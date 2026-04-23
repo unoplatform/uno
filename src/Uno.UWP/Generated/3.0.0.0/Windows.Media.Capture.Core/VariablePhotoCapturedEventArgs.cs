@@ -53,9 +53,9 @@ namespace Windows.Media.Capture.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.Frame.get
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.CaptureTimeOffset.get
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.UsedFrameControllerIndex.get
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.CapturedFrameControlValues.get
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.Frame.get
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.UsedFrameControllerIndex.get
 	}
 }

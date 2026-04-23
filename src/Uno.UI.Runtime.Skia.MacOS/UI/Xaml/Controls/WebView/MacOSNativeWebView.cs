@@ -13,7 +13,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal partial class MacOSNativeWebView : MacOSNativeElement, INativeWebView
+internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNativeWebView
 {
 	private readonly MacOSWindowNative _window;
 	private readonly CoreWebView2 _owner;
@@ -58,14 +58,18 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 		_webview = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
 		NativeHandle = _webview;
 
-		Unloaded += (s, e) =>
-		{
-			_webViews.Remove(NativeHandle);
-		};
-
-		_webViews.Add(NativeHandle, new WeakReference<MacOSNativeWebView>(this));
-
 		_previousTitle = "";
+	}
+
+	void ICleanableNativeWebView.OnLoaded()
+	{
+		_webViews[NativeHandle] = new WeakReference<MacOSNativeWebView>(this);
+		NativeUno.uno_webview_register_message_handler(NativeHandle);
+	}
+
+	void ICleanableNativeWebView.OnUnloaded()
+	{
+		_webViews.Remove(NativeHandle);
 	}
 
 	public string DocumentTitle => NativeUno.uno_webview_get_title(_webview);

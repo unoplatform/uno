@@ -10,15 +10,15 @@ namespace Windows.Networking.NetworkOperators
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Ssid
+		public global::Windows.Networking.NetworkOperators.TetheringWiFiBand Band
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NetworkOperatorTetheringAccessPointConfiguration.Ssid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorTetheringAccessPointConfiguration.Ssid");
+				throw new global::System.NotImplementedException("The member TetheringWiFiBand NetworkOperatorTetheringAccessPointConfiguration.Band is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TetheringWiFiBand%20NetworkOperatorTetheringAccessPointConfiguration.Band");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "string NetworkOperatorTetheringAccessPointConfiguration.Ssid");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "TetheringWiFiBand NetworkOperatorTetheringAccessPointConfiguration.Band");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.NetworkOperators.TetheringWiFiBand Band
+		public string Ssid
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TetheringWiFiBand NetworkOperatorTetheringAccessPointConfiguration.Band is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TetheringWiFiBand%20NetworkOperatorTetheringAccessPointConfiguration.Band");
+				throw new global::System.NotImplementedException("The member string NetworkOperatorTetheringAccessPointConfiguration.Ssid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorTetheringAccessPointConfiguration.Ssid");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "TetheringWiFiBand NetworkOperatorTetheringAccessPointConfiguration.Band");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "string NetworkOperatorTetheringAccessPointConfiguration.Ssid");
 			}
 		}
 #endif
@@ -58,10 +58,6 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.NetworkOperatorTetheringAccessPointConfiguration()
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Ssid.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Ssid.set
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Passphrase.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Passphrase.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsBandSupported(global::Windows.Networking.NetworkOperators.TetheringWiFiBand band)
@@ -78,5 +74,9 @@ namespace Windows.Networking.NetworkOperators
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Band.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Band.set
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Passphrase.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Passphrase.set
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Ssid.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Ssid.set
 	}
 }

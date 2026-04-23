@@ -23,7 +23,6 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.InstanceId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CheckResult()
@@ -31,5 +30,6 @@ namespace Windows.ApplicationModel.Background
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs", "void BackgroundTaskCompletedEventArgs.CheckResult()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.InstanceId.get
 	}
 }

@@ -40,7 +40,7 @@ namespace Windows.Devices.Sensors
 
 		private void StartShaken()
 		{
-			if (_shakeDetector == null)
+			if (_shakeDetector is null)
 			{
 				_shakeDetector = new ShakeDetector(this);
 			}
@@ -52,8 +52,8 @@ namespace Windows.Devices.Sensors
 
 		private void AttachDeviceMotion()
 		{
-			//if both delegates are not null,
-			//we have already started reading previously
+			// If both delegates are not null,
+			// We have already started reading previously
 			if (_shakenWrapper.Event == null || _readingChangedWrapper.Event == null)
 			{
 				NativeMethods.StartReading();

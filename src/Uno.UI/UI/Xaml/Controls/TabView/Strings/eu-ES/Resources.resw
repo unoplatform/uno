@@ -145,4 +145,8 @@
     <value>Korritu fitxen zerrenda aurrera</value>
     <comment>Tooltip for the tab list scroll increase button.</comment>
   </data>
+  <data name="TabViewNewTabAddedNotification" xml:space="preserve">
+    <value>Beste fitxa bat gehitu da.</value>
+    <comment>String read by Narrator when a new tab is added.</comment>
+  </data>
 </root>

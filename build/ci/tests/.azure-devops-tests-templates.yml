@@ -31,7 +31,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-windows.yml
@@ -42,7 +42,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -63,7 +63,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-windows
+      ArtifactName: template-tests-windows-logs
       ArtifactType: Container
 
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
@@ -92,7 +92,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   # Install android 35 as we're running on macos-15
   - bash: |
@@ -120,7 +120,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -140,7 +140,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-macos
+      ArtifactName: template-tests-macos-logs
       ArtifactType: Container
 
 - job: Dotnet_Template_Tests_net7_Linux
@@ -166,7 +166,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-linux.yml
@@ -186,7 +186,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -237,7 +237,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-net7-linux
+      ArtifactName: template-tests-linux-logs
       ArtifactType: Container
 
 
@@ -269,7 +269,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   # Install the .NET 10 SDK in the default system location so 
   # the devserver tests can find them.
@@ -277,7 +277,7 @@ jobs:
     displayName: Install .NET 10 SDK
     inputs:
       packageType: 'sdk'
-      version: '10.0.101'
+      version: '$(DotNetSdkVersion)'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-install.yml
@@ -286,7 +286,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -347,13 +347,13 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   - task: UseDotNet@2
     displayName: Install .NET 10 SDK
     inputs:
       packageType: 'sdk'
-      version: '10.0.101'
+      version: '$(DotNetSdkVersion)'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-install.yml
@@ -362,7 +362,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true

@@ -149,6 +149,11 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateDOMProperties();
 			}
 #endif
+
+#if __SKIA__
+			// Notify UIA clients that IsEnabled (and potentially IsKeyboardFocusable) may have changed.
+			CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+#endif
 		}
 		#endregion
 

@@ -15,6 +15,36 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIDeviceActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIDeviceActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int CurrentlyShownApplicationViewId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int WebUIDeviceActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIDeviceActivatedEventArgs.CurrentlyShownApplicationViewId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceInformationId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebUIDeviceActivatedEventArgs.DeviceInformationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIDeviceActivatedEventArgs.DeviceInformationId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -55,26 +85,6 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int CurrentlyShownApplicationViewId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int WebUIDeviceActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIDeviceActivatedEventArgs.CurrentlyShownApplicationViewId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceInformationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebUIDeviceActivatedEventArgs.DeviceInformationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIDeviceActivatedEventArgs.DeviceInformationId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Verb
 		{
 			get
@@ -83,24 +93,14 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIDeviceActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIDeviceActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.CurrentlyShownApplicationViewId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.DeviceInformationId.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.Verb.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.CurrentlyShownApplicationViewId.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.User.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIDeviceActivatedEventArgs.Verb.get
 		// Processing: Windows.ApplicationModel.Activation.IDeviceActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs

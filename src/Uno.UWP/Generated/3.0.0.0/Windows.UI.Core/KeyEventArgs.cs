@@ -8,15 +8,15 @@ namespace Windows.UI.Core
 #endif
 	public partial class KeyEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
+		// Skipping already declared property DeviceId
 		// Skipping already declared property Handled
 		// Skipping already declared property KeyStatus
 		// Skipping already declared property VirtualKey
-		// Skipping already declared property DeviceId
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.VirtualKey.get
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.KeyStatus.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.DeviceId.get
 		// Forced skipping of method Windows.UI.Core.KeyEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.KeyEventArgs.Handled.set
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.DeviceId.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.KeyStatus.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.VirtualKey.get
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

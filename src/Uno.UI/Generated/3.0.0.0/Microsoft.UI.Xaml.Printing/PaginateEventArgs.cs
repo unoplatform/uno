@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Printing
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PaginateEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PrintTaskOptions.get
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.CurrentPreviewPageNumber.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PrintTaskOptions.get
 	}
 }

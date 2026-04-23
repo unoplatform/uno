@@ -23,7 +23,6 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.EndpointDescriptor.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearStallAsync()
@@ -33,6 +32,7 @@ namespace Windows.Devices.Usb
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.DataReceived.add
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.DataReceived.remove
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.EndpointDescriptor.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Usb.UsbInterruptInPipe, global::Windows.Devices.Usb.UsbInterruptInEventArgs> DataReceived

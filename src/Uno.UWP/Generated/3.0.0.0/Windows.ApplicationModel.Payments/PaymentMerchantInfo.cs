@@ -30,20 +30,20 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PaymentMerchantInfo(global::System.Uri uri)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo(Uri uri)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo(System.Uri)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentMerchantInfo()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public PaymentMerchantInfo(global::System.Uri uri)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo(Uri uri)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo(System.Uri)
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PackageFullName.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.Uri.get
 	}

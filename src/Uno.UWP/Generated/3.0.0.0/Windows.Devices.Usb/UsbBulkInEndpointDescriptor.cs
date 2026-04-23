@@ -43,8 +43,8 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.MaxPacketSize.get
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.EndpointNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.MaxPacketSize.get
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.Pipe.get
 	}
 }

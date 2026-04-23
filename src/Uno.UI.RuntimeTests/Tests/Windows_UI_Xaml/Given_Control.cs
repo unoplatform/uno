@@ -503,6 +503,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(FlipView),
 				typeof(FlipViewItem),
 				typeof(FlyoutPresenter),
+				typeof(GroupItem),
 				typeof(Frame),
 				typeof(Microsoft.UI.Xaml.Controls.GridView),
 				typeof(GridViewHeaderItem),
@@ -519,6 +520,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(MenuFlyoutPresenter),
 				typeof(MenuFlyoutSeparator),
 				typeof(MenuFlyoutSubItem),
+				typeof(SplitMenuFlyoutItem),
 				typeof(NavigationViewItemBase),
 				typeof(Page),
 				typeof(PasswordBox),
@@ -558,8 +560,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			StringBuilder nonWinUI = new StringBuilder();
 			foreach (var controlInstance in allControlTypes.Select(t => Activator.CreateInstance(t) as Control))
 			{
-				Assert.AreEqual(url, controlInstance.DefaultStyleResourceUri);
-				Assert.IsNotNull(Style.GetDefaultStyleForInstance(controlInstance, controlInstance.GetType()));
+				Assert.AreEqual(url, controlInstance.DefaultStyleResourceUri, $"DefaultStyleResourceUri mismatch for {controlInstance.GetType()}");
+				Assert.IsNotNull(Style.GetDefaultStyleForInstance(controlInstance, controlInstance.GetType()), $"Default style not found for {controlInstance.GetType()}");
 			}
 		}
 #endif

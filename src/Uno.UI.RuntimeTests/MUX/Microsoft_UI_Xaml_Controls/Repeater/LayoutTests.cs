@@ -44,7 +44,7 @@ using System.Threading.Tasks;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	public class LayoutTests : MUXApiTestBase
+	public partial class LayoutTests : MUXApiTestBase
 	{
 		[TestMethod]
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
@@ -512,10 +512,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		private DataTemplate GetDataTemplate(string content)
 		{
 			return (DataTemplate)XamlReader.Load(
-					   string.Format(@"<DataTemplate  
+					   string.Format(@"<DataTemplate
 							xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
 						   {0}
 						</DataTemplate>", content));
 		}
+
 	}
 }

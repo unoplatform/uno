@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ItemContainer : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property IsSelected
-		// Skipping already declared property Child
 		// Skipping already declared property ChildProperty
 		// Skipping already declared property IsSelectedProperty
+		// Skipping already declared property Child
+		// Skipping already declared property IsSelected
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemContainer.ItemContainer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ItemContainer()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ChildProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelectedProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.Child.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.Child.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ChildProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelectedProperty.get
 	}
 }

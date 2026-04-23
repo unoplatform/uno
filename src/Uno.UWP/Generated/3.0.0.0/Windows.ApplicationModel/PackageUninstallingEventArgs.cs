@@ -64,9 +64,9 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.ActivityId.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.IsComplete.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.IsComplete.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.ErrorCode.get
 	}
 }

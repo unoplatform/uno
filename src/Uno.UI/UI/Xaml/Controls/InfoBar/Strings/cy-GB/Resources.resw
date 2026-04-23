@@ -154,15 +154,15 @@
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>Neges gwybodaeth, gwall difrifoldeb</value>
+    <value>Neges wybodaeth, gwall difrifoldeb</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>Neges gwybodaeth, gwybodaeth difrifoldeb</value>
+    <value>Neges wybodaeth, gwybodaeth ddifrifoldeb</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
-    <value>Neges gwybodaeth, llwyddiant difrifoldeb</value>
+    <value>Neges wybodaeth, llwyddiant difrifoldeb</value>
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">

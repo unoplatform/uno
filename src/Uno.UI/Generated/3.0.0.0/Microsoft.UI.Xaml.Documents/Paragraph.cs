@@ -8,14 +8,14 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class Paragraph : global::Microsoft.UI.Xaml.Documents.Block
 	{
-		// Skipping already declared property TextIndent
-		// Skipping already declared property Inlines
 		// Skipping already declared property TextIndentProperty
+		// Skipping already declared property Inlines
+		// Skipping already declared property TextIndent
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Paragraph.Paragraph()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.Paragraph()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.TextIndentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.Inlines.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.TextIndent.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.TextIndent.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.TextIndentProperty.get
 	}
 }

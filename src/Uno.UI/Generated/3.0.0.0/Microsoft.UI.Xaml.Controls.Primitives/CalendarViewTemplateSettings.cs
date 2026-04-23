@@ -23,8 +23,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property WeekDay5
 		// Skipping already declared property WeekDay6
 		// Skipping already declared property WeekDay7
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.MinViewWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.CenterX.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.CenterY.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.ClipRect.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.HasMoreContentAfter.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.HasMoreContentBefore.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.HasMoreViews.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.HeaderText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.MinViewWidth.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay1.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay2.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay3.get
@@ -32,11 +38,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay5.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay6.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay7.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.HasMoreContentAfter.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.HasMoreContentBefore.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.HasMoreViews.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.ClipRect.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.CenterX.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.CenterY.get
 	}
 }

@@ -1,18 +1,19 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
-public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationPeer
+public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationPeer, IScrollProvider
 {
 	private const double s_minimumPercent = 0.0;
 	private const double s_maximumPercent = 100.0;
-	//private const double s_noScroll = -1.0;
+	private static readonly double s_noScroll = ScrollPatternIdentifiers.NoScroll;
 
 	private double m_horizontalScrollPercent = ScrollPatternIdentifiers.NoScroll;
 	private double m_verticalScrollPercent = ScrollPatternIdentifiers.NoScroll;
@@ -24,7 +25,6 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 	public ScrollPresenterAutomationPeer(ScrollPresenter owner)
 		: base(owner)
 	{
-		// SCROLLPRESENTER_TRACE_VERBOSE(owner, TRACE_MSG_METH_PTR, METH_NAME, this, owner);
 	}
 
 	// IAutomationPeerOverrides implementation
@@ -41,15 +41,65 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 
 	// IScrollProvider implementation
 
+	double IScrollProvider.HorizontalScrollPercent
+	{
+		get
+		{
+			MUX_ASSERT(m_horizontalScrollPercent == get_HorizontalScrollPercentImpl());
+			return m_horizontalScrollPercent;
+		}
+	}
+
+	double IScrollProvider.VerticalScrollPercent
+	{
+		get
+		{
+			MUX_ASSERT(m_verticalScrollPercent == get_VerticalScrollPercentImpl());
+			return m_verticalScrollPercent;
+		}
+	}
+
+	double IScrollProvider.HorizontalViewSize
+	{
+		get
+		{
+			MUX_ASSERT(m_horizontalViewSize == get_HorizontalViewSizeImpl());
+			return m_horizontalViewSize;
+		}
+	}
+
+	double IScrollProvider.VerticalViewSize
+	{
+		get
+		{
+			MUX_ASSERT(m_verticalViewSize == get_VerticalViewSizeImpl());
+			return m_verticalViewSize;
+		}
+	}
+
+	bool IScrollProvider.HorizontallyScrollable
+	{
+		get
+		{
+			MUX_ASSERT(m_horizontallyScrollable == get_HorizontallyScrollableImpl());
+			return m_horizontallyScrollable;
+		}
+	}
+
+	bool IScrollProvider.VerticallyScrollable
+	{
+		get
+		{
+			MUX_ASSERT(m_verticallyScrollable == get_VerticallyScrollableImpl());
+			return m_verticallyScrollable;
+		}
+	}
+
 	// Request to scroll horizontally and vertically by the specified amount.
 	// The ability to call this method and simultaneously scroll horizontally
 	// and vertically provides simple panning support.
-#if false // UNO TODO
-	private void Scroll(ScrollAmount horizontalAmount, ScrollAmount verticalAmount)
+	void IScrollProvider.Scroll(ScrollAmount horizontalAmount, ScrollAmount verticalAmount)
 	{
-		// SCROLLPRESENTER_TRACE_VERBOSE(Owner(), TRACE_MSG_METH_STR_STR, METH_NAME, this,
-		// 	TypeLogging::ScrollAmountToString(horizontalAmount).c_str(), TypeLogging::ScrollAmountToString(verticalAmount).c_str());
-
 		if (!IsEnabled())
 		{
 			throw new ElementNotEnabledException();
@@ -58,8 +108,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 		bool scrollHorizontally = horizontalAmount != ScrollAmount.NoAmount;
 		bool scrollVertically = verticalAmount != ScrollAmount.NoAmount;
 
-		bool isHorizontallyScrollable = HorizontallyScrollable();
-		bool isVerticallyScrollable = VerticallyScrollable();
+		bool isHorizontallyScrollable = m_horizontallyScrollable;
+		bool isVerticallyScrollable = m_verticallyScrollable;
 
 		if (!(scrollHorizontally && !isHorizontallyScrollable) && !(scrollVertically && !isVerticallyScrollable))
 		{
@@ -116,10 +166,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 	// Passing in the value of "-1", represented by the constant "NoScroll", will indicate that scrolling
 	// in that direction should be ignored.
 	// The ability to call this method and simultaneously scroll horizontally and vertically provides simple panning support.
-	private void SetScrollPercent(double horizontalPercent, double verticalPercent)
+	void IScrollProvider.SetScrollPercent(double horizontalPercent, double verticalPercent)
 	{
-		// SCROLLPRESENTER_TRACE_VERBOSE(Owner(), TRACE_MSG_METH_DBL_DBL, METH_NAME, this, horizontalPercent, verticalPercent);
-
 		if (!IsEnabled())
 		{
 			throw new ElementNotEnabledException();
@@ -133,8 +181,8 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 			return;
 		}
 
-		bool isHorizontallyScrollable = HorizontallyScrollable();
-		bool isVerticallyScrollable = VerticallyScrollable();
+		bool isHorizontallyScrollable = m_horizontallyScrollable;
+		bool isVerticallyScrollable = m_verticallyScrollable;
 
 		if ((scrollHorizontally && !isHorizontallyScrollable) || (scrollVertically && !isVerticallyScrollable))
 		{
@@ -171,56 +219,9 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 		}
 	}
 
-	private double HorizontalScrollPercent()
-	{
-		MUX_ASSERT(m_horizontalScrollPercent == get_HorizontalScrollPercentImpl());
-
-		return m_horizontalScrollPercent;
-	}
-
-	private double VerticalScrollPercent()
-	{
-		MUX_ASSERT(m_verticalScrollPercent == get_VerticalScrollPercentImpl());
-
-		return m_verticalScrollPercent;
-	}
-
-	// Returns the horizontal percentage of the entire extent that is currently viewed.
-	private double HorizontalViewSize()
-	{
-		MUX_ASSERT(m_horizontalViewSize == get_HorizontalViewSizeImpl());
-
-		return m_horizontalViewSize;
-	}
-
-	// Returns the vertical percentage of the entire extent that is currently viewed.
-	private double VerticalViewSize()
-	{
-		MUX_ASSERT(m_verticalViewSize == get_VerticalViewSizeImpl());
-
-		return m_verticalViewSize;
-	}
-
-	private bool HorizontallyScrollable()
-	{
-		MUX_ASSERT(m_horizontallyScrollable == get_HorizontallyScrollableImpl());
-
-		return m_horizontallyScrollable;
-	}
-
-	private bool VerticallyScrollable()
-	{
-		MUX_ASSERT(m_verticallyScrollable == get_VerticallyScrollableImpl());
-
-		return m_verticallyScrollable;
-	}
-#endif
-
 	// Raise relevant Scroll Pattern events for UIAutomation clients.
 	internal void UpdateScrollPatternProperties()
 	{
-		// SCROLLPRESENTER_TRACE_VERBOSE(Owner(), TRACE_MSG_METH, METH_NAME, this);
-
 		double newHorizontalScrollPercent = get_HorizontalScrollPercentImpl();
 		double newVerticalScrollPercent = get_VerticalScrollPercentImpl();
 		double newHorizontalViewSize = get_HorizontalViewSizeImpl();
@@ -389,9 +390,4 @@ public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationP
 
 		return scrollPercent;
 	}
-
-	// ~ScrollPresenterAutomationPeer()
-	// {
-	//     SCROLLPRESENTER_TRACE_VERBOSE(nullptr, TRACE_MSG_METH, METH_NAME, this);
-	// }
 }

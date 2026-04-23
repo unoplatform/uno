@@ -33,7 +33,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo.RuntimeFileTime.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo.EtwRuntimeFileTime.get
+		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo.RuntimeFileTime.get
 	}
 }

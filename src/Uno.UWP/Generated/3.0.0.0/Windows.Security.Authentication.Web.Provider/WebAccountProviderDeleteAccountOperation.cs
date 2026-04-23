@@ -15,16 +15,6 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Credentials.WebAccount WebAccount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WebAccount WebAccountProviderDeleteAccountOperation.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccount%20WebAccountProviderDeleteAccountOperation.WebAccount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.Web.Provider.WebAccountProviderOperationKind Kind
 		{
 			get
@@ -33,8 +23,16 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.WebAccount.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.Kind.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Credentials.WebAccount WebAccount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WebAccount WebAccountProviderDeleteAccountOperation.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccount%20WebAccountProviderDeleteAccountOperation.WebAccount");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted()
@@ -49,6 +47,8 @@ namespace Windows.Security.Authentication.Web.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation", "void WebAccountProviderDeleteAccountOperation.ReportError(WebProviderError value)");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.Kind.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.WebAccount.get
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderBaseReportOperation
 	}

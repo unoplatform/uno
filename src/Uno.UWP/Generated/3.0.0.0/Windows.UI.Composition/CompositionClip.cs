@@ -9,77 +9,16 @@ namespace Windows.UI.Composition
 	public partial class CompositionClip : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionClip()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Matrix3x2 TransformMatrix
+		public global::System.Numerics.Vector2 AnchorPoint
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 CompositionClip.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20CompositionClip.TransformMatrix");
+				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.AnchorPoint");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "Matrix3x2 CompositionClip.TransformMatrix");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 Scale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.Scale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.Scale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RotationAngleInDegrees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionClip.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionClip.RotationAngleInDegrees");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "float CompositionClip.RotationAngleInDegrees");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RotationAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionClip.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionClip.RotationAngle");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "float CompositionClip.RotationAngle");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 Offset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.Offset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.Offset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.AnchorPoint");
 			}
 		}
 #endif
@@ -99,15 +38,71 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 AnchorPoint
+		public global::System.Numerics.Vector2 Offset
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.AnchorPoint");
+				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.Offset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.AnchorPoint");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.Offset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RotationAngle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionClip.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionClip.RotationAngle");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "float CompositionClip.RotationAngle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RotationAngleInDegrees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionClip.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionClip.RotationAngleInDegrees");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "float CompositionClip.RotationAngleInDegrees");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 Scale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.Scale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.Scale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix3x2 TransformMatrix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Matrix3x2 CompositionClip.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20CompositionClip.TransformMatrix");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionClip", "Matrix3x2 CompositionClip.TransformMatrix");
 			}
 		}
 #endif

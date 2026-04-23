@@ -15,6 +15,20 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.ExpressionAnimation Condition
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ExpressionAnimation InteractionTrackerInertiaRestingValue.Condition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpressionAnimation%20InteractionTrackerInertiaRestingValue.Condition");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "ExpressionAnimation InteractionTrackerInertiaRestingValue.Condition");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.ExpressionAnimation RestingValue
 		{
 			get
@@ -29,28 +43,14 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.ExpressionAnimation Condition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ExpressionAnimation InteractionTrackerInertiaRestingValue.Condition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpressionAnimation%20InteractionTrackerInertiaRestingValue.Condition");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "ExpressionAnimation InteractionTrackerInertiaRestingValue.Condition");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.Condition.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.Condition.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
 			throw new global::System.NotImplementedException("The member InteractionTrackerInertiaRestingValue InteractionTrackerInertiaRestingValue.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTrackerInertiaRestingValue%20InteractionTrackerInertiaRestingValue.Create%28Compositor%20compositor%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.Condition.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.Condition.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.set
 	}
 }

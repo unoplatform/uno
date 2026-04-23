@@ -83,8 +83,8 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketInformation.BandwidthStatistics.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketInformation.Protocol.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketInformation.ServerCertificate.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketInformation.ServerCertificateErrorSeverity.get

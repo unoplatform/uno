@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class KeyboardAcceleratorInvokedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Element
+		// Skipping already declared property Handled
 		// Skipping already declared property KeyboardAccelerator
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.KeyboardAccelerator.get
 	}
 }

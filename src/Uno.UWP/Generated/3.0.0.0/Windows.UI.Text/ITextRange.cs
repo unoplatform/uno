@@ -83,26 +83,6 @@ namespace Windows.UI.Text
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.ITextRange.Character.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.Character.set
-		// Forced skipping of method Windows.UI.Text.ITextRange.CharacterFormat.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.CharacterFormat.set
-		// Forced skipping of method Windows.UI.Text.ITextRange.FormattedText.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.FormattedText.set
-		// Forced skipping of method Windows.UI.Text.ITextRange.EndPosition.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.EndPosition.set
-		// Forced skipping of method Windows.UI.Text.ITextRange.Gravity.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.Gravity.set
-		// Forced skipping of method Windows.UI.Text.ITextRange.Length.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.Link.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.Link.set
-		// Forced skipping of method Windows.UI.Text.ITextRange.ParagraphFormat.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.ParagraphFormat.set
-		// Forced skipping of method Windows.UI.Text.ITextRange.StartPosition.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.StartPosition.set
-		// Forced skipping of method Windows.UI.Text.ITextRange.StoryLength.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.Text.get
-		// Forced skipping of method Windows.UI.Text.ITextRange.Text.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		bool CanPaste(int format);
 #endif
@@ -199,5 +179,25 @@ namespace Windows.UI.Text
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		int StartOf(global::Windows.UI.Text.TextRangeUnit unit, bool extend);
 #endif
+		// Forced skipping of method Windows.UI.Text.ITextRange.Character.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.Character.set
+		// Forced skipping of method Windows.UI.Text.ITextRange.CharacterFormat.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.CharacterFormat.set
+		// Forced skipping of method Windows.UI.Text.ITextRange.EndPosition.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.EndPosition.set
+		// Forced skipping of method Windows.UI.Text.ITextRange.FormattedText.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.FormattedText.set
+		// Forced skipping of method Windows.UI.Text.ITextRange.Gravity.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.Gravity.set
+		// Forced skipping of method Windows.UI.Text.ITextRange.Length.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.Link.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.Link.set
+		// Forced skipping of method Windows.UI.Text.ITextRange.ParagraphFormat.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.ParagraphFormat.set
+		// Forced skipping of method Windows.UI.Text.ITextRange.StartPosition.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.StartPosition.set
+		// Forced skipping of method Windows.UI.Text.ITextRange.StoryLength.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.Text.get
+		// Forced skipping of method Windows.UI.Text.ITextRange.Text.set
 	}
 }

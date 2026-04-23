@@ -6,7 +6,7 @@ namespace Windows.Media.Protection.PlayReady
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlayReadySecureStopIterable : global::System.Collections.Generic.IEnumerable<global::Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>
+	public partial class PlayReadySecureStopIterable : global::System.Collections.Generic.IEnumerable<global::Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -16,16 +16,15 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable.PlayReadySecureStopIterable(byte[])
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable.First()
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<IPlayReadySecureStopServiceRequest> PlayReadySecureStopIterable.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CIPlayReadySecureStopServiceRequest%3E%20PlayReadySecureStopIterable.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable.System.Collections.IEnumerable.GetEnumerator()
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

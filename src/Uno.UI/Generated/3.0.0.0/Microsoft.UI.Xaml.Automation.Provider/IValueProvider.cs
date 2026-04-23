@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	{
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property Value
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IValueProvider.SetValue(string)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IValueProvider.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IValueProvider.Value.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IValueProvider.SetValue(string)
 	}
 }

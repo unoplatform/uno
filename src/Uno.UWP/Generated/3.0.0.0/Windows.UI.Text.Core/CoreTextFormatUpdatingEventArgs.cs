@@ -15,20 +15,6 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.Core.CoreTextFormatUpdatingResult Result
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreTextFormatUpdatingResult CoreTextFormatUpdatingEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextFormatUpdatingResult%20CoreTextFormatUpdatingEventArgs.Result");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "CoreTextFormatUpdatingResult CoreTextFormatUpdatingEventArgs.Result");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.ViewManagement.UIElementType? BackgroundColor
 		{
 			get
@@ -69,6 +55,20 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Text.Core.CoreTextFormatUpdatingResult Result
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreTextFormatUpdatingResult CoreTextFormatUpdatingEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextFormatUpdatingResult%20CoreTextFormatUpdatingEventArgs.Result");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "CoreTextFormatUpdatingResult CoreTextFormatUpdatingEventArgs.Result");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.ViewManagement.UIElementType? TextColor
 		{
 			get
@@ -97,15 +97,6 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Range.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.TextColor.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.BackgroundColor.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.UnderlineColor.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.UnderlineType.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Reason.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Result.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Result.set
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.IsCanceled.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -113,5 +104,14 @@ namespace Windows.UI.Text.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreTextFormatUpdatingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextFormatUpdatingEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.BackgroundColor.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.IsCanceled.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Range.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Reason.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Result.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.Result.set
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.TextColor.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.UnderlineColor.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.UnderlineType.get
 	}
 }

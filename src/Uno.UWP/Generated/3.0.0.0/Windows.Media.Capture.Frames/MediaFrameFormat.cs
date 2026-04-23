@@ -15,6 +15,16 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.AudioEncodingProperties AudioEncodingProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AudioEncodingProperties MediaFrameFormat.AudioEncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20MediaFrameFormat.AudioEncodingProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio FrameRate
 		{
 			get
@@ -63,21 +73,11 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.AudioEncodingProperties AudioEncodingProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties MediaFrameFormat.AudioEncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20MediaFrameFormat.AudioEncodingProperties");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.MajorType.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Subtype.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.FrameRate.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Properties.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.VideoFormat.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.AudioEncodingProperties.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.FrameRate.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.MajorType.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Properties.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Subtype.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.VideoFormat.get
 	}
 }

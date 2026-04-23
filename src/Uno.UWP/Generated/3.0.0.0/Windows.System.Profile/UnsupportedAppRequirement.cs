@@ -33,7 +33,7 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.UnsupportedAppRequirement.Requirement.get
 		// Forced skipping of method Windows.System.Profile.UnsupportedAppRequirement.Reasons.get
+		// Forced skipping of method Windows.System.Profile.UnsupportedAppRequirement.Requirement.get
 	}
 }

@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// If there's a ".", we assume there's an extension and that it's a font file path.
-				if (fontFamily.Source.Contains("."))
+				if (fontFamily.Source.Contains('.'))
 				{
 					var source = fontFamily.Source;
 

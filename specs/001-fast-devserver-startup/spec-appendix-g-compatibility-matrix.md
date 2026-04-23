@@ -13,13 +13,13 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 
 | Launcher | Launches Host Via | Uses `--command start` | Passes `--addins` | AmbientRegistry Check | `.csproj.user` Write | Status |
 |----------|-------------------|:----------------------:|:------------------:|:---------------------:|:--------------------:|--------|
-| CLI `start` | Controller → Server | Yes | **Phase 0** | Yes (controller) | Yes (controller: `Program.Command.cs:101`) | Changing |
+| CLI `start` | CLI → Direct | **No** (direct launch) | Yes (`StartCommandHandler`) | Yes (CLI: `StartCommandHandler`) | Yes (CLI: `StartCommandHandler`) | **Implemented** |
 | CLI MCP (`--mcp-app`) | Controller (Phase 0); Direct (Phase 1b) | Phase 0: Yes; Phase 1b: No | **Phase 0** | **Must add** (1g-bis) | Phase 0: controller writes it; Phase 1b: **must re-implement** CLI-side | Changing |
 | VS (`uno.studio`) | `DevServerLauncher` → Direct | No | No (future) | **None today** | Yes (VS extension: `DevServerLauncher.cs:187`) | Unchanged |
 | Rider (`uno.rider`) | `DevServerService` → Direct | No | No (future) | **None today** | Yes (Rider extension: `DevServerService.cs:79`) | Unchanged |
 | VS Code (`uno.vscode`) | `extension.ts` → Direct | No | No (future) | **None today** | Yes (VS Code extension: `unoDebugConfigurationProvider.ts:226`) | Unchanged |
 
-> **Note**: The Host server-mode process (`Program.cs`) does **NOT** write `.csproj.user`. It only registers in AmbientRegistry (`Program.cs:221`). Each launcher is responsible for writing `.csproj.user` independently: the controller does it for CLI `start`, and each IDE extension does it for their own launch path.
+> **Note**: The Host server-mode process (`Program.cs`) does **NOT** write `.csproj.user`. It only registers in AmbientRegistry (`Program.cs:221`). Each launcher is responsible for writing `.csproj.user` independently: the CLI `StartCommandHandler` does it for CLI `start` (previously the controller), and each IDE extension does it for their own launch path.
 
 ### Risks
 
@@ -36,7 +36,7 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 - [ ] Host launched **with** `--addins` → MSBuild discovery skipped, provided paths used
 - [ ] Host launched **with** `--addins ""` (empty) → no add-ins loaded, no discovery
 - [ ] Host launched with both `--addins` and `--solution` → `--addins` for add-ins, `--solution` for Hot Reload
-- [ ] Controller launched with `--addins` → forwards `--addins` to child server process (Phase 0 requirement)
+- [ ] CLI `start` passes `--addins` directly to host in direct mode (no controller involved)
 - [ ] AmbientRegistry: controller pre-checks before starting (existing behavior preserved)
 - [ ] AmbientRegistry: server-mode Host only registers, does NOT pre-check (known limitation)
 
@@ -158,14 +158,14 @@ How different SDK versions affect add-in discovery.
 **Key observations**:
 - **`resources/subscribe` is unsupported across ALL clients** — the `uno://health` resource subscription feature (section 1d) will not work for any current client. Polling or `tools/list_changed` are the only notification mechanisms.
 - **`tools/list_changed` is supported by only 3 clients** (Cursor, VS Code Copilot, Windsurf). All others need `--mcp-wait-tools-list` to block the initial `list_tools` until upstream responds.
-- **`roots` is supported by 4 of 8 clients** (Claude Code, Cursor, VS Code Copilot, Junie). The 4 without (Claude Desktop, Codex CLI, Windsurf, Antigravity) previously required the explicit `--force-roots-fallback` flag. This is now **auto-detected**: when the MCP client does not advertise `roots` capability and the workspace is not already resolved, the proxy enables roots fallback automatically. The `--force-roots-fallback` CLI flag remains available for explicit override. (*) Antigravity declares `roots` capability in the protocol but does not actually provide workspace roots per Uno's own docs (`doc/articles/get-started-ai-google-antigravity.md:52`). Treat as unsupported until verified.
+- **`roots` is supported by 4 of 8 clients** (Claude Code, Cursor, VS Code Copilot, Junie). The 4 without (Claude Desktop, Codex CLI, Windsurf, Antigravity) previously required the explicit `--force-roots-fallback` flag. This is now **auto-detected**: when the MCP client does not advertise `roots` capability and the workspace is not already resolved, the proxy enables roots fallback automatically. IDE registration profiles (`ide-profiles.json`) no longer hardcode the legacy flag. The `--force-roots-fallback` CLI flag remains accepted for explicit override but is rarely needed. (*) Antigravity declares `roots` capability in the protocol but does not actually provide workspace roots per Uno's own docs (`doc/articles/get-started-ai-google-antigravity.md`). Treat as unsupported until verified.
 - **Capability detection from `initialize` is the only reliable approach** — hardcoding client names is fragile and already stale. The auto-detection of roots fallback is an example of this principle in practice: the proxy inspects the client's declared capabilities at connection time rather than relying on per-client flags.
 
 ### Risks
 
 | Risk | Scenario | Impact | Mitigation |
 |------|----------|--------|------------|
-| Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds. Additionally, meta-tools `uno_discover_tools` and `uno_execute_tool` allow clients to discover and invoke upstream tools without re-querying `list_tools`. |
+| Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds. Additionally, meta-tools `uno_discover_tools` and `uno_execute_tool` remain available throughout the session as a stable compatibility path to upstream tools. |
 | Client doesn't support `resources` | `uno://health` not accessible | No diagnostics | `uno_health` tool as universal fallback |
 | Client doesn't support `roots` | Workspace not discovered | Discovery fails | Roots fallback auto-detected when client lacks `roots` capability and workspace is unresolved; `--force-roots-fallback` still available for explicit override |
 | No client supports `resources/subscribe` | Health push notifications never received | Clients must poll or rely on `tools/list_changed` | Design for pull-based health (tool call), not push-based (subscription) |
@@ -219,7 +219,7 @@ These scenarios test the interaction between different DevServer launchers runni
 | Business | 12 | `tools/list_changed` sent |
 | Expired/None | 0 | Warning in health |
 
-> **Note**: The tool cache (`tools-cache.json`) has been removed. For clients that do not re-query `list_tools` after `tools/list_changed`, the meta-tools `uno_discover_tools` and `uno_execute_tool` provide an alternative mechanism to discover and call upstream tools.
+> **Note**: The tool cache (`tools-cache.json`) has been removed. The meta-tools `uno_discover_tools` and `uno_execute_tool` provide a stable compatibility mechanism to discover and call upstream tools while the direct tool set changes during the session.
 
 ### Validation
 

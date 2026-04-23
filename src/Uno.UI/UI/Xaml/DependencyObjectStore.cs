@@ -18,6 +18,7 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Media;
 
@@ -66,6 +67,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private ResourceBindingCollection? _resourceBindings;
+		private ThemeResourceMap? _themeResources;
 
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
 
@@ -75,6 +77,12 @@ namespace Microsoft.UI.Xaml
 
 		private readonly ManagedWeakReference _originalObjectRef;
 		private DependencyObject? _hardOriginalObjectRef;
+
+		/// <summary>
+		/// Cached VisualTree pointer, matching WinUI's CDependencyObject::m_pVisualTree.
+		/// Set during Enter when the element enters the live tree.
+		/// </summary>
+		private ManagedWeakReference? _visualTreeCacheWeakReference;
 
 		/// <summary>
 		/// This field is used to pass a reference to itself in the case
@@ -165,6 +173,28 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the cached VisualTree for this DependencyObject.
+		/// Matches WinUI's CDependencyObject::GetVisualTree/SetVisualTree.
+		/// </summary>
+		internal VisualTree? VisualTreeCache
+		{
+			get => _visualTreeCacheWeakReference?.IsDisposed == false
+				? _visualTreeCacheWeakReference.Target as VisualTree
+				: null;
+			set
+			{
+				if (_visualTreeCacheWeakReference is not null)
+				{
+					WeakReferencePool.ReturnWeakReference(this, _visualTreeCacheWeakReference);
+				}
+
+				_visualTreeCacheWeakReference = value is not null
+					? WeakReferencePool.RentWeakReference(this, value)
+					: null;
+			}
+		}
+
 		static DependencyObjectStore()
 		{
 			InitializeStaticBinder();
@@ -251,6 +281,11 @@ namespace Microsoft.UI.Xaml
 
 			ValidatePropertyOwner(property);
 
+			if (property.IsPropMethodCall)
+			{
+				return GetValueFromMethodCall(property);
+			}
+
 			if (_properties.DataContextPropertyDetails.Property == property)
 			{
 				// Historically, we didn't have this fast path for default value.
@@ -286,6 +321,16 @@ namespace Microsoft.UI.Xaml
 
 			if (details?.GetBaseValueSource() == DependencyPropertyValuePrecedences.Local)
 			{
+				// For PropMethodCall DPs, the authoritative local value is on the backing field
+				// via the method delegate. However, when ModifiedValue exists (coercion/animation
+				// active), the backing field holds the effective (coerced/animated) value, while
+				// the real local base value is preserved in DependencyPropertyDetails via
+				// ModifiedValue — so we must fall through to details.GetBaseValue() in that case.
+				if (property.IsPropMethodCall && details.GetModifiedValue() is null)
+				{
+					return GetValueFromMethodCall(property);
+				}
+
 				return details.GetBaseValue();
 			}
 
@@ -348,6 +393,11 @@ namespace Microsoft.UI.Xaml
 
 		private object? GetValue(DependencyPropertyDetails propertyDetails)
 		{
+			if (propertyDetails.Property.IsPropMethodCall)
+			{
+				return GetValueFromMethodCall(propertyDetails.Property);
+			}
+
 			if (propertyDetails == _properties.DataContextPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
@@ -356,6 +406,24 @@ namespace Microsoft.UI.Xaml
 			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
 				? GetDefaultValue(propertyDetails.Property)
 				: propertyDetails.GetEffectiveValue();
+		}
+
+		private object? GetValueFromMethodCall(DependencyProperty property)
+		{
+			Debug.Assert(property.IsPropMethodCall);
+			Debug.Assert(property.Metadata is FrameworkPropertyMetadata);
+			var propMethodCall = Unsafe.As<FrameworkPropertyMetadata>(property.Metadata).PropMethodCall;
+			Debug.Assert(propMethodCall is not null);
+			return propMethodCall(ActualInstance!, isGet: true, valueToSet: null);
+		}
+
+		private void SetValueViaMethodCall(DependencyProperty property, object? value)
+		{
+			Debug.Assert(property.IsPropMethodCall);
+			Debug.Assert(property.Metadata is FrameworkPropertyMetadata);
+			var propMethodCall = Unsafe.As<FrameworkPropertyMetadata>(property.Metadata).PropMethodCall;
+			Debug.Assert(propMethodCall is not null);
+			_ = propMethodCall(ActualInstance!, isGet: false, valueToSet: value);
 		}
 
 		/// <summary>
@@ -550,6 +618,7 @@ namespace Microsoft.UI.Xaml
 					{
 						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
 						_resourceBindings?.ClearBinding(property, precedence);
+						_themeResources?.Clear(property, precedence);
 					}
 
 					// Value may or may not have changed based on the precedence
@@ -689,19 +758,19 @@ namespace Microsoft.UI.Xaml
 		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails,
 			object? previousValue, object? baseValue, DependencyPropertyValuePrecedences precedence)
 		{
+			var coerceValueCallback = propertyDetails.Property.Metadata.CoerceValueCallback;
+			if (coerceValueCallback == null)
+			{
+				// No coercion to remove or to apply.
+				return;
+			}
+
 			if (baseValue == DependencyProperty.UnsetValue)
 			{
 				// Removing any previously applied coercion
 				SetValueInternal(DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 
 				// CoerceValueCallback shouldn't be called when unsetting the value.
-				return;
-			}
-
-			var coerceValueCallback = propertyDetails.Property.Metadata.CoerceValueCallback;
-			if (coerceValueCallback == null)
-			{
-				// No coercion to remove or to apply.
 				return;
 			}
 
@@ -1157,6 +1226,15 @@ namespace Microsoft.UI.Xaml
 				return (GetDefaultValue(property), DependencyPropertyValuePrecedences.DefaultValue);
 			}
 
+			// For PropMethodCall DPs, the authoritative value is on the backing field,
+			// not in DependencyPropertyDetails._value. Read it from the method delegate.
+			// When ModifiedValue exists (animation/coercion), the base value is preserved there
+			// via InitializeModifiedValue, so fall through to details.GetBaseValue().
+			if (property.IsPropMethodCall && details.GetModifiedValue() is null)
+			{
+				return (GetValueFromMethodCall(property), baseValueSource);
+			}
+
 			return (details.GetBaseValue(), baseValueSource);
 		}
 
@@ -1201,6 +1279,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
+			// WinUI: Foreground propagates through TextFormatting, NOT through DP inheritance.
+			// In Uno, Foreground has FrameworkPropertyMetadataOptions.Inherits which auto-cascades
+			// to ALL descendants. This breaks element-level theming because a parent's theme change
+			// cascades Foreground through theme boundaries (elements with explicit RequestedTheme).
+			// Block the cascade at theme boundaries, matching WinUI's TextFormatting freeze behavior.
+			if (IsForegroundDependencyProperty(parentProperty)
+				&& ActualInstance is FrameworkElement { IsForegroundInheritanceBlocked: true })
+			{
+				return;
+			}
+
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
 			if (localProperty != null)
@@ -1385,234 +1474,20 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
+		/// Returns true if the given DependencyProperty is one of the known Foreground properties
+		/// that participate in theme-boundary inheritance blocking.
 		/// </summary>
-		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null, ResourceDictionary? containingDictionary = null)
-		{
-			if (updateReason == ResourceUpdateReason.None)
-			{
-				throw new ArgumentException();
-			}
-
-			ResourceDictionary[]? dictionariesInScope = null;
-
-			if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
-				_properties.HasBindings)
-			{
-				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
-				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
-				{
-					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
-				}
-
-				_properties.UpdateBindingExpressions();
-
-				for (int i = 0; i < dictionariesInScope.Length; i++)
-				{
-					ResourceResolver.PopSourceFromScope();
-				}
-			}
-
-			if (_resourceBindings?.HasBindings == true)
-			{
-				dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
-
-				var bindings = _resourceBindings.GetAllBindings();
-				foreach (var binding in bindings)
-				{
-					InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
-				}
-			}
-
-			UpdateChildResourceBindings(updateReason, resourceContextProvider);
-		}
-
 		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
+		/// MUX Reference: WinUI uses KnownPropertyIndex and InheritedProperties::GetCorrespondingInheritedProperty
+		/// to identify Foreground properties. We use DP identity checks to avoid fragile string comparison.
 		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
-		{
-			try
-			{
-				InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
-				{
-					this.Log().Warn($"Failed to update binding, target may have been disposed", e);
-				}
-			}
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
-		{
-			if ((binding.UpdateReason & updateReason) == ResourceUpdateReason.None)
-			{
-				// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it
-				return;
-			}
-
-			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
-			{
-				// Add the current dictionaries to the resolver scope,
-				// this allows for StaticResource.ResourceKey to resolve properly
-
-				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
-				{
-					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
-				}
-			}
-
-			var wasSet = false;
-			foreach (var dict in dictionariesInScope)
-			{
-				if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
-				{
-					wasSet = true;
-					SetResourceBindingValue(property, binding, value);
-					break;
-				}
-			}
-
-			if (!wasSet)
-			{
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
-				{
-					SetResourceBindingValue(property, binding, value);
-				}
-			}
-
-			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
-			{
-				foreach (var dict in dictionariesInScope)
-				{
-					ResourceResolver.PopSourceFromScope();
-				}
-			}
-		}
-
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "normal flow of operation")]
-		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
-		{
-			var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
-			if (binding.SetterBindingPath != null)
-			{
-				try
-				{
-					_isSettingPersistentResourceBinding = binding.IsPersistent;
-					binding.SetterBindingPath.Value = convertedValue;
-				}
-				finally
-				{
-					_isSettingPersistentResourceBinding = false;
-				}
-			}
-			else
-			{
-				SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
-			}
-		}
-
-		private bool _isUpdatingChildResourceBindings;
-
-		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			if (_isUpdatingChildResourceBindings)
-			{
-				// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
-				return;
-			}
-
-			if ((updateReason & ResourceUpdateReason.PropagatesThroughTree) != ResourceUpdateReason.None)
-			{
-				try
-				{
-					InnerUpdateChildResourceBindings(updateReason, resourceContextProvider);
-				}
-				finally
-				{
-					_isUpdatingChildResourceBindings = false;
-				}
-
-				if (ActualInstance is IThemeChangeAware themeChangeAware)
-				{
-					// Call OnThemeChanged after bindings of descendants have been updated
-					themeChangeAware.OnThemeChanged();
-				}
-
-				_properties.OnThemeChanged();
-			}
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			_isUpdatingChildResourceBindings = true;
-
-			foreach (var propertyDetail in _properties.GetAllDetails())
-			{
-				if (propertyDetail == null
-					|| propertyDetail == _properties.DataContextPropertyDetails)
-				{
-					continue;
-				}
-
-				var propertyValue = GetValue(propertyDetail);
-
-				if (propertyValue is IEnumerable<DependencyObject> dependencyObjectCollection &&
-					// Try to avoid enumerating collections that shouldn't be enumerated, since we may be encountering user-defined values. This may need to be refined to somehow only consider values coming from the framework itself.
-					(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
-				)
-				{
-					foreach (var innerValue in dependencyObjectCollection)
-					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
-					}
-				}
-
-				if (propertyValue is IAdditionalChildrenProvider updateable)
-				{
-					foreach (var innerValue in updateable.GetAdditionalChildObjects())
-					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
-					}
-				}
-
-				if (propertyValue is DependencyObject dependencyObject)
-				{
-					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason, resourceContextProvider);
-				}
-			}
-		}
-
-		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			// propagate to non-FE DO
-			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
-			{
-				storeProvider.Store.UpdateResourceBindings(
-					updateReason,
-					// when propagating to non-FE, we need to inject a FE as the resource context
-					resourceContextProvider: resourceContextProvider ?? ActualInstance as FrameworkElement
-				);
-			}
-		}
+		private static bool IsForegroundDependencyProperty(DependencyProperty property) =>
+			property == Controls.Control.ForegroundProperty
+			|| property == Controls.TextBlock.ForegroundProperty
+			|| property == Controls.IconElement.ForegroundProperty
+			|| property == Controls.ContentPresenter.ForegroundProperty
+			|| property == Controls.RichTextBlock.ForegroundProperty
+			|| property == Documents.TextElement.ForegroundProperty;
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
@@ -2161,11 +2036,43 @@ namespace Microsoft.UI.Xaml
 				value = GetDefaultValue(propertyDetails.Property);
 			}
 
+			// For PropMethodCall Coercion/Animation: seed ModifiedValue with the real backing field value
+			// before EnsureModifiedValue() would read stale _value (which is UnsetValue for PropMethodCall).
+			if (propertyDetails.IsPropMethodCall
+				&& propertyDetails.GetModifiedValue() == null
+				&& value != DependencyProperty.UnsetValue
+				&& (precedence == DependencyPropertyValuePrecedences.Coercion
+					|| precedence == DependencyPropertyValuePrecedences.Animations))
+			{
+				propertyDetails.InitializeModifiedValue(GetValueFromMethodCall(propertyDetails.Property));
+			}
+
 			propertyDetails.SetValue(value, precedence);
 
 			if (value == DependencyProperty.UnsetValue && precedence >= DependencyPropertyValuePrecedences.Local)
 			{
 				ReevaluateBaseValue(propertyDetails);
+			}
+
+			if (propertyDetails.Property.IsPropMethodCall)
+			{
+				var highestPrecedence = propertyDetails.CurrentHighestValuePrecedence;
+				if (highestPrecedence == DependencyPropertyValuePrecedences.DefaultValue)
+				{
+					SetValueViaMethodCall(propertyDetails.Property, GetDefaultValue(propertyDetails.Property));
+				}
+				else if (highestPrecedence <= DependencyPropertyValuePrecedences.Animations)
+				{
+					// Coercion/Animation values ARE stored in ModifiedValue; GetEffectiveValue works.
+					SetValueViaMethodCall(propertyDetails.Property, propertyDetails.GetEffectiveValue());
+				}
+				else if (value != DependencyProperty.UnsetValue)
+				{
+					// Base value: pass incoming value directly, avoiding store-then-read-back.
+					SetValueViaMethodCall(propertyDetails.Property, value);
+				}
+				// else: ClearValue (UnsetValue) where ReevaluateBaseValue already called
+				// SetValueInternal recursively with the style/default value.
 			}
 		}
 
@@ -2174,15 +2081,19 @@ namespace Microsoft.UI.Xaml
 			// When local value or style value are cleared, we want to re-evaluate base value and set the value with the right precedence.
 			// The new base value will either be Style (explicit or implicit) or DefaultStyle (aka built-in style)
 			var actualInstance = ActualInstance;
-			if (actualInstance is FrameworkElement fe && fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle))
+			if (actualInstance is FrameworkElement fe &&
+				fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle) &&
+				valueFromStyle != DependencyProperty.UnsetValue)
 			{
 				// NOTE: ExplicitStyle here actually means ExplicitOrImplicitStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				propertyDetails.SetValue(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle, propertyDetails);
 			}
-			else if (actualInstance is Control control && control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle))
+			else if (actualInstance is Control control &&
+				control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle) &&
+				valueFromBuiltInStyle != DependencyProperty.UnsetValue)
 			{
 				// NOTE: ImplicitStyle here actually means DefaultStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				propertyDetails.SetValue(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle);
+				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle, propertyDetails);
 			}
 		}
 

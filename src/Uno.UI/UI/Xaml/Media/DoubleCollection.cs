@@ -16,6 +16,8 @@ namespace Microsoft.UI.Xaml.Media
 		{
 		}
 
+		public bool IsReadOnly => false;
+
 		static public implicit operator DoubleCollection(string value)
 		{
 			return value.Split(',', ' ').Select(str => double.Parse(str, CultureInfo.InvariantCulture)).ToArray();

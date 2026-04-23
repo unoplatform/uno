@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class EasingColorKeyFrame : global::Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame
 	{
-		// Skipping already declared property EasingFunction
 		// Skipping already declared property EasingFunctionProperty
+		// Skipping already declared property EasingFunction
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingColorKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunctionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunctionProperty.get
 	}
 }

@@ -239,6 +239,10 @@ public partial class ComboBox : Selector
 
 	internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
 	{
+		var oldValue = SelectionBoxItem is not null
+			? FrameworkElement.GetStringFromObject(SelectionBoxItem)
+			: string.Empty;
+
 		if (oldSelectedItem is _View view)
 		{
 			// Ensure previous SelectedItem is put back in the dropdown list if it's a view
@@ -256,6 +260,19 @@ public partial class ComboBox : Selector
 		{
 			TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
 			TryUpdateSelectorItemIsSelected(selectedItem, true);
+		}
+
+		// Notify accessibility of the selection change so screen readers
+		// announce the newly selected item (e.g., "Favorite color, Red, combo box").
+		if (GetOrCreateAutomationPeer() is Automation.Peers.ComboBoxAutomationPeer peer)
+		{
+			var newValue = SelectionBoxItem is not null
+				? FrameworkElement.GetStringFromObject(SelectionBoxItem)
+				: string.Empty;
+			peer.RaisePropertyChangedEvent(
+				Automation.ValuePatternIdentifiers.ValueProperty,
+				oldValue,
+				newValue);
 		}
 	}
 

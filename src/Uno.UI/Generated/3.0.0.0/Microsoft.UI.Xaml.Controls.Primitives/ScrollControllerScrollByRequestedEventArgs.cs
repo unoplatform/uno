@@ -13,9 +13,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Options
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.ScrollControllerScrollByRequestedEventArgs(double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.ScrollControllerScrollByRequestedEventArgs(double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.OffsetDelta.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.Options.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.CorrelationId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.CorrelationId.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.OffsetDelta.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollByRequestedEventArgs.Options.get
 	}
 }

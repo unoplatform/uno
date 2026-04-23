@@ -99,7 +99,10 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
 		}
 		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => Win32TextBoxNotificationsProviderSingleton.Instance);
+		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => Win32ImeTextBoxExtension.Instance);
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
+
+		Win32Accessibility.Register();
 	}
 
 	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)

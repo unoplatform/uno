@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.ResultCode.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.Message.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.ResultCode.get
 	}
 }

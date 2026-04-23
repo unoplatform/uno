@@ -36,7 +36,7 @@ namespace Windows.Devices.Input
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchCapabilities()
-		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchPresent.get
 		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.Contacts.get
+		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchPresent.get
 	}
 }

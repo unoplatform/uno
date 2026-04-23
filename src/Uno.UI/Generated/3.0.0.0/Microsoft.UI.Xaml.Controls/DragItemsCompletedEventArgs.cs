@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property DropResult
 		// Skipping already declared property Items
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.DropResult.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsCompletedEventArgs.Items.get
 	}
 }

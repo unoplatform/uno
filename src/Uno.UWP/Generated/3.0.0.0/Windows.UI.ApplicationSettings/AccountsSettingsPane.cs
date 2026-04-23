@@ -13,20 +13,18 @@ namespace Windows.UI.ApplicationSettings
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.AccountCommandsRequested.add
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.AccountCommandsRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction ShowManageAccountsForUserAsync(global::Windows.System.User user)
+		public static global::Windows.UI.ApplicationSettings.AccountsSettingsPane GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AccountsSettingsPane.ShowManageAccountsForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AccountsSettingsPane.ShowManageAccountsForUserAsync%28User%20user%29");
+			throw new global::System.NotImplementedException("The member AccountsSettingsPane AccountsSettingsPane.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccountsSettingsPane%20AccountsSettingsPane.GetForCurrentView%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncAction ShowAddAccountForUserAsync(global::Windows.System.User user)
+		public static void Show()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AccountsSettingsPane.ShowAddAccountForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AccountsSettingsPane.ShowAddAccountForUserAsync%28User%20user%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPane", "void AccountsSettingsPane.Show()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -45,18 +43,20 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.ApplicationSettings.AccountsSettingsPane GetForCurrentView()
+		public static global::Windows.Foundation.IAsyncAction ShowManageAccountsForUserAsync(global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member AccountsSettingsPane AccountsSettingsPane.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccountsSettingsPane%20AccountsSettingsPane.GetForCurrentView%28%29");
+			throw new global::System.NotImplementedException("The member IAsyncAction AccountsSettingsPane.ShowManageAccountsForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AccountsSettingsPane.ShowManageAccountsForUserAsync%28User%20user%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void Show()
+		public static global::Windows.Foundation.IAsyncAction ShowAddAccountForUserAsync(global::Windows.System.User user)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPane", "void AccountsSettingsPane.Show()");
+			throw new global::System.NotImplementedException("The member IAsyncAction AccountsSettingsPane.ShowAddAccountForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AccountsSettingsPane.ShowAddAccountForUserAsync%28User%20user%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.AccountCommandsRequested.add
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.AccountCommandsRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ApplicationSettings.AccountsSettingsPane, global::Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs> AccountCommandsRequested

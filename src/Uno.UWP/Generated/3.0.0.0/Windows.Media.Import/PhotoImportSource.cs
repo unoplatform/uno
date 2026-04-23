@@ -173,29 +173,6 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Id.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.DisplayName.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Description.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Manufacturer.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Model.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.SerialNumber.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.ConnectionProtocol.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.ConnectionTransport.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Type.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.PowerSource.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.BatteryLevelPercent.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.DateTime.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.StorageMedia.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.IsLocked.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.IsMassStorage.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Thumbnail.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Import.PhotoImportSession CreateImportSession()
-		{
-			throw new global::System.NotImplementedException("The member PhotoImportSession PhotoImportSource.CreateImportSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSession%20PhotoImportSource.CreateImportSession%28%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Import.PhotoImportSource> FromIdAsync(string sourceId)
@@ -210,5 +187,28 @@ namespace Windows.Media.Import
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhotoImportSource> PhotoImportSource.FromFolderAsync(IStorageFolder sourceRootFolder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhotoImportSource%3E%20PhotoImportSource.FromFolderAsync%28IStorageFolder%20sourceRootFolder%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Import.PhotoImportSession CreateImportSession()
+		{
+			throw new global::System.NotImplementedException("The member PhotoImportSession PhotoImportSource.CreateImportSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSession%20PhotoImportSource.CreateImportSession%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.BatteryLevelPercent.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.ConnectionProtocol.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.ConnectionTransport.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.DateTime.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Description.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.DisplayName.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Id.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.IsLocked.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.IsMassStorage.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Manufacturer.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Model.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.PowerSource.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.SerialNumber.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.StorageMedia.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Thumbnail.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Type.get
 	}
 }

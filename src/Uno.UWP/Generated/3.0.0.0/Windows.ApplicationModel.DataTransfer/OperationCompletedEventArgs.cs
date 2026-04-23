@@ -8,9 +8,9 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 	public partial class OperationCompletedEventArgs
 	{
-		// Skipping already declared property Operation
 		// Skipping already declared property AcceptedFormatId
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Operation.get
+		// Skipping already declared property Operation
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.AcceptedFormatId.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Operation.get
 	}
 }

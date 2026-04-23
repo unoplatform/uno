@@ -56,14 +56,6 @@ jobs:
       dotnet build src/Uno.UI-UnitTests-only.slnf -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
     displayName: Build unit tests solution filter
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    retryCountOnTaskFailure: 3
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts
-      ArtifactType: Container
-
   - pwsh: |
       dotnet test --solution src/Uno.UI-UnitTests-only.slnf -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-run-$(XAML_FLAVOR_BUILD).binlog --no-build --no-progress --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
     displayName: Run unit tests
@@ -84,5 +76,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: unit-tests-binlogs-$(XAML_FLAVOR_BUILD)
+      ArtifactName: unit-tests-logs
       ArtifactType: Container

@@ -86,6 +86,8 @@ public partial class TextBox
 	static TextBox()
 	{
 		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
+		InitializeIme();
 	}
 
 	internal CaretDisplayMode CaretMode
@@ -114,23 +116,52 @@ public partial class TextBox
 		}
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanUndoProperty { get; } = CreateCanUndoProperty();
+	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
+		nameof(CanUndo),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = GetCanUndo,
+		});
 
-	public bool CanUndo
+	public bool CanUndo => (bool)GetValue(CanUndoProperty);
+
+#nullable enable
+	private static object? GetCanUndo(DependencyObject instance, bool isGet, object? valueToSet)
 	{
-		get => GetCanUndoValue();
-		private set => SetCanUndoValue(value);
+		if (!isGet)
+		{
+			throw new InvalidOperationException($"{nameof(CanUndoProperty)} is read-only.");
+		}
+
+		return Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._historyIndex > 0);
 	}
+#nullable restore
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanRedoProperty { get; } = CreateCanRedoProperty();
+	public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
+		nameof(CanRedo),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = GetCanRedo,
+		});
 
-	public bool CanRedo
+	public bool CanRedo => (bool)GetValue(CanRedoProperty);
+
+#nullable enable
+	private static object? GetCanRedo(DependencyObject instance, bool isGet, object? valueToSet)
 	{
-		get => GetCanRedoValue();
-		private set => SetCanRedoValue(value);
+		if (!isGet)
+		{
+			throw new InvalidOperationException($"{nameof(CanRedoProperty)} is read-only.");
+		}
+
+		var textBox = (TextBox)instance;
+		return Uno.UI.Helpers.Boxes.Box(textBox._historyIndex < textBox._history.Count - 1);
 	}
+#nullable restore
 
 	[GeneratedDependencyProperty(DefaultValue = false)]
 	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
@@ -171,12 +202,6 @@ public partial class TextBox
 			SetValue(ProofingMenuFlyoutProperty, _proofingMenu);
 			return _proofingMenu;
 		}
-	}
-
-	private void UpdateCanUndoRedo()
-	{
-		CanUndo = _historyIndex > 0;
-		CanRedo = _historyIndex < _history.Count - 1;
 	}
 
 	private void UpdateCanPasteClipboardContent()
@@ -299,7 +324,6 @@ public partial class TextBox
 				_selectionWhenTypingStarted.start,
 				_selectionWhenTypingStarted.length,
 				_selectionWhenTypingStarted.selectionEndsAtTheStart));
-			UpdateCanUndoRedo();
 		}
 
 		_currentlyTyping = newValue;
@@ -463,6 +487,7 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				_textBoxNotificationsSingleton?.OnFocused(this);
+				StartImeSession();
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
@@ -485,6 +510,7 @@ public partial class TextBox
 
 			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 			{
+				EndImeSession();
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 				if (SelectionFlyout?.IsOpen == true)
@@ -805,6 +831,42 @@ public partial class TextBox
 	#endregion
 
 	/// <summary>
+	/// Narrows the BringIntoView target rect to the caret position so that parent
+	/// ScrollViewers scroll to the cursor rather than the full TextBox bounds.
+	/// </summary>
+	/// <remarks>
+	/// When a TextBox has its internal scrolling disabled and relies on an outer
+	/// ScrollViewer, the default BringIntoView uses the full element bounds.
+	/// For a tall TextBox this causes the outer ScrollViewer to scroll to the
+	/// element edges rather than to the cursor position.
+	/// </remarks>
+	protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
+	{
+		base.OnBringIntoViewRequested(e);
+
+		if (_isSkiaTextBox
+			&& (e.TargetElement is null || e.TargetElement == this)
+			&& FocusState != FocusState.Unfocused
+			&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled }
+			&& TextBoxView?.DisplayBlock is { } displayBlock
+			&& displayBlock.ParsedText is { } parsedText)
+		{
+			var selectionEnd = _selection.selectionEndsAtTheStart
+				? _selection.start
+				: _selection.start + _selection.length;
+
+			var caretRect = parsedText.GetRectForIndex(selectionEnd);
+			caretRect = caretRect with { Width = Math.Max(caretRect.Width, TextBlock.CaretThickness) };
+
+			// Transform from TextBlock coordinate space to TextBox coordinate space
+			var transform = displayBlock.TransformToVisual(this);
+			var caretRectInTextBox = transform.TransformBounds(caretRect);
+
+			e.TargetRect = caretRectInTextBox;
+		}
+	}
+
+	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
 	/// </summary>
 	/// <remarks>
@@ -832,6 +894,14 @@ public partial class TextBox
 			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
+		}
+
+		// When the TextBox's internal scrolling is disabled, an outer ScrollViewer
+		// handles scrolling. Notify it so the caret stays visible after text changes.
+		if (FocusState != FocusState.Unfocused
+			&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled })
+		{
+			StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
 		}
 	}
 
@@ -1038,6 +1108,14 @@ public partial class TextBox
 				}
 				break;
 			default:
+				// During IME composition, skip normal character insertion.
+				// The IME extension handles text updates via OnImeCompositionUpdated → ProcessTextInput.
+				// On platforms where the platform applies text directly (e.g., Android),
+				// key events are independent of composition events and should not be swallowed.
+				if (ShouldSwallowKeyDuringComposition)
+				{
+					return;
+				}
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
 				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 				{
@@ -1555,15 +1633,12 @@ public partial class TextBox
 		return index == -1 ? Text.Length - 1 : index;
 	}
 
-	partial void InitializePartial()
-	{
-		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
-	}
-
 	partial void OnTextChangedPartial()
 	{
 		if (_isSkiaTextBox)
 		{
+			CancelCompositionOnExternalChange();
+
 			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
 			// Close the selection flyout when text changes.
 			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
@@ -1670,7 +1745,6 @@ public partial class TextBox
 			_history.Add(new HistoryRecord(SentinelAction.Instance, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
 		}
 		_historyIndex = Math.Max(0, Math.Min(_history.Count - 1, _historyIndex));
-		UpdateCanUndoRedo();
 	}
 
 	public void ClearUndoRedoHistory()
@@ -1688,7 +1762,6 @@ public partial class TextBox
 		_historyIndex++;
 		_history.RemoveAllAt(_historyIndex);
 		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
-		UpdateCanUndoRedo();
 	}
 
 	public void Undo()
@@ -1728,7 +1801,6 @@ public partial class TextBox
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
-		UpdateCanUndoRedo();
 	}
 
 	public void Redo()
@@ -1766,7 +1838,6 @@ public partial class TextBox
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
-		UpdateCanUndoRedo();
 	}
 
 	internal override bool IsDelegatingFocusToTemplateChild()

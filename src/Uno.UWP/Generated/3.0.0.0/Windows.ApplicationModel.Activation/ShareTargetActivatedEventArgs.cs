@@ -35,6 +35,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation ShareOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ShareOperation ShareTargetActivatedEventArgs.ShareOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ShareOperation%20ShareTargetActivatedEventArgs.ShareOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
 		{
 			get
@@ -53,19 +63,9 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation ShareOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ShareOperation ShareTargetActivatedEventArgs.ShareOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ShareOperation%20ShareTargetActivatedEventArgs.ShareOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.ShareTargetActivatedEventArgs.ShareOperation.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ShareTargetActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ShareTargetActivatedEventArgs.PreviousExecutionState.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.ShareTargetActivatedEventArgs.ShareOperation.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ShareTargetActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ShareTargetActivatedEventArgs.User.get
 		// Processing: Windows.ApplicationModel.Activation.IShareTargetActivatedEventArgs

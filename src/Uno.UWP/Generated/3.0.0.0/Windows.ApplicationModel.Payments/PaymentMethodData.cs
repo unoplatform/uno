@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.PaymentMethodData(System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.SupportedMethodIds.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.JsonData.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.SupportedMethodIds.get
 	}
 }

@@ -9,15 +9,15 @@ namespace Windows.System
 	public partial class DispatcherQueue
 	{
 		// Skipping already declared property HasThreadAccess
+		// Skipping already declared method Windows.System.DispatcherQueue.GetForCurrentThread()
 		// Skipping already declared method Windows.System.DispatcherQueue.CreateTimer()
 		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueueHandler)
 		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueuePriority, Windows.System.DispatcherQueueHandler)
-		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.add
-		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.remove
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownCompleted.add
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownCompleted.remove
+		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.add
+		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.remove
 		// Forced skipping of method Windows.System.DispatcherQueue.HasThreadAccess.get
-		// Skipping already declared method Windows.System.DispatcherQueue.GetForCurrentThread()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.DispatcherQueue, object> ShutdownCompleted

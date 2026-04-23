@@ -15,20 +15,6 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float Restitution
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float BounceVector2NaturalMotionAnimation.Restitution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20BounceVector2NaturalMotionAnimation.Restitution");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.BounceVector2NaturalMotionAnimation", "float BounceVector2NaturalMotionAnimation.Restitution");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float Acceleration
 		{
 			get
@@ -41,9 +27,23 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float Restitution
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float BounceVector2NaturalMotionAnimation.Restitution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20BounceVector2NaturalMotionAnimation.Restitution");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.BounceVector2NaturalMotionAnimation", "float BounceVector2NaturalMotionAnimation.Restitution");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Composition.BounceVector2NaturalMotionAnimation.Acceleration.get
-		// Forced skipping of method Microsoft.UI.Composition.BounceVector2NaturalMotionAnimation.Restitution.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceVector2NaturalMotionAnimation.Acceleration.set
+		// Forced skipping of method Microsoft.UI.Composition.BounceVector2NaturalMotionAnimation.Restitution.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceVector2NaturalMotionAnimation.Restitution.set
 	}
 }

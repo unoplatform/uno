@@ -20,7 +20,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintNumberOptionDetails.MinValue.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintNumberOptionDetails.MaxValue.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintNumberOptionDetails.MinValue.get
 	}
 }

@@ -8,14 +8,14 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 	public partial class AppointmentOrganizer : global::Windows.ApplicationModel.Appointments.IAppointmentParticipant
 	{
-		// Skipping already declared property DisplayName
 		// Skipping already declared property Address
+		// Skipping already declared property DisplayName
 		// Skipping already declared method Windows.ApplicationModel.Appointments.AppointmentOrganizer.AppointmentOrganizer()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.AppointmentOrganizer()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.DisplayName.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.Address.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.DisplayName.set
 		// Processing: Windows.ApplicationModel.Appointments.IAppointmentParticipant
 	}
 }

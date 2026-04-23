@@ -33,10 +33,10 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient.Session.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient.MaxNotificationSize.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient.MaxNotificationSizeChanged.add
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient.MaxNotificationSizeChanged.remove
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient.MaxNotificationSize.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient.Session.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient, object> MaxNotificationSizeChanged

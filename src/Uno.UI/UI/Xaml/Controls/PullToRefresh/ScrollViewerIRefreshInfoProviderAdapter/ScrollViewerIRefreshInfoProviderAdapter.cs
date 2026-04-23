@@ -158,8 +158,8 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 
 		m_interactionTracker = InteractionTracker.CreateWithOwner(compositor, m_infoProvider as IInteractionTrackerOwner);
 
-		m_interactionTracker.MinPosition = new System.Numerics.Vector3(0.0f);
-		m_interactionTracker.MaxPosition = new System.Numerics.Vector3(0.0f);
+		m_interactionTracker.MinPosition = new global::System.Numerics.Vector3(0.0f);
+		m_interactionTracker.MaxPosition = new global::System.Numerics.Vector3(0.0f);
 		m_interactionTracker.MinScale = 1.0f;
 		m_interactionTracker.MaxScale = 1.0f;
 

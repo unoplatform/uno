@@ -33,7 +33,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.SelectedConfigurationMethod.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.IsGroupFormationNeeded.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.SelectedConfigurationMethod.get
 	}
 }

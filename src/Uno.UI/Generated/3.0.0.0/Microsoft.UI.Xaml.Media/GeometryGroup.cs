@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class GeometryGroup : global::Microsoft.UI.Xaml.Media.Geometry
 	{
-		// Skipping already declared property FillRule
-		// Skipping already declared property Children
 		// Skipping already declared property ChildrenProperty
 		// Skipping already declared property FillRuleProperty
+		// Skipping already declared property Children
+		// Skipping already declared property FillRule
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryGroup.GeometryGroup()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.GeometryGroup()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.ChildrenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRuleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.Children.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.Children.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRuleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.ChildrenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.set
 	}
 }

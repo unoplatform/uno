@@ -33,7 +33,7 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppResourceGroupStateReport.ExecutionState.get
 		// Forced skipping of method Windows.System.AppResourceGroupStateReport.EnergyQuotaState.get
+		// Forced skipping of method Windows.System.AppResourceGroupStateReport.ExecutionState.get
 	}
 }

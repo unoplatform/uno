@@ -8,10 +8,10 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TimePickerFlyoutPresenter
 	{
-		// Skipping already declared property IsDefaultShadowEnabled
 		// Skipping already declared property IsDefaultShadowEnabledProperty
+		// Skipping already declared property IsDefaultShadowEnabled
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter.IsDefaultShadowEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter.IsDefaultShadowEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter.IsDefaultShadowEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter.IsDefaultShadowEnabledProperty.get
 	}
 }

@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsDefaultShadowEnabledProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(IsDefaultShadowEnabled), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Controls.FlyoutPresenter),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsDefaultShadowEnabled
 		{
 			get
@@ -22,18 +30,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsDefaultShadowEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsDefaultShadowEnabled), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.FlyoutPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FlyoutPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FlyoutPresenter()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabledProperty.get
 	}
 }

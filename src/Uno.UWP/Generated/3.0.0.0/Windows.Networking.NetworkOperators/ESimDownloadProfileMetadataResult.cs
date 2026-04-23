@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Result.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.ProfileMetadata.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Result.get
 	}
 }

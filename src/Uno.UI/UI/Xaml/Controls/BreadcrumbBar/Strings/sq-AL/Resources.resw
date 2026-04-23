@@ -122,7 +122,7 @@
     <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
   </data>
   <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">
-    <value>elementi i shiritit të copëzave të informacionit</value>
+    <value>njësia e shiritit të adresës</value>
     <comment>A simple description of the control for UIA</comment>
   </data>
 </root>

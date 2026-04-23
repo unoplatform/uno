@@ -202,6 +202,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		partial void OnMonochromeColorChanged()
+		{
+			if (_surfaceBrush is not null)
+			{
+				// When the image is already loaded, just update the color filter on the brush
+				// instead of reloading the entire image. This avoids flicker.
+				_surfaceBrush.MonochromeColor = MonochromeColor?.ToSKColor();
+			}
+			else
+			{
+				OnSourceChanged(Source, forceReload: true);
+			}
+		}
+
 		private bool IsSourceReady()
 		{
 			if (Source is SvgImageSource svgImageSource)
@@ -226,6 +240,20 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return new Size(_currentSurface.Image.Width, _currentSurface.Image.Height);
 			}
+		}
+
+		/// <summary>
+		/// Returns a mask that represents the alpha channel of the image as a CompositionBrush.
+		/// This brush can be used with CompositionMaskBrush or DropShadow.Mask to create shaped effects.
+		/// </summary>
+		/// <returns>A CompositionBrush representing the image as an alpha mask.</returns>
+		public CompositionBrush GetAlphaMask()
+		{
+			var compositor = Compositor.GetSharedCompositor();
+			var surface = new AlphaMaskSurface(compositor, Visual);
+			var brush = compositor.CreateSurfaceBrush(surface);
+			brush.Stretch = CompositionStretch.None;
+			return brush;
 		}
 	}
 }

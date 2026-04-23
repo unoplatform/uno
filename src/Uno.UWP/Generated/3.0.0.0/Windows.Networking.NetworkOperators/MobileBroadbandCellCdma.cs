@@ -94,10 +94,10 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.BaseStationId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.BaseStationPNCode.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.BaseStationLastBroadcastGpsTime.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.BaseStationLatitude.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.BaseStationLongitude.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.BaseStationLastBroadcastGpsTime.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.BaseStationPNCode.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.NetworkId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.PilotSignalStrengthInDB.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.SystemId.get

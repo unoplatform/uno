@@ -11,6 +11,8 @@
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 
+		<UnoEnableImplicitXamlNamespaces>true</UnoEnableImplicitXamlNamespaces>
+
 		<!--
 		Required for Catalyst nuget restore to revalidate
 		once transitive dependencies have been updated.

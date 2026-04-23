@@ -83,9 +83,9 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadTouched.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadPressed.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsThumbstickPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadTouched.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.ThumbstickX.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.ThumbstickY.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.TouchpadX.get

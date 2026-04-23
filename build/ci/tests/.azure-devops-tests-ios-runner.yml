@@ -9,6 +9,7 @@ parameters:
   UITEST_SNAPSHOTS_GROUP: ''
   UITEST_ALLOW_RERUN: ''
   UITEST_VARIANT: ''
+  TEST_KIND: ''   # 'ui' | 'runtime' | 'screenshot'
   SAMPLESAPP_BUNDLE_ID: ''
   nugetPackages: ''
   dependsOn: ''
@@ -51,13 +52,13 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     condition: gt(variables['System.JobAttempt'], 1)
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: ${{ parameters.TEST_KIND }}-tests-ios-${{ parameters.UITEST_VARIANT }}-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
 
@@ -135,7 +136,7 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UITEST_VARIANT: "${{ parameters.UITEST_VARIANT }}"
-      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
+      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/SamplesApp.app"
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
 
   - task: PublishTestResults@2
@@ -161,7 +162,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
+      ArtifactName: ${{ parameters.TEST_KIND }}-tests-ios-${{ parameters.UITEST_VARIANT }}-results
       ArtifactType: Container
 
   # logs files are large, so we create them outside of `artifactstagingdirectory` and publish
@@ -172,7 +173,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/ios-ui-tests-logs
-      ArtifactName: uitests-results-ios-logs
+      ArtifactName: ${{ parameters.TEST_KIND }}-tests-ios-${{ parameters.UITEST_VARIANT }}-logs
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -181,5 +182,5 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      ArtifactName: ${{ parameters.TEST_KIND }}-tests-ios-${{ parameters.UITEST_VARIANT }}-failures
       ArtifactType: Container

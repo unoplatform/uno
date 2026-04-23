@@ -15,16 +15,6 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RequestId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int InteractionTrackerCustomAnimationStateEnteredArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTrackerCustomAnimationStateEnteredArgs.RequestId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsFromBinding
 		{
 			get
@@ -33,7 +23,17 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.RequestId.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int RequestId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int InteractionTrackerCustomAnimationStateEnteredArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTrackerCustomAnimationStateEnteredArgs.RequestId");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.IsFromBinding.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.RequestId.get
 	}
 }

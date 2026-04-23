@@ -4,10 +4,8 @@
 namespace Microsoft.Windows.ApplicationModel.Resources
 {
 #if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-#endif
-	public partial struct MrtCoreContract
+	public enum MrtCoreContract
 	{
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.MrtCoreContract.MrtCoreContract()
 	}
+#endif
 }

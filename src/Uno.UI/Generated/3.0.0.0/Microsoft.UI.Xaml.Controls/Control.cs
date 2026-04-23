@@ -8,83 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Control : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-		// Skipping already declared property VerticalContentAlignment
-		// Skipping already declared property Template
-		// Skipping already declared property TabNavigation
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.RequiresPointer RequiresPointer
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.RequiresPointer)this.GetValue(RequiresPointerProperty);
-			}
-			set
-			{
-				this.SetValue(RequiresPointerProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property Padding
-		// Skipping already declared property IsTextScaleFactorEnabled
-		// Skipping already declared property IsFocusEngagementEnabled
-		// Skipping already declared property IsFocusEngaged
-		// Skipping already declared property IsEnabled
-		// Skipping already declared property HorizontalContentAlignment
-		// Skipping already declared property Foreground
-		// Skipping already declared property FontWeight
-		// Skipping already declared property FontStyle
-		// Skipping already declared property FontStretch
-		// Skipping already declared property FontSize
-		// Skipping already declared property FontFamily
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.ElementSoundMode ElementSoundMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.ElementSoundMode)this.GetValue(ElementSoundModeProperty);
-			}
-			set
-			{
-				this.SetValue(ElementSoundModeProperty, value);
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri DefaultStyleResourceUri
-		{
-			get
-			{
-				return (global::System.Uri)this.GetValue(DefaultStyleResourceUriProperty);
-			}
-			set
-			{
-				this.SetValue(DefaultStyleResourceUriProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property CornerRadius
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int CharacterSpacing
-		{
-			get
-			{
-				return (int)this.GetValue(CharacterSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(CharacterSpacingProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property BorderThickness
-		// Skipping already declared property BorderBrush
-		// Skipping already declared property BackgroundSizing
-		// Skipping already declared property Background
-		// Skipping already declared property DefaultStyleKey
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property BackgroundSizingProperty
 		// Skipping already declared property BorderBrushProperty
@@ -106,14 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.Control),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty DefaultStyleResourceUriProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(DefaultStyleResourceUri), typeof(global::System.Uri),
-			typeof(global::Microsoft.UI.Xaml.Controls.Control),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Uri)));
-#endif
+		// Skipping already declared property DefaultStyleResourceUriProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } =
@@ -154,66 +70,123 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TabNavigationProperty
 		// Skipping already declared property TemplateProperty
 		// Skipping already declared property VerticalContentAlignmentProperty
+		// Skipping already declared property Background
+		// Skipping already declared property BackgroundSizing
+		// Skipping already declared property BorderBrush
+		// Skipping already declared property BorderThickness
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int CharacterSpacing
+		{
+			get
+			{
+				return (int)this.GetValue(CharacterSpacingProperty);
+			}
+			set
+			{
+				this.SetValue(CharacterSpacingProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property CornerRadius
+		// Skipping already declared property DefaultStyleKey
+		// Skipping already declared property DefaultStyleResourceUri
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.ElementSoundMode ElementSoundMode
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.ElementSoundMode)this.GetValue(ElementSoundModeProperty);
+			}
+			set
+			{
+				this.SetValue(ElementSoundModeProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property FontFamily
+		// Skipping already declared property FontSize
+		// Skipping already declared property FontStretch
+		// Skipping already declared property FontStyle
+		// Skipping already declared property FontWeight
+		// Skipping already declared property Foreground
+		// Skipping already declared property HorizontalContentAlignment
+		// Skipping already declared property IsEnabled
+		// Skipping already declared property IsFocusEngaged
+		// Skipping already declared property IsFocusEngagementEnabled
+		// Skipping already declared property IsTextScaleFactorEnabled
+		// Skipping already declared property Padding
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.RequiresPointer RequiresPointer
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.RequiresPointer)this.GetValue(RequiresPointerProperty);
+			}
+			set
+			{
+				this.SetValue(RequiresPointerProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property TabNavigation
+		// Skipping already declared property Template
+		// Skipping already declared property VerticalContentAlignment
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.Control()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Control()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngagementEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngagementEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngaged.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngaged.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.RequiresPointer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.RequiresPointer.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontSize.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontFamily.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontFamily.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontWeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontWeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStyle.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStretch.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CharacterSpacing.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CharacterSpacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Foreground.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Foreground.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTextScaleFactorEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTextScaleFactorEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TabNavigation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TabNavigation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Template.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Template.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Padding.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.HorizontalContentAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.HorizontalContentAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Background.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Background.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundSizing.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundSizing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderThickness.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderThickness.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderBrush.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderBrush.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleResourceUri.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleResourceUri.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.ElementSoundMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.ElementSoundMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CornerRadius.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CornerRadius.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusEngaged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusEngaged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusDisengaged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusDisengaged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabledChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabledChanged.remove
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.GetIsTemplateFocusTarget(Microsoft.UI.Xaml.FrameworkElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.SetIsTemplateFocusTarget(Microsoft.UI.Xaml.FrameworkElement, bool)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool GetIsTemplateKeyTipTarget(global::Microsoft.UI.Xaml.DependencyObject element)
+		{
+			return (bool)element.GetValue(IsTemplateKeyTipTargetProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetIsTemplateKeyTipTarget(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
+		{
+			element.SetValue(IsTemplateKeyTipTargetProperty, value);
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundSizingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderBrushProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderThicknessProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CharacterSpacingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CornerRadiusProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleKeyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleResourceUriProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.ElementSoundModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontFamilyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontSizeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStretchProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStyleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontWeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.ForegroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.HorizontalContentAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngagedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngagementEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTemplateFocusTargetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTemplateKeyTipTargetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTextScaleFactorEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.PaddingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.RequiresPointerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TabNavigationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignmentProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.RemoveFocusEngagement()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.ApplyTemplate()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleKey.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleKey.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusDisengaged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusDisengaged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusEngaged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusEngaged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabledChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabledChanged.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.GetTemplateChild(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerEntered(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerPressed(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
@@ -261,49 +234,56 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragLeave(Microsoft.UI.Xaml.DragEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragOver(Microsoft.UI.Xaml.DragEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDrop(Microsoft.UI.Xaml.DragEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngagementEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngagedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.RequiresPointerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontSizeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontFamilyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontWeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStyleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CharacterSpacingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.ForegroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTextScaleFactorEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TabNavigationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.PaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.HorizontalContentAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundSizingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderThicknessProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderBrushProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleKeyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleResourceUriProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.ElementSoundModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CornerRadiusProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTemplateFocusTargetProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.GetIsTemplateFocusTarget(Microsoft.UI.Xaml.FrameworkElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.SetIsTemplateFocusTarget(Microsoft.UI.Xaml.FrameworkElement, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTemplateKeyTipTargetProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsTemplateKeyTipTarget(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsTemplateKeyTipTargetProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetIsTemplateKeyTipTarget(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
-		{
-			element.SetValue(IsTemplateKeyTipTargetProperty, value);
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Background.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Background.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundSizing.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundSizing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderBrush.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderBrush.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderThickness.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BorderThickness.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CharacterSpacing.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CharacterSpacing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CornerRadius.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.CornerRadius.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleKey.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleKey.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleResourceUri.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.DefaultStyleResourceUri.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.ElementSoundMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.ElementSoundMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontFamily.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontFamily.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontSize.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStretch.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStretch.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStyle.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontStyle.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontWeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FontWeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Foreground.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Foreground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.HorizontalContentAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.HorizontalContentAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngaged.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngaged.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngagementEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsFocusEngagementEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTextScaleFactorEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsTextScaleFactorEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Padding.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Padding.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.RequiresPointer.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.RequiresPointer.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TabNavigation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TabNavigation.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Template.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Template.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignment.set
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Control.FocusDisengaged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Control.FocusEngaged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Control.IsEnabledChanged

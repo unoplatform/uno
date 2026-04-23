@@ -6,30 +6,38 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DoubleKeyFrameCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
+	public partial class DoubleKeyFrameCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping collection property provided by base class: this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.DoubleKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.DoubleKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.SetAt(uint, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.InsertAt(uint, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Append(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetMany(uint, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.ReplaceAll(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.this[int].set
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Insert(int, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.RemoveAt(int)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Add(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Clear()
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Contains(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.CopyTo(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame[], int)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Remove(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>
+		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.IEnumerable
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -21,7 +20,7 @@ namespace Windows.Media.Protection.PlayReady
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.INDCustomData.CustomDataTypeID.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.INDCustomData.CustomData.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.INDCustomData.CustomDataTypeID.get
 	}
 }

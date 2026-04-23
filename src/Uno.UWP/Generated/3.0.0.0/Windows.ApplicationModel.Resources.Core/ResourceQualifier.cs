@@ -40,10 +40,10 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierName.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierValue.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.IsDefault.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.IsMatch.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierName.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierValue.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.Score.get
 	}
 }

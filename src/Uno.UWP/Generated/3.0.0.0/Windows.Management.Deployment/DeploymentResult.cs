@@ -53,8 +53,8 @@ namespace Windows.Management.Deployment
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.ErrorText.get
 		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.ActivityId.get
+		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.ErrorText.get
 		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.ExtendedErrorCode.get
 		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.IsRegistered.get
 	}

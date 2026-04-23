@@ -10,20 +10,20 @@ namespace Windows.Security.Cryptography.DataProtection
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public DataProtectionProvider(string protectionDescriptor)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.DataProtection.DataProtectionProvider", "DataProtectionProvider.DataProtectionProvider(string protectionDescriptor)");
-		}
-#endif
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.DataProtectionProvider(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DataProtectionProvider()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.DataProtection.DataProtectionProvider", "DataProtectionProvider.DataProtectionProvider()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.DataProtectionProvider()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public DataProtectionProvider(string protectionDescriptor)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.DataProtection.DataProtectionProvider", "DataProtectionProvider.DataProtectionProvider(string protectionDescriptor)");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.DataProtectionProvider(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> ProtectAsync(global::Windows.Storage.Streams.IBuffer data)

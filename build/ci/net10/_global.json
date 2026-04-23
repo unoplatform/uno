@@ -1,14 +1,14 @@
 {
 	"sdk": {
-		"version": "10.0.101",
+		"version": "10.0.105",
 		"allowPrerelease": true,
-		"rollForward": "latestMinor"
+		"rollForward": "disable"
 	},
 	"test": {
 		"runner": "Microsoft.Testing.Platform"
 	},
 	"tools": {
-		"dotnet": "10.0.101"
+		"dotnet": "10.0.105"
 	},
 	"msbuild-sdks": {
 		"Microsoft.Build.NoTargets": "3.7.56"

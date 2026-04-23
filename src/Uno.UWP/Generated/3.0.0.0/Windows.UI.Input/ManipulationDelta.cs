@@ -9,6 +9,14 @@ namespace Windows.UI.Input
 	public partial struct ManipulationDelta
 	{
 		// Forced skipping of method Windows.UI.Input.ManipulationDelta.ManipulationDelta()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ManipulationDelta(global::Windows.Foundation.Point _Translation, float _Scale, float _Rotation, float _Expansion)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.ManipulationDelta", "ManipulationDelta.ManipulationDelta(Point _Translation, float _Scale, float _Rotation, float _Expansion)");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.ManipulationDelta.ManipulationDelta(Windows.Foundation.Point, float, float, float)
 		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Translation
 		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Scale
 		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Rotation

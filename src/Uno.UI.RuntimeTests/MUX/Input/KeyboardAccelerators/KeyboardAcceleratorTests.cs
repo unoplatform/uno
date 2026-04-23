@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
@@ -24,7 +23,7 @@ using Microsoft.UI.Xaml.Tests.Common;
 namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;
 
 [TestClass]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMobile)]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeMobile)]
 public partial class KeyboardAcceleratorTests : MUXApiTestBase
 {
 	#region BasicKeyboardAcceleratorToolTipVerification
@@ -391,7 +390,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlAAccelerator,
+				context: $"{nameof(ValidateKeyboardAcceleratorEventInvoked)}: waiting for KeyboardAccelerator.Invoked (Ctrl+A)");
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
 		}
@@ -521,7 +523,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			Log.Comment("Press accelerator sequence: Ctrl + =");
 			//Key up order should not affect accelerators
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_equal#$u$_ctrlscan#$u$_equal");
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlEqualAccelerator,
+				context: $"{nameof(ValidateEqualsKeyCanBeAKeyboardAccelerator)}: waiting for KeyboardAccelerator.Invoked (Ctrl+=)");
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
 		}
@@ -740,7 +745,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			Log.Comment("Press accelerator sequence: Ctrl + Tab");
 			//Key up order should not affect accelerators
 			await TestServices.KeyboardHelper.CtrlTab();
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlTabAccelerator,
+				context: $"{nameof(ValidateKeyboardAcceleratorEventInvokedForCtrlTab)}: waiting for KeyboardAccelerator.Invoked (Ctrl+Tab)");
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
 		}
@@ -1168,7 +1176,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlAAccelerator,
+				context: $"{nameof(ValidateKeyboardAcceleratorEventOrderingOnUIElement)}: waiting for KeyboardAccelerator.Invoked (Ctrl+A) on StackPanel while button has focus");
 			await rootPanelKeyUp.Wait();
 			await rootPanelProcessKeyboardAccelerators.Wait();
 
@@ -1367,7 +1378,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlAAccelerator,
+				context: $"{nameof(ValidateHandlingKeyboardAcceleratorsCanPreventAutomationAction)}: waiting for KeyboardAccelerator.Invoked (Ctrl+A)");
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
@@ -1432,7 +1446,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			{
 				Log.Comment("Press accelerator sequence: Ctrl + Q");
 				await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
-				await keyboardAcceleratorInvoked.Wait();
+				await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+					button2,
+					ctrlQAccelerator,
+					context: $"{nameof(ValidateKeyboardAcceleratorsAreGlobalByDefault)}: waiting for KeyboardAccelerator.Invoked (Ctrl+Q) while focus is on button2");
 				await buttonClickTester.Wait();
 
 			}
@@ -1449,7 +1466,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached MenuFlyout.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyButtonFlyoutWithMenuFlyoutCanInvokeAcceleratorDefinedOnMenuItem()
 	{
 		const string rootPanelXaml =
@@ -1513,7 +1530,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verify accelerators submenuitem in menuflyout on button control.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorsDefinedOnSubMenuItemInMenuFlyoutOnButton()
 	{
 		const string rootPanelXaml =
@@ -1559,8 +1576,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 			ButtonWithFlyout = (Button)rootPanel.FindName("ButtonWithFlyout");
 			MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("MenuItem")).KeyboardAccelerators[0];
-			Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_MenuItem_KA")).KeyboardAccelerators[0];
-			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_Sub_MenuItem_KA")).KeyboardAccelerators[0];
+			var menuFlyout = (ButtonWithFlyout.Flyout as MenuFlyout);
+			var rootSubItem = (MenuFlyoutSubItem)menuFlyout.Items[1];
+			Sub_MenuItem_KA = ((MenuFlyoutItem)rootSubItem.Items[1]).KeyboardAccelerators[0];
+			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)((MenuFlyoutSubItem)rootSubItem.Items[0]).Items[0]).KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1590,7 +1609,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verify accelerators submenuitem in menuflyout on menubar control.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorsDefinedOnSubMenuItemInMenuFlyoutOnMenuBar()
 	{
 		const string rootPanelXaml =
@@ -1636,8 +1655,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 			ButtonWithoutFlyout = (Button)rootPanel.FindName("ButtonWithoutFlyout");
 			MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("MenuItem")).KeyboardAccelerators[0];
-			Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_MenuItem_KA")).KeyboardAccelerators[0];
-			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)rootPanel.FindName("Sub_Sub_MenuItem_KA")).KeyboardAccelerators[0];
+			var menuBar = (MenuBar)rootPanel.Children[0];
+			var mainItem = menuBar.Items[0];
+			var rootSubItem = (MenuFlyoutSubItem)mainItem.Items[1];
+			Sub_MenuItem_KA = ((MenuFlyoutItem)rootSubItem.Items[1]).KeyboardAccelerators[0];
+			Sub_Sub_MenuItem_KA = ((MenuFlyoutItem)((MenuFlyoutSubItem)rootSubItem.Items[0]).Items[0]).KeyboardAccelerators[0];
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1667,7 +1689,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works when menu item is collapsed.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItems()
 	{
 		const string rootPanelXaml =
@@ -1727,7 +1749,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works when menu item is opened up.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItemsWhenItsOpened()
 	{
 		const string rootPanelXaml =
@@ -1793,7 +1815,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works after menu item is opened up and closed again.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItemsWhenItsOpenedAndClosed()
 	{
 		const string rootPanelXaml =
@@ -1862,7 +1884,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandardUICommands defined on MenuBar after setting window content, works when menu item is collapsed.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsAfterSettingWindowContent()
 	{
 		const string rootPanelXaml =
@@ -1913,7 +1935,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandardUICommands on MenuBar works when menu item closed.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItems()
 	{
 		const string rootPanelXaml =
@@ -1961,7 +1983,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandarUICommands on MenuBar works when menu item is opened up.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsWhenItsOpened()
 	{
 		const string rootPanelXaml =
@@ -2015,7 +2037,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandarUICommands on MenuBar works after menu item opened up and closed again.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17133")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsWhenItsOpenedAndClosed()
 	{
 		const string rootPanelXaml =
@@ -2072,7 +2094,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
-	[Ignore("Requires Flyout support for Keyboard Accelerators #17134")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyButtonFlyoutCanInvokeAcceleratorsDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -2158,7 +2180,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
-	[Ignore("Requires MenuFlyout support for Keyboard Accelerators #17134")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyButtonContextFlyoutWithFlyoutCanInvokeAcceleratorDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -2214,9 +2236,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			TestServices.WindowHelper.WindowContent = rootPanel;
 			await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 
-			ButtonFlyout = (Flyout)rootPanel.FindName("ButtonFlyout");
-			flyoutButton1 = (Button)rootPanel.FindName("flyoutButton1");
-			flyoutButton2 = (Button)rootPanel.FindName("flyoutButton2");
+			var button1 = (Button)rootPanel.FindName("focusButton1");
+			ButtonFlyout = (Flyout)button1.ContextFlyout;
+			var stackPanel = (StackPanel)ButtonFlyout.Content;
+			flyoutButton1 = (Button)stackPanel.Children[0];
+			flyoutButton2 = (Button)stackPanel.Children[1];
 			focusButton = (Button)rootPanel.FindName("focusButton");
 			ctrl1Accelerator = flyoutButton1.KeyboardAccelerators[0];
 			ctrl1Accelerator.ScopeOwner = ButtonFlyout;
@@ -2301,7 +2325,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the global accelerators on its attached MenuFlyout.")]
-	[Ignore("Requires MenuFlyout and ContextFlyout support for Keyboard Accelerators #17133 and #17134")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyButtonContextFlyoutWithMenuFlyoutCanInvokeAcceleratorDefinedOnMenuFlyout()
 	{
 		const string rootPanelXaml =
@@ -2840,7 +2864,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
-			await keyboardAccelerator1Invoked.Wait();
+			await keyboardAccelerator1Invoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlAAccelerator1,
+				context: $"{nameof(VerifyParentOfDisabledControlCanBeInvoked)}: waiting for parentPanel KeyboardAccelerator.Invoked (Ctrl+A) while button (disabled) has focus");
 			await keyboardAccelerator2Invoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			Verify.IsFalse(keyboardAccelerator2Invoked.HasFired);
 		}
@@ -2848,7 +2875,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView fires the accelerators on its attached ContextFlyout.")]
-	[Ignore("Requires ContextFlyout support for Keyboard Accelerators #17134")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyListViewContextFlyoutCanInvokeHiddenAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3104,7 +3131,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView does not fire the accelerators on its attached ContextFlyout, as it is scoped to be local.")]
-	[Ignore("Requires ContextFlyout support for Keyboard Accelerators #17134")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyListViewContextFlyoutCanNotInvokeHiddenLocallyScopedAccelerator()
 	{
 		const string rootPanelXaml =

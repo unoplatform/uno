@@ -43,8 +43,8 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnPickedCredential.PasskeyCredential.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPickedCredential.AdditionalPin.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPickedCredential.OldPasswordCredential.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPickedCredential.PasskeyCredential.get
 	}
 }

@@ -12,11 +12,11 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 		// Skipping already declared property MaxZoom
 		// Skipping already declared property MinZoom
 		// Skipping already declared property ZoomLevel
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.CanZoom.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.ZoomLevel.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.MaxZoom.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.MinZoom.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.Zoom(double)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.ZoomByUnit(Microsoft.UI.Xaml.Automation.ZoomUnit)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.CanZoom.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.MaxZoom.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.MinZoom.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITransformProvider2.ZoomLevel.get
 	}
 }

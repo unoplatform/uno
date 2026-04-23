@@ -19,16 +19,16 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property EllipseDiameter
 		// Skipping already declared property EllipseOffset
 		// Skipping already declared property IndicatorLengthDelta
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationStartPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationEndPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationStartPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationEndPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationMidPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.IndicatorLengthDelta.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ClipRect.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationEndPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationStartPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationEndPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationMidPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationStartPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseAnimationEndPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseAnimationWellPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseDiameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.IndicatorLengthDelta.get
 	}
 }

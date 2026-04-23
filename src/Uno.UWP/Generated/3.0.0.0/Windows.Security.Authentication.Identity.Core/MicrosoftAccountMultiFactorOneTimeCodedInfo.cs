@@ -54,8 +54,8 @@ namespace Windows.Security.Authentication.Identity.Core
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo.Code.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo.ServiceResponse.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo.TimeInterval.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo.TimeToLive.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo.ServiceResponse.get
 	}
 }

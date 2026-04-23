@@ -126,19 +126,19 @@
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
-    <value>માહિતી પટ્ટીને કાઢી નાંખી છે</value>
+    <value>જાણકારી પટ્ટીને કાઢી નાંખી</value>
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">
-    <value>માહિતી પટ્ટી</value>
+    <value>જાણકારી પટ્ટી</value>
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
-    <value>ભૂલ આઇકૉન</value>
+    <value>ભૂલનું આઇકૉન</value>
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
-    <value>માહિતીસભર આઇકૉન</value>
+    <value>માહિતીપ્રદ આઇકૉન</value>
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
