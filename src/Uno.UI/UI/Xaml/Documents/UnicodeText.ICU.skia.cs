@@ -84,15 +84,27 @@ internal readonly partial struct UnicodeText
 			}
 			else if (OperatingSystem.IsLinux() || OperatingSystem.IsAndroid() || OperatingSystem.IsMacOS())
 			{
-				// On Linux and Android, we get the ICU binaries from the dynamic linker search path
+				// On Linux, we get the ICU binaries from the dynamic linker search path.
 				// On MacOS, we get the ICU binaries from the uno.icu-macos package.
+				// On Android, ICU is a system library accessible only through the default
+				// dlopen search path (not through assembly-relative paths).
 				if (OperatingSystem.IsMacOS() && !NativeLibrary.TryLoad("icudata", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out _))
 				{
 					// MacOS doesn't automatically load icudata from icuuc for some reason even though the icuuc binary
 					// lists icudata in the `otool -L` output, so we have to load it by hand
 					throw new Exception("Failed to load libicudata.");
 				}
-				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+				if (OperatingSystem.IsAndroid())
+				{
+					// On Android, ICU is a system library that is not accessible through
+					// assembly-relative search paths. Use the default dlopen search path.
+					// Try the NDK stable libicu.so (API 31+) first, then fall back to icuuc.
+					if (!NativeLibrary.TryLoad("libicu.so", out libicuuc))
+					{
+						NativeLibrary.TryLoad("icuuc", out libicuuc);
+					}
+				}
+				else if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					if (OperatingSystem.IsLinux())
 					{
@@ -105,10 +117,10 @@ internal readonly partial struct UnicodeText
 							}
 						}
 					}
-					if (libicuuc == IntPtr.Zero)
-					{
-						throw new Exception("Failed to load libicuuc.");
-					}
+				}
+				if (libicuuc == IntPtr.Zero)
+				{
+					throw new Exception("Failed to load libicuuc.");
 				}
 
 				// Since libicuuc not installed by us, we have no control over the specific version number, so
