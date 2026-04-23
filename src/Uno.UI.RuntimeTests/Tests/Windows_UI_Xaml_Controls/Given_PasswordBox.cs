@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -154,4 +155,46 @@ public class Given_PasswordBox
 			Assert.ThrowsExactly<ArgumentException>(() => passwordBox.PasswordChar = invalid);
 		}
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia & ~RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Copy_Cut_Does_Not_Leak_Password()
+	{
+		if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<ApplicationModel.DataTransfer.IClipboardExtension>())
+		{
+			Assert.Inconclusive("Platform does not support clipboard operations.");
+		}
+
+		const string sentinel = "clipboard-sentinel";
+		const string secret = "hunter2";
+
+		var seed = new DataPackage();
+		seed.SetText(sentinel);
+		Clipboard.SetContent(seed);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var passwordBox = new PasswordBox
+		{
+			Password = secret,
+			Width = 150
+		};
+
+		await UITestHelper.Load(passwordBox);
+
+		passwordBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+		passwordBox.SelectAll();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		passwordBox.CopySelectionToClipboard();
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(sentinel, await Clipboard.GetContent()!.GetTextAsync());
+
+		passwordBox.CutSelectionToClipboard();
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(sentinel, await Clipboard.GetContent()!.GetTextAsync());
+		Assert.AreEqual(secret, passwordBox.Password);
+	}
+#endif
 }
