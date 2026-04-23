@@ -159,6 +159,18 @@ coupling means:
 - Fallback: `DOTNET_ROLL_FORWARD=Major` is the guarantee that the selected host
   (one major below the runtime) actually starts.
 
+### `disco --json` public contract
+
+`DiscoveryInfo.HostRequiresMajorRollForward` is surfaced in the `disco --json`
+payload as the `hostRequiresMajorRollForward` boolean. This is an **additive
+committed field**: `true` indicates that the resolver had to fall back to an
+older-major host and that the spawn path will set `DOTNET_ROLL_FORWARD=Major`;
+`false` indicates an exact-TFM match with no roll-forward override. External
+tools (IDE extensions, doctor-style diagnostics, CI scripts) may rely on it
+to distinguish "host is native to the current runtime" from "host is selected
+via fallback and may behave differently under upgrades". Renaming or removing
+this field is a breaking schema change for those consumers.
+
 ### Risks
 
 | Risk | Scenario | Impact | Mitigation |

@@ -610,19 +610,34 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	{
 		if (!Directory.Exists(hostRoot))
 		{
-			return Array.Empty<string>();
+			return [];
 		}
 
-		return Directory.EnumerateDirectories(hostRoot)
-			.Select(Path.GetFileName)
-			.Select(name => TryParseNetTfm(name, out var major, out var minor)
-				? (valid: true, name: name!, major, minor)
-				: (valid: false, name: (string?)null, major: 0, minor: 0))
-			.Where(entry => entry.valid)
-			.OrderBy(entry => entry.major)
-			.ThenBy(entry => entry.minor)
-			.Select(entry => entry.name!)
-			.ToArray();
+		// Explicit single pass — the LINQ chain we used to have had to carry a nullable
+		// sentinel through a Where filter and drop spurious `!` suppressions at the end.
+		// A loop is both shorter and free of null-forgiving.
+		var parsed = new List<(string name, int major, int minor)>();
+		foreach (var path in Directory.EnumerateDirectories(hostRoot))
+		{
+			var name = Path.GetFileName(path);
+			if (name is { Length: > 0 } && TryParseNetTfm(name, out var major, out var minor))
+			{
+				parsed.Add((name, major, minor));
+			}
+		}
+
+		parsed.Sort(static (a, b) =>
+		{
+			var c = a.major.CompareTo(b.major);
+			return c != 0 ? c : a.minor.CompareTo(b.minor);
+		});
+
+		var result = new string[parsed.Count];
+		for (var i = 0; i < parsed.Count; i++)
+		{
+			result[i] = parsed[i].name;
+		}
+		return result;
 	}
 
 	/// <summary>
@@ -644,34 +659,44 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			return null;
 		}
 
-		var exact = availableTfms.FirstOrDefault(t => string.Equals(t, requestedTfm, StringComparison.OrdinalIgnoreCase));
-		if (exact is not null)
-		{
-			return exact;
-		}
-
 		// One-major cap: DOTNET_ROLL_FORWARD=Major allows exactly one major jump.
 		// Anything further (e.g. net5 host under net10) is not loadable even with
 		// roll-forward enabled, and picking such a host would be misleading.
 		const int MaxMajorGap = 1;
 		var minMajor = reqMajor - MaxMajorGap;
 
-		var candidates = new List<(string tfm, int major, int minor)>();
+		// Single-pass "max under a cap". The cardinality here is the number of net{X}.{Y}
+		// folders shipped by a single DevServer package (currently 2-3) so we do not pay
+		// for a List + LINQ OrderByDescending chain; the explicit shape also handles the
+		// exact-match short-circuit without a second pass.
+		string? best = null;
+		var bestMajor = -1;
+		var bestMinor = -1;
+
 		foreach (var tfm in availableTfms)
 		{
-			if (TryParseNetTfm(tfm, out var major, out var minor)
-				&& major >= minMajor
-				&& (major < reqMajor || (major == reqMajor && minor <= reqMinor)))
+			if (string.Equals(tfm, requestedTfm, StringComparison.OrdinalIgnoreCase))
 			{
-				candidates.Add((tfm, major, minor));
+				return tfm;
+			}
+
+			if (!TryParseNetTfm(tfm, out var major, out var minor)
+				|| major < minMajor
+				|| major > reqMajor
+				|| (major == reqMajor && minor > reqMinor))
+			{
+				continue;
+			}
+
+			if (major > bestMajor || (major == bestMajor && minor > bestMinor))
+			{
+				best = tfm;
+				bestMajor = major;
+				bestMinor = minor;
 			}
 		}
 
-		return candidates
-			.OrderByDescending(v => v.major)
-			.ThenByDescending(v => v.minor)
-			.Select(v => v.tfm)
-			.FirstOrDefault();
+		return best;
 	}
 
 	/// <summary>
@@ -685,12 +710,17 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		major = 0;
 		minor = 0;
 
-		if (string.IsNullOrEmpty(name) || !name!.StartsWith("net", StringComparison.OrdinalIgnoreCase))
+		// `string.IsNullOrEmpty` narrows nullability on the false branch, so no `!`
+		// suppression is needed on the subsequent AsSpan / StartsWith calls.
+		if (string.IsNullOrEmpty(name) || !name.StartsWith("net", StringComparison.OrdinalIgnoreCase))
 		{
 			return false;
 		}
 
-		var rest = name.Substring(3);
+		// Zero-copy parsing: slice the input as a span and let int.TryParse(ReadOnlySpan<char>)
+		// do the work. Avoids two Substring allocations per folder on every discovery.
+		var rest = name.AsSpan(3);
+
 		// Reject OS-suffixed monikers outright. uno.winui.devserver host buckets are the
 		// short net{major}.{minor} form; a dash here means either a platform suffix
 		// (net10.0-windows…) or a feature band we don't want in the candidate list.
@@ -699,14 +729,14 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			return false;
 		}
 
-		var dotIndex = rest.IndexOf('.');
-		if (dotIndex < 0)
+		var dot = rest.IndexOf('.');
+		if (dot < 0)
 		{
 			return false;
 		}
 
-		return int.TryParse(rest.Substring(0, dotIndex), out major)
-			&& int.TryParse(rest.Substring(dotIndex + 1), out minor)
+		return int.TryParse(rest[..dot], out major)
+			&& int.TryParse(rest[(dot + 1)..], out minor)
 			&& major >= 5; // exclude netstandard, netcoreapp, netfx
 	}
 
@@ -882,24 +912,3 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		}
 	}
 }
-
-/// <summary>
-/// How to launch the DevServer host: path to the executable / managed entry-point
-/// DLL, and whether the selected TFM is older than the current runtime (in which
-/// case the spawn path must set <c>DOTNET_ROLL_FORWARD=Major</c> so the host
-/// actually starts).
-/// </summary>
-/// <param name="HostPath">
-/// Absolute path to <c>Uno.UI.RemoteControl.Host.exe</c> (preferred on Windows)
-/// or <c>Uno.UI.RemoteControl.Host.dll</c> (used when the <c>.exe</c> shim is
-/// absent, e.g. cross-platform builds). Never null.
-/// </param>
-/// <param name="RequiresMajorRollForward">
-/// True when the host was selected via one-major fallback
-/// (see <see cref="UnoToolsLocator.TryResolveHostTfm"/>) and the spawned process
-/// must therefore honour <c>DOTNET_ROLL_FORWARD=Major</c>. False for exact-TFM
-/// matches — setting the flag then would still work but would mask unrelated
-/// roll-forward behaviour the user may have pinned via <c>global.json</c> or
-/// ambient env vars.
-/// </param>
-internal sealed record HostLaunchPlan(string HostPath, bool RequiresMajorRollForward);

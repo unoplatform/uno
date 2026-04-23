@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -119,7 +120,7 @@ public class Given_UnoToolsLocator
 		"any future consumer that assumes the returned array is ordered by version.")]
 	public void When_Host_Root_Contains_Mixed_Majors_Then_Result_Is_Sorted_By_Version()
 	{
-		var root = Path.Combine(Path.GetTempPath(), "uno-tests-host-sort-" + System.Guid.NewGuid().ToString("N"));
+		var root = Path.Combine(Path.GetTempPath(), "uno-tests-host-sort-" + Guid.NewGuid().ToString("N"));
 		try
 		{
 			Directory.CreateDirectory(Path.Combine(root, "net9.0"));
@@ -145,7 +146,7 @@ public class Given_UnoToolsLocator
 		"both go through this resolver, so one fixture pins both entry points.")]
 	public void When_Exact_Tfm_Missing_And_Fallback_Exists_Then_Plan_Flags_RollForward()
 	{
-		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-" + System.Guid.NewGuid().ToString("N"));
+		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-" + Guid.NewGuid().ToString("N"));
 		try
 		{
 			var hostDir = Path.Combine(pkg, "tools", "rc", "host", "net9.0");
@@ -173,7 +174,7 @@ public class Given_UnoToolsLocator
 		"would otherwise be silently overridden on every exact-match launch.")]
 	public void When_Exact_Tfm_Available_Then_Plan_Does_Not_Flag_RollForward()
 	{
-		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-exact-" + System.Guid.NewGuid().ToString("N"));
+		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-exact-" + Guid.NewGuid().ToString("N"));
 		try
 		{
 			var hostDir = Path.Combine(pkg, "tools", "rc", "host", "net10.0");
@@ -202,7 +203,7 @@ public class Given_UnoToolsLocator
 		"switched to the .dll and bypassed the native shim on Windows.")]
 	public void When_Both_Exe_And_Dll_Present_In_Fallback_Directory_Then_Exe_Wins()
 	{
-		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-exe-wins-" + System.Guid.NewGuid().ToString("N"));
+		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-exe-wins-" + Guid.NewGuid().ToString("N"));
 		try
 		{
 			var hostDir = Path.Combine(pkg, "tools", "rc", "host", "net9.0");
@@ -231,7 +232,7 @@ public class Given_UnoToolsLocator
 		"instead of returning a launch plan with a bogus path.")]
 	public void When_Host_Directory_Exists_But_Is_Empty_Then_Plan_Is_Null()
 	{
-		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-empty-" + System.Guid.NewGuid().ToString("N"));
+		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-empty-" + Guid.NewGuid().ToString("N"));
 		try
 		{
 			var hostDir = Path.Combine(pkg, "tools", "rc", "host", "net10.0");
@@ -258,7 +259,7 @@ public class Given_UnoToolsLocator
 	{
 		var psi = DevServerProcessHelper.CreateDotnetProcessStartInfo(
 			hostPath: "stub.dll",
-			arguments: System.Array.Empty<string>(),
+			arguments: Array.Empty<string>(),
 			workingDirectory: Path.GetTempPath(),
 			redirectOutput: true,
 			enableMajorRollForward: true);
@@ -275,7 +276,7 @@ public class Given_UnoToolsLocator
 	public void When_EnableMajorRollForward_Is_False_Then_Helper_Does_Not_Force_Major()
 	{
 		var psi = DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			"stub.dll", System.Array.Empty<string>(), Path.GetTempPath(),
+			"stub.dll", Array.Empty<string>(), Path.GetTempPath(),
 			redirectOutput: true, enableMajorRollForward: false);
 
 		if (psi.Environment.TryGetValue("DOTNET_ROLL_FORWARD", out var value))
@@ -314,7 +315,7 @@ public class Given_UnoToolsLocator
 		"points at a likely cause (missing/partial package restore).")]
 	public void When_No_Tfms_Are_Available_Then_Returns_Null()
 	{
-		UnoToolsLocator.TryResolveHostTfm(System.Array.Empty<string>(), "net10.0").Should().BeNull();
+		UnoToolsLocator.TryResolveHostTfm(Array.Empty<string>(), "net10.0").Should().BeNull();
 	}
 
 	[TestMethod]
@@ -324,7 +325,7 @@ public class Given_UnoToolsLocator
 		"guard, duplicating the check.")]
 	public void When_Host_Root_Directory_Does_Not_Exist_Then_Returns_Empty()
 	{
-		var missing = Path.Combine(Path.GetTempPath(), "uno-tests-does-not-exist-" + System.Guid.NewGuid().ToString("N"));
+		var missing = Path.Combine(Path.GetTempPath(), "uno-tests-does-not-exist-" + Guid.NewGuid().ToString("N"));
 
 		UnoToolsLocator.EnumerateHostTfms(missing).Should().BeEmpty();
 	}
@@ -336,7 +337,7 @@ public class Given_UnoToolsLocator
 		"candidate list would break TryResolveHostTfm's major/minor comparison.")]
 	public void When_Host_Root_Contains_Non_Net_Folders_Then_They_Are_Filtered_Out()
 	{
-		var root = Path.Combine(Path.GetTempPath(), "uno-tests-host-" + System.Guid.NewGuid().ToString("N"));
+		var root = Path.Combine(Path.GetTempPath(), "uno-tests-host-" + Guid.NewGuid().ToString("N"));
 		try
 		{
 			Directory.CreateDirectory(Path.Combine(root, "net9.0"));
