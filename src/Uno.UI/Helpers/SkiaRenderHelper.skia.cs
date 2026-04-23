@@ -206,9 +206,10 @@ internal static class SkiaRenderHelper
 		public float? Scale { private get; set; }
 
 		// All hooks early-return when the counter is disabled so the rendering pipeline
-		// pays only a single property read per call site. DebugSettings.EnableFrameRateCounter
-		// is a plain bool field, so this resolves to a cheap mov+test.
-		private static bool IsEnabled => Application.Current.DebugSettings.EnableFrameRateCounter;
+		// pays only a single property read per call site. Null-safe against headless/
+		// test/early-init scenarios where Application.Current or DebugSettings may not
+		// yet be available.
+		private static bool IsEnabled => Application.Current?.DebugSettings?.EnableFrameRateCounter ?? false;
 
 		public FrameDisposable BeginFrame()
 		{
@@ -235,7 +236,7 @@ internal static class SkiaRenderHelper
 			}
 			FrameTime = acc.TotalMilliseconds / _frameTimes.Length;
 
-			_framesRenderedInLastSecond++;
+			Interlocked.Increment(ref _framesRenderedInLastSecond);
 		}
 
 		/// <summary>
@@ -278,6 +279,13 @@ internal static class SkiaRenderHelper
 			var current = Interlocked.Read(ref _currentFrameGeneration);
 			var lastPresented = Interlocked.Read(ref _lastPresentedGeneration);
 
+			// No frame has ever been recorded yet (counter just enabled / very first VSync).
+			// Treating this as a dropped frame would inflate the metric at startup.
+			if (current == 0)
+			{
+				return;
+			}
+
 			if (current == lastPresented)
 			{
 				Interlocked.Increment(ref _droppedThisSecond);
@@ -297,7 +305,7 @@ internal static class SkiaRenderHelper
 
 		public void DrawFps(SKCanvas canvas)
 		{
-			if (!Application.Current.DebugSettings.EnableFrameRateCounter)
+			if (!IsEnabled)
 			{
 				return;
 			}
@@ -428,8 +436,7 @@ internal static class SkiaRenderHelper
 				return;
 			}
 
-			Fps = _framesRenderedInLastSecond;
-			_framesRenderedInLastSecond = 0;
+			Fps = Interlocked.Exchange(ref _framesRenderedInLastSecond, 0);
 
 			DroppedFrames = Interlocked.Exchange(ref _droppedThisSecond, 0);
 			UnpresentedFrames = Interlocked.Exchange(ref _unpresentedThisSecond, 0);
