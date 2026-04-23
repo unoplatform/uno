@@ -2291,6 +2291,11 @@
 		  <Member fullName="Windows.UI.WindowManagement.WindowServices" reason="WinUI sync: preview window-services type removed by WinAppSDK 1.8" />
 
 		  <!-- END WinUI sync: Windows.* legacy / preview namespaces removed -->
+
+		  <!-- ItemsRepeater animator surface removed by WinAppSDK 1.8 (replaced by TransitionManager / ItemCollectionTransitionProvider). No references remain in WinUI microsoft-ui-xaml sources. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.AnimationContext" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimationCompleted" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
 	  </Types>
 
 	  <Fields>
@@ -2526,6 +2531,10 @@
 		  <Member fullName="Windows.UI.ViewManagement.StatusBarProgressIndicator Windows.UI.ViewManagement.StatusBar::ProgressIndicator()" reason="WinUI sync: StatusBar.ProgressIndicator getter removed by WinAppSDK 1.8" />
 
 		  <!-- END WinUI sync (Category C): independent property removals -->
+
+		  <!-- ItemsRepeater.Animator property: paired with removed ElementAnimator type (see <Types> above). -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater::AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater::Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
 	  </Properties>
 
 	  <Methods>
@@ -2859,6 +2868,14 @@
 		  <Member fullName="Windows.UI.ViewManagement.StatusBarProgressIndicator Windows.UI.ViewManagement.StatusBar.get_ProgressIndicator()" reason="WinUI sync: StatusBar.ProgressIndicator getter removed by WinAppSDK 1.8" />
 
 		  <!-- END WinUI sync (Category C): independent method removals -->
+
+		  <!-- ItemsRepeater.Animator accessors: paired with removed ElementAnimator type (see <Types>) and ItemsRepeater::Animator property (see <Properties>). -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater.get_AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater.get_Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsRepeater.set_Animator(Microsoft.UI.Xaml.Controls.ElementAnimator value)" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+
+		  <!-- Layout.CreateDefaultItemTransitionProvider narrowed from public to protected internal virtual to match WinUI's protected virtual (docs: learn.microsoft.com/.../layout.createdefaultitemtransitionprovider). Uno adds 'internal' so ItemsRepeater (same assembly) can invoke the protected-for-external method. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()" reason="WinUI sync: Layout.CreateDefaultItemTransitionProvider is protected virtual in WinAppSDK 1.8 (was public in baseline); narrowed to protected internal virtual in Uno for WinUI parity" />
 	  </Methods>
 
 	  <Events>

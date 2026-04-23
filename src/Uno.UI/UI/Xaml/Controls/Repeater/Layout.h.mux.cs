@@ -18,8 +18,8 @@ partial class Layout
 	/// An <see cref="ItemCollectionTransitionProvider"/> for the default item
 	/// transitions, or <c>null</c>.
 	/// </returns>
-	// Uno-specific: WinRT "overridable" projects accessibly to the projection;
-	// in C# we widen to protected internal so ItemsRepeater (same assembly) can call it.
+	// Uno-specific: WinUI declares this as protected virtual; we widen to protected
+	// internal so ItemsRepeater (same assembly, not a derived type) can invoke it.
 	protected internal virtual ItemCollectionTransitionProvider CreateDefaultItemTransitionProvider()
 	{
 		return null;
