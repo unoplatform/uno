@@ -37,7 +37,8 @@ internal static class DevServerProcessHelper
 		IEnumerable<string> arguments,
 		string workingDirectory,
 		bool redirectOutput,
-		bool redirectInput = false)
+		bool redirectInput = false,
+		bool enableMajorRollForward = false)
 	{
 		var useDotnet = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || hostPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
 
@@ -72,6 +73,17 @@ internal static class DevServerProcessHelper
 
 		PropagateDotnetRootVariables(psi);
 		PropagateXdgVariables(psi);
+
+		if (enableMajorRollForward)
+		{
+			// Override the host's runtimeconfig.json rollForward policy so a host compiled for
+			// an older major (e.g. net9.0 because that's the most recent TFM shipped by an
+			// older Uno.Sdk) can still start on a machine whose only installed runtime is a
+			// newer major (e.g. net10.0). Safe for dev tools; a no-op when the exact TFM
+			// runtime is installed. Used by the host spawn path alongside UnoToolsLocator's
+			// TFM fallback resolver.
+			psi.Environment["DOTNET_ROLL_FORWARD"] = "Major";
+		}
 
 		return psi;
 	}

@@ -521,21 +521,47 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 				return null;
 			}
 
-			var hostExe = Path.Combine(devServerPackagePath, "tools", "rc", "host", dotnetVersion, "Uno.UI.RemoteControl.Host.exe");
+			var hostRoot = Path.Combine(devServerPackagePath, "tools", "rc", "host");
+			var availableTfms = EnumerateHostTfms(hostRoot);
+			var resolvedTfm = TryResolveHostTfm(availableTfms, dotnetVersion);
+			if (resolvedTfm is null)
+			{
+				_logger.LogError(
+					"DevServer host not found in package: no compatible TFM available for {RequestedTfm} (present: {AvailableTfms}).",
+					dotnetVersion,
+					availableTfms.Length == 0 ? "<none>" : string.Join(", ", availableTfms));
+				return null;
+			}
+
+			if (!string.Equals(resolvedTfm, dotnetVersion, StringComparison.OrdinalIgnoreCase))
+			{
+				// Running a lower-TFM host under a higher runtime is safe as long as roll-forward
+				// allows it. The host spawn path sets DOTNET_ROLL_FORWARD=Major so a net9 host can
+				// start on a machine that has only the net10 runtime installed — see
+				// DevServerProcessHelper.CreateDotnetProcessStartInfo.
+				_logger.LogInformation(
+					"Uno.WinUI.DevServer {Version} does not ship a host for {RequestedTfm}; falling back to {ResolvedTfm}.",
+					devServerPackageVersion,
+					dotnetVersion,
+					resolvedTfm);
+			}
+
+			var hostDir = Path.Combine(hostRoot, resolvedTfm);
+			var hostExe = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.exe");
 			if (File.Exists(hostExe))
 			{
 				_logger.LogDebug("Found DevServer Host: {Path}", hostExe);
 				return hostExe;
 			}
 
-			var hostDll = Path.Combine(devServerPackagePath, "tools", "rc", "host", dotnetVersion, "Uno.UI.RemoteControl.Host.dll");
+			var hostDll = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll");
 			if (File.Exists(hostDll))
 			{
 				_logger.LogDebug("Found DevServer Host: {Path}", hostDll);
 				return hostDll;
 			}
 
-			_logger.LogError("DevServer host not found in package at expected paths");
+			_logger.LogError("DevServer host not found in package at expected paths under {HostDir}.", hostDir);
 			return null;
 		}
 		catch (Exception ex)
@@ -543,6 +569,101 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			_logger.LogWarning(ex, "Failed to locate host executable: {Message}", ex.Message);
 			return null;
 		}
+	}
+
+	/// <summary>
+	/// Enumerates the <c>net{X}.{Y}</c> subdirectories that exist under
+	/// <paramref name="hostRoot"/> (i.e. <c>tools/rc/host</c>). Non-matching entries
+	/// (pre-net5 monikers, feature folders, …) are ignored. Returns an empty array
+	/// when the directory does not exist so the caller can surface a clean error.
+	/// </summary>
+	internal static string[] EnumerateHostTfms(string hostRoot)
+	{
+		if (!Directory.Exists(hostRoot))
+		{
+			return Array.Empty<string>();
+		}
+
+		return Directory.EnumerateDirectories(hostRoot)
+			.Select(Path.GetFileName)
+			.Where(name => TryParseNetTfm(name, out _, out _))
+			.Select(name => name!)
+			.OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+			.ToArray();
+	}
+
+	/// <summary>
+	/// Picks the best available TFM for <paramref name="requestedTfm"/> from
+	/// <paramref name="availableTfms"/>. Exact matches win. Otherwise returns the
+	/// highest <c>net{X}.{Y}</c> that is <b>less than or equal to</b>
+	/// <paramref name="requestedTfm"/> — we never pick a TFM newer than the runtime,
+	/// because .NET cannot roll back to a version the host wasn't compiled against.
+	/// Returns <c>null</c> when nothing suitable is available.
+	/// </summary>
+	internal static string? TryResolveHostTfm(string[] availableTfms, string requestedTfm)
+	{
+		if (availableTfms.Length == 0 || !TryParseNetTfm(requestedTfm, out var reqMajor, out var reqMinor))
+		{
+			return null;
+		}
+
+		var exact = availableTfms.FirstOrDefault(t => string.Equals(t, requestedTfm, StringComparison.OrdinalIgnoreCase));
+		if (exact is not null)
+		{
+			return exact;
+		}
+
+		var candidates = new List<(string tfm, int major, int minor)>();
+		foreach (var tfm in availableTfms)
+		{
+			if (TryParseNetTfm(tfm, out var major, out var minor)
+				&& (major < reqMajor || (major == reqMajor && minor <= reqMinor)))
+			{
+				candidates.Add((tfm, major, minor));
+			}
+		}
+
+		return candidates
+			.OrderByDescending(v => v.major)
+			.ThenByDescending(v => v.minor)
+			.Select(v => v.tfm)
+			.FirstOrDefault();
+	}
+
+	/// <summary>
+	/// Parses a short <c>net{X}.{Y}</c> TFM (no OS platform suffix). Returns
+	/// <c>false</c> for pre-net5 monikers (<c>netstandard2.0</c>, <c>netcoreapp3.1</c>, …)
+	/// and anything with an OS bucket (<c>net10.0-windows</c>), which we don't use for
+	/// the DevServer host.
+	/// </summary>
+	internal static bool TryParseNetTfm(string? name, out int major, out int minor)
+	{
+		major = 0;
+		minor = 0;
+
+		if (string.IsNullOrEmpty(name) || !name!.StartsWith("net", StringComparison.OrdinalIgnoreCase))
+		{
+			return false;
+		}
+
+		var rest = name.Substring(3);
+		// Reject OS-suffixed monikers outright. uno.winui.devserver host buckets are the
+		// short net{major}.{minor} form; a dash here means either a platform suffix
+		// (net10.0-windows…) or a feature band we don't want in the candidate list.
+		if (rest.IndexOf('-') >= 0)
+		{
+			return false;
+		}
+
+		var dotIndex = rest.IndexOf('.');
+		if (dotIndex < 0)
+		{
+			return false;
+		}
+
+		return int.TryParse(rest.Substring(0, dotIndex), out major)
+			&& int.TryParse(rest.Substring(dotIndex + 1), out minor)
+			&& major >= 5; // exclude netstandard, netcoreapp, netfx
 	}
 
 	private async Task<string?> GetSettingsExecutable(string unoSdkPath)

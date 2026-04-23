@@ -905,7 +905,7 @@ internal class CliManager
 			args.Add(addins);
 		}
 
-		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput);
+		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput, enableMajorRollForward: true);
 	}
 
 	private StartCommandHandler CreateStartCommandHandler()

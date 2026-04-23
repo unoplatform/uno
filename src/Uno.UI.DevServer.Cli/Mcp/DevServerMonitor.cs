@@ -548,7 +548,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		// Without it, the child process inherits our stdin — the MCP message pipe from
 		// the AI agent — and steals incoming JSON-RPC messages, causing random hangs.
 		var startInfo =
-			DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true);
+			DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true, enableMajorRollForward: true);
 
 		_logger.LogDebug("Starting server process: {File} {Args}", startInfo.FileName,
 			startInfo.Arguments);

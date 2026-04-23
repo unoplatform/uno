@@ -143,7 +143,7 @@ internal sealed class StartCommandHandler
 		args.AddRange(parsed.PassthroughArgs);
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			hostPath, args, workingDirectory, redirectOutput: true);
+			hostPath, args, workingDirectory, redirectOutput: true, enableMajorRollForward: true);
 	}
 
 	/// <summary>
@@ -170,7 +170,7 @@ internal sealed class StartCommandHandler
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			hostPath, args, workingDirectory, redirectOutput: true);
+			hostPath, args, workingDirectory, redirectOutput: true, enableMajorRollForward: true);
 	}
 
 	/// <summary>

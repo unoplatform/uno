@@ -118,24 +118,50 @@ How different SDK versions affect add-in discovery.
 | .NET SDK | TFM | Host Binary Location | `dotnet tool` R2R Support | Notes |
 |----------|-----|---------------------|:-------------------------:|-------|
 | 9.0 | `net9.0` | `tools/rc/host/net9.0/` | No | Current |
-| 10.0 | `net10.0` | `tools/rc/host/net10.0/` | **Yes** (RID-specific tools) | Target for Phase 2 |
-| Preview | `net{x}.0` | May not match installed SDKs | Varies | Edge case |
+| 10.0 | `net10.0` | `tools/rc/host/net10.0/` | **Yes** (RID-specific tools) | Current |
+| 11.0+ | `net{N}.0` | `tools/rc/host/net{N}.0/` when shipped, otherwise fall back to highest `net{M}.0` with `M <= N` | Yes | Automatic via `UnoToolsLocator.TryResolveHostTfm` — no code change when a new major lands |
+| Preview | `net{x}.0` | May not match installed SDKs | Varies | Preview suffix stripped by `GetDotNetVersion`; same fallback path as above |
 | Multiple installed | Depends on `global.json` | Must match pinned SDK | N/A | See section 13 |
+
+### TFM fallback resolver
+
+`UnoToolsLocator.GetHostExecutable` resolves the host directory in two steps:
+
+1. **Exact match first**. `tools/rc/host/{requestedTfm}/Uno.UI.RemoteControl.Host.{exe,dll}`.
+2. **Compatible fallback**. When the exact TFM directory is absent,
+   `TryResolveHostTfm` enumerates `tools/rc/host/net{X}.{Y}/` entries, keeps the ones
+   with `(major, minor) <= (requestedMajor, requestedMinor)`, and returns the highest.
+   The rule never picks a TFM newer than the requested runtime because .NET cannot
+   load an assembly compiled against a future major.
+
+OS-suffixed monikers (`net10.0-windows…`) and pre-net5 monikers (`netstandard2.0`,
+`netcoreapp3.1`, `net472`) are filtered out — only the short `net{major}.{minor}` form
+is a candidate.
+
+Pairs with a runtime-side safeguard on the spawn path: the CLI sets
+`DOTNET_ROLL_FORWARD=Major` in the host process environment (see
+`DevServerProcessHelper.CreateDotnetProcessStartInfo(enableMajorRollForward: true)`),
+so a host built for `net{N}` can still start on a machine whose only installed
+runtime is `net{N+1}`. On exact-TFM matches the variable is a no-op; on fallback it
+is the guarantee that the selected host actually runs.
 
 ### Risks
 
 | Risk | Scenario | Impact | Mitigation |
 |------|----------|--------|------------|
-| TFM mismatch | `dotnet --version` reports 10.0 but Host only has `net9.0` binary | Host not found | Scan available TFMs, pick best match (section 13 Phase 3) |
+| TFM mismatch | `dotnet --version` reports 10.0 but Host only has `net9.0` binary | Host not found | `TryResolveHostTfm` falls back to the highest `net{X}.{Y}` ≤ requested; `DOTNET_ROLL_FORWARD=Major` lets the older-TFM host start on the newer runtime |
 | `global.json` pins older SDK | Project uses 9.0 but system default is 10.0 | Wrong TFM selected | Respect `global.json` SDK version, not `dotnet --version` |
-| Preview SDK version string | `10.0.100-preview.1` | Parser fails | Robust version parsing, ignore preview suffix for TFM |
+| Preview SDK version string | `10.0.100-preview.1` | Parser fails | `GetDotNetVersion` strips preview suffix before TFM computation |
+| New major lands (net11, net12, …) | Package has not shipped the new TFM yet | Resolver returns an older host | Expected behaviour — automatic via the fallback resolver, no code change |
 
 ### Validation
 
-- [ ] .NET 9.0 installed → `net9.0` TFM, Host found
-- [ ] .NET 10.0 installed → `net10.0` TFM, Host found
+- [x] .NET 9.0 installed → `net9.0` TFM, Host found
+- [x] .NET 10.0 installed → `net10.0` TFM, Host found
 - [ ] `global.json` pins 9.0 with 10.0 installed → `net9.0` TFM used
-- [ ] Host package only has `net9.0` but SDK is 10.0 → fallback to `net9.0` with warning
+- [x] Host package only has `net9.0` but SDK is 10.0 → fallback to `net9.0` and `DOTNET_ROLL_FORWARD=Major` on spawn (covered by `Given_UnoToolsLocator`)
+- [x] Host package has only `net11.0` but SDK is 10.0 → resolver returns null rather than pick a higher TFM
+- [x] Non-`net{X}.{Y}` directories under `tools/rc/host/` are ignored
 - [ ] Cache invalidated when `global.json` changes
 
 ---
