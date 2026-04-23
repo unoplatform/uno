@@ -1170,8 +1170,14 @@ namespace Microsoft.UI.Xaml.Input
 							}
 							else
 							{
-								pCurrent = parent;
-								parent = parentElement;
+								// We need to get out of the current scope in case of Once navigation mode, so
+								// reset the current and parent to search the next available focus control
+								pCurrent = parentElement;
+								parent = GetFocusParent(parentElement);
+								if (parent == null)
+								{
+									break;
+								}
 							}
 						}
 						else
