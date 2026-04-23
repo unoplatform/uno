@@ -158,9 +158,9 @@ public partial class CompositionTarget
 
 			// Borrow frame temporarily
 			_lastRenderedFrame = null;
-		}
 
-		_fpsHelper.OnFramePresentRequested();
+			_fpsHelper.OnFramePresentRequested();
+		}
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{

@@ -183,6 +183,7 @@ internal static class SkiaRenderHelper
 		private int _droppedThisSecond;
 		private int _unpresentedThisSecond;
 		private long _currentFrameBeginTimestamp;
+		private bool _measureThisFrame;
 		private long _pictureReadyTimestamp;
 		// Generation counter incremented by OnFrameRecorded (UI thread).
 		// OnFramePresentRequested (native render thread) reads it and remembers the last-presented value.
@@ -220,7 +221,8 @@ internal static class SkiaRenderHelper
 
 		public FrameDisposable BeginFrame()
 		{
-			if (IsEnabled)
+			_measureThisFrame = IsEnabled;
+			if (_measureThisFrame)
 			{
 				if (!_timerRunning)
 				{
@@ -238,7 +240,7 @@ internal static class SkiaRenderHelper
 
 		private void EndFrame()
 		{
-			if (!IsEnabled)
+			if (!_measureThisFrame)
 			{
 				return;
 			}
@@ -487,6 +489,25 @@ internal static class SkiaRenderHelper
 		{
 			_fpsTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 			_timerRunning = false;
+
+			Interlocked.Exchange(ref _framesRenderedInLastSecond, 0);
+			Interlocked.Exchange(ref _droppedThisSecond, 0);
+			Interlocked.Exchange(ref _unpresentedThisSecond, 0);
+			for (var i = 0; i < _drawToPresentTimeTicks.Length; i++)
+			{
+				Interlocked.Exchange(ref _drawToPresentTimeTicks[i], 0);
+			}
+			Array.Clear(_frameTimes);
+			_frameTimesHead = 0;
+			_drawToPresentTimesHead = 0;
+			_lastTimerTickGeneration = Interlocked.Read(ref _currentFrameGeneration);
+			_consecutiveIdleTicks = 0;
+			_isIdle = false;
+			Fps = 0;
+			FrameTime = 0;
+			DroppedFrames = 0;
+			UnpresentedFrames = 0;
+			DrawToPresentDelayMs = 0;
 		}
 
 		public void Dispose() => _fpsTimer.Dispose();
