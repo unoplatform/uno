@@ -475,7 +475,14 @@ internal static class SkiaRenderHelper
 			if (noNewFrames)
 			{
 				_consecutiveIdleTicks++;
-				_isIdle = _consecutiveIdleTicks >= 2;
+				if (_consecutiveIdleTicks >= 2)
+				{
+					_isIdle = true;
+					RequestRedraw?.Invoke();
+					_fpsTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+					_timerRunning = false;
+					return;
+				}
 				RequestRedraw?.Invoke();
 			}
 			else
