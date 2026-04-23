@@ -1029,6 +1029,24 @@ namespace Microsoft.UI.Xaml.Input
 						{
 							pChildStop = GetNextTabStopInternal(childNoRef, pCurrent, pNewTabStop, ref bCurrentPassed, ref pCurrentCompare);
 						}
+
+						// Handling of 21H2 bug 32260809 as WinUI3: When the focus change occurs as the result of pCurrent's removal from the tree,
+						// childNoRef will never be set to pCurrent and thus bCurrentPassed will not be set to true above.
+						// This would lead to the wrong element getting focus. While GetNextTabStopInternal is processed, pCurrent still has
+						// its parent set, but pCurrent no longer appears in that parent's children collection. We detect the parent-child
+						// relationship and set bCurrentPassed to true so that pNewTabStop can later be set even though compareIndexResult
+						// may be 0. Unfortunately this only works when the leaving pCurrent element is the last focusable child for
+						// currentParent. pCurrent's ex-position within currentParent is unknown at this point and focusing a previous
+						// sibling would require deep changes.
+						if (!bCurrentPassed && childNoRef != null)
+						{
+							var currentParent = pCurrent?.GetParentInternal(publicParentOnly: false);
+
+							if (currentParent != null && (currentParent == childNoRef || childNoRef.IsAncestorOf(currentParent)))
+							{
+								bCurrentPassed = true;
+							}
+						}
 					}
 
 					if (pChildStop != null && (IsFocusable(pChildStop) || CanHaveFocusableChildren(pChildStop)))
