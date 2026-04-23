@@ -153,21 +153,25 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			errors.Add("Unable to determine dotnet --version.");
 		}
 
+		var hostRequiresMajorRollForward = false;
 		if (!string.IsNullOrWhiteSpace(devServerPackagePath) && !string.IsNullOrWhiteSpace(dotNetTfm))
 		{
-			var hostExe = Path.Combine(devServerPackagePath, "tools", "rc", "host", dotNetTfm, "Uno.UI.RemoteControl.Host.exe");
-			var hostDll = Path.Combine(devServerPackagePath, "tools", "rc", "host", dotNetTfm, "Uno.UI.RemoteControl.Host.dll");
-			if (File.Exists(hostExe))
+			// Uses the same resolver as ResolveHostExecutableAsync so the two entry points
+			// never disagree about whether a host is available (the old exact-TFM probe here
+			// would return null even when the fallback resolver found a compatible binary,
+			// which misled MCP / doctor diagnostics and DevServerMonitor).
+			var plan = TryResolveHostLaunchPlan(devServerPackagePath!, dotNetTfm!);
+			if (plan is not null)
 			{
-				hostPath = hostExe;
-			}
-			else if (File.Exists(hostDll))
-			{
-				hostPath = hostDll;
+				hostPath = plan.HostPath;
+				hostRequiresMajorRollForward = plan.RequiresMajorRollForward;
 			}
 			else
 			{
-				errors.Add("DevServer host not found in package at expected paths.");
+				var available = EnumerateHostTfms(Path.Combine(devServerPackagePath!, "tools", "rc", "host"));
+				errors.Add(available.Length == 0
+					? "DevServer host not found in package at expected paths."
+					: $"DevServer host not found in package: no compatible TFM available for {dotNetTfm} (present: {string.Join(", ", available)}).");
 			}
 		}
 
@@ -279,6 +283,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			DotNetVersion = dotNetVersion,
 			DotNetTfm = dotNetTfm,
 			HostPath = hostPath,
+			HostRequiresMajorRollForward = hostRequiresMajorRollForward,
 			SettingsPath = settingsPath,
 			AddIns = resolvedAddIns,
 			AddInsDiscoveryMethod = addInsDiscoveryMethod,
@@ -322,7 +327,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		return studioPath;
 	}
 
-	public async Task<string?> ResolveHostExecutableAsync(string workDirectory)
+	public async Task<HostLaunchPlan?> ResolveHostExecutableAsync(string workDirectory)
 	{
 		var sdkVersion = await GetSdkVersionFromGlobalJson(workDirectory);
 		if (sdkVersion.sdkVersion == null || sdkVersion.sdkPackage == null)
@@ -340,13 +345,13 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		}
 		_logger.LogDebug("Found Uno SDK: {UnoSdkPath}", unoSdkPath);
 
-		var hostPath = await GetHostExecutable(unoSdkPath);
-		if (hostPath is null)
+		var plan = await GetHostLaunchPlan(unoSdkPath);
+		if (plan is null)
 		{
 			_logger.LogError("Could not determine DevServer host executable path.");
 			return null;
 		}
-		return hostPath;
+		return plan;
 	}
 
 	private async Task<(string? sdkPackage, string? sdkVersion)> GetSdkVersionFromGlobalJson(string searchDirectory)
@@ -499,7 +504,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		}
 	}
 
-	private async Task<string?> GetHostExecutable(string unoSdkPath)
+	private async Task<HostLaunchPlan?> GetHostLaunchPlan(string unoSdkPath)
 	{
 		try
 		{
@@ -521,48 +526,32 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 				return null;
 			}
 
-			var hostRoot = Path.Combine(devServerPackagePath, "tools", "rc", "host");
-			var availableTfms = EnumerateHostTfms(hostRoot);
-			var resolvedTfm = TryResolveHostTfm(availableTfms, dotnetVersion);
-			if (resolvedTfm is null)
+			var plan = TryResolveHostLaunchPlan(devServerPackagePath, dotnetVersion);
+			if (plan is null)
 			{
+				var available = EnumerateHostTfms(Path.Combine(devServerPackagePath, "tools", "rc", "host"));
 				_logger.LogError(
 					"DevServer host not found in package: no compatible TFM available for {RequestedTfm} (present: {AvailableTfms}).",
 					dotnetVersion,
-					availableTfms.Length == 0 ? "<none>" : string.Join(", ", availableTfms));
+					available.Length == 0 ? "<none>" : string.Join(", ", available));
 				return null;
 			}
 
-			if (!string.Equals(resolvedTfm, dotnetVersion, StringComparison.OrdinalIgnoreCase))
+			if (plan.RequiresMajorRollForward)
 			{
-				// Running a lower-TFM host under a higher runtime is safe as long as roll-forward
-				// allows it. The host spawn path sets DOTNET_ROLL_FORWARD=Major so a net9 host can
-				// start on a machine that has only the net10 runtime installed — see
-				// DevServerProcessHelper.CreateDotnetProcessStartInfo.
+				// One-major fallback only (see TryResolveHostTfm): the spawn path must be told
+				// to set DOTNET_ROLL_FORWARD=Major via HostLaunchPlan.RequiresMajorRollForward,
+				// otherwise the older-TFM host's runtimeconfig rollForward=minor will refuse to
+				// start on a newer-major runtime.
 				_logger.LogInformation(
-					"Uno.WinUI.DevServer {Version} does not ship a host for {RequestedTfm}; falling back to {ResolvedTfm}.",
+					"Uno.WinUI.DevServer {Version} does not ship a host for {RequestedTfm}; falling back to an older-major binary ({HostPath}). DOTNET_ROLL_FORWARD=Major will be set on the spawn so the host starts on the installed runtime.",
 					devServerPackageVersion,
 					dotnetVersion,
-					resolvedTfm);
+					plan.HostPath);
 			}
 
-			var hostDir = Path.Combine(hostRoot, resolvedTfm);
-			var hostExe = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.exe");
-			if (File.Exists(hostExe))
-			{
-				_logger.LogDebug("Found DevServer Host: {Path}", hostExe);
-				return hostExe;
-			}
-
-			var hostDll = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll");
-			if (File.Exists(hostDll))
-			{
-				_logger.LogDebug("Found DevServer Host: {Path}", hostDll);
-				return hostDll;
-			}
-
-			_logger.LogError("DevServer host not found in package at expected paths under {HostDir}.", hostDir);
-			return null;
+			_logger.LogDebug("Found DevServer Host: {Path}", plan.HostPath);
+			return plan;
 		}
 		catch (Exception ex)
 		{
@@ -572,10 +561,50 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	}
 
 	/// <summary>
+	/// Pure, test-friendly resolver shared by <see cref="GetHostLaunchPlan"/> and
+	/// <see cref="DiscoverAsync"/>. Given the DevServer NuGet package path and the
+	/// TFM requested by the current runtime, it returns the host path and whether
+	/// the caller must enable <c>DOTNET_ROLL_FORWARD=Major</c> on the spawn.
+	/// Returns <c>null</c> when the package does not ship a compatible host
+	/// (either nothing at all, or only TFMs newer than the runtime, or only TFMs
+	/// more than one major below the runtime — see <see cref="TryResolveHostTfm"/>
+	/// for the one-major cap rationale).
+	/// </summary>
+	internal static HostLaunchPlan? TryResolveHostLaunchPlan(string devServerPackagePath, string requestedTfm)
+	{
+		var hostRoot = Path.Combine(devServerPackagePath, "tools", "rc", "host");
+		var availableTfms = EnumerateHostTfms(hostRoot);
+		var resolvedTfm = TryResolveHostTfm(availableTfms, requestedTfm);
+		if (resolvedTfm is null)
+		{
+			return null;
+		}
+
+		var hostDir = Path.Combine(hostRoot, resolvedTfm);
+		var hostExe = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.exe");
+		string? hostPath = File.Exists(hostExe)
+			? hostExe
+			: File.Exists(Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll"))
+				? Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll")
+				: null;
+		if (hostPath is null)
+		{
+			return null;
+		}
+
+		var requiresMajorRollForward = !string.Equals(resolvedTfm, requestedTfm, StringComparison.OrdinalIgnoreCase);
+		return new HostLaunchPlan(hostPath, requiresMajorRollForward);
+	}
+
+	/// <summary>
 	/// Enumerates the <c>net{X}.{Y}</c> subdirectories that exist under
 	/// <paramref name="hostRoot"/> (i.e. <c>tools/rc/host</c>). Non-matching entries
 	/// (pre-net5 monikers, feature folders, …) are ignored. Returns an empty array
 	/// when the directory does not exist so the caller can surface a clean error.
+	/// The result is sorted by parsed (major, minor) in ascending order; string-ordinal
+	/// sort would incorrectly place <c>net10.0</c> before <c>net9.0</c>, which is
+	/// harmless for <see cref="TryResolveHostTfm"/> (it re-sorts numerically) but misleads
+	/// the user-facing "present" list in the error log.
 	/// </summary>
 	internal static string[] EnumerateHostTfms(string hostRoot)
 	{
@@ -586,9 +615,13 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 
 		return Directory.EnumerateDirectories(hostRoot)
 			.Select(Path.GetFileName)
-			.Where(name => TryParseNetTfm(name, out _, out _))
-			.Select(name => name!)
-			.OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+			.Select(name => TryParseNetTfm(name, out var major, out var minor)
+				? (valid: true, name: name!, major, minor)
+				: (valid: false, name: (string?)null, major: 0, minor: 0))
+			.Where(entry => entry.valid)
+			.OrderBy(entry => entry.major)
+			.ThenBy(entry => entry.minor)
+			.Select(entry => entry.name!)
 			.ToArray();
 	}
 
@@ -596,8 +629,12 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	/// Picks the best available TFM for <paramref name="requestedTfm"/> from
 	/// <paramref name="availableTfms"/>. Exact matches win. Otherwise returns the
 	/// highest <c>net{X}.{Y}</c> that is <b>less than or equal to</b>
-	/// <paramref name="requestedTfm"/> — we never pick a TFM newer than the runtime,
-	/// because .NET cannot roll back to a version the host wasn't compiled against.
+	/// <paramref name="requestedTfm"/> and within one major of it — we never pick
+	/// a TFM newer than the runtime, because .NET cannot roll back to a version
+	/// the host wasn't compiled against, and we never pick more than one major
+	/// below either, because that is exactly what <c>DOTNET_ROLL_FORWARD=Major</c>
+	/// covers (one major jump). A wider gap would silently select a host the
+	/// runtime cannot actually load.
 	/// Returns <c>null</c> when nothing suitable is available.
 	/// </summary>
 	internal static string? TryResolveHostTfm(string[] availableTfms, string requestedTfm)
@@ -613,10 +650,17 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			return exact;
 		}
 
+		// One-major cap: DOTNET_ROLL_FORWARD=Major allows exactly one major jump.
+		// Anything further (e.g. net5 host under net10) is not loadable even with
+		// roll-forward enabled, and picking such a host would be misleading.
+		const int MaxMajorGap = 1;
+		var minMajor = reqMajor - MaxMajorGap;
+
 		var candidates = new List<(string tfm, int major, int minor)>();
 		foreach (var tfm in availableTfms)
 		{
 			if (TryParseNetTfm(tfm, out var major, out var minor)
+				&& major >= minMajor
 				&& (major < reqMajor || (major == reqMajor && minor <= reqMinor)))
 			{
 				candidates.Add((tfm, major, minor));
@@ -838,3 +882,24 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		}
 	}
 }
+
+/// <summary>
+/// How to launch the DevServer host: path to the executable / managed entry-point
+/// DLL, and whether the selected TFM is older than the current runtime (in which
+/// case the spawn path must set <c>DOTNET_ROLL_FORWARD=Major</c> so the host
+/// actually starts).
+/// </summary>
+/// <param name="HostPath">
+/// Absolute path to <c>Uno.UI.RemoteControl.Host.exe</c> (preferred on Windows)
+/// or <c>Uno.UI.RemoteControl.Host.dll</c> (used when the <c>.exe</c> shim is
+/// absent, e.g. cross-platform builds). Never null.
+/// </param>
+/// <param name="RequiresMajorRollForward">
+/// True when the host was selected via one-major fallback
+/// (see <see cref="UnoToolsLocator.TryResolveHostTfm"/>) and the spawned process
+/// must therefore honour <c>DOTNET_ROLL_FORWARD=Major</c>. False for exact-TFM
+/// matches — setting the flag then would still work but would mask unrelated
+/// roll-forward behaviour the user may have pinned via <c>global.json</c> or
+/// ambient env vars.
+/// </param>
+internal sealed record HostLaunchPlan(string HostPath, bool RequiresMajorRollForward);

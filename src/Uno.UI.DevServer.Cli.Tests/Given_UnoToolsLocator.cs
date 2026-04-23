@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using AwesomeAssertions;
 using Uno.UI.DevServer.Cli.Helpers;
 
@@ -83,6 +85,203 @@ public class Given_UnoToolsLocator
 		var tfms = new[] { "net11.0", "net12.0" };
 
 		UnoToolsLocator.TryResolveHostTfm(tfms, "net10.0").Should().BeNull();
+	}
+
+	[TestMethod]
+	[Description("One-major cap on the fallback: DOTNET_ROLL_FORWARD=Major (the env var the " +
+		"spawn path sets when the resolver returns a fallback host) allows exactly one major " +
+		"version jump. Picking a two-major-or-more gap (e.g. net5 host under a net10 runtime) " +
+		"would hand back a binary the runtime cannot actually load and make the roll-forward " +
+		"claim in HostLaunchPlan a lie. Regression guard against skeptic review of " +
+		"https://github.com/unoplatform/uno/pull/23124.")]
+	public void When_Only_Tfms_More_Than_One_Major_Below_Exist_Then_Returns_Null()
+	{
+		var tfms = new[] { "net5.0", "net6.0", "net7.0" };
+
+		UnoToolsLocator.TryResolveHostTfm(tfms, "net10.0").Should().BeNull();
+	}
+
+	[TestMethod]
+	[Description("Cap boundary: when the requested runtime is net10, a net9 host is acceptable " +
+		"(one-major jump, covered by DOTNET_ROLL_FORWARD=Major) but a net8 host is not. The " +
+		"resolver must pick net9 even when net8 is also present.")]
+	public void When_Both_One_And_Two_Majors_Below_Are_Available_Then_Picks_One_Major_Below()
+	{
+		var tfms = new[] { "net8.0", "net9.0" };
+
+		UnoToolsLocator.TryResolveHostTfm(tfms, "net10.0").Should().Be("net9.0");
+	}
+
+	[TestMethod]
+	[Description("EnumerateHostTfms must sort numerically by (major, minor), not by ordinal " +
+		"string. Ordinal sort places `net10.0` before `net9.0` because '1' < '9', which would " +
+		"make the user-facing \"present TFMs\" list in the error log confusing and would break " +
+		"any future consumer that assumes the returned array is ordered by version.")]
+	public void When_Host_Root_Contains_Mixed_Majors_Then_Result_Is_Sorted_By_Version()
+	{
+		var root = Path.Combine(Path.GetTempPath(), "uno-tests-host-sort-" + System.Guid.NewGuid().ToString("N"));
+		try
+		{
+			Directory.CreateDirectory(Path.Combine(root, "net9.0"));
+			Directory.CreateDirectory(Path.Combine(root, "net10.0"));
+			Directory.CreateDirectory(Path.Combine(root, "net8.0"));
+
+			UnoToolsLocator.EnumerateHostTfms(root).Should().Equal("net8.0", "net9.0", "net10.0");
+		}
+		finally
+		{
+			if (Directory.Exists(root))
+			{
+				Directory.Delete(root, recursive: true);
+			}
+		}
+	}
+
+	[TestMethod]
+	[Description("TryResolveHostLaunchPlan picks the fallback net9 host when the exact net10 " +
+		"directory is missing and flags RequiresMajorRollForward=true so the spawn path will " +
+		"set DOTNET_ROLL_FORWARD=Major. End-to-end guard for issue #23123 (Chefs.sln + " +
+		"Uno.Sdk 6.1.0-dev.30 + .NET 10 SDK): `ResolveHostExecutableAsync` and `DiscoverAsync` " +
+		"both go through this resolver, so one fixture pins both entry points.")]
+	public void When_Exact_Tfm_Missing_And_Fallback_Exists_Then_Plan_Flags_RollForward()
+	{
+		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-" + System.Guid.NewGuid().ToString("N"));
+		try
+		{
+			var hostDir = Path.Combine(pkg, "tools", "rc", "host", "net9.0");
+			Directory.CreateDirectory(hostDir);
+			File.WriteAllText(Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll"), "stub");
+
+			var plan = UnoToolsLocator.TryResolveHostLaunchPlan(pkg, "net10.0");
+
+			plan.Should().NotBeNull();
+			plan!.HostPath.Should().Be(Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll"));
+			plan.RequiresMajorRollForward.Should().BeTrue();
+		}
+		finally
+		{
+			if (Directory.Exists(pkg))
+			{
+				Directory.Delete(pkg, recursive: true);
+			}
+		}
+	}
+
+	[TestMethod]
+	[Description("TryResolveHostLaunchPlan with an exact TFM match must not flag the " +
+		"RollForward requirement: pinned majors (via global.json or DOTNET_ROLL_FORWARD ambient) " +
+		"would otherwise be silently overridden on every exact-match launch.")]
+	public void When_Exact_Tfm_Available_Then_Plan_Does_Not_Flag_RollForward()
+	{
+		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-exact-" + System.Guid.NewGuid().ToString("N"));
+		try
+		{
+			var hostDir = Path.Combine(pkg, "tools", "rc", "host", "net10.0");
+			Directory.CreateDirectory(hostDir);
+			File.WriteAllText(Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.exe"), "stub");
+
+			var plan = UnoToolsLocator.TryResolveHostLaunchPlan(pkg, "net10.0");
+
+			plan.Should().NotBeNull();
+			plan!.HostPath.Should().Be(Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.exe"));
+			plan.RequiresMajorRollForward.Should().BeFalse();
+		}
+		finally
+		{
+			if (Directory.Exists(pkg))
+			{
+				Directory.Delete(pkg, recursive: true);
+			}
+		}
+	}
+
+	[TestMethod]
+	[Description(".exe shim is preferred over the managed .dll when both exist in the fallback " +
+		"host directory — matches the resolution order of ResolveHostExecutableAsync prior to " +
+		"the fallback refactor. Guards against a regression where the fallback path silently " +
+		"switched to the .dll and bypassed the native shim on Windows.")]
+	public void When_Both_Exe_And_Dll_Present_In_Fallback_Directory_Then_Exe_Wins()
+	{
+		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-exe-wins-" + System.Guid.NewGuid().ToString("N"));
+		try
+		{
+			var hostDir = Path.Combine(pkg, "tools", "rc", "host", "net9.0");
+			Directory.CreateDirectory(hostDir);
+			File.WriteAllText(Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.exe"), "stub-exe");
+			File.WriteAllText(Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll"), "stub-dll");
+
+			var plan = UnoToolsLocator.TryResolveHostLaunchPlan(pkg, "net10.0");
+
+			plan.Should().NotBeNull();
+			plan!.HostPath.Should().EndWith(".exe");
+			plan.RequiresMajorRollForward.Should().BeTrue();
+		}
+		finally
+		{
+			if (Directory.Exists(pkg))
+			{
+				Directory.Delete(pkg, recursive: true);
+			}
+		}
+	}
+
+	[TestMethod]
+	[Description("Defensive: an empty host directory (package extracted but layout corrupted) " +
+		"must surface as null — the caller turns that into a clean \"no compatible TFM\" error " +
+		"instead of returning a launch plan with a bogus path.")]
+	public void When_Host_Directory_Exists_But_Is_Empty_Then_Plan_Is_Null()
+	{
+		var pkg = Path.Combine(Path.GetTempPath(), "uno-tests-pkg-empty-" + System.Guid.NewGuid().ToString("N"));
+		try
+		{
+			var hostDir = Path.Combine(pkg, "tools", "rc", "host", "net10.0");
+			Directory.CreateDirectory(hostDir);
+
+			UnoToolsLocator.TryResolveHostLaunchPlan(pkg, "net10.0").Should().BeNull();
+		}
+		finally
+		{
+			if (Directory.Exists(pkg))
+			{
+				Directory.Delete(pkg, recursive: true);
+			}
+		}
+	}
+
+	[TestMethod]
+	[Description("Integration guard for DevServerProcessHelper.CreateDotnetProcessStartInfo: " +
+		"when the caller opts in via enableMajorRollForward=true, DOTNET_ROLL_FORWARD=Major " +
+		"must actually land on the spawned process' Environment dictionary. Without this " +
+		"assertion, nothing in the suite actually exercises the roll-forward contract — a " +
+		"refactor could silently drop the env var and every other test would still pass.")]
+	public void When_EnableMajorRollForward_Is_True_Then_DOTNET_ROLL_FORWARD_Major_Is_Set_On_Process_Environment()
+	{
+		var psi = DevServerProcessHelper.CreateDotnetProcessStartInfo(
+			hostPath: "stub.dll",
+			arguments: System.Array.Empty<string>(),
+			workingDirectory: Path.GetTempPath(),
+			redirectOutput: true,
+			enableMajorRollForward: true);
+
+		psi.Environment.Should().ContainKey("DOTNET_ROLL_FORWARD")
+			.WhoseValue.Should().Be("Major");
+	}
+
+	[TestMethod]
+	[Description("Symmetric guard: exact TFM match (no fallback) must leave the pinned-major " +
+		"scenario alone — the helper must not unconditionally force DOTNET_ROLL_FORWARD=Major " +
+		"when the caller opted out. If the parent already sets it explicitly we propagate it; " +
+		"what we forbid is the helper overwriting that to Major on its own.")]
+	public void When_EnableMajorRollForward_Is_False_Then_Helper_Does_Not_Force_Major()
+	{
+		var psi = DevServerProcessHelper.CreateDotnetProcessStartInfo(
+			"stub.dll", System.Array.Empty<string>(), Path.GetTempPath(),
+			redirectOutput: true, enableMajorRollForward: false);
+
+		if (psi.Environment.TryGetValue("DOTNET_ROLL_FORWARD", out var value))
+		{
+			value.Should().NotBe("Major");
+		}
 	}
 
 	[TestMethod]

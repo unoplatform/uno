@@ -129,12 +129,14 @@ internal class CliManager
 			}
 
 			workingDirectory ??= requestedWorkingDirectory;
-			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
+			var hostLaunchPlan = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
 
-			if (hostPath is null)
+			if (hostLaunchPlan is null)
 			{
 				return 1; // errors already logged
 			}
+
+			var hostPath = hostLaunchPlan.HostPath;
 
 			// Resolve add-ins via convention-based discovery for the start command
 			string? resolvedAddIns = null;
@@ -151,7 +153,8 @@ internal class CliManager
 				var startHandler = CreateStartCommandHandler();
 				return await startHandler.RunAsync(
 					hostPath, originalArgs, workingDirectory, resolvedAddIns,
-					workspaceResolution?.SelectedSolutionPath);
+					workspaceResolution?.SelectedSolutionPath,
+					enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
 			}
 
 			// Non-start commands (stop, list, cleanup) still use controller mode
@@ -160,7 +163,7 @@ internal class CliManager
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: null);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: null, enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
 
 			var (ExitCode, StdOut, StdErr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
 			return ExitCode;
@@ -887,7 +890,7 @@ internal class CliManager
 			servers, jsonOutput, allScopes, allIdes, dryRun, ideDefinitionsPath, serverDefinitionsPath);
 	}
 
-	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)
+	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null, bool enableMajorRollForward = false)
 	{
 		// Use --command=<verb> (single token) instead of --command <verb> (two tokens)
 		// to work around argument splitting observed on some CI environments where
@@ -905,7 +908,7 @@ internal class CliManager
 			args.Add(addins);
 		}
 
-		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput, enableMajorRollForward: true);
+		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput, enableMajorRollForward: enableMajorRollForward);
 	}
 
 	private StartCommandHandler CreateStartCommandHandler()
