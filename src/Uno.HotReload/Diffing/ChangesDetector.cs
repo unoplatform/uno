@@ -33,7 +33,7 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 			var documents = solution
 				.Projects
 				.SelectMany(p => p.Documents)
-				.Where(d => string.Equals(d.FilePath, file, PathComparer.Comparison));
+				.Where(d => PathComparer.PathEquals(d.FilePath, file));
 			foreach (var document in documents)
 			{
 				found = true;
@@ -50,7 +50,7 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 			var additionalDocuments = solution
 				.Projects
 				.SelectMany(p => p.AdditionalDocuments)
-				.Where(d => string.Equals(d.FilePath, file, PathComparer.Comparison));
+				.Where(d => PathComparer.PathEquals(d.FilePath, file));
 			foreach (var additionalDocument in additionalDocuments)
 			{
 				found = true;
