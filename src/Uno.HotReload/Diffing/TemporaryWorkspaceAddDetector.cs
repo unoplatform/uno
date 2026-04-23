@@ -41,12 +41,12 @@ public class TemporaryWorkspaceAddDetector(Func<CancellationToken, ValueTask<Wor
 				var found = false;
 				foreach (var project in tempWorkspace.CurrentSolution.Projects)
 				{
-					if (project.Documents.FirstOrDefault(d => string.Equals(d.FilePath, file, PathComparer.Comparison)) is { } document)
+					if (project.Documents.FirstOrDefault(d => PathComparer.PathEquals(d.FilePath, file)) is { } document)
 					{
 						found = true;
 						discoveredDocuments.Add(new(project.GetInfo(), document.GetInfo()));
 					}
-					else if (project.AdditionalDocuments.FirstOrDefault(d => string.Equals(d.FilePath, file, PathComparer.Comparison)) is { } additionalDocument)
+					else if (project.AdditionalDocuments.FirstOrDefault(d => PathComparer.PathEquals(d.FilePath, file)) is { } additionalDocument)
 					{
 						found = true;
 						discoveredAdditionalDocuments.Add(new(project.GetInfo(), additionalDocument.GetInfo()));

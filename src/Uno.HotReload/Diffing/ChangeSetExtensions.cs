@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Uno.HotReload.Tracking;
+using Uno.HotReload.Utils;
 
 namespace Uno.HotReload.Diffing;
 
@@ -37,6 +38,15 @@ public static class ChangeSetExtensions
 			foreach (var project in projects)
 			{
 				found = true;
+				// Defensive: avoid creating a duplicate Document when an existing one denotes the same physical
+				// file under a different separator/casing spelling (e.g. '\' vs '/'). Roslyn's Workspace does not
+				// deduplicate by normalized path, which previously caused source generators to see the same file
+				// twice and emit conflicting output.
+				if (added.Document.FilePath is { } addedPath
+					&& project.Documents.Any(d => PathComparer.PathEquals(d.FilePath, addedPath)))
+				{
+					continue;
+				}
 				solution = solution.AddDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
 			}
 			if (!found)
@@ -52,8 +62,14 @@ public static class ChangeSetExtensions
 			foreach (var project in projects)
 			{
 				found = true;
+				// Defensive: avoid creating a duplicate AdditionalDocument when an existing one denotes the same
+				// physical file under a different separator/casing spelling. See comment above.
+				if (added.Document.FilePath is { } addedPath
+					&& project.AdditionalDocuments.Any(d => PathComparer.PathEquals(d.FilePath, addedPath)))
+				{
+					continue;
+				}
 				solution = solution.AddAdditionalDocument(added.Document.WithId(DocumentId.CreateNewId(project.Id)));
-
 			}
 			if (!found)
 			{
