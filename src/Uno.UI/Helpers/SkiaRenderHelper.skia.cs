@@ -315,11 +315,11 @@ internal static class SkiaRenderHelper
 			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
 			var panelHeight = Padding + 3 * RowHeight + Padding;
 
-			var applyScale = Scale is { } scale;
-			if (applyScale)
+			var scale = Scale;
+			if (scale is { } scaleValue)
 			{
 				canvas.Save();
-				canvas.Scale(scale, scale);
+				canvas.Scale(scaleValue, scaleValue);
 			}
 
 			canvas.DrawRoundRect(new SKRect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius, BackgroundCornerRadius, _backgroundPaint);
@@ -336,7 +336,7 @@ internal static class SkiaRenderHelper
 			DrawCell(canvas, col2IconX, col2TextX, 0, frameTimeText, DrawFrameTimeIcon);
 			DrawCell(canvas, col2IconX, col2TextX, 1, delayText, DrawClockIcon);
 
-			if (applyScale)
+			if (scale is not null)
 			{
 				canvas.Restore();
 			}
