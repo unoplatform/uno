@@ -80,6 +80,15 @@ public partial class CompositionTarget
 
 		NativeDispatcher.CheckThreadAccess();
 
+		_fpsHelper.RequestRedraw ??= () =>
+		{
+			var root = ContentRoot.VisualTree.RootElement?.XamlRoot;
+			if (root != null)
+			{
+				XamlRootMap.GetHostForRoot(root)?.InvalidateRender();
+			}
+		};
+
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 

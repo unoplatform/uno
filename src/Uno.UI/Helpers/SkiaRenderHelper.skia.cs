@@ -141,6 +141,7 @@ internal static class SkiaRenderHelper
 		}
 
 		private static readonly SKPaint _backgroundPaint = new() { Color = new SKColor(0, 0, 0, 0xCC), IsAntialias = true };
+		private static readonly SKPaint _idleBackgroundPaint = new() { Color = new SKColor(0x1A, 0x23, 0x3B, 0xCC), IsAntialias = true };
 		private static readonly SKPaint _textPaint = new() { Color = SKColors.White, IsAntialias = true };
 		private static readonly SKPaint _fpsIconPaint = CreateStrokePaint(new SKColor(0x4C, 0xAF, 0x50));
 		private static readonly SKPaint _fpsIconFillPaint = CreateFillPaint(new SKColor(0x4C, 0xAF, 0x50));
@@ -189,12 +190,16 @@ internal static class SkiaRenderHelper
 		// which is always re-populated by CompositionTarget.ReturnFrame after each Draw.
 		private long _currentFrameGeneration;
 		private long _lastPresentedGeneration;
+		private long _lastTimerTickGeneration;
+		private int _consecutiveIdleTicks;
+		private bool _isIdle;
+		private bool _timerRunning;
 
 		public FpsHelper(int numberOfFramesToCalculateFrameTime = 10)
 		{
 			_frameTimes = new TimeSpan[numberOfFramesToCalculateFrameTime];
 			_drawToPresentTimeTicks = new long[numberOfFramesToCalculateFrameTime];
-			_fpsTimer = new Timer(static state => (state as FpsHelper)?.TimerTick(), this, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+			_fpsTimer = new Timer(static state => (state as FpsHelper)?.TimerTick(), this, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 		}
 
 		public double Fps { get; private set; }
@@ -204,6 +209,8 @@ internal static class SkiaRenderHelper
 		public double DrawToPresentDelayMs { get; private set; }
 
 		public float? Scale { private get; set; }
+
+		internal Action? RequestRedraw;
 
 		// All hooks early-return when the counter is disabled so the rendering pipeline
 		// pays only a single property read per call site. Null-safe against headless/
@@ -215,7 +222,16 @@ internal static class SkiaRenderHelper
 		{
 			if (IsEnabled)
 			{
+				if (!_timerRunning)
+				{
+					_fpsTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1));
+					_timerRunning = true;
+				}
 				_currentFrameBeginTimestamp = Stopwatch.GetTimestamp();
+			}
+			else if (_timerRunning)
+			{
+				StopTimer();
 			}
 			return new FrameDisposable(this);
 		}
@@ -315,7 +331,8 @@ internal static class SkiaRenderHelper
 			var droppedText = DroppedFrames.ToString(culture);
 			var unpresentedText = UnpresentedFrames.ToString(culture);
 			var frameTimeText = FormattableString.Invariant($"{FrameTime:F1} ms");
-			var delayText = FormattableString.Invariant($"{DrawToPresentDelayMs:F1} ms");
+			var isIdle = _isIdle;
+			var delayText = isIdle ? "Idle" : FormattableString.Invariant($"{DrawToPresentDelayMs:F1} ms");
 
 			var col1Width = Math.Max(_minColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
 			var col2Width = Math.Max(_minColumn2Width, MaxTextWidth(frameTimeText, delayText));
@@ -330,7 +347,7 @@ internal static class SkiaRenderHelper
 				canvas.Scale(scaleValue, scaleValue);
 			}
 
-			canvas.DrawRoundRect(new SKRect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius, BackgroundCornerRadius, _backgroundPaint);
+			canvas.DrawRoundRect(new SKRect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius, BackgroundCornerRadius, isIdle ? _idleBackgroundPaint : _backgroundPaint);
 
 			var col1IconX = Padding;
 			var col1TextX = col1IconX + IconSize + IconTextGap;
@@ -433,6 +450,7 @@ internal static class SkiaRenderHelper
 		{
 			if (!IsEnabled)
 			{
+				StopTimer();
 				return;
 			}
 
@@ -447,6 +465,28 @@ internal static class SkiaRenderHelper
 				accTicks += Interlocked.Read(ref _drawToPresentTimeTicks[i]);
 			}
 			DrawToPresentDelayMs = TimeSpan.FromTicks(accTicks).TotalMilliseconds / _drawToPresentTimeTicks.Length;
+
+			var currentGen = Interlocked.Read(ref _currentFrameGeneration);
+			var noNewFrames = currentGen == _lastTimerTickGeneration;
+			_lastTimerTickGeneration = currentGen;
+
+			if (noNewFrames)
+			{
+				_consecutiveIdleTicks++;
+				_isIdle = _consecutiveIdleTicks >= 2;
+				RequestRedraw?.Invoke();
+			}
+			else
+			{
+				_consecutiveIdleTicks = 0;
+				_isIdle = false;
+			}
+		}
+
+		private void StopTimer()
+		{
+			_fpsTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+			_timerRunning = false;
 		}
 
 		public void Dispose() => _fpsTimer.Dispose();
