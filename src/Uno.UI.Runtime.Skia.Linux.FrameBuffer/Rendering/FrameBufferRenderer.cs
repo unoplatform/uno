@@ -96,4 +96,6 @@ internal abstract class FrameBufferRenderer
 	protected abstract IDisposable MakeCurrent();
 
 	protected abstract SKSurface UpdateSize(int width, int height);
+
+	public virtual void Dispose() { }
 }
