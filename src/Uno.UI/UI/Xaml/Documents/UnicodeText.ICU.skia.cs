@@ -94,17 +94,7 @@ internal readonly partial struct UnicodeText
 					// lists icudata in the `otool -L` output, so we have to load it by hand
 					throw new Exception("Failed to load libicudata.");
 				}
-				if (OperatingSystem.IsAndroid())
-				{
-					// On Android, ICU is a system library that is not accessible through
-					// assembly-relative search paths. Use the default dlopen search path.
-					// Try the NDK stable libicu.so (API 31+) first, then fall back to icuuc.
-					if (!NativeLibrary.TryLoad("libicu.so", out libicuuc))
-					{
-						NativeLibrary.TryLoad("icuuc", out libicuuc);
-					}
-				}
-				else if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					if (OperatingSystem.IsLinux())
 					{
@@ -116,6 +106,13 @@ internal readonly partial struct UnicodeText
 								break;
 							}
 						}
+					}
+					else if (OperatingSystem.IsAndroid())
+					{
+						// On Android, ICU is a system library that is not accessible through
+						// assembly-relative search paths. Use the default dlopen search path
+						// with the NDK stable libicu.so (API 31+).
+						NativeLibrary.TryLoad("libicu.so", out libicuuc);
 					}
 				}
 				if (libicuuc == IntPtr.Zero)
