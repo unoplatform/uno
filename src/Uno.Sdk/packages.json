@@ -219,7 +219,7 @@
 	},
 	{
 		"group": "AndroidXAppCompat",
-		"version": "1.7.0.7",
+		"version": "1.7.1.2",
 		"packages": [
 			"Xamarin.AndroidX.AppCompat"
 		],
