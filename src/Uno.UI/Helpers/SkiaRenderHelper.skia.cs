@@ -152,6 +152,11 @@ internal static class SkiaRenderHelper
 		private static readonly SKPaint _clockIconPaint = CreateStrokePaint(new SKColor(0x21, 0x96, 0xF3));
 		private static readonly SKFont _font = new() { Size = 14, Embolden = true };
 
+		// Minimum per-column widths so the panel doesn't shrink when FPS drops from e.g. 120.0 to 15.0.
+		// Sized to fit a three-digit reference value — measured once at type load.
+		private static readonly float _minColumn1Width = MeasureWidth("120.0");
+		private static readonly float _minColumn2Width = MeasureWidth("120.0 ms");
+
 		private static SKPaint CreateStrokePaint(SKColor color, SKPathEffect? pathEffect = null) => new()
 		{
 			Color = color,
@@ -178,6 +183,12 @@ internal static class SkiaRenderHelper
 		private int _unpresentedThisSecond;
 		private long _currentFrameBeginTimestamp;
 		private long _pictureReadyTimestamp;
+		// Generation counter incremented by OnFrameRecorded (UI thread).
+		// OnFramePresentRequested (native render thread) reads it and remembers the last-presented value.
+		// Mismatches give us dropped-vs-unpresented accounting without relying on _lastRenderedFrame,
+		// which is always re-populated by CompositionTarget.ReturnFrame after each Draw.
+		private long _currentFrameGeneration;
+		private long _lastPresentedGeneration;
 
 		public FpsHelper(int numberOfFramesToCalculateFrameTime = 10)
 		{
@@ -194,14 +205,27 @@ internal static class SkiaRenderHelper
 
 		public float? Scale { private get; set; }
 
+		// All hooks early-return when the counter is disabled so the rendering pipeline
+		// pays only a single property read per call site. DebugSettings.EnableFrameRateCounter
+		// is a plain bool field, so this resolves to a cheap mov+test.
+		private static bool IsEnabled => Application.Current.DebugSettings.EnableFrameRateCounter;
+
 		public FrameDisposable BeginFrame()
 		{
-			_currentFrameBeginTimestamp = Stopwatch.GetTimestamp();
+			if (IsEnabled)
+			{
+				_currentFrameBeginTimestamp = Stopwatch.GetTimestamp();
+			}
 			return new FrameDisposable(this);
 		}
 
 		private void EndFrame()
 		{
+			if (!IsEnabled)
+			{
+				return;
+			}
+
 			_frameTimes[_frameTimesHead] = Stopwatch.GetElapsedTime(_currentFrameBeginTimestamp);
 			_frameTimesHead = (_frameTimesHead + 1) % _frameTimes.Length;
 			var acc = TimeSpan.Zero;
@@ -216,40 +240,58 @@ internal static class SkiaRenderHelper
 
 		/// <summary>
 		/// Called from CompositionTarget.Render after a freshly-recorded SKPicture has been
-		/// swapped into _lastRenderedFrame. Stamps the moment the picture became ready, and
-		/// flags a "drawn-but-not-presented" event when a previous picture was discarded
-		/// before it was ever blit.
+		/// swapped into _lastRenderedFrame. Stamps the moment the picture became ready. If the
+		/// previous generation was never consumed by Draw before this new recording starts,
+		/// that previous CPU work is wasted — count it as "drawn-but-not-presented".
 		/// </summary>
-		public void OnFrameRecorded(bool replacedPendingFrame)
+		public void OnFrameRecorded()
 		{
-			Interlocked.Exchange(ref _pictureReadyTimestamp, Stopwatch.GetTimestamp());
-			if (replacedPendingFrame)
+			if (!IsEnabled)
+			{
+				return;
+			}
+
+			var current = Interlocked.Read(ref _currentFrameGeneration);
+			var lastPresented = Interlocked.Read(ref _lastPresentedGeneration);
+			if (current > lastPresented)
 			{
 				Interlocked.Increment(ref _unpresentedThisSecond);
 			}
+
+			Interlocked.Exchange(ref _pictureReadyTimestamp, Stopwatch.GetTimestamp());
+			Interlocked.Increment(ref _currentFrameGeneration);
 		}
 
 		/// <summary>
-		/// Called from CompositionTarget.Draw at entry. When <paramref name="hadFrameToPresent"/>
-		/// is false, the native VSync fired but Uno had nothing recorded — a dropped frame.
-		/// When true, samples the delay from picture-ready to present for the rolling average.
+		/// Called from CompositionTarget.Draw at entry. If no new frame has been recorded
+		/// since the previous Draw, the native VSync fired but the UI thread didn't produce
+		/// anything new — we'll re-blit the same picture. Count that as a dropped frame.
+		/// Otherwise, sample the delay from picture-ready to present.
 		/// </summary>
-		public void OnFramePresentRequested(bool hadFrameToPresent)
+		public void OnFramePresentRequested()
 		{
-			if (!hadFrameToPresent)
+			if (!IsEnabled)
+			{
+				return;
+			}
+
+			var current = Interlocked.Read(ref _currentFrameGeneration);
+			var lastPresented = Interlocked.Read(ref _lastPresentedGeneration);
+
+			if (current == lastPresented)
 			{
 				Interlocked.Increment(ref _droppedThisSecond);
 				return;
 			}
 
 			var pictureReady = Interlocked.Read(ref _pictureReadyTimestamp);
-			if (pictureReady == 0)
+			if (pictureReady != 0)
 			{
-				return;
+				_drawToPresentTimes[_drawToPresentTimesHead] = Stopwatch.GetElapsedTime(pictureReady);
+				_drawToPresentTimesHead = (_drawToPresentTimesHead + 1) % _drawToPresentTimes.Length;
 			}
 
-			_drawToPresentTimes[_drawToPresentTimesHead] = Stopwatch.GetElapsedTime(pictureReady);
-			_drawToPresentTimesHead = (_drawToPresentTimesHead + 1) % _drawToPresentTimes.Length;
+			Interlocked.Exchange(ref _lastPresentedGeneration, current);
 		}
 
 		public void DrawFps(SKCanvas canvas)
@@ -266,8 +308,8 @@ internal static class SkiaRenderHelper
 			var frameTimeText = FormattableString.Invariant($"{FrameTime:F1} ms");
 			var delayText = FormattableString.Invariant($"{DrawToPresentDelayMs:F1} ms");
 
-			var col1Width = MaxTextWidth(fpsText, droppedText, unpresentedText);
-			var col2Width = MaxTextWidth(frameTimeText, delayText);
+			var col1Width = Math.Max(_minColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
+			var col2Width = Math.Max(_minColumn2Width, MaxTextWidth(frameTimeText, delayText));
 
 			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
 			var panelHeight = Padding + 3 * RowHeight + Padding;
@@ -304,13 +346,19 @@ internal static class SkiaRenderHelper
 			float max = 0;
 			foreach (var t in texts)
 			{
-				_font.MeasureText(t, out var rect);
-				if (rect.Width > max)
+				var width = MeasureWidth(t);
+				if (width > max)
 				{
-					max = rect.Width;
+					max = width;
 				}
 			}
 			return max;
+		}
+
+		private static float MeasureWidth(string text)
+		{
+			_font.MeasureText(text, out var rect);
+			return rect.Width;
 		}
 
 		private static void DrawCell(SKCanvas canvas, float iconX, float textX, int row, string value, Action<SKCanvas, float, float> drawIcon)
@@ -374,6 +422,11 @@ internal static class SkiaRenderHelper
 
 		private void TimerTick()
 		{
+			if (!IsEnabled)
+			{
+				return;
+			}
+
 			Fps = _framesRenderedInLastSecond;
 			_framesRenderedInLastSecond = 0;
 

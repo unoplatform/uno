@@ -97,7 +97,7 @@ public partial class CompositionTarget
 			_lastRenderedFrame = renderedFrame;
 		}
 
-		_fpsHelper.OnFrameRecorded(replacedPendingFrame: previousFrame != null);
+		_fpsHelper.OnFrameRecorded();
 
 		// Delete previous SKPicture now since we are swapping it
 		if (previousFrame != null)
@@ -151,7 +151,7 @@ public partial class CompositionTarget
 			_lastRenderedFrame = null;
 		}
 
-		_fpsHelper.OnFramePresentRequested(hadFrameToPresent: lastRenderedFrameNullable is not null);
+		_fpsHelper.OnFramePresentRequested();
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
