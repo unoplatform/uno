@@ -80,6 +80,18 @@ public partial class CompositionTarget
 
 		NativeDispatcher.CheckThreadAccess();
 
+		_fpsHelper.RequestRedraw ??= () =>
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				var root = ContentRoot.VisualTree.RootElement?.XamlRoot;
+				if (root != null)
+				{
+					XamlRootMap.GetHostForRoot(root)?.InvalidateRender();
+				}
+			});
+		};
+
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 
@@ -96,6 +108,8 @@ public partial class CompositionTarget
 
 			_lastRenderedFrame = renderedFrame;
 		}
+
+		_fpsHelper.OnFrameRecorded();
 
 		// Delete previous SKPicture now since we are swapping it
 		if (previousFrame != null)
@@ -147,6 +161,8 @@ public partial class CompositionTarget
 
 			// Borrow frame temporarily
 			_lastRenderedFrame = null;
+
+			_fpsHelper.OnFramePresentRequested();
 		}
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
