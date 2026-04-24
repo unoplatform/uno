@@ -111,10 +111,13 @@ public class Given_TextBlock_ICU
 		// Per UAX #14, NBSP (U+00A0) is a glue character: line breakers must not
 		// split a run there. ICU honours this; a naive space-splitter would treat
 		// NBSP like a regular space and wrap the same way.
+		// WrapWholeWords is required so Uno doesn't fall back to an emergency
+		// char-break when no ICU break opportunity is found — that fallback
+		// would mask whether NBSP was actually excluded from the break set.
 		var withSpace = new TextBlock
 		{
 			Text = "Hello World",
-			TextWrapping = TextWrapping.Wrap,
+			TextWrapping = TextWrapping.WrapWholeWords,
 			Width = 60,
 		};
 		WindowHelper.WindowContent = withSpace;
@@ -126,7 +129,7 @@ public class Given_TextBlock_ICU
 		var withNbsp = new TextBlock
 		{
 			Text = "Hello World",
-			TextWrapping = TextWrapping.Wrap,
+			TextWrapping = TextWrapping.WrapWholeWords,
 			Width = 60,
 		};
 		WindowHelper.WindowContent = withNbsp;
