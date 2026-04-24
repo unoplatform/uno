@@ -94,6 +94,11 @@ internal readonly partial struct UnicodeText
 					// lists icudata in the `otool -L` output, so we have to load it by hand
 					throw new Exception("Failed to load libicudata.");
 				}
+				// Track every candidate we attempt so the final exception can report exactly
+				// what was tried. On Android the real fallback is "libicu.so", not "libicuuc".
+				var attempts = new List<string> { "icuuc" };
+				Exception? lastError = null;
+
 				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					if (OperatingSystem.IsLinux())
@@ -101,7 +106,9 @@ internal readonly partial struct UnicodeText
 						for (int j = MaxSupportedIcuucVersion; j >= MinSupportedIcuucVersion; j--)
 						{
 							// some environments only have a versioned library and don't symlink it to libicuuc.so
-							if (NativeLibrary.TryLoad($"libicuuc.so.{j}", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+							var name = $"libicuuc.so.{j}";
+							attempts.Add(name);
+							if (NativeLibrary.TryLoad(name, typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
 							{
 								break;
 							}
@@ -112,12 +119,32 @@ internal readonly partial struct UnicodeText
 						// On Android, ICU is a system library that is not accessible through
 						// assembly-relative search paths. Use the default dlopen search path
 						// with the NDK stable libicu.so (API 31+).
-						NativeLibrary.TryLoad("libicu.so", out libicuuc);
+						const string androidFallback = "libicu.so";
+						attempts.Add(androidFallback);
+
+						// Use Load (not TryLoad) on the last attempt so the underlying
+						// dlopen error is preserved for diagnostics.
+						try
+						{
+							libicuuc = NativeLibrary.Load(androidFallback);
+						}
+						catch (Exception e)
+						{
+							lastError = e;
+							libicuuc = IntPtr.Zero;
+						}
 					}
 				}
 				if (libicuuc == IntPtr.Zero)
 				{
-					throw new Exception("Failed to load libicuuc.");
+					var platform = OperatingSystem.IsAndroid() ? "Android"
+						: OperatingSystem.IsLinux() ? "Linux"
+						: OperatingSystem.IsMacOS() ? "MacOS"
+						: "unknown";
+					throw new Exception(
+						$"Failed to load ICU on {platform}. Attempted: [{string.Join(", ", attempts)}]."
+						+ (lastError is null ? string.Empty : $" Last loader error: {lastError.Message}"),
+						lastError);
 				}
 
 				// Since libicuuc not installed by us, we have no control over the specific version number, so
