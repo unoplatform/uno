@@ -19,6 +19,7 @@
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.BindableTypeLinkerGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.AttachedPropertiesLinkerGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 
 	<!--
@@ -488,6 +489,35 @@
 		<ItemGroup>
 			<TrimmerRootDescriptor Include="$(_BindableTypeLinkerDescriptorFile)" Condition="Exists('$(_BindableTypeLinkerDescriptorFile)')" />
 			<FileWrites Include="$(_BindableTypeLinkerDescriptorFile)" Condition="Exists('$(_BindableTypeLinkerDescriptorFile)')" />
+		</ItemGroup>
+
+	</Target>
+
+	<!--
+	  Generate linker descriptor for attached property Get/Set methods to preserve them in Native AOT
+	  -->
+	<Target Name="_UnoGenerateAttachedPropertiesLinkerDescriptor"
+			Condition="'$(IsUnoHead)'=='true' and '$(PublishAot)'=='true'"
+			AfterTargets="CoreCompile"
+			BeforeTargets="PrepareForILLink">
+
+		<ItemGroup>
+			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
+			<_AttachedPropertiesLinkerReferencePaths Include="@(ReferencePath)" Condition="'%(Extension)' == '.dll'" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_AttachedPropertiesLinkerDescriptorFile>$(IntermediateOutputPath)Uno.AttachedProperties.Descriptor.xml</_AttachedPropertiesLinkerDescriptorFile>
+		</PropertyGroup>
+
+		<AttachedPropertiesLinkerGeneratorTask_v0
+			AssemblyPath="@(IntermediateAssembly)"
+			OutputDescriptorPath="$(_AttachedPropertiesLinkerDescriptorFile)"
+			ReferencePath="@(_AttachedPropertiesLinkerReferencePaths)" />
+
+		<ItemGroup>
+			<TrimmerRootDescriptor Include="$(_AttachedPropertiesLinkerDescriptorFile)" Condition="Exists('$(_AttachedPropertiesLinkerDescriptorFile)')" />
+			<FileWrites Include="$(_AttachedPropertiesLinkerDescriptorFile)" Condition="Exists('$(_AttachedPropertiesLinkerDescriptorFile)')" />
 		</ItemGroup>
 
 	</Target>
