@@ -62,10 +62,10 @@ public partial class CompositionTarget
 	/// Guards frame-scheduling state against concurrent access. Two distinct uses:
 	///  - <see cref="ScheduleFrameTick"/> uses it for the <see cref="_frameTickScheduled"/>
 	///    check-then-act that coalesces duplicate schedules.
-	///  - <see cref="FrameTick"/> and <see cref="OnFramePresented"/> use it for the
+	///  - <see cref="FrameTick"/> and <see cref="OnFrameConsumed"/> use it for the
 	///    throttle fields (<see cref="_waitingForPresent"/>, <see cref="_pendingFrameRequest"/>)
 	///    so the FrameTick "throttled? → set pending : arm throttle" sequence is atomic
-	///    against the OnFramePresented "clear throttle, read pending" sequence.
+	///    against the OnFrameConsumed "clear throttle, read pending" sequence.
 	/// <see cref="ICompositionTarget.RequestNewFrame"/> can be called from non-UI threads,
 	/// so a lock is needed — volatile alone leaves check-then-act races that drop or
 	/// duplicate schedules.
@@ -75,24 +75,27 @@ public partial class CompositionTarget
 	/// <summary>
 	/// Throttle flag: when true, <see cref="FrameTick"/> defers the render-side work
 	/// (Rendering event + Render call) and sets <see cref="_pendingFrameRequest"/> so
-	/// OnFramePresented can reschedule. Set unconditionally before Render() runs in
-	/// FrameTick. Cleared by:
-	///  - Win32 (SupportsRenderThrottle == true): the render thread calls OnFramePresented
-	///    after SwapBuffers/BitBlt completes.
-	///  - All other hosts: OnNativePlatformFrameRequested calls OnFramePresented automatically
-	///    after Draw() — that's the platform's vsync callback (Choreographer on Android,
-	///    requestAnimationFrame on WASM, etc).
-	/// This paces UI thread render production at vsync rate instead of the dispatcher
-	/// pump rate, preventing wasted SKPicture records and idle-queue starvation during
-	/// continuous animation.
+	/// <see cref="OnFrameConsumed"/> can reschedule. Set before Render() runs in
+	/// FrameTick. Cleared by <see cref="OnFrameConsumed"/>, which is called from
+	/// <see cref="Draw"/> when the render thread borrows the recorded SKPicture.
+	///
+	/// This enables pipelining on hosts with dedicated render threads (Win32): the
+	/// throttle clears as soon as the render thread picks up the frame, allowing the
+	/// UI thread to prepare the next frame while the current one is being presented
+	/// (SwapBuffers/BitBlt). The pipeline depth is naturally capped at 1 frame ahead
+	/// because recording a new frame re-arms the throttle.
+	///
+	/// On hosts without a render thread (WASM, Android GL thread), Draw runs at vsync
+	/// time so the pipeline doesn't overlap, but clearing at pickup is still correct.
+	///
 	/// Read/written under <see cref="_scheduleGate"/>.
 	/// </summary>
 	private bool _waitingForPresent;
 
 	/// <summary>
 	/// Set inside <see cref="FrameTick"/> when the throttle defers the render-side work
-	/// for this tick. OnFramePresented schedules the deferred FrameTick when it clears
-	/// the throttle.
+	/// for this tick. <see cref="OnFrameConsumed"/> schedules the deferred FrameTick
+	/// when it clears the throttle.
 	/// Read/written under <see cref="_scheduleGate"/>.
 	/// </summary>
 	private bool _pendingFrameRequest;
@@ -118,12 +121,16 @@ public partial class CompositionTarget
 	}
 
 	/// <summary>
-	/// Called by the host's render thread (posted to UI thread) after a frame is presented.
-	/// Clears the throttle and schedules the next FrameTick if one was deferred.
+	/// Called from <see cref="Draw"/> when the render/GL thread borrows the recorded
+	/// SKPicture. Clears the throttle so the UI thread can record the next frame while
+	/// this one is being presented — enabling pipelining on hosts with dedicated render
+	/// threads (Win32).
+	///
+	/// Thread-safe: called from the render thread (Win32), GL thread (Android), or
+	/// UI thread (WASM).
 	/// </summary>
-	internal void OnFramePresented()
+	private void OnFrameConsumed()
 	{
-		NativeDispatcher.CheckThreadAccess();
 		bool reschedule;
 		lock (_scheduleGate)
 		{
@@ -132,18 +139,24 @@ public partial class CompositionTarget
 			_pendingFrameRequest = false;
 		}
 
-		_fpsHelper.OnFramePresentCompleted();
-
-		// Throttled hosts (Win32) fire FrameRendered here — this is the actual "frame on screen"
-		// moment, matching WinUI's CompositionTarget.Rendered semantics. Unthrottled hosts also
-		// raise it here, after Draw(), when OnFramePresented() is called from
-		// OnNativePlatformFrameRequested.
-		FrameRendered?.Invoke();
-
 		if (reschedule)
 		{
 			ScheduleFrameTick();
 		}
+	}
+
+	/// <summary>
+	/// Called after a frame is actually presented (pixels on screen).
+	/// On Win32: posted to the UI thread by the render thread after SwapBuffers/BitBlt.
+	/// On others: called from <see cref="OnNativePlatformFrameRequested"/> after Draw.
+	/// Fires the <see cref="FrameRendered"/> event (WinUI CompositionTarget.Rendered
+	/// semantics). Throttle was already cleared by <see cref="OnFrameConsumed"/>.
+	/// </summary>
+	internal void OnFramePresented()
+	{
+		NativeDispatcher.CheckThreadAccess();
+		_fpsHelper.OnFramePresentCompleted();
+		FrameRendered?.Invoke();
 	}
 
 	/// <summary>
@@ -191,6 +204,13 @@ public partial class CompositionTarget
 	/// Single batched frame tick, posted to the dispatcher as one operation.
 	/// Sequences: Layout -> Loaded events -> Layout -> CompositionTarget.Rendering -> Layout -> Render.
 	/// Matches WPF MediaContext.RenderMessageHandlerCore / WinUI NWDrawTree OnTick pattern.
+	///
+	/// Pipelining: on hosts with a dedicated render thread (Win32), the throttle clears
+	/// when the render thread picks up the previous frame (see <see cref="OnFrameConsumed"/>),
+	/// NOT when it finishes presenting. This allows the UI thread to record Frame N+1
+	/// while the render thread presents Frame N, overlapping CPU and GPU work. The pipeline
+	/// depth is capped at 1 frame ahead: recording re-arms the throttle, so if the render
+	/// thread hasn't picked up the last frame yet, this tick defers render-side work.
 	///
 	/// Trade-off: layout always runs before render here, which is structurally cleaner
 	/// but means composition-only animations (e.g. CompositionTarget.Rendering subscribers
@@ -271,9 +291,15 @@ public partial class CompositionTarget
 			}
 
 			// 3-5. Render-side work (CompositionTarget.Rendering + post-Rendering layout
-			//      + Render). Gated by the throttle: if a previous frame hasn't been
-			//      presented yet, skip render-side work this tick. OnFramePresented will
+			//      + Render). Gated by the throttle: if the render thread hasn't picked
+			//      up the previous frame yet, skip render-side work this tick.
+			//      OnFrameConsumed (called from Draw when the frame is borrowed) will
 			//      reschedule when the throttle clears.
+			//
+			//      On hosts with a dedicated render thread (Win32), the throttle clears
+			//      as soon as the render thread starts drawing — allowing the UI thread
+			//      to prepare the next frame in parallel (pipelining). On single-threaded
+			//      hosts (WASM), Draw runs at vsync time so no overlap occurs.
 			//
 			//      Why gated *here* rather than at ScheduleFrameTick: gating at scheduling
 			//      time would defer FrameTick outside the dispatcher queue, hiding it from

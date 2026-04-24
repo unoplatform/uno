@@ -167,6 +167,18 @@ public partial class CompositionTarget
 			_fpsHelper.OnFramePresentRequested();
 		}
 
+		// Clear the throttle as soon as the frame is borrowed — the slot is now free
+		// for the UI thread to record the next frame while this one is being presented.
+		// This enables pipelining on hosts with dedicated render threads (Win32): the
+		// UI thread prepares Frame N+1 while the render thread presents Frame N.
+		// On hosts without a render thread (WASM), Draw runs at vsync time on the UI
+		// thread, so pipelining doesn't apply — but clearing here is still correct
+		// (equivalent to clearing in the vsync callback).
+		if (lastRenderedFrameNullable.HasValue)
+		{
+			OnFrameConsumed();
+		}
+
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
 			return new SKPath();
