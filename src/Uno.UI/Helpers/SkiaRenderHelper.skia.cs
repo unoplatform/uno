@@ -284,8 +284,7 @@ internal static class SkiaRenderHelper
 		/// <summary>
 		/// Called from CompositionTarget.Draw at entry. If no new frame has been recorded
 		/// since the previous Draw, the native VSync fired but the UI thread didn't produce
-		/// anything new — we'll re-blit the same picture. Count that as a dropped frame.
-		/// Otherwise, sample the delay from picture-ready to present.
+		/// anything new — count that as a dropped frame.
 		/// </summary>
 		public void OnFramePresentRequested()
 		{
@@ -307,6 +306,27 @@ internal static class SkiaRenderHelper
 			if (current == lastPresented)
 			{
 				Interlocked.Increment(ref _droppedThisSecond);
+			}
+		}
+
+		/// <summary>
+		/// Called from CompositionTarget.OnFramePresented after the frame is actually on
+		/// screen (render thread on Win32 after SwapBuffers/BitBlt; end of
+		/// OnNativePlatformFrameRequested on all other hosts). Samples the draw-to-present
+		/// delay and advances the generation counter.
+		/// </summary>
+		public void OnFramePresentCompleted()
+		{
+			if (!IsEnabled)
+			{
+				return;
+			}
+
+			var current = Interlocked.Read(ref _currentFrameGeneration);
+			var lastPresented = Interlocked.Read(ref _lastPresentedGeneration);
+
+			if (current == 0 || current == lastPresented)
+			{
 				return;
 			}
 

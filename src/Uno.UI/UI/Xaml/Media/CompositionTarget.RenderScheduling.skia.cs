@@ -132,6 +132,8 @@ public partial class CompositionTarget
 			_pendingFrameRequest = false;
 		}
 
+		_fpsHelper.OnFramePresentCompleted();
+
 		// Throttled hosts (Win32) fire FrameRendered here — this is the actual "frame on screen"
 		// moment, matching WinUI's CompositionTarget.Rendered semantics. Unthrottled hosts also
 		// raise it here, after Draw(), when OnFramePresented() is called from
