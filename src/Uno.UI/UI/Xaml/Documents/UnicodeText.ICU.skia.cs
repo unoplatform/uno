@@ -88,14 +88,22 @@ internal readonly partial struct UnicodeText
 					}
 					else if (OperatingSystem.IsAndroid())
 					{
-						// On Android, ICU is a system library that is not accessible through
-						// assembly-relative search paths. Use the default dlopen search path
-						// with the NDK stable libicu.so (API 31+).
-						const string androidFallback = "libicu.so";
+						// Android's NDK-stable ICU wrapper "libicu.so" was introduced in API 31.
+						// On API 24+ the linker namespace blocks access to the private
+						// "libicuuc.so"; on API 21-23 the private library can still be
+						// dlopen'd as a best-effort fallback. Use default dlopen search paths
+						// (not assembly-relative) — ICU is a system library on Android.
+						// Use Load (not TryLoad) so the underlying dlopen error is preserved.
+						string androidFallback;
+						if (OperatingSystem.IsAndroidVersionAtLeast(31))
+						{
+							androidFallback = "libicu.so";
+						}
+						else
+						{
+							androidFallback = "libicuuc.so";
+						}
 						attempts.Add(androidFallback);
-
-						// Use Load (not TryLoad) on the last attempt so the underlying
-						// dlopen error is preserved for diagnostics.
 						try
 						{
 							libicuuc = NativeLibrary.Load(androidFallback);
@@ -113,8 +121,11 @@ internal readonly partial struct UnicodeText
 						: OperatingSystem.IsLinux() ? "Linux"
 						: OperatingSystem.IsMacOS() ? "MacOS"
 						: "unknown";
+					var hint = OperatingSystem.IsAndroid() && !OperatingSystem.IsAndroidVersionAtLeast(31)
+						? " Android's NDK-stable ICU (libicu.so) requires API 31+; on API 24-30 the private libicuuc.so is blocked by the linker namespace."
+						: string.Empty;
 					throw new Exception(
-						$"Failed to load ICU on {platform}. Attempted: [{string.Join(", ", attempts)}]."
+						$"Failed to load ICU on {platform}. Attempted: [{string.Join(", ", attempts)}].{hint}"
 						+ (lastError is null ? string.Empty : $" Last loader error: {lastError.Message}"),
 						lastError);
 				}
