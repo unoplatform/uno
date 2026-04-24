@@ -116,30 +116,37 @@ internal readonly partial struct UnicodeText
 					}
 					else if (OperatingSystem.IsAndroid())
 					{
-						// Android's NDK-stable ICU wrapper "libicu.so" was introduced in API 31.
-						// On API 24+ the linker namespace blocks access to the private
-						// "libicuuc.so"; on API 21-23 the private library can still be
-						// dlopen'd as a best-effort fallback. Use default dlopen search paths
-						// (not assembly-relative) — ICU is a system library on Android.
-						// Use Load (not TryLoad) so the underlying dlopen error is preserved.
-						string androidFallback;
+						// Three tiers on Android:
+						//   - API 31+: the NDK-stable wrapper "libicu.so" is available.
+						//   - API 21-23: the private "libicuuc.so" can still be dlopen'd.
+						//   - API 24-30: the linker namespace blocks "libicuuc.so" and
+						//     "libicu.so" does not exist yet, so skip loading and fail
+						//     fast with a clear error below.
+						// ICU is a system library on Android, so use default dlopen search
+						// paths (not assembly-relative). Use Load (not TryLoad) so the
+						// underlying dlopen error is preserved for diagnostics.
+						string? androidFallback = null;
 						if (OperatingSystem.IsAndroidVersionAtLeast(31))
 						{
 							androidFallback = "libicu.so";
 						}
-						else
+						else if (!OperatingSystem.IsAndroidVersionAtLeast(24))
 						{
 							androidFallback = "libicuuc.so";
 						}
-						attempts.Add(androidFallback);
-						try
+
+						if (androidFallback is not null)
 						{
-							libicuuc = NativeLibrary.Load(androidFallback);
-						}
-						catch (Exception e)
-						{
-							lastError = e;
-							libicuuc = IntPtr.Zero;
+							attempts.Add(androidFallback);
+							try
+							{
+								libicuuc = NativeLibrary.Load(androidFallback);
+							}
+							catch (Exception e)
+							{
+								lastError = e;
+								libicuuc = IntPtr.Zero;
+							}
 						}
 					}
 				}
@@ -149,9 +156,21 @@ internal readonly partial struct UnicodeText
 						: OperatingSystem.IsLinux() ? "Linux"
 						: OperatingSystem.IsMacOS() ? "MacOS"
 						: "unknown";
-					var hint = OperatingSystem.IsAndroid() && !OperatingSystem.IsAndroidVersionAtLeast(31)
-						? " Android's NDK-stable ICU (libicu.so) requires API 31+; on API 24-30 the private libicuuc.so is blocked by the linker namespace."
-						: string.Empty;
+					string hint;
+					if (OperatingSystem.IsAndroid()
+						&& OperatingSystem.IsAndroidVersionAtLeast(24)
+						&& !OperatingSystem.IsAndroidVersionAtLeast(31))
+					{
+						hint = " Android API 24-30 has no loadable ICU: the NDK-stable libicu.so requires API 31+, and the private libicuuc.so is blocked by the linker namespace.";
+					}
+					else if (OperatingSystem.IsAndroid() && !OperatingSystem.IsAndroidVersionAtLeast(31))
+					{
+						hint = " Android's NDK-stable ICU (libicu.so) requires API 31+; libicuuc.so was attempted as a best-effort fallback for API 21-23.";
+					}
+					else
+					{
+						hint = string.Empty;
+					}
 					throw new Exception(
 						$"Failed to load ICU on {platform}. Attempted: [{string.Join(", ", attempts)}].{hint}"
 						+ (lastError is null ? string.Empty : $" Last loader error: {lastError.Message}"),
