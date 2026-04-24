@@ -75,31 +75,68 @@ public class Given_TextBlock_ICU
 	}
 
 	[TestMethod]
-	public async Task When_Wrapping_Text_Produces_Multiple_Lines()
+	public async Task When_Thai_Text_Wraps_Using_ICU_Dictionary_Breaker()
 	{
-		var SUT = new TextBlock
-		{
-			Text = "This is a long sentence that should wrap to multiple lines when constrained.",
-			TextWrapping = TextWrapping.Wrap,
-			Width = 100
-		};
+		// Thai has no inter-word spaces. Finding legal break opportunities requires
+		// ICU's dictionary-based line break iterator. Without ICU, the run cannot be
+		// broken internally and the text stays on a single line regardless of width.
+		const string ThaiText = "นี่คือประโยคภาษาไทยที่ยาวพอสมควรและควรตัดบรรทัดเมื่อถูกจำกัดความกว้าง";
 
-		WindowHelper.WindowContent = SUT;
-		await WindowHelper.WaitForLoaded(SUT);
-		await WindowHelper.WaitForIdle();
-
-		// With line breaking via ICU, constrained wrapping text should be taller than single-line text
-		var singleLine = new TextBlock
-		{
-			Text = SUT.Text
-		};
-
+		var singleLine = new TextBlock { Text = ThaiText };
 		WindowHelper.WindowContent = singleLine;
 		await WindowHelper.WaitForLoaded(singleLine);
 		await WindowHelper.WaitForIdle();
 
-		Assert.IsTrue(SUT.ActualHeight > singleLine.ActualHeight,
-			"Wrapped text should be taller than unwrapped text, confirming ICU line breaking works.");
+		var singleLineHeight = singleLine.ActualHeight;
+
+		var wrapped = new TextBlock
+		{
+			Text = ThaiText,
+			TextWrapping = TextWrapping.Wrap,
+			Width = 100,
+		};
+		WindowHelper.WindowContent = wrapped;
+		await WindowHelper.WaitForLoaded(wrapped);
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(
+			wrapped.ActualHeight > singleLineHeight,
+			$"Thai line breaking requires ICU's dictionary break iterator. " +
+			$"wrapped={wrapped.ActualHeight}, singleLine={singleLineHeight}");
+	}
+
+	[TestMethod]
+	public async Task When_NonBreakingSpace_Is_Not_A_Wrap_Opportunity()
+	{
+		// Per UAX #14, NBSP (U+00A0) is a glue character: line breakers must not
+		// split a run there. ICU honours this; a naive space-splitter would treat
+		// NBSP like a regular space and wrap the same way.
+		var withSpace = new TextBlock
+		{
+			Text = "Hello World",
+			TextWrapping = TextWrapping.Wrap,
+			Width = 60,
+		};
+		WindowHelper.WindowContent = withSpace;
+		await WindowHelper.WaitForLoaded(withSpace);
+		await WindowHelper.WaitForIdle();
+
+		var spaceHeight = withSpace.ActualHeight;
+
+		var withNbsp = new TextBlock
+		{
+			Text = "Hello World",
+			TextWrapping = TextWrapping.Wrap,
+			Width = 60,
+		};
+		WindowHelper.WindowContent = withNbsp;
+		await WindowHelper.WaitForLoaded(withNbsp);
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(
+			withNbsp.ActualHeight < spaceHeight,
+			$"NBSP must not be a wrap opportunity under ICU. " +
+			$"nbsp={withNbsp.ActualHeight}, space={spaceHeight}");
 	}
 
 	[TestMethod]
