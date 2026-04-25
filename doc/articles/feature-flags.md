@@ -106,6 +106,20 @@ When `ContentDialog` version is used, it uses the default `ContentDialog` style.
 WinRTFeatureConfiguration.MessageDialog.StyleOverride = "CustomMessageDialogStyle";
 ```
 
+## TextBox
+
+### Disable the iPadOS 26 floating number pad popover (iOS)
+
+iPadOS 26 introduced a floating number pad popover that detaches from `UITextField` when a numeric keyboard is requested. This change has received widespread criticism in the Apple ecosystem for being inconsistent and disruptive. The popover can obscure nearby UI elements, interfere with app-defined overlays near numeric inputs, and behaves inconsistently across iPad models, Stage Manager, and split-view modes. There is no system-wide setting to disable this feature; each app must opt out individually.
+
+To restore the docked numeric keyboard behavior on iPad, consistent with pre-iPadOS 26 and other Uno targets, set the following flag early during your app's startup:
+
+```csharp
+Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover = true;
+```
+
+This flag is iOS Skia-only and has no effect on other platforms or on iOS versions prior to 26. Defaults to `false` (native iPadOS 26 behavior is preserved).
+
 ## ToolTips
 
 By default, `ToolTips` are disabled on all platforms except for WebAssembly and Skia (see [#10791](https://github.com/unoplatform/uno/issues/10791)). To enable them on a specific platform, set the `UseToolTips` configuration flag to `true`. You can add the following in the end of the `App` constructor:
