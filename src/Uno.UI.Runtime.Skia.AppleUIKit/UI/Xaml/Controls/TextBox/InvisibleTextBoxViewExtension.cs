@@ -147,6 +147,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(textBox.InputScope);
 		_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(textBox.InputScope);
 
+		// Apply the iOS 26 number-pad-popover opt-out after KeyboardType is set so the iPad +
+		// numeric-keyboard gate is evaluated against the final value. Single-line only; the
+		// popover is a UITextField behavior and does not apply to UITextView (multiline).
+		if (_textBoxView is SinglelineInvisibleTextBoxView singleline)
+		{
+			singleline.TryDisableNumberPadPopover();
+		}
+
 		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
 		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
 

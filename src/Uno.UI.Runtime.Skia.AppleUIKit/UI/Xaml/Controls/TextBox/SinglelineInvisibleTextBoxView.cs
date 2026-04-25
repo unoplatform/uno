@@ -41,8 +41,6 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		{
 			IsKeyboardHiddenOnEnter = true
 		};
-
-		TryDisableNumberPadPopover();
 	}
 
 	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSend")]
@@ -56,7 +54,10 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	// we invoke the selector directly via objc_msgSend. Setting via KVC (setValue:forKey:) is
 	// unreliable for Swift-bridged BOOL properties and was observed to leave the field in a state
 	// where no keyboard would appear at all on iOS 26.
-	private void TryDisableNumberPadPopover()
+	// Called from InvisibleTextBoxViewExtension.UpdateProperties after KeyboardType is set so the
+	// IsFloatingNumericKeypad gate (iPad idiom + numeric keyboard) is evaluated against the final
+	// value rather than the constructor default.
+	internal void TryDisableNumberPadPopover()
 	{
 		if (!global::Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover)
 		{
@@ -64,6 +65,11 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		}
 
 		if (!OperatingSystem.IsIOSVersionAtLeast(26))
+		{
+			return;
+		}
+
+		if (!InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType))
 		{
 			return;
 		}
