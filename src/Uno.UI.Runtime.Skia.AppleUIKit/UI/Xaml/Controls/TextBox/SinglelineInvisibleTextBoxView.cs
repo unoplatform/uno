@@ -48,6 +48,8 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSend")]
 	private static extern void void_objc_msgSend_bool(IntPtr receiver, IntPtr selector, [MarshalAs(UnmanagedType.I1)] bool arg);
 
+	private static readonly Selector s_setAllowsNumberPadPopoverSelector = new("setAllowsNumberPadPopover:");
+
 	// iOS 26 introduced a floating number pad popover for UITextField on iPad when a numeric
 	// keyboard is active. The opt-out (-[UITextField setAllowsNumberPadPopover:]) is not yet in
 	// the dotnet/macios bindings (no PR/issue tracking it as of Xcode 26.2 Bindings Status), so
@@ -66,13 +68,12 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			return;
 		}
 
-		var selector = new Selector("setAllowsNumberPadPopover:");
-		if (!RespondsToSelector(selector))
+		if (!RespondsToSelector(s_setAllowsNumberPadPopoverSelector))
 		{
 			return;
 		}
 
-		void_objc_msgSend_bool(Handle, selector.Handle, false);
+		void_objc_msgSend_bool(Handle, s_setAllowsNumberPadPopoverSelector.Handle, false);
 	}
 
 	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
