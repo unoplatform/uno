@@ -110,15 +110,13 @@ WinRTFeatureConfiguration.MessageDialog.StyleOverride = "CustomMessageDialogStyl
 
 ### Disable the iPadOS 26 floating number pad popover (iOS)
 
-iPadOS 26 introduced a floating number pad popover that detaches from `UITextField` when a numeric keyboard is requested. This change has received widespread criticism in the Apple ecosystem for being inconsistent and disruptive. The popover can obscure nearby UI elements, interfere with app-defined overlays near numeric inputs, and behaves inconsistently across iPad models, Stage Manager, and split-view modes. There is no system-wide setting to disable this feature; each app must opt out individually.
-
-To restore the docked numeric keyboard behavior on iPad, consistent with pre-iPadOS 26 and other Uno targets, set the following flag early during your app's startup:
+On iPadOS 26, `UITextField` displays the numeric keyboard as a floating popover instead of a docked keyboard. Setting `Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover` to `true` opts out of this behavior and restores the docked keyboard:
 
 ```csharp
 Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover = true;
 ```
 
-This flag is iOS Skia-only and has no effect on other platforms or on iOS versions prior to 26. Defaults to `false` (native iPadOS 26 behavior is preserved).
+The flag only takes effect on iOS Skia, on iOS 26 or later, and only affects `TextBox` instances configured for a numeric keyboard on iPad. It has no effect on other platforms, on iOS versions prior to 26, or on non-numeric keyboards. Defaults to `false`.
 
 ## ToolTips
 
