@@ -347,12 +347,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	private bool ShouldAnchorToTextBox()
 		=> _textBoxView is { } view && IsFloatingNumericKeypad(view.KeyboardType);
 
-	// Single source of truth for "should we anchor/expand the caret rect so
-	// iPad's floating numeric keypad positions adjacent to the full control?"
-	// Also consumed by SinglelineInvisibleTextBoxView.GetFirstRectForRange /
-	// GetCaretRectForPosition. Keep the two call sites in sync by routing
-	// through this helper.
-	internal static bool IsFloatingNumericKeypad(UIKeyboardType keyboardType)
+	// Returns true when the textfield is on iPad with a numeric keyboard type —
+	// the configuration where iOS displays (or would display) the floating
+	// number-pad popover. Used by TryDisableNumberPadPopover to decide whether
+	// the setAllowsNumberPadPopover: opt-out is relevant for this field.
+	internal static bool IsIPadNumericKeyboard(UIKeyboardType keyboardType)
 	{
 		if (UIDevice.CurrentDevice.UserInterfaceIdiom != UIUserInterfaceIdiom.Pad)
 		{
@@ -364,6 +363,24 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			UIKeyboardType.DecimalPad or
 			UIKeyboardType.NumbersAndPunctuation or
 			UIKeyboardType.PhonePad;
+	}
+
+	// Single source of truth for "should we anchor/expand the caret rect so
+	// iPad's floating numeric keypad positions adjacent to the full control?"
+	// Also consumed by SinglelineInvisibleTextBoxView.GetFirstRectForRange /
+	// GetCaretRectForPosition. Keep the two call sites in sync by routing
+	// through this helper.
+	// When FeatureConfiguration.TextBox.DisableNumberPadPopover is true the
+	// popover is opted out via setAllowsNumberPadPopover:, so no anchoring or
+	// frame adjustments are needed and we return false.
+	internal static bool IsFloatingNumericKeypad(UIKeyboardType keyboardType)
+	{
+		if (global::Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover)
+		{
+			return false;
+		}
+
+		return IsIPadNumericKeyboard(keyboardType);
 	}
 
 	private static bool CouldBecomeFirstResponder(FrameworkElement? element)

@@ -69,7 +69,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			return;
 		}
 
-		if (!InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType))
+		if (!InvisibleTextBoxViewExtension.IsIPadNumericKeyboard(KeyboardType))
 		{
 			return;
 		}
