@@ -150,26 +150,33 @@ public class Given_ItemsRepeater_FastScroll
 #endif
 	public async Task When_RealizedItemGrows_Then_LayoutRemainsConsistent()
 	{
+		const double OriginalHeight = 60;
 		var items = Enumerable.Range(0, 10)
-			.Select(i => new ItemModel(i, 60, ColorForIndex(i)))
+			.Select(i => new ItemModel(i, OriginalHeight, ColorForIndex(i)))
 			.ToArray();
-		// Viewport 600 shows all 10 items (10 * 60 = 600), so every item is realized.
-		// This isolates the layout-consistency invariant from ItemsRepeater's virtualization cache.
-		var sut = CreateSut(items, new Size(300, 600));
+		// Viewport 800 comfortably contains all 10 items (10 * 60 = 600) with 200px of headroom.
+		// The exact-fit case (viewport == content) is implementation-defined: the realization rule
+		// (elementMajorStart < rectMajorEnd) is identical on Uno and native WinUI, but the boundary
+		// outcome depends on cache-buffer growth timing — native WinUI realizes 9/10 at the exact
+		// boundary while Uno realizes all 10. A margin sidesteps that ambiguity so the test exercises
+		// the layout-consistency invariant regardless of platform virtualization timing.
+		var sut = CreateSut(items, new Size(300, 800));
 		await LoadAsync(sut);
 
-		EnumerateRepeaterChildren(sut.Repeater).Count().Should().BeGreaterThanOrEqualTo(10,
-			"All 10 items should be realized when the viewport is tall enough to show them all");
+		// Items 5 and 6 must be realized so we can assert the post-growth shift on them.
+		FindMaterializedElementForIndex(sut, 5).Should().NotBeNull(
+			"Item 5 must be realized — it is the item being grown");
+		FindMaterializedElementForIndex(sut, 6).Should().NotBeNull(
+			"Item 6 must be realized — its post-growth offset is the test invariant");
 
 		const double GrownHeight = 1500;
-		const double OriginalHeight = 60;
 		sut.Source[5].Height = GrownHeight;
 		sut.Repeater.UpdateLayout();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		var grownItem5 = EnumerateRepeaterChildren(sut.Repeater)
-			.First(c => c.DataContext is ItemModel m && m.Id == 5);
-		grownItem5.ActualHeight.Should().BeApproximately(GrownHeight, 0.5,
+		var grownItem5 = FindMaterializedElementForIndex(sut, 5);
+		grownItem5.Should().NotBeNull("Item 5 must remain materialized after growing");
+		grownItem5!.ActualHeight.Should().BeApproximately(GrownHeight, 0.5,
 			"Item 5 must reflect its new height after the layout pass");
 
 		var expectedGrowth = GrownHeight - OriginalHeight;
@@ -177,9 +184,9 @@ public class Given_ItemsRepeater_FastScroll
 		AssertNoOverlap(sut);
 
 		// Items after index 5 must have shifted down by the growth delta.
-		var item6 = EnumerateRepeaterChildren(sut.Repeater)
-			.First(c => c.DataContext is ItemModel m && m.Id == 6);
-		((double)item6.ActualOffset.Y).Should().BeApproximately(6 * OriginalHeight + expectedGrowth, 1,
+		var item6 = FindMaterializedElementForIndex(sut, 6);
+		item6.Should().NotBeNull("Item 6 must remain materialized after item 5 grows");
+		((double)item6!.ActualOffset.Y).Should().BeApproximately(6 * OriginalHeight + expectedGrowth, 1,
 			"Item 6 must shift down by the growth delta after item 5 grows");
 	}
 
