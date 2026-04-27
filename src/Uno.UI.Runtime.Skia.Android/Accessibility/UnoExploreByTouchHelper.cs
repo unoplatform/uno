@@ -220,12 +220,17 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				node.ContentDescription = peer.GetName() ?? "";
 				node.Password = peer.IsPassword();
 				node.Enabled = peer.IsEnabled();
-				// 0 = CHECKED_STATE_FALSE, 1 = CHECKED_STATE_TRUE, 2 = CHECKED_STATE_PARTIAL (AndroidX Core 1.17+)
+				// Mirrors AccessibilityNodeInfoCompat.CHECKED_STATE_* (AndroidX.Core 1.17+).
+				// The Xamarin binding exposes setChecked(int) as the int-typed Checked property.
+				const int CheckedStateFalse = 0;
+				const int CheckedStateTrue = 1;
+				const int CheckedStatePartial = 2;
+
 				node.Checked = peer switch
 				{
-					IToggleProvider { ToggleState: ToggleState.On } => 1,
-					IToggleProvider { ToggleState: ToggleState.Indeterminate } => 2,
-					_ => 0,
+					IToggleProvider { ToggleState: ToggleState.On } => CheckedStateTrue,
+					IToggleProvider { ToggleState: ToggleState.Indeterminate } => CheckedStatePartial,
+					_ => CheckedStateFalse,
 				};
 				node.Checkable = peer is IToggleProvider;
 				node.Clickable = isClickable;
