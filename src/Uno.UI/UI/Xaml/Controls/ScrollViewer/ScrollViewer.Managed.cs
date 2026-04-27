@@ -187,6 +187,59 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 		#endregion
+
+		#region End-anchor tracking on extent growth
+
+		// Tracks scrollable-extent growth that lands AFTER a programmatic ChangeView has already
+		// committed its offset against an under-estimated extent. The native WinUI ScrollPresenter
+		// keeps the viewport at the trailing edge under these conditions; the managed presenter
+		// stops at the stale offset, leaving content unreachable until a second scroll.
+		private bool _isFollowingExtentGrowth;
+
+		partial void FollowExtentGrowthIfAtEnd(Orientation orientation, double oldOffset, double oldScrollable)
+		{
+			if (_presenter is null || _isFollowingExtentGrowth)
+			{
+				return;
+			}
+
+			const double Tolerance = 0.5;
+
+			var (newScrollable, newOffset) = orientation switch
+			{
+				Orientation.Vertical => (ScrollableHeight, VerticalOffset),
+				_ => (ScrollableWidth, HorizontalOffset),
+			};
+
+			// Only follow when the previous state was "scrolled to the end of a non-trivially scrollable
+			// region". oldScrollable > Tolerance excludes the initial empty state where extent==viewport
+			// (otherwise, async content insertion would auto-scroll to the bottom on first measure).
+			if (oldScrollable <= Tolerance ||
+				oldOffset < oldScrollable - Tolerance ||
+				newScrollable <= oldScrollable + Tolerance ||
+				newScrollable <= newOffset + Tolerance)
+			{
+				return;
+			}
+
+			try
+			{
+				_isFollowingExtentGrowth = true;
+				if (orientation == Orientation.Vertical)
+				{
+					ChangeView(null, newScrollable, null, disableAnimation: true);
+				}
+				else
+				{
+					ChangeView(newScrollable, null, null, disableAnimation: true);
+				}
+			}
+			finally
+			{
+				_isFollowingExtentGrowth = false;
+			}
+		}
+		#endregion
 	}
 }
 #endif
