@@ -16,6 +16,7 @@ using Uno.Storage.Internal;
 
 using System.Runtime.InteropServices.JavaScript;
 using _HtmlPointerButtonsState = Uno.UI.Runtime.Skia.BrowserPointerInputSource.HtmlPointerButtonsState;
+using Uno.UI.Dispatching;
 using System.Text.Json.Serialization;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
@@ -68,6 +69,10 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
+				// Ensure that the async context is set properly, since we're raising
+				// events from outside the dispatcher.
+				using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
+
 				if (_log.IsEnabled(LogLevel.Trace))
 				{
 					_log.Trace($"Received native drop event: id={id}"
