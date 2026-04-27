@@ -19,7 +19,7 @@ This reference provides a comprehensive mapping of WPF namespaces, controls, XAM
 | `System.Windows.Media` | `Microsoft.UI.Xaml.Media` | Brushes, transforms |
 | `System.Windows.Media.Animation` | `Microsoft.UI.Xaml.Media.Animation` | Storyboard, animations |
 | `System.Windows.Media.Imaging` | `Microsoft.UI.Xaml.Media.Imaging` | BitmapImage, WriteableBitmap |
-| `System.Windows.Media.Media3D` | `Microsoft.UI.Xaml.Media.Media3D` (partial equivalent) | Supports 3D transforms/projection (for example `CompositeTransform3D`, `Matrix3D`, `PerspectiveTransform3D`), but not WPF-style `Viewport3D` / 3D scenegraph APIs |
+| `System.Windows.Media.Media3D` | `Microsoft.UI.Xaml.Media.Media3D` (partial equivalent) | Supports 3D transforms/projection (for example `CompositeTransform3D`, `Matrix3D`, `PerspectiveTransform3D`), but not WPF-style `Viewport3D` / 3D scene graph APIs |
 | `System.Windows.Shapes` | `Microsoft.UI.Xaml.Shapes` | Rectangle, Ellipse, Path |
 | `System.Windows.Data` | `Microsoft.UI.Xaml.Data` | Binding, IValueConverter |
 | `System.Windows.Input` | `Microsoft.UI.Xaml.Input` | Pointer, keyboard, focus |
