@@ -838,7 +838,7 @@ namespace Microsoft.UI.Xaml.Controls
 			FollowExtentGrowthIfAtEnd(Orientation.Vertical, oldVerticalOffset, oldScrollableHeight);
 			FollowExtentGrowthIfAtEnd(Orientation.Horizontal, oldHorizontalOffset, oldScrollableWidth);
 
-			var newSize = new Size(ExtentWidth, ExtentWidth);
+			var newSize = new Size(ExtentWidth, ExtentHeight);
 			if (oldSize != newSize)
 			{
 				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
