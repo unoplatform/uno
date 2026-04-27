@@ -656,6 +656,8 @@ namespace Microsoft.UI.Xaml.Controls
 					m_itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged;
 				});
 			}
+
+			m_transitionManager.ReattachToProvider();
 #endif
 		}
 
@@ -677,6 +679,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// because ItemsRepeater uses a "singleton" instance of default StackLayout.
 			_layoutSubscriptionsRevoker.Disposable = null;
 			_dataSourceSubscriptionsRevoker.Disposable = null;
+			m_transitionManager.DetachFromProvider();
 			if (m_itemsSourceView is not null)
 			{
 				// We will no longer receive the element changes until next load.
