@@ -55,7 +55,6 @@
         <ScrollViewer
             x:Name="TargetScrollViewer"
             Grid.Row="2"
-            BorderBrush="{ThemeResource SystemBaseMediumBrush}"
             BorderThickness="1"
             HorizontalScrollBarVisibility="Disabled"
             HorizontalScrollMode="Disabled"
