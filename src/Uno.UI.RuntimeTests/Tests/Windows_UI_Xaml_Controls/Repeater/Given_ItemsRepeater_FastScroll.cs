@@ -244,6 +244,43 @@ public class Given_ItemsRepeater_FastScroll
 			+ "the pre-fix clamp caused an under-estimated extent that left late items unreachable.");
 	}
 
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_ScrolledFromTopToScrollableHeight_Then_LastItemReaches_BottomOfViewport()
+	{
+		// Regression for the chat-style "scroll to bottom" gesture: from the top, a single
+		// ChangeView(null, ScrollableHeight, null) must leave the last source item visible at the
+		// bottom of the viewport on the FIRST click. The pre-fix symptom on Uno was that
+		// ScrollableHeight under-counts the cumulative content size for the unrealized tail, so the
+		// first jump only reaches an item several positions short of the end (observed: stops at
+		// item 193 of 200). A second click then reaches the true bottom because the first scroll
+		// already realized more items and corrected the extent — but the user shouldn't have to
+		// click twice.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		sut.Scroller.ChangeView(null, 0, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var lastIndex = sut.Source.Count - 1;
+		var lastItem = FindMaterializedElementForIndex(sut, lastIndex);
+		lastItem.Should().NotBeNull(
+			$"Source[{lastIndex}] must be materialized after scrolling to ScrollableHeight from the top "
+			+ "— if it isn't, the extent under-counts the tail and the 'scroll to bottom' gesture cannot reach the end.");
+
+		var lastTop = lastItem!.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, 0)).Y;
+		var lastBottom = lastTop + lastItem.ActualHeight;
+
+		lastBottom.Should().BeApproximately(sut.Scroller.ViewportHeight, 1,
+			$"Source[{lastIndex}] bottom must be flush with the viewport bottom after a single ChangeView(ScrollableHeight) "
+			+ "from the top — otherwise the user cannot reach the end of the list without manually dragging the thumb.");
+	}
+
 	// ----- helpers -----
 
 	private static SutHandle CreateHighVarianceSut(int itemCount, Size viewport)
