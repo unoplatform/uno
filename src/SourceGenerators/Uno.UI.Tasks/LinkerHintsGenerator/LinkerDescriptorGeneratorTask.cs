@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 
 using Microsoft.Build.Framework;
@@ -15,23 +14,19 @@ using Mono.Cecil;
 namespace Uno.UI.Tasks.LinkerHintsGenerator
 {
 	/// <summary>
-	/// Task used to generate linker descriptor files for types referenced by [Bindable] types,
-	/// to preserve their public properties for Native AOT scenarios.
+	/// Unified task that generates ILLink descriptor files for Native AOT scenarios.
+	/// Loads the assembly closure once and runs all registered descriptor generators against it.
 	/// </summary>
-	public class BindableTypeLinkerGeneratorTask_v0 : Microsoft.Build.Utilities.Task
+	public class LinkerDescriptorGeneratorTask_v0 : Microsoft.Build.Utilities.Task
 	{
-		internal const MessageImportance DefaultLogMessageLevel
-#if DEBUG
-			= MessageImportance.High;
-#else
-			= MessageImportance.Low;
-#endif
-
 		[Required]
 		public string AssemblyPath { get; set; } = "";
 
 		[Required]
-		public string OutputDescriptorPath { get; set; } = "";
+		public string BindableDescriptorOutputPath { get; set; } = "";
+
+		[Required]
+		public string AttachedPropertiesDescriptorOutputPath { get; set; } = "";
 
 		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? ReferencePath { get; set; }
@@ -40,32 +35,26 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			try
 			{
-				Log.LogMessage(DefaultLogMessageLevel, $"Processing assembly: {AssemblyPath}");
+				Log.LogMessage(LinkerDescriptorGenerator.DefaultLogMessageLevel, $"Processing assembly: {AssemblyPath}");
 
 				using var resolver = BuildAssemblyResolver();
-
 				var assemblyList = BuildAssemblyList(resolver);
-				var bindableTypes = FindBindableTypes(assemblyList);
-				var typeCache = new TypeDefinitionCache();
-				var typesToProperties = FindReferencedPropertyTypes(bindableTypes, typeCache);
 
-				var typesWithProperties = typesToProperties.GetTypeProperties().Count(kvp => kvp.Value.Count > 0);
-				if (typesWithProperties > 0)
-				{
-					GenerateLinkerDescriptor(typesToProperties);
-					Log.LogMessage(DefaultLogMessageLevel, $"Generated descriptor with {typesWithProperties} types.");
-				}
-				else
-				{
-					Log.LogMessage(DefaultLogMessageLevel, $"No types to preserve found.");
-				}
+				var bindableGenerator = new BindableTypeDescriptorGenerator(Log);
+				var attachedGenerator = new AttachedPropertiesDescriptorGenerator(Log);
+
+				bindableGenerator.Analyze(assemblyList);
+				attachedGenerator.Analyze(assemblyList);
+
+				bindableGenerator.WriteDescriptorIfResults(BindableDescriptorOutputPath);
+				attachedGenerator.WriteDescriptorIfResults(AttachedPropertiesDescriptorOutputPath);
 
 				return true;
 			}
 			catch (Exception ex)
 			{
-				Log.LogError($"BindableTypeLinkerGenerator failed: {ex.Message}");
-				Log.LogMessage(DefaultLogMessageLevel, ex.ToString());
+				Log.LogError($"LinkerDescriptorGenerator failed: {ex.Message}");
+				Log.LogMessage(LinkerDescriptorGenerator.DefaultLogMessageLevel, ex.ToString());
 				return false;
 			}
 		}
@@ -137,7 +126,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				AssemblyResolver = resolver,
 			};
 			var rootAssembly = resolver.Resolve(AssemblyNameReference.Parse(Path.GetFileNameWithoutExtension(AssemblyPath)), readerParameters);
-			Log.LogMessage(DefaultLogMessageLevel, $"Resolved Root Assembly reference `{rootAssembly.FullName}`.");
+			Log.LogMessage(LinkerDescriptorGenerator.DefaultLogMessageLevel, $"Resolved Root Assembly reference `{rootAssembly.FullName}`.");
 
 			var assemblies = new HashSet<AssemblyDefinition>()
 			{
@@ -155,14 +144,14 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					var referencedAssembly = TryResolveAssembly(resolver, reference);
 					if (referencedAssembly != null && !assemblies.Contains(referencedAssembly))
 					{
-						Log.LogMessage(DefaultLogMessageLevel, $"Resolved Assembly reference `{referencedAssembly.FullName}` via `{assembly.MainModule.FileName}`.");
+						Log.LogMessage(LinkerDescriptorGenerator.DefaultLogMessageLevel, $"Resolved Assembly reference `{referencedAssembly.FullName}` via `{assembly.MainModule.FileName}`.");
 						assembliesToProcess.Enqueue(referencedAssembly);
 						assemblies.Add(referencedAssembly);
 					}
 				}
 			}
 
-			Log.LogMessage(DefaultLogMessageLevel, $"Loaded {assemblies.Count} assemblies.");
+			Log.LogMessage(LinkerDescriptorGenerator.DefaultLogMessageLevel, $"Loaded {assemblies.Count} assemblies.");
 			return assemblies;
 		}
 
@@ -184,6 +173,107 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				return null;
 			}
 		}
+	}
+
+	/// <summary>
+	/// Base class for ILLink descriptor generators.
+	/// Subclasses analyse a set of assemblies and emit XML preserving specific members.
+	/// </summary>
+	internal abstract class LinkerDescriptorGenerator
+	{
+		internal const MessageImportance DefaultLogMessageLevel
+#if DEBUG
+			= MessageImportance.High;
+#else
+			= MessageImportance.Low;
+#endif
+
+		protected TaskLoggingHelper Log { get; }
+
+		protected LinkerDescriptorGenerator(TaskLoggingHelper log)
+		{
+			Log = log;
+		}
+
+		/// <summary>Scan <paramref name="assemblies"/> and collect results.</summary>
+		public abstract void Analyze(IEnumerable<AssemblyDefinition> assemblies);
+
+		/// <summary>Returns <see langword="true"/> when <see cref="Analyze"/> found at least one member to preserve.</summary>
+		public abstract bool HasResults { get; }
+
+		/// <summary>Write the ILLink descriptor XML to <paramref name="outputPath"/>.</summary>
+		public abstract void WriteDescriptor(string outputPath);
+
+		/// <summary>
+		/// Calls <see cref="WriteDescriptor"/> when there are results to preserve;
+		/// otherwise logs a diagnostic message and does nothing.
+		/// </summary>
+		public void WriteDescriptorIfResults(string outputPath)
+		{
+			if (HasResults)
+			{
+				WriteDescriptor(outputPath);
+			}
+			else
+			{
+				Log.LogMessage(DefaultLogMessageLevel, $"No results to preserve; skipping {outputPath}.");
+			}
+		}
+
+		protected static IEnumerable<TypeDefinition> GetAllTypes(TypeDefinition type)
+		{
+			yield return type;
+			foreach (var nested in type.NestedTypes)
+			{
+				foreach (var t in GetAllTypes(nested))
+				{
+					yield return t;
+				}
+			}
+		}
+
+		protected static void EnsureDirectory(string outputPath)
+		{
+			var outputDir = Path.GetDirectoryName(outputPath);
+			if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+			{
+				Directory.CreateDirectory(outputDir);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Preserves public properties on types that are referenced by [Bindable]-annotated types.
+	/// </summary>
+	internal sealed class BindableTypeDescriptorGenerator : LinkerDescriptorGenerator
+	{
+		private PreservePropertyInfoMap? _typesToProperties;
+
+		public BindableTypeDescriptorGenerator(TaskLoggingHelper log) : base(log) { }
+
+		public override bool HasResults =>
+			_typesToProperties?.GetTypeProperties().Any(kvp => kvp.Value.Count > 0) ?? false;
+
+		public override void Analyze(IEnumerable<AssemblyDefinition> assemblies)
+		{
+			var bindableTypes = FindBindableTypes(assemblies);
+			var typeCache = new TypeDefinitionCache();
+			_typesToProperties = FindReferencedPropertyTypes(bindableTypes, typeCache);
+
+			var typesWithProperties = _typesToProperties.GetTypeProperties().Count(kvp => kvp.Value.Count > 0);
+			Log.LogMessage(DefaultLogMessageLevel, $"Found {typesWithProperties} implicitly referenced types with properties to preserve.");
+		}
+
+		public override void WriteDescriptor(string outputPath)
+		{
+			if (_typesToProperties == null)
+			{
+				return;
+			}
+
+			EnsureDirectory(outputPath);
+			GenerateLinkerDescriptor(_typesToProperties, outputPath);
+		}
 
 		private List<TypeDefinition> FindBindableTypes(IEnumerable<AssemblyDefinition> assemblies)
 		{
@@ -191,7 +281,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			foreach (var assembly in assemblies)
 			{
-				foreach (var type in assembly.MainModule.Types.SelectMany(t => GetAllTypes(t)))
+				foreach (var type in assembly.MainModule.Types.SelectMany(GetAllTypes))
 				{
 					if (HasBindableAttribute(type))
 					{
@@ -205,19 +295,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return bindableTypes;
 		}
 
-		private IEnumerable<TypeDefinition> GetAllTypes(TypeDefinition type)
-		{
-			yield return type;
-			foreach (var nested in type.NestedTypes)
-			{
-				foreach (var t in GetAllTypes(nested))
-				{
-					yield return t;
-				}
-			}
-		}
-
-		private bool HasBindableAttribute(TypeDefinition type)
+		private static bool HasBindableAttribute(TypeDefinition type)
 		{
 			return type.CustomAttributes.Any(attr =>
 				attr.AttributeType.FullName == "BindableAttribute" ||
@@ -247,7 +325,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return typesToProperties;
 		}
 
-		static readonly HashSet<PreservePropertyInfo> EmptyPreservedPropertyInfo = [];
+		private static readonly HashSet<PreservePropertyInfo> EmptyPreservedPropertyInfo = [];
 
 		private PreserveTypeDefinition? AddDeclaredPropertyTypes(TypeDefinitionCache typeCache, TypeReference typeReference, PreservePropertyInfoMap typesToProperties)
 		{
@@ -308,7 +386,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return key;
 		}
 
-		static bool ShouldProcessPropertyType(PropertyDefinition property)
+		private static bool ShouldProcessPropertyType(PropertyDefinition property)
 		{
 			var get = property.GetMethod;
 			if (get == null)
@@ -332,7 +410,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			}
 		}
 
-		private void GenerateLinkerDescriptor(PreservePropertyInfoMap referencedTypes)
+		private void GenerateLinkerDescriptor(PreservePropertyInfoMap referencedTypes, string outputPath)
 		{
 			// Group types by assembly
 			var typesByAssembly = referencedTypes
@@ -344,19 +422,12 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				typesByAssembly.Select(assemblyGroup =>
 					CreateAssemblyElement(assemblyGroup.Key, assemblyGroup)));
 
-			// Ensure output directory exists
-			var outputDir = Path.GetDirectoryName(OutputDescriptorPath);
-			if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
-			{
-				Directory.CreateDirectory(outputDir);
-			}
-
 			var doc = new XDocument(
 				new XDeclaration("1.0", "UTF-8", null),
 				linkerElement);
 
-			doc.Save(OutputDescriptorPath);
-			Log.LogMessage(MessageImportance.High, $"Saved descriptor to {OutputDescriptorPath}");
+			doc.Save(outputPath);
+			Log.LogMessage(MessageImportance.High, $"Saved bindable descriptor to {outputPath}");
 
 			static XElement? CreateAssemblyElement(string assemblyName, IEnumerable<KeyValuePair<PreserveTypeDefinition, HashSet<PreservePropertyInfo>>> types)
 			{
@@ -402,6 +473,178 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				{
 					yield return item;
 				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Preserves <c>Get&lt;Name&gt;</c> and <c>Set&lt;Name&gt;</c> static methods for attached
+	/// <see cref="Microsoft.UI.Xaml.DependencyProperty"/> members so that they survive trimming
+	/// and Native AOT without requiring manual <c>[DynamicDependency]</c> annotations.
+	/// </summary>
+	internal sealed class AttachedPropertiesDescriptorGenerator : LinkerDescriptorGenerator
+	{
+		private const string DependencyPropertyFullName = "Microsoft.UI.Xaml.DependencyProperty";
+		private const string PropertySuffix = "Property";
+
+		private Dictionary<TypeDefinition, List<string>>? _typeMethods;
+
+		public AttachedPropertiesDescriptorGenerator(TaskLoggingHelper log) : base(log) { }
+
+		public override bool HasResults => (_typeMethods?.Count ?? 0) > 0;
+
+		public override void Analyze(IEnumerable<AssemblyDefinition> assemblies)
+		{
+			_typeMethods = FindAttachedPropertyMethods(assemblies);
+			Log.LogMessage(DefaultLogMessageLevel, $"Found {_typeMethods.Values.Sum(v => v.Count)} attached property methods to preserve in {_typeMethods.Count} types.");
+		}
+
+		public override void WriteDescriptor(string outputPath)
+		{
+			if (_typeMethods == null)
+			{
+				return;
+			}
+
+			EnsureDirectory(outputPath);
+			GenerateLinkerDescriptor(_typeMethods, outputPath);
+		}
+
+		private Dictionary<TypeDefinition, List<string>> FindAttachedPropertyMethods(IEnumerable<AssemblyDefinition> assemblies)
+		{
+			var result = new Dictionary<TypeDefinition, List<string>>();
+
+			foreach (var assembly in assemblies)
+			{
+				foreach (var type in assembly.MainModule.Types.SelectMany(GetAllTypes))
+				{
+					var methods = FindGetSetMethodsForType(type);
+					if (methods.Count > 0)
+					{
+						result[type] = methods;
+					}
+				}
+			}
+
+			return result;
+		}
+
+		private List<string> FindGetSetMethodsForType(TypeDefinition type)
+		{
+			var methods = new List<string>();
+
+			// Collect all DependencyProperty member names (from static fields and static properties)
+			var dpNames = new HashSet<string>(StringComparer.Ordinal);
+
+			foreach (var field in type.Fields)
+			{
+				if (field.IsStatic &&
+					field.FieldType.FullName == DependencyPropertyFullName &&
+					field.Name.EndsWith(PropertySuffix, StringComparison.Ordinal))
+				{
+					var dpName = field.Name.Substring(0, field.Name.Length - PropertySuffix.Length);
+					if (dpName.Length > 0)
+					{
+						dpNames.Add(dpName);
+					}
+				}
+			}
+
+			foreach (var property in type.Properties)
+			{
+				var getter = property.GetMethod;
+				if (getter != null &&
+					getter.IsStatic &&
+					property.PropertyType.FullName == DependencyPropertyFullName &&
+					property.Name.EndsWith(PropertySuffix, StringComparison.Ordinal))
+				{
+					var dpName = property.Name.Substring(0, property.Name.Length - PropertySuffix.Length);
+					if (dpName.Length > 0)
+					{
+						dpNames.Add(dpName);
+					}
+				}
+			}
+
+			if (dpNames.Count == 0)
+			{
+				return methods;
+			}
+
+			// For each DependencyProperty name, look for Get<Name> and Set<Name> static methods
+			var methodLookup = new HashSet<string>(
+				type.Methods.Where(m => m.IsStatic).Select(m => m.Name),
+				StringComparer.Ordinal);
+
+			foreach (var dpName in dpNames)
+			{
+				var getName = "Get" + dpName;
+				var setName = "Set" + dpName;
+
+				if (methodLookup.Contains(getName))
+				{
+					Log.LogMessage(DefaultLogMessageLevel, $"Found attached property accessor: {type.FullName}.{getName}");
+					methods.Add(getName);
+				}
+
+				if (methodLookup.Contains(setName))
+				{
+					Log.LogMessage(DefaultLogMessageLevel, $"Found attached property accessor: {type.FullName}.{setName}");
+					methods.Add(setName);
+				}
+			}
+
+			return methods;
+		}
+
+		private void GenerateLinkerDescriptor(Dictionary<TypeDefinition, List<string>> typeMethods, string outputPath)
+		{
+			var typesByAssembly = typeMethods
+				.GroupBy(kvp => kvp.Key.Module.Assembly.Name.Name)
+				.OrderBy(g => g.Key);
+
+			var linkerElement = new XElement("linker",
+				typesByAssembly.Select(assemblyGroup =>
+					CreateAssemblyElement(assemblyGroup.Key, assemblyGroup)));
+
+			var doc = new XDocument(
+				new XDeclaration("1.0", "UTF-8", null),
+				linkerElement);
+
+			doc.Save(outputPath);
+			Log.LogMessage(MessageImportance.High, $"Saved attached properties descriptor to {outputPath}");
+
+			static XElement? CreateAssemblyElement(string assemblyName, IEnumerable<KeyValuePair<TypeDefinition, List<string>>> types)
+			{
+				var typeElements = types
+					.OrderBy(t => t.Key.FullName)
+					.Select(typeEntry => CreateTypeElement(typeEntry.Key, typeEntry.Value))
+					.Where(e => e != null)
+					.ToList();
+
+				if (typeElements.Count == 0)
+				{
+					return null;
+				}
+
+				return new XElement("assembly",
+					new XAttribute("fullname", assemblyName),
+					typeElements);
+			}
+
+			static XElement? CreateTypeElement(TypeDefinition typeDefinition, List<string> methodNames)
+			{
+				if (methodNames.Count == 0)
+				{
+					return null;
+				}
+
+				return new XElement("type",
+					new XAttribute("fullname", typeDefinition.FullName),
+					new XAttribute("required", "false"),
+					methodNames.OrderBy(n => n).Select(name =>
+						new XElement("method",
+							new XAttribute("name", name))));
 			}
 		}
 	}
