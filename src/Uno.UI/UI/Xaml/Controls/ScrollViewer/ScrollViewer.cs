@@ -692,6 +692,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void TrimOverscroll(Orientation orientation);
 
+		partial void FollowExtentGrowthIfAtEnd(Orientation orientation, double oldOffset, double oldScrollable);
+
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
@@ -748,6 +750,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ViewportHeight = vpHeight;
 			ViewportWidth = vpWidth;
+
+			var oldVerticalOffset = VerticalOffset;
+			var oldHorizontalOffset = HorizontalOffset;
+			var oldScrollableHeight = ScrollableHeight;
+			var oldScrollableWidth = ScrollableWidth;
 
 			var oldSize = new Size(ExtentWidth, ExtentHeight);
 
@@ -827,6 +834,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			TrimOverscroll(Orientation.Vertical);
 			TrimOverscroll(Orientation.Horizontal);
+
+			FollowExtentGrowthIfAtEnd(Orientation.Vertical, oldVerticalOffset, oldScrollableHeight);
+			FollowExtentGrowthIfAtEnd(Orientation.Horizontal, oldHorizontalOffset, oldScrollableWidth);
 
 			var newSize = new Size(ExtentWidth, ExtentWidth);
 			if (oldSize != newSize)
