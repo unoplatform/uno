@@ -78,19 +78,27 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 			return Array.Empty<StorageFile>();
 		}
 
-		var files = new List<StorageFile>();
-		var ptr = Marshal.ReadIntPtr(array);
-		while (ptr != IntPtr.Zero)
+		try
 		{
-			var filename = Marshal.PtrToStringUTF8(ptr);
-			if (filename is not null)
+			var files = new List<StorageFile>();
+			var cursor = array;
+			var ptr = Marshal.ReadIntPtr(cursor);
+			while (ptr != IntPtr.Zero)
 			{
-				files.Add(await StorageFile.GetFileFromPathAsync(filename));
+				var filename = Marshal.PtrToStringUTF8(ptr);
+				if (filename is not null)
+				{
+					files.Add(await StorageFile.GetFileFromPathAsync(filename));
+				}
+				cursor += IntPtr.Size;
+				ptr = Marshal.ReadIntPtr(cursor);
 			}
-			array += IntPtr.Size;
-			ptr = Marshal.ReadIntPtr(array);
+			return files.ToArray();
 		}
-		return files.ToArray();
+		finally
+		{
+			NativeUno.uno_free_string_array(array);
+		}
 	}
 
 	public async Task<StorageFile?> PickSingleFileAsync(CancellationToken token)
