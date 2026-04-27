@@ -42,7 +42,11 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		// binding evaluation sees SynchronizationContext.Current == null, which
 		// breaks user code that relies on TaskScheduler.FromCurrentSynchronizationContext()
 		// to marshal async continuations back to the UI thread.
+		// NativeWinUI exhibits the same null-SynchronizationContext behavior on the
+		// deferred-tab binding pass, so the second-tab assertion fails there too.
+		// Tracked by https://github.com/unoplatform/uno/issues/12265.
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Second_Tab_Selected_Binding_Has_SynchronizationContext_12265()
 		{
 			var vms = new ObservableCollection<Given_TabView_SyncContext_12265_ViewModel>
