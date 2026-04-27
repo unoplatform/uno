@@ -62,12 +62,24 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 				tcs.TrySetCanceled(token);
 				return;
 			}
+			IntPtr nativeArray = IntPtr.Zero;
 			try
 			{
-				tcs.TrySetResult(NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
+				nativeArray = NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
+				if (!tcs.TrySetResult(nativeArray) && nativeArray != IntPtr.Zero)
+				{
+					// Late cancellation: the awaiter has already observed cancellation and
+					// will not consume the array, so free it here to avoid leaking the
+					// malloc'd char** plus its strdup'd entries.
+					NativeUno.uno_free_string_array(nativeArray);
+				}
 			}
 			catch (Exception ex)
 			{
+				if (nativeArray != IntPtr.Zero)
+				{
+					NativeUno.uno_free_string_array(nativeArray);
+				}
 				tcs.TrySetException(ex);
 			}
 		});
