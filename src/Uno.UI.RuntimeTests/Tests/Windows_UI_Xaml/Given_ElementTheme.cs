@@ -3798,9 +3798,6 @@ public class Given_ElementTheme
 		await WindowHelper.WaitForLoaded(textBox);
 		await WindowHelper.WaitForIdle();
 
-		// Capture the default foreground before style change
-		var defaultFg = textBox.Foreground as SolidColorBrush;
-
 		// Apply custom style from code-behind
 		textBox.Style = style;
 		await WindowHelper.WaitForIdle();
@@ -3886,6 +3883,7 @@ public class Given_ElementTheme
 		}
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public async Task When_Style_With_Template_Applied_CodeBehind_In_Light_Subtree_Under_Dark_App()
 	{
@@ -3896,85 +3894,95 @@ public class Given_ElementTheme
 		// code-behind must resolve ThemeResources from the Light dictionary,
 		// not the Dark app-level dictionary.
 
-		var styleXaml = """
-			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			       TargetType="TextBox">
-				<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="TextBox">
-							<Grid>
-								<ScrollViewer x:Name="ContentElement"
-								              Foreground="{TemplateBinding Foreground}"
-								              IsTabStop="False"
-								              ZoomMode="Disabled" />
-								<TextBlock x:Name="PlaceholderTextContentPresenter"
-								           Foreground="{ThemeResource TextControlPlaceholderForeground}"
-								           IsHitTestVisible="False"
-								           Text="{TemplateBinding PlaceholderText}" />
-								<VisualStateManager.VisualStateGroups>
-									<VisualStateGroup x:Name="CommonStates">
-										<VisualState x:Name="Normal" />
-										<VisualState x:Name="Focused">
-											<Storyboard>
-												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
-													<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" />
-												</ObjectAnimationUsingKeyFrames>
-											</Storyboard>
-										</VisualState>
-									</VisualStateGroup>
-								</VisualStateManager.VisualStateGroups>
-							</Grid>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
-			""";
-		var style = (Style)XamlReader.Load(styleXaml);
-
-		var container = new Border
+		// Force the application theme to Dark so the Light Border below truly
+		// represents a divergent subtree theme; otherwise, in environments where
+		// the app is already Light the scenario degenerates to same-theme and
+		// the regression isn't exercised.
+		using (ThemeHelper.UseApplicationDarkTheme())
 		{
-			Width = 300,
-			Height = 50,
-			RequestedTheme = ElementTheme.Light
-		};
-		var textBox = new TextBox { Text = "Hello", Width = 200 };
-		container.Child = textBox;
+			await WindowHelper.WaitForIdle();
 
-		WindowHelper.WindowContent = container;
-		await WindowHelper.WaitForLoaded(textBox);
-		await WindowHelper.WaitForIdle();
+			var styleXaml = """
+				<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				       TargetType="TextBox">
+					<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="TextBox">
+								<Grid>
+									<ScrollViewer x:Name="ContentElement"
+									              Foreground="{TemplateBinding Foreground}"
+									              IsTabStop="False"
+									              ZoomMode="Disabled" />
+									<TextBlock x:Name="PlaceholderTextContentPresenter"
+									           Foreground="{ThemeResource TextControlPlaceholderForeground}"
+									           IsHitTestVisible="False"
+									           Text="{TemplateBinding PlaceholderText}" />
+									<VisualStateManager.VisualStateGroups>
+										<VisualStateGroup x:Name="CommonStates">
+											<VisualState x:Name="Normal" />
+											<VisualState x:Name="Focused">
+												<Storyboard>
+													<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
+														<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" />
+													</ObjectAnimationUsingKeyFrames>
+												</Storyboard>
+											</VisualState>
+										</VisualStateGroup>
+									</VisualStateManager.VisualStateGroups>
+								</Grid>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				""";
+			var style = (Style)XamlReader.Load(styleXaml);
 
-		// Apply the style from code-behind
-		textBox.Style = style;
-		await WindowHelper.WaitForIdle();
+			var container = new Border
+			{
+				Width = 300,
+				Height = 50,
+				RequestedTheme = ElementTheme.Light
+			};
+			var textBox = new TextBox { Text = "Hello", Width = 200 };
+			container.Child = textBox;
 
-		// Foreground should come from the Light theme dictionary (dark color)
-		var fg = textBox.Foreground as SolidColorBrush;
-		Assert.IsNotNull(fg, "Foreground brush should not be null");
-		var avgBrightness = (fg.Color.R + fg.Color.G + fg.Color.B) / 3;
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(textBox);
+			await WindowHelper.WaitForIdle();
 
-		// In a Light theme subtree, TextControlForeground is dark (low brightness)
-		Assert.IsTrue(avgBrightness < 100,
-			$"TextBox in Light subtree: Foreground should be dark (from Light theme), " +
-			$"but was {fg.Color} (avg brightness={avgBrightness}). " +
-			$"If bright, ThemeResource resolved from the wrong (Dark/app-level) dictionary.");
+			// Apply the style from code-behind
+			textBox.Style = style;
+			await WindowHelper.WaitForIdle();
 
-		// Also verify the reference TextBox (with default style) matches
-		var refTextBox = new TextBox { Text = "Reference", Width = 200 };
-		container.Child = refTextBox;
-		await WindowHelper.WaitForLoaded(refTextBox);
-		await WindowHelper.WaitForIdle();
+			// Foreground should come from the Light theme dictionary (dark color)
+			var fg = textBox.Foreground as SolidColorBrush;
+			Assert.IsNotNull(fg, "Foreground brush should not be null");
+			var avgBrightness = (fg.Color.R + fg.Color.G + fg.Color.B) / 3;
 
-		var refFg = refTextBox.Foreground as SolidColorBrush;
-		Assert.IsNotNull(refFg, "Reference Foreground should not be null");
+			// In a Light theme subtree, TextControlForeground is dark (low brightness)
+			Assert.IsTrue(avgBrightness < 100,
+				$"TextBox in Light subtree: Foreground should be dark (from Light theme), " +
+				$"but was {fg.Color} (avg brightness={avgBrightness}). " +
+				$"If bright, ThemeResource resolved from the wrong (Dark/app-level) dictionary.");
 
-		// Both should resolve to the same theme's TextControlForeground
-		Assert.AreEqual(refFg.Color, fg.Color,
-			$"Code-behind styled TextBox Foreground ({fg.Color}) should match " +
-			$"default-styled TextBox Foreground ({refFg.Color}) in same Light subtree.");
+			// Also verify the reference TextBox (with default style) matches
+			var refTextBox = new TextBox { Text = "Reference", Width = 200 };
+			container.Child = refTextBox;
+			await WindowHelper.WaitForLoaded(refTextBox);
+			await WindowHelper.WaitForIdle();
+
+			var refFg = refTextBox.Foreground as SolidColorBrush;
+			Assert.IsNotNull(refFg, "Reference Foreground should not be null");
+
+			// Both should resolve to the same theme's TextControlForeground
+			Assert.AreEqual(refFg.Color, fg.Color,
+				$"Code-behind styled TextBox Foreground ({fg.Color}) should match " +
+				$"default-styled TextBox Foreground ({refFg.Color}) in same Light subtree.");
+		}
 	}
+#endif
 
 	#endregion
 }

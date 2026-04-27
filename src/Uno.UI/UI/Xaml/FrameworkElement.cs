@@ -724,10 +724,13 @@ namespace Microsoft.UI.Xaml
 			// Themes.Active, which can differ from the element's theme when an ancestor has
 			// RequestedTheme set (e.g., RequestedTheme="Light" on root with OS in Dark mode).
 			var effectiveTheme = GetTheme();
-			var needsThemePush = effectiveTheme != Theme.None;
+			var baseTheme = Theming.GetBaseValue(effectiveTheme);
+			// HighContrast-only themes have a base of None; skip the push in that case
+			// (mirrors the short-circuit in NotifyThemeChangedCore).
+			var needsThemePush = baseTheme is Theme.Light or Theme.Dark;
 			if (needsThemePush)
 			{
-				var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+				var themeKey = baseTheme == Theme.Light ? "Light" : "Dark";
 				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
 			}
 
