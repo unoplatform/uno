@@ -14,7 +14,6 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -28,6 +27,11 @@ public class Given_ItemsRepeater_FastScroll
 {
 	private const double OffsetTolerance = 0.5;
 	private const double OverlapTolerance = 0.5;
+
+	// ItemsRepeater parks recycled/unrealized elements at ~-10000 as a hide trick.
+	// This threshold sits above the parking range, well below any plausible legitimate
+	// negative origin shift introduced by anchor-shift extents.
+	private const double ParkingOffsetThreshold = -5000;
 
 	private const string ItemTemplateXaml = """
 		<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
@@ -405,10 +409,10 @@ public class Given_ItemsRepeater_FastScroll
 
 	private static void AssertNoOverlap(SutHandle sut)
 	{
-		// ItemsRepeater parks recycled/unrealized elements at large negative offsets (Y ≈ -10000)
-		// as a hide trick. Filter those out before checking overlap.
+		// Filter out parked recycled elements (see ParkingOffsetThreshold) so the assertion only
+		// inspects laid-out children, while still admitting legitimate negative origin shifts.
 		var laidOut = EnumerateRepeaterChildren(sut.Repeater)
-			.Where(c => c.ActualHeight > 0 && c.ActualOffset.Y > -1000)
+			.Where(c => c.ActualHeight > 0 && c.ActualOffset.Y > ParkingOffsetThreshold)
 			.Select(c => (Top: c.ActualOffset.Y, Bottom: c.ActualOffset.Y + c.ActualHeight))
 			.OrderBy(t => t.Top)
 			.ToArray();
@@ -425,7 +429,7 @@ public class Given_ItemsRepeater_FastScroll
 	private static void AssertNoOverlapHorizontal(SutHandle sut)
 	{
 		var laidOut = EnumerateRepeaterChildren(sut.Repeater)
-			.Where(c => c.ActualWidth > 0 && c.ActualOffset.X > -1000)
+			.Where(c => c.ActualWidth > 0 && c.ActualOffset.X > ParkingOffsetThreshold)
 			.Select(c => (Left: c.ActualOffset.X, Right: c.ActualOffset.X + c.ActualWidth))
 			.OrderBy(t => t.Left)
 			.ToArray();
@@ -443,14 +447,18 @@ public class Given_ItemsRepeater_FastScroll
 	{
 		foreach (var child in EnumerateRepeaterChildren(sut.Repeater))
 		{
-			if (child.ActualHeight <= 0)
+			if (child.ActualWidth <= 0 && child.ActualHeight <= 0)
 			{
 				continue;
 			}
 
+			double.IsFinite(child.ActualOffset.X).Should().BeTrue(
+				"Materialized child must have a finite X offset");
 			double.IsFinite(child.ActualOffset.Y).Should().BeTrue(
 				"Materialized child must have a finite Y offset");
-			double.IsNaN(child.ActualHeight).Should().BeFalse(
+			double.IsFinite(child.ActualWidth).Should().BeTrue(
+				"Materialized child must have a finite width");
+			double.IsFinite(child.ActualHeight).Should().BeTrue(
 				"Materialized child must have a finite height");
 		}
 	}
