@@ -44,6 +44,12 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	// Disposal state — guards pending dispatcher callbacks after the window closes.
 	private bool _isDisposed;
 
+	// Tracks scroll-source elements (ScrollViewer / ScrollPresenter) we are subscribed to,
+	// so descendant accessibility positions can be re-emitted when the scroll offset changes.
+	// Keyed by Visual handle so removal can find the entry without holding a strong reference.
+	private readonly System.Collections.Generic.Dictionary<nint, EventHandler<ScrollViewerViewChangedEventArgs>> _scrollViewerSubscriptions = new();
+	private readonly System.Collections.Generic.Dictionary<nint, Windows.Foundation.TypedEventHandler<ScrollPresenter, object>> _scrollPresenterSubscriptions = new();
+
 	/// <summary>
 	/// Whether this instance has been disposed. Pending dispatcher callbacks
 	/// (e.g., structure-change coalescing, announcement flushers) must check
@@ -126,6 +132,96 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 
 		OnChildRemoved(parent, child);
+	}
+
+	// Hooks ScrollViewer / ScrollPresenter scroll events. Without this, scrolling a
+	// container does not invalidate the cached bounding rectangles of its descendants
+	// in the native accessibility tree, leaving screen-reader highlight rectangles at
+	// pre-scroll positions on macOS and WASM. Platform OnChildAdded implementations
+	// must call this for every element they add (including those pruned via
+	// AccessibilityView=Raw, since their descendants still need the subscription).
+	protected void TrySubscribeScrollSource(UIElement element)
+	{
+		if (element is ScrollViewer scrollViewer)
+		{
+			var handle = scrollViewer.Visual.Handle;
+			if (_scrollViewerSubscriptions.ContainsKey(handle))
+			{
+				return;
+			}
+
+			void Handler(object? sender, ScrollViewerViewChangedEventArgs e) => OnScrollSourceChanged(scrollViewer);
+			scrollViewer.ViewChanged += Handler;
+			_scrollViewerSubscriptions[handle] = Handler;
+		}
+		else if (element is ScrollPresenter scrollPresenter)
+		{
+			var handle = scrollPresenter.Visual.Handle;
+			if (_scrollPresenterSubscriptions.ContainsKey(handle))
+			{
+				return;
+			}
+
+			void Handler(ScrollPresenter sender, object e) => OnScrollSourceChanged(scrollPresenter);
+			scrollPresenter.ViewChanged += Handler;
+			_scrollPresenterSubscriptions[handle] = Handler;
+		}
+	}
+
+	protected void TryUnsubscribeScrollSource(UIElement element)
+	{
+		if (element is ScrollViewer scrollViewer)
+		{
+			var handle = scrollViewer.Visual.Handle;
+			if (_scrollViewerSubscriptions.Remove(handle, out var handler))
+			{
+				scrollViewer.ViewChanged -= handler;
+			}
+		}
+		else if (element is ScrollPresenter scrollPresenter)
+		{
+			var handle = scrollPresenter.Visual.Handle;
+			if (_scrollPresenterSubscriptions.Remove(handle, out var handler))
+			{
+				scrollPresenter.ViewChanged -= handler;
+			}
+		}
+	}
+
+	// Walks descendants of the scrolled element and re-emits OnSizeOrOffsetChanged
+	// for each ContainerVisual. The platform overrides recompute positions via
+	// UIElement.GetTransform, which composes ancestor scroll offsets and transforms.
+	private void OnScrollSourceChanged(UIElement scrollSource)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		ReemitDescendantPositions(scrollSource);
+	}
+
+	private void ReemitDescendantPositions(UIElement element)
+	{
+		foreach (var child in element.GetChildren())
+		{
+			if (child.Visual is ContainerVisual childVisual)
+			{
+				try
+				{
+					OnSizeOrOffsetChanged(childVisual);
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"[A11y] ReemitDescendantPositions failed for {child.GetType().Name}: {ex.Message}");
+					}
+				}
+			}
+
+			ReemitDescendantPositions(child);
+		}
 	}
 
 	internal void RouteVisualOffsetOrSizeChanged(Microsoft.UI.Composition.Visual visual)
@@ -794,6 +890,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		_assertiveDebounceTimer = null;
 		_pendingPoliteContent = null;
 		_pendingAssertiveContent = null;
+
+		_scrollViewerSubscriptions.Clear();
+		_scrollPresenterSubscriptions.Clear();
 
 		UntrackFocusedElement();
 	}

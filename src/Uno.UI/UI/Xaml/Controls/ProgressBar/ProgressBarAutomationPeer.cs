@@ -66,5 +66,5 @@ public partial class ProgressBarAutomationPeer : RangeBaseAutomationPeer, IRange
 
 	double IRangeValueProvider.Maximum => GetImpl().Maximum;
 
-	void IRangeValueProvider.SetValue(double value) => GetImpl().Value = value;
+	void IRangeValueProvider.SetValue(double value) => throw new ElementNotEnabledException();
 }

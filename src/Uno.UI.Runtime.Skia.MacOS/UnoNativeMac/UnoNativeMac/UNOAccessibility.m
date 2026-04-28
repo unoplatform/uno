@@ -11,6 +11,27 @@
 #import "UNOAccessibility.h"
 #import "UNOWindow.h"
 #import <objc/runtime.h>
+#import <stdlib.h>
+
+// Diagnostic logging gate. NSLog calls in this file fire only when both:
+//   1. The build is DEBUG (release builds compile them out entirely).
+//   2. The environment variable UNO_A11Y_VERBOSE=1 is set at process start.
+// Default debug builds are quiet to avoid swamping the Xcode console
+// during navigation/scroll. Set the env var when diagnosing a11y issues.
+#if DEBUG
+static BOOL uno_a11y_verbose(void) {
+	static BOOL v;
+	static dispatch_once_t once;
+	dispatch_once(&once, ^{
+		const char *e = getenv("UNO_A11Y_VERBOSE");
+		v = (e != NULL && strcmp(e, "1") == 0);
+	});
+	return v;
+}
+#define UNO_A11Y_LOG(fmt, ...) do { if (uno_a11y_verbose()) NSLog(fmt, ##__VA_ARGS__); } while (0)
+#else
+#define UNO_A11Y_LOG(fmt, ...) do { } while (0)
+#endif
 
 // Native macOS notifications not publicly documented
 static NSString* const kAccessibilityLiveRegionCreatedNotification = @"AXLiveRegionCreated";
@@ -912,17 +933,13 @@ void uno_accessibility_init_context(NSWindow* window) {
 		[existing.elements removeAllObjects];
 		existing.rootElement = nil;
 		existing.focusedElement = nil;
-#if DEBUG
-		NSLog(@"UNOAccessibility: re-initialized context for window %p", window);
-#endif
+		UNO_A11Y_LOG(@"UNOAccessibility: re-initialized context for window %p", window);
 		return;
 	}
 
 	UNOAccessibilityContext *context = [[UNOAccessibilityContext alloc] initWithWindow:window];
 	objc_setAssociatedObject(window, kUNOAccessibilityContextKey, context, OBJC_ASSOCIATION_RETAIN);
-#if DEBUG
-	NSLog(@"UNOAccessibility: initialized context for window %p", window);
-#endif
+	UNO_A11Y_LOG(@"UNOAccessibility: initialized context for window %p", window);
 }
 
 void uno_accessibility_destroy_context(NSWindow* window) {
@@ -946,9 +963,7 @@ void uno_accessibility_destroy_context(NSWindow* window) {
 	context.window = nil;
 
 	objc_setAssociatedObject(window, kUNOAccessibilityContextKey, nil, OBJC_ASSOCIATION_RETAIN);
-#if DEBUG
-	NSLog(@"UNOAccessibility: destroyed context for window %p", window);
-#endif
+	UNO_A11Y_LOG(@"UNOAccessibility: destroyed context for window %p", window);
 }
 
 void uno_accessibility_set_callbacks(accessibility_invoke_fn_ptr invoke, accessibility_focus_fn_ptr focus) {
@@ -1001,9 +1016,7 @@ void uno_accessibility_add_element(NSWindow* window,
 
 	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
 	if (!context) {
-#if DEBUG
-		NSLog(@"UNOAccessibility: add_element with no context for window %p — dropping (handle=%ld)", window, (long)handle);
-#endif
+		UNO_A11Y_LOG(@"UNOAccessibility: add_element with no context for window %p — dropping (handle=%ld)", window, (long)handle);
 		return;
 	}
 
@@ -1046,9 +1059,7 @@ void uno_accessibility_add_element(NSWindow* window,
 		context.rootElement = element;
 	}
 
-#if DEBUG
-	NSLog(@"UNOAccessibility: [window %p] added element handle=%ld role=%s label=%s parent=%ld", window, (long)handle, role ?: "(null)", label ?: "(null)", (long)parentHandle);
-#endif
+	UNO_A11Y_LOG(@"UNOAccessibility: [window %p] added element handle=%ld role=%s label=%s parent=%ld", window, (long)handle, role ?: "(null)", label ?: "(null)", (long)parentHandle);
 }
 
 void uno_accessibility_remove_element(NSWindow* window, intptr_t parentHandle, intptr_t handle) {
@@ -1094,9 +1105,7 @@ void uno_accessibility_remove_element(NSWindow* window, intptr_t parentHandle, i
 		[context.elements removeObjectForKey:key];
 	}
 
-#if DEBUG
-	NSLog(@"UNOAccessibility: [window %p] removed element handle=%ld (and %lu descendants)", window, (long)handle, (unsigned long)(handlesToRemove.count - 1));
-#endif
+	UNO_A11Y_LOG(@"UNOAccessibility: [window %p] removed element handle=%ld (and %lu descendants)", window, (long)handle, (unsigned long)(handlesToRemove.count - 1));
 }
 
 void uno_accessibility_update_label(intptr_t handle, const char* label) {
@@ -1293,9 +1302,7 @@ void uno_accessibility_set_focused(intptr_t handle) {
 			context.focusedElement = element;
 		}
 		NSAccessibilityPostNotification(element, NSAccessibilityFocusedUIElementChangedNotification);
-#if DEBUG
-		NSLog(@"UNOAccessibility: focus set to handle=%ld label=%@", (long)handle, element.unoLabel);
-#endif
+		UNO_A11Y_LOG(@"UNOAccessibility: focus set to handle=%ld label=%@", (long)handle, element.unoLabel);
 	}
 }
 
@@ -1321,18 +1328,14 @@ void uno_accessibility_announce(NSWindow* window, const char* text, bool asserti
 		userInfo
 	);
 
-#if DEBUG
-	NSLog(@"UNOAccessibility: [window %p] announce '%@' (assertive=%d)", window, announcement, assertive);
-#endif
+	UNO_A11Y_LOG(@"UNOAccessibility: [window %p] announce '%@' (assertive=%d)", window, announcement, assertive);
 }
 
 void uno_accessibility_post_layout_changed(NSWindow* window) {
 	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
 	if (context.rootElement) {
 		NSAccessibilityPostNotification(context.rootElement, NSAccessibilityLayoutChangedNotification);
-#if DEBUG
-		NSLog(@"UNOAccessibility: [window %p] posted layout changed notification", window);
-#endif
+		UNO_A11Y_LOG(@"UNOAccessibility: [window %p] posted layout changed notification", window);
 	}
 }
 
@@ -1341,9 +1344,7 @@ void uno_accessibility_post_children_changed(NSWindow* window) {
 	// to make VoiceOver pick up structural changes reliably.
 	if (window) {
 		NSAccessibilityPostNotification(window, NSAccessibilityCreatedNotification);
-#if DEBUG
-		NSLog(@"UNOAccessibility: [window %p] posted children changed (created) notification", window);
-#endif
+		UNO_A11Y_LOG(@"UNOAccessibility: [window %p] posted children changed (created) notification", window);
 	}
 }
 

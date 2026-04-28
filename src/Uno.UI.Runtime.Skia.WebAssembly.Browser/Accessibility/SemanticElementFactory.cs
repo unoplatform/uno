@@ -150,6 +150,28 @@ internal static partial class SemanticElementFactory
 			ApplyRelationshipAttributes(peer, handle);
 		}
 
+		// Apply aria-expanded for ExpandCollapse-capable elements not handled by their
+		// own factory (Expander, NavigationViewItem, SplitButton, MenuFlyoutSubItem).
+		// ComboBox and TreeItem already pass `expanded` at creation time.
+		if (created && attributes.Expanded.HasValue &&
+			elementType is not (SemanticElementType.ComboBox or SemanticElementType.TreeItem))
+		{
+			NativeMethods.UpdateExpandCollapseState(handle, attributes.Expanded.Value);
+		}
+
+		// Apply aria-keyshortcuts from AcceleratorKey / AccessKey (WinUI3 parity, ARIA 1.2).
+		if (created && !string.IsNullOrEmpty(attributes.KeyShortcuts))
+		{
+			NativeMethods.UpdateAriaKeyShortcuts(handle, attributes.KeyShortcuts);
+		}
+
+		// Apply aria-modal for IsDialog peers (the FocusTrap subsystem also sets this
+		// when a modal scope activates; this covers static/declarative dialogs).
+		if (created && attributes.Modal == true)
+		{
+			NativeMethods.UpdateAriaModal(handle, true);
+		}
+
 		return created;
 	}
 
@@ -1084,5 +1106,14 @@ internal static partial class SemanticElementFactory
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLabelledBy")]
 		internal static partial void UpdateAriaLabelledBy(IntPtr handle, string idList);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateExpandCollapseState")]
+		internal static partial void UpdateExpandCollapseState(IntPtr handle, bool expanded);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaKeyShortcuts")]
+		internal static partial void UpdateAriaKeyShortcuts(IntPtr handle, string keyShortcuts);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaModal")]
+		internal static partial void UpdateAriaModal(IntPtr handle, bool modal);
 	}
 }

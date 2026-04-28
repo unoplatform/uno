@@ -116,6 +116,50 @@ internal interface IUiaScrollItemProvider
 	void ScrollIntoView();
 }
 
+[ComImport, Guid("987df77b-db06-4d77-8f8a-86a9c3bb90b9"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+internal interface IUiaWindowProvider
+{
+	void SetVisualState(WindowVisualState state);
+	void Close();
+	[return: MarshalAs(UnmanagedType.Bool)]
+	bool WaitForInputIdle(int milliseconds);
+	bool Maximizable { get; }
+	bool Minimizable { get; }
+	bool IsModal { get; }
+	bool IsTopmost { get; }
+	WindowVisualState VisualState { get; }
+	WindowInteractionState InteractionState { get; }
+}
+
+[ComImport, Guid("6829ddc4-4f91-4ffa-b86f-bd3e2987cb4c"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+internal interface IUiaTransformProvider
+{
+	void Move(double x, double y);
+	void Resize(double width, double height);
+	void Rotate(double degrees);
+	bool CanMove { get; }
+	bool CanResize { get; }
+	bool CanRotate { get; }
+}
+
+[ComImport, Guid("159bc72c-4ad3-485e-9637-d7052edf0146"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+internal interface IUiaDockProvider
+{
+	void SetDockPosition(DockPosition dockPosition);
+	DockPosition DockPosition { get; }
+}
+
+[ComImport, Guid("6278cab1-b556-4a1a-b4e0-418acc523201"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+internal interface IUiaMultipleViewProvider
+{
+	[return: MarshalAs(UnmanagedType.LPWStr)]
+	string GetViewName(int viewId);
+	void SetCurrentView(int viewId);
+	int CurrentView { get; }
+	[return: MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_I4)]
+	int[] GetSupportedViews();
+}
+
 // Wrapper classes that bridge Uno AutomationPeer patterns to UIA COM pattern interfaces.
 // Each wrapper is [ComVisible(true)] so the CLR creates a COM Callable Wrapper (CCW)
 // that UIA can consume directly.
@@ -397,4 +441,53 @@ internal sealed class UiaScrollItemProviderWrapper : IUiaScrollItemProvider
 	private readonly IScrollItemProvider _inner;
 	internal UiaScrollItemProviderWrapper(IScrollItemProvider inner) => _inner = inner;
 	public void ScrollIntoView() => _inner.ScrollIntoView();
+}
+
+[ComVisible(true)]
+internal sealed class UiaWindowProviderWrapper : IUiaWindowProvider
+{
+	private readonly IWindowProvider _inner;
+	internal UiaWindowProviderWrapper(IWindowProvider inner) => _inner = inner;
+	public void SetVisualState(WindowVisualState state) => _inner.SetVisualState(state);
+	public void Close() => _inner.Close();
+	public bool WaitForInputIdle(int milliseconds) => _inner.WaitForInputIdle(milliseconds);
+	public bool Maximizable => _inner.Maximizable;
+	public bool Minimizable => _inner.Minimizable;
+	public bool IsModal => _inner.IsModal;
+	public bool IsTopmost => _inner.IsTopmost;
+	public WindowVisualState VisualState => _inner.VisualState;
+	public WindowInteractionState InteractionState => _inner.InteractionState;
+}
+
+[ComVisible(true)]
+internal sealed class UiaTransformProviderWrapper : IUiaTransformProvider
+{
+	private readonly ITransformProvider _inner;
+	internal UiaTransformProviderWrapper(ITransformProvider inner) => _inner = inner;
+	public void Move(double x, double y) => _inner.Move(x, y);
+	public void Resize(double width, double height) => _inner.Resize(width, height);
+	public void Rotate(double degrees) => _inner.Rotate(degrees);
+	public bool CanMove => _inner.CanMove;
+	public bool CanResize => _inner.CanResize;
+	public bool CanRotate => _inner.CanRotate;
+}
+
+[ComVisible(true)]
+internal sealed class UiaDockProviderWrapper : IUiaDockProvider
+{
+	private readonly IDockProvider _inner;
+	internal UiaDockProviderWrapper(IDockProvider inner) => _inner = inner;
+	public void SetDockPosition(DockPosition dockPosition) => _inner.SetDockPosition(dockPosition);
+	public DockPosition DockPosition => _inner.DockPosition;
+}
+
+[ComVisible(true)]
+internal sealed class UiaMultipleViewProviderWrapper : IUiaMultipleViewProvider
+{
+	private readonly IMultipleViewProvider _inner;
+	internal UiaMultipleViewProviderWrapper(IMultipleViewProvider inner) => _inner = inner;
+	public string GetViewName(int viewId) => _inner.GetViewName(viewId) ?? string.Empty;
+	public void SetCurrentView(int viewId) => _inner.SetCurrentView(viewId);
+	public int CurrentView => _inner.CurrentView;
+	public int[] GetSupportedViews() => _inner.GetSupportedViews() ?? Array.Empty<int>();
 }

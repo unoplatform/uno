@@ -295,6 +295,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		try
 		{
+			TrySubscribeScrollSource(child);
+
 			var isChildSemantic = IsSemanticElement(child);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -373,6 +375,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				this.Log().Debug($"[A11y] OnChildRemoved: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle}");
 			}
 
+			TryUnsubscribeScrollSource(child);
 			TryUnregisterVirtualizedContainer(child);
 
 			// Remove any children of this element first (they may be semantic even if parent isn't)
@@ -649,7 +652,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (@this.Log().IsEnabled(LogLevel.Warning))
 			{
 				@this.Log().Warn("[A11y] EnableAccessibility() called for the second time. Returning early.");
-				@this.Log().LogWarning("EnableA11y is called for the second time. This shouldn't happen.");
 			}
 
 			return;
@@ -660,26 +662,26 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (rootElement is null)
 		{
-			if (@this.Log().IsEnabled(LogLevel.Error))
+			// Window not yet attached is normal during early boot; retried below.
+			if (@this.Log().IsEnabled(LogLevel.Debug))
 			{
-				@this.Log().Error($"[A11y] EnableAccessibility() ERROR: Window={window?.GetType().Name ?? "null"}, RootElement={rootElement?.GetType().Name ?? "null"}");
+				@this.Log().Debug($"[A11y] EnableAccessibility deferred: Window={window?.GetType().Name ?? "null"}, RootElement=null");
 			}
 
-			// Retry with delay if we haven't exceeded max retries
 			if (_enableAccessibilityRetryCount < MaxEnableAccessibilityRetries)
 			{
 				_enableAccessibilityRetryCount++;
-				if (@this.Log().IsEnabled(LogLevel.Debug))
+				if (@this.Log().IsEnabled(LogLevel.Trace))
 				{
-					@this.Log().Debug($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
+					@this.Log().Trace($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
 				}
 
 				var timer = new Timer(
 					_ =>
 					{
-						if (@this.Log().IsEnabled(LogLevel.Debug))
+						if (@this.Log().IsEnabled(LogLevel.Trace))
 						{
-							@this.Log().Debug($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
+							@this.Log().Trace($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
 						}
 						EnableAccessibility();
 					},
@@ -693,7 +695,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				if (@this.Log().IsEnabled(LogLevel.Error))
 				{
-					@this.Log().Error($"[A11y] EnableAccessibility() ERROR: Max retries ({MaxEnableAccessibilityRetries}) exceeded. Window still not ready.");
+					@this.Log().Error($"[A11y] EnableAccessibility: max retries ({MaxEnableAccessibilityRetries}) exceeded; Window still not ready.");
 				}
 
 				return;
@@ -973,6 +975,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			this.Log().Debug($"[A11y] CreateAOM: rootElement={rootElement.GetType().Name}, handle={rootElement.Visual.Handle}, size={rootElement.Visual.Size.X}x{rootElement.Visual.Size.Y}");
 		}
 
+		TrySubscribeScrollSource(rootElement);
+
 		// We build an AOM (Accessibility Object Model):
 		// https://wicg.github.io/aom/explainer.html
 		var rootHandle = rootElement.Visual.Handle;
@@ -1137,6 +1141,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, int depth = 0)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
+
+		TrySubscribeScrollSource(child);
 
 		var handle = child.Visual.Handle;
 		var isSemantic = IsSemanticElement(child);
@@ -1342,6 +1348,36 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				var ariaLive = childLiveSetting == AutomationLiveSetting.Assertive ? "assertive" : "polite";
 				NativeMethods.UpdateAriaLive(handle, ariaLive);
+			}
+
+			// Generic elements that still expose ExpandCollapse / shortcut keys (e.g. Expander
+			// hosted inside a fallback role, custom controls) need aria-expanded / aria-keyshortcuts
+			// applied post-hoc. Factory paths handle their own creation-time wiring.
+			if (automationPeer is not null)
+			{
+				try
+				{
+					if (automationPeer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+					{
+						var expanded = expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Expanded ||
+									   expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
+						NativeMethods.UpdateExpandCollapseState(handle, expanded);
+					}
+				}
+				catch
+				{
+					// Some peers throw if queried before fully initialized. Update will arrive via property change.
+				}
+
+				var acceleratorKey = automationPeer.GetAcceleratorKey();
+				var accessKey = automationPeer.GetAccessKey();
+				if (!string.IsNullOrEmpty(acceleratorKey) || !string.IsNullOrEmpty(accessKey))
+				{
+					var keyShortcuts = string.IsNullOrEmpty(accessKey)
+						? acceleratorKey
+						: string.IsNullOrEmpty(acceleratorKey) ? accessKey : $"{acceleratorKey} {accessKey}";
+					NativeMethods.UpdateAriaKeyShortcuts(handle, keyShortcuts);
+				}
 			}
 		}
 
@@ -1989,6 +2025,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaPressed")]
 		internal static partial void UpdateAriaPressed(IntPtr handle, string pressed);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaKeyShortcuts")]
+		internal static partial void UpdateAriaKeyShortcuts(IntPtr handle, string keyShortcuts);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
