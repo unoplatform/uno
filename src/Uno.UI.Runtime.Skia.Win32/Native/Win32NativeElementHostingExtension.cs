@@ -4,8 +4,10 @@ using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -24,6 +26,11 @@ namespace Uno.UI.Runtime.Skia.Win32;
 internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
+
+	// Tracks the desired Uno z-order of native child HWNDs per parent window so SetZIndex can place
+	// each child relative to its lower sibling deterministically, instead of depending on the caller
+	// invoking SetZIndex for every host in ascending order.
+	private static readonly Dictionary<nint, SortedDictionary<int, nint>> _childZOrderByParent = new();
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
@@ -319,12 +326,27 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
+		var parentHwnd = (nint)Hwnd;
+		var childHwnd = window.Hwnd;
+
 		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 
 		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, HWND.Null);
 		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+
+		if (_childZOrderByParent.TryGetValue(parentHwnd, out var siblings))
+		{
+			foreach (var staleKey in siblings.Where(pair => pair.Value == childHwnd).Select(pair => pair.Key).ToList())
+			{
+				siblings.Remove(staleKey);
+			}
+			if (siblings.Count == 0)
+			{
+				_childZOrderByParent.Remove(parentHwnd);
+			}
 		}
 
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
@@ -409,21 +431,45 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public bool SupportsZIndex() => true;
 
-	// The zIndex argument is intentionally unused: ContentPresenter.OnNativeHostsRenderOrderChanged
-	// calls SetZIndex for every host in ascending z-order, so successively raising each child HWND
-	// to HWND_TOP leaves the final Win32 child z-order matching the Uno visual tree. If that calling
-	// convention ever changes, this implementation must be revisited (e.g., positioning relative to
-	// a tracked previous sibling HWND instead).
-	public void SetZIndex(object content, int _)
+	public void SetZIndex(object content, int zIndex)
 	{
 		if (content is not Win32NativeWindow window)
 		{
 			return;
 		}
 
+		var childHwnd = window.Hwnd;
+		var parentHwnd = (nint)Hwnd;
+
+		if (!_childZOrderByParent.TryGetValue(parentHwnd, out var siblings))
+		{
+			siblings = new SortedDictionary<int, nint>();
+			_childZOrderByParent[parentHwnd] = siblings;
+		}
+
+		// The child may have moved from a different z-index in a previous pass; drop any stale entry
+		// before recording the new one so the sibling lookup below stays consistent.
+		foreach (var staleKey in siblings.Where(pair => pair.Value == childHwnd).Select(pair => pair.Key).ToList())
+		{
+			siblings.Remove(staleKey);
+		}
+		siblings[zIndex] = childHwnd;
+
+		// Place the child immediately above the next-lower sibling we know about. If none exists
+		// (this is the lowest-known z-index under this parent), drop it to the bottom of the chain.
+		var hwndInsertAfter = new HWND(1); // HWND_BOTTOM
+		foreach (var pair in siblings.Reverse())
+		{
+			if (pair.Key < zIndex)
+			{
+				hwndInsertAfter = (HWND)pair.Value;
+				break;
+			}
+		}
+
 		var success = PInvoke.SetWindowPos(
-			(HWND)window.Hwnd,
-			default, // HWND_TOP == (HWND)0
+			(HWND)childHwnd,
+			hwndInsertAfter,
 			0, 0, 0, 0,
 			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
 		if (!success)
