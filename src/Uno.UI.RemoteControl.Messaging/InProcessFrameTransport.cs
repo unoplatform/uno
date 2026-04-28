@@ -119,6 +119,18 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 			{
 				// Ignore spurious releases.
 			}
+			catch (ObjectDisposedException)
+			{
+				// _signal was already disposed (the endpoint's Dispose ran while a
+				// concurrent CloseAsync from the OTHER peer was still in-flight, or
+				// the local CloseAsync runs after Dispose because it is fire-and-forget).
+				// Nothing to wake — the endpoint is gone, so swallowing the exception
+				// is safe. This also stops the throw from propagating up
+				// MarkRemoteClosed → CloseAsync → InProcessFrameTransport.CloseAsync,
+				// which in Studio Live's AppBinaryLoader.StopActiveApplicationAsync
+				// previously left the in-process broker mid-teardown and prevented
+				// the next ALC's RemoteControlClient from establishing a transport.
+			}
 		}
 
 		public void Dispose() => _signal.Dispose();

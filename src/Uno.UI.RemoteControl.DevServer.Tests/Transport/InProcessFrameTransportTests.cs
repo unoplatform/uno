@@ -306,4 +306,54 @@ public class InProcessFrameTransportTests
 		result1.Should().NotBeNull();
 		result2.Should().NotBeNull();
 	}
+
+	/// <summary>
+	/// Regression for the second-rebuild RC client death observed in Studio Live
+	/// feedback bundle <c>c23a8e063ced4134b477a29c08e11141</c>: when one peer is
+	/// fully <see cref="IDisposable.Dispose"/>'d (so its inner
+	/// <see cref="System.Threading.SemaphoreSlim"/> is gone) but its
+	/// <c>_isRemoteClosed</c> flag was never flipped — which is the case because
+	/// <c>Endpoint.CloseAsync</c> only flips the *remote*'s flag, not its own —
+	/// the next <c>CloseAsync</c> call on the OTHER peer reaches the disposed
+	/// peer's <c>MarkRemoteClosed → Signal()</c> path and throws
+	/// <see cref="ObjectDisposedException"/> on <c>SemaphoreSlim.Release()</c>.
+	/// <para>
+	/// Pre-fix stack:
+	/// <code>
+	///   at SemaphoreSlim.Release(...)
+	///   at Endpoint.Signal()
+	///   at Endpoint.MarkRemoteClosed()
+	///   at Endpoint.CloseAsync()
+	/// </code>
+	/// </para>
+	/// <para>
+	/// The fix catches <see cref="ObjectDisposedException"/> in
+	/// <c>Endpoint.Signal()</c> alongside the existing
+	/// <see cref="SemaphoreFullException"/> swallow — a disposed semaphore has no
+	/// one waiting on it, so swallowing the throw is safe and prevents the
+	/// in-process broker from being torn down mid-teardown.
+	/// </para>
+	/// </summary>
+	[TestMethod]
+	public async Task InProcessTransport_OnePeerDisposedFirst_OtherPeerCloseDoesNotThrow()
+	{
+		// Arrange — connected pair.
+		var pair = FrameTransportPair.Create();
+
+		// Act 1 — fully dispose Peer2. Internally:
+		//   - Peer2.CloseAsync() runs synchronously: sets Peer2._isClosed=1,
+		//     signals Peer2, calls Peer1.MarkRemoteClosed (which sets
+		//     Peer1._isRemoteClosed=1 and signals Peer1).
+		//   - Peer2._signal is then disposed.
+		// Final state: Peer2._signal disposed, Peer2._isRemoteClosed STILL 0
+		// (CloseAsync only touches the *peer*'s _isRemoteClosed, not its own).
+		pair.Peer2.Dispose();
+
+		// Act 2 — close Peer1. This calls Peer2.MarkRemoteClosed which slips past
+		// the Interlocked.Exchange guard (Peer2._isRemoteClosed was 0) and reaches
+		// Signal() → _signal.Release() on the disposed semaphore.
+		//
+		// Assert — must complete without throwing.
+		await pair.Peer1.CloseAsync();
+	}
 }
