@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -162,50 +163,106 @@ internal sealed class DevServerHostDiscovery
 			.ConfigureAwait(false);
 	}
 
-	private static Task<string?> TryRunAsync(string fileName, string arguments, string solutionPath, CancellationToken cancellationToken)
+	private static async Task<string?> TryRunAsync(string fileName, string arguments, string solutionPath, CancellationToken cancellationToken)
 	{
-		return Task.Run<string?>(() =>
+		try
 		{
-			try
+			var workingDirectory = Path.GetDirectoryName(solutionPath);
+			using var process = new Process
 			{
-				var workingDirectory = Path.GetDirectoryName(solutionPath);
-				using var process = new Process
+				StartInfo = new ProcessStartInfo
 				{
-					StartInfo = new ProcessStartInfo
-					{
-						FileName = fileName,
-						Arguments = arguments,
-						WorkingDirectory = string.IsNullOrEmpty(workingDirectory) ? Environment.CurrentDirectory : workingDirectory,
-						UseShellExecute = false,
-						RedirectStandardOutput = true,
-						RedirectStandardError = true,
-						CreateNoWindow = true,
-					},
-				};
+					FileName = fileName,
+					Arguments = arguments,
+					WorkingDirectory = string.IsNullOrEmpty(workingDirectory) ? Environment.CurrentDirectory : workingDirectory,
+					UseShellExecute = false,
+					RedirectStandardOutput = true,
+					// stderr is consumed concurrently below: leaving it un-redirected would
+					// pollute the VS output window, but reading it synchronously *after*
+					// WaitForExit (or not at all) lets the child block when its stderr
+					// buffer fills up — exactly what would force the 8 s timeout to fire
+					// for callers that emit a non-trivial diagnostic on stderr.
+					RedirectStandardError = true,
+					CreateNoWindow = true,
+				},
+				EnableRaisingEvents = true,
+			};
 
-				if (!process.Start())
+			var stdoutBuffer = new StringBuilder();
+			var stderrBuffer = new StringBuilder();
+
+			process.OutputDataReceived += (_, args) =>
+			{
+				if (args.Data is { Length: > 0 })
 				{
-					return null;
+					lock (stdoutBuffer) { stdoutBuffer.AppendLine(args.Data); }
 				}
-
-				// Bound the wait so a hung dotnet/dnx doesn't block solution open.
-				if (!process.WaitForExit((int)_defaultTimeout.TotalMilliseconds))
+			};
+			process.ErrorDataReceived += (_, args) =>
+			{
+				if (args.Data is { Length: > 0 })
 				{
-					try { process.Kill(); } catch { /* swallow */ }
-					return null;
+					lock (stderrBuffer) { stderrBuffer.AppendLine(args.Data); }
 				}
+			};
 
-				if (process.ExitCode != 0)
-				{
-					return null;
-				}
-
-				return process.StandardOutput.ReadToEnd();
-			}
-			catch
+			if (!process.Start())
 			{
 				return null;
 			}
-		}, cancellationToken);
+
+			process.BeginOutputReadLine();
+			process.BeginErrorReadLine();
+
+			// Bound the wait so a hung dotnet/dnx doesn't block solution open. Compose
+			// the timeout with the caller's cancellation token so a solution-close
+			// (which cancels _ct) returns promptly instead of waiting out the full
+			// 8 s budget.
+			using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+			timeoutCts.CancelAfter(_defaultTimeout);
+			try
+			{
+				await WaitForExitAsync(process, timeoutCts.Token).ConfigureAwait(false);
+			}
+			catch (OperationCanceledException)
+			{
+				try { if (!process.HasExited) { process.Kill(); } } catch { /* swallow */ }
+				return null;
+			}
+
+			if (process.ExitCode != 0)
+			{
+				return null;
+			}
+
+			lock (stdoutBuffer)
+			{
+				return stdoutBuffer.ToString();
+			}
+		}
+		catch
+		{
+			return null;
+		}
+	}
+
+	private static Task WaitForExitAsync(Process process, CancellationToken cancellationToken)
+	{
+		// .NET Framework 4.7.2 has no Process.WaitForExitAsync — bridge Process.Exited
+		// to a TaskCompletionSource and observe cancellation through a token registration.
+		var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		void OnExited(object? sender, EventArgs e) => tcs.TrySetResult(true);
+		process.Exited += OnExited;
+
+		using var registration = cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken));
+
+		// Belt-and-suspenders: if the process already exited before EnableRaisingEvents
+		// was wired up (race), short-circuit.
+		if (process.HasExited)
+		{
+			tcs.TrySetResult(true);
+		}
+
+		return tcs.Task;
 	}
 }
