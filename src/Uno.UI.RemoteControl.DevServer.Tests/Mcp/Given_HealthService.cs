@@ -573,7 +573,7 @@ public class Given_HealthService
 	}
 
 	[TestMethod]
-	[Description("HealthReport includes HostMcpEndpointNotAvailable when host responds but /mcp is 404")]
+	[Description("HealthReport includes HostMcpEndpointNotAvailable as Fatal when host responds but /mcp is 404")]
 	public void HealthReport_WhenHostRespondedNoMcp_ReportsHostMcpEndpointNotAvailable()
 	{
 		var report = HealthReportFactory.Create(
@@ -587,8 +587,27 @@ public class Given_HealthService
 
 		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostMcpEndpointNotAvailable);
 		var mcpIssue = report.Issues.First(issue => issue.Code == IssueCode.HostMcpEndpointNotAvailable);
-		mcpIssue.Severity.Should().Be(ValidationSeverity.Warning);
+		mcpIssue.Severity.Should().Be(ValidationSeverity.Fatal);
+		mcpIssue.Message.Should().Contain("6.6", "should mention the minimum version that supports MCP");
 		mcpIssue.Remediation.Should().NotBeNullOrEmpty();
+	}
+
+	[TestMethod]
+	[Description("HostNotStarted is suppressed when hostRespondedNoMcp is true to avoid contradictory issues")]
+	public void HealthReport_WhenNotStartedButHostRespondedNoMcp_OnlyReportsNoMcp()
+	{
+		var report = HealthReportFactory.Create(
+			discovery: null,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null,
+			hostRespondedNoMcp: true);
+
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostMcpEndpointNotAvailable);
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostNotStarted,
+			"HostNotStarted would be confusing when the real issue is a too-old host version");
 	}
 
 	[TestMethod]

@@ -77,10 +77,12 @@ internal static class MonitorDecisions
 	/// <summary>
 	/// Determines whether the readiness result allows the monitor to proceed
 	/// to the ServerStarted event (connect the MCP proxy).
+	/// <c>ServerRespondedNoMcp</c> is handled explicitly in the caller
+	/// (kill-and-retry for adopted servers, fail-fast for self-spawned)
+	/// and must NOT reach this gate.
 	/// </summary>
 	internal static bool IsReadinessAcceptable(ReadinessProbeResult probeResult)
-		=> probeResult == ReadinessProbeResult.Ready
-			|| probeResult == ReadinessProbeResult.ServerRespondedNoMcp;
+		=> probeResult == ReadinessProbeResult.Ready;
 
 	/// <summary>
 	/// Returns <c>true</c> when the server process has already exited, allowing

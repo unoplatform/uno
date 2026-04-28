@@ -25,6 +25,13 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 	private long _discoveryDurationMs;
 	private DiscoveryInfo? _lastDiscoveryInfo;
 	private Process? _serverProcess;
+	/// <summary>
+	/// PID of a server adopted from the AmbientRegistry (not spawned by this monitor).
+	/// Tracked so we can terminate it in <see cref="StopMonitoringAsync"/> — unlike
+	/// <see cref="_serverProcess"/>, we don't hold a <see cref="Process"/> handle
+	/// because we didn't spawn the process.
+	/// </summary>
+	private int? _adoptedServerPid;
 	private WorkspaceResolution? _workspaceResolution;
 
 	public event Action<string>? ServerStarted;
@@ -132,6 +139,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		_monitor = null;
 		cts?.Dispose();
 		_serverProcess = null;
+		_adoptedServerPid = null;
 		HostRespondedNoMcp = false;
 	}
 
@@ -281,6 +289,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 									$"oldPort={effectivePort};newPort={existing.Port};pid={existing.ProcessId}");
 								effectivePort = existing.Port;
 								_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
+								_adoptedServerPid = existing.ProcessId;
 
 								readinessResult = await WaitForServerReadyAsync(effectivePort, ct);
 							}
@@ -323,6 +332,41 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 								"Host responds to HTTP on port {Port} but the /mcp endpoint is not available. " +
 								"The host version may predate MCP support or the MCP transport failed to register.",
 								effectivePort);
+
+							if (_serverProcess is null)
+							{
+								// We adopted this server from the AmbientRegistry — it doesn't
+								// support MCP so there's no point keeping it. Kill it and retry
+								// so the next cycle spawns a fresh host from the resolved package.
+								_logger.LogWarning(
+									"Adopted server on port {Port} does not support /mcp; terminating to start fresh",
+									effectivePort);
+								TerminateServerProcess();
+								_adoptedServerPid = null;
+								retryCount++;
+								if (retryCount >= maxRetries)
+								{
+									_logger.LogError(
+										"DevServer failed to start with MCP support after {MaxRetries} attempts. " +
+										"The installed Uno.WinUI.DevServer package may need to be upgraded.",
+										maxRetries);
+									ServerFailed?.Invoke();
+									break;
+								}
+								await Task.Delay(TimeSpan.FromSeconds(2), ct);
+								continue;
+							}
+							else
+							{
+								// We spawned this host ourselves — the resolved package
+								// doesn't support MCP. Fail with a clear message rather
+								// than retrying endlessly.
+								_logger.LogError(
+									"Self-spawned DevServer does not support /mcp. " +
+									"Upgrade the Uno.WinUI.DevServer package to a version with MCP support.");
+								ServerFailed?.Invoke();
+								break;
+							}
 						}
 						else
 						{
@@ -569,6 +613,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 					existing.ProcessId, existing.Port, solution);
 				LogTimeline("start-process.reused-existing", processStartStopwatch.ElapsedMilliseconds,
 					$"pid={existing.ProcessId};port={existing.Port}");
+				_adoptedServerPid = existing.ProcessId;
 				return (true, existing.Port);
 			}
 		}
@@ -721,6 +766,31 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		catch (Exception ex)
 		{
 			_logger.LogWarning(ex, "Failed to terminate server process");
+		}
+
+		// Also terminate an adopted server (reused from AmbientRegistry) that we
+		// don't hold a Process handle for. Without this, the adopted host survives
+		// indefinitely after the CLI exits because no ParentProcessObserver is
+		// watching the current CLI PID.
+		if (_adoptedServerPid is { } adoptedPid)
+		{
+			try
+			{
+				var adopted = Process.GetProcessById(adoptedPid);
+				if (!adopted.HasExited)
+				{
+					adopted.Kill(entireProcessTree: true);
+					_logger.LogDebug("Terminated adopted server process (PID {Pid})", adoptedPid);
+				}
+			}
+			catch (ArgumentException)
+			{
+				// Process already exited — expected
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Failed to terminate adopted server process (PID {Pid})", adoptedPid);
+			}
 		}
 	}
 

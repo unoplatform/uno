@@ -365,13 +365,13 @@ public class Given_DevServerMonitor
 	// -------------------------------------------------------------------
 
 	[TestMethod]
-	[Description("Ready and ServerRespondedNoMcp are acceptable readiness results")]
-	public void IsReadinessAcceptable_ReadyAndServerRespondedNoMcp_ReturnsTrue()
+	[Description("Only Ready is acceptable; ServerRespondedNoMcp is handled explicitly, not via IsReadinessAcceptable")]
+	public void IsReadinessAcceptable_OnlyReady_ReturnsTrue()
 	{
 		MonitorDecisions.IsReadinessAcceptable(MonitorDecisions.ReadinessProbeResult.Ready)
 			.Should().BeTrue();
 		MonitorDecisions.IsReadinessAcceptable(MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp)
-			.Should().BeTrue();
+			.Should().BeFalse("ServerRespondedNoMcp is handled by kill-and-retry / fail-fast, not as acceptable");
 	}
 
 	[TestMethod]

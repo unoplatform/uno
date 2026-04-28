@@ -22,7 +22,7 @@ internal static class HealthReportFactory
 	{
 		var issues = new List<ValidationIssue>();
 
-		if (!devServerStarted)
+		if (!devServerStarted && !hostRespondedNoMcp)
 		{
 			var remediation = forceRootsFallback && !rootsProvided
 				? "Call uno_app_initialize with the workspaceDirectory path to your Uno workspace folder to initialize the DevServer."
@@ -90,9 +90,14 @@ internal static class HealthReportFactory
 			issues.Add(new ValidationIssue
 			{
 				Code = IssueCode.HostMcpEndpointNotAvailable,
-				Severity = ValidationSeverity.Warning,
-				Message = "The DevServer host responds to HTTP but the /mcp endpoint is not available. The host version may predate MCP support or the MCP HTTP transport failed to register.",
-				Remediation = "Upgrade the Uno.WinUI.DevServer / Uno.UI.DevServer NuGet package to a version that supports MCP (6.6+). Hot Reload and other WebSocket-based features may still work.",
+				Severity = ValidationSeverity.Fatal,
+				Message = "The DevServer host responds to HTTP but the /mcp endpoint is not available. " +
+					"This means the installed host version does not support the MCP protocol " +
+					"(MCP support requires Uno.WinUI.DevServer 6.6 or later).",
+				Remediation = "Upgrade the Uno.WinUI.DevServer (or Uno.UI.DevServer) NuGet package in " +
+					"your project to version 6.6 or later. If the project uses the Uno.Sdk, update " +
+					"the SDK version in global.json. Hot Reload and other WebSocket-based features " +
+					"may still work with the current version, but MCP tools require the upgrade.",
 			});
 		}
 
