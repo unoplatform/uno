@@ -297,6 +297,13 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
     webview.scrollingEnabled = enabled;
 }
 
+void uno_webview_set_inspectable(WKWebView *webview, bool inspectable)
+{
+    if (@available(macOS 13.3, *)) {
+        webview.inspectable = inspectable;
+    }
+}
+
 @implementation UNOWebView : WKWebView
 
 - (nullable instancetype)initWithCoder:(NSCoder *)coder {

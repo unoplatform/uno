@@ -93,6 +93,7 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 
 	private async void NativeWebView_CoreWebView2InitializationCompleted(object? sender, WpfCoreWebView2InitializationCompletedEventArgs e)
 	{
+		_nativeWebView.CoreWebView2.Settings.AreDevToolsEnabled = Uno.UI.FeatureConfiguration.WebView2.EnableDevTools;
 		_nativeWebView.CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
 		_nativeWebView.CoreWebView2.DocumentTitleChanged += OnNativeTitleChanged;
 		UpdateDocumentTitle();

@@ -790,6 +790,27 @@ namespace Uno.UI
 
 		public static class WebView2
 		{
+			/// <summary>
+			/// Enables the platform-native developer tools for the <see cref="WebView2"/> control.
+			/// </summary>
+			/// <remarks>
+			/// <para>Defaults to <c>true</c> in DEBUG builds and <c>false</c> in RELEASE builds.</para>
+			/// <para>Per-platform behavior:</para>
+			/// <list type="bullet">
+			///   <item><description>Windows / Linux (Skia): toggles Chromium DevTools (right-click "Inspect" / F12).</description></item>
+			///   <item><description>iOS / Mac Catalyst / macOS: enables Safari Web Inspector against the <c>WKWebView</c> (requires iOS 16.4+, macOS 13.3+).</description></item>
+			///   <item><description>Android: enables Chrome DevTools remote debugging at <c>chrome://inspect</c>.</description></item>
+			///   <item><description>WebAssembly: no-op; use the host browser's developer tools.</description></item>
+			/// </list>
+			/// <para>Set this once during application startup before any <c>WebView2</c> is materialized.</para>
+			/// </remarks>
+			public static bool EnableDevTools { get; set; }
+#if DEBUG
+				= true;
+#else
+				= false;
+#endif
+
 #if __IOS__ || UNO_REFERENCE_API
 			/// <summary>
 			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
@@ -798,7 +819,12 @@ namespace Uno.UI
 			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
 			/// Important: It will only work when the app runs in Debug mode.
 			/// </remarks>
-			public static bool IsInspectable { get; set; }
+			[System.Obsolete("Use " + nameof(EnableDevTools) + " instead. This cross-platform flag controls the same behavior on all targets.")]
+			public static bool IsInspectable
+			{
+				get => EnableDevTools;
+				set => EnableDevTools = value;
+			}
 #endif
 		}
 

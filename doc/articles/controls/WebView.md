@@ -150,23 +150,32 @@ The web files can reference each other in a relative path fashion, for example, 
 
 Is referencing a `site.js` file inside the `js` subfolder.
 
-## iOS specifics
+## Enabling native developer tools
 
-From macOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
+Set `Uno.UI.FeatureConfiguration.WebView2.EnableDevTools` during application startup, before any `WebView2` is materialized, to enable the platform-native developer tools for the underlying web engine:
 
 ```csharp
 public App()
 {
+    Uno.UI.FeatureConfiguration.WebView2.EnableDevTools = true;
     this.InitializeComponent();
-#if __IOS__
-    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
-#endif
 }
 ```
 
+The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
+
+| Platform | What it enables | How to open |
+|----------|-----------------|-------------|
+| **Windows / Linux (Skia)** | Chromium DevTools | Right-click inside the WebView and choose **Inspect**, or press <kbd>F12</kbd>. |
+| **iOS / Mac Catalyst / macOS** | Safari Web Inspector against the `WKWebView` (iOS 16.4+, macOS 13.3+) | In Safari, enable the **Develop** menu, then pick the device → page. See Apple's [Inspecting iOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) guide. |
+| **Android** | Chrome DevTools remote debugging | Open `chrome://inspect` in desktop Chrome with the device connected. |
+| **WebAssembly** | N/A — use the host browser's developer tools (<kbd>F12</kbd>). |
+
 > [!IMPORTANT]
->
-> This feature will only work for security reasons when the application runs in Debug mode.
+> On Apple platforms the OS gates inspection to apps signed with the get-task-allow entitlement (DEBUG / development builds). Setting the flag in a RELEASE build has no visible effect.
+
+> [!NOTE]
+> The legacy iOS-only `Uno.UI.FeatureConfiguration.WebView2.IsInspectable` property is now an obsolete alias for `EnableDevTools`.
 
 ## Linux specifics
 

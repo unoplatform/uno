@@ -457,6 +457,9 @@ internal static partial class NativeUno
 	internal static partial void uno_webview_set_scrolling_enabled(nint webview, [MarshalAs(UnmanagedType.I1)] bool enabled);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_set_inspectable(nint webview, [MarshalAs(UnmanagedType.I1)] bool inspectable);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_mediaplayer_set_callbacks(
 		delegate* unmanaged[Cdecl]<IntPtr, double, void> periodicPositionUpdate,
 		delegate* unmanaged[Cdecl]<IntPtr, double, void> onRateChanged,
