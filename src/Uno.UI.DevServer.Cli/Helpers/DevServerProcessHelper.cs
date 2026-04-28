@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Uno.UI.RemoteControl.Host;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
@@ -338,6 +340,19 @@ internal static class DevServerProcessHelper
 			// Streams may not be available
 		}
 
+		// Backfill the ambient registry with the ideChannelId we passed via --ideChannel.
+		// Older host versions (Uno.WinUI.DevServer < ~6.6) don't include IdeChannelId in
+		// their own registration, leaving disco's `activeServers[].ideChannelId` null and
+		// preventing uno.studio's DevServerLauncher from adopting the host without
+		// re-spawning a duplicate. The sidecar is removed automatically when the host
+		// process is no longer alive.
+		var ideChannelId = ExtractIdeChannel(startInfo.Arguments);
+		if (!string.IsNullOrWhiteSpace(ideChannelId))
+		{
+			var ambient = new AmbientRegistry(NullLogger.Instance);
+			ambient.WriteAuxiliaryRegistration(targetProcessId: process.Id, ideChannelId: ideChannelId);
+		}
+
 		// Extract the port from the args to probe for readiness
 		var port = ExtractPort(startInfo.Arguments);
 		if (port <= 0)
@@ -390,6 +405,21 @@ internal static class DevServerProcessHelper
 		}
 
 		return 0;
+	}
+
+	private static string? ExtractIdeChannel(string arguments)
+	{
+		var parts = arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		for (var i = 0; i < parts.Length - 1; i++)
+		{
+			if (string.Equals(parts[i], "--ideChannel", StringComparison.OrdinalIgnoreCase))
+			{
+				// Strip surrounding quotes that the args builder may have added.
+				return parts[i + 1].Trim('"');
+			}
+		}
+
+		return null;
 	}
 
 	private static async Task<bool> WaitForTcpReadyAsync(int port, int timeoutMs)
