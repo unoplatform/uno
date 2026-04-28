@@ -582,19 +582,38 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 
 		var hostDir = Path.Combine(hostRoot, resolvedTfm);
 		var hostExe = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.exe");
-		string? hostPath = File.Exists(hostExe)
-			? hostExe
-			: File.Exists(Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll"))
-				? Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll")
+		var hostDll = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll");
+
+		// `Uno.UI.RemoteControl.Host.exe` is a Windows PE — `dotnet <exe>` on Linux/macOS
+		// fails. Prefer the framework-dependent `.dll` everywhere except Windows, where
+		// the `.exe` is the conventional entry point and `dotnet <exe>` is well-defined.
+		string? hostPath = OperatingSystem.IsWindows()
+			? File.Exists(hostExe)
+				? hostExe
+				: File.Exists(hostDll)
+					? hostDll
+					: null
+			: File.Exists(hostDll)
+				? hostDll
 				: null;
+
 		if (hostPath is null)
 		{
 			return null;
 		}
 
-		var requiresMajorRollForward = !string.Equals(resolvedTfm, requestedTfm, StringComparison.OrdinalIgnoreCase);
+		// Major-only downgrade is the trigger for DOTNET_ROLL_FORWARD=Major. A minor
+		// fallback (e.g. requested net10.5, available net10.0 — hypothetical today)
+		// stays inside the same major and shouldn't override the user's roll-forward
+		// policy. Equal TFMs need no roll-forward at all.
+		var requiresMajorRollForward = IsOneMajorFallback(requestedTfm, resolvedTfm);
 		return new HostLaunchPlan(hostPath, requiresMajorRollForward);
 	}
+
+	private static bool IsOneMajorFallback(string requestedTfm, string resolvedTfm)
+		=> TryParseNetTfm(requestedTfm, out var requestedMajor, out _)
+			&& TryParseNetTfm(resolvedTfm, out var resolvedMajor, out _)
+			&& resolvedMajor < requestedMajor;
 
 	/// <summary>
 	/// Enumerates the <c>net{X}.{Y}</c> subdirectories that exist under
