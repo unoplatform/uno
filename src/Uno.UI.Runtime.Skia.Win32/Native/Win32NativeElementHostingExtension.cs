@@ -32,7 +32,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	private bool _arrangePending;
 	private string? _lastFinalSvgClipPath;
 	private HRGN _lastClipHrgn;
-	private bool _showWindowOnNextArrange;
+	private bool _showWindowOnNextRender;
 
 	public Win32NativeElementHostingExtension(ContentPresenter presenter)
 	{
@@ -88,7 +88,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (oldStyleVal | (int)WINDOW_STYLE.WS_CLIPSIBLINGS) & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
 
 		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
-		_showWindowOnNextArrange = true; // only show the window after the first arrange to avoid the split-second flicker between showing the window and positioning/clipping it correctly.
+		_showWindowOnNextRender = true; // only show the window after the first render that has consumed an arrange, to avoid the split-second flicker between showing the window and positioning/clipping it correctly.
 
 		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, Hwnd);
 		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
@@ -107,9 +107,11 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			return;
 		}
 
+		var consumedArrange = false;
 		if (_arrangePending)
 		{
 			_arrangePending = false;
+			consumedArrange = true;
 			_lastArrangeRect = _pendingArrangeRect;
 			_lastFinalSvgClipPath = null; // force clip recomputation for the new arrange rect
 
@@ -134,10 +136,12 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		finally
 		{
 			// Reveal the window only after position + clip are applied for the first time,
-			// to avoid a split-second flash of an unpositioned / unclipped window.
-			if (_showWindowOnNextArrange)
+			// to avoid a split-second flash of an unpositioned / unclipped window. Gating on
+			// consumedArrange ensures we never show before the first ArrangeNativeElement has
+			// been applied (e.g., if a render fires between Attach and the initial arrange).
+			if (_showWindowOnNextRender && consumedArrange)
 			{
-				_showWindowOnNextArrange = false;
+				_showWindowOnNextRender = false;
 				_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
 			}
 		}
@@ -405,7 +409,12 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public bool SupportsZIndex() => true;
 
-	public void SetZIndex(object content, int zIndex)
+	// The zIndex argument is intentionally unused: ContentPresenter.OnNativeHostsRenderOrderChanged
+	// calls SetZIndex for every host in ascending z-order, so successively raising each child HWND
+	// to HWND_TOP leaves the final Win32 child z-order matching the Uno visual tree. If that calling
+	// convention ever changes, this implementation must be revisited (e.g., positioning relative to
+	// a tracked previous sibling HWND instead).
+	public void SetZIndex(object content, int _)
 	{
 		if (content is not Win32NativeWindow window)
 		{
