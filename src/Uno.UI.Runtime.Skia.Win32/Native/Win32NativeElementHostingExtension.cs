@@ -4,8 +4,10 @@ using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -25,13 +27,19 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 {
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 
+	// Tracks the desired Uno z-order of native child HWNDs per parent window so SetZIndex can place
+	// each child relative to its lower sibling deterministically, instead of depending on the caller
+	// invoking SetZIndex for every host in ascending order.
+	private static readonly Dictionary<nint, SortedDictionary<int, nint>> _childZOrderByParent = new();
+
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
-	private SKPath? _lastClipPath;
 	private Rect _lastArrangeRect;
+	private Rect _pendingArrangeRect;
+	private bool _arrangePending;
 	private string? _lastFinalSvgClipPath;
 	private HRGN _lastClipHrgn;
-	private bool _showWindowOnNextArrange;
+	private bool _showWindowOnNextRender;
 
 	public Win32NativeElementHostingExtension(ContentPresenter presenter)
 	{
@@ -87,7 +95,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (oldStyleVal | (int)WINDOW_STYLE.WS_CLIPSIBLINGS) & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
 
 		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
-		_showWindowOnNextArrange = true; // only show the window after the first arrange to avoid the split-second flicker between showing the window and positioning/clipping it correctly.
+		_showWindowOnNextRender = true; // only show the window after the first render that has consumed an arrange, to avoid the split-second flicker between showing the window and positioning/clipping it correctly.
 
 		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, Hwnd);
 		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
@@ -101,8 +109,53 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
 	{
-		_lastClipPath = path;
+		if (_presenter.Content is not Win32NativeWindow window)
+		{
+			return;
+		}
 
+		var consumedArrange = false;
+		if (_arrangePending)
+		{
+			_arrangePending = false;
+			consumedArrange = true;
+			_lastArrangeRect = _pendingArrangeRect;
+			_lastFinalSvgClipPath = null; // force clip recomputation for the new arrange rect
+
+			var posSuccess = PInvoke.SetWindowPos(
+				(HWND)window.Hwnd,
+				HWND.Null,
+				(int)_lastArrangeRect.X,
+				(int)_lastArrangeRect.Y,
+				(int)_lastArrangeRect.Width,
+				(int)_lastArrangeRect.Height,
+				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+			if (!posSuccess)
+			{
+				this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+		}
+
+		try
+		{
+			ApplyClipPath(path);
+		}
+		finally
+		{
+			// Reveal the window only after position + clip are applied for the first time,
+			// to avoid a split-second flash of an unpositioned / unclipped window. Gating on
+			// consumedArrange ensures we never show before the first ArrangeNativeElement has
+			// been applied (e.g., if a render fires between Attach and the initial arrange).
+			if (_showWindowOnNextRender && consumedArrange)
+			{
+				_showWindowOnNextRender = false;
+				_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+			}
+		}
+	}
+
+	private unsafe void ApplyClipPath(SKPath path)
+	{
 		_tempPath.Rewind();
 		_tempPath.AddRect(_lastArrangeRect.ToSKRect());
 		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
@@ -273,6 +326,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
+		var parentHwnd = (nint)Hwnd;
+		var childHwnd = window.Hwnd;
+
 		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 
 		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, HWND.Null);
@@ -281,12 +337,24 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
+		if (_childZOrderByParent.TryGetValue(parentHwnd, out var siblings))
+		{
+			foreach (var staleKey in siblings.Where(pair => pair.Value == childHwnd).Select(pair => pair.Key).ToList())
+			{
+				siblings.Remove(staleKey);
+			}
+			if (siblings.Count == 0)
+			{
+				_childZOrderByParent.Remove(parentHwnd);
+			}
+		}
+
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
 
 	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
-		if (content is not Win32NativeWindow window)
+		if (content is not Win32NativeWindow)
 		{
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
@@ -298,36 +366,18 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		var width = arrangeRect.Width * scale;
 		var height = arrangeRect.Height * scale;
 
-		_lastArrangeRect = new Rect(
+		// Stash the intended rect and defer SetWindowPos to OnRenderingNegativePathReevaluated,
+		// which fires between the Skia picture playback and CopyPixels. Moving the child HWND
+		// at that point keeps its position update temporally adjacent to the parent framebuffer
+		// present, so DWM is more likely to see both updates in the same compose cycle — rather
+		// than compositing the child at a new position over the parent's previous frame (visible
+		// as flicker when scrolling a native element).
+		_pendingArrangeRect = new Rect(
 			double.IsFinite(x) ? x : 0,
 			double.IsFinite(y) ? y : 0,
 			double.IsFinite(width) ? width : 0,
 			double.IsFinite(height) ? height : 0);
-
-		var success = PInvoke.SetWindowPos(
-				(HWND)window.Hwnd,
-				HWND.Null,
-				(int)_lastArrangeRect.X,
-				(int)_lastArrangeRect.Y,
-				(int)_lastArrangeRect.Width,
-				(int)_lastArrangeRect.Height,
-				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
-		if (!success)
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-
-		if (_lastClipPath is not null)
-		{
-			_lastFinalSvgClipPath = null; // force reapply clip path after arranging
-			OnRenderingNegativePathReevaluated(this, _lastClipPath);
-		}
-
-		if (_showWindowOnNextArrange)
-		{
-			_showWindowOnNextArrange = false;
-			_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-		}
+		_arrangePending = true;
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)
@@ -377,5 +427,54 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 		var success = PInvoke.SetLayeredWindowAttributes((HWND)window.Hwnd, new COLORREF(0), (byte)Math.Round(opacity * 255), LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetLayeredWindowAttributes)} failed: {Win32Helper.GetErrorMessage()}"); }
+	}
+
+	public bool SupportsZIndex() => true;
+
+	public void SetZIndex(object content, int zIndex)
+	{
+		if (content is not Win32NativeWindow window)
+		{
+			return;
+		}
+
+		var childHwnd = window.Hwnd;
+		var parentHwnd = (nint)Hwnd;
+
+		if (!_childZOrderByParent.TryGetValue(parentHwnd, out var siblings))
+		{
+			siblings = new SortedDictionary<int, nint>();
+			_childZOrderByParent[parentHwnd] = siblings;
+		}
+
+		// The child may have moved from a different z-index in a previous pass; drop any stale entry
+		// before recording the new one so the sibling lookup below stays consistent.
+		foreach (var staleKey in siblings.Where(pair => pair.Value == childHwnd).Select(pair => pair.Key).ToList())
+		{
+			siblings.Remove(staleKey);
+		}
+		siblings[zIndex] = childHwnd;
+
+		// Place the child immediately above the next-lower sibling we know about. If none exists
+		// (this is the lowest-known z-index under this parent), drop it to the bottom of the chain.
+		var hwndInsertAfter = new HWND(1); // HWND_BOTTOM
+		foreach (var pair in siblings.Reverse())
+		{
+			if (pair.Key < zIndex)
+			{
+				hwndInsertAfter = (HWND)pair.Value;
+				break;
+			}
+		}
+
+		var success = PInvoke.SetWindowPos(
+			(HWND)childHwnd,
+			hwndInsertAfter,
+			0, 0, 0, 0,
+			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} (z-order) failed: {Win32Helper.GetErrorMessage()}");
+		}
 	}
 }
