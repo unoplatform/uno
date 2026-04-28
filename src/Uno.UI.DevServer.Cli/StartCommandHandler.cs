@@ -108,7 +108,8 @@ internal sealed class StartCommandHandler
 		string hostPath,
 		StartCommandArgs parsed,
 		string? addins,
-		string workingDirectory)
+		string workingDirectory,
+		bool enableMajorRollForward = false)
 	{
 		var args = new List<string>();
 
@@ -143,7 +144,7 @@ internal sealed class StartCommandHandler
 		args.AddRange(parsed.PassthroughArgs);
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			hostPath, args, workingDirectory, redirectOutput: true);
+			hostPath, args, workingDirectory, redirectOutput: true, enableMajorRollForward: enableMajorRollForward);
 	}
 
 	/// <summary>
@@ -154,7 +155,8 @@ internal sealed class StartCommandHandler
 		string hostPath,
 		string[] originalArgs,
 		string workingDirectory,
-		string? addins)
+		string? addins,
+		bool enableMajorRollForward = false)
 	{
 		var command = originalArgs.Length > 0 ? originalArgs[0] : "start";
 		var args = new List<string> { $"--command={command}" };
@@ -170,7 +172,7 @@ internal sealed class StartCommandHandler
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			hostPath, args, workingDirectory, redirectOutput: true);
+			hostPath, args, workingDirectory, redirectOutput: true, enableMajorRollForward: enableMajorRollForward);
 	}
 
 	/// <summary>
@@ -186,7 +188,8 @@ internal sealed class StartCommandHandler
 		string[] originalArgs,
 		string workingDirectory,
 		string? addins,
-		string? resolvedSolutionPath = null)
+		string? resolvedSolutionPath = null,
+		bool enableMajorRollForward = false)
 	{
 		var parsed = ParseStartArgs(originalArgs);
 
@@ -269,7 +272,7 @@ internal sealed class StartCommandHandler
 		}
 
 		// Build direct-mode args and spawn
-		var startInfo = BuildDirectLaunchArgs(hostPath, effectiveParsed, addins, workingDirectory);
+		var startInfo = BuildDirectLaunchArgs(hostPath, effectiveParsed, addins, workingDirectory, enableMajorRollForward: enableMajorRollForward);
 
 		_logger.LogInformation("Starting DevServer in direct mode: {Command} {Args}",
 			startInfo.FileName, startInfo.Arguments);

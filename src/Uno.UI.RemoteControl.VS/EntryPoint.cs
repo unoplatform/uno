@@ -459,6 +459,49 @@ public partial class EntryPoint : IDisposable
 				return;
 			}
 
+			// External-host detection: another launcher (the CLI-driven flow in the uno.studio
+			// VS extension, or — once they ship — the VS Code / Rider plugins) may have already
+			// spawned a DevServer host for this solution under the same devenv. Without this
+			// probe, EnsureServerAsync would unconditionally spawn a second host, leaving the
+			// user with two phantom processes serving the same solution on different ports.
+			//
+			// This is "Phase 1": detect-and-skip. Full adoption (connecting our IdeChannelClient
+			// to the existing host's pipe) is gated on the disco payload exposing `ideChannelId`
+			// reliably for active servers — currently it's null in the field. When that lands,
+			// this branch can also wire `_ideChannelClient` and keep IDE-channel features
+			// (UDEI status, command routing) working through the adopted host.
+			var solutionPath = _dte.Solution?.FullName;
+			if (!string.IsNullOrEmpty(solutionPath))
+			{
+				var discovery = new Helpers.DevServerHostDiscovery();
+				var existing = await discovery.TryFindHostAsync(
+					solutionPath!,
+					System.Diagnostics.Process.GetCurrentProcess().Id,
+					_ct.Token).ConfigureAwait(true);
+
+				if (existing is not null)
+				{
+					_debugAction?.Invoke(
+						$"Skipping in-process DevServer spawn: an external host (PID {existing.ProcessId}) " +
+						$"is already serving '{solutionPath}' on port {existing.Port}. " +
+						$"IDE-channel features wired by this EntryPoint will be inactive until disco surfaces ideChannelId (Phase 2).");
+
+					// Adopt the external host's port so build events don't keep proposing the
+					// previously-persisted (or freshly-picked) port. This avoids a port flip on
+					// every project rebuild while an external host owns the slot.
+					if (port != existing.Port)
+					{
+						await _dte.SetProjectUserSettingsAsync(
+							_asyncPackage,
+							RemoteControlServerPortProperty,
+							existing.Port.ToString(CultureInfo.InvariantCulture),
+							persistenceFilter).ConfigureAwait(true);
+					}
+
+					return;
+				}
+			}
+
 			// Safety: Cancel previous services! (Should have already been cancelled by the exit handler);
 			_devServer?.attachedServices.Cancel();
 
@@ -485,7 +528,7 @@ public partial class EntryPoint : IDisposable
 			var pipeGuid = Guid.NewGuid();
 
 			var hostBinPath = Path.Combine(_toolsPath, "host", $"net{version}.0", "Uno.UI.RemoteControl.Host.dll");
-			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\" --solution \"{_dte.Solution.FullName}\"";
+			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\" --solution \"{_dte.Solution!.FullName}\"";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,

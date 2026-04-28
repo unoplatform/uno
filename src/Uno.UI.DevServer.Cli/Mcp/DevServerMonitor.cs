@@ -214,7 +214,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 							_currentDirectory,
 							port);
 						var (success, effectivePort) =
-							await StartProcess(hostPath, port, _currentDirectory, solution, ct);
+							await StartProcess(hostPath, port, _currentDirectory, solution, ct, enableMajorRollForward: discovery.HostRequiresMajorRollForward);
 						LogTimeline("start-process.complete", monitorCycleStopwatch.ElapsedMilliseconds,
 							$"success={success};port={effectivePort}");
 						if (!success)
@@ -470,7 +470,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 	}
 
 	internal async Task<(bool success, int effectivePort)> StartProcess(string hostPath, int port,
-		string workingDirectory, string? solution, CancellationToken ct)
+		string workingDirectory, string? solution, CancellationToken ct, bool enableMajorRollForward = false)
 	{
 		var processStartStopwatch = Stopwatch.StartNew();
 		// Check for existing DevServer instance via AmbientRegistry.
@@ -548,7 +548,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		// Without it, the child process inherits our stdin — the MCP message pipe from
 		// the AI agent — and steals incoming JSON-RPC messages, causing random hangs.
 		var startInfo =
-			DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true);
+			DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true, enableMajorRollForward: enableMajorRollForward);
 
 		_logger.LogDebug("Starting server process: {File} {Args}", startInfo.FileName,
 			startInfo.Arguments);

@@ -27,6 +27,8 @@
 		<!-- Link sources directly so unit tests can compile without directly referencing the project output -->
 		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\ApplicationLaunchMonitor.cs" Link="AppLaunch\ApplicationLaunchMonitor.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AppLaunch\VsAppLaunchStateService.cs" Link="AppLaunch\VsAppLaunchStateService.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\DevServerHostDiscovery.cs" Link="Helpers\DevServerHostDiscovery.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\DiscoveredDevServer.cs" Link="Helpers\DiscoveredDevServer.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
 
 		<!-- Reuse the AssemblyInfoReader implementation from the VS project to avoid duplication -->
