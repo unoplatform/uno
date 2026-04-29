@@ -1,0 +1,220 @@
+﻿<Page
+    x:Class="SamplesApp.Windows_UI_Xaml_Media.Geometry.Geometry_Stroke_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="CellBorderStyle" TargetType="Border">
+            <Setter Property="Width" Value="220" />
+            <Setter Property="Height" Value="100" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemBaseLowColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style x:Key="CellLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="4,2" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Path stroke variations" />
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Solid stroke" />
+                        <Path
+                            Data="M 20,60 L 200,60"
+                            Stroke="DarkBlue"
+                            StrokeThickness="6" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="StrokeDashArray 2 1" />
+                        <Path
+                            Data="M 20,60 L 200,60"
+                            Stroke="DarkBlue"
+                            StrokeDashArray="2,1"
+                            StrokeThickness="6" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="StrokeDashArray 4 2 1 2" />
+                        <Path
+                            Data="M 20,60 L 200,60"
+                            Stroke="DarkBlue"
+                            StrokeDashArray="4,2,1,2"
+                            StrokeThickness="6" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="LineCap Flat (default)" />
+                        <Path
+                            Data="M 30,60 L 190,60"
+                            Stroke="DarkBlue"
+                            StrokeEndLineCap="Flat"
+                            StrokeStartLineCap="Flat"
+                            StrokeThickness="14" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="LineCap Round" />
+                        <Path
+                            Data="M 30,60 L 190,60"
+                            Stroke="DarkBlue"
+                            StrokeEndLineCap="Round"
+                            StrokeStartLineCap="Round"
+                            StrokeThickness="14" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="LineCap Square" />
+                        <Path
+                            Data="M 30,60 L 190,60"
+                            Stroke="DarkBlue"
+                            StrokeEndLineCap="Square"
+                            StrokeStartLineCap="Square"
+                            StrokeThickness="14" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="LineJoin Miter" />
+                        <Path
+                            Data="M 30,80 L 110,30 L 190,80"
+                            Stroke="DarkBlue"
+                            StrokeLineJoin="Miter"
+                            StrokeThickness="10" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="LineJoin Bevel" />
+                        <Path
+                            Data="M 30,80 L 110,30 L 190,80"
+                            Stroke="DarkBlue"
+                            StrokeLineJoin="Bevel"
+                            StrokeThickness="10" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="LineJoin Round" />
+                        <Path
+                            Data="M 30,80 L 110,30 L 190,80"
+                            Stroke="DarkBlue"
+                            StrokeLineJoin="Round"
+                            StrokeThickness="10" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="MiterLimit 1" />
+                        <Path
+                            Data="M 30,80 L 110,40 L 190,80"
+                            Stroke="DarkBlue"
+                            StrokeLineJoin="Miter"
+                            StrokeMiterLimit="1"
+                            StrokeThickness="10" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="MiterLimit 10" />
+                        <Path
+                            Data="M 30,80 L 110,40 L 190,80"
+                            Stroke="DarkBlue"
+                            StrokeLineJoin="Miter"
+                            StrokeMiterLimit="10"
+                            StrokeThickness="10" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="DashOffset 4" />
+                        <Path
+                            Data="M 20,60 L 200,60"
+                            Stroke="DarkBlue"
+                            StrokeDashArray="2,1"
+                            StrokeDashOffset="4"
+                            StrokeThickness="6" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

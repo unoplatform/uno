@@ -1,0 +1,277 @@
+﻿<Page
+    x:Class="SamplesApp.Windows_UI_Xaml_Media.Geometry.Geometry_AllSegments_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="CellLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,2,0,2" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style x:Key="CellBorderStyle" TargetType="Border">
+            <Setter Property="Width" Value="180" />
+            <Setter Property="Height" Value="140" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemBaseLowColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="All PathSegment subtypes" />
+            <TextBlock
+                Foreground="{ThemeResource SystemBaseMediumColor}"
+                Text="Visual parity sheet — compare side-by-side with the same XAML running on native WinUI."
+                TextWrapping="Wrap" />
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="LineSegment" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="20,40">
+                                        <LineSegment Point="160,110" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="BezierSegment" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="10,110">
+                                        <BezierSegment
+                                            Point1="40,20"
+                                            Point2="140,20"
+                                            Point3="170,110" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="QuadraticBezierSegment" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="10,110">
+                                        <QuadraticBezierSegment Point1="90,20" Point2="170,110" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="ArcSegment small CW r=40" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="50,90">
+                                        <ArcSegment
+                                            IsLargeArc="False"
+                                            Point="130,90"
+                                            RotationAngle="0"
+                                            Size="40,40"
+                                            SweepDirection="Clockwise" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="ArcSegment large CW r=40" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="50,90">
+                                        <ArcSegment
+                                            IsLargeArc="True"
+                                            Point="130,90"
+                                            RotationAngle="0"
+                                            Size="40,40"
+                                            SweepDirection="Clockwise" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="ArcSegment small CCW r=40" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="50,90">
+                                        <ArcSegment
+                                            IsLargeArc="False"
+                                            Point="130,90"
+                                            RotationAngle="0"
+                                            Size="40,40"
+                                            SweepDirection="Counterclockwise" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="ArcSegment elliptical r=60,30" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="20,90">
+                                        <ArcSegment
+                                            IsLargeArc="False"
+                                            Point="160,90"
+                                            RotationAngle="0"
+                                            Size="60,30"
+                                            SweepDirection="Clockwise" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="ArcSegment elliptical 30deg" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="20,90">
+                                        <ArcSegment
+                                            IsLargeArc="False"
+                                            Point="160,90"
+                                            RotationAngle="30"
+                                            Size="60,30"
+                                            SweepDirection="Clockwise" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="PolyLineSegment" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="10,110">
+                                        <PolyLineSegment Points="50,30 90,110 130,30 170,110" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="PolyBezierSegment" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="10,110">
+                                        <PolyBezierSegment Points="30,20 60,20 90,110 120,20 150,20 170,110" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="PolyQuadraticBezierSegment" />
+                        <Path Stroke="Red" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="10,110">
+                                        <PolyQuadraticBezierSegment Points="50,20 90,110 130,20 170,110" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
