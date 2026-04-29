@@ -98,18 +98,17 @@ namespace Microsoft.UI.Xaml.Media
 
 		public static void Write(this StreamGeometryContext ctx, EllipseGeometry ellipseGeometry)
 		{
-			// TODO - for some reason the following code is crashing on iOS.
-			// https://github.com/unoplatform/uno/issues/6849
+#if !__APPLE_UIKIT__
+			var cx = ellipseGeometry.Center.X;
+			var cy = ellipseGeometry.Center.Y;
+			var rx = ellipseGeometry.RadiusX;
+			var ry = ellipseGeometry.RadiusY;
 
-			//var cx = ellipseGeometry.Center.X;
-			//var cy = ellipseGeometry.Center.Y;
-			//var rx = ellipseGeometry.RadiusX;
-			//var ry = ellipseGeometry.RadiusY;
-
-			//ctx.BeginFigure(new Point(cx, cy - ry), true, true);
-			//ctx.ArcTo(new Point(cx, cy + ry), new Size(rx, ry), 0, false, SweepDirection.Counterclockwise, true, false);
-			//ctx.ArcTo(new Point(cx, cy - ry), new Size(rx, ry), 0, false, SweepDirection.Counterclockwise, true, false);
-			//ctx.SetClosedState(true);
+			ctx.BeginFigure(new Point(cx, cy - ry), true);
+			ctx.ArcTo(new Point(cx, cy + ry), new Size(rx, ry), 0, false, SweepDirection.Counterclockwise, true, false);
+			ctx.ArcTo(new Point(cx, cy - ry), new Size(rx, ry), 0, false, SweepDirection.Counterclockwise, true, false);
+			ctx.SetClosedState(true);
+#endif
 		}
 
 		public static void Write(this StreamGeometryContext ctx, PathFigure pathFigure)
