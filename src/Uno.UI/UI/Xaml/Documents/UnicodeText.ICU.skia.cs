@@ -289,7 +289,7 @@ internal readonly partial struct UnicodeText
 		public delegate IntPtr ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate IntPtr ubrk_close(IntPtr bi);
+		public delegate void ubrk_close(IntPtr bi);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubrk_first(IntPtr bi);
@@ -388,7 +388,7 @@ internal readonly partial struct UnicodeText
 			static extern IntPtr ubrk_open_77(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 			[DllImport("__Internal")]
-			static extern IntPtr ubrk_close_77(IntPtr bi);
+			static extern void ubrk_close_77(IntPtr bi);
 
 			[DllImport("__Internal")]
 			static extern int ubrk_first_77(IntPtr bi);
