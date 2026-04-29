@@ -209,8 +209,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			bool success = true, updated = false;
 
-			const double EndArmTolerance = 0.5;
-
 			if (horizontalOffset is double hOffset)
 			{
 				var maxOffset = Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
@@ -222,17 +220,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					HorizontalOffset = targetHorizontalOffset;
 					updated = true;
-				}
-
-				// Arm the follow-extent workaround whenever an input lands at the trailing edge of a
-				// non-trivially scrollable region (Bottom button, wheel-down clamped against an
-				// under-estimated ScrollableWidth, drag-thumb to far edge). The workaround stays inert
-				// otherwise; this is what lets wheel-down past the under-estimated end actually grow
-				// the realization window.
-				if (Scroller is { } svH && svH.ScrollableWidth > EndArmTolerance &&
-					targetHorizontalOffset >= svH.ScrollableWidth - EndArmTolerance)
-				{
-					svH.ArmFollowExtentGrowthFromInput(Orientation.Horizontal);
 				}
 			}
 
@@ -247,12 +234,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					VerticalOffset = targetVerticalOffset;
 					updated = true;
-				}
-
-				if (Scroller is { } svV && svV.ScrollableHeight > EndArmTolerance &&
-					targetVerticalOffset >= svV.ScrollableHeight - EndArmTolerance)
-				{
-					svV.ArmFollowExtentGrowthFromInput(Orientation.Vertical);
 				}
 			}
 
