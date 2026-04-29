@@ -3,15 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum ApplicationDataCreateDisposition
 	{
-#if false
-		Always = 0,
-#endif
-#if false
-		Existing = 1,
-#endif
+		// Skipping already declared field Windows.Storage.ApplicationDataCreateDisposition.Always
+		// Skipping already declared field Windows.Storage.ApplicationDataCreateDisposition.Existing
 	}
 #endif
 }

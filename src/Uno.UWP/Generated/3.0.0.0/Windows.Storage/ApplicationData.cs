@@ -121,8 +121,8 @@ namespace Windows.Storage
 		}
 #endif
 		// Forced skipping of method Windows.Storage.ApplicationData.Current.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || IS_UNIT_TESTS || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public global::Windows.Foundation.IAsyncAction SetVersionAsync(uint desiredVersion, global::Windows.Storage.ApplicationDataSetVersionHandler handler)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ApplicationData.SetVersionAsync%28uint%20desiredVersion%2C%20ApplicationDataSetVersionHandler%20handler%29");
