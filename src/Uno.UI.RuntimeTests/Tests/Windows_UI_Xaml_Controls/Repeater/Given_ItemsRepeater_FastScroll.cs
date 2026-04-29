@@ -251,6 +251,11 @@ public class Given_ItemsRepeater_FastScroll
 	[TestMethod]
 #if __ANDROID__ || __IOS__ || __WASM__
 	[Ignore("Fails due to async native scrolling.")]
+#elif !HAS_UNO
+	[Ignore("Validates Uno's synchronous-convergence accelerator (FollowExtentGrowthIfAtEnd in ScrollViewer.Managed). "
+		+ "Native WinUI ScrollViewer converges via element-anchor-driven origin tracking over multiple "
+		+ "EffectiveViewportChanged → measure → arrange cycles, which exceeds the WaitForIdle frame budget "
+		+ "with this high-variance test data. Both reach the end manually; only Uno reaches it within a single WaitForIdle.")]
 #endif
 	public async Task When_ScrolledFromTopToScrollableHeight_Then_LastItemReaches_BottomOfViewport()
 	{

@@ -190,15 +190,52 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region End-anchor tracking on extent growth
 
-		// Tracks scrollable-extent growth that lands AFTER a programmatic ChangeView has already
-		// committed its offset against an under-estimated extent. The native WinUI ScrollPresenter
-		// keeps the viewport at the trailing edge under these conditions; the managed presenter
-		// stops at the stale offset, leaving content unreachable until a second scroll.
+		// Forces synchronous convergence to the trailing edge when a programmatic ChangeView lands
+		// against an under-estimated extent (e.g. ItemsRepeater virtualizing a high-variance tail).
+		// Native WinUI converges via element-anchor-driven origin tracking over multiple
+		// EffectiveViewportChanged → measure → arrange cycles; the managed presenter does not iterate
+		// the same way, so without this hook the user would see content several items short of the
+		// end until additional layout passes ran. Gated by ArmFollowExtentGrowth so this only runs
+		// for programmatic "scroll to end" calls — never for wheel/touch input, which would
+		// otherwise fight the user when re-realization momentarily inflates the average size.
 		private bool _isFollowingExtentGrowth;
+		private bool _followExtentGrowthArmedVertical;
+		private bool _followExtentGrowthArmedHorizontal;
+
+		partial void ArmFollowExtentGrowth(Orientation orientation)
+		{
+			if (orientation == Orientation.Vertical)
+			{
+				_followExtentGrowthArmedVertical = true;
+			}
+			else
+			{
+				_followExtentGrowthArmedHorizontal = true;
+			}
+		}
 
 		partial void FollowExtentGrowthIfAtEnd(Orientation orientation, double oldOffset, double oldScrollable)
 		{
 			if (_presenter is null || _isFollowingExtentGrowth)
+			{
+				return;
+			}
+
+			// Consume the per-orientation arm token. If the workaround re-issues ChangeView below,
+			// that re-issuance arms the next arrange via the public ChangeView path.
+			bool wasArmed;
+			if (orientation == Orientation.Vertical)
+			{
+				wasArmed = _followExtentGrowthArmedVertical;
+				_followExtentGrowthArmedVertical = false;
+			}
+			else
+			{
+				wasArmed = _followExtentGrowthArmedHorizontal;
+				_followExtentGrowthArmedHorizontal = false;
+			}
+
+			if (!wasArmed)
 			{
 				return;
 			}
