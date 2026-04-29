@@ -295,6 +295,55 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 							}
 						}
 
+						// Handle ServerRespondedNoMcp before the generic readiness check,
+						// because IsReadinessAcceptable rejects it (only Ready is acceptable).
+						if (readinessResult == MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp)
+						{
+							HostRespondedNoMcp = true;
+							_logger.LogWarning(
+								"Host responds to HTTP on port {Port} but the /mcp endpoint is not available. " +
+								"The host version may predate MCP support or the MCP transport failed to register.",
+								effectivePort);
+
+							LogTimeline("wait-ready.no-mcp", monitorCycleStopwatch.ElapsedMilliseconds,
+								$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms");
+
+							if (_serverProcess is null)
+							{
+								// We adopted this server from the AmbientRegistry — it doesn't
+								// support MCP so there's no point keeping it. Kill it and retry
+								// so the next cycle spawns a fresh host from the resolved package.
+								_logger.LogWarning(
+									"Adopted server on port {Port} does not support /mcp; terminating to start fresh",
+									effectivePort);
+								TerminateAdoptedServer();
+								_adoptedServerPid = null;
+								retryCount++;
+								if (retryCount >= maxRetries)
+								{
+									_logger.LogError(
+										"DevServer failed to start with MCP support after {MaxRetries} attempts. " +
+										"The installed Uno.WinUI.DevServer package may need to be upgraded.",
+										maxRetries);
+									ServerFailed?.Invoke();
+									break;
+								}
+								await Task.Delay(TimeSpan.FromSeconds(2), ct);
+								continue;
+							}
+							else
+							{
+								// We spawned this host ourselves — the resolved package
+								// doesn't support MCP. Fail with a clear message rather
+								// than retrying endlessly.
+								_logger.LogError(
+									"Self-spawned DevServer does not support /mcp. " +
+									"Upgrade the Uno.WinUI.DevServer package to a version with MCP support.");
+								ServerFailed?.Invoke();
+								break;
+							}
+						}
+
 						if (!MonitorDecisions.IsReadinessAcceptable(readinessResult))
 						{
 							LogTimeline("wait-ready.failed", monitorCycleStopwatch.ElapsedMilliseconds,
@@ -325,53 +374,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 						LogTimeline("wait-ready.complete", monitorCycleStopwatch.ElapsedMilliseconds,
 							$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms;result={readinessResult}");
 
-						if (readinessResult == MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp)
-						{
-							HostRespondedNoMcp = true;
-							_logger.LogWarning(
-								"Host responds to HTTP on port {Port} but the /mcp endpoint is not available. " +
-								"The host version may predate MCP support or the MCP transport failed to register.",
-								effectivePort);
-
-							if (_serverProcess is null)
-							{
-								// We adopted this server from the AmbientRegistry — it doesn't
-								// support MCP so there's no point keeping it. Kill it and retry
-								// so the next cycle spawns a fresh host from the resolved package.
-								_logger.LogWarning(
-									"Adopted server on port {Port} does not support /mcp; terminating to start fresh",
-									effectivePort);
-								TerminateServerProcess();
-								_adoptedServerPid = null;
-								retryCount++;
-								if (retryCount >= maxRetries)
-								{
-									_logger.LogError(
-										"DevServer failed to start with MCP support after {MaxRetries} attempts. " +
-										"The installed Uno.WinUI.DevServer package may need to be upgraded.",
-										maxRetries);
-									ServerFailed?.Invoke();
-									break;
-								}
-								await Task.Delay(TimeSpan.FromSeconds(2), ct);
-								continue;
-							}
-							else
-							{
-								// We spawned this host ourselves — the resolved package
-								// doesn't support MCP. Fail with a clear message rather
-								// than retrying endlessly.
-								_logger.LogError(
-									"Self-spawned DevServer does not support /mcp. " +
-									"Upgrade the Uno.WinUI.DevServer package to a version with MCP support.");
-								ServerFailed?.Invoke();
-								break;
-							}
-						}
-						else
-						{
-							HostRespondedNoMcp = false;
-						}
+						HostRespondedNoMcp = false;
 
 						// Update remoteEndpoint in case effectivePort changed via AmbientRegistry fallback
 						remoteEndpoint = $"http://localhost:{effectivePort}/mcp";
@@ -768,29 +771,47 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			_logger.LogWarning(ex, "Failed to terminate server process");
 		}
 
-		// Also terminate an adopted server (reused from AmbientRegistry) that we
-		// don't hold a Process handle for. Without this, the adopted host survives
-		// indefinitely after the CLI exits because no ParentProcessObserver is
-		// watching the current CLI PID.
+		// Do not terminate adopted servers here. An adopted server may have been
+		// started by another process (for example, an IDE) and we cannot prove
+		// ownership from this generic stop path. Adopted servers are only killed
+		// in targeted scenarios (e.g., the NoMcp kill-and-retry path) where we
+		// explicitly know the server is unusable for our purposes.
 		if (_adoptedServerPid is { } adoptedPid)
 		{
-			try
+			_logger.LogDebug(
+				"Skipping termination of adopted server process (PID {Pid}) — ownership not proven",
+				adoptedPid);
+		}
+	}
+
+	/// <summary>
+	/// Terminates an adopted server that has been explicitly determined to be
+	/// unusable (e.g., it does not support MCP). Unlike <see cref="TerminateServerProcess"/>,
+	/// this is called only in targeted scenarios where the kill is justified.
+	/// </summary>
+	private void TerminateAdoptedServer()
+	{
+		if (_adoptedServerPid is not { } adoptedPid)
+		{
+			return;
+		}
+
+		try
+		{
+			var adopted = Process.GetProcessById(adoptedPid);
+			if (!adopted.HasExited)
 			{
-				var adopted = Process.GetProcessById(adoptedPid);
-				if (!adopted.HasExited)
-				{
-					adopted.Kill(entireProcessTree: true);
-					_logger.LogDebug("Terminated adopted server process (PID {Pid})", adoptedPid);
-				}
+				adopted.Kill(entireProcessTree: true);
+				_logger.LogDebug("Terminated adopted server process (PID {Pid})", adoptedPid);
 			}
-			catch (ArgumentException)
-			{
-				// Process already exited — expected
-			}
-			catch (Exception ex)
-			{
-				_logger.LogWarning(ex, "Failed to terminate adopted server process (PID {Pid})", adoptedPid);
-			}
+		}
+		catch (ArgumentException)
+		{
+			// Process already exited — expected
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to terminate adopted server process (PID {Pid})", adoptedPid);
 		}
 	}
 

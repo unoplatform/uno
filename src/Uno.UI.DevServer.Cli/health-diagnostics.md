@@ -69,7 +69,7 @@ These are added directly by `HealthService.BuildHealthReport()`:
 | `NoSolutionFound` | Warning | No `.sln` or `.slnx` file found in working directory tree |
 | `HostCrashed` | Warning/Fatal | Connection state `Reconnecting` / `Degraded` |
 | `HostUnreachable` | Warning | Started but not yet connected |
-| `HostMcpEndpointNotAvailable` | Warning | Host responds to HTTP but `/mcp` returns 404/400 (pre-MCP host or MCP transport failed to register). Remediation suggests upgrading the DevServer package. |
+| `HostMcpEndpointNotAvailable` | Fatal | Host responds to HTTP but `/mcp` returns 404/400 — the host version predates MCP support (requires 6.6 or later). The MCP bridge cannot function without this endpoint. Remediation: upgrade the Uno.WinUI.DevServer package. |
 | `UpstreamError` | Fatal | Upstream task faulted |
 
 ## Non-Mapped `IssueCode` Values

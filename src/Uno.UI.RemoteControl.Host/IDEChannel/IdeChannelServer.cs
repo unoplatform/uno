@@ -42,7 +42,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 	public event Action? ClientDisconnected;
 
 	/// <summary>Tracks whether we've already fired <see cref="ClientDisconnected"/> for the current session.</summary>
-	private volatile bool _disconnectFired;
+	private int _disconnectFired;
 
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
@@ -216,7 +216,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 			_logger.LogInformation("IDE channel {ChannelId}: client connected, JsonRpc attached. Publishing state snapshot.", session.ChannelId);
 
-			_disconnectFired = false; // Reset so the next disconnect can fire
+			Interlocked.Exchange(ref _disconnectFired, 0); // Reset so the next disconnect can fire
 			ScheduleKeepAlive();
 			session.Proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
 
@@ -266,10 +266,10 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 	private void RaiseClientDisconnected()
 	{
-		// Ensure we only fire once per connection lifecycle
-		if (!_disconnectFired)
+		// Atomic check-and-set to ensure we only fire once per connection lifecycle,
+		// even if multiple keep-alive timer callbacks race.
+		if (Interlocked.CompareExchange(ref _disconnectFired, 1, 0) == 0)
 		{
-			_disconnectFired = true;
 			_logger.LogInformation("IDE channel client disconnected.");
 			try
 			{

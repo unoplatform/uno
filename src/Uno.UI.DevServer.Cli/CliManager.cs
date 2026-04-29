@@ -947,19 +947,19 @@ internal class CliManager
 	{
 		private readonly AmbientRegistry _registry = new(Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
 
-		public (int ProcessId, int Port, string? SolutionPath)? FindBySolution(string solution)
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindBySolution(string solution)
 		{
 			var existing = _registry.GetActiveDevServerForPath(solution);
 			return existing is not null
-				? (existing.ProcessId, existing.Port, existing.SolutionPath)
+				? (existing.ProcessId, existing.Port, existing.SolutionPath, existing.ParentProcessId)
 				: null;
 		}
 
-		public (int ProcessId, int Port, string? SolutionPath)? FindByPort(int port)
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindByPort(int port)
 		{
 			var existing = _registry.GetActiveDevServerForPort(port);
 			return existing is not null
-				? (existing.ProcessId, existing.Port, existing.SolutionPath)
+				? (existing.ProcessId, existing.Port, existing.SolutionPath, existing.ParentProcessId)
 				: null;
 		}
 	}

@@ -92,14 +92,9 @@ internal static class IdeChannelObserver
 
 				gracefulShutdown();
 
-				try
-				{
-					await Task.Delay(5_500, ct);
-				}
-				catch (OperationCanceledException)
-				{
-					// Expected during shutdown
-				}
+				// Use CancellationToken.None for the forced-exit delay: gracefulShutdown()
+				// cancels `ct`, so using ct here would skip the delay entirely.
+				await Task.Delay(5_500, CancellationToken.None);
 
 				telemetry?.TrackEvent(
 					"ide-channel-lost-forced-exit",
