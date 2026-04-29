@@ -34,6 +34,10 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
+	// _lastArrangeRect, _pendingArrangeRect, _arrangePending and _showWindowOnNextRender
+	// are only touched on the UI thread: ArrangeNativeElement runs during the arrange pass
+	// and OnRenderingNegativePathReevaluated runs from a UI-thread dispatcher continuation.
+	// Asserted at the entry of OnRenderingNegativePathReevaluated.
 	private Rect _lastArrangeRect;
 	private Rect _pendingArrangeRect;
 	private bool _arrangePending;
@@ -109,6 +113,14 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
 	{
+		// Invoked from a UI-thread dispatcher continuation enqueued by the render thread
+		// after Draw() returned (see Win32WindowWrapper.Rendering.cs onClipPathUpdated).
+		// The SetWindowPos and SetWindowRgn calls below are best-effort temporally close
+		// to the parent present, but they run whenever the UI dispatcher next picks up
+		// Normal-priority work — not synchronously between picture playback and CopyPixels.
+		Debug.Assert(Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess,
+			$"{nameof(OnRenderingNegativePathReevaluated)} must run on the UI thread.");
+
 		if (_presenter.Content is not Win32NativeWindow window)
 		{
 			return;
@@ -366,12 +378,12 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		var width = arrangeRect.Width * scale;
 		var height = arrangeRect.Height * scale;
 
-		// Stash the intended rect and defer SetWindowPos to OnRenderingNegativePathReevaluated,
-		// which fires between the Skia picture playback and CopyPixels. Moving the child HWND
-		// at that point keeps its position update temporally adjacent to the parent framebuffer
-		// present, so DWM is more likely to see both updates in the same compose cycle — rather
-		// than compositing the child at a new position over the parent's previous frame (visible
-		// as flicker when scrolling a native element).
+		// Stash the intended rect and defer SetWindowPos to OnRenderingNegativePathReevaluated.
+		// That handler is enqueued by the render thread immediately after Draw() returns and
+		// runs on the UI thread, best-effort temporally close to the parent framebuffer present.
+		// In practice the UI dispatcher is usually idle at that point, so the child HWND move
+		// lands in the same DWM compose cycle as the parent — reducing (but not eliminating)
+		// flicker when scrolling a native element. There is no hard ordering guarantee.
 		_pendingArrangeRect = new Rect(
 			double.IsFinite(x) ? x : 0,
 			double.IsFinite(y) ? y : 0,

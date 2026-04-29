@@ -102,18 +102,27 @@ internal partial class Win32WindowWrapper
 			_disposed = true;
 			_frameSignal.Set(); // Unblock if waiting
 
-			// 250 ms is enough for the thread to finish a present (~16 ms at 60 Hz) plus
-			// some slack. If the join times out the GPU is likely hung — warn and then
-			// keep waiting so we never dispose synchronization primitives (or let the
-			// caller dispose _renderer next) while the render thread can still touch them.
+			// 250 ms covers a present (~16 ms at 60 Hz) plus slack. If that fails, the GPU
+			// is likely hung. Wait one more bounded interval (2 s) and then abandon: leaving
+			// the render thread (background, marked at construction) blocked is preferable
+			// to hanging the UI thread on window close. The leaked synchronization
+			// primitives and renderer outlive the thread, so the OS reclaims them at exit.
 			var joined = _thread.Join(timeout: TimeSpan.FromMilliseconds(250));
 			if (!joined)
 			{
 				typeof(RenderThread).LogWarn()?.Warn(
-					"Render thread did not exit within 250 ms during dispose; waiting for it to exit " +
-					"before releasing shared resources. This usually indicates a stuck GPU present " +
-					"(SwapBuffers/BitBlt blocked on VSync).");
-				_thread.Join();
+					"Render thread did not exit within 250 ms during dispose; waiting up to 2 s more " +
+					"before abandoning. This usually indicates a stuck GPU present " +
+					"(SwapBuffers/BitBlt/DwmFlush blocked).");
+
+				joined = _thread.Join(timeout: TimeSpan.FromSeconds(2));
+				if (!joined)
+				{
+					typeof(RenderThread).LogError()?.Error(
+						"Render thread still alive after 2 s; abandoning to keep window close responsive. " +
+						"Leaking _frameSignal, _presentedEvent and renderer until process exit.");
+					return;
+				}
 			}
 
 			_frameSignal.Dispose();

@@ -25,6 +25,14 @@ public partial class CompositionTarget
 	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
 	private static bool _isRenderingActive;
 
+	/// <summary>
+	/// True when at least one handler is subscribed to <see cref="Rendering"/>. While true,
+	/// every <see cref="CompositionTarget"/> requests a new frame after each render and the
+	/// internal render throttle paces FrameTick at vsync. Useful for diagnosing apps where
+	/// a leaked Rendering subscriber prevents the dispatcher from going idle.
+	/// </summary>
+	internal static bool IsRenderingActive => _isRenderingActive;
+
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();

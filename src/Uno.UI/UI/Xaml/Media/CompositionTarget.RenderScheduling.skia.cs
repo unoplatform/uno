@@ -107,6 +107,22 @@ public partial class CompositionTarget
 	private bool _reentrantFrameRequested;
 
 	/// <summary>
+	/// Diagnostic: incremented every time FrameTick re-entry is detected and the inner
+	/// tick is deferred. WinUI fail-fasts on the equivalent condition (XAML_FAIL_FAST in
+	/// NWDrawTree); we are more lenient and only log + defer, but a sustained increase
+	/// here indicates a third-party handler pumping the message loop or otherwise
+	/// re-entering the render pipeline. Exposed via <see cref="ReentrantFrameTickCount"/>.
+	/// </summary>
+	private long _reentrantFrameTickCount;
+
+	/// <summary>
+	/// Number of times <see cref="FrameTick"/> has been re-entered and deferred over the
+	/// life of this <see cref="CompositionTarget"/>. Use to diagnose handlers that pump
+	/// the message loop or otherwise call back into the render pipeline.
+	/// </summary>
+	internal long ReentrantFrameTickCount => Interlocked.Read(ref _reentrantFrameTickCount);
+
+	/// <summary>
 	/// Cached entry-point delegate for the dispatcher. Lazy-initialised once per
 	/// CompositionTarget to avoid per-frame closure allocation
 	/// (~3,600/min during 60 fps animation).
@@ -257,6 +273,7 @@ public partial class CompositionTarget
 			// Skip to avoid corrupting the loaded event list iteration. The outer FrameTick
 			// will schedule another tick after completing.
 			_reentrantFrameRequested = true;
+			Interlocked.Increment(ref _reentrantFrameTickCount);
 
 			// WinUI fail-fasts on tick re-entry (XAML_FAIL_FAST in NWDrawTree). We're more
 			// lenient because shipping fail-fast on user-handler re-entry would be too
@@ -265,7 +282,7 @@ public partial class CompositionTarget
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().Warn(
-					$"CompositionTarget#{GetHashCode()}: FrameTick re-entered. " +
+					$"CompositionTarget#{GetHashCode()}: FrameTick re-entered (total: {_reentrantFrameTickCount}). " +
 					"A handler invoked during Loaded or CompositionTarget.Rendering pumped the message loop " +
 					"(e.g. modal dialog, blocking Win32 call). Deferring the inner tick.");
 			}

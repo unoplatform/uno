@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
@@ -13,7 +14,15 @@ internal partial class Win32WindowWrapper
 {
 	private class SoftwareRenderer(HWND hwnd) : IRenderer
 	{
+		// Pacing fallback when DwmFlush hangs/fails repeatedly (DWM paused, RDP reconnect,
+		// fast user switch, GPU TDR). After this many consecutive failures we stop calling
+		// DwmFlush and use a fixed sleep to keep the render loop bounded.
+		private const int DwmFlushFailureThreshold = 3;
+		private const int FallbackPacingMs = 16; // ~60 Hz
+
 		private HBITMAP _hBitmap;
+		private int _consecutiveDwmFlushFailures;
+		private bool _dwmFlushDegraded;
 
 		public void StartPaint() { }
 		public void EndPaint() { }
@@ -87,10 +96,40 @@ internal partial class Win32WindowWrapper
 			// Without this, BitBlt returns instantly (unlike GL's SwapBuffers
 			// which blocks for VSync), causing the render loop to spin at
 			// hundreds of fps — wasting CPU and reporting misleading frame rates.
+			//
+			// Fallback: after DwmFlushFailureThreshold consecutive failures (DWM hung
+			// during RDP reconnect, fast user switch, or a GPU TDR), give up on
+			// DwmFlush and use a fixed sleep. We never re-enable DwmFlush in this
+			// renderer instance — once degraded, stay degraded for the lifetime of
+			// the window. Better to lose vsync alignment than to risk hanging the
+			// render thread on each frame.
+			if (_dwmFlushDegraded)
+			{
+				Thread.Sleep(FallbackPacingMs);
+				return;
+			}
+
 			var dwmFlushResult = PInvoke.DwmFlush();
 			if (dwmFlushResult.Failed)
 			{
-				this.LogError()?.Error($"{nameof(PInvoke.DwmFlush)} failed: {dwmFlushResult}");
+				_consecutiveDwmFlushFailures++;
+				this.LogError()?.Error($"{nameof(PInvoke.DwmFlush)} failed: {dwmFlushResult} (failure {_consecutiveDwmFlushFailures}/{DwmFlushFailureThreshold})");
+
+				if (_consecutiveDwmFlushFailures >= DwmFlushFailureThreshold)
+				{
+					_dwmFlushDegraded = true;
+					this.LogWarn()?.Warn(
+						$"{nameof(PInvoke.DwmFlush)} failed {DwmFlushFailureThreshold} times consecutively; " +
+						$"falling back to {FallbackPacingMs} ms sleep-based pacing. " +
+						"Frame timing will not be vsync-aligned for the rest of this window's lifetime.");
+				}
+
+				// Pace the failing call so we don't spin at full speed.
+				Thread.Sleep(FallbackPacingMs);
+			}
+			else
+			{
+				_consecutiveDwmFlushFailures = 0;
 			}
 		}
 
