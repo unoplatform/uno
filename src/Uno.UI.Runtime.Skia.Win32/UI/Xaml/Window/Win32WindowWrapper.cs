@@ -490,6 +490,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Win32Host.UnregisterWindow(_hwnd);
 		_renderThread?.Dispose();
 		_renderThread = null;
+		// Dispose the cached SKSurface before the renderer: on Vulkan it references
+		// GPU resources owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs)
+		// and the render thread has already been joined, so no background access remains.
+		_surface?.Dispose();
+		_surface = null;
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();

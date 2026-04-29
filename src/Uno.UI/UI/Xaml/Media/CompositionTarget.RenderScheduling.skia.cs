@@ -414,21 +414,22 @@ public partial class CompositionTarget
 
 		// On non-Win32 hosts, OnNativePlatformFrameRequested IS the vsync callback that
 		// signals "previous frame is on its way to the display, you can prepare the next".
-		// Forward it to OnFramePresented to release the throttle armed in FrameTick — this
-		// gives those hosts the same 1-FrameTick-per-vsync pacing Win32 gets via its render
-		// thread, and prevents the dispatcher from being saturated by FrameTicks during
-		// continuous animation (which would also starve idle work).
+		// By the time we get here, Draw() has already consumed the frame and released the
+		// render throttle (via OnFrameConsumed). Forwarding to OnFramePresented here is
+		// therefore only for the post-present "frame rendered" notification and related
+		// bookkeeping (FrameRendered + FPS tracking), giving those hosts the same
+		// post-present signal that Win32 gets from its render thread.
 		//
 		// Win32 (SupportsRenderThrottle == true) is excluded because its render thread
 		// already calls OnFramePresented after SwapBuffers/BitBlt completes — auto-calling
-		// here would be a redundant clear (and might fire from a non-vsync moment like
-		// a WM_PAINT for window uncovering).
+		// here would duplicate the FrameRendered notification and FPS bookkeeping (and
+		// might fire from a non-vsync moment like a WM_PAINT for window uncovering).
 		//
 		// Note: if the platform stops calling OnNativePlatformFrameRequested (window
-		// minimised / hidden), the throttle stays armed and FrameTicks halt. That matches
-		// the pre-branch behaviour where the platform vsync callback was the only thing
-		// driving Render() — no callback, no render. Animations resume when the platform
-		// resumes vsync delivery.
+		// minimised / hidden), rendering work stops as well. That matches the pre-branch
+		// behaviour where the platform vsync callback was the only thing driving Render()
+		// — no callback, no render. Animations resume when the platform resumes vsync
+		// delivery.
 		var host = ContentRoot.XamlRoot is { } xr
 			? XamlRootMap.GetHostForRoot(xr)
 			: null;

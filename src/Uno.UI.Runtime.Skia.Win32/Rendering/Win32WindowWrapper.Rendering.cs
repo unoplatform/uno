@@ -112,8 +112,10 @@ internal partial class Win32WindowWrapper
 	}
 
 	/// <summary>
-	/// Posted to the UI thread by the render thread after a frame is presented.
-	/// Clears the throttle so the next FrameTick can be scheduled.
+	/// Posted to the UI thread by the render thread after a frame is presented
+	/// (SwapBuffers/BitBlt completed). Forwards to <see cref="CompositionTarget.OnFramePresented"/>
+	/// for the <c>FrameRendered</c> notification and FPS bookkeeping. The render throttle
+	/// is cleared earlier — at <c>Draw</c> entry — by <c>OnFrameConsumed</c>, not here.
 	/// </summary>
 	private void OnFramePresented()
 	{
