@@ -1,0 +1,214 @@
+﻿<Page
+    x:Class="SamplesApp.Windows_UI_Xaml_Media.Geometry.Geometry_PathMarkup_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="CellBorderStyle" TargetType="Border">
+            <Setter Property="Width" Value="240" />
+            <Setter Property="Height" Value="160" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemBaseLowColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style x:Key="CellLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="4,2" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="SVG path mini-language showcase" />
+            <TextBlock
+                Foreground="{ThemeResource SystemBaseMediumColor}"
+                Text="Each cell is a Path with a different mini-language string. Compare to native WinUI for parity."
+                TextWrapping="Wrap" />
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="M / L / Z (absolute)" />
+                        <Path
+                            Data="M 30,30 L 200,30 L 200,130 L 30,130 Z"
+                            Fill="LightCoral"
+                            Stroke="DarkRed"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="m / l / z (relative)" />
+                        <Path
+                            Data="m 30,30 l 170,0 l 0,100 l -170,0 z"
+                            Fill="LightCoral"
+                            Stroke="DarkRed"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="H / V (horiz/vert lines)" />
+                        <Path
+                            Data="M 30,30 H 200 V 130 H 30 Z"
+                            Fill="LightCoral"
+                            Stroke="DarkRed"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="C (cubic bezier)" />
+                        <Path
+                            Data="M 30,130 C 60,30 180,30 210,130"
+                            Stroke="DarkGreen"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="C followed by S (smooth)" />
+                        <Path
+                            Data="M 20,130 C 50,30 90,30 120,130 S 190,30 220,130"
+                            Stroke="DarkGreen"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Q (quadratic) + T (smooth)" />
+                        <Path
+                            Data="M 20,130 Q 70,30 120,130 T 220,130"
+                            Stroke="DarkGreen"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="A (circular arc)" />
+                        <Path
+                            Data="M 40,90 A 40,40 0 0 1 200,90"
+                            Stroke="MidnightBlue"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="A (elliptical arc rx!=ry)" />
+                        <Path
+                            Data="M 40,90 A 80,30 0 0 1 200,90"
+                            Stroke="MidnightBlue"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="A (large-arc + rotation)" />
+                        <Path
+                            Data="M 40,90 A 60,30 30 1 1 200,90"
+                            Stroke="MidnightBlue"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="F0 (EvenOdd) self-intersect" />
+                        <Path
+                            Data="F0 M 30,30 L 200,30 L 30,130 L 200,130 Z"
+                            Fill="Goldenrod"
+                            Stroke="DarkGoldenrod"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="F1 (Nonzero) self-intersect" />
+                        <Path
+                            Data="F1 M 30,30 L 200,30 L 30,130 L 200,130 Z"
+                            Fill="Goldenrod"
+                            Stroke="DarkGoldenrod"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="M implicit-repeat (M then L)" />
+                        <Path
+                            Data="M 30,30 200,30 200,130 30,130 Z"
+                            Fill="Goldenrod"
+                            Stroke="DarkGoldenrod"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

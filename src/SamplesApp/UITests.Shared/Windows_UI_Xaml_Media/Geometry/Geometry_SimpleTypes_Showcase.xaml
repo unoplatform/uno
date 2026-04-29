@@ -1,0 +1,219 @@
+﻿<Page
+    x:Class="SamplesApp.Windows_UI_Xaml_Media.Geometry.Geometry_SimpleTypes_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="CellBorderStyle" TargetType="Border">
+            <Setter Property="Width" Value="200" />
+            <Setter Property="Height" Value="160" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemBaseLowColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style x:Key="CellLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="0,2" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Simple Geometry types" />
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="RectangleGeometry" />
+                        <Path
+                            Fill="LightSkyBlue"
+                            Stroke="SteelBlue"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <RectangleGeometry Rect="40,40,120,80" />
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="EllipseGeometry r=60,40" />
+                        <Path
+                            Fill="LightSkyBlue"
+                            Stroke="SteelBlue"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <EllipseGeometry
+                                    Center="100,80"
+                                    RadiusX="60"
+                                    RadiusY="40" />
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="LineGeometry" />
+                        <Path Stroke="SteelBlue" StrokeThickness="2">
+                            <Path.Data>
+                                <LineGeometry StartPoint="20,40" EndPoint="180,140" />
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="GeometryGroup (additive)" />
+                        <Path
+                            Fill="LightSkyBlue"
+                            Stroke="SteelBlue"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <GeometryGroup FillRule="EvenOdd">
+                                    <RectangleGeometry Rect="30,40,140,80" />
+                                    <EllipseGeometry
+                                        Center="100,80"
+                                        RadiusX="40"
+                                        RadiusY="25" />
+                                </GeometryGroup>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="GeometryGroup Nonzero" />
+                        <Path
+                            Fill="LightSkyBlue"
+                            Stroke="SteelBlue"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <GeometryGroup FillRule="Nonzero">
+                                    <RectangleGeometry Rect="30,40,140,80" />
+                                    <EllipseGeometry
+                                        Center="100,80"
+                                        RadiusX="40"
+                                        RadiusY="25" />
+                                </GeometryGroup>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Rectangle with rotation" />
+                        <Path
+                            Fill="LightSkyBlue"
+                            Stroke="SteelBlue"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <RectangleGeometry Rect="40,40,120,80">
+                                    <RectangleGeometry.Transform>
+                                        <RotateTransform Angle="20" CenterX="100" CenterY="80" />
+                                    </RectangleGeometry.Transform>
+                                </RectangleGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Ellipse with skew" />
+                        <Path
+                            Fill="LightSkyBlue"
+                            Stroke="SteelBlue"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <EllipseGeometry
+                                    Center="100,80"
+                                    RadiusX="60"
+                                    RadiusY="40">
+                                    <EllipseGeometry.Transform>
+                                        <SkewTransform AngleX="20" CenterX="100" CenterY="80" />
+                                    </EllipseGeometry.Transform>
+                                </EllipseGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="GeometryGroup translated" />
+                        <Path
+                            Fill="LightSkyBlue"
+                            Stroke="SteelBlue"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <GeometryGroup FillRule="EvenOdd">
+                                    <RectangleGeometry Rect="0,0,80,80">
+                                        <RectangleGeometry.Transform>
+                                            <TranslateTransform X="20" Y="20" />
+                                        </RectangleGeometry.Transform>
+                                    </RectangleGeometry>
+                                    <EllipseGeometry
+                                        Center="0,0"
+                                        RadiusX="50"
+                                        RadiusY="30">
+                                        <EllipseGeometry.Transform>
+                                            <TranslateTransform X="120" Y="80" />
+                                        </EllipseGeometry.Transform>
+                                    </EllipseGeometry>
+                                </GeometryGroup>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

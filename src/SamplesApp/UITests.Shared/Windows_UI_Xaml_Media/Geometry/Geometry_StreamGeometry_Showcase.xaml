@@ -1,0 +1,156 @@
+﻿<Page
+    x:Class="SamplesApp.Windows_UI_Xaml_Media.Geometry.Geometry_StreamGeometry_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="CellBorderStyle" TargetType="Border">
+            <Setter Property="Width" Value="240" />
+            <Setter Property="Height" Value="160" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemBaseLowColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style x:Key="CellLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="0,2" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="StreamGeometry vs PathGeometry parity" />
+            <TextBlock
+                Foreground="{ThemeResource SystemBaseMediumColor}"
+                Text="Each row shows the same shape built two ways: StreamGeometry mini-language string (left) vs explicit PathGeometry (right). Both should render identically."
+                TextWrapping="Wrap" />
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="StreamGeometry: simple closed path" />
+                        <Path
+                            Data="M 30,30 L 200,30 L 200,130 L 30,130 Z"
+                            Fill="LightCoral"
+                            Stroke="Maroon"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="PathGeometry: same shape" />
+                        <Path
+                            Fill="LightCoral"
+                            Stroke="Maroon"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure IsClosed="True" StartPoint="30,30">
+                                        <LineSegment Point="200,30" />
+                                        <LineSegment Point="200,130" />
+                                        <LineSegment Point="30,130" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="StreamGeometry: bezier" />
+                        <Path
+                            Data="M 30,130 C 60,30 180,30 210,130"
+                            Stroke="DarkGreen"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="PathGeometry: same bezier" />
+                        <Path Stroke="DarkGreen" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="30,130">
+                                        <BezierSegment
+                                            Point1="60,30"
+                                            Point2="180,30"
+                                            Point3="210,130" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="StreamGeometry: elliptical arc" />
+                        <Path
+                            Data="M 40,90 A 80,30 0 0 1 200,90"
+                            Stroke="MidnightBlue"
+                            StrokeThickness="2" />
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="PathGeometry: same arc" />
+                        <Path Stroke="MidnightBlue" StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="40,90">
+                                        <ArcSegment
+                                            IsLargeArc="False"
+                                            Point="200,90"
+                                            RotationAngle="0"
+                                            Size="80,30"
+                                            SweepDirection="Clockwise" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
