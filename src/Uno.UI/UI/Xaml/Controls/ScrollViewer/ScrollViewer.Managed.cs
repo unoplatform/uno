@@ -204,6 +204,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ArmFollowExtentGrowth(Orientation orientation)
 		{
+			ArmFollowExtentGrowthCore(orientation);
+		}
+
+		internal void ArmFollowExtentGrowthFromInput(Orientation orientation) => ArmFollowExtentGrowthCore(orientation);
+
+		private void ArmFollowExtentGrowthCore(Orientation orientation)
+		{
 			if (orientation == Orientation.Vertical)
 			{
 				_followExtentGrowthArmedVertical = true;
