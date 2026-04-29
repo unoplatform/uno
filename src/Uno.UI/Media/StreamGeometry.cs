@@ -48,6 +48,20 @@ namespace Uno.Media
 			bezierPath.FillType = FillRule.ToSkiaFillType();
 			return bezierPath;
 		}
+
+		private protected override Windows.Foundation.Rect ComputeBounds()
+		{
+			if (bezierPath is null)
+			{
+				return default;
+			}
+
+			var path = GetTransformedSKPath();
+			var b = path.Bounds;
+			return b.IsEmpty
+				? default
+				: new Windows.Foundation.Rect(b.Left, b.Top, b.Width, b.Height);
+		}
 #endif
 
 #if __APPLE_UIKIT__
