@@ -694,6 +694,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void FollowExtentGrowthIfAtEnd(Orientation orientation, double oldOffset, double oldScrollable);
 
+		partial void ArmFollowExtentGrowth(Orientation orientation);
+
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
@@ -1521,6 +1523,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
+				const double EndArmTolerance = 0.5;
+				if (verticalOffset is double v && v >= ScrollableHeight - EndArmTolerance)
+				{
+					ArmFollowExtentGrowth(Orientation.Vertical);
+				}
+				if (horizontalOffset is double h && h >= ScrollableWidth - EndArmTolerance)
+				{
+					ArmFollowExtentGrowth(Orientation.Horizontal);
+				}
+
 				return ChangeViewCore(
 					horizontalOffset,
 					verticalOffset,
