@@ -38,6 +38,12 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 	/// <inheritdoc />
 	public event Action? ClientConnected;
 
+	/// <inheritdoc />
+	public event Action? ClientDisconnected;
+
+	/// <summary>Tracks whether we've already fired <see cref="ClientDisconnected"/> for the current session.</summary>
+	private volatile bool _disconnectFired;
+
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
 		_logger = logger;
@@ -51,6 +57,12 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 				{
 					proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
 				}
+				else if (session?.Proxy is not null)
+				{
+					// Had a client (Proxy was set) but pipe is no longer connected → client disconnected
+					_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+					RaiseClientDisconnected();
+				}
 				else
 				{
 					_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
@@ -60,6 +72,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 			{
 				_logger.LogDebug(ex, "Keep-alive send failed; stopping timer.");
 				_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+				RaiseClientDisconnected();
 			}
 		});
 
@@ -203,6 +216,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 			_logger.LogInformation("IDE channel {ChannelId}: client connected, JsonRpc attached. Publishing state snapshot.", session.ChannelId);
 
+			_disconnectFired = false; // Reset so the next disconnect can fire
 			ScheduleKeepAlive();
 			session.Proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
 
@@ -249,6 +263,24 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 	internal static int KeepAliveDelayMs { get; set; } = 10_000;
 
 	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelayMs, KeepAliveDelayMs);
+
+	private void RaiseClientDisconnected()
+	{
+		// Ensure we only fire once per connection lifecycle
+		if (!_disconnectFired)
+		{
+			_disconnectFired = true;
+			_logger.LogInformation("IDE channel client disconnected.");
+			try
+			{
+				ClientDisconnected?.Invoke();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "A ClientDisconnected subscriber threw an exception.");
+			}
+		}
+	}
 
 	/// <inheritdoc />
 	public void Dispose()
