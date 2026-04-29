@@ -221,26 +221,33 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			// Consume the per-orientation arm token. If the workaround re-issues ChangeView below,
-			// that re-issuance arms the next arrange via the public ChangeView path.
-			bool wasArmed;
-			if (orientation == Orientation.Vertical)
-			{
-				wasArmed = _followExtentGrowthArmedVertical;
-				_followExtentGrowthArmedVertical = false;
-			}
-			else
-			{
-				wasArmed = _followExtentGrowthArmedHorizontal;
-				_followExtentGrowthArmedHorizontal = false;
-			}
+			bool armed = orientation == Orientation.Vertical
+				? _followExtentGrowthArmedVertical
+				: _followExtentGrowthArmedHorizontal;
 
-			if (!wasArmed)
+			if (!armed)
 			{
 				return;
 			}
 
 			const double Tolerance = 0.5;
+
+			// Disarm if the user (or any non-programmatic source) has visibly scrolled away from the end
+			// since the arming ChangeView. The arm token is meant for "follow until extent stabilizes
+			// or the user takes over"; once the offset is genuinely off-end, further extent growth must
+			// not snap the viewport back.
+			if (oldScrollable > Tolerance && oldOffset < oldScrollable - Tolerance)
+			{
+				if (orientation == Orientation.Vertical)
+				{
+					_followExtentGrowthArmedVertical = false;
+				}
+				else
+				{
+					_followExtentGrowthArmedHorizontal = false;
+				}
+				return;
+			}
 
 			var (newScrollable, newOffset) = orientation switch
 			{
@@ -248,17 +255,20 @@ namespace Microsoft.UI.Xaml.Controls
 				_ => (ScrollableWidth, HorizontalOffset),
 			};
 
-			// Only follow when the previous state was "scrolled to the end of a non-trivially scrollable
-			// region". oldScrollable > Tolerance excludes the initial empty state where extent==viewport
-			// (otherwise, async content insertion would auto-scroll to the bottom on first measure).
+			// The realization-driven extent growth typically lands one or two arrange passes after the
+			// arming ChangeView (ItemsRepeater realizes new items via EffectiveViewportChanged, which
+			// fires during arrange and only triggers a fresh measure on the next pump). Stay armed when
+			// the extent hasn't grown yet — do NOT consume the token here.
 			if (oldScrollable <= Tolerance ||
-				oldOffset < oldScrollable - Tolerance ||
 				newScrollable <= oldScrollable + Tolerance ||
 				newScrollable <= newOffset + Tolerance)
 			{
 				return;
 			}
 
+			// Extent grew while still at-end: fire. The recursive ChangeView re-arms the token through
+			// the public ChangeView path, so successive growth passes keep converging until the extent
+			// stabilizes or the user scrolls away (handled by the disarm above).
 			try
 			{
 				_isFollowingExtentGrowth = true;
