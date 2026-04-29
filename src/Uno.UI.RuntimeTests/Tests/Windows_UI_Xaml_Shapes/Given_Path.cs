@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.Media;
 using SamplesApp.UITests;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
 using Uno.UI.RuntimeTests.Helpers;
@@ -361,6 +362,106 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			WindowHelper.WindowContent = path;
 			await WindowHelper.WaitForLoaded(path);
 			await WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
+#if !__SKIA__
+		[Ignore("StreamGeometry elliptical arcs are only implemented on Skia (issue #2228 scope).")]
+#endif
+		public void When_SvgPath_String_With_Elliptical_Arc_Parses()
+		{
+			// SVG path strings with elliptical arc commands (rx != ry) used to throw
+			// NotImplementedException in PathStreamGeometryContext.ArcTo when going through
+			// PathMarkupParser -> StreamGeometry. Validates that the parser succeeds and the
+			// resulting geometry has finite, non-empty bounds.
+			var data = (Geometry)XamlBindingHelper.ConvertValue(
+				typeof(Geometry),
+				"M 10,10 A 5,3 0 0 1 20,15 A 7,2 30 1 0 30,30 Z");
+
+			Assert.IsNotNull(data);
+
+			var path = new Path { Data = data, Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black), StrokeThickness = 1 };
+			path.Measure(new Size(100, 100));
+
+			Assert.IsTrue(path.DesiredSize.Width > 0, $"Expected non-zero width, got {path.DesiredSize}");
+			Assert.IsTrue(path.DesiredSize.Height > 0, $"Expected non-zero height, got {path.DesiredSize}");
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("StreamGeometryContext.PolyBezierTo is only implemented on Skia.")]
+#endif
+		public void When_StreamGeometry_PolyBezierTo_Renders()
+		{
+			var stream = new StreamGeometry();
+			using (var ctx = stream.Open())
+			{
+				ctx.BeginFigure(new Point(0, 0), true);
+				ctx.PolyBezierTo(new[]
+				{
+					new Point(10, 0), new Point(10, 10), new Point(20, 10),
+					new Point(30, 10), new Point(30, 20), new Point(40, 20),
+				}, true, false);
+				ctx.SetClosedState(false);
+			}
+
+			var path = new Path { Data = stream, Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black), StrokeThickness = 1 };
+			path.Measure(new Size(100, 100));
+
+			Assert.IsTrue(path.DesiredSize.Width > 0);
+			Assert.IsTrue(path.DesiredSize.Height > 0);
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("StreamGeometryContext.PolyQuadraticBezierTo is only implemented on Skia.")]
+#endif
+		public void When_StreamGeometry_PolyQuadraticBezierTo_Renders()
+		{
+			var stream = new StreamGeometry();
+			using (var ctx = stream.Open())
+			{
+				ctx.BeginFigure(new Point(0, 0), true);
+				ctx.PolyQuadraticBezierTo(new[]
+				{
+					new Point(10, 0), new Point(10, 10),
+					new Point(20, 10), new Point(20, 20),
+				}, true, false);
+				ctx.SetClosedState(false);
+			}
+
+			var path = new Path { Data = stream, Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black), StrokeThickness = 1 };
+			path.Measure(new Size(100, 100));
+
+			Assert.IsTrue(path.DesiredSize.Width > 0);
+			Assert.IsTrue(path.DesiredSize.Height > 0);
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("EllipseGeometry -> StreamGeometry conversion is only validated on Skia (iOS workaround for #6849).")]
+#endif
+		public void When_EllipseGeometry_To_StreamGeometry_Round_Trips()
+		{
+			// Position the ellipse so its bounding box starts at (0, 0) — DesiredSize is measured
+			// from origin and includes the full extent of the geometry in absolute coordinates.
+			var ellipse = new EllipseGeometry
+			{
+				Center = new Point(30, 20),
+				RadiusX = 30,
+				RadiusY = 20,
+			};
+
+			var stream = ellipse.ToStreamGeometry();
+			Assert.IsNotNull(stream);
+
+			var path = new Path { Data = stream, Fill = new SolidColorBrush(Microsoft.UI.Colors.Black) };
+			path.Measure(new Size(200, 200));
+
+			// Ellipse occupies 60x40 (2*RadiusX by 2*RadiusY) — measured shape should match within 1 px.
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(60 - path.DesiredSize.Width), $"Width: {path.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(40 - path.DesiredSize.Height), $"Height: {path.DesiredSize}");
 		}
 	}
 }
