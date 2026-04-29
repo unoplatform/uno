@@ -584,6 +584,18 @@
 				},
 				"SpellChecking": {
 					"description": "Adds support for spell checking."
+				},
+				"AndroidTV": {
+					"description": "Configures the Android head for Android TV (adds Xamarin.AndroidX.Leanback). Pair with template-stamped manifest entries for Leanback launcher, banner, and focus highlight overrides.",
+					"helpUrl": "https://aka.platform.uno/feature-android-tv"
+				},
+				"AndroidAuto": {
+					"description": "Configures the Android head for Android Auto / Automotive OS (adds Xamarin.AndroidX.Car.App).",
+					"helpUrl": "https://aka.platform.uno/feature-android-auto"
+				},
+				"AndroidWear": {
+					"description": "Adds Wear OS support to the Android head (adds Xamarin.AndroidX.Wear and Xamarin.AndroidX.Wear.Tiles). Single APK targets both phone and watch.",
+					"helpUrl": "https://aka.platform.uno/feature-android-wear"
 				}
 			}
 		}
