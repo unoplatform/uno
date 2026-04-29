@@ -23,7 +23,10 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
-			textInputPlugin.ShowTextInput(textBox);
+			if (!textBox.IsReadOnly)
+			{
+				textInputPlugin.ShowTextInput(textBox);
+			}
 			textInputPlugin.NotifyViewEntered(textBox, textBox.GetHashCode());
 		}
 	}
