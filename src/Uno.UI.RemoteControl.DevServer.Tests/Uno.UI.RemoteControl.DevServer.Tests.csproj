@@ -68,7 +68,7 @@
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeChannelServer.cs" Link="IDEChannel\IdeChannelServer.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeMessageSerializer.cs" Link="IDEChannel\IdeMessageSerializer.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeChannelServerOptions.cs" Link="IDEChannel\IdeChannelServerOptions.cs" />
-		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IDEChannel\IIdeChannelServer.cs" Link="IDEChannel\IIdeChannelServer.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IdeChannel\IIdeChannelServer.cs" Link="IDEChannel\IIdeChannelServer.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IDEChannel\IdeMessageEnvelope.cs" Link="IDEChannel\IdeMessageEnvelope.cs" />
 
 

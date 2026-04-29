@@ -8,10 +8,10 @@ internal interface IDevServerLookup
 	/// <summary>
 	/// Finds an active DevServer that serves the given solution path.
 	/// </summary>
-	(int ProcessId, int Port, string? SolutionPath)? FindBySolution(string solution);
+	(int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindBySolution(string solution);
 
 	/// <summary>
 	/// Finds an active DevServer listening on the given port.
 	/// </summary>
-	(int ProcessId, int Port, string? SolutionPath)? FindByPort(int port);
+	(int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindByPort(int port);
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -389,7 +390,44 @@ internal static class DevServerProcessHelper
 		}
 
 		logger.LogInformation("DevServer is ready on port {Port}.", port);
+
+		// If we injected our own PID as --ppid (because no explicit ppid was provided
+		// but an ideChannel was), we must stay alive so the host's ParentProcessObserver
+		// can detect our death (which happens when the IDE kills its child processes on
+		// exit). Without this, the CLI exits immediately and the host sees its parent
+		// gone → shuts down within ~7.5s.
+		if (ShouldAwaitHostExit(startInfo.Arguments))
+		{
+			logger.LogDebug(
+				"CLI will remain alive as ppid guardian for host PID {HostPid}. " +
+				"The host will self-terminate when this process dies.",
+				process.Id);
+			await process.WaitForExitAsync();
+			logger.LogDebug("Host process exited with code {ExitCode}.", process.ExitCode);
+			return process.ExitCode;
+		}
+
 		return 0;
+	}
+
+	/// <summary>
+	/// Returns <c>true</c> when the CLI injected its own PID as <c>--ppid</c>
+	/// and must therefore remain alive as a guardian process.
+	/// </summary>
+	private static bool ShouldAwaitHostExit(string arguments)
+	{
+		var currentPid = Environment.ProcessId.ToString(CultureInfo.InvariantCulture);
+		var parts = arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		for (var i = 0; i < parts.Length - 1; i++)
+		{
+			if (string.Equals(parts[i], "--ppid", StringComparison.OrdinalIgnoreCase)
+				&& parts[i + 1] == currentPid)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static int ExtractPort(string arguments)
