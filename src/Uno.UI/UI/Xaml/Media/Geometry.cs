@@ -41,6 +41,12 @@ namespace Microsoft.UI.Xaml.Media
 
 		public Rect Bounds => ComputeBounds();
 
+		private static Geometry _empty;
+
+		public static Geometry Empty => _empty ??= new PathGeometry();
+
+		public static double StandardFlatteningTolerance => 0.25;
+
 		private protected virtual Rect ComputeBounds()
 		{
 			throw new NotImplementedException($"Bounds property is not implemented on {GetType().Name}.");
