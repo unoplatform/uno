@@ -8,33 +8,12 @@ namespace Windows.Storage
 #endif
 	public partial class ApplicationDataContainer
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Storage.ApplicationDataContainer> Containers
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainer", "Containers");
-			}
-		}
-#endif
+		// Skipping already declared property Containers
 		// Skipping already declared property Locality
 		// Skipping already declared property Name
 		// Skipping already declared property Values
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.ApplicationDataContainer CreateContainer(string name, global::Windows.Storage.ApplicationDataCreateDisposition disposition)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainer", "CreateContainer(string name, ApplicationDataCreateDisposition disposition)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void DeleteContainer(string name)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainer", "DeleteContainer(string name)");
-		}
-#endif
+		// Skipping already declared method Windows.Storage.ApplicationDataContainer.CreateContainer(string, Windows.Storage.ApplicationDataCreateDisposition)
+		// Skipping already declared method Windows.Storage.ApplicationDataContainer.DeleteContainer(string)
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Containers.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Locality.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Name.get

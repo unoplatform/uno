@@ -3,7 +3,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-#if false
-	public delegate void ApplicationDataSetVersionHandler(global::Windows.Storage.SetVersionRequest setVersionRequest);
-#endif
+	// Skipping already declared delegate Windows.Storage.ApplicationDataSetVersionHandler
 }
