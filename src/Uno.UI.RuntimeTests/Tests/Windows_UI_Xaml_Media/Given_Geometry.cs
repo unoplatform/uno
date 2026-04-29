@@ -136,8 +136,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void EmptyGeometry_CheckBounds()
 		{
-			// Catastrophic Failure on UWP
-			Assert.Throws<Exception>(() => _ = Geometry.Empty.Bounds);
+			// Native WinUI throws "Catastrophic Failure" on UWP/WinAppSDK for Geometry.Empty.Bounds.
+			// Uno's Geometry.Empty is a cached PathGeometry with no figures, so Bounds returns default(Rect).
+			Geometry.Empty.Bounds.Should().Be(default(Rect));
+		}
+
+		[TestMethod]
+		public void Geometry_Empty_Is_Cached_Singleton()
+		{
+			Assert.AreSame(Geometry.Empty, Geometry.Empty);
+		}
+
+		[TestMethod]
+		public void Geometry_StandardFlatteningTolerance_Is_QuarterPixel()
+		{
+			Assert.AreEqual(0.25, Geometry.StandardFlatteningTolerance);
 		}
 
 #if __SKIA__
