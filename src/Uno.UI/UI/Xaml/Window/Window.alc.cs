@@ -66,7 +66,7 @@ partial class Window
 #if DEBUG
 		if (callingAssembly.FullName?.StartsWith("System.", StringComparison.Ordinal) == true)
 		{
-			System.Diagnostics.Debug.WriteLine("Window.Content was set via reflection or framework code; secondary ALC detection may be inaccurate.");
+			global::System.Diagnostics.Debug.WriteLine("Window.Content was set via reflection or framework code; secondary ALC detection may be inaccurate.");
 		}
 #endif
 
