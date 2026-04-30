@@ -25,7 +25,7 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 		}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
 	}
 
-	public async Task<string?> GetFontNameForCodepoint(int codepoint)
+	public async Task<string?> GetFontFamilyForCodepoint(int codepoint)
 	{
 		foreach (var (fontName, typeface) in await _fonts)
 		{
@@ -37,6 +37,6 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 		return null;
 	}
 
-	public async Task<SKTypeface?> GetTypefaceForFontName(string fontName, FontWeight weight, FontStretch stretch, FontStyle style)
-		=> (await _fonts).FirstOrDefault(f => f.fontName.Equals(fontName)).typeface;
+	public async Task<SKTypeface?> GetTypefaceForFontFamily(string fontFamily, FontWeight weight, FontStretch stretch, FontStyle style)
+		=> (await _fonts).FirstOrDefault(f => f.fontName.Equals(fontFamily)).typeface;
 }

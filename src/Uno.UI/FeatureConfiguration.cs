@@ -230,6 +230,20 @@ namespace Uno.UI
 			/// </summary>
 			public static float? MaximumTextScaleFactor { get; set; }
 #endif
+
+			/// <summary>
+			/// (Skia only)
+			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
+			/// that the requested font family cannot render. When <c>null</c> (the default),
+			/// the platform-registered service is used.
+			/// </summary>
+			/// <remarks>
+			/// Customers wanting to keep the built-in coverage but change how font bytes are obtained
+			/// (e.g. to avoid CORS restrictions on WebAssembly) typically supply a
+			/// <see cref="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService"/>
+			/// constructed with their own coverage table and stream provider.
+			/// </remarks>
+			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
 		}
 
 		public static class FrameworkElement
