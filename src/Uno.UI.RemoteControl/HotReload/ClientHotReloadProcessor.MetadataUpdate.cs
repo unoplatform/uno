@@ -129,6 +129,35 @@ partial class ClientHotReloadProcessor
 				_log.Warn($"[HotReload] DoUpdateVisualTreeCore SKIPPED — reason='{prevent.reason}', TypeMappings.IsPaused={TypeMappings.IsPaused}");
 			}
 
+			// Refresh global resources even on the skip path. UpdateGlobalResources
+			// only invokes static `Initialize` / `RegisterResourceDictionariesBySource`
+			// methods on `*GlobalStaticResources` types — it does not touch the
+			// visual tree, so it is safe with TypeMappings.IsPaused. This is also
+			// the ONLY place a resource-only delta (e.g. App.xaml theme edit) can
+			// be applied while HD is active, because:
+			//   - HotDesign's HotReloadUpdateHandler.UpdateApplication strips
+			//     non-FrameworkElement types before calling AppUpdater.UpdateToLatestUI
+			//   - HotDesign's XamlUpdateService.RunUIUpdate early-returns true when
+			//     the type list is empty, so it never dispatches
+			//     ReloadUIAfterHotReload back into us
+			// Without this hoist, GSR-only or GSR+FE deltas never reach
+			// UpdateGlobalResources at all while HD is active.
+			UpdateGlobalResources(updatedTypes);
+
+			// HotDesign's drain only fires for FrameworkElement subtypes. If the
+			// delta has none, RunUIUpdate short-circuits on the empty filtered
+			// list and ReloadWithUpdatedTypes (which is the only caller of
+			// op.ReportCompleted) never runs — leaving the op stuck in Ignored
+			// forever, with the server-side wait only resolving via timeout.
+			// Resources have already been applied above; complete the op
+			// directly so the wait resolves cleanly.
+			var needsUiUpdate = updatedTypes.Any(t => t.IsSubclassOf(typeof(FrameworkElement)));
+			if (!needsUiUpdate)
+			{
+				op.ReportCompleted();
+				return;
+			}
+
 			op.ReportIgnored(prevent.reason);
 			return;
 		}
