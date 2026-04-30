@@ -109,6 +109,40 @@ partial class Application
 	}
 
 	/// <summary>
+	/// Enumerates all secondary-ALC <see cref="Application"/> instances currently registered.
+	/// Used by <see cref="ResourceResolver"/> as a last-resort fallback when a resource
+	/// lookup originating from a shared (default-ALC) assembly fails to find a key —
+	/// the resource may live in a secondary ALC's <see cref="Application.Resources"/>
+	/// (e.g. brushes from a shared theme assembly that reference colors defined only
+	/// in the consuming application's merged dictionaries).
+	/// </summary>
+	internal static global::System.Collections.Generic.IEnumerable<Application> EnumerateSecondaryApplications()
+	{
+		if (!_hasSecondaryApps)
+		{
+			yield break;
+		}
+
+		global::System.Collections.Generic.List<Application> snapshot;
+		lock (_applicationsByAlcSync)
+		{
+			snapshot = new global::System.Collections.Generic.List<Application>();
+			foreach (var kvp in _applicationsByAlc)
+			{
+				if (kvp.Value is not null && kvp.Value != Current)
+				{
+					snapshot.Add(kvp.Value);
+				}
+			}
+		}
+
+		foreach (var app in snapshot)
+		{
+			yield return app;
+		}
+	}
+
+	/// <summary>
 	/// Purges Type-keyed caches of entries from non-default (collectible) ALCs.
 	/// Called from <see cref="Window.CloseAlcWindow"/> during ALC teardown.
 	/// </summary>
