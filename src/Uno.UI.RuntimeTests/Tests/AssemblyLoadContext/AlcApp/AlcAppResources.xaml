@@ -18,4 +18,20 @@
     -->
     <SolidColorBrush x:Key="AlcAppSpecificBrush" Color="#FF00AA55"/>
     <x:String x:Key="AlcAppIdentifier">Uno.UI.RuntimeTests.AlcApp</x:String>
+
+    <!--
+        Fixture for the secondary-ALC fallback in ResourceResolver.TryTopLevelRetrieval.
+        AlcAppOnlyColor is intentionally defined ONLY here (in the secondary ALC's
+        Application.Resources). It must not be reachable from the host's
+        Application.Current.Resources, so a lookup originating from a default-ALC
+        parse context can only succeed via the secondary-app fallback.
+
+        AlcAppLazyBrush mirrors the real-world bug scenario (Uno.Themes.WinUI's
+        SharedColors.xaml has SolidColorBrushes whose Color="{StaticResource X}"
+        references colors defined elsewhere): when this brush is materialized
+        lazily after a theme switch, the {StaticResource AlcAppOnlyColor} lookup
+        must reach the secondary ALC.
+    -->
+    <Color x:Key="AlcAppOnlyColor">#FF112233</Color>
+    <SolidColorBrush x:Key="AlcAppLazyBrush" Color="{StaticResource AlcAppOnlyColor}"/>
 </ResourceDictionary>

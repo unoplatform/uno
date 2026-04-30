@@ -167,6 +167,75 @@ public class Given_AlcContentHost
 			"SubdirCustomBrush should have the color defined in AlcApp's Styles/CustomColors.xaml (#FF3399FF)");
 	}
 
+	/// <summary>
+	/// Regression test for the lookup gap that broke theme switching in Studio Live's
+	/// hosted preview: when a brush living in a default-ALC (shared) assembly references
+	/// a color via {StaticResource X} and X is defined ONLY in a secondary ALC's
+	/// Application.Resources, ResourceResolver.TryTopLevelRetrieval used to fall back to
+	/// Application.Current (the host) and miss the resource — causing the brush to be
+	/// materialized with a transparent default Color. This fixture asserts that the
+	/// secondary-ALC fallback added to TryTopLevelRetrieval finds the resource.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_TopLevelLookupFromHostContext_Then_FallsBackToSecondaryAlcApp()
+	{
+		await StartSecondaryAlcAppAsync();
+
+		// Sanity: AlcAppOnlyColor is intentionally absent from the host Application.Resources
+		Assert.IsFalse(
+			Application.Current.Resources.ContainsKey("AlcAppOnlyColor"),
+			"Sanity check: AlcAppOnlyColor must not exist in Application.Current.Resources");
+
+		// Build a parse context whose AssemblyName resolves to the test assembly (default ALC),
+		// matching the situation a brush in Uno.Themes.WinUI sees: parseContext.AssemblyLoadContext
+		// resolves to the default ALC, not the secondary one that holds the color.
+		var parseContext = new XamlParseContext
+		{
+			AssemblyName = typeof(Given_AlcContentHost).Assembly.GetName().Name
+		};
+
+		var key = new SpecializedResourceDictionary.ResourceKey("AlcAppOnlyColor");
+		var found = ResourceResolver.TryTopLevelRetrieval(key, parseContext, out var value);
+
+		Assert.IsTrue(found,
+			"TryTopLevelRetrieval must fall back to secondary-ALC Application.Resources " +
+			"when the resource is missing from the host app.");
+		Assert.IsInstanceOfType<Windows.UI.Color>(value);
+		Assert.AreEqual(
+			Windows.UI.Color.FromArgb(0xFF, 0x11, 0x22, 0x33),
+			(Windows.UI.Color)value,
+			"Returned color must match AlcAppOnlyColor (#FF112233) defined in the secondary ALC.");
+	}
+
+	/// <summary>
+	/// End-to-end regression test mirroring the Studio Live theme-switch bug shape: a
+	/// SolidColorBrush whose Color is bound via {StaticResource} to a Color defined in
+	/// the secondary ALC must materialize with the correct Color rather than the default
+	/// transparent value. Without the fix the lazy materialization returns a brush with
+	/// Color = #00000000.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_LazyBrushReferencesSecondaryAlcColor_Then_MaterializesWithCorrectColor()
+	{
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		var mergedDictionary = contentHost.Resources.MergedDictionaries
+			.FirstOrDefault(dict => dict.ContainsKey("AlcAppLazyBrush"));
+		Assert.IsNotNull(mergedDictionary,
+			"AlcAppLazyBrush should be discoverable through the projected merged dictionaries.");
+
+		var lazyBrush = mergedDictionary!["AlcAppLazyBrush"] as SolidColorBrush;
+		Assert.IsNotNull(lazyBrush,
+			"AlcAppLazyBrush should materialize to a SolidColorBrush.");
+		Assert.AreEqual(
+			Windows.UI.Color.FromArgb(0xFF, 0x11, 0x22, 0x33),
+			lazyBrush!.Color,
+			"AlcAppLazyBrush.Color must be resolved from AlcAppOnlyColor (#FF112233). " +
+			"A transparent (#00000000) value indicates the secondary-ALC fallback did not run.");
+	}
+
 	[TestMethod]
 	public void When_ContentChanges_Then_ContentChangedEventFires()
 	{
