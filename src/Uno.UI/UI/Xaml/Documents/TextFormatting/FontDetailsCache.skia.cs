@@ -35,7 +35,9 @@ internal static class FontDetailsCache
 
 	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
-	private static readonly IFontFallbackService? _fontFallbackService = ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null;
+	private static readonly IFontFallbackService? _fontFallbackService =
+		FeatureConfiguration.Font.FallbackService
+		?? (ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null);
 
 	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
@@ -97,7 +99,7 @@ internal static class FontDetailsCache
 		}
 		else
 		{
-			if (_fontFallbackService is not null && await _fontFallbackService.GetTypefaceForFontName(name, weight, stretch, style) is { } typeface)
+			if (_fontFallbackService is { } fallbackService && await fallbackService.GetTypefaceForFontFamily(name, weight, stretch, style) is { } typeface)
 			{
 				return typeface;
 			}
@@ -201,9 +203,9 @@ internal static class FontDetailsCache
 		FontStretch stretch,
 		FontStyle style)
 	{
-		if (_fontFallbackService is not null)
+		if (_fontFallbackService is { } fallbackService)
 		{
-			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodepoint(codepoint);
+			var fallbackServiceTask = fallbackService.GetFontFamilyForCodepoint(codepoint);
 			string? fallbackServiceResult = null;
 			try
 			{
