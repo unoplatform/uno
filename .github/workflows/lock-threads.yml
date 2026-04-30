@@ -8,6 +8,7 @@ on:
 permissions:
   issues: write
   pull-requests: write
+  discussions: write
 
 concurrency:
   group: lock-threads
@@ -30,3 +31,5 @@ jobs:
 
           pr-inactive-days: '7'
           pr-lock-reason: 'resolved'
+
+          log-output: true
