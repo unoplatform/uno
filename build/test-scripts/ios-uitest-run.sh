@@ -199,6 +199,18 @@ echo "===== PHASE: Start idb install (background) (t=${SECONDS}s) ====="
 idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" &
 IDB_INSTALL_PID=$!
 
+# Ensure the background idb install is reaped if the script exits early
+# (e.g. `dotnet build` fails under `set -e`); otherwise it can leak into
+# subsequent steps. The trap is a no-op once `wait $IDB_INSTALL_PID`
+# below has already reaped the process.
+cleanup_idb_install() {
+	if [ -n "${IDB_INSTALL_PID:-}" ] && kill -0 "$IDB_INSTALL_PID" 2>/dev/null; then
+		kill "$IDB_INSTALL_PID" 2>/dev/null || true
+		wait "$IDB_INSTALL_PID" 2>/dev/null || true
+	fi
+}
+trap cleanup_idb_install EXIT
+
 ## Pre-build the transform tool to get early warnings
 echo "===== PHASE: Build Uno.NUnitTransformTool (t=${SECONDS}s) ====="
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool

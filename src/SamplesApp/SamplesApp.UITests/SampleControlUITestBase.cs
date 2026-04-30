@@ -343,6 +343,14 @@ namespace SamplesApp.UITests
 
 			if (winner.Result == timeoutTask)
 			{
+				// Observe the orphan attach so it doesn't surface as an
+				// UnobservedTaskException later. The simctl erase performed
+				// by ResetSimulator below tears down the simulator the
+				// launcher is talking to, which forces the orphan to fail.
+				_ = attachTask.ContinueWith(
+					t => Console.WriteLine($"Orphaned attach completed after timeout: {t.Exception?.GetBaseException().Message ?? "ok"}"),
+					TaskScheduler.Default);
+
 				Console.WriteLine($"AttachToApp exceeded {timeout}; resetting iOS simulator.");
 				return ResetSimulator();
 			}
@@ -370,7 +378,19 @@ namespace SamplesApp.UITests
 		{
 			try
 			{
-				System.Diagnostics.Process.Start("xcrun", args)?.WaitForExit();
+				using var process = System.Diagnostics.Process.Start("xcrun", args);
+				if (process is null)
+				{
+					Console.WriteLine($"xcrun {args} failed to start");
+					return;
+				}
+				process.WaitForExit();
+				if (process.ExitCode != 0)
+				{
+					// Surface non-zero exits (e.g. transient simctl shutdown/erase
+					// failures on CI) so logs show why a recovery step didn't take.
+					Console.WriteLine($"xcrun {args} exited with code {process.ExitCode}");
+				}
 			}
 			catch (Exception ex)
 			{
