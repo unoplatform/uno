@@ -526,42 +526,49 @@ namespace Uno.UI
 		{
 			value = null;
 
-			// When secondary ALCs are active, check the secondary ALC's Application.Resources first
-			if (Application.HasSecondaryApps
-				&& context is XamlParseContext parseContext
-				&& parseContext.AssemblyLoadContext is { } alc)
+			// Resource lookup priority when secondary-ALC apps are registered:
+			//  1. The specific app whose ALC matches parseContext.AssemblyLoadContext.
+			//     (Brush XAML in a secondary-ALC assembly is uniquely owned by that app.)
+			//  2. All other secondary apps (in registration order). A secondary app's
+			//     theme overrides — e.g. SimpleToolkitTheme.ColorOverrideDictionary
+			//     resolved through Application.Resources — must beat the host's defaults
+			//     for keys that exist in both. Brush XAML in a *shared* (default-ALC)
+			//     assembly such as Uno.Themes.WinUI has no inherent owner, so the
+			//     consuming secondary app's customization should take precedence.
+			//  3. The host (Application.Current).
+			//  4. Assembly / system resources.
+			if (Application.HasSecondaryApps)
 			{
-				var alcApp = Application.GetForAssemblyLoadContext(alc);
-				if (alcApp is not null && alcApp != Application.Current)
+				Application contextApp = null;
+				if (context is XamlParseContext parseContext
+					&& parseContext.AssemblyLoadContext is { } alc)
 				{
-					if (alcApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					contextApp = Application.GetForAssemblyLoadContext(alc);
+					if (contextApp is not null
+						&& contextApp != Application.Current
+						&& contextApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 					{
 						return true;
 					}
 				}
-			}
 
-			// Try host app resources next.
-			if (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
-			{
-				return true;
-			}
-
-			// Last-resort fallback for resources defined ONLY in a secondary ALC's Application.Resources
-			// when the lookup originated from a shared (default-ALC) assembly. Common case:
-			// a brush defined in a shared theme assembly references a color via {StaticResource X},
-			// and that color lives only in the consuming app's merged dictionaries (different ALC).
-			// The parse context points at the shared assembly's ALC (default), so the targeted lookup
-			// above misses; we iterate the registered secondary apps to find it.
-			if (Application.HasSecondaryApps)
-			{
 				foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
 				{
+					if (secondaryApp == contextApp)
+					{
+						continue; // already tried above
+					}
+
 					if (secondaryApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 					{
 						return true;
 					}
 				}
+			}
+
+			if (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
+			{
+				return true;
 			}
 
 			return TryAssemblyResourceRetrieval(resourceKey, context, out value)
@@ -604,19 +611,32 @@ namespace Uno.UI
 			value = null;
 			providingDictionary = null;
 
-			// When secondary ALCs are active, check the secondary ALC's Application.Resources first.
-			// This mirrors the 3-parameter overload above and is critical for lazy materialization
-			// of brushes from secondary-ALC theme dictionaries (e.g. when a {ThemeResource X}
-			// lookup pivots to the Light/Dark sub-dictionary at theme switch time and the brush
-			// inside that sub-dictionary uses {StaticResource Y} for its Color).
-			if (Application.HasSecondaryApps
-				&& context is XamlParseContext parseContext
-				&& parseContext.AssemblyLoadContext is { } alc)
+			// See the 3-parameter overload above for the rationale of this priority order.
+			// Secondary-ALC apps are queried before the host so that a secondary app's
+			// theme overrides win over the host's same-key defaults.
+			if (Application.HasSecondaryApps)
 			{
-				var alcApp = Application.GetForAssemblyLoadContext(alc);
-				if (alcApp is not null && alcApp != Application.Current)
+				Application contextApp = null;
+				if (context is XamlParseContext parseContext
+					&& parseContext.AssemblyLoadContext is { } alc)
 				{
-					if (alcApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+					contextApp = Application.GetForAssemblyLoadContext(alc);
+					if (contextApp is not null
+						&& contextApp != Application.Current
+						&& contextApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+					{
+						return true;
+					}
+				}
+
+				foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+				{
+					if (secondaryApp == contextApp)
+					{
+						continue;
+					}
+
+					if (secondaryApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
 					{
 						return true;
 					}
@@ -626,20 +646,6 @@ namespace Uno.UI
 			if (Application.Current?.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false) ?? false)
 			{
 				return true;
-			}
-
-			// Last-resort fallback: iterate registered secondary apps. Required when a shared
-			// (default-ALC) assembly's brush references a color via {StaticResource X} and that
-			// color is defined only in a secondary ALC's Application.Resources.
-			if (Application.HasSecondaryApps)
-			{
-				foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
-				{
-					if (secondaryApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
-					{
-						return true;
-					}
-				}
 			}
 
 			// Assembly and system resources don't need pinning -- RefreshValue will fall back to TryTopLevelRetrieval
