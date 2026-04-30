@@ -469,7 +469,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OwnerPanel.ShouldInterceptInvalidate = true;
 
 			UnfillLayout(extentAdjustment ?? 0);
-			FillLayout(extentAdjustment ?? 0);
+			var linesAdded = FillLayout(extentAdjustment ?? 0);
 			SetDynamicSeed(null, null);
 
 			CorrectForEstimationErrors();
@@ -485,6 +485,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			OwnerPanel.ShouldInterceptInvalidate = false;
+
+			if (!isScroll && linesAdded > 0)
+			{
+				// If any new lines are materialized from FillLayout, we need to force an immediate layout.
+				// This is because the newly materialized lines are not arranged, and if a render pass happens to occur
+				// before the next layout pass, the listview will render with all item clustered at the top-left of the panel.
+				// This is particularly noticeable from the full refresh caused by NotifyCollectionChangedAction.Move (not properly implemented atm),
+				// as the user will notice a single frame of broken view between two correct frames.
+				OwnerPanel.UpdateLayout();
+			}
 		}
 
 		/// <summary>
@@ -508,8 +518,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Adjustment to apply when calculating fillable area.
 		/// Used when a viewport change is not yet committed into the <see cref="ScrollOffset"/>.
 		/// </param>
-		private void FillLayout(double extentAdjustment)
+		/// <returns>The number of lines added</returns>
+		private int FillLayout(double extentAdjustment)
 		{
+			var prefillCount = _materializedLines.Count;
+
 			// Don't fill backward if we're doing a light rebuild (since we are starting from nearest previously-visible item)
 			if (!_dynamicSeedStart.HasValue)
 			{
@@ -533,6 +546,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				AddLine(Forward, reorderIndex);
 			}
+
+			return _materializedLines.Count - prefillCount;
 
 			void FillBackward()
 			{
