@@ -25,6 +25,10 @@ jobs:
           days-before-issue-stale: 120
           days-before-issue-close: 10
 
+          # disable PR handling (handled by stale-prs.yml)
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+
           operations-per-run: 200
 
           exempt-issue-labels: 'pinned,keep-open'
