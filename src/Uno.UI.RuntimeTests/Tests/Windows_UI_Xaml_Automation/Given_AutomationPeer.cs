@@ -1,5 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
@@ -394,6 +396,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var result = automationPeer.GetFullDescription();
 			Assert.AreEqual(string.Empty, result);
 		}
+
+#if !__ANDROID__ && !__APPLE_UIKIT__
+		// Regression test for unoplatform/uno#461: external Toolkit controls
+		// (e.g. CommunityToolkit DataGrid) without a dedicated AutomationPeer
+		// could surface themselves as their own descendants up to the depth
+		// guard. The visited-set cycle guard in
+		// FrameworkElementAutomationPeer.GetAutomationPeerChildren prevents this.
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_VisualTree_Cycles_Then_Peer_Not_Reported_As_Own_Descendant()
+		{
+			var button = new Button { Content = "self" };
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+			Assert.IsNotNull(peer);
+
+			// Force a self-cycle in the visual subtree to mimic the malformed
+			// tree observed with external CommunityToolkit DataGrid.
+			button._children.Add(button);
+			try
+			{
+				var children = peer.GetChildren();
+				Assert.IsFalse(
+					children?.Any(c => ReferenceEquals(c, peer)) == true,
+					"Automation peer must not appear as its own descendant when the visual subtree contains a cycle.");
+			}
+			finally
+			{
+				button._children.Remove(button);
+			}
+		}
+#endif
 
 		private class TestAutomationPeer : AutomationPeer
 		{

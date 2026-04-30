@@ -141,10 +141,16 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	private void GetAutomationPeerChildren(UIElement element, List<AutomationPeer> children)
 	{
-		GetAutomationPeerChildren(element, children, 0);
+#if !__ANDROID__ && !__APPLE_UIKIT__
+		// Seed the visited set with the walk root so a malformed visual subtree
+		// that walks back to it (e.g. external Toolkit controls without a dedicated
+		// peer) does not surface the same peer as its own descendant.
+		var visited = new HashSet<UIElement>(ReferenceEqualityComparer.Instance) { element };
+		GetAutomationPeerChildren(element, children, 0, visited);
+#endif
 	}
 
-	private void GetAutomationPeerChildren(UIElement element, List<AutomationPeer> children, int depth)
+	private void GetAutomationPeerChildren(UIElement element, List<AutomationPeer> children, int depth, HashSet<UIElement> visited)
 	{
 		//UNO TODO: Properly implement GetAutomationPeerChildren on FrameworkElementAutomationPeer
 		//Temporarily disabled as android, ios, macos doesn't use UIElement
@@ -166,6 +172,16 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 				if (childIsAcceptable)
 				{
+					// Cycle guard: skip elements already encountered on this walk.
+					// Some external/Toolkit controls (e.g. CommunityToolkit DataGrid)
+					// expose a malformed visual subtree where a descendant resolves
+					// back to an ancestor. Without this guard the same peer would
+					// appear as its own descendant up to MaxAutomationTreeDepth.
+					if (!visited.Add(spChild))
+					{
+						continue;
+					}
+
 					var spChildAP = spChild.GetOrCreateAutomationPeer();
 					if (spChildAP != null)
 					{
@@ -173,7 +189,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 					}
 					else
 					{
-						GetAutomationPeerChildren(spChild, children, depth + 1);
+						GetAutomationPeerChildren(spChild, children, depth + 1, visited);
 					}
 				}
 			}
