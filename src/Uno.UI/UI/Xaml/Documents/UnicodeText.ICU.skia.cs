@@ -56,14 +56,21 @@ internal readonly partial struct UnicodeText
 			}
 			else if (OperatingSystem.IsLinux() || OperatingSystem.IsAndroid() || OperatingSystem.IsMacOS())
 			{
-				// On Linux and Android, we get the ICU binaries from the dynamic linker search path
+				// On Linux, we get the ICU binaries from the dynamic linker search path.
 				// On MacOS, we get the ICU binaries from the uno.icu-macos package.
+				// On Android, ICU is a system library accessible only through the default
+				// dlopen search path (not through assembly-relative paths).
 				if (OperatingSystem.IsMacOS() && !NativeLibrary.TryLoad("icudata", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out _))
 				{
 					// MacOS doesn't automatically load icudata from icuuc for some reason even though the icuuc binary
 					// lists icudata in the `otool -L` output, so we have to load it by hand
 					throw new Exception("Failed to load libicudata.");
 				}
+				// Track every candidate we attempt so the final exception can report exactly
+				// what was tried. On Android the real fallback is "libicu.so", not "libicuuc".
+				var attempts = new List<string> { "icuuc" };
+				Exception? lastError = null;
+
 				if (!NativeLibrary.TryLoad("icuuc", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					if (OperatingSystem.IsLinux())
@@ -71,16 +78,75 @@ internal readonly partial struct UnicodeText
 						for (int j = MaxSupportedIcuucVersion; j >= MinSupportedIcuucVersion; j--)
 						{
 							// some environments only have a versioned library and don't symlink it to libicuuc.so
-							if (NativeLibrary.TryLoad($"libicuuc.so.{j}", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
+							var name = $"libicuuc.so.{j}";
+							attempts.Add(name);
+							if (NativeLibrary.TryLoad(name, typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
 							{
 								break;
 							}
 						}
 					}
-					if (libicuuc == IntPtr.Zero)
+					else if (OperatingSystem.IsAndroid())
 					{
-						throw new Exception("Failed to load libicuuc.");
+						// Three tiers on Android:
+						//   - API 31+: the NDK-stable wrapper "libicu.so" is available.
+						//   - API 21-23: the private "libicuuc.so" can still be dlopen'd.
+						//   - API 24-30: the linker namespace blocks "libicuuc.so" and
+						//     "libicu.so" does not exist yet, so skip loading and fail
+						//     fast with a clear error below.
+						// ICU is a system library on Android, so use default dlopen search
+						// paths (not assembly-relative). Use Load (not TryLoad) so the
+						// underlying dlopen error is preserved for diagnostics.
+						string? androidFallback = null;
+						if (OperatingSystem.IsAndroidVersionAtLeast(31))
+						{
+							androidFallback = "libicu.so";
+						}
+						else if (!OperatingSystem.IsAndroidVersionAtLeast(24))
+						{
+							androidFallback = "libicuuc.so";
+						}
+
+						if (androidFallback is not null)
+						{
+							attempts.Add(androidFallback);
+							try
+							{
+								libicuuc = NativeLibrary.Load(androidFallback);
+							}
+							catch (Exception e)
+							{
+								lastError = e;
+								libicuuc = IntPtr.Zero;
+							}
+						}
 					}
+				}
+				if (libicuuc == IntPtr.Zero)
+				{
+					var platform = OperatingSystem.IsAndroid() ? "Android"
+						: OperatingSystem.IsLinux() ? "Linux"
+						: OperatingSystem.IsMacOS() ? "MacOS"
+						: "unknown";
+					string hint;
+					if (OperatingSystem.IsAndroid()
+						&& OperatingSystem.IsAndroidVersionAtLeast(24)
+						&& !OperatingSystem.IsAndroidVersionAtLeast(31))
+					{
+						hint = " Android API 24-30 has no loadable ICU: the NDK-stable libicu.so requires API 31+, and the private libicuuc.so is blocked by the linker namespace.";
+					}
+					else if (OperatingSystem.IsAndroid() && !OperatingSystem.IsAndroidVersionAtLeast(31))
+					{
+						hint = " Android's NDK-stable ICU (libicu.so) requires API 31+; libicuuc.so was attempted as a best-effort fallback for API 21-23.";
+					}
+					else
+					{
+						hint = string.Empty;
+					}
+					throw new Exception(
+						$"Failed to load ICU on {platform}. Attempted: [{string.Join(", ", attempts)}].{hint}"
+						+ (lastError is null ? string.Empty : $" Last loader error: {lastError.Message}"),
+						lastError);
 				}
 
 				// Since libicuuc not installed by us, we have no control over the specific version number, so
@@ -223,7 +289,7 @@ internal readonly partial struct UnicodeText
 		public delegate IntPtr ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate IntPtr ubrk_close(IntPtr bi);
+		public delegate void ubrk_close(IntPtr bi);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubrk_first(IntPtr bi);
@@ -322,7 +388,7 @@ internal readonly partial struct UnicodeText
 			static extern IntPtr ubrk_open_77(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 			[DllImport("__Internal")]
-			static extern IntPtr ubrk_close_77(IntPtr bi);
+			static extern void ubrk_close_77(IntPtr bi);
 
 			[DllImport("__Internal")]
 			static extern int ubrk_first_77(IntPtr bi);
