@@ -15,6 +15,7 @@ using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
 using SkiaSharp;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
@@ -74,7 +75,9 @@ namespace SamplesApp.UITests
 			// poisoning the static ctor and failing every test with TypeInitializationException.
 			var isIos = AppInitializer.GetLocalPlatform() == Platform.iOS;
 			var perAttemptTimeout = isIos ? TimeSpan.FromMinutes(4) : TimeSpan.FromMinutes(5);
-			const int maxAttempts = 3;
+			// Only iOS has a recovery step (simulator erase) between attempts; on other
+			// platforms a retry without recovery just masks real failures.
+			var maxAttempts = isIos ? 3 : 1;
 
 			Exception lastError = null;
 			for (int attempt = 1; attempt <= maxAttempts; attempt++)
@@ -99,7 +102,7 @@ namespace SamplesApp.UITests
 
 			if (lastError is not null)
 			{
-				throw lastError;
+				ExceptionDispatchInfo.Capture(lastError).Throw();
 			}
 
 			TryInitializeSkiaSharpLoader();
@@ -278,30 +281,32 @@ namespace SamplesApp.UITests
 
 		private static IApp ResetSimulator()
 		{
-			if (AppInitializer.GetLocalPlatform() == Platform.iOS
-				&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is not null)
-			{
-				// Shutdown the simulator to avoid errors like
-				// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
-				// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
-				// libc++abi: terminating due to uncaught exception of type NSException
-				// Simulator is already booted.
-				// StackTrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
-				//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
-				// --DeviceAgentException
-				//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
-				ShutdownAndEraseIosSimulator();
-
-				// Retry a cold startup after the erasure
-				return AppInitializer.ColdStartApp();
-			}
-			else
+			if (AppInitializer.GetLocalPlatform() != Platform.iOS)
 			{
 				return null;
 			}
+
+			// Shutdown the simulator to avoid errors like
+			// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
+			// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
+			// libc++abi: terminating due to uncaught exception of type NSException
+			// Simulator is already booted.
+			// StackTrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+			//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
+			// --DeviceAgentException
+			//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
+			//
+			// ShutdownAndEraseIosSimulator() is a no-op without UITEST_IOSDEVICE_ID,
+			// so we don't re-check it here.
+			ShutdownAndEraseIosSimulator();
+
+			// Retry a cold startup after the erasure, with the same timeout
+			// guard used by the static-ctor retry loop so a stuck Calabash
+			// backend can't hang here either.
+			return RunColdStartWithTimeout(TimeSpan.FromMinutes(4));
 		}
 
-		private static void RunColdStartWithTimeout(TimeSpan timeout)
+		private static IApp RunColdStartWithTimeout(TimeSpan timeout)
 		{
 			var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
 			var timeoutTask = Task.Delay(timeout);
@@ -311,13 +316,21 @@ namespace SamplesApp.UITests
 
 			if (winner.Result == timeoutTask)
 			{
-				throw new Exception($"Cold start timeout after {timeout}");
+				// Observe the orphan launch so it doesn't surface as an
+				// UnobservedTaskException later. The simctl erase performed
+				// by the caller before the next attempt kills the in-flight
+				// launch by tearing down the simulator the launcher is
+				// talking to.
+				_ = coldStartTask.ContinueWith(
+					t => Console.WriteLine($"Orphaned cold-start completed after timeout: {t.Exception?.GetBaseException().Message ?? "ok"}"),
+					TaskScheduler.Default);
+
+				throw new TimeoutException($"Cold start timeout after {timeout}");
 			}
 
-			if (coldStartTask.Exception is not null)
-			{
-				throw coldStartTask.Exception;
-			}
+			// GetAwaiter().GetResult() rethrows the original exception (not
+			// the wrapping AggregateException) and preserves the stack trace.
+			return coldStartTask.GetAwaiter().GetResult();
 		}
 
 		private static IApp RunAttachWithTimeout(TimeSpan timeout)
