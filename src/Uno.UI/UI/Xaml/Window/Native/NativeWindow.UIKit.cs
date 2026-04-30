@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Linq;
 using CoreGraphics;
@@ -272,7 +272,7 @@ public partial class Window : UIWindow
 			scalableViews.ForEach(v => v.RefreshFont());
 
 			// Update text scale factor from OS
-			var uiSettings = new Windows.UI.ViewManagement.UISettings();
+			var uiSettings = new global::Windows.UI.ViewManagement.UISettings();
 			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
 		}
 		catch (Exception ex)

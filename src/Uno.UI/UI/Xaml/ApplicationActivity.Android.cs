@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -363,7 +363,7 @@ namespace Microsoft.UI.Xaml
 			SystemThemeHelper.RefreshSystemTheme();
 
 			// Update text scale factor from OS
-			var uiSettings = new Windows.UI.ViewManagement.UISettings();
+			var uiSettings = new global::Windows.UI.ViewManagement.UISettings();
 			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
 		}
 
