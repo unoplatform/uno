@@ -99,7 +99,9 @@ internal static class FontDetailsCache
 		}
 		else
 		{
-			if (_fontFallbackService is { } fallbackService && await fallbackService.GetTypefaceForFontFamily(name, weight, stretch, style) is { } typeface)
+			if (_fontFallbackService is { } fallbackService
+				&& await fallbackService.GetFontStreamForFontFamily(name, weight, stretch, style) is { } fallbackStream
+				&& SKTypeface.FromStream(fallbackStream) is { } typeface)
 			{
 				return typeface;
 			}
