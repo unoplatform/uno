@@ -23,7 +23,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 		if (UnoSKCanvasView.Instance is { } canvasView)
 		{
-			if (!textBox.IsReadOnly)
+			if (CouldRequireKeyboard(textBox))
 			{
 				canvasView.TextInputPlugin.ShowTextInput(textBox);
 			}
