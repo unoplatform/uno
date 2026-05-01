@@ -580,6 +580,35 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// (C++ source line 2323)
+		protected override void OnGotFocus(RoutedEventArgs args)
+		{
+			base.OnGotFocus(args);
+
+			if (IsRootScrollViewer())
+			{
+				return;
+			}
+
+			var lastInputDeviceType = XamlRoot?.VisualTree.ContentRoot.InputManager.LastInputDeviceType
+				?? global::Uno.UI.Xaml.Input.InputDeviceType.None;
+
+			m_preferMouseIndicators =
+				lastInputDeviceType == global::Uno.UI.Xaml.Input.InputDeviceType.Mouse ||
+				lastInputDeviceType == global::Uno.UI.Xaml.Input.InputDeviceType.Pen;
+
+			ShowIndicators();
+
+			// If we are here because a text-editable descendant got focus,
+			// we might have to reflow the ScrollViewer around any existing occlusions.
+			bool reduceViewportForCoreInputViewOcclusions = ReduceViewportForCoreInputViewOcclusions;
+
+			if (reduceViewportForCoreInputViewOcclusions)
+			{
+				ReflowAroundCoreInputViewOcclusions();
+			}
+		}
+
 		// (C++ source line 2856)
 		internal void MakeVisible(
 			// Child element to bring into view
