@@ -546,19 +546,27 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool IsInDirectManipulationCore() => m_isInDirectManipulation;
 
 		// Skia-side bridges: SCP.Managed.cs IDirectManipulationHandler events flip the
-		// underlying m_isInDirectManipulation flag so the rest of the SV state machine
-		// (snap-points reaction, OnPrimaryContentChanged DM gates, etc.) behaves
-		// correctly during touch-driven scroll. The Phase-4 DM adapter port will replace
-		// these with full HandleManipulationStarting/Delta/Completed invocations.
+		// underlying m_isInDirectManipulation / m_isInertial flags so the rest of the SV
+		// state machine (snap-points reaction, OnPrimaryContentChanged DM gates,
+		// ViewChanging.IsInertial, etc.) behaves correctly during touch-driven scroll.
+		// The Phase-4 DM adapter port will replace these with full
+		// HandleManipulationStarting/Delta/Completed invocations.
 		internal void NotifyDirectManipulationStarting()
 		{
 			m_isInDirectManipulation = true;
 			m_isDirectManipulationStopped = false;
+			m_isInertial = false;
 		}
 
 		internal void NotifyDirectManipulationCompleted()
 		{
 			m_isInDirectManipulation = false;
+			m_isInertial = false;
+		}
+
+		internal void NotifyInertiaStarting()
+		{
+			m_isInertial = true;
 		}
 
 		// A direct manipulation in inertia phase can be interrupted via a call to StopInertialManipulation().

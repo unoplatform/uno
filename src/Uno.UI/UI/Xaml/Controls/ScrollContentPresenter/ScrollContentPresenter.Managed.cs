@@ -493,6 +493,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
+#if __SKIA__
+			// MUX Reference: when DM transitions from active manipulation to inertia,
+			// the m_isInertial flag flips so subsequent ViewChanging events report
+			// IsInertial=true. The Phase-4 DM adapter will replace this bridge.
+			sv.NotifyInertiaStarting();
+#endif
+
 			var direction = GetDirection(args.Velocities);
 
 			// Check if we have snap points configured - if so, we should handle inertia even with limited scrollable space
