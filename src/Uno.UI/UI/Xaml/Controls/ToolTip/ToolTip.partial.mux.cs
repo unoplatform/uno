@@ -475,11 +475,17 @@ public partial class ToolTip : ContentControl
 			UpdateVisualState();
 
 			// Uno-specific safety net: the C++ port relies on the Closed VSM state's
-			// Storyboard.Completed event to trigger ForceFinishClosing -> Close. The
-			// default ToolTip XAML template (ToolTip.xaml) has its VSM commented out, so
-			// no animation actually fires. ChangeVisualState handles the !bWentToState
-			// case, but if Uno's GoToState reports success even for missing states, the
-			// close path doesn't run. Force-close here defensively.
+			// Storyboard.Completed event to trigger ForceFinishClosing -> Close. There are
+			// two cases where that event will never fire on Uno Skia:
+			//   1. Default ToolTip.xaml has its VSM groups commented out, so OnApplyTemplate
+			//      finds no Closed state Storyboard to subscribe to. ChangeVisualState's
+			//      !bWentToState branch DOES fire Close() in this case (and clears m_bClosing),
+			//      so the check below is a no-op.
+			//   2. A custom template that defines a Closed VisualState WITHOUT a Storyboard
+			//      (or with an empty Storyboard). GoToState succeeds (returns true) so
+			//      ChangeVisualState leaves m_bClosing = true and does NOT call Close(),
+			//      expecting the Storyboard.Completed event - which never fires. The check
+			//      below covers this case.
 			if (m_bClosing)
 			{
 				m_bClosing = false;
