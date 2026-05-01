@@ -3976,9 +3976,7 @@ namespace Microsoft.UI.Xaml.Controls
 					null => false,
 					_ => Convert.ToBoolean(newValue, global::System.Globalization.CultureInfo.InvariantCulture),
 				};
-				// TODO Uno: Phase 4 — once SCP CanContentRenderOutsideBoundsProperty is implemented on Skia, push it through:
-				// scp.CanContentRenderOutsideBounds = canContentRenderOutsideBounds;
-				_ = canContentRenderOutsideBounds; // suppress unused warning until DP is wired.
+				scp.CanContentRenderOutsideBounds = canContentRenderOutsideBounds;
 			}
 		}
 
@@ -4101,10 +4099,8 @@ namespace Microsoft.UI.Xaml.Controls
 					m_showingMouseIndicators = false;
 				}
 
-				// TODO Uno: Phase 4 — call ScrollBar.BlockIndicatorFromShowing() once that ScrollBar method
-				// is available on the managed Skia path.
-				// m_trElementHorizontalScrollBar?.BlockIndicatorFromShowing();
-				// m_trElementVerticalScrollBar?.BlockIndicatorFromShowing();
+				m_trElementHorizontalScrollBar?.BlockIndicatorFromShowing();
+				m_trElementVerticalScrollBar?.BlockIndicatorFromShowing();
 				m_keepIndicatorsShowing = false;
 			}
 		}
@@ -4112,9 +4108,8 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void ResetBlockIndicatorsFromShowing()
 		{
 			m_blockIndicators = false;
-			// TODO Uno: Phase 4 — call ScrollBar.ResetBlockIndicatorFromShowing() on the two scrollbars.
-			// m_trElementHorizontalScrollBar?.ResetBlockIndicatorFromShowing();
-			// m_trElementVerticalScrollBar?.ResetBlockIndicatorFromShowing();
+			m_trElementHorizontalScrollBar?.ResetBlockIndicatorFromShowing();
+			m_trElementVerticalScrollBar?.ResetBlockIndicatorFromShowing();
 		}
 
 		// Change to the correct visual state for the ScrollViewer.
