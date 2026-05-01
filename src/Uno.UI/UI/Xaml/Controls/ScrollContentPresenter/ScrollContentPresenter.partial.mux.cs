@@ -994,6 +994,305 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isSemanticZoomPresenter = true;
 		}
 
+		// (C++ source line 2789)
+		internal void CalculateTextBoxClipRect(
+			global::Windows.Foundation.Size availableSize,
+			out global::Windows.Foundation.Rect pClipRect)
+		{
+			// Special case for a scroll content presenter containing the text of a
+			// TextBox or a RichtextBox: we don't want to clip to the layout boundaries
+			// of the text, as that will clip any ovehanging glyph strokes, such as the
+			// bottom of a lowercase italic f in a Latin font like Times New Roman, or a
+			// Lam or Alif in any Arabic font. See bug 82041 for an example.
+			//
+			// If this scroll content presenter hosts a TextBoxView or a
+			// RichTextBoxView, and if either end of the text is fully in view, then we
+			// allow glyphs at those ends to overhang into the padding of the containing
+			// ScrollViewer and the 1 pixel selection highlight border by extending the
+			// clipping rectangle.
+
+			double glyphOverhangLeft = 0.0;
+			double glyphOverhangRight = 0.0;
+			double extentWidth = 0.0;
+			double viewportWidth = 0.0;
+			double offset = 0.0;
+			// TODO: Add back when we have RichTextBox
+			//    ctl::ComPtr<RichTextBox> spRichTextBoxParent;
+			TextWrapping wrapping = TextWrapping.NoWrap;
+			ScrollBarVisibility visibility = ScrollBarVisibility.Disabled;
+			Thickness scrollViewerPadding = default;
+			double availableWidth = 0.0;
+			double availableHeight = 0.0;
+			global::Windows.Foundation.Rect clipRect = default;
+
+			var spTemplatedParent = TemplatedParent;
+			var spScrollViewer = spTemplatedParent as ScrollViewer;
+			var pScrollData = GetScrollData();
+			extentWidth = pScrollData.m_extent.Width;
+			viewportWidth = pScrollData.m_viewport.Width;
+			offset = pScrollData.GetOffsetX();
+
+			var spTemplatedGrandParent = spScrollViewer?.TemplatedParent;
+			var spTextBoxParent = spTemplatedGrandParent as TextBox;
+			// TODO: Add back when we have RichTextBox
+			//    spRichTextBoxParent = spTemplatedGrandParent.AsOrNull<xaml_controls::IRichTextBox>();
+
+			// Detemine the TextWrapping and HorizontalScrollBarVisiblity properties.
+			if (spTextBoxParent is not null)
+			{
+				wrapping = spTextBoxParent.TextWrapping;
+				// TODO: Add back when TextBox has a HorizontalScrollBarVisibility property
+				//        IFC(spTextBoxParent->get_HorizontalScrollBarVisibility(&visibility));
+			}
+			// TODO: Add back when we have RichTextBox
+			//    else if (spRichTextBoxParent)
+			//    {
+			//        IFC(spRichTextBoxParent->get_TextWrapping(&wrapping));
+			//        IFC(spRichTextBoxParent->get_HorizontalScrollBarVisibility(&visibility));
+			//    }
+
+			// Determine the space to reserve for left and right glyph overhang
+			scrollViewerPadding = spScrollViewer is not null ? spScrollViewer.Padding : default;
+			if (wrapping == TextWrapping.Wrap)
+			{
+				// If TextWrapping="wrap" then the text always fits the margins and we
+				// always want to allow glyphs to overhang into both margins.
+				glyphOverhangLeft = scrollViewerPadding.Left + 1.0;
+				glyphOverhangRight = scrollViewerPadding.Right + 1.0;
+			}
+			else
+			{
+				// We're not wrapping.
+				// The left end is quite easy:
+				if (viewportWidth > extentWidth || offset == 0)
+				{
+					// Left end of content is fully in view
+					glyphOverhangLeft = scrollViewerPadding.Left + 1.0;
+				}
+
+				// The right end is not so easy, because when client disables the
+				// horizontal scrollbar we don't bother to measure the extent beyond
+				// the viewport width. So with a disabled horizontal scrollbar we can
+				// only trust the extent measurement when it is less than the viewport
+				// width.
+				if (viewportWidth > extentWidth ||
+					(visibility != ScrollBarVisibility.Disabled &&
+					Math.Abs(extentWidth - offset + viewportWidth) <= 1.0))
+				{
+					// Right end of content is fully in view
+					glyphOverhangRight = scrollViewerPadding.Right + 1.0;
+				}
+			}
+
+			// Note that we only want to expand the clip. We use Math.Max to
+			// enforce this for cases where the client provides negative values
+			// for padding left and/or right.
+			glyphOverhangLeft = Math.Max(0.0, glyphOverhangLeft);
+			glyphOverhangRight = Math.Max(0.0, glyphOverhangRight);
+
+			// Return the clipping rectangle with the calculated overhangs.
+			availableWidth = availableSize.Width;
+			availableHeight = availableSize.Height;
+			clipRect.X = (float)-glyphOverhangLeft;
+			clipRect.Y = 0;
+			clipRect.Width = (float)(availableWidth + glyphOverhangLeft + glyphOverhangRight);
+			clipRect.Height = (float)availableHeight;
+			pClipRect = clipRect;
+		}
+
+		// ScrollContentPresenter clips its content to arrange size.
+		// No clip is applied if its CanContentRenderOutsideBounds property is set to True though.
+		// (C++ source line 2907)
+		internal void UpdateClip(global::Windows.Foundation.Size availableSize)
+		{
+			bool canContentRenderOutsideBounds = CanContentRenderOutsideBounds;
+
+			if (canContentRenderOutsideBounds)
+			{
+				if (m_isClipPropertySet)
+				{
+					Clip = null;
+					m_isClipPropertySet = false;
+				}
+			}
+			else
+			{
+				if (!m_isClipPropertySet)
+				{
+					var spClippingGeometry = new RectangleGeometry();
+					m_tpClippingRectangle = spClippingGeometry;
+					Clip = m_tpClippingRectangle;
+					m_isClipPropertySet = true;
+				}
+
+				global::Windows.Foundation.Rect clipRect = default;
+
+				// TODO: Add back when we have ITextBoxView/IRichTextBoxView
+				//    IFC(get_TemplatedParent(&pTemplatedParent));
+				//    IFC(get_Content(&pContent));
+				//
+				//    if (ctl::is<IScrollViewer>(ctl::as_iinspectable(pTemplatedParent)) &&
+				//        (ctl::is<ITextBoxView>(pContentAsII) || ctl::is<IRichTextBoxView>(pContentAsII)))
+				//    {
+				//        // We may need to allow glyphs to overhang into the ScrollViewers padding
+				//        IFC(CalculateTextBoxClipRect(availableSize, &clip));
+				//        clipRect = clip;
+				//    }
+				//    else
+				//    {
+				clipRect.X = clipRect.Y = 0;
+				clipRect.Width = availableSize.Width;
+				clipRect.Height = availableSize.Height;
+				//    }
+				m_tpClippingRectangle.Rect = clipRect;
+			}
+		}
+
+		// Called when a criteria for the CanUseActualWidthAsExtent or CanUseActualHeightAsExtent evaluation changed.
+		// Calls InvalidateMeasure when the evaluation actually changes so the special
+		// mode can be entered or exited.
+		// (C++ source line 2961)
+		internal void RefreshUseOfActualSizeAsExtent(UIElement pManipulatedElement)
+		{
+			bool isScrollClient = IsScrollClient();
+			var pScrollData = GetScrollData();
+			if (isScrollClient && pScrollData is not null)
+			{
+				bool canUseActualWidthAsExtent = false;
+				bool canUseActualHeightAsExtent = false;
+
+				var spScrollOwner = GetScrollOwner();
+				var spScrollViewer = spScrollOwner as ScrollViewer;
+				var spContentFE = pManipulatedElement as FrameworkElement;
+
+				CanUseActualWidthAsExtent(
+					spScrollOwner,
+					spScrollViewer,
+					spContentFE,
+					out canUseActualWidthAsExtent);
+
+				if (canUseActualWidthAsExtent == m_isChildActualWidthUsedAsExtent)
+				{
+					CanUseActualHeightAsExtent(
+						spScrollOwner,
+						spScrollViewer,
+						spContentFE,
+						out canUseActualHeightAsExtent);
+				}
+
+				if (m_isChildActualWidthUsedAsExtent != canUseActualWidthAsExtent || m_isChildActualHeightUsedAsExtent != canUseActualHeightAsExtent)
+				{
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		// Determines whether the mode that uses the child's actual size for the IScrollInfo extent is applicable or not.
+		// The answer is partially evaluated with a temporary reg key.
+		// (C++ source line 3016)
+		internal static void CanUseActualWidthAsExtent(
+			IScrollOwner pScrollOwner,
+			ScrollViewer pScrollViewer,
+			FrameworkElement pContentFE,
+			out bool pCanUseActualWidthAsExtent)
+		{
+			pCanUseActualWidthAsExtent = false;
+
+			if (pContentFE is null)
+			{
+				return;
+			}
+
+			HorizontalAlignment horizontalContentFEAlignment = pContentFE.HorizontalAlignment;
+			if (horizontalContentFEAlignment != HorizontalAlignment.Stretch)
+			{
+				// In order to minimize the risks for regressions, we only stop using
+				// the child's desired size in known problematic situations. Bugs have
+				// only surfaced when the Stretched alignment is used.
+				// Do not enter the special mode unless a Stretch alignment is used.
+				return;
+			}
+
+			// FrameworkElement::IsWidthSpecified() returns true when Width, MinWidth or
+			// MaxWidth was set to a non-default value (NaN width, 0 min, +Inf max).
+			if (!double.IsNaN(pContentFE.Width) ||
+				pContentFE.MinWidth != 0.0 ||
+				!double.IsPositiveInfinity(pContentFE.MaxWidth))
+			{
+				// When the child has a non-default Width, MinWidth or MaxWidth, the
+				// desired width reflects the correct extent to push via IScrollInfo,
+				// while the actual width does not.
+				return;
+			}
+
+			if (pScrollViewer is not null)
+			{
+				// Do not enter the special mode when the ScrollViewer is using an imposed layout size.
+				// This situation arises with the SemanticZoom control which imposes a size for the
+				// ScrollContentPresenter's child. See how ScrollContentPresenter::MeasureOverride
+				// uses GetLayoutSize() for the desired size and IScrollInfo extent size.
+				var layoutSize = pScrollViewer.GetLayoutSize();
+				if (layoutSize.Width != 0.0f)
+				{
+					return;
+				}
+			}
+
+			pCanUseActualWidthAsExtent = true;
+		}
+
+		// (C++ source line 3067)
+		internal static void CanUseActualHeightAsExtent(
+			IScrollOwner pScrollOwner,
+			ScrollViewer pScrollViewer,
+			FrameworkElement pContentFE,
+			out bool pCanUseActualHeightAsExtent)
+		{
+			pCanUseActualHeightAsExtent = false;
+
+			if (pContentFE is null)
+			{
+				return;
+			}
+
+			VerticalAlignment verticalContentFEAlignment = pContentFE.VerticalAlignment;
+			if (verticalContentFEAlignment != VerticalAlignment.Stretch)
+			{
+				// In order to minimize the risks for regressions, we only stop using
+				// the child's desired size in known problematic situations. Bugs have
+				// only surfaced when the Stretched alignment is used.
+				// Do not enter the special mode unless a Stretch alignment is used.
+				return;
+			}
+
+			// FrameworkElement::IsHeightSpecified() returns true when Height, MinHeight or
+			// MaxHeight was set to a non-default value.
+			if (!double.IsNaN(pContentFE.Height) ||
+				pContentFE.MinHeight != 0.0 ||
+				!double.IsPositiveInfinity(pContentFE.MaxHeight))
+			{
+				// When the child has a non-default Height, MinHeight or MaxHeight, the
+				// desired height reflects the correct extent to push via IScrollInfo,
+				// while the actual height does not.
+				return;
+			}
+
+			if (pScrollViewer is not null)
+			{
+				// Do not enter the special mode when the ScrollViewer is using an imposed layout size.
+				// This situation arises with the SemanticZoom control which imposes a size for the
+				// ScrollContentPresenter's child. See how ScrollContentPresenter::MeasureOverride
+				// uses GetLayoutSize() for the desired size and IScrollInfo extent size.
+				var layoutSize = pScrollViewer.GetLayoutSize();
+				if (layoutSize.Height != 0.0f)
+				{
+					return;
+				}
+			}
+
+			pCanUseActualHeightAsExtent = true;
+		}
+
 		// Verifies scrolling data using the passed viewport and extent as
 		// newly computed values.  Checks the X/Y offset and coerces them
 		// into the range [0, Extent - ViewportSize].  If extent, viewport,
@@ -1139,17 +1438,70 @@ namespace Microsoft.UI.Xaml.Controls
 			// }
 		}
 
-		// TODO Uno: Phase 6 — port StopUseOfActualWidthAsExtent / StopUseOfActualHeightAsExtent.
-		// These methods clear the m_isChildActualWidth/HeightUsedAsExtent flag and re-evaluate measure.
-		// For now stubs are sufficient.
-		private void StopUseOfActualWidthAsExtent()
+		// Enters the mode where the child's actual size is used for
+		// the extent exposed through IScrollInfo.
+		// (C++ source line 6034)
+		internal void StartUseOfActualWidthAsExtent()
 		{
-			m_isChildActualWidthUsedAsExtent = false;
+			global::System.Diagnostics.Debug.Assert(!m_isChildActualWidthUsedAsExtent);
+			m_isChildActualWidthUsedAsExtent = true;
+
+			var spScrollOwner = GetScrollOwner();
+			var spScrollViewer = spScrollOwner as ScrollViewer;
+			if (spScrollViewer is not null)
+			{
+				spScrollViewer.StartUseOfActualSizeAsExtent(true /*isHorizontal*/);
+			}
 		}
 
-		private void StopUseOfActualHeightAsExtent()
+		// Leaves the mode where the child's actual size is used for
+		// the extent exposed through IScrollInfo.
+		// (C++ source line 6055)
+		internal void StopUseOfActualWidthAsExtent()
 		{
+			global::System.Diagnostics.Debug.Assert(m_isChildActualWidthUsedAsExtent);
+			m_unpublishedExtentSize.Width = 0.0f;
+			m_isChildActualWidthUsedAsExtent = false;
+
+			var spScrollOwner = GetScrollOwner();
+			var spScrollViewer = spScrollOwner as ScrollViewer;
+			if (spScrollViewer is not null)
+			{
+				spScrollViewer.StopUseOfActualSizeAsExtent(true /*isHorizontal*/);
+			}
+		}
+
+		// Enters the mode where the child's actual size is used for
+		// the extent exposed through IScrollInfo.
+		// (C++ source line 6077)
+		internal void StartUseOfActualHeightAsExtent()
+		{
+			global::System.Diagnostics.Debug.Assert(!m_isChildActualHeightUsedAsExtent);
+			m_isChildActualHeightUsedAsExtent = true;
+
+			var spScrollOwner = GetScrollOwner();
+			var spScrollViewer = spScrollOwner as ScrollViewer;
+			if (spScrollViewer is not null)
+			{
+				spScrollViewer.StartUseOfActualSizeAsExtent(false /*isHorizontal*/);
+			}
+		}
+
+		// Leaves the mode where the child's actual size is used for
+		// the extent exposed through IScrollInfo.
+		// (C++ source line 6098)
+		internal void StopUseOfActualHeightAsExtent()
+		{
+			global::System.Diagnostics.Debug.Assert(m_isChildActualHeightUsedAsExtent);
+			m_unpublishedExtentSize.Height = 0.0f;
 			m_isChildActualHeightUsedAsExtent = false;
+
+			var spScrollOwner = GetScrollOwner();
+			var spScrollViewer = spScrollOwner as ScrollViewer;
+			if (spScrollViewer is not null)
+			{
+				spScrollViewer.StopUseOfActualSizeAsExtent(false /*isHorizontal*/);
+			}
 		}
 
 		// Provides the behavior for the Measure pass of layout. Classes can
