@@ -118,28 +118,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			EnsureAttachScrollBars();
-
-			OnLoadedPartial();
-		}
-
-		private partial void OnLoadedPartial();
-
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-
-			DetachScrollBars();
-			ResetScrollIndicator();
-
-			OnUnloadedPartial();
-		}
-		private partial void OnUnloadedPartial();
-
 		protected override AutomationPeer OnCreateAutomationPeer() => new ScrollViewerAutomationPeer(this);
 
 		// Note: All DependencyProperty declarations have been moved to ScrollViewer.Properties.cs
