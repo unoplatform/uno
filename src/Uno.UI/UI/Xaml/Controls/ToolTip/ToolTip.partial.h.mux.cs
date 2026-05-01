@@ -88,6 +88,11 @@ public partial class ToolTip : ContentControl
 	internal readonly SerialDisposable m_ownerPointerCanceledToken = new SerialDisposable();
 	internal readonly SerialDisposable m_ownerGotFocusToken = new SerialDisposable();
 	internal readonly SerialDisposable m_ownerLostFocusToken = new SerialDisposable();
+
+	// Uno-specific addition: revoker for the PointerPressed handler attached on
+	// ButtonBase owners (matching the cross-platform Uno UX where clicking a button
+	// dismisses its tooltip). WinUI relies on hit-testing instead.
+	internal readonly SerialDisposable m_ownerPointerPressedToken = new SerialDisposable();
 	internal bool m_bInputEventsHookedUp;
 	internal AutomaticToolTipInputMode m_inputMode;
 	internal bool m_isSliderThumbToolTip;

@@ -11,6 +11,8 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -106,6 +108,18 @@ public partial class ToolTipService
 			pToolTipNoRef.m_ownerLostFocusToken.Disposable = global::Uno.Disposables.Disposable.Create(
 				() => pOwnerAsFENoRef.LostFocus -= OnOwnerLostFocus);
 
+			// Uno-specific UX: a click on a Button-based owner closes the tooltip.
+			// WinUI doesn't subscribe here — it relies on hit-testing the popup. Until
+			// safe-zone (Phase 6) and Popup hit-test forwarding are wired on Skia, the
+			// existing Uno behavior matches the cross-platform ToolTipService.cs path.
+			if (pOwnerAsFENoRef is ButtonBase buttonBaseOwner)
+			{
+				PointerEventHandler pointerPressedHandler = OnOwnerPointerPressed;
+				buttonBaseOwner.AddHandler(UIElement.PointerPressedEvent, pointerPressedHandler, handledEventsToo: true);
+				pToolTipNoRef.m_ownerPointerPressedToken.Disposable = global::Uno.Disposables.Disposable.Create(
+					() => buttonBaseOwner.RemoveHandler(UIElement.PointerPressedEvent, pointerPressedHandler));
+			}
+
 			pToolTipNoRef.m_bInputEventsHookedUp = true;
 		}
 	}
@@ -144,6 +158,7 @@ public partial class ToolTipService
 			spToolTipObjectConcrete.m_ownerPointerCanceledToken.Disposable = null;
 			spToolTipObjectConcrete.m_ownerGotFocusToken.Disposable = null;
 			spToolTipObjectConcrete.m_ownerLostFocusToken.Disposable = null;
+			spToolTipObjectConcrete.m_ownerPointerPressedToken.Disposable = null;
 		}
 
 		spToolTipObjectConcrete.SetOwner(null);
@@ -524,6 +539,28 @@ public partial class ToolTipService
 			if (owner is not null)
 			{
 				pToolTipServiceMetadataNoRef.m_lastToolTipOwnerInSafeZone = new WeakReference(owner);
+			}
+
+			// TODO Uno (Phase 6): WinUI keeps the ToolTip open and waits for the safe-zone
+			// timer to determine whether the pointer has truly left the owner+tooltip
+			// convex hull. Until SafeZoneCheckTimer (DispatcherQueueTimer) is wired on
+			// Skia, close immediately so PointerExited / PointerCanceled actually dismiss
+			// the tooltip (matches the cross-platform Uno UX expected by Given_ToolTip
+			// runtime tests).
+			CancelAutomaticToolTip();
+		}
+	}
+
+	// Uno-specific UX (no direct C++ counterpart): a click on a Button-based owner
+	// dismisses the open tooltip. Mirrors the cross-platform behavior in
+	// ToolTipService.cs (gated #if !__SKIA__).
+	private static void OnOwnerPointerPressed(object sender, Input.PointerRoutedEventArgs e)
+	{
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
+		{
+			if (e.GetCurrentPoint(owner).Properties.IsLeftButtonPressed)
+			{
+				toolTip.IsOpen = false;
 			}
 		}
 	}
