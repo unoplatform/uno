@@ -2158,12 +2158,24 @@ namespace Microsoft.UI.Xaml.Controls
 			double horizontalAlignmentRatio,
 			double verticalAlignmentRatio,
 			double offsetX,
-			double offsetY)
+			double offsetY,
+			// Uno-specific out parameters used by OnBringIntoViewRequested for parent
+			// SV propagation. The C++ ScrollViewer::MakeVisible (line 2856) calls
+			// UIElement::BringIntoView at the end to originate a fresh RequestBringIntoView
+			// event up the visual tree; Uno hasn't ported that internal API yet, so the
+			// caller (OnBringIntoViewRequested) updates the args directly using these
+			// out params instead.
+			out global::Windows.Foundation.Rect desiredViewOut,
+			out double remainingOffsetX,
+			out double remainingOffsetY)
 		{
 			global::Windows.Foundation.Rect visibleBounds = default;
 			global::Windows.Foundation.Rect desiredView = default;
 			global::Windows.Foundation.Point visiblePoint = default;
 			global::Windows.Foundation.Point transformedPoint = default;
+			desiredViewOut = default;
+			remainingOffsetX = offsetX;
+			remainingOffsetY = offsetY;
 
 			if (element is not null && m_trElementScrollContentPresenter is not null)
 			{
@@ -2216,11 +2228,11 @@ namespace Microsoft.UI.Xaml.Controls
 						// applied by the last contributor, spScrollInfo, must not be applied more than once.
 						if (appliedOffsetX != 0.0)
 						{
-							offsetX -= appliedOffsetX;
+							remainingOffsetX -= appliedOffsetX;
 						}
 						if (appliedOffsetY != 0.0)
 						{
-							offsetY -= appliedOffsetY;
+							remainingOffsetY -= appliedOffsetY;
 						}
 					}
 
@@ -2241,13 +2253,17 @@ namespace Microsoft.UI.Xaml.Controls
 						desiredView = visibleBounds;
 					}
 
+					desiredViewOut = desiredView;
+
 					// TODO Uno: Phase 4 — port UIElement::BringIntoView(rect, forceIntoView,
 					// useAnimation, skipDuringManipulation, horizontalAlignmentRatio,
 					// verticalAlignmentRatio, offsetX, offsetY) which originates a
 					// RequestBringIntoView event up the visual tree so a parent ScrollViewer
-					// can complete the request. For now we only update this ScrollViewer's
-					// IScrollInfo above and bail out.
-					_ = desiredView;
+					// can complete the request. Uno's OnBringIntoViewRequested uses the
+					// `desiredView` + `remaining*Offset` out params to update the routed-event
+					// args directly so the parent SV picks up the bubbled event with the
+					// adjusted target — equivalent to BringIntoView re-originating, except
+					// without spawning a new event.
 					_ = forceIntoView;
 					_ = skipDuringManipulation;
 				}
@@ -2314,11 +2330,54 @@ namespace Microsoft.UI.Xaml.Controls
 							horizontalAlignmentRatio,
 							verticalAlignmentRatio,
 							offsetX,
-							offsetY);
-					}
+							offsetY,
+							out var desiredView,
+							out var remainingOffsetX,
+							out var remainingOffsetY);
 
-					// Set handled as true since MakeVisible will invoke BringIntoView for parent contributors.
-					args.Handled = true;
+						// Parent SV propagation (Uno-specific): the C++ MakeVisible originates
+						// a fresh RequestBringIntoView event via UIElement::BringIntoView so
+						// any ancestor ScrollViewer can complete the request. Until that internal
+						// API is ported, update the routed-event args so the same event continues
+						// bubbling with the adjusted target rect / element / offsets — the parent
+						// SV's OnBringIntoViewRequested then picks up the request with a target
+						// inside this SV.
+						bool desiredViewEmpty = desiredView.IsEmpty || (desiredView.Width == 0 && desiredView.Height == 0);
+						if (!desiredViewEmpty)
+						{
+							// Compute the SV's own viewport rectangle in its coordinate space.
+							var viewportRect = new global::Windows.Foundation.Rect(0, 0, ActualWidth, ActualHeight);
+
+							if (Uno.UI.Helpers.WinUI.SharedHelpers.DoRectsIntersect(desiredView, viewportRect))
+							{
+								// A portion of the rect is still in this SV's viewport — let the
+								// event bubble so a parent SV can scroll the rest into its own view.
+								args.TargetRect = desiredView;
+								args.TargetElement = this;
+								args.HorizontalOffset = remainingOffsetX;
+								args.VerticalOffset = remainingOffsetY;
+							}
+							else
+							{
+								// The rect is entirely outside this SV's viewport — no further
+								// parent scrolling can help; mark handled.
+								args.Handled = true;
+							}
+						}
+						else
+						{
+							// MakeVisible bailed out (this SV isn't a real ancestor of the target,
+							// or no IScrollInfo). Mark handled so the event doesn't keep firing.
+							args.Handled = true;
+						}
+					}
+					else
+					{
+						// SV is configured not to bring into view (BringIntoViewOnFocusChange=false
+						// without forceIntoView, or skipping during manipulation). Mark handled to
+						// prevent duplicate work by ancestors.
+						args.Handled = true;
+					}
 				}
 			}
 		}
