@@ -1402,37 +1402,91 @@ public partial class ToolTip : ContentControl
 		// TODO Uno: Phase 2 closeout / Phase 3 will port RemoveAutomaticStatusFromOpenToolTip.
 	}
 
-	// === Helpers awaiting Phase 6 (Xaml-island roots + safe zone) ===
+	// === Phase 6 helpers (safe-zone + Xaml-island roots) ===
+
+	// MUX Reference: ToolTip_Partial.cpp HandlePointInSafeZone (line 2221, Point overload).
+	private void HandlePointInSafeZone(Point point)
+	{
+		var owner = m_wrOwner?.Target as DependencyObject;
+		if (owner is not null)
+		{
+			ToolTipService.HandleToolTipSafeZone(point, this, owner);
+		}
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp IsOwnerPositionChanged (line 2233).
+	private bool IsOwnerPositionChanged()
+	{
+		var owner = m_wrOwner?.Target as DependencyObject;
+		if (owner is not null)
+		{
+			var ownerBounds = ToolTipService.GetToolTipOwnersBoundary(owner);
+			if ((Math.Abs(ownerBounds.Bottom - m_ownerBounds.Bottom) > 0.5) ||
+				(Math.Abs(ownerBounds.Top - m_ownerBounds.Top) > 0.5) ||
+				(Math.Abs(ownerBounds.Left - m_ownerBounds.Left) > 0.5) ||
+				(Math.Abs(ownerBounds.Right - m_ownerBounds.Right) > 0.5))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// MUX Reference: ToolTip_Partial.cpp UpdateOwnersBoundary (line 2268).
 	private void UpdateOwnersBoundary()
 	{
-		// TODO Uno (Phase 6): port UpdateOwnersBoundary.
+		var owner = m_wrOwner?.Target as DependencyObject;
+		if (owner is not null)
+		{
+			m_ownerBounds = ToolTipService.GetToolTipOwnersBoundary(owner);
+		}
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp HookupXamlIslandRoot (line 2278).
+	// Hooks up the CoreWindow's or XamlIslandRoot's PointerMoved event so the ToolTip can be
+	// automatically closed if it's out of safe zone. On Skia the equivalent is the XamlRoot.
 	private void HookupXamlIslandRoot()
 	{
-		// TODO Uno (Phase 6): port HookupXamlIslandRoot.
+		// TODO Uno (Phase 6 closeout): port HookupXamlIslandRoot. The Uno Skia equivalent
+		// hooks PointerMoved + Key{Down,Up} on the XamlRoot.Content. Currently no-op so
+		// the open path doesn't crash; the safe-zone close fallback still runs via the
+		// iter #6 immediate-close path in OnOwnerPointerExitedOrLostOrCanceled.
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp HookupOwnerLayoutChangedEvent (line 2296).
 	private void HookupOwnerLayoutChangedEvent()
 	{
-		// TODO Uno (Phase 6): port HookupOwnerLayoutChangedEvent.
+		var owner = m_wrOwner?.Target as DependencyObject;
+		if (owner is FrameworkElement ownerAsFE)
+		{
+			global::System.EventHandler<object> handler = (sender, args) =>
+			{
+				if (this.Parent is not null && IsOwnerPositionChanged())
+				{
+					var pToolTipServiceMetadataNoRef = ToolTipService.GetToolTipServiceMetadata();
+
+					var current = pToolTipServiceMetadataNoRef.m_tpCurrentToolTip;
+					if (current is not null && ReferenceEquals(current, this))
+					{
+						ToolTipService.CancelAutomaticToolTip();
+					}
+				}
+			};
+			ownerAsFE.LayoutUpdated += handler;
+			m_ownerLayoutUpdatedToken.Disposable = global::Uno.Disposables.Disposable.Create(
+				() => ownerAsFE.LayoutUpdated -= handler);
+		}
 	}
 
-	// MUX Reference: ToolTip_Partial.cpp UnhookOwnerLayoutChangedEvent (later in file).
+	// MUX Reference: ToolTip_Partial.cpp UnhookOwnerLayoutChangedEvent (line 2337).
 	private void UnhookOwnerLayoutChangedEvent()
 	{
-		// TODO Uno (Phase 6): port UnhookOwnerLayoutChangedEvent.
 		m_ownerLayoutUpdatedToken.Disposable = null;
 	}
 
-	// MUX Reference: ToolTip_Partial.cpp UnhookFromXamlIslandRoot (later in file).
+	// MUX Reference: ToolTip_Partial.cpp UnhookFromXamlIslandRoot (line 2447).
 	private void UnhookFromXamlIslandRoot()
 	{
-		// TODO Uno (Phase 6): port UnhookFromXamlIslandRoot.
 		m_xamlIslandRootPointerMovedHandler.Disposable = null;
 		m_xamlIslandRootKeyDownHandler.Disposable = null;
 		m_xamlIslandRootKeyUpHandler.Disposable = null;
