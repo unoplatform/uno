@@ -12,6 +12,16 @@ using Windows.System;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+#if __SKIA__
+	// MUX Reference ScrollViewer_Partial.h:90 — `class ScrollViewer : public IScrollOwner`.
+	// Adding the interface as a separate partial keeps the cross-platform
+	// declaration in ScrollViewer.cs intact while making SV serve as the
+	// IScrollOwner for the new SCP port on Skia.
+	partial class ScrollViewer : IScrollOwner
+	{
+	}
+#endif
+
 	partial class ScrollViewer
 	{
 #if __SKIA__
@@ -2834,6 +2844,124 @@ namespace Microsoft.UI.Xaml.Controls
 			zoomedVerticalOffset += m_pendingViewportShiftY;
 			return (float)zoomedVerticalOffset;
 		}
+
+		// #region IScrollOwner contract — explicit interface implementation.
+		// Each member is a thin adapter onto an existing port method or a
+		// scoped Phase-stub. The full WinUI behavior (in particular the 600-line
+		// InvalidateScrollInfoImpl and 400-line InvalidateScrollInfo_TryUpdateValues)
+		// will land in Phase 4 once the DM adapter is wired up. For now the
+		// adapter is functional enough that an SCP that has been told to use
+		// the new IScrollOwner pipeline can call back without crashing.
+
+		// Member of the IScrollOwner internal contract.
+		// Pushes the latest IScrollInfo state to the scroll bars and the
+		// HorizontalOffset / VerticalOffset DPs. The full DM-aware port at
+		// C++ source line 4392 will replace this once the adapter lands.
+		void IScrollOwner.InvalidateScrollInfoImpl()
+		{
+			// Batch up any potential ViewChanged events into a single notification
+			DelayViewChanged();
+
+			var spScrollInfo = GetScrollInfo();
+			if (spScrollInfo is null)
+			{
+				FlushViewChanged();
+				return;
+			}
+
+			var horizontalOffset = spScrollInfo.HorizontalOffset;
+			var verticalOffset = spScrollInfo.VerticalOffset;
+			var minHorizontalOffset = spScrollInfo.MinHorizontalOffset;
+			var minVerticalOffset = spScrollInfo.MinVerticalOffset;
+			var extentWidth = spScrollInfo.ExtentWidth;
+			var extentHeight = spScrollInfo.ExtentHeight;
+			var viewportWidth = spScrollInfo.ViewportWidth;
+			var viewportHeight = spScrollInfo.ViewportHeight;
+
+			if (m_trElementHorizontalScrollBar is not null)
+			{
+				if (!m_trElementHorizontalScrollBar.IsDragging)
+				{
+					m_trElementHorizontalScrollBar.Minimum = minHorizontalOffset;
+				}
+				m_trElementHorizontalScrollBar.Maximum = Math.Max(minHorizontalOffset, extentWidth - viewportWidth);
+				m_trElementHorizontalScrollBar.ViewportSize = viewportWidth;
+				if (!m_trElementHorizontalScrollBar.IsDragging)
+				{
+					m_trElementHorizontalScrollBar.Value = horizontalOffset;
+				}
+			}
+
+			if (m_trElementVerticalScrollBar is not null)
+			{
+				if (!m_trElementVerticalScrollBar.IsDragging)
+				{
+					m_trElementVerticalScrollBar.Minimum = minVerticalOffset;
+				}
+				m_trElementVerticalScrollBar.Maximum = Math.Max(minVerticalOffset, extentHeight - viewportHeight);
+				m_trElementVerticalScrollBar.ViewportSize = viewportHeight;
+				if (!m_trElementVerticalScrollBar.IsDragging)
+				{
+					m_trElementVerticalScrollBar.Value = verticalOffset;
+				}
+			}
+
+			// Push the offsets to the public DPs. DP-changed handlers will fire
+			// ViewChanging/ViewChanged via NotifyHorizontal/VerticalOffsetChanging.
+			if (HorizontalOffset != horizontalOffset)
+			{
+				ScrollToHorizontalOffsetInternal(horizontalOffset);
+			}
+			if (VerticalOffset != verticalOffset)
+			{
+				ScrollToVerticalOffsetInternal(verticalOffset);
+			}
+
+			FlushViewChanged();
+		}
+
+		// Already ported as an instance method; forward through the explicit
+		// interface so SCP can call them through the IScrollOwner pipeline.
+		void IScrollOwner.NotifyLayoutRefreshed() => NotifyLayoutRefreshed();
+
+		void IScrollOwner.NotifyHorizontalOffsetChanging(double targetHorizontalOffset, double targetVerticalOffset)
+			=> NotifyHorizontalOffsetChanging(targetHorizontalOffset, targetVerticalOffset);
+
+		void IScrollOwner.NotifyVerticalOffsetChanging(double targetHorizontalOffset, double targetVerticalOffset)
+			=> NotifyVerticalOffsetChanging(targetHorizontalOffset, targetVerticalOffset);
+
+		void IScrollOwner.ScrollToHorizontalOffsetImpl(double offset) => ScrollToHorizontalOffsetInternal(offset);
+
+		void IScrollOwner.ScrollToVerticalOffsetImpl(double offset) => ScrollToVerticalOffsetInternal(offset);
+
+		void IScrollOwner.SetScrollInfo(IScrollInfo value) => PutScrollInfo(value);
+
+		IScrollInfo IScrollOwner.GetScrollInfo() => GetScrollInfo();
+
+		float IScrollOwner.GetZoomFactor() => ZoomFactor;
+
+		// TODO Uno: Phase 4 DM wiring — forwards a pure-inertia keyboard zoom
+		// (Ctrl+Plus / Ctrl+Minus) request to DirectManipulation. Stubbed for
+		// now; the keyboard zoom path is not exercised on Skia until the DM
+		// adapter lands.
+		void IScrollOwner.ProcessPureInertiaInputMessage(ZoomDirection zoomDirection)
+		{
+			_ = zoomDirection;
+		}
+
+		// Returns true while DM is in a zoom manipulation. Reflected through
+		// the existing MuxInternal m_isInDirectManipulationZoom field so we
+		// stay consistent with the rest of the SV state machine. Stubbed to
+		// false until the DM adapter lands.
+		bool IScrollOwner.IsInDirectManipulationZoom() => false;
+
+		// Tracks whether the SV is itself triggering an InvalidateMeasure on
+		// its inner panel (bug 261102 / 342668 workaround). Skia's pure-managed
+		// scroll path does not have that race, so this is permanently false
+		// for now.
+		bool IScrollOwner.IsInChildInvalidateMeasure() => false;
+
+		// #endregion
 
 #pragma warning restore IDE0051
 #endif

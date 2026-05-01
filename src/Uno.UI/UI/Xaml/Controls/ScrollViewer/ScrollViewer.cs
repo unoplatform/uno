@@ -1047,6 +1047,17 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSizeChangedSubscription();
 
 			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
+
+#if __SKIA__
+			// MUX Reference ScrollViewer_Partial.cpp:9951 — OnContentChanged
+			// notifies the new SCP port that the content has changed so it can
+			// reset its child-actual-size special mode and re-hook scrolling
+			// components.
+			if (m_trElementScrollContentPresenter is not null)
+			{
+				m_trElementScrollContentPresenter.OnContentChanging(oldValue);
+			}
+#endif
 		}
 
 		private void ApplyScrollContentPresenterContent(object? content)
