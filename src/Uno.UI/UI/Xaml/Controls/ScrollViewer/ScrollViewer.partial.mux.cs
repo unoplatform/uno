@@ -580,6 +580,73 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Gets the horizontal extent in pixels even for logical scrolling scenarios.
+		// (C++ source line 5607)
+		internal void ComputePixelExtentWidth(
+			bool ignoreZoomFactor,
+			object pProvider,
+			out double pValue)
+		{
+			pValue = 0.0;
+
+			if (pProvider is not null)
+			{
+				// TODO Uno: Phase 5 — IManipulationDataProvider integration for
+				// virtualizing panels. pProvider->ComputePixelExtent(...) goes here.
+				pValue = ExtentWidth;
+			}
+			else
+			{
+				pValue = ExtentWidth;
+				if (ignoreZoomFactor && m_trElementScrollContentPresenter is not null)
+				{
+					pValue /= m_trElementScrollContentPresenter.GetLastZoomFactorApplied();
+				}
+			}
+		}
+
+		// Gets the horizontal extent in pixels even for logical scrolling scenarios.
+		// Overload that attempts to determine the potential inner horizontal IManipulationDataProvider.
+		// (C++ source line 5635)
+		internal void ComputePixelExtentWidth(out double pValue)
+		{
+			var spProvider = GetInnerManipulationDataProvider(true /*isForHorizontalOrientation*/);
+			ComputePixelExtentWidth(false /*ignoreZoomFactor*/, spProvider, out pValue);
+		}
+
+		// Gets the vertical extent in pixels even for logical scrolling scenarios.
+		// (C++ source line 5652)
+		internal void ComputePixelExtentHeight(
+			bool ignoreZoomFactor,
+			object pProvider,
+			out double pValue)
+		{
+			pValue = 0.0;
+
+			if (pProvider is not null)
+			{
+				// TODO Uno: Phase 5 — IManipulationDataProvider integration.
+				pValue = ExtentHeight;
+			}
+			else
+			{
+				pValue = ExtentHeight;
+				if (ignoreZoomFactor && m_trElementScrollContentPresenter is not null)
+				{
+					pValue /= m_trElementScrollContentPresenter.GetLastZoomFactorApplied();
+				}
+			}
+		}
+
+		// Gets the vertical extent in pixels even for logical scrolling scenarios.
+		// Overload that attempts to determine the potential inner vertical IManipulationDataProvider.
+		// (C++ source line 5680)
+		internal void ComputePixelExtentHeight(out double pValue)
+		{
+			var spProvider = GetInnerManipulationDataProvider(false /*isForHorizontalOrientation*/);
+			ComputePixelExtentHeight(false /*ignoreZoomFactor*/, spProvider, out pValue);
+		}
+
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
 		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
