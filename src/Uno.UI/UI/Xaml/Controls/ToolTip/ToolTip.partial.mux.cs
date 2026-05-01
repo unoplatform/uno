@@ -1,6 +1,73 @@
 ﻿// MUX Reference dxaml\xcp\dxaml\lib\ToolTip_Partial.cpp, tag 5f9e85113
 // Contains ported portions of dxaml\xcp\dxaml\lib\ToolTip_Partial.cpp
 //
+// === ToolTip Skia port architecture ===
+//
+// File map (1:1 with C++ sources at the same commit):
+//   ToolTip_Partial.h        -> ToolTip.partial.h.mux.cs
+//   ToolTip_Partial.cpp      -> ToolTip.partial.mux.cs (this file)
+//   ToolTipService_Partial.h -> ToolTipService.partial.h.mux.cs
+//   ToolTipService_Partial.cpp -> ToolTipService.partial.mux.cs
+//   ToolTipAutomationPeer_Partial.{h,cpp} -> ToolTipAutomationPeer.partial.{h,}mux.cs
+//
+// Method order within each file matches C++ source line order strictly. Each
+// non-trivial method has a `// MUX Reference: ...cpp <Method> (line N)` comment
+// linking back to the C++. C++ branches that don't have a Skia equivalent (e.g.
+// CPopup::IsWindowed, the BringIntoView DM-aware path, ToolTipObject inheritance
+// context) are preserved verbatim inside `#if false` blocks for diff-ability.
+//
+// === End-to-end open path ===
+//
+//   ToolTipService.SetToolTip(target, content)
+//     -> OnToolTipChanged DP-callback (in ToolTipService.Properties.cs)
+//       -> RegisterToolTip -> SetOwner/SetContainer + handler subscriptions
+// {Pointer,Got,Lost}Focus event on owner
+//     -> OnOwnerPointerEntered / OnOwnerGotFocus
+//       -> OnOwnerEnterInternal -> DispatcherTimer.Start (delay = GetInitialShowDelay)
+//         -> OpenAutomaticToolTip -> spToolTipObject.IsOpen = true
+//           -> OnIsOpenChanged (this file) -> HookupParentPopup (creates Popup)
+//             -> OpenPopup -> Popup.Child = this; Popup.IsOpen = true
+//               -> Popup.Opened -> OnPopupOpened -> OnOpened -> raises ToolTip.Opened
+//                 -> StartSafeZoneCheckTimer (1s tick) keeps tooltip alive while in safe zone
+//
+// === End-to-end close path ===
+//
+//   PointerExited on owner (or 5s show duration elapsed, or Ctrl-only key, or
+//   safe-zone check fails)
+//     -> CancelAutomaticToolTip -> CloseAutomaticToolTip -> IsOpen = false
+//       -> OnIsOpenChanged(false) -> UpdateVisualState
+//         -> ChangeVisualState -> GoToState("Closed")
+//           -> [if VSM Closed Storyboard] wait for Storyboard.Completed -> ForceFinishClosing
+//           -> [otherwise OR Uno safety net at end of OnIsOpenChanged false branch] Close()
+//             -> Popup.Child = null; Popup.IsOpen = false
+//               -> Popup.Closed -> OnPopupClosed -> OnClosed -> raises ToolTip.Closed
+//
+// === Documented Uno-specific divergences ===
+//
+// 1. SetContainer (this file) installs a Binding from container.DataContext rather
+//    than capturing it once. WinUI relies on the inheritance context that the
+//    ToolTipObject attached property establishes between owner and ToolTip; that
+//    machinery has no Uno equivalent.
+// 2. ForwardOwnerThemePropertyToToolTip falls back to owner.ActualTheme when no
+//    explicit RequestedTheme is found by the ancestry walk - WinUI's logical-tree
+//    inheritance handles this implicitly.
+// 3. OnOwnerPointerExitedOrLostOrCanceled (in ToolTipService.partial.mux.cs) closes
+//    the open tooltip immediately on top of the safe-zone stash, until the
+//    SafeZoneCheckTimer port is fully validated against test expectations.
+// 4. OnSafeZoneCheck (in ToolTipService.partial.mux.cs) uses
+//    PointerRoutedEventArgs.LastPointerEvent in place of Win32 GetCursorPos.
+// 5. ToolTipPositioning is the cross-platform Uno C# transliteration (un-gated)
+//    shared between non-Skia and Skia.
+// 6. RegisterToolTip subscribes to PointerPressedEvent on ButtonBase owners (Uno UX
+//    nicety; WinUI relies on popup hit-testing).
+//
+// On Skia the existing cross-platform ToolTip.cs / ToolTipService.cs /
+// ToolTipPositioning.cs is gated `#if !__SKIA__`. The new port (`.partial.mux.cs`
+// and `.partial.h.mux.cs`) takes over for `__SKIA__`. Generated NotImplemented stubs
+// for HorizontalOffset/VerticalOffset/PlacementRect/PlacementTarget DPs were
+// gated `false` for Skia (see Generated/.../ToolTip.cs); the port re-declares them
+// here with OnPlacementCriteriaChangedDP callbacks.
+//
 // NOTE: Constants and field declarations live in ToolTip.partial.h.mux.cs
 // (port of ToolTip_Partial.h). This file ports method bodies in the order
 // they appear in ToolTip_Partial.cpp.
