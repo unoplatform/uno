@@ -420,6 +420,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// the touch/inertia pipeline.
 			if (!isResuming && Scroller is { } sv)
 			{
+				sv.NotifyDirectManipulationStarting();
 				sv.RaiseDirectManipulationStarted();
 			}
 #endif
@@ -630,6 +631,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// DirectManipulationCompleted event. Route through SCP's DM handler.
 			if (Scroller is { } sv)
 			{
+				sv.NotifyDirectManipulationCompleted();
 				sv.RaiseDirectManipulationCompleted();
 			}
 #endif

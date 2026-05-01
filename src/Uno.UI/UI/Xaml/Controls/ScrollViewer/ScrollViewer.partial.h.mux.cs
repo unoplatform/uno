@@ -545,6 +545,22 @@ namespace Microsoft.UI.Xaml.Controls
 		// Note: IsInDirectManipulation() and IsInManipulation() are exposed via the existing MuxInternal partial.
 		internal bool IsInDirectManipulationCore() => m_isInDirectManipulation;
 
+		// Skia-side bridges: SCP.Managed.cs IDirectManipulationHandler events flip the
+		// underlying m_isInDirectManipulation flag so the rest of the SV state machine
+		// (snap-points reaction, OnPrimaryContentChanged DM gates, etc.) behaves
+		// correctly during touch-driven scroll. The Phase-4 DM adapter port will replace
+		// these with full HandleManipulationStarting/Delta/Completed invocations.
+		internal void NotifyDirectManipulationStarting()
+		{
+			m_isInDirectManipulation = true;
+			m_isDirectManipulationStopped = false;
+		}
+
+		internal void NotifyDirectManipulationCompleted()
+		{
+			m_isInDirectManipulation = false;
+		}
+
 		// A direct manipulation in inertia phase can be interrupted via a call to StopInertialManipulation().
 		// At that point the m_isDirectManipulationStopped flag is set to True and IsInUnstoppedManipulation()
 		// starts to return False instead of True. Once the state change to DMManipulationCompleted is processed,
