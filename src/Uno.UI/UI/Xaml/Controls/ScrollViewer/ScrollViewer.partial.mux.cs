@@ -220,6 +220,50 @@ namespace Microsoft.UI.Xaml.Controls
 				((ScrollViewer)s).RefreshScrollBarIsIgnoringUserInput(true));
 			RegisterPropertyChangedCallback(VerticalScrollModeProperty, (s, e) =>
 				((ScrollViewer)s).RefreshScrollBarIsIgnoringUserInput(false));
+
+			// IsHorizontalScrollChainingEnabled / IsVerticalScrollChainingEnabled / IsZoomChainingEnabled →
+			// OnViewportAffectingPropertyChanged with chainedMotionTypesChanged: true.
+			RegisterPropertyChangedCallback(IsHorizontalScrollChainingEnabledProperty, (s, e) =>
+				((ScrollViewer)s).OnViewportAffectingPropertyChanged(
+					boundsChanged: false,
+					touchConfigurationChanged: false,
+					nonTouchConfigurationChanged: false,
+					configurationsChanged: false,
+					chainedMotionTypesChanged: true,
+					horizontalOverpanModeChanged: false,
+					verticalOverpanModeChanged: false,
+					out _));
+			RegisterPropertyChangedCallback(IsVerticalScrollChainingEnabledProperty, (s, e) =>
+				((ScrollViewer)s).OnViewportAffectingPropertyChanged(
+					boundsChanged: false,
+					touchConfigurationChanged: false,
+					nonTouchConfigurationChanged: false,
+					configurationsChanged: false,
+					chainedMotionTypesChanged: true,
+					horizontalOverpanModeChanged: false,
+					verticalOverpanModeChanged: false,
+					out _));
+			RegisterPropertyChangedCallback(IsZoomChainingEnabledProperty, (s, e) =>
+				((ScrollViewer)s).OnViewportAffectingPropertyChanged(
+					boundsChanged: false,
+					touchConfigurationChanged: false,
+					nonTouchConfigurationChanged: false,
+					configurationsChanged: false,
+					chainedMotionTypesChanged: true,
+					horizontalOverpanModeChanged: false,
+					verticalOverpanModeChanged: false,
+					out _));
+
+			// IsScrollInertiaEnabled / IsZoomInertiaEnabled / IsHorizontalRailEnabled / IsVerticalRailEnabled →
+			// OnViewportConfigurationsAffectingPropertyChanged.
+			RegisterPropertyChangedCallback(IsScrollInertiaEnabledProperty, (s, e) =>
+				((ScrollViewer)s).OnViewportConfigurationsAffectingPropertyChanged());
+			RegisterPropertyChangedCallback(IsZoomInertiaEnabledProperty, (s, e) =>
+				((ScrollViewer)s).OnViewportConfigurationsAffectingPropertyChanged());
+			RegisterPropertyChangedCallback(IsHorizontalRailEnabledProperty, (s, e) =>
+				((ScrollViewer)s).OnViewportConfigurationsAffectingPropertyChanged());
+			RegisterPropertyChangedCallback(IsVerticalRailEnabledProperty, (s, e) =>
+				((ScrollViewer)s).OnViewportConfigurationsAffectingPropertyChanged());
 		}
 
 #if false
