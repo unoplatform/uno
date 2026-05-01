@@ -478,6 +478,28 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void ScrollToVerticalOffsetInternal(double offset)
 			=> HandleVerticalScroll(ScrollEventType.ThumbPosition, offset);
 
+		// (C++ source line 1148)
+		internal DependencyObject GetPointedElement()
+			=> m_wrPointedElement?.Target as DependencyObject;
+
+		// Sets the m_wrPointedElement field which represents
+		// the dependency object touched at the beginning of a
+		// touch-based manipulation.
+		// (C++ source line 1167)
+		internal void PutPointedElement(DependencyObject value)
+		{
+			if (m_wrPointedElement is not null)
+			{
+				WeakReferencePool.ReturnWeakReference(this, m_wrPointedElement);
+				m_wrPointedElement = null;
+			}
+
+			if (value is not null)
+			{
+				m_wrPointedElement = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
+
 		// (C++ source line 3316)
 		internal bool ChangeViewImpl(
 			double? pHorizontalOffset,
