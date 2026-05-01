@@ -3242,13 +3242,11 @@ namespace Microsoft.UI.Xaml.Controls
 			float newZoomFactorBoundary)
 		{
 			// If a DirectManipulation manip is active, push the new boundary to DM.
-			// TODO Uno: Phase 4 — port OnPrimaryContentAffectingPropertyChanged. For now, no-op since
-			// the new managed Skia path doesn't have a separate DM service to push to.
-			// OnPrimaryContentAffectingPropertyChanged(
-			//     boundsChanged: false,
-			//     horizontalAlignmentChanged: false,
-			//     verticalAlignmentChanged: false,
-			//     zoomFactorBoundaryChanged: true);
+			OnPrimaryContentAffectingPropertyChanged(
+				boundsChanged: false,
+				horizontalAlignmentChanged: false,
+				verticalAlignmentChanged: false,
+				zoomFactorBoundaryChanged: true);
 		}
 
 		// Called when the ZoomFactor value changed.
@@ -3843,6 +3841,64 @@ namespace Microsoft.UI.Xaml.Controls
 					// The DM viewport-configuration push is part of the DM adapter (Phase 4) and isn't wired up
 					// yet on Skia. Until then, this branch is a no-op (the m_areViewportConfigurationsInvalid
 					// gate above already handles the in-manipulation case).
+				}
+			}
+		}
+
+		// Called when a primary-content characteristic that affects DirectManipulation has changed.
+		// (C++ source line 10639)
+		internal void OnPrimaryContentAffectingPropertyChanged(
+			bool boundsChanged,
+			bool horizontalAlignmentChanged,
+			bool verticalAlignmentChanged,
+			bool zoomFactorBoundaryChanged)
+		{
+			if (!IsInManipulation && (horizontalAlignmentChanged || verticalAlignmentChanged))
+			{
+				// Viewport configurations are dependent on the content alignment because of
+				// WPB bugs 261102 & 342668. Thus when a content alignment changes outside of
+				// a manipulation, the viewport configurations may change.
+				OnViewportConfigurationsAffectingPropertyChanged();
+			}
+
+			OnPrimaryContentChanged(
+				layoutRefreshed: false,
+				boundsChanged,
+				horizontalAlignmentChanged,
+				verticalAlignmentChanged,
+				zoomFactorBoundaryChanged);
+		}
+
+		// Called when a primary content characteristic has changed.
+		// (C++ source line 10672)
+		internal void OnPrimaryContentChanged(
+			bool layoutRefreshed,
+			bool boundsChanged,
+			bool horizontalAlignmentChanged,
+			bool verticalAlignmentChanged,
+			bool zoomFactorBoundaryChanged)
+		{
+			// When DManip-on-DComp is turned on, DManip needs to be aware of the latest content sizes so that the content can be properly aligned based on
+			// the current alignments, even outside a manipulation.
+			if (m_hManipulationHandler is not null &&
+				(m_isManipulationHandlerInterestedInNotifications ||
+				 IsInManipulation ||
+				 (layoutRefreshed && m_trManipulatableElement is not null) ||
+				 ((boundsChanged || horizontalAlignmentChanged || verticalAlignmentChanged) && m_trManipulatableElement is not null)))
+			{
+				var spContentUIElement = GetContentUIElement();
+				if (spContentUIElement is not null)
+				{
+					// TODO Uno: Phase 4 — port ManipulationHandler_NotifyPrimaryContentChanged via the DM adapter.
+					// CoreImports::ManipulationHandler_NotifyPrimaryContentChanged(
+					//     m_hManipulationHandler,
+					//     spContentUIElement,
+					//     IsInManipulation,
+					//     layoutRefreshed,
+					//     boundsChanged,
+					//     horizontalAlignmentChanged,
+					//     verticalAlignmentChanged,
+					//     zoomFactorBoundaryChanged);
 				}
 			}
 		}
