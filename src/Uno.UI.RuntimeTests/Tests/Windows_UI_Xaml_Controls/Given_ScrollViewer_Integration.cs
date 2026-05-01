@@ -422,11 +422,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.1, scrollViewer.MinZoomFactor, 0.001);
 		}
 
-		// TODO Uno: Phase-4 ChangeViewInternal port — re-enable C++ ChangeViewTwice
-		// (C++ line 1763) once cross-platform ChangeView on Skia applies zoom factor.
-		// The original test uses zoom 2.0 → 3.0 with verticalOffset=3500 to validate
-		// the second-overrides-first contract; without zoom application that
-		// becomes a different test, so it's deferred per the "don't simplify"
-		// porting rule.
+		// TODO Uno: visual zoom rendering — port C++ ChangeViewTwice (C++ line 1763)
+		// once SCP applies ZoomFactor as a visual transform and recomputes
+		// scrollable extents at the new zoom. The test asserts a final
+		// VerticalOffset of 3500 after ChangeView(null, 3500, 3.0f) — only
+		// achievable when the content extent is multiplied by the zoom factor
+		// (12*100*3 = 3600, scrollable = 3500). The DP-update half (ZoomFactor)
+		// is in via 9dada7a6d4; the visual half is the missing feature.
 	}
 }
