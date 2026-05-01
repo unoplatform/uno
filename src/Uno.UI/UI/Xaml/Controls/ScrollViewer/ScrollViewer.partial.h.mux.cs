@@ -596,6 +596,29 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isInertial = true;
 		}
 
+		// Updates the SV's tracked offsets when the presenter reports a scroll change.
+		// Mirrors C++ ScrollViewer::NotifyManipulationProgress when offsets change during
+		// active DM. Keeps m_x/yOffset and m_x/yPixelOffset in sync with the rendered
+		// SCP position so the Get*Offset family of methods (used by ScrollForFocusNavigation
+		// and snap-points logic) returns accurate values.
+		internal void NotifyPresenterOffsetsChanged(double horizontalOffset, double verticalOffset, float zoomFactor)
+		{
+			m_xOffset = horizontalOffset;
+			m_yOffset = verticalOffset;
+
+			// Pixel offsets equal logical offsets multiplied by the zoom factor.
+			m_xPixelOffset = horizontalOffset * zoomFactor;
+			m_yPixelOffset = verticalOffset * zoomFactor;
+
+			// Track the "unbound" offsets (offsets without overpan clamping). Outside
+			// of active DM these are equal to the pixel offsets.
+			if (!m_isInDirectManipulation)
+			{
+				m_unboundHorizontalOffset = m_xPixelOffset;
+				m_unboundVerticalOffset = m_yPixelOffset;
+			}
+		}
+
 		// Stops an in-progress inertia phase. The C++ source uses this when an
 		// external programmatic ChangeView arrives during inertia — the inertia
 		// is aborted and the new view is applied directly. On Skia, SCP's

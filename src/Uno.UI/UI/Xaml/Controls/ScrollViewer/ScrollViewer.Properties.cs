@@ -227,6 +227,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnMinZoomFactorChanged(DependencyPropertyChangedEventArgs args)
 		{
 			_presenter?.OnMinZoomFactorChanged((float)args.NewValue);
+#if __SKIA__
+			// MUX Reference: when MinZoomFactor changes, the Skia port runs the
+			// boundary-changed handler so any DM-aware code paths that observe the
+			// new lower-bound (e.g. AdjustZoomFactorWithMandatorySnapPoints clamping)
+			// pick up the new value.
+			OnZoomFactorBoundaryChanged(isForLowerBound: true, (float)args.OldValue, (float)args.NewValue);
+#endif
 		}
 		#endregion
 
@@ -243,6 +250,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnMaxZoomFactorChanged(DependencyPropertyChangedEventArgs args)
 		{
 			_presenter?.OnMaxZoomFactorChanged((float)args.NewValue);
+#if __SKIA__
+			// MUX Reference: when MaxZoomFactor changes, fire the upper-bound boundary
+			// handler so DM-aware code paths pick up the new upper limit.
+			OnZoomFactorBoundaryChanged(isForLowerBound: false, (float)args.OldValue, (float)args.NewValue);
+#endif
 		}
 		#endregion
 

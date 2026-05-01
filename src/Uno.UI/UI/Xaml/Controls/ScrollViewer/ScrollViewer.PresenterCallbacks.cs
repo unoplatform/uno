@@ -13,6 +13,14 @@ namespace Microsoft.UI.Xaml.Controls
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
 
+#if __SKIA__
+			// MUX Reference: keep the SV's tracked offsets in sync with the SCP's
+			// rendered position so the Get*Offset family of methods (used by
+			// ScrollForFocusNavigation, snap-points reaction, etc.) reflects
+			// reality during touch-driven scroll/inertia.
+			NotifyPresenterOffsetsChanged(horizontalOffset, verticalOffset, ZoomFactor);
+#endif
+
 			if (isIntermediate && UpdatesMode != Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous)
 			{
 				RequestUpdate();
@@ -72,6 +80,11 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnPresenterZoomed(float zoomFactor)
 		{
 			ZoomFactor = zoomFactor;
+
+#if __SKIA__
+			// Refresh pixel offsets with the new zoom factor.
+			NotifyPresenterOffsetsChanged(HorizontalOffset, VerticalOffset, zoomFactor);
+#endif
 
 			// Note: We should also defer the intermediate zoom changes
 			Update(isIntermediate: false);
