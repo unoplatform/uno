@@ -275,6 +275,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
 		}
 
+		// MUX Reference DefaultValuesAreCorrect (C++ line 3170).
+		// Validates that a fresh ScrollViewer has the documented default values for
+		// scroll modes, rail enablement, zoom mode, scroll bar visibility, and
+		// MaxZoomFactor.
+		// Note: HorizontalScrollBarVisibility's default differs across editions.
+		// WinUI generic style sets it to Disabled; AddScrollViewer(Vertical) does not
+		// touch it so we check the as-built state.
+		[TestMethod]
+		public async Task DefaultValuesAreCorrect()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			Assert.AreEqual(ScrollMode.Auto, scrollViewer.HorizontalScrollMode);
+			Assert.AreEqual(ScrollMode.Auto, scrollViewer.VerticalScrollMode);
+			Assert.AreEqual(true, scrollViewer.IsHorizontalRailEnabled);
+			Assert.AreEqual(true, scrollViewer.IsVerticalRailEnabled);
+			Assert.AreEqual(ZoomMode.Disabled, scrollViewer.ZoomMode);
+			Assert.AreEqual(10.0, scrollViewer.MaxZoomFactor, 0.001);
+			// MinZoomFactor default per WinUI is 0.1.
+			Assert.AreEqual(0.1, scrollViewer.MinZoomFactor, 0.001);
+		}
+
 		// MUX Reference ChangeViewTwice (C++ line 1763).
 		// Validates that two consecutive ChangeView calls land on the SECOND call's
 		// parameters (the first is overridden) and ViewChanged fires with
