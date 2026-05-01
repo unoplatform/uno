@@ -116,4 +116,88 @@ public class Given_ToolTip_Integration
 		var retrieved = ToolTipService.GetToolTip(dummy) as string;
 		Assert.AreEqual("Tool tip on non-stateful object", retrieved);
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp CanEnableAndDisableOpenedToolTip (line 1330).
+	// "Verify that enabling and disabling of an opened ToolTip makes it appear and disappear
+	//  respectively."
+	[TestMethod]
+	public async Task CanEnableAndDisableOpenedToolTip()
+	{
+		var button = await SetupToolTipTest();
+		var toolTip = CreateToolTip();
+		ToolTipService.SetToolTip(button, toolTip);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		toolTip.IsOpen = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// ToolTip is enabled by default.
+		Assert.IsTrue(toolTip.IsOpen);
+		Assert.IsTrue(toolTip.IsEnabled);
+		var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+			TestServices.WindowHelper.WindowContent.XamlRoot);
+		Assert.AreEqual(1, popups.Count);
+		var toolTipParentPopup = popups[0];
+		Assert.AreEqual(1, toolTipParentPopup.Opacity);
+
+		toolTip.IsEnabled = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Disabling the ToolTip causes the ToolTip to disappear.
+		Assert.IsTrue(toolTip.IsOpen);
+		Assert.IsFalse(toolTip.IsEnabled);
+		popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+			TestServices.WindowHelper.WindowContent.XamlRoot);
+		Assert.AreEqual(1, popups.Count);
+		toolTipParentPopup = popups[0];
+		Assert.AreEqual(0, toolTipParentPopup.Opacity);
+
+		// TODO: Bug ID 5254453 - Figure out why we can't enable an opened ToolTip.
+		// (C++ block disabled with /* */; preserved here as a reminder.)
+
+		// Cleanup
+		toolTip.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp CanOpenAndCloseDisabledToolTip (line 1398).
+	// "Verify that opening and closing of a disabled ToolTip does not make it appear."
+	[TestMethod]
+	public async Task CanOpenAndCloseDisabledToolTip()
+	{
+		var button = await SetupToolTipTest();
+		var toolTip = CreateToolTip();
+		ToolTipService.SetToolTip(button, toolTip);
+		toolTip.IsEnabled = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// ToolTip is closed by default.
+		Assert.IsFalse(toolTip.IsOpen);
+		Assert.IsFalse(toolTip.IsEnabled);
+		var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+			TestServices.WindowHelper.WindowContent.XamlRoot);
+		Assert.AreEqual(0, popups.Count);
+
+		toolTip.IsOpen = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Setting IsOpen to true on a disabled ToolTip does not make it appear.
+		Assert.IsTrue(toolTip.IsOpen);
+		Assert.IsFalse(toolTip.IsEnabled);
+		popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+			TestServices.WindowHelper.WindowContent.XamlRoot);
+		Assert.AreEqual(1, popups.Count);
+		var toolTipParentPopup = popups[0];
+		Assert.AreEqual(0, toolTipParentPopup.Opacity);
+
+		toolTip.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Setting IsOpen to false, closes the parent Popup.
+		Assert.IsFalse(toolTip.IsOpen);
+		Assert.IsFalse(toolTip.IsEnabled);
+		popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+			TestServices.WindowHelper.WindowContent.XamlRoot);
+		Assert.AreEqual(0, popups.Count);
+	}
 }
