@@ -13,6 +13,7 @@ using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Windows.Foundation;
 
@@ -20,6 +21,11 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ToolTip : ContentControl
 {
+	// Suppressions for the in-progress port: many private helpers are wired only by
+	// later phases (DP-callback dispatch in Phase 2 closeout, OpenPopup / OnIsOpenChanged
+	// in Phase 3, etc.). The corresponding warnings are restored once the wiring lands.
+#pragma warning disable IDE0051 // Remove unused private members
+
 	// === WinUI Generated stubs (these come from ToolTip.idl / ToolTip.g.cpp in WinUI;
 	// ===  they are not ported from ToolTip_Partial.cpp but Skia needs them because
 	// ===  the gated cross-platform ToolTip.cs declared them and the source generator
@@ -231,11 +237,34 @@ public partial class ToolTip : ContentControl
 		return new ToolTipAutomationPeer(this);
 	}
 
-	// MUX Reference: ToolTip_Partial.cpp OnToolTipSizeChanged (referenced from Initialize, body further down in the file).
-	// Phase 5 (placement) will replace this stub with the faithful port.
-	private void OnToolTipSizeChanged(object sender, SizeChangedEventArgs args)
+	// MUX Reference: ToolTip_Partial.cpp OnPlacementCriteriaChanged (line 567).
+	private void OnPlacementCriteriaChanged()
 	{
-		// TODO Uno (Phase 5): port the SizeChanged-driven re-placement.
+		PerformPlacementInternal();
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp Close (line 666).
+	private void Close()
+	{
+		UnhookOwnerLayoutChangedEvent();
+		UnhookFromXamlIslandRoot();
+
+		var spTemplate = Template;
+		// If we don't have a template, we never opened the popup in the first place.
+		if (spTemplate is not null)
+		{
+			var spPopup = m_wrPopup?.Target as Popup;
+
+			// Fix for Bug 2146297: The popup may already be null by the time ToolTip::Close() is called.
+			if (spPopup is not null)
+			{
+				// Though cleanup of the Popup will release the ToolTip, it's possible this ToolTip might try to open again
+				// with a different Popup before that cleanup happens.  I've seen something to this effect happening, and found
+				// that clearing Popup.Child here prevents this problem.
+				spPopup.Child = null;
+				spPopup.IsOpen = false;
+			}
+		}
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp GetTarget (line 696).
@@ -254,14 +283,32 @@ public partial class ToolTip : ContentControl
 		return spTarget;
 	}
 
-	// === Phase 0 scaffolding methods retained until their corresponding C++ port lands ===
-
-	// Phase 0 scaffolding: invoked by Slider.mux.cs to reposition the slider thumb
-	// tooltip while dragging. Full port lives in ToolTip_Partial.cpp::PerformPlacement
-	// (line ~830); will be reconciled in Phase 5.
+	// MUX Reference: ToolTip_Partial.cpp PerformPlacement (line 723).
+	// Phase 5 will port PerformPlacement faithfully. Until then this stub keeps
+	// the public Slider call-site working.
+	//
+	// Sets the location of the ToolTip's Popup.
+	//
+	// Slider "Disambiguation UI" ToolTips need special handling since they need to remain centered
+	// over the sliding Thumb, which has not yet rendered in its new position.  Therefore, we pass
+	// the new target rect to handle this case.
 	internal void PerformPlacement(Rect? pTargetRect = null)
 	{
-		// TODO Uno: Phase 5 will port PerformPlacement faithfully.
+		// TODO Uno (Phase 5): port PerformPlacement faithfully.
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp PerformPlacementInternal (line 1866).
+	// Phase 5 will port PerformPlacementInternal faithfully.
+	private void PerformPlacementInternal()
+	{
+		// TODO Uno (Phase 5): port PerformPlacementInternal.
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp OnToolTipSizeChanged (line 1899).
+	// Phase 5 (placement) will replace this stub with the faithful port.
+	private void OnToolTipSizeChanged(object sender, SizeChangedEventArgs args)
+	{
+		// TODO Uno (Phase 5): port the SizeChanged-driven re-placement.
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp OnPopupOpened (line 1911).
@@ -325,14 +372,117 @@ public partial class ToolTip : ContentControl
 		Closed?.Invoke(this, spArgs);
 	}
 
-	// MUX Reference: ToolTip_Partial.cpp PerformPlacementInternal (later in file).
-	// Phase 5 will port PerformPlacementInternal faithfully.
-	private void PerformPlacementInternal()
+	// MUX Reference: ToolTip_Partial.cpp ForceFinishClosing (line 2057).
+	// If we are in the process of animating to the Closed state, then closes the ToolTip's Popup.
+	// Else, does nothing.
+	private void ForceFinishClosing(object? pUnused1, object? pUnused2)
 	{
-		// TODO Uno (Phase 5): port PerformPlacementInternal.
+		// Avoid closing the current Popup if it's already been done i.e. by another ToolTip trying to open.
+		if (m_bClosing)
+		{
+			Close();
+			m_bClosing = false;
+		}
 	}
 
-	// MUX Reference: ToolTip_Partial.cpp RemoveAutomaticStatusFromOpenToolTip (later in file).
+	// MUX Reference: ToolTip_Partial.cpp OnIsEnabledChanged (line 2075).
+	// Called when the IsEnabled property changes.
+	private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+	{
+		bool bIsOpen = IsOpen;
+		if (bIsOpen)
+		{
+			var spPopup = m_wrPopup?.Target as Popup;
+			global::System.Diagnostics.Debug.Assert(spPopup is not null, "popup from weak reference expected to be non-null");
+			if (spPopup is null)
+			{
+				return;
+			}
+
+			bool bIsEnabled = IsEnabled;
+			if (bIsEnabled)
+			{
+				PerformPlacementInternal();
+			}
+
+			// Make the ToolTip visible if IsEnabled=True, or hidden otherwise.
+			spPopup.Opacity = bIsEnabled ? 1 : 0;
+		}
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp ChangeVisualState (line 2105).
+	// Change to the correct visual state for the ToolTip.
+	//
+	// bUseTransitions: true to use transitions when updating the visual state, false
+	// to snap directly to the new visual state.
+	private protected override void ChangeVisualState(bool bUseTransitions)
+	{
+		bool bIsOpen = IsOpen;
+
+		if (bIsOpen && m_bIsPopupPositioned)
+		{
+			GoToState(bUseTransitions, "Opened");
+		}
+		else
+		{
+			bool alreadyInClosedState = false;
+
+			// MUX Reference: VSM::TryGetState equivalent (Uno does not expose TryGetState publicly).
+			// Walk the VSM groups on the templated child to find the "Closed" state and check whether
+			// the current state of its group is already "Closed".
+			VisualState? spClosedVisualState = null;
+			VisualStateGroup? spClosedVisualStateGroup = null;
+			if (VisualTreeHelper.GetChildrenCount(this) > 0)
+			{
+				if (VisualTreeHelper.GetChild(this, 0) is FrameworkElement spChildAsFE)
+				{
+					var spVisualStateGroups = VisualStateManager.GetVisualStateGroups(spChildAsFE);
+					if (spVisualStateGroups is not null)
+					{
+						foreach (var group in spVisualStateGroups)
+						{
+							foreach (var state in group.States)
+							{
+								if (state.Name == "Closed")
+								{
+									spClosedVisualState = state;
+									spClosedVisualStateGroup = group;
+									break;
+								}
+							}
+
+							if (spClosedVisualState is not null)
+							{
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			if (spClosedVisualStateGroup is not null && spClosedVisualState is not null)
+			{
+				var spCurrentVisualState = spClosedVisualStateGroup.CurrentState;
+				alreadyInClosedState = ReferenceEquals(spCurrentVisualState, spClosedVisualState);
+			}
+
+			m_bClosing = true;
+
+			bool bWentToState = GoToState(bUseTransitions, "Closed");
+
+			if (!bWentToState || alreadyInClosedState)
+			{
+				// We could not go to the "Closed" state. This could happen if there is no Closed state or if we were already in
+				// the Closed state.
+				// Ordinarily, the Storyboard Completed event will trigger the call to Close(), but if this is not going to happen,
+				// we need to call it directly from here.
+				m_bClosing = false;
+				Close();
+			}
+		}
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp RemoveAutomaticStatusFromOpenToolTip (line 2160).
 	//
 	// For Slider, the Thumb ToolTip may be opened as an automatic ToolTip by pointer hover.  However, if
 	// we click on the Thumb and start to drag, we don't want the ToolTip to disappear after several seconds.
@@ -342,6 +492,26 @@ public partial class ToolTip : ContentControl
 	{
 		// TODO Uno: Phase 2 closeout / Phase 3 will port RemoveAutomaticStatusFromOpenToolTip.
 	}
+
+	// === Helpers awaiting Phase 6 (Xaml-island roots + safe zone) ===
+
+	// MUX Reference: ToolTip_Partial.cpp UnhookOwnerLayoutChangedEvent (later in file).
+	private void UnhookOwnerLayoutChangedEvent()
+	{
+		// TODO Uno (Phase 6): port UnhookOwnerLayoutChangedEvent.
+		m_ownerLayoutUpdatedToken.Disposable = null;
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp UnhookFromXamlIslandRoot (later in file).
+	private void UnhookFromXamlIslandRoot()
+	{
+		// TODO Uno (Phase 6): port UnhookFromXamlIslandRoot.
+		m_xamlIslandRootPointerMovedHandler.Disposable = null;
+		m_xamlIslandRootKeyDownHandler.Disposable = null;
+		m_xamlIslandRootKeyUpHandler.Disposable = null;
+	}
+
+#pragma warning restore IDE0051
 }
 
 #endif // __SKIA__
