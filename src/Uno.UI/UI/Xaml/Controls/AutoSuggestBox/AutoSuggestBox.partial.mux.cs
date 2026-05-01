@@ -2709,10 +2709,67 @@ namespace Microsoft.UI.Xaml.Controls
 			new AutoSuggestBoxAutomationPeer(this);
 
 		// TODO Uno: Uno-specific test hook (no equivalent in WinUI C++). Used by runtime tests
-		// to simulate programmatic suggestion selection. Will be re-implemented once
-		// OnSuggestionSelectionChanged + UpdateText are ported.
+		// to simulate programmatic suggestion selection.
 		internal void ChoseItem(object o)
 		{
+			if (m_tpSuggestionsPart is not null && o is not null)
+			{
+				bool wasIgnoring = m_ignoreSelectionChanges;
+				try
+				{
+					// Drive the SelectionChanged path so OnSuggestionSelectionChanged runs UpdateTextBoxText.
+					m_tpSuggestionsPart.SelectedItem = o;
+				}
+				finally
+				{
+					m_ignoreSelectionChanges = wasIgnoring;
+				}
+			}
+		}
+
+		// TODO Uno: Uno-specific test hook (no equivalent in WinUI C++). Reflected by When_Selecting_Suggest_With_UpDown_Key
+		// runtime test, which expects a private HandleUpDownKeys method that drives the suggestion-list selector cursor
+		// from the supplied KeyRoutedEventArgs. Mirrors the legacy Uno code's wrap-around index navigation.
+		private void HandleUpDownKeys(KeyRoutedEventArgs e)
+		{
+			if (m_tpSuggestionsPart is null)
+			{
+				return;
+			}
+
+			int currentIndex = m_tpSuggestionsPart.SelectedIndex;
+			int numSuggestions = Items?.Count ?? 0;
+			if (numSuggestions == 0)
+			{
+				return;
+			}
+
+			int nextIndex = -1;
+
+			if (e.Key == VirtualKey.Up)
+			{
+				// C# modulo isn't actually a modulo it's a remainder, so need to account for negative index
+				nextIndex = ((currentIndex % numSuggestions) + numSuggestions) % numSuggestions - ((currentIndex == -1) ? 0 : 1);
+			}
+			else if (e.Key == VirtualKey.Down)
+			{
+				int indexPlusOne = currentIndex + 1;
+				// The next step after the last index should be -1, not 0.
+				nextIndex = ((indexPlusOne % numSuggestions) + numSuggestions) % numSuggestions - ((indexPlusOne == numSuggestions) ? 1 : 0);
+			}
+
+			m_tpSuggestionsPart.SelectedIndex = nextIndex;
+
+			if (nextIndex == -1)
+			{
+				// Restore the user-typed text.
+				UpdateTextBoxText(m_userTypedText, AutoSuggestionBoxTextChangeReason.ProgrammaticChange);
+			}
+			else
+			{
+				// Adopt the selected suggestion's text.
+				ChoseItem(m_tpSuggestionsPart.SelectedItem);
+			}
 		}
 	}
 }
