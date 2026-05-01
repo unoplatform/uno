@@ -1465,13 +1465,94 @@ public partial class ToolTip : ContentControl
 
 	// MUX Reference: ToolTip_Partial.cpp HookupXamlIslandRoot (line 2278).
 	// Hooks up the CoreWindow's or XamlIslandRoot's PointerMoved event so the ToolTip can be
-	// automatically closed if it's out of safe zone. On Skia the equivalent is the XamlRoot.
+	// automatically closed if it's out of safe zone.
 	private void HookupXamlIslandRoot()
 	{
-		// TODO Uno (Phase 6 closeout): port HookupXamlIslandRoot. The Uno Skia equivalent
-		// hooks PointerMoved + Key{Down,Up} on the XamlRoot.Content. Currently no-op so
-		// the open path doesn't crash; the safe-zone close fallback still runs via the
-		// iter #6 immediate-close path in OnOwnerPointerExitedOrLostOrCanceled.
+		var islandRootElement = GetXamlIslandRootElement();
+		if (islandRootElement is not null)
+		{
+			AddXamlIslandRootHandler(islandRootElement);
+		}
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp AddXamlIslandRootHandler (line 2354).
+	private void AddXamlIslandRootHandler(UIElement rootElement)
+	{
+		if (m_xamlIslandRootPointerMovedHandler.Disposable is null)
+		{
+			var weakThis = new WeakReference<ToolTip>(this);
+			Input.PointerEventHandler pointerMovedHandler = (sender, args) =>
+			{
+				if (weakThis.TryGetTarget(out var toolTip))
+				{
+					var pointerPoint = args.GetCurrentPoint(null);
+					if (pointerPoint is not null)
+					{
+						toolTip.HandlePointInSafeZone(pointerPoint.Position);
+					}
+				}
+			};
+
+			rootElement.AddHandler(UIElement.PointerMovedEvent, pointerMovedHandler, handledEventsToo: true);
+			m_xamlIslandRootPointerMovedHandler.Disposable = global::Uno.Disposables.Disposable.Create(
+				() => rootElement.RemoveHandler(UIElement.PointerMovedEvent, pointerMovedHandler));
+		}
+
+		if (m_xamlIslandRootKeyDownHandler.Disposable is null)
+		{
+			var weakThis = new WeakReference<ToolTip>(this);
+			Input.KeyEventHandler keyDownHandler = (sender, args) =>
+			{
+				if (weakThis.TryGetTarget(out var toolTip))
+				{
+					toolTip.m_lastKeyDownIsControlOnly = IsControlKeyOnly(args.Key);
+				}
+			};
+
+			rootElement.AddHandler(UIElement.KeyDownEvent, keyDownHandler, handledEventsToo: true);
+			m_xamlIslandRootKeyDownHandler.Disposable = global::Uno.Disposables.Disposable.Create(
+				() => rootElement.RemoveHandler(UIElement.KeyDownEvent, keyDownHandler));
+		}
+
+		if (m_xamlIslandRootKeyUpHandler.Disposable is null)
+		{
+			var weakThis = new WeakReference<ToolTip>(this);
+			Input.KeyEventHandler keyUpHandler = (sender, args) =>
+			{
+				if (weakThis.TryGetTarget(out var toolTip))
+				{
+					if (toolTip.m_lastKeyDownIsControlOnly && IsControlKeyOnly(args.Key))
+					{
+						ToolTipService.CloseToolTipInternal(null);
+					}
+				}
+			};
+
+			rootElement.AddHandler(UIElement.KeyUpEvent, keyUpHandler, handledEventsToo: true);
+			m_xamlIslandRootKeyUpHandler.Disposable = global::Uno.Disposables.Disposable.Create(
+				() => rootElement.RemoveHandler(UIElement.KeyUpEvent, keyUpHandler));
+		}
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp GetXamlIslandRootElement (line 2483).
+	private UIElement? GetXamlIslandRootElement()
+	{
+		var owner = m_wrOwner?.Target as DependencyObject;
+		if (owner is null)
+		{
+			return null;
+		}
+
+		// C++ checks for a CXamlIslandRoot specifically; on Skia, return the owner's
+		// XamlRoot.Content (the visual-tree root element). When the owner is part of a
+		// XamlIslandRoot subtree, this is the XamlIslandRoot's content element.
+		var xamlRoot = (owner as UIElement)?.XamlRoot;
+		if (xamlRoot is null && owner is FrameworkElement fe)
+		{
+			xamlRoot = fe.XamlRoot;
+		}
+
+		return xamlRoot?.Content as UIElement;
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp HookupOwnerLayoutChangedEvent (line 2296).
