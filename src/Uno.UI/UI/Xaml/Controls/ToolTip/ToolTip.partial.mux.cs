@@ -1,5 +1,9 @@
 ﻿// MUX Reference dxaml\xcp\dxaml\lib\ToolTip_Partial.cpp, tag 5f9e85113
 // Contains ported portions of dxaml\xcp\dxaml\lib\ToolTip_Partial.cpp
+//
+// NOTE: Constants and field declarations live in ToolTip.partial.h.mux.cs
+// (port of ToolTip_Partial.h). This file ports method bodies in the order
+// they appear in ToolTip_Partial.cpp.
 
 #if __SKIA__
 
@@ -14,35 +18,22 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ToolTip : ContentControl
 {
-	// Default offset for automatic tooltips opened by mouse.
-	internal const double DEFAULT_MOUSE_OFFSET = 20;
+#pragma warning disable IDE0051 // Remove unused private members (placeholder until Phase 2 ports the dispatch wiring)
+#pragma warning disable IDE0060 // Remove unused parameter (placeholder)
 
-	// Default offset for automatic tooltips opened by touch.
-	internal const double DEFAULT_TOUCH_OFFSET = 44;
-
-	// Top - Default PlacementMode for ToolTips in Jupiter.
-	internal const PlacementMode DefaultPlacementMode = PlacementMode.Top;
-
-#pragma warning disable CS0649 // Field is assigned externally (e.g. from Slider.mux.cs) but never read in this scaffolding stub.
-#pragma warning disable CS0414 // Field assigned but its value is never used in this scaffolding stub.
-#pragma warning disable CS0067 // Event is never used in this scaffolding stub.
-#pragma warning disable IDE0044 // Add readonly modifier
-#pragma warning disable IDE0051 // Remove unused private members
-#pragma warning disable IDE0052 // Remove unread private members
-
-	internal AutomaticToolTipInputMode m_inputMode;
-	internal bool m_isSliderThumbToolTip;
-
-	// Initializes a new instance of the ToolTip class.
+	// Phase 0 scaffolding: ToolTip_Partial.cpp::ToolTip() (line 24).
+	// Phase 2 will replace this body with the faithful port and add the
+	// ~ToolTip() destructor (line 36) wiring.
 	public ToolTip()
 	{
 		DefaultStyleKey = typeof(ToolTip);
 	}
 
 	// Phase 0 scaffolding: public DependencyProperties consumed by external callers
-	// (TabView, ColorPickerSlider, etc.). The full faithful port replaces these in
-	// subsequent phases - order will be reconciled with C++ source line order
-	// (ToolTip_Partial.cpp / ToolTip_Partial.h) as the port lands.
+	// (TabView, ColorPickerSlider, etc.). The Generated NotImplemented stubs in
+	// Generated/3.0.0.0/Microsoft.UI.Xaml.Controls/ToolTip.cs skipped IsOpen/Placement
+	// because they were declared in the now-gated ToolTip.cs; we re-declare them
+	// here for Skia. Phase 2 will replace OnIsOpenChanged with the faithful port.
 
 	public static DependencyProperty IsOpenProperty { get; } =
 		DependencyProperty.Register(
@@ -73,9 +64,11 @@ public partial class ToolTip : ContentControl
 		set => SetValue(PlacementProperty, value);
 	}
 
+#pragma warning disable CS0067 // Event is never used in this scaffolding stub.
 	public event RoutedEventHandler? Opened;
 
 	public event RoutedEventHandler? Closed;
+#pragma warning restore CS0067
 
 	// Phase 0 scaffolding: invoked by Slider.mux.cs to anchor the slider thumb tooltip
 	// to the thumb element. Full port lives in ToolTip_Partial.cpp::SetOwner (line 45)
@@ -105,12 +98,8 @@ public partial class ToolTip : ContentControl
 		// ToolTip_Partial.cpp.
 	}
 
-#pragma warning restore IDE0052
+#pragma warning restore IDE0060
 #pragma warning restore IDE0051
-#pragma warning restore IDE0044
-#pragma warning restore CS0067
-#pragma warning restore CS0414
-#pragma warning restore CS0649
 }
 
 #endif // __SKIA__
