@@ -1511,6 +1511,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Retrieves the left and top margins of the provided element.
+		internal static void GetTopLeftMargins(UIElement pElement, out double topMargin, out double leftMargin)
+		{
+			topMargin = 0;
+			leftMargin = 0;
+
+			if (pElement is FrameworkElement spFrameworkElement)
+			{
+				var margins = spFrameworkElement.Margin;
+				topMargin = margins.Top;
+				leftMargin = margins.Left;
+			}
+		}
+
 		// Called by internal controls to apply a pseudo-LayoutTransform
 		// to the ScrollViewer.Content element.
 		internal void SetLayoutSize(global::Windows.Foundation.Size layoutSize)
@@ -1608,6 +1622,30 @@ namespace Microsoft.UI.Xaml.Controls
 			//     isContentChanged: true,
 			//     isAffectingConfigurations: false,
 			//     isAffectingTouchConfiguration: false);
+		}
+
+		// Called to determine if our manipulation data is stale and we need to bring into view.
+		internal bool IsBringIntoViewportNeeded()
+		{
+			// We might not have a manipulation handler yet.  If not, assume we need a bring into view.
+			if (m_hManipulationHandler is null)
+			{
+				return true;
+			}
+
+			// Get the manipulated element
+			var pManipulatedElementNoRef = GetContentUIElement();
+
+			if (pManipulatedElementNoRef is null)
+			{
+				// No content element so content can't exceed viewport
+				return false;
+			}
+
+			// TODO Uno: Phase 4 — full IsBringIntoViewportNeeded port. The C++ source compares the current
+			// DM transform with the XAML offsets/zoom and returns true when they have diverged. Until DM
+			// adapter exists, return false (no sync needed).
+			return false;
 		}
 
 		// Synchonizes the ScrollData's m_ComputedOffset and m_Offset fields.
@@ -1874,10 +1912,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Pending viewport shifts live on the Anchoring partial; until that's wired up, this is a stub.
+		// Pending viewport shifts live on the Anchoring partial; reset them.
 		private void ResetPendingViewportShifts()
 		{
-			// TODO Uno: Phase 5 — clear m_pendingViewportShiftX/Y on the Anchoring partial.
+			m_pendingViewportShiftX = 0.0;
+			m_pendingViewportShiftY = 0.0;
 		}
 
 		// Increments m_iViewChangingDelay to delay any
@@ -2055,10 +2094,64 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Returns the combined size of the headers:
+		// - horizontal size is max(TopLeftHeader's width, LeftHeader's width)
+		// - vertical size is max(TopLeftHeader's height, TopHeader's height)
+		internal void GetHeadersSize(out global::Windows.Foundation.Size pSize)
+		{
+			pSize = default;
+
+			if (m_trElementScrollContentPresenter is { } pScrollContentPresenter)
+			{
+				double sizeX = 0.0;
+				double sizeY = 0.0;
+
+				// TODO Uno: Phase 6 — port get_TopLeftHeader / get_TopHeader / get_LeftHeader on SCP and the
+				// header-margin computation. Headers are not yet wired up on the managed Skia path; this
+				// returns (0, 0).
+
+				pSize = new global::Windows.Foundation.Size((float)sizeX, (float)sizeY);
+			}
+		}
+
+		// Returns the horizontal and vertical ratios between the ScrollViewer effective viewport
+		// and its actual size. That viewport is potentially reduced by the presence of headers.
+		// Ratios returned depend on the quadrant owning the provided child.
+		// If child is not provided, we assume the child is in the content.
+		internal void GetViewportRatios(DependencyObject pChild, out global::Windows.Foundation.Size pRatios)
+		{
+			pRatios = new global::Windows.Foundation.Size(1.0f, 1.0f);
+
+			if (m_trElementScrollContentPresenter is not null)
+			{
+				GetHeadersSize(out var sizeHeaders);
+
+				if (sizeHeaders.Width > 0.0f || sizeHeaders.Height > 0.0f)
+				{
+					// TODO Uno: Phase 6 — header ownership lookup + ComputePixelViewportWidth/Height
+					// once those land. Until headers are wired up, the ratios stay (1, 1).
+				}
+			}
+		}
+
 		// TODO Uno: Phase 5 — port `IsPanelACarouselPanel`. CarouselPanel is a virtualizing panel used
 		// by ComboBox; until it's hooked up here, return false (which is the safe default for
 		// non-carousel scenarios — the offset gets clamped, which is correct for normal Scroll panels).
 		private bool IsPanelACarouselPanel(bool isForHorizontalOrientation) => false;
+
+		internal float GetZoomedHorizontalOffsetWithPendingShifts()
+		{
+			var zoomedHorizontalOffset = HorizontalOffset;
+			zoomedHorizontalOffset += m_pendingViewportShiftX;
+			return (float)zoomedHorizontalOffset;
+		}
+
+		internal float GetZoomedVerticalOffsetWithPendingShifts()
+		{
+			var zoomedVerticalOffset = VerticalOffset;
+			zoomedVerticalOffset += m_pendingViewportShiftY;
+			return (float)zoomedVerticalOffset;
+		}
 
 #pragma warning restore IDE0051
 #endif
