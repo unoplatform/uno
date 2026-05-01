@@ -576,11 +576,26 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void NotifyDirectManipulationStarted()
 		{
 			m_dmanipState = DMManipulationState.DMManipulationStarted;
+
+			// Switch to Intermediate mode since any ViewChanged event raised
+			// until the DMManipulationCompleted notification is intermediate.
+			// (MUX Reference: NotifyManipulationProgress DMManipulationStarted case.)
+			EnterIntermediateViewChangedMode();
+
+			// Forward to the registered IDirectManipulationStateChangeHandler.
+			m_pDMStateChangeHandler?.NotifyStateChange(
+				DMManipulationState.DMManipulationStarted,
+				0f, 0f, 1f, 0f, 0f,
+				m_isInertial, false, false);
 		}
 
 		internal void NotifyDirectManipulationCompleted()
 		{
+			// Mirror C++ NotifyManipulationProgress DMManipulationCompleted handling:
+			// flip flags BEFORE running any further DM-aware code.
+			m_isInDirectManipulationCompletion = true;
 			m_isInDirectManipulation = false;
+			m_isInDirectManipulationZoom = false;
 			m_isInertial = false;
 			m_dmanipState = DMManipulationState.DMManipulationCompleted;
 			m_isInertiaEndTransformValid = false;
@@ -590,6 +605,15 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isTargetHorizontalOffsetValid = false;
 			m_isTargetVerticalOffsetValid = false;
 			m_isTargetZoomFactorValid = false;
+
+			// Leave intermediate mode and raise final ViewChanged.
+			LeaveIntermediateViewChangedMode(raiseFinalViewChanged: true);
+
+			// Forward to the registered IDirectManipulationStateChangeHandler.
+			m_pDMStateChangeHandler?.NotifyStateChange(
+				DMManipulationState.DMManipulationCompleted,
+				0f, 0f, 1f, 0f, 0f,
+				false, false, false);
 		}
 
 		internal void NotifyInertiaStarting()
