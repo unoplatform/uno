@@ -223,5 +223,108 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The ScrollViewer is no longer expected to be scrollable horizontally.
 			Assert.AreEqual(0.0, scrollViewer.ScrollableWidth, 0.5, "ScrollableWidth after MinWidth lifted");
 		}
+
+		// MUX Reference ChangeScrollViewerHeightToZero (C++ line 1622).
+		// Regression test: setting Height=0 on a loaded ScrollViewer must not crash.
+		[TestMethod]
+		public async Task ChangeScrollViewerHeightToZero()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			// Changing ScrollViewer Height to 0 after it was loaded.
+			scrollViewer.Height = 0;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// No assertion: just verify no crash.
+			Assert.AreEqual(0.0, scrollViewer.Height);
+		}
+
+		// MUX Reference ResetContent (C++ line 1643).
+		// Validates that Content=null implies ScrollableHeight=0, and that re-assigning
+		// content restores scrollability.
+		[TestMethod]
+		public async Task ResetContent()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			Assert.IsTrue(scrollViewer.ScrollableHeight > 0.0, "Initial ScrollableHeight should be > 0");
+
+			// Resetting Content for the case where ScrollContentPresenter::m_isChildActualHeightUsedAsExtent is false.
+			scrollViewer.Content = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// ScrollViewer.Content == null implies ScrollViewer.ScrollableHeight == 0
+			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after Content=null");
+
+			var textBlock = new TextBlock
+			{
+				FontSize = 100.0,
+				Text = "A text with large characters.",
+			};
+			scrollViewer.Content = textBlock;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(scrollViewer.ScrollableHeight > 0.0, "ScrollableHeight after re-content should be > 0");
+
+			// Resetting Content for the case where ScrollContentPresenter::m_isChildActualHeightUsedAsExtent is true.
+			scrollViewer.Content = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// ScrollViewer.Content == null implies ScrollViewer.ScrollableHeight == 0
+			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
+		}
+
+		// MUX Reference ChangeViewTwice (C++ line 1763).
+		// Validates that two consecutive ChangeView calls land on the SECOND call's
+		// parameters (the first is overridden) and ViewChanged fires with
+		// IsIntermediate=false at the end.
+		// Note: the original C++ test uses zoom 2.0 → 3.0 to validate zoom override; on
+		// Skia the cross-platform ChangeView path doesn't (yet) apply zoom factor — that
+		// arrives with the Phase-4 ChangeViewInternal port. This Skia variant uses
+		// offset-only deltas so the SECOND-overrides-FIRST semantics are still validated
+		// without depending on zoom support.
+		[TestMethod]
+		public async Task ChangeViewTwice()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			var viewChangedTcs = new TaskCompletionSource<bool>();
+			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+			{
+				if (!args.IsIntermediate)
+				{
+					viewChangedTcs.TrySetResult(true);
+				}
+			}
+			scrollViewer.ViewChanged += OnViewChanged;
+			try
+			{
+				// Content height is 1200 (12 * 100), SV is 100, scrollable = 1100.
+
+				// First ChangeView: target offset 100.
+				_ = scrollViewer.ChangeView(
+					horizontalOffset: null,
+					verticalOffset: 100.0,
+					zoomFactor: null,
+					disableAnimation: true);
+				// Second ChangeView: override with offset 500.
+				_ = scrollViewer.ChangeView(
+					horizontalOffset: null,
+					verticalOffset: 500.0,
+					zoomFactor: null,
+					disableAnimation: true);
+
+				var completed = await Task.WhenAny(viewChangedTcs.Task, Task.Delay(TimeSpan.FromSeconds(3)));
+				Assert.AreEqual(viewChangedTcs.Task, completed, "ViewChanged with IsIntermediate=false didn't fire within 3s");
+
+				Assert.AreEqual(0.0, scrollViewer.HorizontalOffset, 0.5, "HorizontalOffset");
+				Assert.AreEqual(500.0, scrollViewer.VerticalOffset, 0.5, "VerticalOffset (second call wins)");
+			}
+			finally
+			{
+				scrollViewer.ViewChanged -= OnViewChanged;
+			}
+		}
 	}
 }
