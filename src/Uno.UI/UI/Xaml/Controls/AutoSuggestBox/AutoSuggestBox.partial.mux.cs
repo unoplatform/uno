@@ -475,19 +475,33 @@ namespace Microsoft.UI.Xaml.Controls
 					if (m_textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
 					{
 						m_userTypedText = strQueryText;
-						// make sure the suggestion list is shown when user inputs
-						UpdateSuggestionListVisibility();
 					}
-
-					if (m_tpSuggestionsPart is not null)
+					// Uno-only: latch "user typed while focused" so subsequent async ItemsSource updates can
+					// ride through the ListView focus bounce.
+					if (m_tpTextBoxPart is not null && m_tpTextBoxPart.IsFocused)
 					{
-						int selectedIndex = m_tpSuggestionsPart.SelectedIndex;
+						m_userTypedWithFocus = true;
+					}
+					// Uno-only: always update suggestion list visibility on text-change. Legacy Uno did this
+					// regardless of reason; the focus gate inside UpdateSuggestionListVisibility prevents
+					// opening when not focused. WinUI gates this on UserInput-only because its OnItemsChanged
+					// path runs synchronously under the same focus state, so the popup opens via OnItemsChanged
+					// when ItemsSource updates from the app's TextChanged handler. Uno's deferred event
+					// dispatch makes that path unreliable, so we open synchronously here too.
+					UpdateSuggestionListVisibility();
 
-						if (-1 != selectedIndex)
+					if (m_textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+					{
+						if (m_tpSuggestionsPart is not null)
 						{
-							m_ignoreSelectionChanges = true;
-							m_tpSuggestionsPart.SelectedIndex = -1;
-							m_ignoreSelectionChanges = false;
+							int selectedIndex = m_tpSuggestionsPart.SelectedIndex;
+
+							if (-1 != selectedIndex)
+							{
+								m_ignoreSelectionChanges = true;
+								m_tpSuggestionsPart.SelectedIndex = -1;
+								m_ignoreSelectionChanges = false;
+							}
 						}
 					}
 				}
@@ -867,6 +881,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!m_keepFocus)
 			{
 				m_hasFocus = false;
+				// TODO Uno: m_userTypedWithFocus latch is intentionally NOT cleared on OnLostFocus, because
+				// Uno's deferred event delivery causes brief focus excursions during ItemsSource updates that
+				// would clear the latch prematurely. The latch is keyed off "the user typed in this AutoSuggestBox
+				// at some point", which remains a meaningful signal across short focus bounces.
 
 				if (m_isSipVisible)
 				{
@@ -1131,6 +1149,29 @@ namespace Microsoft.UI.Xaml.Controls
 		//
 		// Queries the focused element from the focus manager to see if it's the textbox
 		//------------------------------------------------------------------------------
+		// TODO Uno: helper for "is any descendant of `this` the focused element?". Uno-specific —
+		// WinUI doesn't need this because IsTextBoxFocusedElement is sufficient under WinUI's synchronous
+		// focus delivery. Uno's async focus delivery + ListView-driven focus bouncing makes the strict
+		// "is exactly the inner TextBox focused" check too tight.
+		private bool IsSubtreeFocused()
+		{
+			if (XamlRoot is not { } xamlRoot)
+			{
+				return false;
+			}
+
+			var focused = FocusManager.GetFocusedElement(xamlRoot) as DependencyObject;
+			while (focused is not null)
+			{
+				if (focused == this)
+				{
+					return true;
+				}
+				focused = Media.VisualTreeHelper.GetParent(focused);
+			}
+			return false;
+		}
+
 		private bool IsTextBoxFocusedElement()
 		{
 			// TODO Uno: WinUI uses GetFocusedElement to walk the focus tree; in Uno, FocusManager.GetFocusedElement
@@ -2571,7 +2612,12 @@ namespace Microsoft.UI.Xaml.Controls
 			// dispatch + ListView-driven focus stealing on ItemsSource update can briefly drop
 			// m_tpTextBoxPart.IsFocused mid-update (focus bounces to a sibling, then returns), so checking
 			// .IsFocused at the wrong instant causes the popup to stay closed when it should open.
-			bool textBoxFocused = m_tpTextBoxPart is not null && m_tpTextBoxPart.IsFocused;
+			// More robust: walk up from FocusManager.GetFocusedElement to see if ANY ancestor is `this`
+			// (the AutoSuggestBox). This recognizes "any descendant of SUT owns focus" — not just the
+			// inner TextBox — which rides through brief focus bounces between template parts.
+			bool textBoxFocused = m_userTypedWithFocus
+				|| (m_tpTextBoxPart is not null && m_tpTextBoxPart.IsFocused)
+				|| IsSubtreeFocused();
 
 			if (maxHeight > 0 && textBoxFocused)
 			{

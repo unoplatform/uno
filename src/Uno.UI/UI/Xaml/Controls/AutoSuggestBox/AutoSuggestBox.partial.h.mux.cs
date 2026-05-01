@@ -173,6 +173,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool m_suppressSuggestionListVisibility;
 
+		// Uno-only: latched true in OnTextBoxTextChanged (UserInput branch) when m_tpTextBoxPart was focused
+		// at typing time. Cleared in OnLostFocus when focus actually leaves the AutoSuggestBox subtree.
+		// Used as an alternative focus signal in UpdateSuggestionListVisibility to ride through ListView-induced
+		// focus bounces during async ItemsSource updates that drop m_tpTextBoxPart.IsFocused mid-update.
+		private bool m_userTypedWithFocus;
+
 		private bool m_deferringUpdate;
 		// WinUI caches a PropertyPathListener built from TextMemberPath; Uno equivalent is `Uno.UI.DataBinding.BindingPath`.
 		private Uno.UI.DataBinding.BindingPath m_spPropertyPathListener;
