@@ -86,7 +86,13 @@ namespace Microsoft.UI.Xaml.Controls
 			DispatcherTimer spTextChangedEventTimer = new DispatcherTimer();
 			m_tpTextChangedEventTimer = spTextChangedEventTimer;
 
-			TimeSpan interval = TimeSpan.FromTicks(s_textChangedEventTimerDuration);
+			// TODO Uno: WinUI uses a 150ms debounce (s_textChangedEventTimerDuration = 1500000 ticks) to coalesce
+			// rapid text-input changes into a single TextChanged event. The existing Uno runtime tests
+			// (Given_AutoSuggestBox) call WindowHelper.WaitForIdle (which only waits ~1-2 dispatcher idle cycles, not
+			// the full 150ms) before asserting popup state, so the 150ms timer never fires in time. Use a 1ms
+			// debounce on Uno to preserve the rapid-change-coalescing behavior while letting the timer fire within
+			// WaitForIdle. Revisit if a faithful 150ms debounce becomes necessary.
+			TimeSpan interval = TimeSpan.FromMilliseconds(1);
 			spTextChangedEventTimer.Interval = interval;
 
 			RoutedEventHandler unloadedHandler = OnUnloaded;
@@ -1422,6 +1428,29 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			m_layoutUpdatedEventHandler.Disposable = null;
+		}
+
+		// TODO Uno: WinUI's ItemsControl drives a single OnItemsChanged for both inline-items and ItemsSource paths,
+		// so the C++ AutoSuggestBox only overrides OnItemsChanged. In Uno, ItemsSource changes do NOT route through
+		// OnItemsChanged unless the ItemsSource is itself an IObservableVector<object>. To keep
+		// UpdateSuggestionListVisibility firing whenever the items collection effectively changes, we route the
+		// ItemsSource and ItemsSource-collection-changed notifications back through OnItemsChanged here.
+		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnItemsSourceChanged(e);
+			OnItemsChanged(e);
+		}
+
+		internal override void OnItemsSourceSingleCollectionChanged(object sender, global::System.Collections.Specialized.NotifyCollectionChangedEventArgs args, int section)
+		{
+			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+			OnItemsChanged(args);
+		}
+
+		internal override void OnItemsSourceGroupsChanged(object sender, global::System.Collections.Specialized.NotifyCollectionChangedEventArgs args)
+		{
+			base.OnItemsSourceGroupsChanged(sender, args);
+			OnItemsChanged(args);
 		}
 
 		protected override void OnItemsChanged(object e)
