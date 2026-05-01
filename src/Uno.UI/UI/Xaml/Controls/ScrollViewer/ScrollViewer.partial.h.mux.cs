@@ -583,6 +583,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isInDirectManipulation = false;
 			m_isInertial = false;
 			m_dmanipState = DMManipulationState.DMManipulationCompleted;
+			m_isInertiaEndTransformValid = false;
 
 			// Reset target-view tracking flags so a subsequent ChangeViewInternal call
 			// uses fresh live property values.
@@ -594,6 +595,24 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void NotifyInertiaStarting()
 		{
 			m_isInertial = true;
+		}
+
+		// Bridge for SCP's IDirectManipulationHandler.OnInertiaStarting that lets
+		// the SCP communicate the end-of-inertia transform so ViewChanging events
+		// raised during inertia can populate FinalView with the right targets.
+		// MUX Reference: ScrollViewer_Partial.cpp NotifyManipulationProgress sets
+		// m_inertiaEndHorizontalOffset / m_inertiaEndVerticalOffset / m_inertiaEndZoomFactor
+		// and m_isInertiaEndTransformValid when DM produces an end-of-inertia transform.
+		internal void NotifyInertiaStarting(
+			double inertiaEndHorizontalOffset,
+			double inertiaEndVerticalOffset,
+			float inertiaEndZoomFactor)
+		{
+			m_isInertial = true;
+			m_inertiaEndHorizontalOffset = (float)inertiaEndHorizontalOffset;
+			m_inertiaEndVerticalOffset = (float)inertiaEndVerticalOffset;
+			m_inertiaEndZoomFactor = inertiaEndZoomFactor;
+			m_isInertiaEndTransformValid = true;
 		}
 
 		// Updates the SV's tracked offsets when the presenter reports a scroll change.
