@@ -3744,17 +3744,21 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (layoutSize.Width != m_layoutSize.Width || layoutSize.Height != m_layoutSize.Height)
 			{
+				double viewport = 0;
+				global::Windows.Foundation.Size availableSize = new global::Windows.Foundation.Size(0.0f, 0.0f);
+
 				m_layoutSize = layoutSize;
 
-				// TODO Uno: Phase 4 — invalidate the inner SCP and re-measure with the computed pixel viewport
-				// once m_trElementScrollContentPresenter is wired up.
-				// if (m_trElementScrollContentPresenter is not null)
-				// {
-				//     m_trElementScrollContentPresenter.InvalidateMeasure();
-				//     ComputePixelViewportWidth(null, false, out var widthViewport);
-				//     ComputePixelViewportHeight(null, false, out var heightViewport);
-				//     m_trElementScrollContentPresenter.Measure(new Size((float)widthViewport, (float)heightViewport));
-				// }
+				if (m_trElementScrollContentPresenter is not null)
+				{
+					m_trElementScrollContentPresenter.InvalidateMeasure();
+
+					ComputePixelViewportWidth(pProvider: null, isProviderSet: false, out viewport);
+					availableSize.Width = (float)viewport;
+					ComputePixelViewportHeight(pProvider: null, isProviderSet: false, out viewport);
+					availableSize.Height = (float)viewport;
+					m_trElementScrollContentPresenter.Measure(availableSize);
+				}
 			}
 		}
 
