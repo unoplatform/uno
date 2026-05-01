@@ -411,6 +411,18 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
 			_touchInertia = null;
+
+#if __SKIA__
+			// MUX Reference ScrollViewer_Partial.cpp HandleManipulationStarting raises the
+			// DirectManipulationStarted event so app code can observe DM-driven scroll/zoom
+			// transitions. The new port has Raise* helpers (ScrollViewer.partial.mux.cs:4866)
+			// but no caller; route through SCP's DM handler which is already wired into
+			// the touch/inertia pipeline.
+			if (!isResuming && Scroller is { } sv)
+			{
+				sv.RaiseDirectManipulationStarted();
+			}
+#endif
 		}
 
 		/// <inheritdoc />
@@ -612,6 +624,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//Set(disableAnimation: true, isIntermediate: false);
 			Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
+
+#if __SKIA__
+			// MUX Reference ScrollViewer_Partial.cpp HandleManipulationCompleted raises the
+			// DirectManipulationCompleted event. Route through SCP's DM handler.
+			if (Scroller is { } sv)
+			{
+				sv.RaiseDirectManipulationCompleted();
+			}
+#endif
 		}
 
 		private ScrollDirection GetDirection(ManipulationVelocities velocities)
