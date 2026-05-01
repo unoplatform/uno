@@ -510,8 +510,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Note: m_isFocusableOnFlyoutScrollViewer exists in MuxInternal partial.
 
 		// Reference to the ScrollContentPresenter child.
-		// Note: existing _presenter field already references the ScrollContentPresenter; alias here for parity with C++.
-		// protected IScrollContentPresenter m_trElementScrollContentPresenter;
+		// Cross-platform code already populates `_presenter` in OnApplyTemplate; this field is kept in sync
+		// with that on Skia for parity with the C++ source.
+		private ScrollContentPresenter m_trElementScrollContentPresenter;
 
 		// #endregion
 

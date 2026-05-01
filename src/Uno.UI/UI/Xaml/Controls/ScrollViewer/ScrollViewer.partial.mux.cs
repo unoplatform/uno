@@ -213,6 +213,38 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Releases and unhooks template parts and their events.
+		internal void UnhookTemplate()
+		{
+			// Cleanup any existing template parts
+			if (m_trElementHorizontalScrollBar is { } hScrollBar)
+			{
+				// TODO Uno: Phase 4 — call StopUseOfActualSizeAsExtent on the ScrollBar once that helper lands.
+				// hScrollBar.StopUseOfActualSizeAsExtent();
+				m_HorizontalScrollToken.Disposable = null;
+				m_horizontalThumbDragStartedToken.Disposable = null;
+				m_horizontalThumbDragCompletedToken.Disposable = null;
+				m_horizontalScrollbarPointerEnteredToken.Disposable = null;
+				m_horizontalScrollbarPointerExitedToken.Disposable = null;
+			}
+			if (m_trElementVerticalScrollBar is { } vScrollBar)
+			{
+				// TODO Uno: Phase 4 — call StopUseOfActualSizeAsExtent on the ScrollBar once that helper lands.
+				// vScrollBar.StopUseOfActualSizeAsExtent();
+				m_VerticalScrollToken.Disposable = null;
+				m_verticalThumbDragStartedToken.Disposable = null;
+				m_verticalThumbDragCompletedToken.Disposable = null;
+				m_verticalScrollbarPointerEnteredToken.Disposable = null;
+				m_verticalScrollbarPointerExitedToken.Disposable = null;
+			}
+			m_trElementRoot = null;
+			m_trElementScrollContentPresenter = null;
+			m_trElementHorizontalScrollBar = null;
+			m_trElementVerticalScrollBar = null;
+			m_tpElementScrollBarSeparator = null;
+			m_trLayoutAdjustmentsForOcclusionsStoryboard = null;
+		}
+
 		// Scrolls the view in the specified direction.
 		internal void ScrollInDirection(
 			VirtualKey key,
@@ -590,6 +622,92 @@ namespace Microsoft.UI.Xaml.Controls
 			pScrollInfo.CanVerticallyScroll = vertical != ScrollBarVisibility.Disabled;
 		}
 
+		// Handle the horizontal ScrollBar's Scroll event.
+		internal void OnHorizontalScrollBarScroll(object pSender, ScrollEventArgs pArgs)
+		{
+			// Do not process this request when the effective HorizontalScrollMode is Disabled.
+			// TODO Uno: Phase 4 — wire GetEffectiveHorizontalScrollMode (manipulation-time cache); use live property for now.
+			var scrollMode = HorizontalScrollMode;
+			if (scrollMode == ScrollMode.Disabled)
+			{
+				return;
+			}
+
+			var scrollEventType = pArgs.ScrollEventType;
+			var newOffset = pArgs.NewValue;
+
+			HandleHorizontalScroll(scrollEventType, newOffset);
+		}
+
+		// Handle the vertical ScrollBar's Scroll event.
+		internal void OnVerticalScrollBarScroll(object pSender, ScrollEventArgs pArgs)
+		{
+			// Do not process this request when the effective VerticalScrollMode is Disabled.
+			// TODO Uno: Phase 4 — wire GetEffectiveVerticalScrollMode (manipulation-time cache); use live property for now.
+			var scrollMode = VerticalScrollMode;
+			if (scrollMode == ScrollMode.Disabled)
+			{
+				return;
+			}
+
+			var scrollEventType = pArgs.ScrollEventType;
+			var newOffset = pArgs.NewValue;
+
+			HandleVerticalScroll(scrollEventType, newOffset);
+		}
+
+		// Handle DragStarted on the horizontal ScrollBar's Thumb.
+		internal void OnScrollBarThumbDragStarted(object pSender, DragStartedEventArgs pArgs)
+		{
+			// Suppress the scrollbars from fading out while we are dragging.
+			m_keepIndicatorsShowing = true;
+
+			// Suppress scrolling when dragging a thumb
+			m_isDraggingThumb = true;
+
+			ShowIndicators();
+		}
+
+		// Handle DragCompleted on the horizontal ScrollBar's Thumb.
+		internal void OnScrollBarThumbDragCompleted(object pSender, DragCompletedEventArgs pArgs)
+		{
+			// Make the scrollbars fade out, after the normal delay.
+			m_keepIndicatorsShowing = false;
+
+			// Suppress scrolling when dragging a thumb
+			m_isDraggingThumb = false;
+
+			// and synchronize
+			SynchronizeScrollOffsetsAfterThumbDeferring();
+
+			// TODO Uno: Phase 4 — call UpdateVisualState() once it's wired up.
+			// UpdateVisualState();
+		}
+
+		// Handle PointerEntered on the vertical scrollbar
+		internal void OnVerticalScrollbarPointerEntered(object pSender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs pArgs)
+		{
+			m_isPointerOverVerticalScrollbar = true;
+		}
+
+		// Handle PointerExited on the vertical scrollbar
+		internal void OnVerticalScrollbarPointerExited(object pSender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs pArgs)
+		{
+			m_isPointerOverVerticalScrollbar = false;
+		}
+
+		// Handle PointerEntered on the horizontal scrollbar
+		internal void OnHorizontalScrollbarPointerEntered(object pSender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs pArgs)
+		{
+			m_isPointerOverHorizontalScrollbar = true;
+		}
+
+		// Handle PointerExited on the horizontal scrollbar
+		internal void OnHorizontalScrollbarPointerExited(object pSender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs pArgs)
+		{
+			m_isPointerOverHorizontalScrollbar = false;
+		}
+
 		// Returns a rounded down dimension for the viewport since DManip only accepts integer viewport values.
 		// A rounded down value is used to avoid bugs with unreachable mandatory scroll snap points.
 		internal static double AdjustPixelViewportDim(double pixelViewportDim)
@@ -634,6 +752,36 @@ namespace Microsoft.UI.Xaml.Controls
 		// Returns the potential inner IManipulationDataProvider if it's oriented according
 		// to the provided orientation.
 		private object GetInnerManipulationDataProvider(bool isForHorizontalOrientation) => null;
+
+		// Updates the ScrollBar's IsIgnoringUserInput flag based on the scroll mode setting.
+		// Delays the update when there is an ongoing manipulation.
+		// The horizontal or vertical ScrollBar is affected depending on the param.
+		internal void RefreshScrollBarIsIgnoringUserInput(bool isForHorizontalOrientation)
+		{
+			if (IsInDirectManipulation)
+			{
+				// Refresh the ScrollBar after the current manipulation
+				m_isScrollBarIgnoringUserInputInvalid = true;
+				return;
+			}
+
+			if (isForHorizontalOrientation)
+			{
+				if (m_trElementHorizontalScrollBar is { } hScrollBar)
+				{
+					var scrollMode = HorizontalScrollMode;
+					hScrollBar.IsIgnoringUserInput = scrollMode == ScrollMode.Disabled;
+				}
+			}
+			else
+			{
+				if (m_trElementVerticalScrollBar is { } vScrollBar)
+				{
+					var scrollMode = VerticalScrollMode;
+					vScrollBar.IsIgnoringUserInput = scrollMode == ScrollMode.Disabled;
+				}
+			}
+		}
 
 		// Updates the zoom factor value. Equivalent of ScrollToHorizontalOffset
 		// and ScrollToVerticalOffset for the ZoomFactor dependency property.
@@ -1300,6 +1448,59 @@ namespace Microsoft.UI.Xaml.Controls
 			m_pDMStateChangeHandler = pDMStateChangeHandler;
 		}
 
+		// Show the appropriate scrolling indicators.
+		internal void ShowIndicators()
+		{
+			var showScrollBarSeparator = !IsConscious();
+
+			if ((!m_blockIndicators || !IsConscious())
+				&& !AreBothScrollBarsCollapsed())
+			{
+				// Mouse indicators dominate if they are already showing or if we have set the flag to prefer them.
+				if (m_preferMouseIndicators || m_showingMouseIndicators || !IsConscious())
+				{
+					if (AreBothScrollBarsVisible() &&
+						(m_isPointerOverVerticalScrollbar || m_isPointerOverHorizontalScrollbar))
+					{
+						VisualStateManager.GoToState(this, "MouseIndicatorFull", true);
+						showScrollBarSeparator = true;
+					}
+					else
+					{
+						VisualStateManager.GoToState(this, "MouseIndicator", true);
+					}
+
+					m_showingMouseIndicators = true;
+				}
+				else
+				{
+					VisualStateManager.GoToState(this, "TouchIndicator", true);
+				}
+			}
+
+			var isEnabled = IsEnabled;
+
+			// Select the proper state for the ScrollBar separator square within the ScrollBarSeparatorStates group:
+			if (Uno.UI.Helpers.WinUI.SharedHelpers.IsAnimationsEnabled())
+			{
+				// When OS animations are turned on, show the square when a ScrollBar is shown unless the ScrollViewer is disabled, using an animation.
+				VisualStateManager.GoToState(this, (showScrollBarSeparator && isEnabled) ? "ScrollBarSeparatorExpanded" : "ScrollBarSeparatorCollapsed", true /*useTransitions*/);
+			}
+			else
+			{
+				// OS animations are turned off. Show or hide the square depending on the presence of a ScrollBar, without an animation.
+				// When the ScrollViewer is disabled, hide the square in sync with the ScrollBar(s).
+				if (showScrollBarSeparator)
+				{
+					VisualStateManager.GoToState(this, isEnabled ? "ScrollBarSeparatorExpandedWithoutAnimation" : "ScrollBarSeparatorCollapsed", true /*useTransitions*/);
+				}
+				else
+				{
+					VisualStateManager.GoToState(this, isEnabled ? "ScrollBarSeparatorCollapsedWithoutAnimation" : "ScrollBarSeparatorCollapsed", true /*useTransitions*/);
+				}
+			}
+		}
+
 		// Returns true iff both horizontal and vertical scrollbars are collapsed. Used to skip scroll bar animations.
 		internal bool AreBothScrollBarsCollapsed()
 			=> m_scrollVisibilityX == Visibility.Collapsed
@@ -1309,6 +1510,26 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool AreBothScrollBarsVisible()
 			=> m_scrollVisibilityX == Visibility.Visible
 				&& m_scrollVisibilityY == Visibility.Visible;
+
+		// Handler for when the TouchIndicator or MouseIndicator state's storyboard completes animating.
+		internal void IndicatorStateStoryboardCompleted(object pUnused1, object pUnused2)
+		{
+			// If the cursor is currently directly over either scrollbar then don't automatically hide the indicators
+			if (!m_keepIndicatorsShowing &&
+				!(m_isPointerOverVerticalScrollbar || m_isPointerOverHorizontalScrollbar))
+			{
+				// Go to the NoIndicator state using transitions.  There should be a delay before the NoIndicator state actually shows.
+				// TODO Uno: Phase 4 — call UpdateVisualState() once it's wired up; for now use VisualStateManager.GoToState.
+				VisualStateManager.GoToState(this, "NoIndicator", true /*useTransitions*/);
+			}
+		}
+
+		// Handler for when the NoIndicator state's storyboard completes animating.
+		internal void NoIndicatorStateStoryboardCompleted(object pUnused1, object pUnused2)
+		{
+			global::System.Diagnostics.Debug.Assert(m_hasNoIndicatorStateStoryboardCompletedHandler);
+			m_showingMouseIndicators = false;
+		}
 
 		// Raises or delays the ViewChanging event with the provided target transform and IsInertial flag.
 		// The event is delayed when m_iViewChangingDelay is strictly positive. In that case the event is
