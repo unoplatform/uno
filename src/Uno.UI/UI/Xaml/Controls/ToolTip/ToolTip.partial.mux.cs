@@ -1505,6 +1505,29 @@ public partial class ToolTip : ContentControl
 		}
 	}
 
+	// MUX Reference: ToolTip_Partial.cpp RepositionPopup (line 2202).
+	internal void RepositionPopup()
+	{
+		PerformPlacementInternal();
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp HandlePointInSafeZone (line 2209, POINT overload).
+	// Win32 POINT-based overload that converts screen-physical coordinates to client-logical
+	// coordinates before forwarding to the Point overload. Skia has no Win32 POINT/screen-physical
+	// coord pipeline; the Uno safe-zone path uses PointerRoutedEventArgs.LastPointerEvent which
+	// is already in logical coordinates. Preserved verbatim under #if false for diff fidelity.
+#if false
+	internal void HandlePointInSafeZone(POINT position)
+	{
+		if (auto visualTree = VisualTree::GetForElementNoRef(GetHandle()))
+		{
+			// Start from GetCursorPos point, which need to be converted logical point
+			auto logicalPoint = visualTree->ScreenPhysicalToClientLogical(position);
+			IFC_RETURN(HandlePointInSafeZone(logicalPoint));
+		}
+	}
+#endif
+
 	// MUX Reference: ToolTip_Partial.cpp HandlePointInSafeZone (line 2221, Point overload).
 	internal void HandlePointInSafeZone(Point point)
 	{
@@ -1576,6 +1599,12 @@ public partial class ToolTip : ContentControl
 		{
 			AddXamlIslandRootHandler(islandRootElement);
 		}
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp UnhookFromXamlIslandRoot (line 2290).
+	private void UnhookFromXamlIslandRoot()
+	{
+		RemoveXamlIslandRootHandler();
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp HookupOwnerLayoutChangedEvent (line 2296).
@@ -1675,8 +1704,9 @@ public partial class ToolTip : ContentControl
 		}
 	}
 
-	// MUX Reference: ToolTip_Partial.cpp UnhookFromXamlIslandRoot (line 2447).
-	private void UnhookFromXamlIslandRoot()
+	// MUX Reference: ToolTip_Partial.cpp RemoveXamlIslandRootHandler (line 2447).
+	// Unhooks the CoreWindow's PointerMoved event.
+	private void RemoveXamlIslandRootHandler()
 	{
 		m_xamlIslandRootPointerMovedHandler.Disposable = null;
 		m_xamlIslandRootKeyDownHandler.Disposable = null;
