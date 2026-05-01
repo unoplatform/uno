@@ -265,18 +265,71 @@ public partial class ToolTip : ContentControl
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp OnPopupOpened (line 1911).
-	// Phase 2 closeout will port the AutomationPeer raise + pendingPopupOpenEventCount logic.
 	private void OnPopupOpened(object? pUnused1, object pUnused2)
 	{
-		// TODO Uno: Phase 2 closeout will port OnPopupOpened faithfully.
+		OnOpened();
+
+		if (AutomationPeer.ListenerExistsHelper(AutomationEvents.ToolTipOpened))
+		{
+			var spAutomationPeer = GetOrCreateAutomationPeer();
+			if (spAutomationPeer is not null)
+			{
+				spAutomationPeer.RaiseAutomationEvent(AutomationEvents.ToolTipOpened);
+			}
+		}
+
+		// If we've recently closed and reopened this ToolTip, then don't do anything until we receive the final Popup.Opened
+		// event. See comment for m_pendingPopupOpenEventCount in header for details.
+		m_pendingPopupOpenEventCount--;
+		if (m_pendingPopupOpenEventCount == 0 && m_bCallPerformPlacementAtNextPopupOpen)
+		{
+			m_bCallPerformPlacementAtNextPopupOpen = false;
+			PerformPlacementInternal();
+		}
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp OnPopupClosed (line 1945).
-	// Phase 2 closeout will port the AutomationPeer raise + m_bIsPopupPositioned reset.
 	private void OnPopupClosed(object? pUnused1, object pUnused2)
 	{
-		// TODO Uno: Phase 2 closeout will port OnPopupClosed faithfully.
+		OnClosed();
+
+		if (AutomationPeer.ListenerExistsHelper(AutomationEvents.ToolTipClosed))
+		{
+			var spAutomationPeer = GetOrCreateAutomationPeer();
+			if (spAutomationPeer is not null)
+			{
+				spAutomationPeer.RaiseAutomationEvent(AutomationEvents.ToolTipClosed);
+			}
+		}
+
 		m_bIsPopupPositioned = false;
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp OnOpened (line 1971).
+	private void OnOpened()
+	{
+		// Create the args
+		var spArgs = new RoutedEventArgs(this);
+
+		// Raise the event
+		Opened?.Invoke(this, spArgs);
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp OnClosed (line 1989).
+	private void OnClosed()
+	{
+		// Create the args
+		var spArgs = new RoutedEventArgs(this);
+
+		// Raise the event
+		Closed?.Invoke(this, spArgs);
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp PerformPlacementInternal (later in file).
+	// Phase 5 will port PerformPlacementInternal faithfully.
+	private void PerformPlacementInternal()
+	{
+		// TODO Uno (Phase 5): port PerformPlacementInternal.
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp RemoveAutomaticStatusFromOpenToolTip (later in file).
