@@ -50,6 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[RequiresScaling(1f)]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScrollViewer_Resized()
 		{
@@ -109,6 +110,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
@@ -388,6 +390,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Home_End_PageDown_PageUp()
 		{
 			var border = new Border
@@ -1168,6 +1171,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_NonRound_Content_Height()
 		{
 			var outerScrollViewer = new ScrollViewer()
