@@ -2624,8 +2624,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// ScrollBar visibilities affect the DirectManipulation viewport configurations.
-			// TODO Uno: Phase 4 — call OnViewportConfigurationsAffectingPropertyChanged once DM adapter exists.
-			// OnViewportConfigurationsAffectingPropertyChanged();
+			OnViewportConfigurationsAffectingPropertyChanged();
 
 			InvalidateMeasure();
 		}
