@@ -2864,17 +2864,30 @@ namespace Microsoft.UI.Xaml.Controls
 						else
 						{
 							// Zoom factor change is programmatic, during a DManip operation
-							// TODO Uno: Phase 4 — route through ChangeViewInternal once it lands. For now, just
-							// programmatically apply the value.
-							PutZoomFactorCore(value);
-							zoomChanged = true;
-							if (!m_isTargetZoomFactorValid || m_targetZoomFactor != value)
+							result = ChangeViewInternal(
+								pHorizontalOffset: null,
+								pVerticalOffset: null,
+								pZoomFactor: value,
+								pOldZoomFactor: null,
+								forceChangeToCurrentView: false,
+								adjustWithMandatorySnapPoints: false,
+								skipDuringTouchContact: false,
+								skipAnimationWhileRunning: false,
+								disableAnimation: true,
+								applyAsManip: true,
+								transformIsInertiaEnd: false,
+								isForMakeVisible: false);
+
+							if (result)
 							{
-								// Raise the ViewChanging event with the new target zoom factor. This will set m_isTargetZoomFactorValid to True and
-								// m_targetZoomFactor to value, allowing m_targetZoomFactor to be used in any potential imminent call to ChangeViewInternal.
-								NotifyZoomFactorChanging(value);
+								zoomChanged = true;
+								if (!m_isTargetZoomFactorValid || m_targetZoomFactor != value)
+								{
+									// Raise the ViewChanging event with the new target zoom factor. This will set m_isTargetZoomFactorValid to True and
+									// m_targetZoomFactor to value, allowing m_targetZoomFactor to be used in any potential imminent call to ChangeViewInternal.
+									NotifyZoomFactorChanging(value);
+								}
 							}
-							_ = result; // suppress unused warning until ChangeViewInternal lands
 						}
 					}
 				}
