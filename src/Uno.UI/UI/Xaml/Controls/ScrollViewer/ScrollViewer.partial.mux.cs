@@ -3328,11 +3328,15 @@ namespace Microsoft.UI.Xaml.Controls
 		// Retrieves the UIElement for the ScrollViewer content if any.
 		internal UIElement GetContentUIElement()
 		{
-			// TODO Uno: Phase 4 wiring — read from m_trElementScrollContentPresenter once OnApplyTemplate
-			// populates it. For now route through the cross-platform _presenter field.
-			if (IsLoaded && _presenter is ScrollContentPresenter scp)
+			if (m_trElementScrollContentPresenter is { } scp)
 			{
 				return scp.Content as UIElement;
+			}
+			// Fallback while OnApplyTemplate hasn't run: use the cross-platform
+			// _presenter field if it has been populated by the legacy path.
+			if (IsLoaded && _presenter is ScrollContentPresenter legacyScp)
+			{
+				return legacyScp.Content as UIElement;
 			}
 			return null;
 		}
@@ -3909,6 +3913,49 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Called when a viewport-affecting property changes that may need to push to DManip.
+		// (C++ source line 10310)
+		internal void OnViewportAffectingPropertyChanged(
+			bool boundsChanged,
+			bool touchConfigurationChanged,
+			bool nonTouchConfigurationChanged,
+			bool configurationsChanged,
+			bool chainedMotionTypesChanged,
+			bool horizontalOverpanModeChanged,
+			bool verticalOverpanModeChanged,
+			out bool areConfigurationsUpdated)
+		{
+			areConfigurationsUpdated = false;
+
+			// Configurations are not expected to change during a manipulation
+			global::System.Diagnostics.Debug.Assert(!(configurationsChanged && IsInDirectManipulation));
+
+			// When DManip-on-DComp is turned on, DManip needs to be aware of the latest viewport sizes so that its content can be properly aligned based on
+			// the current alignments, even outside a manipulation.
+			if (m_hManipulationHandler is not null &&
+				(m_isManipulationHandlerInterestedInNotifications || IsInManipulation || (configurationsChanged && m_trManipulatableElement is not null) ||
+				 (boundsChanged && m_trManipulatableElement is not null)))
+			{
+				var spContentUIElement = GetContentUIElement();
+				if (spContentUIElement is not null)
+				{
+					// TODO Uno: Phase 4 — port ManipulationHandler_NotifyViewportChanged via the DM adapter.
+					// CoreImports::ManipulationHandler_NotifyViewportChanged(
+					//     m_hManipulationHandler,
+					//     spContentUIElement,
+					//     IsInManipulation,
+					//     boundsChanged,
+					//     touchConfigurationChanged,
+					//     nonTouchConfigurationChanged,
+					//     configurationsChanged,
+					//     chainedMotionTypesChanged,
+					//     horizontalOverpanModeChanged,
+					//     verticalOverpanModeChanged,
+					//     out areConfigurationsUpdated);
+				}
+			}
+		}
+
 		// Called when the input manager may need to be told that a manipulatable element has changed.
 		internal void NotifyManipulatableElementChanged()
 		{
@@ -4439,16 +4486,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_horizontalOverpanMode = horizontalOverpanMode;
 				m_verticalOverpanMode = verticalOverpanMode;
-				// TODO Uno: Phase 4 — port OnViewportAffectingPropertyChanged.
-				// OnViewportAffectingPropertyChanged(
-				//     boundsChanged: false,
-				//     touchConfigurationChanged: false,
-				//     nonTouchConfigurationChanged: false,
-				//     configurationsChanged: false,
-				//     chainedMotionTypesChanged: false,
-				//     horizontalOverpanModeChanged,
-				//     verticalOverpanModeChanged,
-				//     out _);
+				OnViewportAffectingPropertyChanged(
+					boundsChanged: false,
+					touchConfigurationChanged: false,
+					nonTouchConfigurationChanged: false,
+					configurationsChanged: false,
+					chainedMotionTypesChanged: false,
+					horizontalOverpanModeChanged,
+					verticalOverpanModeChanged,
+					out _);
 			}
 		}
 
