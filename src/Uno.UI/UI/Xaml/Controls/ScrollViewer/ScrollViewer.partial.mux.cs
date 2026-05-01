@@ -298,6 +298,18 @@ namespace Microsoft.UI.Xaml.Controls
 				m_trElementHorizontalScrollBar = GetTemplateChild("HorizontalScrollBar") as ScrollBar;
 				m_trElementVerticalScrollBar = GetTemplateChild("VerticalScrollBar") as ScrollBar;
 				m_tpElementScrollBarSeparator = GetTemplateChild("ScrollBarSeparator") as UIElement;
+
+				// Re-run the SCP's HookupScrollingComponents from here. SCP.OnApplyTemplate
+				// runs earlier in the layout pipeline before the cross-platform SV sets
+				// `presenter.ScrollOwner = this`, so the SCP-side hookup typically can't
+				// resolve its owning SV yet. Calling it again from here, after SCP.ScrollOwner
+				// has been set by the cross-platform SV.OnApplyTemplate (ScrollViewer.cs:997),
+				// wires SV.PutScrollInfo and SCP.PutScrollOwner so the new IScrollInfo /
+				// IScrollOwner pipeline becomes live for programmatic scroll + bring-into-view.
+				if (m_trElementScrollContentPresenter is not null)
+				{
+					m_trElementScrollContentPresenter.HookupScrollingComponents();
+				}
 			}
 
 			if (m_trElementHorizontalScrollBar is { } hScrollBar)

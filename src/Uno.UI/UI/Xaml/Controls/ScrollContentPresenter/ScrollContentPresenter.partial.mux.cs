@@ -42,6 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_pScrollData;
 		}
 
+
 		// Property that controls how ScrollContentPresenter measures its
 		// Child during layout.  If true, it measures child at infinite
 		// space in this dimension.
@@ -93,16 +94,42 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Gets the horizontal size of the extent.
-		internal double GetExtentWidth() => IsScrollClient() ? GetScrollData().m_extent.Width : 0.0;
+		// Note: the new SCP MeasureOverridePort / ArrangeOverridePort don't run on
+		// Skia yet (the cross-platform path is still active), so VerifyScrollData
+		// never refreshes ScrollData.m_extent / m_viewport. Fall back to the cross-
+		// platform ExtentWidth/Height + ViewportWidth/Height DPs which the existing
+		// Skia pipeline maintains. Once the port's Measure/Arrange take over the
+		// fallback becomes redundant.
+		internal double GetExtentWidth()
+		{
+			if (!IsScrollClient()) return 0.0;
+			var fromScrollData = GetScrollData().m_extent.Width;
+			return fromScrollData != 0.0 ? fromScrollData : ExtentWidth;
+		}
 
 		// Gets the vertical size of the extent.
-		internal double GetExtentHeight() => IsScrollClient() ? GetScrollData().m_extent.Height : 0.0;
+		internal double GetExtentHeight()
+		{
+			if (!IsScrollClient()) return 0.0;
+			var fromScrollData = GetScrollData().m_extent.Height;
+			return fromScrollData != 0.0 ? fromScrollData : ExtentHeight;
+		}
 
 		// Gets the horizontal size of the viewport for this content.
-		internal double GetViewportWidth() => IsScrollClient() ? GetScrollData().m_viewport.Width : 0.0;
+		internal double GetViewportWidth()
+		{
+			if (!IsScrollClient()) return 0.0;
+			var fromScrollData = GetScrollData().m_viewport.Width;
+			return fromScrollData != 0.0 ? fromScrollData : ViewportWidth;
+		}
 
 		// Gets the vertical size of the viewport for this content.
-		internal double GetViewportHeight() => IsScrollClient() ? GetScrollData().m_viewport.Height : 0.0;
+		internal double GetViewportHeight()
+		{
+			if (!IsScrollClient()) return 0.0;
+			var fromScrollData = GetScrollData().m_viewport.Height;
+			return fromScrollData != 0.0 ? fromScrollData : ViewportHeight;
+		}
 
 		// Gets the horizontal offset of the scrolled content.
 		internal double GetHorizontalOffset() => IsScrollClient() ? GetScrollData().m_ComputedOffset.X : 0.0;
@@ -390,13 +417,10 @@ namespace Microsoft.UI.Xaml.Controls
 					m_scrollRequested = true;
 					isScrollRequested = true;
 					requestedOffset = scrollY;
-					// TODO Uno: Phase 4 — see SetHorizontalOffsetPrivate for the same
-					// bridging note. CoerceOffsets pushes m_Offset → m_ComputedOffset
-					// which is what the SV's public DP reads through GetVerticalOffset.
+					// TODO Uno: Phase 4 — see SetHorizontalOffsetPrivate. CoerceOffsets pushes
+					// m_Offset → m_ComputedOffset which is what GetVerticalOffset reads.
 					CoerceOffsets(out _);
 					pScrollData.GetScrollOwner()?.InvalidateScrollInfoImpl();
-					// Drive the cross-platform managed scroll path so the visual scroll
-					// actually moves on Skia.
 					Set(verticalOffset: scrollY, disableAnimation: true);
 				}
 			}
@@ -1034,8 +1058,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// We need to introduce our IScrollInfo to our ScrollViewer (and break any
 			// previous links).
-			var spTemplatedParent = TemplatedParent;
-			var spScrollContainer = spTemplatedParent as ScrollViewer;
+			// MUX Reference: C++ uses get_TemplatedParent() to find the owning SV.
+			// Uno's cross-platform path explicitly sets `presenter.ScrollOwner = this`
+			// from SV.OnApplyTemplate (ScrollViewer.cs:997) without setting TemplatedParent
+			// on the SCP, so we need to consult ScrollOwner first and fall back to
+			// TemplatedParent for parity with WinUI.
+			var spScrollContainer = (ScrollOwner as ScrollViewer)
+				?? (TemplatedParent as ScrollViewer);
 
 			// If our content is not an IScrollInfo, we should have selected a style
 			// that contains one.
