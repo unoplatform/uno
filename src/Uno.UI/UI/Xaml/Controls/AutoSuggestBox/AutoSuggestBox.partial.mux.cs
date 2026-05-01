@@ -501,9 +501,69 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: NOT PORTED - OnSuggestionListKeyDown (lines 576-652).
+		// This event handler is only for Gamepad or Remote cases, where Focus and Selection are tied.
+		// This is never invoked for Keyboard cases since Focus stays on the TextBox but Selection moves
+		// down the ListView so the key down events go to OnKeyDown event handler.
 		private void OnSuggestionListKeyDown(object sender, KeyRoutedEventArgs args)
 		{
+			VirtualKey key = args.Key;
+
+			m_inputDeviceTypeUsed = InputDeviceType.GamepadOrRemote;
+
+			bool wasHandledLocally = false;
+
+			switch (key)
+			{
+				case VirtualKey.Left:
+				case VirtualKey.Right:
+					// Since the SuggestionList is open, we don't allow horizontal movement.
+					wasHandledLocally = true;
+					break;
+
+				case VirtualKey.Up:
+				case VirtualKey.Down:
+					int upDownSelectedIndex = m_tpSuggestionsPart.SelectedIndex;
+
+					int upDownCount = Items?.Count ?? 0;
+					int upDownLastIndex = upDownCount - 1;
+
+					// If we are already at the Suggestion that is adjacent to the TextBox, then set SelectedIndex to -1.
+					if ((upDownSelectedIndex == 0 && !IsSuggestionListVectorReversed()) ||
+						(upDownSelectedIndex == upDownLastIndex && IsSuggestionListVectorReversed()))
+					{
+						UpdateTextBoxText(m_userTypedText, AutoSuggestionBoxTextChangeReason.ProgrammaticChange);
+						m_tpSuggestionsPart.SelectedIndex = -1;
+
+						m_tpTextBoxPart?.Focus(FocusState.Keyboard);
+					}
+
+					wasHandledLocally = true;
+					break;
+
+				case VirtualKey.Space:
+				case VirtualKey.Enter:
+					object enterSelectedItem = m_tpSuggestionsPart.SelectedItem;
+					SubmitQuery(enterSelectedItem);
+					IsSuggestionListOpen = false;
+					wasHandledLocally = true;
+					break;
+
+				case VirtualKey.Escape:
+					// Reset the text in the TextBox to what the user had typed.
+					UpdateTextBoxText(m_userTypedText, AutoSuggestionBoxTextChangeReason.ProgrammaticChange);
+					// Close the suggestion list.
+					IsSuggestionListOpen = false;
+					// Return the focus to the TextBox.
+					m_tpTextBoxPart?.Focus(FocusState.Keyboard);
+
+					wasHandledLocally = true;
+					break;
+			}
+
+			if (wasHandledLocally)
+			{
+				args.Handled = true;
+			}
 		}
 
 		//------------------------------------------------------------------------------
@@ -752,14 +812,335 @@ namespace Microsoft.UI.Xaml.Controls
 			ProcessDeferredUpdate();
 		}
 
-		// InputPane.Showing handler — TODO Uno: NOT PORTED body (lines from OnSipShowing in C++).
-		private void OnSipShowing(InputPane sender, InputPaneVisibilityEventArgs args)
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox OnLostFocus event handler
+		//
+		// The suggestions drop-down will never be displayed when this control loses focus.
+		//------------------------------------------------------------------------------
+		protected override void OnLostFocus(RoutedEventArgs e)
 		{
+			if (!m_keepFocus)
+			{
+				m_hasFocus = false;
+
+				if (m_isSipVisible)
+				{
+					// checking to see if the focus went to a new element that contains a textbox
+					// in this case, we leave it up to the new element to handle scrolling
+					DependencyObject spFocusedElement = XamlRoot is { } xamlRoot
+						? FocusManager.GetFocusedElement(xamlRoot) as DependencyObject
+						: null;
+					if (spFocusedElement is not null)
+					{
+						TextBox spFocusedElementAsTextBox = spFocusedElement as TextBox;
+						if (spFocusedElementAsTextBox is null)
+						{
+							// This is for the case when the focus is changed to something that is not ASB or textbox
+							OnSipHidingInternal();
+						}
+					}
+					else
+					{
+						// This is for the case when focus is lost and no other control is in focus
+						OnSipHidingInternal();
+					}
+				}
+				m_scrollActions.Clear();
+			}
+
+			// When Gamepad or Remote is used, we move the focus from the AutoSuggestBox TextBox to the ListView.
+			// But in other cases (when using keyboard), where we get OnLostFocus, we want to make sure to close suggestions list.
+			// Note that Left/Right keys are handled by OnKeyDown and OnSuggestionListKeyDown handlers so the only time we are here
+			// is when we "Tab" out of, or the focus is moved programmatically off of, the AutoSuggestBox TextBox.
+			if (m_inputDeviceTypeUsed != InputDeviceType.GamepadOrRemote)
+			{
+				IsSuggestionListOpen = false;
+			}
 		}
 
-		// InputPane.Hiding handler — TODO Uno: NOT PORTED body (lines from OnSipHiding in C++).
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox OnGotFocus event handler
+		//
+		// The suggestions drop-down should be displayed if items are present and the textbox has text
+		//------------------------------------------------------------------------------
+		protected override void OnGotFocus(RoutedEventArgs e)
+		{
+			try
+			{
+				if (!m_keepFocus)
+				{
+					bool isTextBoxFocused = IsTextBoxFocusedElement();
+					if (isTextBoxFocused)
+					{
+						// this code handles the case when the control receives focus from another control
+						// that was using the sip. In this case, OnSipShowing is not guaranteed to be called
+						// hence, we align the control to the top or bottom depending on its position at the time
+						// it received focus
+						if (m_tpInputPane is not null && m_sSipIsOpen)
+						{
+							Rect sipOverlayArea = m_tpInputPane.OccludedRect;
+							AlignmentHelper(sipOverlayArea);
+						}
+
+						// Expands the suggestion list if there is already text in the textbox
+						string strText = m_tpTextBoxPart?.Text ?? string.Empty;
+
+						if (!string.IsNullOrEmpty(strText) && !m_suppressSuggestionListVisibility)
+						{
+							UpdateSuggestionListVisibility();
+							m_suppressSuggestionListVisibility = false;
+						}
+					}
+				}
+				else
+				{
+					// making sure the ASB is aligned to where it should be
+					ApplyScrollActions(true);
+				}
+			}
+			finally
+			{
+				m_keepFocus = false;
+			}
+		}
+
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox OnKeyDown event handler
+		//
+		// Handle the proper KeyDown event to process Key_Down, KeyUp, Key_Enter and
+		// Key_Escape.
+		//
+		//  Key_Down/Key_Up is for navigating the suggestionlist.
+		//  Key_Enter is for choosing the current selection if there is a proper select item.
+		//   otherwise, do nothing.
+		//  Key_Escape is for closing the suggestion list or clear the current text.
+		//
+		//------------------------------------------------------------------------------
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			VirtualKey key = args.Key;
+
+			VirtualKey originalKey = args.OriginalKey;
+
+			m_inputDeviceTypeUsed = XboxUtility.IsGamepadNavigationInput(originalKey) ? InputDeviceType.GamepadOrRemote : InputDeviceType.Keyboard;
+
+			base.OnKeyDown(args);
+
+			if (m_tpSuggestionsPart is not null)
+			{
+				bool wasHandledLocally = false;
+
+				int selectedIndex = m_tpSuggestionsPart.SelectedIndex;
+
+				bool isSuggestionListOpen = IsSuggestionListOpen;
+
+				switch (key)
+				{
+					case VirtualKey.Left:
+					case VirtualKey.Right:
+						if (isSuggestionListOpen && m_inputDeviceTypeUsed == InputDeviceType.GamepadOrRemote)
+						{
+							// If SuggestionList is open, we don't allow horizontal movement
+							// when using Gamepad or Remote.
+							wasHandledLocally = true;
+						}
+						break;
+
+					case VirtualKey.Up:
+					case VirtualKey.Down:
+						// If the suggestion list isn't open, we shouldn't be able to keyboard through it.
+						if (isSuggestionListOpen)
+						{
+							var spItems = Items;
+
+							int count = spItems?.Count ?? 0;
+							if (count > 0)
+							{
+								int lastIndex = count - 1;
+
+								VirtualKeyModifiers modifiers = GetKeyboardModifiers();
+								bool isForward = ShouldMoveIndexForwardForKey(key, modifiers);
+
+								selectedIndex = m_tpSuggestionsPart.SelectedIndex;
+
+								// The meaning of this conditional is really hard to parse by itself, so here's
+								// a much simpler way of saying the same thing:
+								//
+								// "If we only have one item (lastIndex == 0), and if it's already selected (selectedIndex == 0),
+								// then the arrow keys should do nothing."
+								//
+								// Basically, if lastIndex != 0, then since count > 0, lastIndex must be greater than 0.
+								// Conversely, if lastIndex == 0, then selectedIndex can only be equal to -1 (nothing selected)
+								// or 0 (the first and only item is selected).
+								//
+								// Note that lastIndex means "the index of the last item in the suggestion list", not
+								// "the previous index".
+								//
+								if (selectedIndex != 0 || lastIndex != 0)
+								{
+									// The following conditional was written to satisfy the table below which identifies the indices we
+									// need to go to for the different types of AutoSuggestBoxes (Suggestion List below, Suggestion List
+									// above with new implementation where vector is reversed, Suggestion List above with old implementation).
+									// Note that the "/NA" indicates that the index does not move when the input is coming from Gamepad/Remote
+									// because there is no looping behavior.
+									//
+									//                        ArrowKey  isForward   VectorReversed  indexToGoTo
+									// ASB_SuggestionsBelow     Down        1           0               0
+									//                          Up          0           0               lastIndex/NA
+									// ASB_SuggestionsAbove     Down        1           1               0/NA
+									//                (New)     Up          0           1               lastIndex
+									// ASB_SuggestionsAbove     Down        0           0               lastIndex/NA
+									//                (Old)     Up          1           0               0
+									if (selectedIndex == -1)
+									{
+										if (isForward)
+										{
+											if (!(IsSuggestionListVectorReversed() && m_inputDeviceTypeUsed == InputDeviceType.GamepadOrRemote))
+											{
+												m_tpSuggestionsPart.SelectedIndex = 0;
+											}
+										}
+										else
+										{
+											if (!(!IsSuggestionListVectorReversed() && m_inputDeviceTypeUsed == InputDeviceType.GamepadOrRemote))
+											{
+												m_tpSuggestionsPart.SelectedIndex = lastIndex;
+											}
+										}
+									}
+									else if (selectedIndex == 0)
+									{
+										if (isForward)
+										{
+											m_tpSuggestionsPart.SelectedIndex = selectedIndex + 1;
+										}
+										else
+										{
+											UpdateTextBoxText(m_userTypedText, AutoSuggestionBoxTextChangeReason.ProgrammaticChange);
+											m_tpSuggestionsPart.SelectedIndex = -1;
+										}
+									}
+									else if (selectedIndex == lastIndex)
+									{
+										if (isForward)
+										{
+											UpdateTextBoxText(m_userTypedText, AutoSuggestionBoxTextChangeReason.ProgrammaticChange);
+											m_tpSuggestionsPart.SelectedIndex = -1;
+										}
+										else
+										{
+											m_tpSuggestionsPart.SelectedIndex = lastIndex - 1;
+										}
+									}
+									else
+									{
+										m_tpSuggestionsPart.SelectedIndex = isForward ? selectedIndex + 1 : selectedIndex - 1;
+									}
+								}
+							}
+							wasHandledLocally = true;
+						}
+						break;
+
+					case VirtualKey.Tab:
+						// Only close the suggestion list and reset the user text with Tab if the suggestion
+						// list is open.
+						if (!isSuggestionListOpen)
+						{
+							break;
+						}
+						goto case VirtualKey.Escape;
+					case VirtualKey.Escape:
+						// Reset the text in the TextBox to what the user had typed.
+						UpdateTextBoxText(m_userTypedText, AutoSuggestionBoxTextChangeReason.ProgrammaticChange);
+						// Close the suggestion list.
+						IsSuggestionListOpen = false;
+						// Return the focus to the TextBox.
+						m_tpTextBoxPart?.Focus(FocusState.Keyboard);
+
+						// Handle the key for Escape, but not for tab so that the default tab processing can take place.
+						wasHandledLocally = (key != VirtualKey.Tab);
+						break;
+
+					case VirtualKey.Enter:
+						// If the AutoSuggestBox supports QueryIcon, then pressing the Enter key
+						// will submit the current query - we'll already have set the text in the TextBox
+						// in OnSuggestionSelectionChanged().
+						object enterSpSelectedItem = m_tpSuggestionsPart.SelectedItem;
+						SubmitQuery(enterSpSelectedItem);
+
+						IsSuggestionListOpen = false;
+						wasHandledLocally = true;
+						break;
+				}
+
+				if (wasHandledLocally)
+				{
+					args.Handled = true;
+				}
+			}
+		}
+
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox IsFocusedElement event handler
+		//
+		// Queries the focused element from the focus manager to see if it's the textbox
+		//------------------------------------------------------------------------------
+		private bool IsTextBoxFocusedElement()
+		{
+			bool focused = false;
+
+			if (m_tpTextBoxPart is not null)
+			{
+				DependencyObject spFocusedElement = XamlRoot is { } xamlRoot
+					? FocusManager.GetFocusedElement(xamlRoot) as DependencyObject
+					: null;
+				if (spFocusedElement is not null)
+				{
+					TextBox spFocusedElementAsTextBox = spFocusedElement as TextBox;
+					if (spFocusedElementAsTextBox is not null && spFocusedElementAsTextBox == m_tpTextBoxPart)
+					{
+						focused = true;
+					}
+				}
+			}
+
+			return focused;
+		}
+
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox OnSipShowing
+		//
+		// This event handler will be called by the global InputPane when the SIP will
+		// be showing up from the bottom of the screen, here we try to scroll AutoSuggestBox
+		// to top or bottom with minimum visual glitch
+		//------------------------------------------------------------------------------
+		private void OnSipShowing(InputPane sender, InputPaneVisibilityEventArgs args)
+		{
+			// setting the static value to true
+			m_sSipIsOpen = true;
+
+			// the check here is to ensure that the arguments received are not null hence crashing our application
+			// in some stress tests, null was encountered
+			if (args is not null)
+			{
+				OnSipShowingInternal(args);
+			}
+		}
+
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox OnSipHiding
+		//
+		// This event handler will be called by the global InputPane when the SIP is
+		// hiding. It reverts the scroll actions that are applied to bring the ASB
+		// to its original position.
+		//------------------------------------------------------------------------------
 		private void OnSipHiding(InputPane sender, InputPaneVisibilityEventArgs args)
 		{
+			// setting the static value to false
+			m_sSipIsOpen = false;
+
+			ReevaluateIsOverlayVisible();
 		}
 
 		//------------------------------------------------------------------------------
@@ -948,9 +1329,78 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - ProcessDeferredUpdate. Stub keeps OnTextChangedEventTimerTick callable.
+		protected override void OnItemsChanged(object e)
+		{
+			bool isTextBoxFocused = false;
+
+#if DBG
+			bool wasHandlingCollectionChange = m_handlingCollectionChange;
+			m_handlingCollectionChange = true;
+#endif
+
+			try
+			{
+				base.OnItemsChanged(e);
+
+				isTextBoxFocused = IsTextBoxFocusedElement();
+				if (isTextBoxFocused)
+				{
+					// Defer the update until after change notification is fully processed.
+					// UpdateSuggestionListPosition must not be called synchronously while handling
+					// the change notification (see comment in UpdateSuggestionListPosition).
+					// This also has the benefit of doing just one update for a batch of change notifications
+					// if we get a bunch at the same time.
+					if (!m_deferringUpdate)
+					{
+						WeakReference<AutoSuggestBox> wpThis = new WeakReference<AutoSuggestBox>(this);
+
+						Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()?.TryEnqueue(() => ProcessDeferredUpdateStatic(wpThis));
+						m_deferringUpdate = true;
+					}
+
+					// We should immediately update visibility, however, since we want the value of
+					// IsSuggestionListOpen to be properly updated by the time this returns.
+					UpdateSuggestionListVisibility();
+				}
+
+				// TODO Uno: NOT PORTED - AutomationPeer.ListenerExistsHelper(LayoutInvalidated) + RaiseAutomationEvent
+				// on the suggestion list's automation peer. Uno does not yet expose ListenerExistsHelper.
+				// bool bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.LayoutInvalidated);
+				// if (bAutomationListener)
+				// {
+				//     UIElement spListPart = m_tpSuggestionsPart as UIElement;
+				//     if (spListPart is not null)
+				//     {
+				//         var spAutomationPeer = spListPart.GetOrCreateAutomationPeer();
+				//         spAutomationPeer?.RaiseAutomationEvent(AutomationEvents.LayoutInvalidated);
+				//     }
+				// }
+			}
+			finally
+			{
+#if DBG
+				m_handlingCollectionChange = wasHandlingCollectionChange;
+#endif
+			}
+		}
+
+		private static void ProcessDeferredUpdateStatic(WeakReference<AutoSuggestBox> wpThis)
+		{
+			if (wpThis.TryGetTarget(out AutoSuggestBox localThis))
+			{
+				localThis.ProcessDeferredUpdate();
+			}
+		}
+
 		private void ProcessDeferredUpdate()
 		{
+			if (m_deferringUpdate)
+			{
+				m_deferringUpdate = false;
+				UpdateSuggestionListPosition();
+				UpdateSuggestionListSize();
+				UpdateSuggestionListVisibility();
+			}
 		}
 
 		// TODO Uno: NOT PORTED - UpdateSuggestionListPosition (lines 1329+).
@@ -960,6 +1410,31 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// TODO Uno: NOT PORTED - UpdateSuggestionListSize (lines 1252+).
 		private void UpdateSuggestionListSize()
+		{
+		}
+
+		// TODO Uno: NOT PORTED - AlignmentHelper (lines 1842+). Stub keeps OnGotFocus + OnTextBoxCandidateWindowBoundsChanged callable.
+		private void AlignmentHelper(Rect sipOverlay)
+		{
+		}
+
+		// TODO Uno: NOT PORTED - MaximizeSuggestionAreaWithoutInputPane (lines 2021+). Stub keeps OnTextBoxCandidateWindowBoundsChanged callable.
+		private void MaximizeSuggestionAreaWithoutInputPane()
+		{
+		}
+
+		// TODO Uno: NOT PORTED - ApplyScrollActions (lines 2218+). Stub keeps OnGotFocus + OnSipHidingInternal callable.
+		private void ApplyScrollActions(bool hasNewScrollActions)
+		{
+		}
+
+		// TODO Uno: NOT PORTED - OnSipShowingInternal (lines 2536+). Stub keeps OnSipShowing callable.
+		private void OnSipShowingInternal(InputPaneVisibilityEventArgs args)
+		{
+		}
+
+		// TODO Uno: NOT PORTED - OnSipHidingInternal (lines 2496+). Stub keeps OnLostFocus callable.
+		private void OnSipHidingInternal()
 		{
 		}
 
@@ -1096,37 +1571,22 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Remaining method TODOs (deferred to next iter):
-		// TODO Uno: NOT PORTED - OnTextBoxQueryButtonClick.
-		// TODO Uno: NOT PORTED - SubmitQuery.
-		// TODO Uno: NOT PORTED - UpdateText.
-		// TODO Uno: NOT PORTED - ChangeVisualState.
-		// TODO Uno: NOT PORTED - AlignmentHelper.
-		// TODO Uno: NOT PORTED - MaximizeSuggestionArea.
-		// TODO Uno: NOT PORTED - MaximizeSuggestionAreaWithoutInputPane.
-		// TODO Uno: NOT PORTED - Scroll.
-		// TODO Uno: NOT PORTED - PushScrollAction.
-		// TODO Uno: NOT PORTED - ApplyScrollActions.
-		// TODO Uno: NOT PORTED - UpdateSuggestionListSize.
-		// TODO Uno: NOT PORTED - UpdateSuggestionListVisibility.
-		// TODO Uno: NOT PORTED - UpdateSuggestionListPosition.
+		// TODO Uno: NOT PORTED - ChangeVisualState (lines 1806+).
+		// TODO Uno: NOT PORTED - AlignmentHelper (lines 1842+).
+		// TODO Uno: NOT PORTED - MaximizeSuggestionArea / MaximizeSuggestionAreaWithoutInputPane.
+		// TODO Uno: NOT PORTED - Scroll / PushScrollAction / ApplyScrollActions.
+		// TODO Uno: NOT PORTED - UpdateSuggestionListSize / UpdateSuggestionListPosition (lines 1252/1329+).
 		// TODO Uno: NOT PORTED - TransformPoint.
-		// TODO Uno: NOT PORTED - OnSipHidingInternal.
-		// TODO Uno: NOT PORTED - OnSipShowingInternal.
+		// TODO Uno: NOT PORTED - OnSipHidingInternal / OnSipShowingInternal.
 		// TODO Uno: NOT PORTED - GetCandidateWindowPopupAdjustment.
 		// TODO Uno: NOT PORTED - ScrollLastItemIntoView.
-		// TODO Uno: NOT PORTED - ProcessDeferredUpdate.
 		// TODO Uno: NOT PORTED - SetupOverlayState / TeardownOverlayState.
-		// TODO Uno: NOT PORTED - CreateLTEs / PositionLTEs / DestroyLTEs.
-		// TODO Uno: NOT PORTED - ShouldUseParentedLTE.
+		// TODO Uno: NOT PORTED - CreateLTEs / PositionLTEs / DestroyLTEs / ShouldUseParentedLTE.
 		// TODO Uno: NOT PORTED - GetAdjustedLayoutBounds / GetActualTextBoxSize / GetDisplayOrientation.
 		// TODO Uno: NOT PORTED - OnInkingFunctionButtonClicked (static).
-		// TODO Uno: NOT PORTED - OnGotFocus / OnLostFocus / OnKeyDown overrides.
-		// TODO Uno: NOT PORTED - OnItemsChanged override.
-		// TODO Uno: NOT PORTED - TryGetSuggestionValue.
-		// GetPlainText override (lines 2725-2740 of AutoSuggestBox_Partial.cpp).
-		// TODO Uno: NOT PORTED - GetPlainText. The C++ override returns the FrameworkElement plain-text representation
-		// for accessibility ("name" computation). FrameworkElement::GetStringFromObject(spHeader, ...) has no direct
-		// Uno equivalent; revisit alongside automation-peer parity work.
+		// TODO Uno: NOT PORTED - GetPlainText override. The C++ override returns the FrameworkElement
+		// plain-text representation for accessibility ("name" computation). FrameworkElement.GetStringFromObject
+		// has no direct Uno equivalent; revisit alongside automation-peer parity work.
 
 		//------------------------------------------------------------------------------
 		// Raises the QuerySubmitted event using the current content of the TextBox.
