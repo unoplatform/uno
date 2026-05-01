@@ -416,6 +416,442 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// ScrollContentPresenter implementation of its public MakeVisible method.
+		// Does not animate the move by default.
+		// (C++ source line 1038)
+		public global::Windows.Foundation.Rect MakeVisible(
+			// The element that should become visible.
+			UIElement visual,
+			// A rectangle representing in the visual's coordinate space to
+			// make visible.
+			global::Windows.Foundation.Rect rectangle)
+		{
+			return MakeVisible(
+				visual,
+				rectangle,
+				false /*useAnimation*/,
+				DoubleUtil.NaN /*horizontalAlignmentRatio*/,
+				DoubleUtil.NaN /*verticalAlignmentRatio*/,
+				0.0 /*offsetX*/,
+				0.0 /*offsetY*/,
+				out _ /*appliedOffsetX*/,
+				out _ /*appliedOffsetY*/);
+		}
+
+		// This scrolls to make the rectangle in the UIElement's coordinate
+		// space visible.
+		// Alignment ratios are either -1 (i.e. no alignment to apply) or between
+		// 0 and 1. For instance when the alignment ratio is 0, the near edge of
+		// the 'rectangle' needs to align with the near edge of the viewport.
+		// 'offset' is an additional amount of scrolling requested, beyond the
+		// normal amount to bring the target into view and potentially align it.
+		// That additional offset is only applied when the 'rectangle' does not
+		// step outside the extents.
+		// The 'appliedOffset' returned specifies how much of 'offset' was applied
+		// so that potential parent bring-into-view contributors can attempt to
+		// apply the remainder offset.
+		// (C++ source line 1078 — Skia-focused port: header ownership and DManip
+		//  view-snapshotting paths are stubbed; all other behavior preserved.)
+		internal global::Windows.Foundation.Rect MakeVisible(
+			// The element that should become visible.
+			UIElement visual,
+			// A rectangle representing in the visual's coordinate space to make visible.
+			global::Windows.Foundation.Rect rectangle,
+			// When set to True, the DManip ZoomToRect method is invoked.
+			bool useAnimation,
+			double horizontalAlignmentRatio,
+			double verticalAlignmentRatio,
+			double offsetX,
+			double offsetY,
+			out double appliedOffsetX,
+			out double appliedOffsetY)
+		{
+			bool isEmpty = false;
+			bool isAncestor = false;
+			bool isVisualDirectChild = false;
+			bool isVisualInTopLeftHeader = false;
+			bool isVisualInTopHeader = false;
+			bool isVisualInLeftHeader = false;
+			bool isVisualInContent = false;
+			global::Windows.Foundation.Rect transformedRect = default;
+			global::Windows.Foundation.Rect viewport = default;
+			global::Windows.Foundation.Rect unhandledRect = default;
+			double horizontalOffset = 0.0;
+			double verticalOffset = 0.0;
+			double viewportWidth = 0.0;
+			double viewportHeight = 0.0;
+			float viewportLeft = 0.0f;
+			float viewportRight = 0.0f;
+			float viewportTop = 0.0f;
+			float viewportBottom = 0.0f;
+			float rectLeft = 0.0f;
+			float rectRight = 0.0f;
+			float rectTop = 0.0f;
+			float rectBottom = 0.0f;
+			float minX = 0.0f;
+			float minY = 0.0f;
+			float zoomFactor = 1.0f;
+			float targetZoomFactor = 1.0f;
+			double appliedOffsetXTmp = 0.0;
+			double appliedOffsetYTmp = 0.0;
+			global::Windows.Foundation.Size sizeHeaders = default;
+
+			appliedOffsetX = 0.0;
+			appliedOffsetY = 0.0;
+
+			// Handle cases where we don't have to do anything
+			isEmpty = rectangle.IsEmpty || rectangle.Width == 0 || rectangle.Height == 0;
+			isEmpty = isEmpty || visual is null || visual == this;
+			if (!isEmpty)
+			{
+				// TODO Uno: IsAncestorOfAndMostAncestorPageBetween — Page tracking
+				// is required only by GetFullScreenPageBottomAppBarHeight (an
+				// app-bar/full-screen accommodation that is Win32 specific). We
+				// approximate by walking the parent chain via IsAncestorOf and
+				// not tracking the intervening Page.
+				isAncestor = this.IsAncestorOf(visual);
+			}
+			if (isEmpty || !isAncestor)
+			{
+				rectangle = default; // CreateEmptyRect equivalent
+			}
+			else
+			{
+				bool isScrollClient;
+				bool handled = false;
+
+				// Compute the child's rect relative to (0,0) in our coordinate space.
+				var spChildTransform = visual.TransformToVisual(this);
+				transformedRect = spChildTransform.TransformBounds(rectangle);
+
+				rectangle = transformedRect;
+
+				// Rectangle to return in case ChangeView is a no-op.
+				unhandledRect = rectangle;
+
+				// Compute the area taken up by the potential ScrollViewer headers
+				// TODO Uno: Phase 6 — when headers are ported, replace with a real
+				// GetZoomedHeadersSize(out sizeHeaders).
+				sizeHeaders = new global::Windows.Foundation.Size(0, 0);
+
+				// Adjust the target rectangle based on those headers
+				rectangle.X -= sizeHeaders.Width;
+				rectangle.Y -= sizeHeaders.Height;
+
+				isScrollClient = IsScrollClient();
+				if (isScrollClient)
+				{
+					// Check if visual belongs to a header.
+					// TODO Uno: Phase 6 — replace with a real GetHeaderOwnership(...)
+					// once headers are ported. For now treat every descendant as
+					// part of the scrollable content.
+					isVisualDirectChild = false;
+					isVisualInTopLeftHeader = false;
+					isVisualInTopHeader = false;
+					isVisualInLeftHeader = false;
+					isVisualInContent = true;
+
+					if (!isVisualInTopLeftHeader)
+					{
+						var spScrollOwner = GetScrollOwner();
+						ScrollViewer spScrollViewer = spScrollOwner as ScrollViewer;
+
+						// Initialize the viewport
+						if (spScrollViewer is not null && useAnimation)
+						{
+#if false
+							// TODO Uno: Phase 4 DM wiring — when DM adapter lands, restore the
+							// in-manipulation snapshot of the DManip view + target view so
+							// MakeVisible during a manipulation merges with the ongoing animation.
+							if (spScrollViewer.IsInManipulation())
+							{
+								double targetHorizontalOffset = 0.0;
+								double targetVerticalOffset = 0.0;
+
+								spScrollViewer.GetDManipView(out horizontalOffset, out verticalOffset, out zoomFactor);
+								spScrollViewer.GetTargetView(out targetHorizontalOffset, out targetVerticalOffset, out targetZoomFactor);
+								if (targetHorizontalOffset != -1.0 && targetVerticalOffset != -1.0 && targetZoomFactor != -1.0f)
+								{
+									global::System.Diagnostics.Debug.Assert(zoomFactor == targetZoomFactor);
+
+									rectangle.X += (float)(horizontalOffset - targetHorizontalOffset);
+									rectangle.Y += (float)(verticalOffset - targetVerticalOffset);
+
+									horizontalOffset = targetHorizontalOffset;
+									verticalOffset = targetVerticalOffset;
+								}
+							}
+							else
+							{
+								// Take into account the overbounce offsets which are reflected in the spChildTransform transform.
+								horizontalOffset = spScrollViewer.GetUnboundHorizontalOffset();
+								verticalOffset = spScrollViewer.GetUnboundVerticalOffset();
+							}
+#else
+							// Phase-4 stub: fall back to the cached IScrollInfo offsets.
+							horizontalOffset = GetHorizontalOffset();
+							verticalOffset = GetVerticalOffset();
+#endif
+						}
+						else
+						{
+							horizontalOffset = GetHorizontalOffset();
+							verticalOffset = GetVerticalOffset();
+						}
+
+						// Compute the offsets required to minimally scroll the child maximally into view.
+
+						if (isVisualInLeftHeader)
+						{
+							// visual is not allowed to scroll horizontally
+							minX = (float)horizontalOffset;
+						}
+						else
+						{
+							viewportWidth = GetViewportWidth();
+							viewport.X = (float)horizontalOffset;
+							viewport.Width = Math.Max(0.0f, (float)viewportWidth - sizeHeaders.Width);
+							rectangle.X += (float)horizontalOffset;
+
+							var rectangleWithAlignment = rectangle;
+
+							if (!DoubleUtil.IsNaN(horizontalAlignmentRatio))
+							{
+								// Account for the horizontal alignment ratio.
+								global::System.Diagnostics.Debug.Assert(horizontalAlignmentRatio >= 0.0 && horizontalAlignmentRatio <= 1.0);
+								rectangleWithAlignment.X += (float)((rectangleWithAlignment.Width - viewport.Width) * horizontalAlignmentRatio);
+								rectangleWithAlignment.Width = viewport.Width;
+							}
+
+							viewportLeft = (float)viewport.X;
+							viewportRight = (float)(viewport.X + viewport.Width);
+							rectLeft = (float)rectangleWithAlignment.X;
+							rectRight = (float)(rectangleWithAlignment.X + rectangleWithAlignment.Width);
+							ComputeScrollOffsetWithMinimalScroll(viewportLeft, viewportRight, rectLeft, rectRight, out minX);
+
+							// If the target offset is within bounds and an offset was provided, apply as much of it as possible while remaining within bounds.
+							if (offsetX != 0.0 && minX >= 0.0f && spScrollViewer is not null)
+							{
+								double scrollableWidth = spScrollViewer.ScrollableWidth;
+								if (minX <= scrollableWidth)
+								{
+									if (offsetX > 0.0)
+									{
+										appliedOffsetXTmp = Math.Min(minX, offsetX);
+									}
+									else
+									{
+										appliedOffsetXTmp = -Math.Min((float)scrollableWidth - minX, -offsetX);
+									}
+									minX -= (float)offsetX;
+								}
+							}
+						}
+
+						if (isVisualInTopHeader)
+						{
+							// visual is not allowed to scroll vertically
+							minY = (float)verticalOffset;
+						}
+						else
+						{
+							// if applicable additionally reduce the viewport height by the space occluded by a page bottom appbar
+							// TODO Uno: GetFullScreenPageBottomAppBarHeight is Win32-only and stubbed to 0 here.
+							double pageBottomAppBarScrollOffset = 0.0;
+
+							viewportHeight = GetViewportHeight();
+							viewport.Y = (float)verticalOffset;
+							viewport.Height = Math.Max(0.0f, (float)(viewportHeight - pageBottomAppBarScrollOffset) - sizeHeaders.Height);
+							rectangle.Y += (float)verticalOffset;
+
+							var rectangleWithAlignment = rectangle;
+
+							if (!DoubleUtil.IsNaN(verticalAlignmentRatio))
+							{
+								// Account for the vertical alignment ratio.
+								global::System.Diagnostics.Debug.Assert(verticalAlignmentRatio >= 0.0 && verticalAlignmentRatio <= 1.0);
+								rectangleWithAlignment.Y += (float)((rectangleWithAlignment.Height - viewport.Height) * verticalAlignmentRatio);
+								rectangleWithAlignment.Height = viewport.Height;
+							}
+
+							viewportTop = (float)viewport.Y;
+							viewportBottom = (float)(viewport.Y + viewport.Height);
+							rectTop = (float)rectangleWithAlignment.Y;
+							rectBottom = (float)(rectangleWithAlignment.Y + rectangleWithAlignment.Height);
+							ComputeScrollOffsetWithMinimalScroll(viewportTop, viewportBottom, rectTop, rectBottom, out minY);
+
+							// If the target offset is within bounds and an offset was provided, apply as much of it as possible while remaining within bounds.
+							if (offsetY != 0.0 && minY >= 0.0f && spScrollViewer is not null)
+							{
+								double scrollableHeight = spScrollViewer.ScrollableHeight;
+								if (minY <= scrollableHeight)
+								{
+									if (offsetY > 0.0)
+									{
+										appliedOffsetYTmp = Math.Min(minY, offsetY);
+									}
+									else
+									{
+										appliedOffsetYTmp = -Math.Min((float)scrollableHeight - minY, -offsetY);
+									}
+									minY -= (float)offsetY;
+								}
+							}
+						}
+
+						// We have computed the scrolling offsets; scroll to them.
+						if (spScrollViewer is not null && useAnimation)
+						{
+							double targetHorizontalOffset = (double)Math.Max(0, minX);
+							double targetVerticalOffset = (double)Math.Max(0, minY);
+
+#if false
+							// TODO Uno: Phase 4 DM wiring — animated MakeVisible flows through
+							// ScrollViewer.ChangeViewInternal which is not yet ported. For now
+							// fall through to the non-animated SetHorizontalOffsetPrivate /
+							// SetVerticalOffsetPrivate path.
+							// No need to call ChangeView during a manipulation if the requested view coincides with the final view.
+							if (!spScrollViewer.IsInManipulation() ||
+								!DoubleUtil.AreClose(horizontalOffset, targetHorizontalOffset) ||
+								!DoubleUtil.AreClose(verticalOffset, targetVerticalOffset))
+							{
+								spScrollViewer.ChangeViewInternal(
+									targetHorizontalOffset /*pHorizontalOffset*/,
+									targetVerticalOffset /*pVerticalOffset*/,
+									null /*pZoomFactor*/,
+									null /*pOldZoomFactor*/,
+									false /*forceChangeToCurrentView*/,
+									true /*adjustWithMandatorySnapPoints*/,
+									true /*skipDuringTouchContact*/,
+									true /*skipAnimationWhileRunning*/,
+									false /*disableAnimation*/,
+									true /*applyAsManip*/,
+									false /*transformIsInertiaEnd*/,
+									true /*isForMakeVisible*/,
+									out handled);
+
+								if (handled)
+								{
+									// Make sure the resulting minX/minY offsets are within bounds so the final viewport is correctly evaluated below.
+									double scrollableDim = spScrollViewer.ScrollableWidth;
+									minX = (float)Math.Min(targetHorizontalOffset, scrollableDim);
+
+									scrollableDim = spScrollViewer.ScrollableHeight;
+									minY = (float)Math.Min(targetVerticalOffset, scrollableDim);
+								}
+							}
+#else
+							// Phase-4 stub: synchronous scroll. ChangeViewInternal will be wired
+							// in Phase 4 once the DM adapter and ChangeView pipeline are ported.
+							if (horizontalOffset != minX)
+							{
+								SetHorizontalOffsetPrivate((double)minX, out var isScrollRequested, out var currentOffset, out var requestedOffset);
+								if (isScrollRequested)
+								{
+									minX = (float)requestedOffset;
+									handled = true;
+								}
+								else
+								{
+									minX = (float)currentOffset;
+								}
+							}
+							if (verticalOffset != minY)
+							{
+								SetVerticalOffsetPrivate((double)minY, out var isScrollRequested, out var currentOffset, out var requestedOffset);
+								if (isScrollRequested)
+								{
+									minY = (float)requestedOffset;
+									handled = true;
+								}
+								else
+								{
+									minY = (float)currentOffset;
+								}
+							}
+#endif
+						}
+						else
+						{
+							bool isScrollRequested = false;
+							double currentOffset = 0.0;
+							double requestedOffset = 0.0;
+
+							// We fall back to calling SetHorizontalOffset/SetVerticalOffset when
+							// ScrollViewer::ChangeView is not called.
+							if (horizontalOffset != minX)
+							{
+								SetHorizontalOffsetPrivate((double)minX, out isScrollRequested, out currentOffset, out requestedOffset);
+
+								// Make sure the resulting minX offset is within bounds so the final viewport is correctly evaluated below.
+								if (isScrollRequested)
+								{
+									minX = (float)requestedOffset;
+									handled = true;
+								}
+								else
+								{
+									minX = (float)currentOffset;
+								}
+							}
+
+							if (verticalOffset != minY)
+							{
+								SetVerticalOffsetPrivate((double)minY, out isScrollRequested, out currentOffset, out requestedOffset);
+
+								// Make sure the resulting minY offset is within bounds so the final viewport is correctly evaluated below.
+								if (isScrollRequested)
+								{
+									minY = (float)requestedOffset;
+									handled = true;
+								}
+								else
+								{
+									minY = (float)currentOffset;
+								}
+							}
+						}
+					}
+
+					if (handled)
+					{
+						// Compute the visible rectangle of the child relative to the viewport.
+						viewport.X = minX;
+						viewport.Y = minY;
+
+						// Do not include the applied offset so that potential parent bring-into-view contributors ignore that shift.
+						viewport.X += (float)appliedOffsetXTmp;
+						viewport.Y += (float)appliedOffsetYTmp;
+
+						rectangle.Intersect(viewport);
+
+						isEmpty = rectangle.IsEmpty || rectangle.Width == 0 || rectangle.Height == 0;
+						if (!isEmpty)
+						{
+							rectangle.X = rectangle.X - viewport.X + sizeHeaders.Width;
+							rectangle.Y = rectangle.Y - viewport.Y + sizeHeaders.Height;
+						}
+					}
+					else
+					{
+						rectangle = unhandledRect;
+					}
+				}
+			}
+
+			appliedOffsetX = appliedOffsetXTmp;
+			appliedOffsetY = appliedOffsetYTmp;
+
+			// Suppress unused-variable warnings for stub-only locals.
+			_ = isVisualDirectChild;
+			_ = isVisualInContent;
+			_ = zoomFactor;
+			_ = targetZoomFactor;
+
+			// Return the rectangle
+			return rectangle;
+		}
+
 		// Determine how down we need to scroll to accommodate the desired view.
 		internal static void ComputeScrollOffsetWithMinimalScroll(
 			float topView,
