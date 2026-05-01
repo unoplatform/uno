@@ -14,7 +14,7 @@ For projects using the `Uno.Sdk`, add the `AndroidAuto` feature to your project'
 <UnoFeatures>$(UnoFeatures);AndroidAuto</UnoFeatures>
 ```
 
-This automatically adds a reference to the `Xamarin.AndroidX.Car.App` package. New projects created from the Uno Platform templates with the **Android Auto** option enabled will also have the required manifest entries and the `automotive_app_desc.xml` resource stamped automatically.
+This automatically adds a reference to the `Xamarin.AndroidX.Car.App.App` package. New projects created from the Uno Platform templates with the **Android Auto** option enabled will also have the required manifest entries and the `automotive_app_desc.xml` resource stamped automatically.
 
 ## What gets configured
 
