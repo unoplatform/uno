@@ -1704,7 +1704,11 @@ namespace Microsoft.UI.Xaml.Controls
 					(m_tpSuggestionsContainerPart as UIElement)?.UpdateLayout();
 					height = m_tpSuggestionsContainerPart.ActualHeight;
 
-					translateY -= height;
+					// TODO Uno: round up to whole pixel so the popup's bottom edge sits at or above the
+					// AutoSuggestBox top (the When_Popup_Above test expects popupY+popupHeight <= sutY+1).
+					// Without rounding, sub-pixel residue (0.33px at 1.5× scale) leaves the popup bottom
+					// fractionally below the SUT top, failing the assertion.
+					translateY -= Math.Ceiling(height);
 
 					if (IsSuggestionListVerticallyMirrored())
 					{
