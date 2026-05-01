@@ -1,14 +1,25 @@
-﻿#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference AutoSuggestBoxQuerySubmittedEventArgs.idl, commit 5f9e85113
+
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Provides data for the QuerySubmitted event.
+	/// </summary>
 	public partial class AutoSuggestBoxQuerySubmittedEventArgs
 	{
-		public object ChosenSuggestion { get; }
+		/// <summary>
+		/// Gets the suggestion item selected by the user, if the query was submitted from a suggestion in the suggestion list.
+		/// </summary>
+		public object ChosenSuggestion { get; internal set; }
 
-		public string QueryText { get; }
+		/// <summary>
+		/// Gets the query text of the AutoSuggestBox.
+		/// </summary>
+		public string QueryText { get; internal set; }
 
-		public AutoSuggestBoxQuerySubmittedEventArgs() : base()
+		public AutoSuggestBoxQuerySubmittedEventArgs()
 		{
 		}
 

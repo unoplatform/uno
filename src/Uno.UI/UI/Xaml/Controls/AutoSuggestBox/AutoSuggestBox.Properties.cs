@@ -1,158 +1,212 @@
-﻿
-using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference AutoSuggestBox.idl, commit 5f9e85113
+
+#pragma warning disable CS0067 // Events not yet raised — TextChanged/QuerySubmitted/SuggestionChosen wired in later iters
+
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class AutoSuggestBox : ItemsControl
+	partial class AutoSuggestBox
 	{
+		/// <summary>
+		/// Gets or sets the text that is displayed in the control until the value is changed by a
+		/// user action or some other operation.
+		/// </summary>
 		public string PlaceholderText
 		{
-			get => (string)this.GetValue(PlaceholderTextProperty);
-			set => this.SetValue(PlaceholderTextProperty, value);
+			get => (string)GetValue(PlaceholderTextProperty);
+			set => SetValue(PlaceholderTextProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets the maximum height for the drop-down portion of the AutoSuggestBox control.
+		/// </summary>
 		public double MaxSuggestionListHeight
 		{
-			get => (double)this.GetValue(MaxSuggestionListHeightProperty);
-			set => this.SetValue(MaxSuggestionListHeightProperty, value);
+			get => (double)GetValue(MaxSuggestionListHeightProperty);
+			set => SetValue(MaxSuggestionListHeightProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether the drop-down portion of the AutoSuggestBox is open.
+		/// </summary>
 		public bool IsSuggestionListOpen
 		{
-			get => (bool)this.GetValue(IsSuggestionListOpenProperty);
-			set => this.SetValue(IsSuggestionListOpenProperty, value);
+			get => (bool)GetValue(IsSuggestionListOpenProperty);
+			set => SetValue(IsSuggestionListOpenProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets the content for the control's header.
+		/// </summary>
 		public object Header
 		{
-			get => (object)this.GetValue(HeaderProperty);
-			set => this.SetValue(HeaderProperty, value);
+			get => GetValue(HeaderProperty);
+			set => SetValue(HeaderProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether the control will resize and reposition itself
+		/// to make room for an on-screen keyboard.
+		/// </summary>
 		public bool AutoMaximizeSuggestionArea
 		{
-			get => (bool)this.GetValue(AutoMaximizeSuggestionAreaProperty);
-			set => this.SetValue(AutoMaximizeSuggestionAreaProperty, value);
+			get => (bool)GetValue(AutoMaximizeSuggestionAreaProperty);
+			set => SetValue(AutoMaximizeSuggestionAreaProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets a value that indicates whether items selected in the drop-down portion of the
+		/// AutoSuggestBox update the content of the text box.
+		/// </summary>
 		public bool UpdateTextOnSelect
 		{
-			get => (bool)this.GetValue(UpdateTextOnSelectProperty);
-			set => this.SetValue(UpdateTextOnSelectProperty, value);
+			get => (bool)GetValue(UpdateTextOnSelectProperty);
+			set => SetValue(UpdateTextOnSelectProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets the name or path of a property that is displayed for each data item.
+		/// </summary>
 		public string TextMemberPath
 		{
-			get => (string)this.GetValue(TextMemberPathProperty) ?? "";
-			set => this.SetValue(TextMemberPathProperty, value);
+			get => (string)GetValue(TextMemberPathProperty) ?? string.Empty;
+			set => SetValue(TextMemberPathProperty, value);
 		}
 
-		public global::Microsoft.UI.Xaml.Style TextBoxStyle
+		/// <summary>
+		/// Gets or sets the style applied to the text box of the AutoSuggestBox.
+		/// </summary>
+		public Style TextBoxStyle
 		{
-			get => (global::Microsoft.UI.Xaml.Style)this.GetValue(TextBoxStyleProperty);
-			set => this.SetValue(TextBoxStyleProperty, value);
+			get => (Style)GetValue(TextBoxStyleProperty);
+			set => SetValue(TextBoxStyleProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets the text that is shown in the control.
+		/// </summary>
 		public string Text
 		{
-			get => (string)this.GetValue(TextProperty);
-			set => this.SetValue(TextProperty, value);
+			get => (string)GetValue(TextProperty);
+			set => SetValue(TextProperty, value);
 		}
 
-		public global::Microsoft.UI.Xaml.Controls.IconElement QueryIcon
+		/// <summary>
+		/// Gets or sets the graphic content of the query button.
+		/// </summary>
+		public IconElement QueryIcon
 		{
-			get => (global::Microsoft.UI.Xaml.Controls.IconElement)this.GetValue(QueryIconProperty);
-			set => this.SetValue(QueryIconProperty, value);
+			get => (IconElement)GetValue(QueryIconProperty);
+			set => SetValue(QueryIconProperty, value);
 		}
 
+		/// <summary>
+		/// Gets or sets content that is shown below the control. The content should provide guidance
+		/// about the input expected by the control.
+		/// </summary>
 		public
 #if __APPLE_UIKIT__
 		new
 #endif
 		object Description
 		{
-			get => this.GetValue(DescriptionProperty);
-			set => this.SetValue(DescriptionProperty, value);
+			get => GetValue(DescriptionProperty);
+			set => SetValue(DescriptionProperty, value);
 		}
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty MaxSuggestionListHeightProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"MaxSuggestionListHeight", typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: double.PositiveInfinity)
-		);
+		public static DependencyProperty MaxSuggestionListHeightProperty { get; } =
+			DependencyProperty.Register(
+				nameof(MaxSuggestionListHeight),
+				typeof(double),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(double.PositiveInfinity));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderText", typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: "")
-		);
+		public static DependencyProperty PlaceholderTextProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PlaceholderText),
+				typeof(string),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(string.Empty));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextBoxStyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"TextBoxStyle", typeof(global::Microsoft.UI.Xaml.Style),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
+		public static DependencyProperty TextBoxStyleProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TextBoxStyle),
+				typeof(Style),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(default(Style)));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextMemberPathProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"TextMemberPath", typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
+		public static DependencyProperty TextMemberPathProperty { get; } =
+			DependencyProperty.Register(
+				nameof(TextMemberPath),
+				typeof(string),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(default(string)));
 
 		public static DependencyProperty TextProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"Text", typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: "", propertyChangedCallback: (dO, _) => ((AutoSuggestBox)dO).UpdateTextBox())
-		);
+			DependencyProperty.Register(
+				nameof(Text),
+				typeof(string),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(string.Empty, (s, e) => ((AutoSuggestBox)s).OnTextPropertyChanged(e)));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty UpdateTextOnSelectProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"UpdateTextOnSelect", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: true)
-		);
+		public static DependencyProperty UpdateTextOnSelectProperty { get; } =
+			DependencyProperty.Register(
+				nameof(UpdateTextOnSelect),
+				typeof(bool),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(true));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty AutoMaximizeSuggestionAreaProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"AutoMaximizeSuggestionArea", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: false)
-		);
+		public static DependencyProperty AutoMaximizeSuggestionAreaProperty { get; } =
+			DependencyProperty.Register(
+				nameof(AutoMaximizeSuggestionArea),
+				typeof(bool),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(false));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty HeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"Header", typeof(object),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Header),
+				typeof(object),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(default(object)));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsSuggestionListOpenProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"IsSuggestionListOpen", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.OnIsSuggestionListOpenChanged(e))
-		);
+		public static DependencyProperty IsSuggestionListOpenProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsSuggestionListOpen),
+				typeof(bool),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(false, (s, e) => ((AutoSuggestBox)s).OnIsSuggestionListOpenPropertyChanged(e)));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty QueryIconProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			"QueryIcon", typeof(global::Microsoft.UI.Xaml.Controls.IconElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconElement), propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.UpdateQueryButton()));
+		public static DependencyProperty QueryIconProperty { get; } =
+			DependencyProperty.Register(
+				nameof(QueryIcon),
+				typeof(IconElement),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(default(IconElement), (s, e) => ((AutoSuggestBox)s).OnQueryIconPropertyChanged(e)));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
-			Microsoft.UI.Xaml.DependencyProperty.Register(
-				nameof(Description), typeof(object),
-				typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.UpdateDescriptionVisibility(false)));
+		public static DependencyProperty DescriptionProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Description),
+				typeof(object),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(default(object), (s, e) => ((AutoSuggestBox)s).OnDescriptionPropertyChanged(e)));
 
+		/// <summary>
+		/// Raised when the user selects an item from the recommended ones in the drop-down list.
+		/// </summary>
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen;
+
+		/// <summary>
+		/// Raised when the text content of the editable control component of the AutoSuggestBox is updated.
+		/// </summary>
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxTextChangedEventArgs> TextChanged;
+
+		/// <summary>
+		/// Occurs when the user submits a search query.
+		/// </summary>
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxQuerySubmittedEventArgs> QuerySubmitted;
 	}
 }

@@ -4,10 +4,15 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	/// <summary>
-	/// Provides data for the AutoSuggestBox.TextChanged event.
-	/// </summary>
-	public partial class AutoSuggestBoxTextChangedEventArgs : DependencyObject
+	partial class AutoSuggestBoxTextChangedEventArgs
 	{
+		/// <summary>
+		/// Gets a value that indicates the reason the text in an AutoSuggestBox was changed.
+		/// </summary>
+		public AutoSuggestionBoxTextChangeReason Reason
+		{
+			get => m_reason;
+			set => m_reason = value;
+		}
 	}
 }

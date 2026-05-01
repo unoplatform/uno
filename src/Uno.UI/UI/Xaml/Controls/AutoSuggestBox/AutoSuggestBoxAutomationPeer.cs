@@ -1,39 +1,23 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference AutoSuggestBoxAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+// MUX Reference AutoSuggestBoxAutomationPeer.idl, commit 5f9e85113
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
-
-/// <summary>
-/// Exposes AutoSuggestBox types to Microsoft UI Automation.
-/// </summary>
-/// <param name="owner"></param>
-public partial class AutoSuggestBoxAutomationPeer
-	: FrameworkElementAutomationPeer, Provider.IInvokeProvider
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public AutoSuggestBoxAutomationPeer(AutoSuggestBox owner) : base(owner)
-	{
-	}
-
-	protected override string GetClassNameCore() => nameof(AutoSuggestBox);
-
-	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Group;
-
-	protected override object GetPatternCore(PatternInterface patternInterface)
-	{
-		if (patternInterface is PatternInterface.Invoke)
-		{
-			return this;
-		}
-
-		return base.GetPatternCore(patternInterface);
-	}
-
 	/// <summary>
-	/// Sends a request to submit the auto-suggest query to the AutoSuggestBox associated with the automation peer.
+	/// Exposes AutoSuggestBox types to Microsoft UI Automation.
 	/// </summary>
-	public void Invoke()
-		=> (Owner as AutoSuggestBox).ProgrammaticSubmitQuery();
+	public partial class AutoSuggestBoxAutomationPeer
+		: FrameworkElementAutomationPeer, Provider.IInvokeProvider
+	{
+		/// <summary>
+		/// Initializes a new instance of the AutoSuggestBoxAutomationPeer class.
+		/// </summary>
+		/// <param name="owner">The AutoSuggestBox to associate with the new automation peer.</param>
+		public AutoSuggestBoxAutomationPeer(AutoSuggestBox owner) : base(owner)
+		{
+		}
+	}
 }
