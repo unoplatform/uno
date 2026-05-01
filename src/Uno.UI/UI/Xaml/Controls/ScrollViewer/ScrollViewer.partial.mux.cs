@@ -580,6 +580,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Note: OnPointerPressed and OnPointerReleased are already implemented on
+		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
+		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
+		// is that GestureFollowing reads as None (`PointerRoutedEventArgs.GestureFollowing`
+		// is currently NotImplemented), so the m_shouldFocusOnRightTapUnhandled
+		// branch never fires. Once GestureFollowing lands, uncomment the
+		// commented-out branch in MuxInternal to wire the right-tap focus path.
+
 		// (C++ source line 2323)
 		protected override void OnGotFocus(RoutedEventArgs args)
 		{
