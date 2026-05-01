@@ -200,4 +200,27 @@ public class Given_ToolTip_Integration
 			TestServices.WindowHelper.WindowContent.XamlRoot);
 		Assert.AreEqual(0, popups.Count);
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp CloseToolTipBeforeItIsFullyOpen (line 1298).
+	// Regression: MSFT:3417091 "Excel: Font and Fill color ToolTip sometimes gets stuck in Open state".
+	// Prior to the bug fix, it was possible to get ToolTip into a state where its Popup remained
+	// Open even when the ToolTip was in the Closed state. This could happen by setting the IsOpen
+	// property back to false before it had time to fully complete opening.
+	[TestMethod]
+	public async Task CloseToolTipBeforeItIsFullyOpen()
+	{
+		var button = await SetupToolTipTest();
+		var toolTip = CreateToolTip();
+		ToolTipService.SetToolTip(button, toolTip);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		toolTip.IsOpen = true;
+		toolTip.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// We expect there to be no open popups on the screen.
+		var currentlyOpenPopups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+			TestServices.WindowHelper.WindowContent.XamlRoot);
+		Assert.AreEqual(0, currentlyOpenPopups.Count);
+	}
 }
