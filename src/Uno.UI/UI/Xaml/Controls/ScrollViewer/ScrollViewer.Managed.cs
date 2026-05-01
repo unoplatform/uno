@@ -163,6 +163,12 @@ namespace Microsoft.UI.Xaml.Controls
 			if (zoomFactor.HasValue)
 			{
 				NotifyZoomFactorChanging(targetZ);
+				// MUX Reference ScrollViewer_Partial.cpp:3385 — ChangeViewInternal
+				// processes a zoom factor change by routing through ZoomToFactorInternal,
+				// which coerces against MinZoomFactor/MaxZoomFactor and updates the
+				// public ZoomFactor DP. Without this, the SV's ZoomFactor property
+				// stays at its old value after a ChangeView call that requested zoom.
+				ZoomToFactorInternal(targetZ, delayAndFlushViewChanged: false, out _);
 			}
 			if (horizontalOffset.HasValue)
 			{
