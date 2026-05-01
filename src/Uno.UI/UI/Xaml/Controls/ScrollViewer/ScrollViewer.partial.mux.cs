@@ -1021,6 +1021,74 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Determines if a change in the content's extents, if any, is expected
+		// based on DirectManipulation feedback.
+		// (C++ source line 10716)
+		internal void AreExtentChangesExpected(out bool areExtentChangesExpected)
+		{
+			areExtentChangesExpected = false;
+
+			IsExtentXChangeExpected(out var isExtentChangeExpected);
+			if (!isExtentChangeExpected)
+			{
+				return;
+			}
+
+			IsExtentYChangeExpected(out isExtentChangeExpected);
+			if (!isExtentChangeExpected)
+			{
+				return;
+			}
+
+			areExtentChangesExpected = true;
+		}
+
+		// Determines if a change in the content's width is expected based on
+		// DirectManipulation feedback.
+		// (C++ source line 10751)
+		internal void IsExtentXChangeExpected(out bool isExtentXChangeExpected)
+		{
+			isExtentXChangeExpected = false;
+
+			if (!IsInDirectManipulation || m_contentWidthRequested == -1)
+			{
+				return;
+			}
+
+			var spProvider = GetInnerManipulationDataProvider(true /*isForHorizontalOrientation*/);
+
+			ComputePixelExtentWidth(false /*ignoreZoomFactor*/, spProvider, out var extent);
+			if (Math.Abs(m_contentWidthRequested - extent) / extent > ScrollViewerZoomExtentRoundingTolerance)
+			{
+				return;
+			}
+
+			isExtentXChangeExpected = true;
+		}
+
+		// Determines if a change in the content's height is expected based on
+		// DirectManipulation feedback.
+		// (C++ source line 10806)
+		internal void IsExtentYChangeExpected(out bool isExtentYChangeExpected)
+		{
+			isExtentYChangeExpected = false;
+
+			if (!IsInDirectManipulation || m_contentHeightRequested == -1)
+			{
+				return;
+			}
+
+			var spProvider = GetInnerManipulationDataProvider(false /*isForHorizontalOrientation*/);
+
+			ComputePixelExtentHeight(false /*ignoreZoomFactor*/, spProvider, out var extent);
+			if (Math.Abs(m_contentHeightRequested - extent) / extent > ScrollViewerZoomExtentRoundingTolerance)
+			{
+				return;
+			}
+
+			isExtentYChangeExpected = true;
+		}
+
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
 		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
