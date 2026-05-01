@@ -667,5 +667,82 @@ public class Given_ToolTip_Integration
 			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 		}
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp VerifyToolTipPlacedCorrectlyWhenRTL (line 1649).
+	// "Verify that an RTL ToolTip is placed at the same position as an LTR ToolTip."
+	// Opens the tooltip with FlowDirection.LeftToRight, captures bounds; sets
+	// FlowDirection.RightToLeft, opens again, captures bounds; asserts X+Y match.
+	//
+	// SKIPPED: the port has TODO Uno comments for RTL handling throughout
+	// PerformMousePlacementWithPopup (iter #5). The bIsRTL flag is currently
+	// hardcoded to false; FlowDirection-based RTL detection requires Uno
+	// FlowDirection wiring to flow through Popup.HorizontalOffset semantics.
+	// Re-enable this test once Phase 5 RTL polish lands.
+	[TestMethod]
+	[Ignore("Blocked on Phase-5 RTL polish - PerformMousePlacementWithPopup hardcodes bIsRTL=false")]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task VerifyToolTipPlacedCorrectlyWhenRTL()
+	{
+		var toolTip = CreateToolTip();
+
+		var button = new Button
+		{
+			Content = "Button.ToolTip",
+			HorizontalAlignment = HorizontalAlignment.Center,
+		};
+
+		var rootPanel = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+		rootPanel.Children.Add(button);
+
+		ToolTipService.SetToolTip(button, toolTip);
+
+		TestServices.WindowHelper.WindowContent = rootPanel;
+		await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			// Open with LTR (default).
+			mouse.MoveTo(new Point(0, 0));
+			await TestServices.WindowHelper.WaitForIdle();
+			mouse.MoveTo(button.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(toolTip.IsOpen, "Pre-RTL: ToolTip should be open");
+			var ltrBounds = toolTip.TransformToVisual(null).TransformBounds(
+				new Rect(0, 0, toolTip.ActualWidth, toolTip.ActualHeight));
+
+			toolTip.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			mouse.MoveTo(new Point(0, 0));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Set FlowDirection.RightToLeft on the button and re-open.
+			button.FlowDirection = FlowDirection.RightToLeft;
+			await TestServices.WindowHelper.WaitForIdle();
+			mouse.MoveTo(button.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(toolTip.IsOpen, "Post-RTL: ToolTip should be open");
+			var rtlBounds = toolTip.TransformToVisual(null).TransformBounds(
+				new Rect(0, 0, toolTip.ActualWidth, toolTip.ActualHeight));
+
+			Assert.AreEqual(ltrBounds.X, rtlBounds.X, "RTL X should equal LTR X");
+			Assert.AreEqual(ltrBounds.Y, rtlBounds.Y, "RTL Y should equal LTR Y");
+		}
+		finally
+		{
+			toolTip.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
 #endif
 }
