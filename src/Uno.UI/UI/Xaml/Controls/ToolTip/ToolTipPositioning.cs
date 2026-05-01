@@ -1,4 +1,8 @@
-﻿#if !__SKIA__
+﻿// MUX Reference dxaml\xcp\dxaml\lib\ToolTipService_Partial.h (lines 331-435) and
+// dxaml\xcp\dxaml\lib\ToolTipService_Partial.cpp ToolTipPositioning namespace.
+// This file was originally Uno-only (cross-platform) - now ungated so the new
+// Skia port can use it as well; it remains a faithful C# transliteration of
+// the C++ ToolTipPositioning helpers.
 
 using System;
 using System.Collections.Generic;
@@ -391,5 +395,3 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
-
-#endif // !__SKIA__

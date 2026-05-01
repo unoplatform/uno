@@ -687,12 +687,4 @@ public partial class ToolTipService
 #pragma warning restore IDE0051
 }
 
-// Phase 0 scaffolding: Slider.mux.cs calls ToolTipPositioning.IsLefthandedUser().
-// Full port lives under ToolTipService_Partial.h (lines 331-435) and
-// ToolTipService_Partial.cpp; will be reconciled in Phase 5.
-internal static class ToolTipPositioning
-{
-	internal static bool IsLefthandedUser() => false;
-}
-
 #endif // __SKIA__
