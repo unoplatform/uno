@@ -60,21 +60,24 @@ namespace Microsoft.UI.Xaml.Controls
 		// (C++ source line 549)
 		internal void OnTreeParentUpdatedCore(object pNewParent, bool isParentAlive)
 		{
-			// TODO Uno: Phase 4 — DM-container registration. The C++ source toggles this when the SV
-			// enters/leaves the live tree. On Skia the InputManager.PointerManager handles this implicitly.
-			// if (m_hManipulationHandler is null)
-			// {
-			//     put_IsDirectManipulationContainer(isParentAlive || pNewParent is not null);
-			// }
-			// else
-			// {
-			//     OnManipulatabilityAffectingPropertyChanged(
-			//         pIsInLiveTree: null,
-			//         isCachedPropertyChanged: false,
-			//         isContentChanged: false,
-			//         isAffectingConfigurations: false,
-			//         isAffectingTouchConfiguration: false);
-			// }
+			if (m_hManipulationHandler is null)
+			{
+				// TODO Uno: Phase 4 — UIElement::put_IsDirectManipulationContainer is the
+				// CDispatcherCore-level marker that the SV is a DM container. On Skia the
+				// InputManager.PointerManager.DirectManipulation pump handles container
+				// detection implicitly via the visual tree, so this is a no-op until
+				// the DM adapter formalises a container-attachment hook.
+				// put_IsDirectManipulationContainer(isParentAlive || pNewParent is not null);
+			}
+			else
+			{
+				OnManipulatabilityAffectingPropertyChanged(
+					pIsInLiveTree: null,
+					isCachedPropertyChanged: false,
+					isContentChanged: false,
+					isAffectingConfigurations: false,
+					isAffectingTouchConfiguration: false);
+			}
 		}
 
 		// Initializes a new instance of the ScrollViewer class.
@@ -5146,13 +5149,59 @@ namespace Microsoft.UI.Xaml.Controls
 
 		float IScrollOwner.GetZoomFactor() => ZoomFactor;
 
-		// TODO Uno: Phase 4 DM wiring — forwards a pure-inertia keyboard zoom
-		// (Ctrl+Plus / Ctrl+Minus) request to DirectManipulation. Stubbed for
-		// now; the keyboard zoom path is not exercised on Skia until the DM
-		// adapter lands.
+		// Forwards a pure-inertia keyboard zoom (Ctrl+Plus / Ctrl+Minus) request to
+		// DirectManipulation. The DM-side path remains DM-bound; on Skia this
+		// becomes a no-op until the DM adapter lands. The C++ source has 2 overloads:
+		// the no-out one captures the handled flag and feeds it back to
+		// m_handleScrollInfoWheelEvent so the next wheel/key event is routed correctly.
+		// (C++ source line 9728)
 		void IScrollOwner.ProcessPureInertiaInputMessage(ZoomDirection zoomDirection)
 		{
-			_ = zoomDirection;
+			ProcessPureInertiaInputMessage(zoomDirection, out var isHandled);
+			m_handleScrollInfoWheelEvent = isHandled;
+		}
+
+		// Called when this DM container wants the DM handler to process the current
+		// pure inertia input message, by forwarding it to DirectManipulation.
+		// (C++ source line 9758)
+		internal void ProcessPureInertiaInputMessage(ZoomDirection zoomDirection, out bool isHandled)
+		{
+			bool stopProcessing = false;
+			isHandled = false;
+
+			// Pass the event to DM, except if all these hold:
+			// - it's a zoom event, AND
+			// - we have zoom enabled, AND
+			// - we have zoom chaining enabled, AND
+			// - won't result in a zoom change (eg, it's a zoom in event but we're already at maximum zoom).
+			// This allows us to implement zoom chaining via our regular routed events. DM doesn't provide
+			// for chaining of inertia-only manipulations (as in, anything not related to a touch pointer).
+			if (zoomDirection != ZoomDirection.None)
+			{
+				var zoomMode = ZoomMode;
+				bool isZoomEnabled = zoomMode != ZoomMode.Disabled;
+
+				if (isZoomEnabled)
+				{
+					bool isZoomChainingEnabled = IsZoomChainingEnabled;
+					if (isZoomChainingEnabled)
+					{
+						if (zoomDirection == ZoomDirection.In)
+						{
+							stopProcessing = IsAtMaxZoom();
+						}
+						else if (zoomDirection == ZoomDirection.Out)
+						{
+							stopProcessing = IsAtMinZoom();
+						}
+					}
+				}
+			}
+
+			if (!stopProcessing)
+			{
+				ProcessInputMessage(ignoreFlowDirection: false, out isHandled);
+			}
 		}
 
 		// Returns true while DM is in a zoom manipulation. Reflected through
