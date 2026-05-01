@@ -50,9 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!IsEnabled)
 			{
-				// TODO Uno: Phase 4 — port SetConstantVelocities. The constant-velocity scroll path
-				// is not yet wired up on Skia.
-				// SetConstantVelocities(0, 0);
+				SetConstantVelocities(0, 0);
 			}
 
 			UpdateVisualState();
