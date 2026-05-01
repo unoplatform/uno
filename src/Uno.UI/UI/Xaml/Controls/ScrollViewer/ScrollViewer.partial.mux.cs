@@ -3283,8 +3283,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// Let the InputManager know about the zoom factor change request.
 					// A programmatic zoom factor change during a DM manipulation:
 					//  - cancels that manipulation if ZoomMode is Enabled.
-					// TODO Uno: Phase 4 — port OnPrimaryContentTransformChanged.
-					// OnPrimaryContentTransformChanged(translationXChanged: false, translationYChanged: false, zoomFactorChanged: true);
+					OnPrimaryContentTransformChanged(translationXChanged: false, translationYChanged: false, zoomFactorChanged: true);
 				}
 			}
 			else if (!m_isInDirectManipulationSync)
@@ -3913,6 +3912,55 @@ namespace Microsoft.UI.Xaml.Controls
 					//     horizontalAlignmentChanged,
 					//     verticalAlignmentChanged,
 					//     zoomFactorBoundaryChanged);
+				}
+			}
+		}
+
+		// Called when a primary-content transform characteristic has changed.
+		// (C++ source line 7222)
+		internal void OnPrimaryContentTransformChanged(
+			bool translationXChanged,
+			bool translationYChanged,
+			bool zoomFactorChanged)
+		{
+			UIElement spContentUIElement = null;
+			UIElement pManipulatedElementNoRef = null;
+
+			if (m_hManipulationHandler is not null || zoomFactorChanged)
+			{
+				spContentUIElement = GetContentUIElement();
+				pManipulatedElementNoRef = spContentUIElement;
+			}
+
+			if (pManipulatedElementNoRef is not null)
+			{
+				bool isInUnstoppedManipulation = IsInUnstoppedManipulation();
+				if (m_hManipulationHandler is not null && !(isInUnstoppedManipulation && m_trManipulatableElement is null))
+				{
+					// TODO Uno: Phase 4 — port ManipulationHandler_NotifyPrimaryContentTransformChanged via the DM adapter.
+					// CoreImports::ManipulationHandler_NotifyPrimaryContentTransformChanged(
+					//     m_hManipulationHandler,
+					//     pManipulatedElementNoRef,
+					//     isInUnstoppedManipulation,
+					//     translationXChanged,
+					//     translationYChanged,
+					//     zoomFactorChanged);
+				}
+				else
+				{
+					// Set the manipulated element's static DM transform since the
+					// InputManager has not declared itself as the manipulation handler.
+					global::System.Diagnostics.Debug.Assert(zoomFactorChanged);
+					// TODO Uno: Phase 4 — port GetManipulationPrimaryContentTransform. The DM adapter will provide
+					// the static transform; until then, the transform is implicit through Composition.
+					// GetManipulationPrimaryContentTransform(
+					//     pManipulatedElementNoRef,
+					//     inManipulation: false,
+					//     forInitialTransformationAdjustment: false,
+					//     forMargins: false,
+					//     out _,  // translationX
+					//     out _,  // translationY
+					//     out _); // zoomFactor
 				}
 			}
 		}
@@ -4552,8 +4600,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// DManip needs to be aware of the content transform immediately via a ZoomToRect call.
 			// Prior attempts at synchronizing the XAML and DManip transforms may have failed because a viewport size, in pixels, was still 0.
-			// TODO Uno: Phase 4 — port OnPrimaryContentTransformChanged.
-			// OnPrimaryContentTransformChanged(translationXChanged: true, translationYChanged: true, zoomFactorChanged: true);
+			OnPrimaryContentTransformChanged(translationXChanged: true, translationYChanged: true, zoomFactorChanged: true);
 		}
 
 		// Unloaded event handler.
