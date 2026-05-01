@@ -269,6 +269,98 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Hook the WinUI-port template-part state on top of the cross-platform
+		// OnApplyTemplate already in ScrollViewer.cs. Caches the SCP, the
+		// horizontal/vertical ScrollBars and wires the Scroll / DragStarted /
+		// DragCompleted / PointerEntered / PointerExited handlers as the
+		// C++ OnApplyTemplate at line 1232 does. The remainder of the C++
+		// OnApplyTemplate (visual-state storyboards, transition cleanup,
+		// IsRootScrollViewer special case) is Phase-4 work.
+		private void OnApplyTemplate_MuxPartial()
+		{
+			m_keepIndicatorsShowing = false;
+
+			UnhookTemplate();
+
+			// no longer dragging a thumb
+			m_isDraggingThumb = false;
+
+			m_hasNoIndicatorStateStoryboardCompletedHandler = false;
+
+			if (!IsRootScrollViewer() || IsRootScrollViewerAllowImplicitStyle())
+			{
+				// Get the parts. Uno keeps the cross-platform _presenter cached on
+				// ScrollViewer.cs; reuse that here so we don't double-fetch the
+				// template child. The two scroll bars are still resolved by name
+				// because the cross-platform path doesn't cache them as fields
+				// the new port can read.
+				m_trElementScrollContentPresenter = _presenter as ScrollContentPresenter;
+				m_trElementHorizontalScrollBar = GetTemplateChild("HorizontalScrollBar") as ScrollBar;
+				m_trElementVerticalScrollBar = GetTemplateChild("VerticalScrollBar") as ScrollBar;
+				m_tpElementScrollBarSeparator = GetTemplateChild("ScrollBarSeparator") as UIElement;
+			}
+
+			if (m_trElementHorizontalScrollBar is { } hScrollBar)
+			{
+				if (m_trElementScrollContentPresenter is { } scp && scp.IsChildActualWidthUsedAsExtent())
+				{
+					hScrollBar.StartUseOfActualSizeAsExtent();
+				}
+
+				ScrollEventHandler scrollHandler = OnHorizontalScrollBarScroll;
+				hScrollBar.Scroll += scrollHandler;
+				m_HorizontalScrollToken.Disposable = global::Uno.Disposables.Disposable.Create(() => hScrollBar.Scroll -= scrollHandler);
+
+				DragStartedEventHandler dragStartedHandler = OnScrollBarThumbDragStarted;
+				hScrollBar.ThumbDragStarted += dragStartedHandler;
+				m_horizontalThumbDragStartedToken.Disposable = global::Uno.Disposables.Disposable.Create(() => hScrollBar.ThumbDragStarted -= dragStartedHandler);
+
+				DragCompletedEventHandler dragCompletedHandler = OnScrollBarThumbDragCompleted;
+				hScrollBar.ThumbDragCompleted += dragCompletedHandler;
+				m_horizontalThumbDragCompletedToken.Disposable = global::Uno.Disposables.Disposable.Create(() => hScrollBar.ThumbDragCompleted -= dragCompletedHandler);
+
+				Microsoft.UI.Xaml.Input.PointerEventHandler pointerEnteredHandler = OnHorizontalScrollbarPointerEntered;
+				hScrollBar.PointerEntered += pointerEnteredHandler;
+				m_horizontalScrollbarPointerEnteredToken.Disposable = global::Uno.Disposables.Disposable.Create(() => hScrollBar.PointerEntered -= pointerEnteredHandler);
+
+				Microsoft.UI.Xaml.Input.PointerEventHandler pointerExitedHandler = OnHorizontalScrollbarPointerExited;
+				hScrollBar.PointerExited += pointerExitedHandler;
+				m_horizontalScrollbarPointerExitedToken.Disposable = global::Uno.Disposables.Disposable.Create(() => hScrollBar.PointerExited -= pointerExitedHandler);
+
+				RefreshScrollBarIsIgnoringUserInput(true /*isForHorizontalOrientation*/);
+			}
+
+			if (m_trElementVerticalScrollBar is { } vScrollBar)
+			{
+				if (m_trElementScrollContentPresenter is { } scp && scp.IsChildActualHeightUsedAsExtent())
+				{
+					vScrollBar.StartUseOfActualSizeAsExtent();
+				}
+
+				ScrollEventHandler scrollHandler = OnVerticalScrollBarScroll;
+				vScrollBar.Scroll += scrollHandler;
+				m_VerticalScrollToken.Disposable = global::Uno.Disposables.Disposable.Create(() => vScrollBar.Scroll -= scrollHandler);
+
+				DragStartedEventHandler dragStartedHandler = OnScrollBarThumbDragStarted;
+				vScrollBar.ThumbDragStarted += dragStartedHandler;
+				m_verticalThumbDragStartedToken.Disposable = global::Uno.Disposables.Disposable.Create(() => vScrollBar.ThumbDragStarted -= dragStartedHandler);
+
+				DragCompletedEventHandler dragCompletedHandler = OnScrollBarThumbDragCompleted;
+				vScrollBar.ThumbDragCompleted += dragCompletedHandler;
+				m_verticalThumbDragCompletedToken.Disposable = global::Uno.Disposables.Disposable.Create(() => vScrollBar.ThumbDragCompleted -= dragCompletedHandler);
+
+				Microsoft.UI.Xaml.Input.PointerEventHandler pointerEnteredHandler = OnVerticalScrollbarPointerEntered;
+				vScrollBar.PointerEntered += pointerEnteredHandler;
+				m_verticalScrollbarPointerEnteredToken.Disposable = global::Uno.Disposables.Disposable.Create(() => vScrollBar.PointerEntered -= pointerEnteredHandler);
+
+				Microsoft.UI.Xaml.Input.PointerEventHandler pointerExitedHandler = OnVerticalScrollbarPointerExited;
+				vScrollBar.PointerExited += pointerExitedHandler;
+				m_verticalScrollbarPointerExitedToken.Disposable = global::Uno.Disposables.Disposable.Create(() => vScrollBar.PointerExited -= pointerExitedHandler);
+
+				RefreshScrollBarIsIgnoringUserInput(false /*isForHorizontalOrientation*/);
+			}
+		}
+
 		// Releases and unhooks template parts and their events.
 		internal void UnhookTemplate()
 		{
