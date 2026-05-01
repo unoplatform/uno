@@ -97,17 +97,25 @@ internal static class FontDetailsCache
 		{
 			return await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}
-		else
+
+		SKTypeface? fallbackTypeface = null;
+		if (_fontFallbackService is { } fallbackService)
 		{
-			if (_fontFallbackService is { } fallbackService
-				&& await fallbackService.GetFontStreamForFontFamily(name, weight, stretch, style) is { } fallbackStream
-				&& SKTypeface.FromStream(fallbackStream) is { } typeface)
+			try
 			{
-				return typeface;
+				if (await fallbackService.GetFontStreamForFontFamily(name, weight, stretch, style) is { } fallbackStream)
+				{
+					fallbackTypeface = SKTypeface.FromStream(fallbackStream);
+				}
 			}
-			// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-			return SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
+			catch (Exception e)
+			{
+				typeof(FontDetailsCache).LogError()?.Error($"Font fallback service threw resolving {name}", e);
+			}
 		}
+
+		// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
+		return fallbackTypeface ?? SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
 	}
 
 	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
