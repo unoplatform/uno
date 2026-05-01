@@ -214,30 +214,39 @@ public partial class ToolTipService
 			// We don't not use PointerPointStatic get_Position here, since it is based on the current window.
 			// This prevents us from getting the right position in out of window ToolTip cases.
 			// We call GetCursorPos() to get the screen based position instead of each window based position.
-			// TODO Uno: Win32 GetCursorPos has no direct Skia equivalent. Read the last pointer position
-			// from PointerRoutedEventArgs.LastPointerEvent instead. This forfeits the screen-physical
-			// coordinate semantics but is acceptable since the new port runs in-window.
-			var lastPointer = Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.LastPointerEvent;
-			if (lastPointer is null)
+			// Uno: Win32 GetCursorPos has no direct Skia equivalent. Use TryGetLastPointerPosition
+			// (PointerRoutedEventArgs.LastPointerEvent) instead. Forfeits screen-physical coordinate
+			// semantics but acceptable since the new port runs in-window.
+			if (TryGetLastPointerPosition(out var pointerPosition))
 			{
-				return;
-			}
-			var pointerPoint = lastPointer.GetCurrentPoint(null);
-			if (pointerPoint is null)
-			{
-				return;
-			}
-			var pointerPosition = pointerPoint.Position;
+				var startPosition = s_pointerPointWhenSafeZoneTimerStart;
+				if (Math.Abs(startPosition.X - pointerPosition.X) < 0.1 && Math.Abs(startPosition.Y - pointerPosition.Y) < 0.1)
+				{
+					// Pointer not moved, avoid to dismiss keyboard opened ToolTip
+					return;
+				}
 
-			var startPosition = s_pointerPointWhenSafeZoneTimerStart;
-			if (Math.Abs(startPosition.X - pointerPosition.X) < 0.1 && Math.Abs(startPosition.Y - pointerPosition.Y) < 0.1)
-			{
-				// Pointer not moved, avoid to dismiss keyboard opened ToolTip
-				return;
+				tooltip.HandlePointInSafeZone(pointerPosition);
 			}
-
-			tooltip.HandlePointInSafeZone(pointerPosition);
 		}
+	}
+
+	// Uno-specific helper: read the last pointer position from
+	// `Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.LastPointerEvent` as a stand-in for the
+	// Win32 `GetCursorPos` used by the C++ safe-zone timer. Returns false if no pointer has
+	// been seen yet (e.g. the tooltip was opened by keyboard focus before any pointer move).
+	private static bool TryGetLastPointerPosition(out Point position)
+	{
+		var lastPointer = Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.LastPointerEvent;
+		var pointerPoint = lastPointer?.GetCurrentPoint(null);
+		if (pointerPoint is null)
+		{
+			position = default;
+			return false;
+		}
+
+		position = pointerPoint.Position;
+		return true;
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp StartSafeZoneCheckTimer (line 384).
@@ -258,11 +267,10 @@ public partial class ToolTipService
 
 		pToolTipServiceMetadataNoRef.m_tpSafeZoneCheckTimer!.Start();
 
-		// TODO Uno: Win32 GetCursorPos. On Skia capture the last pointer position via the
-		// LastPointerEvent. This is what subsequent OnSafeZoneCheck ticks compare against.
-		var lastPointer = Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.LastPointerEvent;
-		var pointerPoint = lastPointer?.GetCurrentPoint(null);
-		s_pointerPointWhenSafeZoneTimerStart = pointerPoint?.Position ?? default;
+		// Uno: Win32 GetCursorPos. On Skia capture the last pointer position via the
+		// LastPointerEvent (TryGetLastPointerPosition helper). This is what subsequent
+		// OnSafeZoneCheck ticks compare against.
+		_ = TryGetLastPointerPosition(out s_pointerPointWhenSafeZoneTimerStart);
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp OpenAutomaticToolTip (line 423).

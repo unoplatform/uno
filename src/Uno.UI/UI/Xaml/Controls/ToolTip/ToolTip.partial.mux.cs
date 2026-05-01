@@ -1548,16 +1548,23 @@ public partial class ToolTip : ContentControl
 		var owner = m_wrOwner?.Target as DependencyObject;
 		if (owner is FrameworkElement ownerAsFE)
 		{
+			// C++ captures a weak ref to `this` so the LayoutUpdated subscription doesn't
+			// keep the ToolTip alive when its owner outlives it. Mirror that pattern in C#
+			// via WeakReference<ToolTip>.
+			var weakThis = new WeakReference<ToolTip>(this);
 			global::System.EventHandler<object> handler = (sender, args) =>
 			{
-				if (this.Parent is not null && IsOwnerPositionChanged())
+				if (weakThis.TryGetTarget(out var toolTip))
 				{
-					var pToolTipServiceMetadataNoRef = ToolTipService.GetToolTipServiceMetadata();
-
-					var current = pToolTipServiceMetadataNoRef.m_tpCurrentToolTip;
-					if (current is not null && ReferenceEquals(current, this))
+					if (toolTip.Parent is not null && toolTip.IsOwnerPositionChanged())
 					{
-						ToolTipService.CancelAutomaticToolTip();
+						var pToolTipServiceMetadataNoRef = ToolTipService.GetToolTipServiceMetadata();
+
+						var current = pToolTipServiceMetadataNoRef.m_tpCurrentToolTip;
+						if (current is not null && ReferenceEquals(current, toolTip))
+						{
+							ToolTipService.CancelAutomaticToolTip();
+						}
 					}
 				}
 			};
