@@ -17,6 +17,12 @@ namespace Microsoft.UI.Xaml.Controls
 #if __SKIA__
 #pragma warning disable IDE0051 // Private member is unused (placeholder for full impl)
 
+		// These keycodes are undefined in the VirtualKey enum, so define them here.
+		// - (on number row)
+		private const VirtualKey SCROLLVIEWER_KEYCODE_MINUS = (VirtualKey)189;
+		// = (on number row)
+		private const VirtualKey SCROLLVIEWER_KEYCODE_EQUALS = (VirtualKey)187;
+
 		// Note: IsAnimationEnabled() is provided by the cross-platform ScrollViewer.cs partial.
 
 		// Initializes a new instance of the ScrollViewer class.
@@ -1123,20 +1129,60 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		// Called when the Content property changed.
-		// The current content is the new one at this point.
-		internal void OnContentPropertyChanged()
+		// Called by internal controls to apply a pseudo-LayoutTransform
+		// to the ScrollViewer.Content element.
+		internal void SetLayoutSize(global::Windows.Foundation.Size layoutSize)
 		{
-			m_isHorizontalStretchAlignmentTreatedAsNear = false;
-			m_isVerticalStretchAlignmentTreatedAsNear = false;
+			if (layoutSize.Width != m_layoutSize.Width || layoutSize.Height != m_layoutSize.Height)
+			{
+				m_layoutSize = layoutSize;
 
-			// TODO Uno: Phase 4 — port OnManipulatabilityAffectingPropertyChanged.
-			// OnManipulatabilityAffectingPropertyChanged(
-			//     pIsInLiveTree: null,
-			//     isCachedPropertyChanged: false,
-			//     isContentChanged: true,
-			//     isAffectingConfigurations: false,
-			//     isAffectingTouchConfiguration: false);
+				// TODO Uno: Phase 4 — invalidate the inner SCP and re-measure with the computed pixel viewport
+				// once m_trElementScrollContentPresenter is wired up.
+				// if (m_trElementScrollContentPresenter is not null)
+				// {
+				//     m_trElementScrollContentPresenter.InvalidateMeasure();
+				//     ComputePixelViewportWidth(null, false, out var widthViewport);
+				//     ComputePixelViewportHeight(null, false, out var heightViewport);
+				//     m_trElementScrollContentPresenter.Measure(new Size((float)widthViewport, (float)heightViewport));
+				// }
+			}
+		}
+
+		// Called at the end of a DM manipulation when the first layout occurs
+		// after receiving the DMManipulationCompleted notification.
+		internal void PostDirectManipulationLayoutRefreshed()
+		{
+			m_isInDirectManipulationCompletion = false;
+			NotifyLayoutRefreshed();
+		}
+
+		// Member of the IScrollOwner internal contract. Allows the interface consumer to notify this ScrollViewer
+		// that an ArrangeOverride occurred after the consumer gets an IManipulationDataProvider::UpdateInManipulation(...)
+		// call with isInLiveTree=True. Also called by PostDirectManipulationLayoutRefreshed during the first
+		// ScrollContentPresenter layout after a DManip completes.
+		internal void NotifyLayoutRefreshed()
+		{
+			// TODO Uno: Phase 4 — port OnPrimaryContentChanged. The DM-side syncing path is not wired up yet.
+			// OnPrimaryContentChanged(
+			//     layoutRefreshed: true,
+			//     boundsChanged: false,
+			//     horizontalAlignmentChanged: false,
+			//     verticalAlignmentChanged: false,
+			//     zoomFactorBoundaryChanged: false);
+		}
+
+		// Register this instance as being under control of a semantic zoom.
+		internal void RegisterAsSemanticZoomHost()
+		{
+			m_ignoreSemanticZoomNavigationInput = true;
+
+			// TODO Uno: Phase 4 — once OnApplyTemplate populates m_trElementScrollContentPresenter, route to
+			// SCP.RegisterAsSemanticZoomPresenter().
+			// if (m_trElementScrollContentPresenter is not null)
+			// {
+			//     m_trElementScrollContentPresenter.RegisterAsSemanticZoomPresenter();
+			// }
 		}
 
 		// Indicates whether we're at our highest zoom factor (as defined by MaxZoomFactor).
@@ -1153,6 +1199,105 @@ namespace Microsoft.UI.Xaml.Controls
 			var minZoomFactor = MinZoomFactor;
 			var currentZoomFactor = ZoomFactor;
 			return DoubleUtil.LessThanOrClose(currentZoomFactor, minZoomFactor);
+		}
+
+		// Called by HorizontalSnapPointsChangedHandler and
+		// VerticalSnapPointsChangedHandler when snap points changed
+		// or by OnZoomSnapPointsCollectionChanged when the ZoomSnapPoints observable collection changed,
+		// or by OnSnapPointsAffectingPropertyChanged when a property affecting snap points changed.
+		internal void OnSnapPointsChanged(DMMotionTypes motionType)
+		{
+			// TODO Uno: Phase 5 — push snap-point notification to the manipulation handler once the DM
+			// adapter exists. The native WinUI implementation calls
+			// CoreImports::ManipulationHandler_NotifySnapPointsChanged here.
+		}
+
+		// Called when the Content property changed.
+		// The current content is the new one at this point.
+		internal void OnContentPropertyChanged()
+		{
+			m_isHorizontalStretchAlignmentTreatedAsNear = false;
+			m_isVerticalStretchAlignmentTreatedAsNear = false;
+
+			// TODO Uno: Phase 4 — port OnManipulatabilityAffectingPropertyChanged.
+			// OnManipulatabilityAffectingPropertyChanged(
+			//     pIsInLiveTree: null,
+			//     isCachedPropertyChanged: false,
+			//     isContentChanged: true,
+			//     isAffectingConfigurations: false,
+			//     isAffectingTouchConfiguration: false);
+		}
+
+		// Synchonizes the ScrollData's m_ComputedOffset and m_Offset fields.
+		internal void SynchronizeScrollOffsets()
+		{
+			var spScrollInfo = GetScrollInfo();
+			if (spScrollInfo is null)
+			{
+				return;
+			}
+
+			// Synchonize the ScrollData's m_ComputedOffset.X and m_Offset.X fields
+			var offset = spScrollInfo.HorizontalOffset;
+			spScrollInfo.SetHorizontalOffset(offset);
+
+			// Synchonize the ScrollData's m_ComputedOffset.Y and m_Offset.Y fields
+			offset = spScrollInfo.VerticalOffset;
+			spScrollInfo.SetVerticalOffset(offset);
+		}
+
+		// after the thumb drag completes, we need to push the cached values to the scrollinfo
+		internal void SynchronizeScrollOffsetsAfterThumbDeferring()
+		{
+			var spScrollInfo = GetScrollInfo();
+			if (spScrollInfo is not null)
+			{
+				// we have completed a drag, so synchronize
+				if (m_horizontalOffsetCached != -1.0)
+				{
+					spScrollInfo.SetHorizontalOffset(m_horizontalOffsetCached);
+				}
+				if (m_verticalOffsetCached != -1.0)
+				{
+					spScrollInfo.SetVerticalOffset(m_verticalOffsetCached);
+				}
+			}
+
+			m_horizontalOffsetCached = m_verticalOffsetCached = -1.0;
+		}
+
+		// Obtains the zoom action (if any) DM will attempt if given the provided key combination.
+		internal static ZoomDirection GetKeyboardMessageZoomAction(VirtualKeyModifiers keyModifiers, VirtualKey key)
+		{
+			var messageZoomDirection = ZoomDirection.None;
+
+			// Filter out the shift key, we are not sensitive to it.
+			// This is the design for now, will be reviewed for RC.
+			keyModifiers &= ~VirtualKeyModifiers.Shift;
+
+			if (keyModifiers == VirtualKeyModifiers.Control)
+			{
+				if (key == VirtualKey.Subtract
+					|| key == SCROLLVIEWER_KEYCODE_MINUS)
+				{
+					messageZoomDirection = ZoomDirection.Out;
+				}
+				else if (key == VirtualKey.Add
+					|| key == SCROLLVIEWER_KEYCODE_EQUALS)
+				{
+					messageZoomDirection = ZoomDirection.In;
+				}
+			}
+
+			return messageZoomDirection;
+		}
+
+		// Called by a control interested in knowning DirectManipulation state changes.
+		// Only one listener can declare itself at once.
+		internal void SetDirectManipulationStateChangeHandlerCore(IDirectManipulationStateChangeHandler pDMStateChangeHandler)
+		{
+			global::System.Diagnostics.Debug.Assert(pDMStateChangeHandler is null || m_pDMStateChangeHandler is null);
+			m_pDMStateChangeHandler = pDMStateChangeHandler;
 		}
 
 		// Returns true iff both horizontal and vertical scrollbars are collapsed. Used to skip scroll bar animations.
