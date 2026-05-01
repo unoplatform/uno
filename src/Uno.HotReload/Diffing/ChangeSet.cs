@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
 namespace Uno.HotReload.Diffing;
@@ -13,11 +13,16 @@ public record ChangeSet(
 	ImmutableArray<AddedDocumentInfo> AddedAdditionalDocuments,
 	ImmutableArray<DocumentId> RemovedDocuments,
 	ImmutableArray<DocumentId> RemovedAdditionalDocuments,
+	ImmutableArray<Project> EditedProjects,
+	ImmutableArray<Project> AddedProjects,
+	ImmutableArray<ProjectId> RemovedProjects,
 	ImmutableHashSet<string> IgnoredFiles
 )
 {
 	public bool HasAddOrRemove => !AddedDocuments.IsEmpty || !AddedAdditionalDocuments.IsEmpty || !RemovedDocuments.IsEmpty || !RemovedAdditionalDocuments.IsEmpty;
 
+	public bool HasProjectEdits => !EditedProjects.IsEmpty || !AddedProjects.IsEmpty || !RemovedProjects.IsEmpty;
+
 	public static ChangeSet IgnoreAll(ImmutableHashSet<string> ignoredFiles)
-		=> new([], [], [], [], [], [], ignoredFiles);
+		=> new([], [], [], [], [], [], [], [], [], ignoredFiles);
 }

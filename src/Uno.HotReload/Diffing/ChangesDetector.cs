@@ -16,6 +16,19 @@ namespace Uno.HotReload.Diffing;
 /// </summary>
 public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : IChangesDetector
 {
+	/// <summary>
+	/// Filenames that participate in csproj evaluation by MSBuild convention. When any of
+	/// these files is edited (anywhere in the project's parent chain), the corresponding
+	/// project is flagged on <see cref="ChangeSet.EditedProjects"/> so wrapping appliers
+	/// can re-evaluate the csproj.
+	/// </summary>
+	private static readonly string[] _csprojInfluencingFileNames =
+	[
+		"Directory.Build.props",
+		"Directory.Build.targets",
+		"Directory.Packages.props",
+	];
+
 	/// <inheritdoc />
 	public async ValueTask<ChangeSet> DiscoverChangesAsync(Solution solution, ImmutableHashSet<string> files, CancellationToken ct)
 	{
@@ -25,6 +38,8 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 		var removedAdditionalDocuments = new List<DocumentId>();
 		var potentiallyAdded = new List<string>();
 		var notFound = new List<string>();
+		var editedProjectIds = new HashSet<ProjectId>();
+		var editedProjects = new List<Project>();
 
 		foreach (var file in files)
 		{
@@ -64,6 +79,27 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 				}
 			}
 
+			// Match the file against project-level inputs (csproj or its
+			// MSBuild-conventional siblings). A match flags the project for
+			// downstream re-evaluation but does not consume the file — the
+			// applier owns the re-read.
+			foreach (var project in solution.Projects)
+			{
+				if (project.FilePath is not { Length: > 0 } projectPath
+					|| editedProjectIds.Contains(project.Id))
+				{
+					continue;
+				}
+
+				if (PathComparer.PathEquals(projectPath, file)
+					|| IsCsprojInfluencingFile(file, projectPath))
+				{
+					editedProjectIds.Add(project.Id);
+					editedProjects.Add(project);
+					found = true;
+				}
+			}
+
 			// Not found in current solution
 			if (!found)
 			{
@@ -88,6 +124,52 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 			added.AdditionalDocuments,
 			[.. removedDocuments],
 			[.. removedAdditionalDocuments],
+			[.. editedProjects],
+			AddedProjects: [],
+			RemovedProjects: [],
 			[.. notFound, .. added.Ignored]);
+	}
+
+	/// <summary>
+	/// Returns <c>true</c> when <paramref name="file"/> is a <c>Directory.Build.props</c>,
+	/// <c>Directory.Build.targets</c>, or <c>Directory.Packages.props</c> located in any
+	/// directory along the chain from the project's folder up to the filesystem root.
+	/// </summary>
+	private static bool IsCsprojInfluencingFile(string file, string projectPath)
+	{
+		var fileName = Path.GetFileName(file);
+		var matchesWellKnown = false;
+		foreach (var wellKnown in _csprojInfluencingFileNames)
+		{
+			if (string.Equals(fileName, wellKnown, PathComparer.Comparison))
+			{
+				matchesWellKnown = true;
+				break;
+			}
+		}
+
+		if (!matchesWellKnown)
+		{
+			return false;
+		}
+
+		var fileDirectory = PathComparer.Normalize(Path.GetDirectoryName(file));
+		if (string.IsNullOrEmpty(fileDirectory))
+		{
+			return false;
+		}
+
+		var projectDirectory = PathComparer.Normalize(Path.GetDirectoryName(projectPath));
+		while (!string.IsNullOrEmpty(projectDirectory))
+		{
+			if (string.Equals(projectDirectory, fileDirectory, PathComparer.Comparison))
+			{
+				return true;
+			}
+
+			projectDirectory = PathComparer.Normalize(Path.GetDirectoryName(projectDirectory));
+		}
+
+		return false;
 	}
 }

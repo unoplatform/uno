@@ -43,7 +43,8 @@ public sealed class HotReloadManager : IDisposable
 		IHotReloadTracker tracker,
 		IChangesDetector changesDetector,
 		CancellationToken ct,
-		bool forceEmitCompilationOutput = false)
+		bool forceEmitCompilationOutput = false,
+		IHotReloadChangeApplier? changeApplier = null)
 	{
 		if (forceEmitCompilationOutput
 			|| workspace.CurrentSolution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
@@ -54,7 +55,7 @@ public sealed class HotReloadManager : IDisposable
 
 		var watch = await WatchHotReloadService.CreateAsync(workspace, metadataUpdateCapabilities, ct).ConfigureAwait(false);
 
-		return new HotReloadManager(workspace, watch, sendUpdates, changesDetector, tracker);
+		return new HotReloadManager(workspace, watch, sendUpdates, changesDetector, tracker, changeApplier ?? new DefaultHotReloadChangeApplier());
 	}
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
@@ -63,19 +64,22 @@ public sealed class HotReloadManager : IDisposable
 	private readonly SendUpdatesAsync _sendUpdates;
 	private readonly IHotReloadTracker _tracker;
 	private readonly IChangesDetector _changesDetector;
+	private readonly IHotReloadChangeApplier _changeApplier;
 
 	private HotReloadManager(
 		Workspace innerWorkspace,
 		WatchHotReloadService watchService,
 		SendUpdatesAsync sendUpdates,
 		IChangesDetector changesDetector,
-		IHotReloadTracker tracker)
+		IHotReloadTracker tracker,
+		IHotReloadChangeApplier changeApplier)
 	{
 		_innerWorkspace = innerWorkspace;
 		_watchService = watchService;
 		_sendUpdates = sendUpdates;
 		_tracker = tracker;
 		_changesDetector = changesDetector;
+		_changeApplier = changeApplier;
 
 		CurrentSolution = innerWorkspace.CurrentSolution;
 	}
@@ -115,7 +119,16 @@ public sealed class HotReloadManager : IDisposable
 		// Detects the changes and try to update the solution
 		var originalSolution = workspace.CurrentSolution;
 		var changeSet = await _changesDetector.DiscoverChangesAsync(originalSolution, files, ct).ConfigureAwait(false);
-		var solution = await originalSolution.ApplyAsync(changeSet, hotReload, ct).ConfigureAwait(false);
+		var applyResult = await _changeApplier.ApplyChangesAsync(originalSolution, changeSet, hotReload, ct).ConfigureAwait(false);
+		var solution = applyResult.Solution;
+
+		// The applier completed the operation itself (typically with Failed). Skip the
+		// remainder of the cycle so logs reflect what actually happened — no
+		// "No changes found" line, no Complete(NoChanges) on top of the applier's status.
+		if (applyResult.IsCompleted)
+		{
+			return;
+		}
 
 		if (solution == originalSolution)
 		{
