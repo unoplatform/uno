@@ -55,8 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// SetConstantVelocities(0, 0);
 			}
 
-			// TODO Uno: Phase 4 — call UpdateVisualState() once the new ChangeVisualState is the source of truth.
-			// UpdateVisualState();
+			UpdateVisualState();
 		}
 
 		// Called when the parent of this ScrollViewer changed. Makes sure the manipulation handler knows
@@ -2707,8 +2706,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// and synchronize
 			SynchronizeScrollOffsetsAfterThumbDeferring();
 
-			// TODO Uno: Phase 4 — call UpdateVisualState() once it's wired up.
-			// UpdateVisualState();
+			UpdateVisualState();
 		}
 
 		// Handle PointerEntered on the vertical scrollbar
@@ -4211,8 +4209,7 @@ namespace Microsoft.UI.Xaml.Controls
 				!(m_isPointerOverVerticalScrollbar || m_isPointerOverHorizontalScrollbar))
 			{
 				// Go to the NoIndicator state using transitions.  There should be a delay before the NoIndicator state actually shows.
-				// TODO Uno: Phase 4 — call UpdateVisualState() once it's wired up; for now use VisualStateManager.GoToState.
-				VisualStateManager.GoToState(this, "NoIndicator", true /*useTransitions*/);
+				UpdateVisualState();
 			}
 		}
 
