@@ -8,7 +8,12 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
+using Uno.Extensions;
+using Uno.UI;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 using Windows.Foundation;
+using Windows.UI.Input.Preview.Injection;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -331,4 +336,115 @@ public class Given_ToolTip_Integration
 		toolTip.IsOpen = false;
 		await TestServices.WindowHelper.WaitForIdle();
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp ValidateNestedToolTips (line 879).
+	// "Validates that ToolTips applied to nested UIElements behave correctly. When the mouse is
+	// over the parent element, but not the child element, the parent's tooltip should show. When
+	// the mouse is over the child element (and hence also over the parent element), the child's
+	// tooltip should show. When the mouse leaves both elements, no tooltips should show."
+	// Regression: Bug 1093270 (Tooltips showing incorrect content at incorrect times).
+	// Exercises the iter #9 nested-owners list management ports.
+#if HAS_UNO
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task ValidateNestedToolTips()
+	{
+		// Build the layout programmatically rather than via XamlReader because Uno's
+		// FindName doesn't always resolve x:Name'd elements stored inside attached-property
+		// setters (the ToolTipService.ToolTip subtree).
+		var parentToolTip = new ToolTip { Content = "Parent ToolTip" };
+		var nestedToolTip = new ToolTip { Content = "Nested ToolTip" };
+
+		var nestedTarget = new Border
+		{
+			Height = 50,
+			BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+			BorderThickness = new Thickness(2),
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Green),
+			Child = new TextBlock { Text = "Nested Target" },
+		};
+		ToolTipService.SetToolTip(nestedTarget, nestedToolTip);
+
+		var parentTarget = new StackPanel
+		{
+			Width = 200,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Yellow),
+		};
+		parentTarget.Children.Add(new TextBlock { Text = "Parent Target", Height = 100 });
+		parentTarget.Children.Add(nestedTarget);
+		ToolTipService.SetToolTip(parentTarget, parentToolTip);
+
+		var noToolTipElement = new Border
+		{
+			Height = 100,
+			BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+			BorderThickness = new Thickness(2),
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightBlue),
+			CornerRadius = new CornerRadius(5),
+			Margin = new Thickness(10),
+			Child = new TextBlock { Text = "Element with no ToolTip" },
+		};
+
+		var rootPanel = new StackPanel();
+		rootPanel.Children.Add(parentTarget);
+		rootPanel.Children.Add(noToolTipElement);
+
+		await UITestHelper.Load(rootPanel);
+
+		bool parentOpened = false, parentClosed = false, nestedOpened = false, nestedClosed = false;
+		parentToolTip.Opened += (s, e) => parentOpened = true;
+		parentToolTip.Closed += (s, e) => parentClosed = true;
+		nestedToolTip.Opened += (s, e) => nestedOpened = true;
+		nestedToolTip.Closed += (s, e) => nestedClosed = true;
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			// Move mouse to Parent element
+			mouse.MoveTo(parentTarget.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// We expect the Parent ToolTip to open. Nothing else should open or close.
+			Assert.IsTrue(parentOpened, "Parent ToolTip should have opened");
+			Assert.IsFalse(parentClosed, "Parent ToolTip should not have closed yet");
+			Assert.IsFalse(nestedOpened, "Nested ToolTip should not have opened yet");
+			Assert.IsFalse(nestedClosed, "Nested ToolTip should not have closed yet");
+
+			parentOpened = false;
+
+			// Move mouse to nested element
+			mouse.MoveTo(nestedTarget.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// We expect the Parent ToolTip to close and the nested ToolTip to open. Nothing else should open or close.
+			Assert.IsFalse(parentOpened, "Parent ToolTip should not have re-opened");
+			Assert.IsTrue(parentClosed, "Parent ToolTip should have closed");
+			Assert.IsTrue(nestedOpened, "Nested ToolTip should have opened");
+			Assert.IsFalse(nestedClosed, "Nested ToolTip should not have closed yet");
+
+			parentClosed = false;
+			nestedOpened = false;
+
+			// Move mouse to element with no ToolTip
+			mouse.MoveTo(noToolTipElement.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// We expect the nested ToolTip to close, and nothing else to open or close.
+			Assert.IsFalse(parentOpened, "Parent ToolTip should not have re-opened");
+			Assert.IsFalse(parentClosed, "Parent ToolTip should not have closed again");
+			Assert.IsFalse(nestedOpened, "Nested ToolTip should not have re-opened");
+			Assert.IsTrue(nestedClosed, "Nested ToolTip should have closed");
+		}
+		finally
+		{
+			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
+#endif
 }
