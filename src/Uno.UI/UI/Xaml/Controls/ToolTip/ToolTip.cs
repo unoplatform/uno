@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+#if !__SKIA__
+
 using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -878,3 +880,5 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
+
+#endif // !__SKIA__

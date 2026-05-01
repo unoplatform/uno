@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !__SKIA__
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -389,3 +391,5 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
+
+#endif // !__SKIA__

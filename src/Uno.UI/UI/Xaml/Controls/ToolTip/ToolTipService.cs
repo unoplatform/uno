@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !__SKIA__
+
+using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -323,3 +325,5 @@ public partial class ToolTipService
 		}
 	}
 }
+
+#endif // !__SKIA__
