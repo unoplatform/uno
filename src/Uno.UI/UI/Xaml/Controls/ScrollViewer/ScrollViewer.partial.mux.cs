@@ -1556,12 +1556,20 @@ namespace Microsoft.UI.Xaml.Controls
 			// Adjust offset with mandatory scroll snap points
 			if (disableAnimation && adjustWithMandatorySnapPoints)
 			{
-				// TODO Uno: Phase 5 — RefreshScrollSnapPointsInfo + AdjustOffsetWithMandatorySnapPoints
-				// chain port. The C++ does:
-				// if (!m_trScrollSnapPointsInfo) { IFC_RETURN(RefreshScrollSnapPointsInfo()); }
-				// IFC_RETURN(AdjustOffsetWithMandatorySnapPoints(...));
-				// Our existing SnapPoints.cs has an AdjustOffsetWithMandatorySnapPoints helper
-				// but with a different signature; reconcile in Phase 5.
+				if (m_trScrollSnapPointsInfo is null)
+				{
+					RefreshScrollSnapPointsInfo();
+				}
+
+				AdjustOffsetWithMandatorySnapPoints(
+					isForHorizontalOffset: true,
+					minOffset: minHorizontalOffset,
+					maxOffset: maxHorizontalOffset,
+					currentOffset: currentHorizontalOffset,
+					targetExtentDimension: targetExtentWidth,
+					viewportDimension: viewportPixelWidth,
+					targetZoomFactor: targetZoomFactor,
+					targetOffset: ref targetHorizontalOffset);
 			}
 
 			pTargetHorizontalOffset = targetHorizontalOffset;
@@ -1613,7 +1621,20 @@ namespace Microsoft.UI.Xaml.Controls
 			// Adjust offset with mandatory scroll snap points
 			if (disableAnimation && adjustWithMandatorySnapPoints)
 			{
-				// TODO Uno: Phase 5 — see AdjustTargetHorizontalOffset.
+				if (m_trScrollSnapPointsInfo is null)
+				{
+					RefreshScrollSnapPointsInfo();
+				}
+
+				AdjustOffsetWithMandatorySnapPoints(
+					isForHorizontalOffset: false,
+					minOffset: minVerticalOffset,
+					maxOffset: maxVerticalOffset,
+					currentOffset: currentVerticalOffset,
+					targetExtentDimension: targetExtentHeight,
+					viewportDimension: viewportPixelHeight,
+					targetZoomFactor: targetZoomFactor,
+					targetOffset: ref targetVerticalOffset);
 			}
 
 			pTargetVerticalOffset = targetVerticalOffset;
@@ -4024,6 +4045,10 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
+
+			// Keep the cross-platform ScrollViewer.SnapPoints.cs `_snapPointsInfo` field in sync
+			// so the existing AdjustOffsetWithMandatorySnapPoints helper observes the same state.
+			_snapPointsInfo = m_trScrollSnapPointsInfo;
 		}
 
 		// Called when a property that affects the snap points changed.
