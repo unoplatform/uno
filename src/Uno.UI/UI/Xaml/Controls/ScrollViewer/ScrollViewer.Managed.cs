@@ -148,7 +148,33 @@ namespace Microsoft.UI.Xaml.Controls
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
-			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
+		{
+#if __SKIA__
+			// MUX Reference ScrollViewer_Partial.cpp:3385 ChangeViewInternal — before
+			// applying the new view, the WinUI port raises ViewChanging with the
+			// computed target view so app code can observe the in-flight change.
+			// On Skia the rendered scroll is driven by SCP.Set(...) below; this
+			// block sources the same NextView/FinalView args the C++ port would.
+			// Phase-4 ChangeViewInternal will own this entirely; until then, this
+			// is the bridge.
+			var targetH = horizontalOffset ?? HorizontalOffset;
+			var targetV = verticalOffset ?? VerticalOffset;
+			var targetZ = zoomFactor.HasValue ? (float)zoomFactor.Value : ZoomFactor;
+			if (zoomFactor.HasValue)
+			{
+				NotifyZoomFactorChanging(targetZ);
+			}
+			if (horizontalOffset.HasValue)
+			{
+				NotifyHorizontalOffsetChanging(targetH, targetV);
+			}
+			if (verticalOffset.HasValue)
+			{
+				NotifyVerticalOffsetChanging(targetH, targetV);
+			}
+#endif
+			return (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
+		}
 
 		private partial void OnLoadedPartial()
 		{
