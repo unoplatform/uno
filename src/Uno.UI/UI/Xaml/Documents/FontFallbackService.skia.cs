@@ -54,6 +54,23 @@ internal class NotoFontFallbackService : IFontFallbackService
 
 	public static NotoFontFallbackService Instance { get; } = new NotoFontFallbackService();
 
+	/// <summary>
+	/// Per-font URI overrides for apps that cannot reach the default GitHub-hosted Noto fonts
+	/// (e.g. due to a Content Security Policy). Keys are font names as stored in
+	/// <see cref="FallbackFontMaps"/> (e.g. <c>"SimplifiedChinese"</c>, <c>"Noto Sans Arabic"</c>).
+	/// Values must be URIs resolvable by <see cref="Uno.Helpers.AppDataUriEvaluator"/>,
+	/// such as <c>ms-appx:///Assets/Fonts/NotoSansCJKsc-Regular.otf</c>.
+	/// When an override is present the remote GitHub URL is never attempted for that font.
+	/// </summary>
+	public static Dictionary<string, Uri> LocalFontUriOverrides { get; } = new();
+
+	/// <summary>
+	/// When <see langword="true"/>, fonts that have no entry in <see cref="LocalFontUriOverrides"/>
+	/// are silently skipped instead of being fetched from the remote GitHub URLs. Use this in
+	/// environments where outbound connections to raw.githubusercontent.com are blocked.
+	/// </summary>
+	public static bool DisableRemoteFontFallback { get; set; }
+
 	private NotoFontFallbackService()
 	{
 		_memoizedGetFontNameForCodepoint = ((Func<int, Task<string?>>)GetFontNameForCodepointInternal).AsMemoized();
@@ -119,9 +136,21 @@ internal class NotoFontFallbackService : IFontFallbackService
 				};
 			}
 
-			var map = FallbackFontMaps.FontWeightsToRawUrls[font];
-			// TODO: use weight/stretch/style to pick the best match
-			var uri = new Uri(map["Regular"]);
+			if (DisableRemoteFontFallback && !LocalFontUriOverrides.ContainsKey(font))
+			{
+				this.LogWarning()?.Warn($"Remote font fallback is disabled and no local override is registered for '{font}'. Font will not be loaded.");
+				_fetchedFonts[font] = null;
+				continue;
+			}
+
+			Uri uri;
+			if (!LocalFontUriOverrides.TryGetValue(font, out uri!))
+			{
+				var map = FallbackFontMaps.FontWeightsToRawUrls[font];
+				// TODO: use weight/stretch/style to pick the best match
+				uri = new Uri(map["Regular"]);
+			}
+
 			try
 			{
 				var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
