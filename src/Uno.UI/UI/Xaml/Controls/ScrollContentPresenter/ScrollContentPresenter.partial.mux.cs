@@ -1743,8 +1743,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isChildActualHeightUpdated = true;
 
 			// Let ScrollViewer know that child sizes might have changed.
-			// TODO Uno: Phase 5 — ScrollViewer.OnScrollContentPresenterMeasured already exists in Anchoring partial.
-			// spScrollViewer?.OnScrollContentPresenterMeasured();
+			spScrollViewer?.OnScrollContentPresenterMeasured();
 
 			return desiredSize;
 
