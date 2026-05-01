@@ -553,5 +553,54 @@ public class Given_ToolTip_Integration
 			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 		}
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp VerifyPlacementModeMouse (line 402).
+	// "Verify the ToolTip placement mode mouse." Sets PlacementMode.Mouse on the button's
+	// owner-attached property, opens via mouse hover, and verifies the popup hosts + the
+	// PlacementMode round-trips. The C++ uses InputMode.Mouse via InputHelper.MoveMouse +
+	// CloseToolTip via MoveMouse(0,0); Uno's port uses the same mouse-hover pattern as
+	// VerifyToolTipPlacement.
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task VerifyPlacementModeMouse()
+	{
+		var button = await SetupToolTipTest();
+		var toolTip = CreateToolTip();
+		ToolTipService.SetToolTip(button, toolTip);
+		ToolTipService.SetPlacement(button, PlacementMode.Mouse);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			// Move mouse onto the button to trigger PointerEntered + the show timer.
+			mouse.MoveTo(new Point(0, 0));
+			await TestServices.WindowHelper.WaitForIdle();
+			mouse.MoveTo(button.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(toolTip.IsOpen, "ToolTip should be open after mouse hover");
+			Assert.AreEqual(PlacementMode.Mouse, ToolTipService.GetPlacement(button),
+				"PlacementMode round-trip mismatch");
+
+			var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+				TestServices.WindowHelper.WindowContent.XamlRoot);
+			Assert.AreEqual(1, popups.Count, "Expected one open popup for the tooltip");
+
+			// Close via mouse-leave (matches CloseToolTip(InputMode.Mouse) in C++).
+			mouse.MoveTo(new Point(0, 0));
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsFalse(toolTip.IsOpen, "ToolTip should be closed after mouse leaves");
+		}
+		finally
+		{
+			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
 #endif
 }
