@@ -192,69 +192,6 @@ public partial class ToolTipService
 		return toolTip;
 	}
 
-	// MUX Reference: ToolTipService_Partial.cpp GetToolTipOwnersBoundary (line 820).
-	internal static Rect GetToolTipOwnersBoundary(DependencyObject ownerDO)
-	{
-		Rect bounds;
-		if (ownerDO is UIElement owner)
-		{
-			bounds = GetGlobalBoundsLogical(owner);
-		}
-		else if (ownerDO is Documents.TextElement textElement)
-		{
-			// TODO Uno (Phase 6 polish): port CCoreServices::GetTextElementBoundingRect equivalent.
-			// For now use the containing FrameworkElement's bounds.
-			var fe = textElement.GetContainingFrameworkElement();
-			if (fe is null)
-			{
-				return default;
-			}
-			bounds = GetGlobalBoundsLogical(fe);
-		}
-		else
-		{
-			return default;
-		}
-
-		// Validate non-NaN / non-Infinity bounds.
-		if (double.IsInfinity(bounds.Left) || double.IsNaN(bounds.Left) ||
-			double.IsInfinity(bounds.Top) || double.IsNaN(bounds.Top) ||
-			double.IsInfinity(bounds.Right) || double.IsNaN(bounds.Right) ||
-			double.IsInfinity(bounds.Bottom) || double.IsNaN(bounds.Bottom))
-		{
-			return default;
-		}
-
-		return bounds;
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp HandleToolTipSafeZone (line 862).
-	internal static void HandleToolTipSafeZone(Point point, UIElement toolTip, DependencyObject ownerDO)
-	{
-		// On WindowsCore, because message event queue, even if ToolTip is unhooked from CoreWindow during the same PointerMove event handling,
-		// CoreWindows.PointerMove event is still be received by ToolTip, and it makes the current ToolTip doesn't match with ToolTip from the event.
-		// so we should only handle the tooltip if it's the current ToolTip.
-		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
-
-		var current = pToolTipServiceMetadataNoRef.m_tpCurrentToolTip;
-		if (current is null || !ReferenceEquals(current, toolTip))
-		{
-			return;
-		}
-
-		// owner bounds in global space
-		Rect ownerBounds = GetToolTipOwnersBoundary(ownerDO);
-
-		// tooltip bounds in global space
-		Rect toolTipBounds = GetGlobalBoundsLogical(toolTip);
-
-		// outside of safe zone, close ToolTip
-		if (!IsToolTipInSafeZone(point, ownerBounds, toolTipBounds))
-		{
-			CancelAutomaticToolTip();
-		}
-	}
-
 	// MUX Reference: ToolTipService_Partial.cpp OnSafeZoneCheck (line 348).
 	// ToolTip will not be closed until Pointer moves out of safe zone.
 	// A timer is started when ToolTip is open, and then check if pointer is in the safe zone periodically.
@@ -420,59 +357,6 @@ public partial class ToolTipService
 			{
 				RemoveFromNestedOwners(owner);
 			}
-		}
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp CloseToolTipInternal (line 895).
-	internal static void CloseToolTipInternal(KeyRoutedEventArgs? pIKeyRoutedEventArgs)
-	{
-		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
-
-		if (pToolTipServiceMetadataNoRef.m_tpOpenTimer is null)
-		{
-			return;
-		}
-
-		// close the opened ToolTip or cancel mouse hover
-		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is null)
-		{
-			pToolTipServiceMetadataNoRef.m_tpOpenTimer.Stop();
-			return;
-		}
-
-		if (pIKeyRoutedEventArgs is not null)
-		{
-			var key = pIKeyRoutedEventArgs.Key;
-			if (IsSpecialKey(key))
-			{
-				return;
-			}
-		}
-
-		CloseAutomaticToolTip(null, null);
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp IsSpecialKey (line 933).
-	internal static bool IsSpecialKey(global::Windows.System.VirtualKey key)
-	{
-		switch (key)
-		{
-			case global::Windows.System.VirtualKey.Menu:
-			case global::Windows.System.VirtualKey.Back:
-			case global::Windows.System.VirtualKey.Delete:
-			case global::Windows.System.VirtualKey.Down:
-			case global::Windows.System.VirtualKey.End:
-			case global::Windows.System.VirtualKey.Home:
-			case global::Windows.System.VirtualKey.Insert:
-			case global::Windows.System.VirtualKey.Left:
-			case global::Windows.System.VirtualKey.PageDown:
-			case global::Windows.System.VirtualKey.PageUp:
-			case global::Windows.System.VirtualKey.Right:
-			case global::Windows.System.VirtualKey.Space:
-			case global::Windows.System.VirtualKey.Up:
-				return true;
-			default:
-				return false;
 		}
 	}
 
@@ -673,6 +557,122 @@ public partial class ToolTipService
 		}
 	}
 
+	// MUX Reference: ToolTipService_Partial.cpp GetToolTipOwnersBoundary (line 820).
+	internal static Rect GetToolTipOwnersBoundary(DependencyObject ownerDO)
+	{
+		Rect bounds;
+		if (ownerDO is UIElement owner)
+		{
+			bounds = GetGlobalBoundsLogical(owner);
+		}
+		else if (ownerDO is Documents.TextElement textElement)
+		{
+			// TODO Uno (Phase 6 polish): port CCoreServices::GetTextElementBoundingRect equivalent.
+			// For now use the containing FrameworkElement's bounds.
+			var fe = textElement.GetContainingFrameworkElement();
+			if (fe is null)
+			{
+				return default;
+			}
+			bounds = GetGlobalBoundsLogical(fe);
+		}
+		else
+		{
+			return default;
+		}
+
+		// Validate non-NaN / non-Infinity bounds.
+		if (double.IsInfinity(bounds.Left) || double.IsNaN(bounds.Left) ||
+			double.IsInfinity(bounds.Top) || double.IsNaN(bounds.Top) ||
+			double.IsInfinity(bounds.Right) || double.IsNaN(bounds.Right) ||
+			double.IsInfinity(bounds.Bottom) || double.IsNaN(bounds.Bottom))
+		{
+			return default;
+		}
+
+		return bounds;
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp HandleToolTipSafeZone (line 862).
+	internal static void HandleToolTipSafeZone(Point point, UIElement toolTip, DependencyObject ownerDO)
+	{
+		// On WindowsCore, because message event queue, even if ToolTip is unhooked from CoreWindow during the same PointerMove event handling,
+		// CoreWindows.PointerMove event is still be received by ToolTip, and it makes the current ToolTip doesn't match with ToolTip from the event.
+		// so we should only handle the tooltip if it's the current ToolTip.
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		var current = pToolTipServiceMetadataNoRef.m_tpCurrentToolTip;
+		if (current is null || !ReferenceEquals(current, toolTip))
+		{
+			return;
+		}
+
+		// owner bounds in global space
+		Rect ownerBounds = GetToolTipOwnersBoundary(ownerDO);
+
+		// tooltip bounds in global space
+		Rect toolTipBounds = GetGlobalBoundsLogical(toolTip);
+
+		// outside of safe zone, close ToolTip
+		if (!IsToolTipInSafeZone(point, ownerBounds, toolTipBounds))
+		{
+			CancelAutomaticToolTip();
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp CloseToolTipInternal (line 895).
+	internal static void CloseToolTipInternal(KeyRoutedEventArgs? pIKeyRoutedEventArgs)
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_tpOpenTimer is null)
+		{
+			return;
+		}
+
+		// close the opened ToolTip or cancel mouse hover
+		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is null)
+		{
+			pToolTipServiceMetadataNoRef.m_tpOpenTimer.Stop();
+			return;
+		}
+
+		if (pIKeyRoutedEventArgs is not null)
+		{
+			var key = pIKeyRoutedEventArgs.Key;
+			if (IsSpecialKey(key))
+			{
+				return;
+			}
+		}
+
+		CloseAutomaticToolTip(null, null);
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp IsSpecialKey (line 933).
+	internal static bool IsSpecialKey(global::Windows.System.VirtualKey key)
+	{
+		switch (key)
+		{
+			case global::Windows.System.VirtualKey.Menu:
+			case global::Windows.System.VirtualKey.Back:
+			case global::Windows.System.VirtualKey.Delete:
+			case global::Windows.System.VirtualKey.Down:
+			case global::Windows.System.VirtualKey.End:
+			case global::Windows.System.VirtualKey.Home:
+			case global::Windows.System.VirtualKey.Insert:
+			case global::Windows.System.VirtualKey.Left:
+			case global::Windows.System.VirtualKey.PageDown:
+			case global::Windows.System.VirtualKey.PageUp:
+			case global::Windows.System.VirtualKey.Right:
+			case global::Windows.System.VirtualKey.Space:
+			case global::Windows.System.VirtualKey.Up:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	// MUX Reference: ToolTipService_Partial.cpp GetOwner (line 960).
 	internal static DependencyObject? GetOwner()
 	{
@@ -750,59 +750,6 @@ public partial class ToolTipService
 		finally
 		{
 			pToolTipServiceMetadataNoRef.m_isAddingToNestedOwners = false;
-		}
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp RemoveFromNestedOwners (line 1116).
-	// If a nested owner has been removed from the visual tree or made invisible, remove it
-	// from the list, because it can no longer display tooltips.
-	internal static void RemoveFromNestedOwners(DependencyObject pOwner)
-	{
-		global::System.Diagnostics.Debug.Assert(pOwner is not null);
-		if (pOwner is null)
-		{
-			return;
-		}
-
-		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
-
-		if (pToolTipServiceMetadataNoRef.m_isAddingToNestedOwners ||
-			pToolTipServiceMetadataNoRef.m_isPurgingInvalidNestedOwners)
-		{
-			pToolTipServiceMetadataNoRef.m_objectsToRemove.Add(new WeakReference(pOwner));
-			return;
-		}
-
-		try
-		{
-			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = true;
-
-			// Remove from list of nested owners
-			if (pToolTipServiceMetadataNoRef.m_nestedOwners is not null)
-			{
-				var it = pToolTipServiceMetadataNoRef.m_nestedOwners.First;
-				while (it is not null)
-				{
-					var spCurrentDO = it.Value.Target as DependencyObject;
-					if (spCurrentDO is not null)
-					{
-						if (ReferenceEquals(pOwner, spCurrentDO))
-						{
-							pToolTipServiceMetadataNoRef.DeleteElementFromNestedOwners(it);
-							break;
-						}
-					}
-
-					it = it.Next;
-				}
-			}
-
-			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = false;
-			RunPendingOwnerListOperations(pToolTipServiceMetadataNoRef);
-		}
-		finally
-		{
-			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = false;
 		}
 	}
 
@@ -925,6 +872,59 @@ public partial class ToolTipService
 		// TransformToVisual(null) of the element's local bounds.
 		var local = new Rect(0, 0, (element as FrameworkElement)?.ActualWidth ?? 0, (element as FrameworkElement)?.ActualHeight ?? 0);
 		return element.TransformToVisual(null).TransformBounds(local);
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp RemoveFromNestedOwners (line 1116).
+	// If a nested owner has been removed from the visual tree or made invisible, remove it
+	// from the list, because it can no longer display tooltips.
+	internal static void RemoveFromNestedOwners(DependencyObject pOwner)
+	{
+		global::System.Diagnostics.Debug.Assert(pOwner is not null);
+		if (pOwner is null)
+		{
+			return;
+		}
+
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_isAddingToNestedOwners ||
+			pToolTipServiceMetadataNoRef.m_isPurgingInvalidNestedOwners)
+		{
+			pToolTipServiceMetadataNoRef.m_objectsToRemove.Add(new WeakReference(pOwner));
+			return;
+		}
+
+		try
+		{
+			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = true;
+
+			// Remove from list of nested owners
+			if (pToolTipServiceMetadataNoRef.m_nestedOwners is not null)
+			{
+				var it = pToolTipServiceMetadataNoRef.m_nestedOwners.First;
+				while (it is not null)
+				{
+					var spCurrentDO = it.Value.Target as DependencyObject;
+					if (spCurrentDO is not null)
+					{
+						if (ReferenceEquals(pOwner, spCurrentDO))
+						{
+							pToolTipServiceMetadataNoRef.DeleteElementFromNestedOwners(it);
+							break;
+						}
+					}
+
+					it = it.Next;
+				}
+			}
+
+			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = false;
+			RunPendingOwnerListOperations(pToolTipServiceMetadataNoRef);
+		}
+		finally
+		{
+			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = false;
+		}
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp PurgeInvalidNestedOwners (line 1177).
