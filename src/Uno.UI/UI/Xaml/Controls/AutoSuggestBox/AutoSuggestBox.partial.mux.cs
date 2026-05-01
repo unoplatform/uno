@@ -1865,6 +1865,15 @@ namespace Microsoft.UI.Xaml.Controls
 					// getting the position with respect to the root ScrollViewer
 					point = TransformPoint(spRootScrollViewerAsUIElement, point);
 				}
+				else if (XamlRoot?.Content is UIElement xamlRootContent)
+				{
+					// TODO Uno: WinUI's RootScrollViewer model isn't used in Uno; without it,
+					// `point` would stay at (0, 0) and the Above/Below decision below would always
+					// pick Below regardless of where the AutoSuggestBox actually sits in the
+					// window. Fall back to transforming relative to the XamlRoot.Content so the
+					// deltaTop/deltaBottom math reflects the SUT's actual on-screen position.
+					point = TransformPoint(xamlRootContent, point);
+				}
 
 				// Instead of determining the alignment of the autosuggest popup using the popup layout bounds, use the adjusted layout
 				// bounds of the text box in the case where the autosuggest popup is nullptr. If a windowed popup is created later,
