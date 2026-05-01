@@ -349,6 +349,10 @@ namespace Microsoft.UI.Xaml.Controls
 					// of waiting for a layout pass that may not call VerifyScrollData.
 					CoerceOffsets(out _);
 					pScrollData.GetScrollOwner()?.InvalidateScrollInfoImpl();
+					// Drive the cross-platform managed scroll path so the visual scroll
+					// actually moves on Skia. Without this, only ScrollData state changes
+					// and the rendered content stays in place.
+					Set(horizontalOffset: scrollX, disableAnimation: true);
 				}
 			}
 		}
@@ -391,6 +395,9 @@ namespace Microsoft.UI.Xaml.Controls
 					// which is what the SV's public DP reads through GetVerticalOffset.
 					CoerceOffsets(out _);
 					pScrollData.GetScrollOwner()?.InvalidateScrollInfoImpl();
+					// Drive the cross-platform managed scroll path so the visual scroll
+					// actually moves on Skia.
+					Set(verticalOffset: scrollY, disableAnimation: true);
 				}
 			}
 		}
