@@ -2935,6 +2935,111 @@ namespace Microsoft.UI.Xaml.Controls
 			return (float)zoomedVerticalOffset;
 		}
 
+		// Determines if key press should be forwarded or processed by DM.
+		// The determination is made based on whether scrolling and chaining are
+		// enabled and viewport is near an edge within the current item.
+		// (C++ source line 15074)
+		internal bool ShouldContinueRoutingKeyDownEvent(VirtualKey key)
+		{
+			double offset = 0.0;
+			double edge = 0.0;
+			bool chainingEnabled = false;
+			ScrollMode scrollMode = ScrollMode.Disabled;
+			FlowDirection direction = FlowDirection;
+
+			switch (key)
+			{
+				case VirtualKey.GamepadLeftTrigger:
+				case VirtualKey.Up:
+					offset = VerticalOffset;
+					chainingEnabled = IsVerticalScrollChainingEnabled;
+					scrollMode = VerticalScrollMode;
+					break;
+
+				case VirtualKey.GamepadRightTrigger:
+				case VirtualKey.Down:
+					offset = VerticalOffset;
+					edge = ScrollableHeight;
+					chainingEnabled = IsVerticalScrollChainingEnabled;
+					scrollMode = VerticalScrollMode;
+					break;
+
+				case VirtualKey.GamepadLeftShoulder:
+				case VirtualKey.Left:
+					offset = HorizontalOffset;
+					if (direction == FlowDirection.RightToLeft)
+					{
+						edge = ScrollableWidth;
+					}
+					chainingEnabled = IsHorizontalScrollChainingEnabled;
+					scrollMode = HorizontalScrollMode;
+					break;
+
+				case VirtualKey.GamepadRightShoulder:
+				case VirtualKey.Right:
+					offset = HorizontalOffset;
+					if (direction == FlowDirection.LeftToRight)
+					{
+						edge = ScrollableWidth;
+					}
+					chainingEnabled = IsHorizontalScrollChainingEnabled;
+					scrollMode = HorizontalScrollMode;
+					break;
+			}
+
+			// Methods get_xxxOffset() do not return fractional parts and get_ScrollableXxx() do,
+			// define 'near' as within radius of 1 unit.
+
+			if (scrollMode != ScrollMode.Disabled &&
+				chainingEnabled &&
+				DoubleUtil.LessThanOrClose(Math.Abs(edge - offset), 1.0))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// RightTappedUnhandled event handler.
+		// Private event.
+		// (C++ source line 2589)
+		private protected override void OnRightTappedUnhandled(Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs args)
+		{
+			base.OnRightTappedUnhandled(args);
+
+			if (!args.Handled && m_shouldFocusOnRightTapUnhandled)
+			{
+				// Set focus to the ScrollViewer to capture key input for scrolling
+				bool focused = Focus(FocusState.Pointer);
+				args.Handled = focused;
+			}
+
+			m_shouldFocusOnRightTapUnhandled = false;
+		}
+
+		// Determines if the ScrollViewer should clear focus on pointer released or right tapped.
+		// This determination is made based on whether or not it is part of a template for a
+		// text control - if it is not, then we should clear focus.
+		// (C++ source line 15157)
+		internal bool GetShouldClearFocus()
+		{
+			DependencyObject spCurrent = this;
+
+			while (spCurrent is not null)
+			{
+				if (spCurrent is TextBox or PasswordBox or RichEditBox)
+				{
+					return false;
+				}
+
+				spCurrent = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(spCurrent);
+			}
+
+			return true;
+		}
+
 		// #region IScrollOwner contract — explicit interface implementation.
 		// Each member is a thin adapter onto an existing port method or a
 		// scoped Phase-stub. The full WinUI behavior (in particular the 600-line
