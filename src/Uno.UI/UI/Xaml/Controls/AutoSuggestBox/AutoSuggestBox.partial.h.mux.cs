@@ -179,6 +179,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static bool m_sSipIsOpen;
 
+		// Originally a function-local static in C++ OnSipShowingInternal. Promoted to a class-level static
+		// because C# does not support local-static lifetime semantics inside methods.
+		private static bool s_fDeferredShowing;
+
 #if DBG
 		private bool m_handlingCollectionChange;
 #endif

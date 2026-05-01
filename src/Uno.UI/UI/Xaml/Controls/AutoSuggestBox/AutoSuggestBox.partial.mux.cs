@@ -17,6 +17,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.ViewManagement;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 #pragma warning disable CS0067 // Unused event — TextChanged/QuerySubmitted/SuggestionChosen are wired in later iters
 #pragma warning disable CS0414 // Unused field — placeholder fields awaiting impl
@@ -1413,29 +1414,570 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - AlignmentHelper (lines 1842+). Stub keeps OnGotFocus + OnTextBoxCandidateWindowBoundsChanged callable.
 		private void AlignmentHelper(Rect sipOverlay)
 		{
+			// query the ScrollViewer.BringIntoViewOnFocusChange property
+			// if it's set to false, the control should not move
+			bool bringIntoViewOnFocusChange = true;
+
+			// In case when the app is not occluded by the SIP, we should just calculate the max suggestion area same way as if SIP is not deployed.
+			// Otherwise sipOverlay.Y is 0 and it will erroneously throw the calculation off, it is same as if SIP is deployed at the top of the app.
+			if (sipOverlay.Y == 0)
+			{
+				MaximizeSuggestionAreaWithoutInputPane();
+				return;
+			}
+
+			if (m_wkRootScrollViewer is null)
+			{
+				return;
+			}
+
+			bringIntoViewOnFocusChange = ScrollViewer.GetBringIntoViewOnFocusChange(this);
+
+			if (bringIntoViewOnFocusChange)
+			{
+				if (m_scrollActions.Count == 0)
+				{
+					ScrollViewer spRootScrollViewer = null;
+					m_wkRootScrollViewer?.TryGetTarget(out spRootScrollViewer);
+					UIElement spRootScrollViewerAsUIElement = spRootScrollViewer;
+					if (spRootScrollViewerAsUIElement is not null)
+					{
+						double actualTextBoxHeight = 0;
+						Point point = new Point(0, 0);
+						Rect layoutBounds = GetAdjustedLayoutBounds();
+
+						// getting the position with respect to the root ScrollViewer
+						point = TransformPoint(spRootScrollViewerAsUIElement, point);
+
+						double actualTextBoxWidth = 0;
+						GetActualTextBoxSize(out actualTextBoxWidth, out actualTextBoxHeight);
+
+						double bottomY = point.Y + actualTextBoxHeight;
+
+						// updates the visual state of the ASB depending on the phone orientation
+						ChangeVisualState();
+
+						MaximizeSuggestionArea(point.Y, bottomY, sipOverlay.Y, layoutBounds);
+					}
+				}
+				else
+				{
+					ApplyScrollActions(true);
+				}
+
+				UpdateSuggestionListPosition();
+				UpdateSuggestionListSize();
+			}
 		}
 
-		// TODO Uno: NOT PORTED - MaximizeSuggestionAreaWithoutInputPane (lines 2021+). Stub keeps OnTextBoxCandidateWindowBoundsChanged callable.
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox MaximizeSuggestionArea
+		//
+		// Maximizes the suggestion list area if the AutoMaximizeSuggestionArea is enabled.
+		//------------------------------------------------------------------------------
+		private void MaximizeSuggestionArea(double topY, double bottomY, double sipOverlayY, Rect layoutBounds)
+		{
+			double deltaTop = 0;
+			double deltaBottom = 0;
+			bool autoMaximizeSuggestionArea = true;
+			double candidateWindowYOffset = 0;
+
+			// DBG_TRACE(L"DBASB[0x%p]: topY: %f, bottomY: %f, sipOverlayAreaY: %f, windowsBoundsHeight",
+			//     this, topY, bottomY, sipOverlayY, windowsBoundsHeight);
+
+			try
+			{
+				autoMaximizeSuggestionArea = AutoMaximizeSuggestionArea;
+
+				GetCandidateWindowPopupAdjustment(
+					true /* ignoreSuggestionListPosition */,
+					out _,
+					out candidateWindowYOffset);
+
+				// distance from top of asb (or candidate window, whichever is higher) to bottom of system chrome
+				deltaTop = topY + (candidateWindowYOffset < 0 ? candidateWindowYOffset : 0) - layoutBounds.Y;
+				// distance from bottom of asb (or candidate window, whichever is lower) to top of sip
+				deltaBottom = sipOverlayY - (bottomY + (candidateWindowYOffset > 0 ? candidateWindowYOffset : 0));
+
+				if (deltaBottom < 0)
+				{
+					double actualTextBoxHeight = bottomY - topY;
+
+					// Scrolls the textbox up above the SIP if it is covered by the SIP, put the suggestions
+					// list on top of the ASB and maximizes its height based on the available space left.
+					deltaBottom *= -1;
+					Scroll(ref deltaBottom);
+					m_suggestionListPosition = SuggestionListPosition.Above;
+
+					// scroll function changes the deltaBottom to 0 if the ASB reached its location
+					// otherwise it will contain the remaining distance to the desired destination
+					// subtracting the positive deltabottom value (bottomY - sipOverlayY)
+					// then subtracting deltaBottom which will either contain 0 or the remaining distance
+					m_availableSuggestionHeight = sipOverlayY - (deltaBottom + actualTextBoxHeight + layoutBounds.Y);
+				}
+				else if (autoMaximizeSuggestionArea &&
+						 (deltaTop < s_minSuggestionListHeight && deltaBottom < s_minSuggestionListHeight))
+				{
+					// Scrolls the textbox to the top of the page, this makes use of ScrollableArea
+					// of the RootScrollViewer if needed. Put the suggestions list to the bottom of the
+					// ASB and maximizes its height based on the available space, the height of the
+					// suggestion list shouldn't go beyond the SIP area.
+
+					double actualTextBoxHeight = bottomY - topY;
+
+					Scroll(ref deltaTop);
+
+					// in case we cannot scroll all the way to the top due to ScrollViewer scrollableheight restrictions,
+					// we maximize the suggestions list position and size
+					// deltaTop will only be greater than zero in case we couldn't scroll all the way to the top
+					if (deltaTop > 0)
+					{
+						topY = deltaTop + layoutBounds.Y;
+						bottomY = topY + actualTextBoxHeight;
+
+						deltaBottom = sipOverlayY - bottomY;
+
+						if (deltaTop < deltaBottom)
+						{
+							m_suggestionListPosition = SuggestionListPosition.Below;
+							m_availableSuggestionHeight = Math.Abs(deltaBottom);
+						}
+						else
+						{
+							m_suggestionListPosition = SuggestionListPosition.Above;
+							m_availableSuggestionHeight = deltaTop;
+						}
+					}
+					else
+					{
+						m_suggestionListPosition = SuggestionListPosition.Below;
+						m_availableSuggestionHeight = sipOverlayY - actualTextBoxHeight - layoutBounds.Y;
+					}
+				}
+				else
+				{
+					if (deltaTop < deltaBottom)
+					{
+						m_suggestionListPosition = SuggestionListPosition.Below;
+						m_availableSuggestionHeight = Math.Abs(deltaBottom);
+					}
+					else
+					{
+						m_suggestionListPosition = SuggestionListPosition.Above;
+						m_availableSuggestionHeight = deltaTop;
+					}
+				}
+			}
+			finally
+			{
+				// Set availabeHeight to zero if there are no space left on the screen, this can happen
+				// for instance when the ASB has a great height and when the device is in landscape orientation
+				if (m_availableSuggestionHeight < 0)
+				{
+					m_availableSuggestionHeight = 0;
+				}
+			}
+		}
+
 		private void MaximizeSuggestionAreaWithoutInputPane()
 		{
+			try
+			{
+				double topY;
+				double bottomY;
+				double deltaTop = 0;
+				double deltaBottom = 0;
+				Rect layoutBounds = default;
+				bool autoMaximizeSuggestionArea = true;
+				ScrollViewer spRootScrollViewer = null;
+				m_wkRootScrollViewer?.TryGetTarget(out spRootScrollViewer);
+				UIElement spRootScrollViewerAsUIElement = spRootScrollViewer;
+				double candidateWindowYOffset = 0;
+				double actualTextBoxWidth = 0;
+				double actualTextBoxHeight = 0;
+				Point point = new Point(0, 0);
+
+				if (spRootScrollViewerAsUIElement is not null)
+				{
+					// getting the position with respect to the root ScrollViewer
+					point = TransformPoint(spRootScrollViewerAsUIElement, point);
+				}
+
+				// Instead of determining the alignment of the autosuggest popup using the popup layout bounds, use the adjusted layout
+				// bounds of the text box in the case where the autosuggest popup is nullptr. If a windowed popup is created later,
+				// the UpdateSuggestionListPosition function will run again and correct the invalid previous alignment.
+				// TODO Uno: NOT PORTED - DXamlCore::CalculateAvailableMonitorRect for windowed popups. Falls back to GetAdjustedLayoutBounds.
+				// if ((m_tpPopupPart is not null) && m_tpPopupPart.IsWindowed)
+				// {
+				//     layoutBounds = DXamlCore.GetCurrent().CalculateAvailableMonitorRect(m_tpPopupPart, point);
+				// }
+				// else
+				{
+					layoutBounds = GetAdjustedLayoutBounds();
+				}
+
+				GetActualTextBoxSize(out actualTextBoxWidth, out actualTextBoxHeight);
+
+				topY = point.Y;
+				bottomY = point.Y + actualTextBoxHeight;
+
+				autoMaximizeSuggestionArea = AutoMaximizeSuggestionArea;
+
+				GetCandidateWindowPopupAdjustment(
+					true /* ignoreSuggestionListPosition */,
+					out _,
+					out candidateWindowYOffset);
+
+				// distance from top of asb (or candidate window, whichever is higher) to bottom of system chrome
+				deltaTop = topY + (candidateWindowYOffset < 0 ? candidateWindowYOffset : 0) - layoutBounds.Y;
+
+				// distance from bottom of asb (or candidate window, whichever is lower) to the bottom of the layout bounds
+				deltaBottom = layoutBounds.Height - (bottomY + (candidateWindowYOffset > 0 ? candidateWindowYOffset : 0));
+
+				if (deltaTop < deltaBottom)
+				{
+					m_suggestionListPosition = SuggestionListPosition.Below;
+					m_availableSuggestionHeight = Math.Abs(deltaBottom);
+				}
+				else
+				{
+					m_suggestionListPosition = SuggestionListPosition.Above;
+					m_availableSuggestionHeight = deltaTop;
+				}
+			}
+			finally
+			{
+				if (m_availableSuggestionHeight < 0)
+				{
+					m_availableSuggestionHeight = 0;
+				}
+			}
 		}
 
-		// TODO Uno: NOT PORTED - ApplyScrollActions (lines 2218+). Stub keeps OnGotFocus + OnSipHidingInternal callable.
+		//------------------------------------------------------------------------------
+		// Walks up the visual tree and find all ScrollViewers, try to scroll them up or down to see
+		// if we can let the ASB hit the desired position (Top or Bottom)
+		//------------------------------------------------------------------------------
+		private void Scroll(ref double totalOffset)
+		{
+			DependencyObject spCurrentAsDO = this;
+			DependencyObject spParentAsDO;
+
+			double previousYLocation = 0;
+
+			MUX_ASSERT(m_scrollActions.Count == 0);
+
+			do
+			{
+				spParentAsDO = Media.VisualTreeHelper.GetParent(spCurrentAsDO);
+
+				if (spParentAsDO is not null)
+				{
+					ScrollViewer spScrollViewer = spParentAsDO as ScrollViewer;
+
+					if (spScrollViewer is not null)
+					{
+						UIElement spScrollViewerAsUIE = spScrollViewer;
+						Point asbLocation = new Point(0, 0);
+						double partialOffset = 0;
+
+						asbLocation = TransformPoint(spScrollViewerAsUIE, asbLocation);
+
+						asbLocation.Y -= previousYLocation;
+						partialOffset = asbLocation.Y;
+
+						// checking to see if the ASB's position within the ScrollViewer is less than the total offset
+						// this means that the ASB will scroll out of the ScrollViewer's viewport
+						// in this case, we scroll by the ASB's position and let the parent ScrollViewer handle the rest of the move
+						if (asbLocation.Y < totalOffset)
+						{
+							PushScrollAction(spScrollViewer, ref partialOffset);
+
+							totalOffset -= asbLocation.Y - partialOffset;
+						}
+						else
+						{
+							PushScrollAction(spScrollViewer, ref totalOffset);
+						}
+
+						// if ASB cannot scroll by the partial offset value (ScrollViewer height restrictions)
+						// the difference is added to previous location so that the parent ScrollViewer handles the rest of the move
+						previousYLocation = asbLocation.Y - partialOffset;
+					}
+
+					spCurrentAsDO = spParentAsDO;
+				}
+
+			} while (spParentAsDO is not null);
+
+			ApplyScrollActions(true /* hasNewScrollActions */);
+		}
+
+		//------------------------------------------------------------------------------
+		// Push scroll actions for the given ScrollViewer to the internal ScrollAction vector.
+		//------------------------------------------------------------------------------
+		private void PushScrollAction(ScrollViewer pScrollViewer, ref double targetOffset)
+		{
+			ScrollViewer spScrollViewer = pScrollViewer;
+			double verticalOffset = 0;
+			double scrollableHeight = 0;
+			ScrollAction action = new ScrollAction();
+
+			MUX_ASSERT(spScrollViewer is not null);
+
+			verticalOffset = spScrollViewer.VerticalOffset;
+			scrollableHeight = spScrollViewer.ScrollableHeight;
+
+			action.wkScrollViewer = new WeakReference<ScrollViewer>(spScrollViewer);
+
+			action.initial = verticalOffset;
+			if (targetOffset + verticalOffset > scrollableHeight)
+			{
+				action.target = scrollableHeight;
+				targetOffset -= scrollableHeight - verticalOffset;
+			}
+			else
+			{
+				action.target = targetOffset + verticalOffset;
+
+				if (action.target < 0)
+				{
+					action.target = 0;
+					targetOffset += verticalOffset;
+				}
+				else
+				{
+					targetOffset = 0;
+				}
+			}
+
+			m_scrollActions.Add(action);
+		}
+
 		private void ApplyScrollActions(bool hasNewScrollActions)
 		{
+			try
+			{
+				if (m_wkRootScrollViewer is null)
+				{
+					return;
+				}
+
+				ScrollViewer rootScrollViewer = null;
+				m_wkRootScrollViewer.TryGetTarget(out rootScrollViewer);
+
+				foreach (ScrollAction iter in m_scrollActions)
+				{
+					ScrollViewer spScrollViewer = null;
+					iter.wkScrollViewer?.TryGetTarget(out spScrollViewer);
+					if (spScrollViewer is not null)
+					{
+						double offset = iter.target;
+
+						if (!hasNewScrollActions)
+						{
+							offset = iter.initial;
+						}
+
+						if (spScrollViewer == rootScrollViewer)
+						{
+							// potential bug on RootScrolViewer, there is a visual glitch on the RootScrollViewer
+							// when ChangeViewWithOptionalAnimation is used
+							spScrollViewer.ScrollToVerticalOffset(offset);
+						}
+						else
+						{
+							spScrollViewer.ChangeView(
+								null,    // horizontalOffset
+								offset,  // verticalOffset
+								null,    // zoomFactor
+								false    // disableAnimation
+								);
+						}
+					}
+				}
+			}
+			finally
+			{
+				if (!hasNewScrollActions)
+				{
+					m_scrollActions.Clear();
+				}
+			}
 		}
 
-		// TODO Uno: NOT PORTED - OnSipShowingInternal (lines 2536+). Stub keeps OnSipShowing callable.
-		private void OnSipShowingInternal(InputPaneVisibilityEventArgs args)
+		private void OnSipShowingInternal(InputPaneVisibilityEventArgs pArgs)
 		{
+			if (m_tpTextBoxPart is not null)
+			{
+				InputPaneVisibilityEventArgs spSipArgs = pArgs;
+				Rect sipOverlayArea = default;
+				bool isTextBoxFocused = false;
+
+				// Hold a reference to the eventarg
+				m_tpSipArgs = spSipArgs;
+
+				sipOverlayArea = pArgs.OccludedRect;
+
+				isTextBoxFocused = IsTextBoxFocusedElement();
+				if (isTextBoxFocused)
+				{
+					m_hasFocus = true;
+
+					// TODO Uno: NOT PORTED - XamlDisplay::GetDisplayOrientation(GetHandle(), currentOrientation).
+					// Display orientation tracking from DisplayOrientationHelper.h is not yet wired in Uno.
+					// var currentOrientation = XamlDisplay.GetDisplayOrientation(this);
+					// if (currentOrientation != m_displayOrientation)
+					// {
+					//     m_displayOrientation = currentOrientation;
+					//     if (m_scrollActions.Count != 0)
+					//     {
+					//         OnSipHidingInternal();
+					//     }
+					// }
+				}
+
+				if (!m_isSipVisible && m_hasFocus && m_wkRootScrollViewer is not null)
+				{
+					ScrollViewer spRootScrollViewer = null;
+					m_wkRootScrollViewer.TryGetTarget(out spRootScrollViewer);
+
+					if (spRootScrollViewer is not null)
+					{
+						double scrollableHeight = spRootScrollViewer.ScrollableHeight;
+						if (scrollableHeight == 0 && !s_fDeferredShowing)
+						{
+							// Wait for next OnSIPShowing event as the RootScrollViewer is not adjusted yet.
+							// There is no guarantee that the Jupiter (InputPane::Showing) will gets call
+							// first, the native side invokes the Windows.UI.ViewManagement.InputPane.Showing/Hiding
+							// separately from the Jupiter internal events. RootScrollViewer will get
+							// notified about the InputPane state (through the callback NotifyInputPaneStateChange)
+							// when Jupiter gets the Showing event. Defer the SipEvent if the RootScrollViewer
+							// has not yet been notified about the SIP state change.
+							WeakReference<AutoSuggestBox> wrThis = new WeakReference<AutoSuggestBox>(this);
+
+							bool enqueued = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()?.TryEnqueue(() =>
+							{
+								if (wrThis.TryGetTarget(out AutoSuggestBox asb))
+								{
+									MUX_ASSERT(asb is not null);
+
+									asb.OnSipShowingInternal(asb.m_tpSipArgs);
+
+									// clearing the placeholder sip arguments stored in the asb after being used
+									asb.m_tpSipArgs = null;
+								}
+							}) ?? false;
+
+							MUX_ASSERT(enqueued);
+
+							s_fDeferredShowing = true;
+
+							return;
+						}
+
+						string strText;
+
+						m_isSipVisible = true;
+						s_fDeferredShowing = false;
+
+						AlignmentHelper(sipOverlayArea);
+
+						// Expands the suggestion list if there is already text in the textbox
+						strText = m_tpTextBoxPart.Text;
+						if (!string.IsNullOrEmpty(strText))
+						{
+							UpdateSuggestionListVisibility();
+						}
+					}
+				}
+			}
+
+			ReevaluateIsOverlayVisible();
 		}
 
-		// TODO Uno: NOT PORTED - OnSipHidingInternal (lines 2496+). Stub keeps OnLostFocus callable.
+		//------------------------------------------------------------------------------
+		// Internal helper function to handle the Hiding event from InputPane.
+		//------------------------------------------------------------------------------
 		private void OnSipHidingInternal()
 		{
+			m_isSipVisible = false;
+
+			// scroll all ScrollViewers back if we changed.
+			ApplyScrollActions(false /* hasNewScrollActions */);
+
+			// potential bug in RootScrollViewer: when SIP is hiding, the viewport of RootScrollViewer will be restored to
+			// the screen size and the content of RootScrollViewer will not able to scroll, in this case, the vertical offset
+			// should be reset to 0, however it doesn't.
+			// wrong vertical offset will cause suggestionlist in wrong positon next time when SIP is showing.
+			if (m_wkRootScrollViewer is not null)
+			{
+				ScrollViewer spRootScrollViewer = null;
+				m_wkRootScrollViewer.TryGetTarget(out spRootScrollViewer);
+
+				if (spRootScrollViewer is not null)
+				{
+					double verticalOffset = spRootScrollViewer.VerticalOffset;
+					if (verticalOffset != 0)
+					{
+						spRootScrollViewer.ScrollToVerticalOffset(0);
+					}
+				}
+			}
+		}
+
+		// TODO Uno: NOT PORTED - GetCandidateWindowPopupAdjustment (lines 2743+). Stub returns zero.
+		private void GetCandidateWindowPopupAdjustment(bool ignoreSuggestionListPosition, out double xOffset, out double yOffset)
+		{
+			xOffset = 0;
+			yOffset = 0;
+		}
+
+		// TODO Uno: NOT PORTED - GetAdjustedLayoutBounds (lines 3127+). Stub returns the XamlRoot bounds.
+		private Rect GetAdjustedLayoutBounds()
+		{
+			Rect layoutBounds = XamlRoot?.VisualTree?.VisibleBounds ?? default;
+			return layoutBounds;
+		}
+
+		// TODO Uno: NOT PORTED - GetActualTextBoxSize (lines 3144+). Stub uses ActualWidth/ActualHeight.
+		private void GetActualTextBoxSize(out double actualWidth, out double actualHeight)
+		{
+			actualWidth = m_tpTextBoxPart?.ActualWidth ?? ActualWidth;
+			actualHeight = m_tpTextBoxPart?.ActualHeight ?? ActualHeight;
+		}
+
+		// TODO Uno: NOT PORTED - ChangeVisualState (lines 1806+). Stub keeps AlignmentHelper callable.
+		private void ChangeVisualState()
+		{
+		}
+
+		// Transforms coordinates to the target element's space.
+		private Point TransformPoint(UIElement target, Point point)
+		{
+			MUX_ASSERT(target is not null);
+
+			GeneralTransform spGeneralTransform = TransformToVisual(target);
+			return spGeneralTransform.TransformPoint(point);
+		}
+
+		private void ScrollLastItemIntoView()
+		{
+			ListViewBase listViewBase = m_tpSuggestionsPart as ListViewBase;
+			if (listViewBase is not null)
+			{
+				var items = listViewBase.Items;
+				int size = items?.Count ?? 0;
+
+				if (size > 1)
+				{
+					object lastItem = items[size - 1];
+
+					listViewBase.ScrollIntoView(lastItem);
+				}
+			}
 		}
 
 		// TODO Uno: NOT PORTED - UpdateText body uses InvokeValidationCommand which is part of the input-validation
@@ -1572,18 +2114,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Remaining method TODOs (deferred to next iter):
 		// TODO Uno: NOT PORTED - ChangeVisualState (lines 1806+).
-		// TODO Uno: NOT PORTED - AlignmentHelper (lines 1842+).
-		// TODO Uno: NOT PORTED - MaximizeSuggestionArea / MaximizeSuggestionAreaWithoutInputPane.
-		// TODO Uno: NOT PORTED - Scroll / PushScrollAction / ApplyScrollActions.
 		// TODO Uno: NOT PORTED - UpdateSuggestionListSize / UpdateSuggestionListPosition (lines 1252/1329+).
-		// TODO Uno: NOT PORTED - TransformPoint.
-		// TODO Uno: NOT PORTED - OnSipHidingInternal / OnSipShowingInternal.
-		// TODO Uno: NOT PORTED - GetCandidateWindowPopupAdjustment.
-		// TODO Uno: NOT PORTED - ScrollLastItemIntoView.
-		// TODO Uno: NOT PORTED - SetupOverlayState / TeardownOverlayState.
-		// TODO Uno: NOT PORTED - CreateLTEs / PositionLTEs / DestroyLTEs / ShouldUseParentedLTE.
-		// TODO Uno: NOT PORTED - GetAdjustedLayoutBounds / GetActualTextBoxSize / GetDisplayOrientation.
-		// TODO Uno: NOT PORTED - OnInkingFunctionButtonClicked (static).
+		// TODO Uno: NOT PORTED - GetCandidateWindowPopupAdjustment full body (currently returns zeros).
+		// TODO Uno: NOT PORTED - GetAdjustedLayoutBounds / GetActualTextBoxSize full bodies (currently use simple fallbacks).
+		// TODO Uno: NOT PORTED - GetDisplayOrientation.
+		// TODO Uno: NOT PORTED - SetupOverlayState / TeardownOverlayState / CreateLTEs / PositionLTEs / DestroyLTEs / ShouldUseParentedLTE.
+		// TODO Uno: NOT PORTED - OnInkingFunctionButtonClicked (static, line 3165+).
 		// TODO Uno: NOT PORTED - GetPlainText override. The C++ override returns the FrameworkElement
 		// plain-text representation for accessibility ("name" computation). FrameworkElement.GetStringFromObject
 		// has no direct Uno equivalent; revisit alongside automation-peer parity work.
