@@ -129,18 +129,28 @@ public partial class ToolTip : ContentControl
 	// MUX Reference: ToolTip_Partial.cpp SetContainer (line 72).
 	internal void SetContainer(FrameworkElement? pNewContainer)
 	{
-		object? spContainerDataContext = null;
-
 		m_wrContainer = null;
 
 		if (pNewContainer is not null)
 		{
 			m_wrContainer = new WeakReference(pNewContainer);
-			spContainerDataContext = pNewContainer.DataContext;
-		}
 
-		// If pNewContainer is NULL, we'll clear the DataContext here.
-		this.DataContext = spContainerDataContext;
+			// MUX semantics: capture the container's DataContext so the ToolTip inherits
+			// it for binding purposes. The WinUI native code does this via the
+			// inheritance context that the ToolTipObject attached property establishes
+			// between owner and ToolTip; that mechanism has no Uno equivalent, so we
+			// install a Binding so subsequent owner DataContext changes flow through.
+			this.SetBinding(DataContextProperty, new Data.Binding
+			{
+				Source = pNewContainer,
+				Path = new PropertyPath(nameof(DataContext)),
+			});
+		}
+		else
+		{
+			// If pNewContainer is NULL, we'll clear the DataContext here.
+			this.ClearValue(DataContextProperty);
+		}
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp HookupParentPopup (line 113).
