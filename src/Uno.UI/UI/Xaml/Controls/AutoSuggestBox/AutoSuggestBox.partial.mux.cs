@@ -457,6 +457,19 @@ namespace Microsoft.UI.Xaml.Controls
 			string strQueryText;
 			AutoSuggestBoxTextChangedEventArgs spEventArgs;
 
+			// TODO Uno: WinUI relies on UpdateTextBoxText setting m_textChangeReason BEFORE the TextBox.Text setter
+			// (which fires TextChanged synchronously) to capture the right reason. In Uno, when callers set
+			// `textBox.Text = "..."` directly (bypassing the AutoSuggestBox.Text DP and UpdateTextBoxText),
+			// m_textChangeReason stays at its previous value (UserInput by default). Use the Uno-extension
+			// `e.IsUserModifyingText` flag to detect "TextBox text was set programmatically" and override the
+			// reason. SuggestionChosen overrides explicitly via UpdateTextBoxText so it's preserved.
+			if (m_textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+			{
+				m_textChangeReason = e.IsUserModifyingText
+					? AutoSuggestionBoxTextChangeReason.UserInput
+					: AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
+			}
+
 			m_textChangedCounter++;
 
 			spEventArgs = new AutoSuggestBoxTextChangedEventArgs();
