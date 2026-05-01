@@ -61,7 +61,6 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Cupertino" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';cupertino;'))" />
 		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Material" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';material;'))" />
 		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Material.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';material;')) AND $(UnoFeatures.Contains(';csharpmarkup;'))" />
-		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Simple" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';simpletheme;'))" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';material;'))">
@@ -72,12 +71,6 @@
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';cupertino;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Cupertino.WinUI" ProjectSystem="true" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$(UnoFeatures.Contains(';simpletheme;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.Simple.WinUI" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.Simple.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
-		<_UnoProjectSystemPackageReference Include="Uno.Themes.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';prism;'))">
