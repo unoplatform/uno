@@ -1289,6 +1289,61 @@ namespace Microsoft.UI.Xaml.Controls
 			pTranslationY = (float)translationY;
 		}
 
+		// Adjusts the provided logical targetOffset based on potential mandatory near-aligned scroll snap points.
+		// (C++ source line 12301)
+		internal void AdjustLogicalOffsetWithMandatorySnapPoints(
+			bool isForHorizontalOffset,
+			ref double pTargetOffset)
+		{
+			SnapPointsType snapPointsType = SnapPointsType.None;
+			Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment snapPointsAlignment = Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment.Near;
+
+			if (_snapPointsInfo is null)
+			{
+				// No scroll snap point implementation to operate against.
+				return;
+			}
+
+			if (isForHorizontalOffset)
+			{
+				snapPointsType = HorizontalSnapPointsType;
+				snapPointsAlignment = HorizontalSnapPointsAlignment;
+			}
+			else
+			{
+				snapPointsType = VerticalSnapPointsType;
+				snapPointsAlignment = VerticalSnapPointsAlignment;
+			}
+
+			if (snapPointsType != SnapPointsType.MandatorySingle &&
+				snapPointsType != SnapPointsType.Mandatory)
+			{
+				// Scroll snap points are not mandatory.
+				return;
+			}
+
+			if (snapPointsAlignment != Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment.Near)
+			{
+				// Scroll snap points are not near-aligned. We don't know how to alter the logical offset.
+				return;
+			}
+
+			// Truncate targetOffset to the lower integer - this corresponds to the snap point
+			// separating two consecutive items.
+
+			// That truncation is not performed though when the target offset is very slightly
+			// smaller than an integer because of a float rounding.
+
+			// Tolerated rounding delta in logical unit for skipping the adjustment to the lower integer.
+			const double ScrollViewerScrollSnapPointRoundingToleranceForProvider = 0.00001;
+			double adjustedTargetOffset = Math.Floor(pTargetOffset);
+
+			if (pTargetOffset - adjustedTargetOffset < 1.0 - ScrollViewerScrollSnapPointRoundingToleranceForProvider)
+			{
+				pTargetOffset = adjustedTargetOffset;
+			}
+		}
+
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
 		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
