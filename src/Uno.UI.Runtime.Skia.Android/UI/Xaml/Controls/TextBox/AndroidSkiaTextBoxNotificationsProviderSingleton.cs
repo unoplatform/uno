@@ -23,7 +23,10 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 		if (UnoSKCanvasView.Instance is { } canvasView)
 		{
-			canvasView.TextInputPlugin.ShowTextInput(textBox);
+			if (CouldRequireKeyboard(textBox))
+			{
+				canvasView.TextInputPlugin.ShowTextInput(textBox);
+			}
 			canvasView.TextInputPlugin.NotifyViewEntered(textBox, textBox.GetHashCode());
 		}
 	}
@@ -86,9 +89,11 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	private static bool CouldRequireKeyboard(FrameworkElement? element)
 	{
-		return element
-			is TextBox
-			or AutoSuggestBox
-			or NumberBox;
+		return element switch
+		{
+			TextBox textBox => !textBox.IsReadOnly,
+			AutoSuggestBox or NumberBox => true,
+			_ => false,
+		};
 	}
 }
