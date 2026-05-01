@@ -464,19 +464,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Public and deprecated version of ScrollToHorizontalOffsetInternal.
-		public void ScrollToHorizontalOffset(double offset) => ScrollToHorizontalOffsetInternal(offset);
-
 		// Scrolls the content within the ScrollViewer to the specified
-		// horizontal offset position.
+		// horizontal offset position. The public ScrollToHorizontalOffset is
+		// declared in the cross-platform ScrollViewer.cs and routes through
+		// ChangeView; this Internal variant is the C++ entry-point used by
+		// the new port for internal flows that should not touch ChangeView.
 		internal void ScrollToHorizontalOffsetInternal(double offset)
 			=> HandleHorizontalScroll(ScrollEventType.ThumbPosition, offset);
 
-		// Public and deprecated version of ScrollToVerticalOffsetInternal.
-		public void ScrollToVerticalOffset(double offset) => ScrollToVerticalOffsetInternal(offset);
-
 		// Scrolls the content within the ScrollViewer to the specified vertical
-		// offset position.
+		// offset position. See ScrollToHorizontalOffsetInternal for the public
+		// API split rationale.
 		internal void ScrollToVerticalOffsetInternal(double offset)
 			=> HandleVerticalScroll(ScrollEventType.ThumbPosition, offset);
 
@@ -2998,15 +2996,18 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// Push the offsets to the public DPs. DP-changed handlers will fire
-			// ViewChanging/ViewChanged via NotifyHorizontal/VerticalOffsetChanging.
+			// Push the offsets to the public DPs directly via SetValue so we don't
+			// recurse back through ScrollToHorizontal/VerticalOffsetInternal (which
+			// is what may have triggered this InvalidateScrollInfoImpl in the first
+			// place). DP-changed handlers will fire ViewChanging/ViewChanged via
+			// NotifyHorizontal/VerticalOffsetChanging.
 			if (HorizontalOffset != horizontalOffset)
 			{
-				ScrollToHorizontalOffsetInternal(horizontalOffset);
+				SetValue(HorizontalOffsetProperty, horizontalOffset);
 			}
 			if (VerticalOffset != verticalOffset)
 			{
-				ScrollToVerticalOffsetInternal(verticalOffset);
+				SetValue(VerticalOffsetProperty, verticalOffset);
 			}
 
 			FlushViewChanged();

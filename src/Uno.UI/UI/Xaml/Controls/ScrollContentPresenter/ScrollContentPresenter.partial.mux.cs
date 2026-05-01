@@ -336,6 +336,14 @@ namespace Microsoft.UI.Xaml.Controls
 					m_scrollRequested = true;
 					isScrollRequested = true;
 					requestedOffset = scrollX;
+					// TODO Uno: Phase 4 — once the cross-platform Skia ArrangeOverride is
+					// switched to ArrangeOverridePort (which calls VerifyScrollData →
+					// CoerceOffsets → IScrollOwner.InvalidateScrollInfoImpl), this direct
+					// call becomes redundant. For now bridge the chain manually so the
+					// SV's public HorizontalOffset DP gets updated synchronously instead
+					// of waiting for a layout pass that may not call VerifyScrollData.
+					CoerceOffsets(out _);
+					pScrollData.GetScrollOwner()?.InvalidateScrollInfoImpl();
 				}
 			}
 		}
@@ -372,6 +380,11 @@ namespace Microsoft.UI.Xaml.Controls
 					m_scrollRequested = true;
 					isScrollRequested = true;
 					requestedOffset = scrollY;
+					// TODO Uno: Phase 4 — see SetHorizontalOffsetPrivate for the same
+					// bridging note. CoerceOffsets pushes m_Offset → m_ComputedOffset
+					// which is what the SV's public DP reads through GetVerticalOffset.
+					CoerceOffsets(out _);
+					pScrollData.GetScrollOwner()?.InvalidateScrollInfoImpl();
 				}
 			}
 		}

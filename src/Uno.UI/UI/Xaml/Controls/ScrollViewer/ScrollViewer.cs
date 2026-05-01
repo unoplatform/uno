@@ -1420,15 +1420,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-#if !__SKIA__
-		// On Skia these are provided by the WinUI port (ScrollViewer.mux.cs),
-		// which routes through HandleHorizontalScroll/VerticalScroll matching native behavior.
 		public void ScrollToHorizontalOffset(double offset)
 			=> ChangeView(offset, null, null, true);
 
 		public void ScrollToVerticalOffset(double offset)
 			=> ChangeView(null, offset, null, true);
-#endif
 
 #if !__SKIA__
 		// On Skia these are provided by the WinUI port (ScrollViewer.mux.cs).
