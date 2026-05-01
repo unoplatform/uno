@@ -40,13 +40,12 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnIsEnabledChangedCore()
 		{
 			// The new IsEnabled status most likely changes the result of get_CanManipulateElements.
-			// TODO Uno: Phase 4 — port OnManipulatabilityAffectingPropertyChanged.
-			// OnManipulatabilityAffectingPropertyChanged(
-			//     pIsInLiveTree: null,
-			//     isCachedPropertyChanged: false,
-			//     isContentChanged: false,
-			//     isAffectingConfigurations: !IsInDirectManipulation,
-			//     isAffectingTouchConfiguration: false);
+			OnManipulatabilityAffectingPropertyChanged(
+				pIsInLiveTree: null,
+				isCachedPropertyChanged: false,
+				isContentChanged: false,
+				isAffectingConfigurations: !IsInDirectManipulation,
+				isAffectingTouchConfiguration: false);
 
 			if (!IsEnabled)
 			{
@@ -3807,6 +3806,40 @@ namespace Microsoft.UI.Xaml.Controls
 			return DoubleUtil.LessThanOrClose(currentZoomFactor, minZoomFactor);
 		}
 
+		// Called when a characteristic changes that might affect the result
+		// of get_CanManipulateElements.
+		// (C++ source line 10014)
+		internal void OnManipulatabilityAffectingPropertyChanged(
+			bool? pIsInLiveTree,
+			bool isCachedPropertyChanged,
+			bool isContentChanged,
+			bool isAffectingConfigurations,
+			bool isAffectingTouchConfiguration)
+		{
+			if (m_hManipulationHandler is null)
+			{
+				// No DM handler attached: nothing to push. The Skia path doesn't
+				// have a separate manipulation handler service; the InputManager's
+				// PointerManager.DirectManipulation drives panning directly via
+				// GestureRecognizer + InertiaProcessor.
+				return;
+			}
+
+			// TODO Uno: Phase 4 — full body. Depends on GetManipulationConfigurations
+			// (a 200+ line port that needs IManipulationDataProvider) and
+			// CoreImports::ManipulationHandler_NotifyCanManipulateElements which is
+			// the DM-adapter layer. The full C++ source at line 10014-10310 mirrors:
+			//   1. Compute the new (canManipulateElementsByTouch / NonTouch / Bring)
+			//      tuple via GetManipulationConfigurations(...).
+			//   2. If the tuple changed, set m_isCanManipulateElementsInvalid /
+			//      m_touchConfiguration / m_nonTouchConfiguration accordingly,
+			//      raise NotifyManipulatableElementChanged + push to DM handler.
+			//   3. If only touch configuration changed (and not the tuple), push
+			//      to DM via ManipulationHandler_NotifyCanManipulateElements.
+			//   4. If isAffectingConfigurations, fall through to
+			//      OnViewportConfigurationsAffectingPropertyChanged.
+		}
+
 		// Called when this DM container wants the DM handler to process the current
 		// input message, by forwarding it to DirectManipulation.
 		// The handler must set the isHandled flag to True if the message was handled.
@@ -3992,18 +4025,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Called when the Content property changed.
 		// The current content is the new one at this point.
+		// (C++ source line 9974)
 		internal void OnContentPropertyChanged()
 		{
 			m_isHorizontalStretchAlignmentTreatedAsNear = false;
 			m_isVerticalStretchAlignmentTreatedAsNear = false;
 
-			// TODO Uno: Phase 4 — port OnManipulatabilityAffectingPropertyChanged.
-			// OnManipulatabilityAffectingPropertyChanged(
-			//     pIsInLiveTree: null,
-			//     isCachedPropertyChanged: false,
-			//     isContentChanged: true,
-			//     isAffectingConfigurations: false,
-			//     isAffectingTouchConfiguration: false);
+			OnManipulatabilityAffectingPropertyChanged(
+				pIsInLiveTree: null,
+				isCachedPropertyChanged: false,
+				isContentChanged: true,
+				isAffectingConfigurations: false,
+				isAffectingTouchConfiguration: false);
 		}
 
 		// Called when a characteristic changes that affects the DM viewport configurations.
