@@ -1467,13 +1467,43 @@ public partial class ToolTip : ContentControl
 	// For Slider, the Thumb ToolTip may be opened as an automatic ToolTip by pointer hover.  However, if
 	// we click on the Thumb and start to drag, we don't want the ToolTip to disappear after several seconds.
 	// Thus, we remove the automatic flag and keep the ToolTip open for Slider to handle.
-	[NotImplemented]
 	internal void RemoveAutomaticStatusFromOpenToolTip()
 	{
-		// TODO Uno: Phase 2 closeout / Phase 3 will port RemoveAutomaticStatusFromOpenToolTip.
-	}
+		bool isOpen = IsOpen;
 
-	// === Phase 6 helpers (safe-zone + Xaml-island roots) — ordered to match C++ source ===
+		if (isOpen && m_bIsOpenAsAutomaticToolTip)
+		{
+			var pToolTipServiceMetadata = ToolTipService.GetToolTipServiceMetadata();
+
+			if (pToolTipServiceMetadata.m_tpCloseTimer is not null)
+			{
+				pToolTipServiceMetadata.m_tpCloseTimer.Stop();
+			}
+
+			if (pToolTipServiceMetadata.m_tpSafeZoneCheckTimer is not null)
+			{
+				pToolTipServiceMetadata.m_tpSafeZoneCheckTimer.Stop();
+			}
+
+			global::System.Diagnostics.Debug.Assert(pToolTipServiceMetadata.m_tpCurrentPopup is not null);
+			global::System.Diagnostics.Debug.Assert(pToolTipServiceMetadata.m_tpCurrentToolTip is not null);
+			global::System.Diagnostics.Debug.Assert(ReferenceEquals(pToolTipServiceMetadata.m_tpCurrentToolTip, this));
+
+			m_bIsOpenAsAutomaticToolTip = false;
+
+			pToolTipServiceMetadata.m_tpCurrentToolTip = null;
+			if (pToolTipServiceMetadata.m_tpContainer is not null)
+			{
+				// TODO Uno (Phase 6): FrameworkElement.SetHasOpenToolTip is not exposed in Uno.
+#if false
+				IFC(static_cast<FrameworkElement*>(pToolTipServiceMetadata->m_tpContainer.Get())->SetHasOpenToolTip(FALSE));
+#endif
+				pToolTipServiceMetadata.m_tpContainer = null;
+			}
+			pToolTipServiceMetadata.m_tpLastEnterSource = null;
+			pToolTipServiceMetadata.m_tpCurrentPopup = null;
+		}
+	}
 
 	// MUX Reference: ToolTip_Partial.cpp HandlePointInSafeZone (line 2221, Point overload).
 	internal void HandlePointInSafeZone(Point point)
