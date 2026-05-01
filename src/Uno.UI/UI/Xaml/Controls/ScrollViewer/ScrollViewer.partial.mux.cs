@@ -3258,15 +3258,72 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Called when the ZoomFactor value changed.
+		// (C++ source line 7084)
 		internal void OnZoomFactorChanged(float oldZoomFactor, float newZoomFactor)
 		{
+			bool isHorizontalScrollSnapPointsUpdateRequired = false;
+			bool isVerticalScrollSnapPointsUpdateRequired = false;
+
 			if (m_trElementScrollContentPresenter is not null)
 			{
 				m_trElementScrollContentPresenter.SetZoomFactor(newZoomFactor);
 			}
 
-			// TODO Uno: Phase 5 — snap-points reaction (m_trScrollSnapPointsInfo handling, GetEffectiveZoomMode,
-			// horizontal/vertical snap-point alignment checks, OnSnapPointsAffectingPropertyChanged calls).
+			if (m_trScrollSnapPointsInfo is not null)
+			{
+				_ = GetEffectiveZoomMode(canUseCachedProperty: true);
+				{
+					// A manipulatable zoom factor affects:
+					//   - Regular and irregular snap points when their alignment is SnapPointsAlignment_Center
+					//   - Irregular snap points when their alignment is SnapPointsAlignment_Far
+
+					var snapPointsType = HorizontalSnapPointsType;
+					if (snapPointsType != SnapPointsType.None)
+					{
+						var snapPointsAlignment = HorizontalSnapPointsAlignment;
+						if (snapPointsAlignment == SnapPointsAlignment.Center)
+						{
+							isHorizontalScrollSnapPointsUpdateRequired = true;
+						}
+						else if (snapPointsAlignment == SnapPointsAlignment.Far)
+						{
+							var areSnapPointsRegular = m_trScrollSnapPointsInfo.AreHorizontalSnapPointsRegular;
+							if (!areSnapPointsRegular)
+							{
+								isHorizontalScrollSnapPointsUpdateRequired = true;
+							}
+						}
+					}
+
+					snapPointsType = VerticalSnapPointsType;
+					if (snapPointsType != SnapPointsType.None)
+					{
+						var snapPointsAlignment = VerticalSnapPointsAlignment;
+						if (snapPointsAlignment == SnapPointsAlignment.Center)
+						{
+							isVerticalScrollSnapPointsUpdateRequired = true;
+						}
+						else if (snapPointsAlignment == SnapPointsAlignment.Far)
+						{
+							var areSnapPointsRegular = m_trScrollSnapPointsInfo.AreVerticalSnapPointsRegular;
+							if (!areSnapPointsRegular)
+							{
+								isVerticalScrollSnapPointsUpdateRequired = true;
+							}
+						}
+					}
+				}
+
+				if (isHorizontalScrollSnapPointsUpdateRequired)
+				{
+					OnSnapPointsAffectingPropertyChanged(DMMotionTypes.PanX, updateSnapPointsChangeSubscription: false);
+				}
+
+				if (isVerticalScrollSnapPointsUpdateRequired)
+				{
+					OnSnapPointsAffectingPropertyChanged(DMMotionTypes.PanY, updateSnapPointsChangeSubscription: false);
+				}
+			}
 
 			if (IsInDirectManipulation)
 			{
