@@ -1467,30 +1467,7 @@ public partial class ToolTip : ContentControl
 		// TODO Uno: Phase 2 closeout / Phase 3 will port RemoveAutomaticStatusFromOpenToolTip.
 	}
 
-	// === Phase 6 helpers (safe-zone + Xaml-island roots) ===
-
-	// MUX Reference: ToolTip_Partial.cpp IsControlKeyOnly (line 2253).
-	// Returns true when the supplied key is the Control key with no other modifier
-	// (Alt/Shift/Windows). Used by HookupXamlIslandRoot to implement the Ctrl-only
-	// dismiss behavior (only Ctrl Down then Ctrl Up dismiss the ToolTip).
-	private static bool IsControlKeyOnly(VirtualKey key)
-	{
-		if (key == VirtualKey.Control)
-		{
-			var modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu);
-			bool altDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
-
-			modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift);
-			bool shiftDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
-
-			modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.LeftWindows);
-			bool winDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
-
-			return !altDown && !shiftDown && !winDown;
-		}
-
-		return false;
-	}
+	// === Phase 6 helpers (safe-zone + Xaml-island roots) — ordered to match C++ source ===
 
 	// MUX Reference: ToolTip_Partial.cpp HandlePointInSafeZone (line 2221, Point overload).
 	internal void HandlePointInSafeZone(Point point)
@@ -1520,6 +1497,29 @@ public partial class ToolTip : ContentControl
 		return false;
 	}
 
+	// MUX Reference: ToolTip_Partial.cpp IsControlKeyOnly (line 2253).
+	// Returns true when the supplied key is the Control key with no other modifier
+	// (Alt/Shift/Windows). Used by HookupXamlIslandRoot to implement the Ctrl-only
+	// dismiss behavior (only Ctrl Down then Ctrl Up dismiss the ToolTip).
+	private static bool IsControlKeyOnly(VirtualKey key)
+	{
+		if (key == VirtualKey.Control)
+		{
+			var modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu);
+			bool altDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
+
+			modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift);
+			bool shiftDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
+
+			modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.LeftWindows);
+			bool winDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
+
+			return !altDown && !shiftDown && !winDown;
+		}
+
+		return false;
+	}
+
 	// MUX Reference: ToolTip_Partial.cpp UpdateOwnersBoundary (line 2268).
 	private void UpdateOwnersBoundary()
 	{
@@ -1540,6 +1540,37 @@ public partial class ToolTip : ContentControl
 		{
 			AddXamlIslandRootHandler(islandRootElement);
 		}
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp HookupOwnerLayoutChangedEvent (line 2296).
+	private void HookupOwnerLayoutChangedEvent()
+	{
+		var owner = m_wrOwner?.Target as DependencyObject;
+		if (owner is FrameworkElement ownerAsFE)
+		{
+			global::System.EventHandler<object> handler = (sender, args) =>
+			{
+				if (this.Parent is not null && IsOwnerPositionChanged())
+				{
+					var pToolTipServiceMetadataNoRef = ToolTipService.GetToolTipServiceMetadata();
+
+					var current = pToolTipServiceMetadataNoRef.m_tpCurrentToolTip;
+					if (current is not null && ReferenceEquals(current, this))
+					{
+						ToolTipService.CancelAutomaticToolTip();
+					}
+				}
+			};
+			ownerAsFE.LayoutUpdated += handler;
+			m_ownerLayoutUpdatedToken.Disposable = global::Uno.Disposables.Disposable.Create(
+				() => ownerAsFE.LayoutUpdated -= handler);
+		}
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp UnhookOwnerLayoutChangedEvent (line 2337).
+	private void UnhookOwnerLayoutChangedEvent()
+	{
+		m_ownerLayoutUpdatedToken.Disposable = null;
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp AddXamlIslandRootHandler (line 2354).
@@ -1601,6 +1632,14 @@ public partial class ToolTip : ContentControl
 		}
 	}
 
+	// MUX Reference: ToolTip_Partial.cpp UnhookFromXamlIslandRoot (line 2447).
+	private void UnhookFromXamlIslandRoot()
+	{
+		m_xamlIslandRootPointerMovedHandler.Disposable = null;
+		m_xamlIslandRootKeyDownHandler.Disposable = null;
+		m_xamlIslandRootKeyUpHandler.Disposable = null;
+	}
+
 	// MUX Reference: ToolTip_Partial.cpp GetXamlIslandRootElement (line 2483).
 	private UIElement? GetXamlIslandRootElement()
 	{
@@ -1620,45 +1659,6 @@ public partial class ToolTip : ContentControl
 		}
 
 		return xamlRoot?.Content as UIElement;
-	}
-
-	// MUX Reference: ToolTip_Partial.cpp HookupOwnerLayoutChangedEvent (line 2296).
-	private void HookupOwnerLayoutChangedEvent()
-	{
-		var owner = m_wrOwner?.Target as DependencyObject;
-		if (owner is FrameworkElement ownerAsFE)
-		{
-			global::System.EventHandler<object> handler = (sender, args) =>
-			{
-				if (this.Parent is not null && IsOwnerPositionChanged())
-				{
-					var pToolTipServiceMetadataNoRef = ToolTipService.GetToolTipServiceMetadata();
-
-					var current = pToolTipServiceMetadataNoRef.m_tpCurrentToolTip;
-					if (current is not null && ReferenceEquals(current, this))
-					{
-						ToolTipService.CancelAutomaticToolTip();
-					}
-				}
-			};
-			ownerAsFE.LayoutUpdated += handler;
-			m_ownerLayoutUpdatedToken.Disposable = global::Uno.Disposables.Disposable.Create(
-				() => ownerAsFE.LayoutUpdated -= handler);
-		}
-	}
-
-	// MUX Reference: ToolTip_Partial.cpp UnhookOwnerLayoutChangedEvent (line 2337).
-	private void UnhookOwnerLayoutChangedEvent()
-	{
-		m_ownerLayoutUpdatedToken.Disposable = null;
-	}
-
-	// MUX Reference: ToolTip_Partial.cpp UnhookFromXamlIslandRoot (line 2447).
-	private void UnhookFromXamlIslandRoot()
-	{
-		m_xamlIslandRootPointerMovedHandler.Disposable = null;
-		m_xamlIslandRootKeyDownHandler.Disposable = null;
-		m_xamlIslandRootKeyUpHandler.Disposable = null;
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp ForwardOwnerThemePropertyToToolTip (line 2510).
