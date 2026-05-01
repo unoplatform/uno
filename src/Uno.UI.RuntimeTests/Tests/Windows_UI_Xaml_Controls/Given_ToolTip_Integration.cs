@@ -602,5 +602,70 @@ public class Given_ToolTip_Integration
 			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 		}
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp CanOpenToolTipWithUIASetFocus (line 2503).
+	// "Verify that setting focus to the tooltip target with UIA causes the ToolTip to show."
+	// Exercises the OnOwnerGotFocus port (iter #4) UIA-driven path:
+	//   GetRealFocusStateForFocusedElement == Programmatic +
+	//   InputManager.GetWasUIAFocusSetSinceLastInput() == true.
+	//
+	// SKIPPED: Uno's InputManager.GetWasUIAFocusSetSinceLastInput() is hardcoded to return
+	// false (TODO Uno marker in src/Uno.UI/UI/Xaml/Internal/InputManager.Pointers.cs:52).
+	// FrameworkElementAutomationPeer.SetFocusCore calls control.Focus(FocusState.Programmatic)
+	// without marking the focus as UIA-driven, so the OnOwnerGotFocus check rejects it.
+	// Re-enable this test once Uno's InputManager wires the UIA-focus tracking flag.
+	[TestMethod]
+	[Ignore("Blocked on Uno InputManager.GetWasUIAFocusSetSinceLastInput - TODO Uno in InputManager.Pointers.cs:52")]
+	public async Task CanOpenToolTipWithUIASetFocus()
+	{
+		var toolTip = CreateToolTip();
+
+		var rootPanel = new StackPanel();
+
+		var topButton = new Button
+		{
+			Content = "Top Button",
+			HorizontalAlignment = HorizontalAlignment.Center,
+		};
+		rootPanel.Children.Add(topButton);
+
+		var bottomButton = new Button
+		{
+			Content = "Button with ToolTip",
+			HorizontalAlignment = HorizontalAlignment.Center,
+		};
+		rootPanel.Children.Add(bottomButton);
+
+		ToolTipService.SetToolTip(bottomButton, toolTip);
+
+		TestServices.WindowHelper.WindowContent = rootPanel;
+		await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			// UIA SetFocus on the button - matches C++ OpenToolTip InputMode.UIA which does
+			// ButtonAutomationPeer.FromElement(button).SetFocus().
+			var buttonAp = (Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer)
+				Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FromElement(bottomButton);
+			Assert.IsNotNull(buttonAp, "FromElement(bottomButton) should return a ButtonAutomationPeer");
+			buttonAp.SetFocus();
+
+			// Wait for the show timer.
+			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(toolTip.IsOpen, "ToolTip should be open after UIA SetFocus");
+			var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+				TestServices.WindowHelper.WindowContent.XamlRoot);
+			Assert.AreEqual(1, popups.Count, "Expected one open popup for the tooltip");
+		}
+		finally
+		{
+			toolTip.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
 #endif
 }
