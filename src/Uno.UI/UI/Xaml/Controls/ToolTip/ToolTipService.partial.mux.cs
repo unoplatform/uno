@@ -513,11 +513,51 @@ public partial class ToolTipService
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp EnsureHandlersAttachedToRootElement (line 744).
-	// Phase 4 closeout / Phase 6 will port the OnRootVisualPointerMoved + OnRootVisualSizeChanged
-	// handler attachment. For now this is a no-op stub so OpenPopup compiles.
 	internal static void EnsureHandlersAttachedToRootElement(XamlRoot? visualTree)
 	{
-		// TODO Uno: Phase 4 closeout will port EnsureHandlersAttachedToRootElement.
+		if (visualTree?.Content is not UIElement rootElement)
+		{
+			return;
+		}
+
+		var toolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (!toolTipServiceMetadataNoRef.m_rootElementsWithHandlersNoRef.Contains(rootElement))
+		{
+			// These event handlers are never detached, but they will not leak the root element. They take references on the core
+			// CUIElement. The DXaml layer's peer DirectUI::UIElement has a separate ref count, and when the DXaml peer is released,
+			// it calls into the core to detach all event handlers. See DirectUI::DependencyObject::DisconnectFrameworkPeerCore's
+			// loop over its m_pEventMap.
+
+			rootElement.PointerMoved += OnRootVisualPointerMoved;
+
+			if (rootElement is FrameworkElement rootFrameworkElement)
+			{
+				rootFrameworkElement.SizeChanged += OnRootVisualSizeChanged;
+			}
+
+			toolTipServiceMetadataNoRef.m_rootElementsWithHandlersNoRef.Add(rootElement);
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp OnPublicRootRemoved (line 794).
+	internal static void OnPublicRootRemoved(UIElement publicRoot)
+	{
+		// This function can be called in a shutdown path after the ToolTipService has already been destroyed.
+		// No need to (re)create the ToolTipService here since we only get it to remove handlers.
+		var toolTipServiceMetadataNoRef = s_toolTipServiceMetadata;
+
+		if (toolTipServiceMetadataNoRef is not null)
+		{
+			toolTipServiceMetadataNoRef.m_rootElementsWithHandlersNoRef.Remove(publicRoot);
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp GetOwner (line 960).
+	internal static DependencyObject? GetOwner()
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+		return pToolTipServiceMetadataNoRef.m_tpOwner;
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp AddToNestedOwners (line 979).
@@ -980,6 +1020,93 @@ public partial class ToolTipService
 			{
 				toolTip.IsOpen = false;
 			}
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp OnRootVisualPointerMoved (line 1483).
+	private static void OnRootVisualPointerMoved(object sender, Input.PointerRoutedEventArgs e)
+	{
+		// If the pointer is over a nested owner, and there is no current
+		// owner, notify the next nested owner that it is current owner.
+		// This supports the pointer coming back to an ancestor after
+		// it enters and leaves a nested descendant element. Although
+		// the pointer never left the ancestor in this scenario, the ancestor
+		// needs to re-open its tooltip, because the pointer came back to the
+		// ancestor from the nested descendant.
+		var spOwner = GetOwner();
+		if (spOwner is null)
+		{
+			var spPointerPoint = e.GetCurrentPoint(null);
+			if (spPointerPoint is null)
+			{
+				return;
+			}
+			var position = spPointerPoint.Position;
+
+			var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+			if (sender is UIElement rootElement)
+			{
+				var elementsAtPosition = Microsoft.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(position, rootElement);
+
+				PurgeInvalidNestedOwners();
+
+				if (pToolTipServiceMetadataNoRef.m_nestedOwners is not null)
+				{
+					var nestedOwnersIterator = pToolTipServiceMetadataNoRef.m_nestedOwners.First;
+					while (nestedOwnersIterator is not null)
+					{
+						var nestedOwner = nestedOwnersIterator.Value.Target as DependencyObject;
+						if (nestedOwner is null)
+						{
+							var next = pToolTipServiceMetadataNoRef.DeleteElementFromNestedOwners(nestedOwnersIterator);
+							nestedOwnersIterator = next;
+							continue;
+						}
+
+						bool ownerIsAtPosition = false;
+						foreach (var elementAtPosition in elementsAtPosition)
+						{
+							if (ReferenceEquals(elementAtPosition, nestedOwner))
+							{
+								ownerIsAtPosition = true;
+								break;
+							}
+						}
+
+						if (!ownerIsAtPosition)
+						{
+							var next = pToolTipServiceMetadataNoRef.DeleteElementFromNestedOwners(nestedOwnersIterator);
+							nestedOwnersIterator = next;
+							continue;
+						}
+
+						var pointerDeviceType = spPointerPoint.PointerDeviceType;
+						bool isInPointerMode = pointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Touch;
+
+						var spContainer = GetContainerFromOwner(nestedOwner);
+
+						OnOwnerEnterInternal(
+							nestedOwner,
+							spContainer,
+							isInPointerMode ? AutomaticToolTipInputMode.Touch : AutomaticToolTipInputMode.Mouse);
+
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp OnRootVisualSizeChanged (line 1590).
+	// Used to handle SizeChanged on the application root visual FrameworkElement.
+	private static void OnRootVisualSizeChanged(object sender, SizeChangedEventArgs e)
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is { } currentToolTip)
+		{
+			currentToolTip.OnRootVisualSizeChanged();
 		}
 	}
 

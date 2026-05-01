@@ -1275,6 +1275,12 @@ public partial class ToolTip : ContentControl
 		}
 	}
 
+	// MUX Reference: ToolTip_Partial.cpp OnRootVisualSizeChanged (line 2045).
+	internal void OnRootVisualSizeChanged()
+	{
+		PerformPlacementInternal();
+	}
+
 	// MUX Reference: ToolTip_Partial.cpp ForceFinishClosing (line 2057).
 	// If we are in the process of animating to the Closed state, then closes the ToolTip's Popup.
 	// Else, does nothing.
