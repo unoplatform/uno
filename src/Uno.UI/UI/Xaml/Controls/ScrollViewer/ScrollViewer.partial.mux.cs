@@ -1447,8 +1447,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				// TODO Uno: Phase 4 — port ComputeHorizontalAlignment. For now default to Center alignment.
-				return DMAlignment.Center;
+				return ComputeHorizontalAlignment(canUseCachedProperties: false);
 			}
 		}
 
@@ -1464,9 +1463,229 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				// TODO Uno: Phase 4 — port ComputeVerticalAlignment. For now default to Center alignment.
-				return DMAlignment.Center;
+				return ComputeVerticalAlignment(canUseCachedProperties: false);
 			}
+		}
+
+		// Computes the required horizontal alignment to provide to DirectManipulation.
+		internal DMAlignment ComputeHorizontalAlignment(bool canUseCachedProperties)
+		{
+			bool resetHorizontalStretchAlignmentTreatedAsNear = true;
+			DMAlignment alignment = DMAlignment.Center;
+			DMAlignment contentAlignment = DMAlignment.Center;
+
+			DMAlignment horizontalAlignment = DMAlignment.None;
+
+			// First access the ScrollViewer's HorizontalContentAlignment
+			var horizontalContentAlignment = HorizontalContentAlignment;
+			switch (horizontalContentAlignment)
+			{
+				case HorizontalAlignment.Left:
+					contentAlignment = DMAlignment.Near;
+					break;
+				case HorizontalAlignment.Center:
+					contentAlignment = DMAlignment.Center;
+					break;
+				case HorizontalAlignment.Right:
+					contentAlignment = DMAlignment.Far;
+					break;
+				case HorizontalAlignment.Stretch:
+					contentAlignment = DMAlignment.Center;
+					break;
+			}
+
+			// Determine whether the ScrollContentPresenter is the IScrollInfo implementer or not
+			var isScrollContentPresenterScrollClient = IsScrollContentPresenterScrollClient();
+
+			if (isScrollContentPresenterScrollClient)
+			{
+				// When the ScrollContentPresenter is the IScrollInfo implementer,
+				// use the horizontal alignment of the manipulated element by default.
+				var spContentUIElement = GetContentUIElement();
+				if (spContentUIElement is FrameworkElement spContentFE)
+				{
+					var horizontalContentFEAlignment = spContentFE.HorizontalAlignment;
+					switch (horizontalContentFEAlignment)
+					{
+						case HorizontalAlignment.Left:
+							alignment = DMAlignment.Near;
+							break;
+						case HorizontalAlignment.Right:
+							alignment = DMAlignment.Far;
+							break;
+						case HorizontalAlignment.Stretch:
+							resetHorizontalStretchAlignmentTreatedAsNear = false;
+							if (m_isHorizontalStretchAlignmentTreatedAsNear)
+							{
+								alignment = DMAlignment.Near;
+							}
+							break;
+					}
+				}
+
+				var scrollMode = GetEffectiveHorizontalScrollMode(canUseCachedProperties);
+				if (scrollMode == ScrollMode.Disabled)
+				{
+					// When horizontal panning is turned off, use None when the content is
+					// larger than the viewport in order to keep the zoom center between the fingers.
+					var scrollable = ScrollableWidth;
+					if (scrollable > 0)
+					{
+						alignment = DMAlignment.None;
+					}
+				}
+
+				var hsbv = GetEffectiveHorizontalScrollBarVisibility(canUseCachedProperty: false);
+				if (hsbv == ScrollBarVisibility.Disabled)
+				{
+					// When horizontal scrollbar visibility is disabled, the content is cut off if it's
+					// wider than the viewport, and the HorizontalOffset can only be 0.0f. If the zoom factor
+					// is larger than 1.0f, and the content is horizontally scrollable, pick a Left alignment
+					var scrollable = ScrollableWidth;
+					if (scrollable > 0)
+					{
+						alignment = DMAlignment.Near;
+					}
+				}
+			}
+			else
+			{
+				alignment = contentAlignment;
+			}
+
+			horizontalAlignment = alignment;
+
+			// TODO Uno: Phase 6 — header child Unlock-center logic. Headers aren't ported yet.
+			// if (horizontalAlignment == DMAlignment.Near && m_trElementScrollContentPresenter is { } pScrollContentPresenter)
+			// {
+			//     if (pScrollContentPresenter.IsTopLeftHeaderChild_New || pScrollContentPresenter.IsTopHeaderChild_New || pScrollContentPresenter.IsLeftHeaderChild_New)
+			//     {
+			//         horizontalAlignment = (DMAlignment)((int)alignment + (int)DMAlignment.Unlocked);
+			//     }
+			// }
+
+			if (resetHorizontalStretchAlignmentTreatedAsNear)
+			{
+				m_isHorizontalStretchAlignmentTreatedAsNear = false;
+			}
+
+			return horizontalAlignment;
+		}
+
+		// Computes the required vertical alignment to provide to DirectManipulation.
+		internal DMAlignment ComputeVerticalAlignment(bool canUseCachedProperties)
+		{
+			bool resetVerticalStretchAlignmentTreatedAsNear = true;
+			DMAlignment alignment = DMAlignment.Center;
+			DMAlignment contentAlignment = DMAlignment.Center;
+
+			// Work around for ScrollViewer / ScrollContentPresenter bug Windows Blue 358691
+			// Only forced by Hub on phone
+			if (m_isNearVerticalAlignmentForced)
+			{
+				return DMAlignment.Near;
+			}
+
+			DMAlignment verticalAlignment = DMAlignment.None;
+
+			// First access the ScrollViewer's VerticalContentAlignment
+			var verticalContentAlignment = VerticalContentAlignment;
+			switch (verticalContentAlignment)
+			{
+				case VerticalAlignment.Top:
+					contentAlignment = DMAlignment.Near;
+					break;
+				case VerticalAlignment.Center:
+					contentAlignment = DMAlignment.Center;
+					break;
+				case VerticalAlignment.Bottom:
+					contentAlignment = DMAlignment.Far;
+					break;
+				case VerticalAlignment.Stretch:
+					contentAlignment = DMAlignment.Center;
+					break;
+			}
+
+			// Determine whether the ScrollContentPresenter is the IScrollInfo implementer or not
+			var isScrollContentPresenterScrollClient = IsScrollContentPresenterScrollClient();
+
+			if (isScrollContentPresenterScrollClient)
+			{
+				// When the ScrollContentPresenter is the IScrollInfo implementer,
+				// use the vertical alignment of the manipulated element by default.
+				var spContentUIElement = GetContentUIElement();
+				if (spContentUIElement is FrameworkElement spContentFE)
+				{
+					var verticalContentFEAlignment = spContentFE.VerticalAlignment;
+					switch (verticalContentFEAlignment)
+					{
+						case VerticalAlignment.Top:
+							alignment = DMAlignment.Near;
+							break;
+						case VerticalAlignment.Bottom:
+							alignment = DMAlignment.Far;
+							break;
+						case VerticalAlignment.Stretch:
+							resetVerticalStretchAlignmentTreatedAsNear = false;
+							if (m_isVerticalStretchAlignmentTreatedAsNear)
+							{
+								alignment = DMAlignment.Near;
+							}
+							break;
+					}
+				}
+
+				var scrollMode = GetEffectiveVerticalScrollMode(canUseCachedProperties);
+				if (scrollMode == ScrollMode.Disabled)
+				{
+					// When vertical panning is turned off, use None when the content is
+					// larger than the viewport in order to keep the zoom center between the fingers.
+					var scrollable = ScrollableHeight;
+					if (scrollable > 0)
+					{
+						alignment = DMAlignment.None;
+					}
+				}
+
+				var vsbv = GetEffectiveVerticalScrollBarVisibility(canUseCachedProperty: false);
+				if (vsbv == ScrollBarVisibility.Disabled)
+				{
+					// When vertical scrollbar visibility is disabled, the content is cut off if it's
+					// taller than the viewport, and the VerticalOffset can only be 0.0f. If the zoom factor
+					// is larger than 1.0f, and the content is vertically scrollable, pick a Top alignment
+					var scrollable = ScrollableHeight;
+					if (scrollable > 0)
+					{
+						alignment = DMAlignment.Near;
+					}
+				}
+			}
+			else
+			{
+				alignment = contentAlignment;
+			}
+
+			verticalAlignment = alignment;
+
+			// TODO Uno: Phase 6 — header child Unlock-center logic. Headers aren't ported yet.
+
+			if (resetVerticalStretchAlignmentTreatedAsNear)
+			{
+				m_isVerticalStretchAlignmentTreatedAsNear = false;
+			}
+
+			return verticalAlignment;
+		}
+
+		// Gets a value indicating whether the current ScrollContentPresenter is the IScrollInfo implementer.
+		// Uses the ScrollContentPresenter::IsScrollClient(...) method.
+		internal bool IsScrollContentPresenterScrollClient()
+		{
+			if (m_trElementScrollContentPresenter is { } pScp)
+			{
+				return pScp.IsScrollClient();
+			}
+			return false;
 		}
 
 		// Retrieves the effective horizontal scroll mode: m_currentHorizontalScrollMode or
@@ -1624,6 +1843,41 @@ namespace Microsoft.UI.Xaml.Controls
 			//     isAffectingTouchConfiguration: false);
 		}
 
+		// Called when a property that changes responsiveness to occlusions changes.
+		internal void OnReduceViewportForCoreInputViewOcclusionsChanged()
+		{
+			// TODO Uno: Phase 5 — CoreInputView occlusion subscription. The Win32 CoreInputView API isn't
+			// available on Skia; soft-keyboard reflow on Skia happens via a different InputManager path.
+			// For now this is a no-op so the property change doesn't fire any unsupported native call.
+		}
+
+		// Called when the ScrollViewer.CanContentRenderOutsideBounds property changed.
+		internal void OnCanContentRenderOutsideBoundsChanged(object newValue)
+		{
+			if (m_trElementScrollContentPresenter is { } scp)
+			{
+				bool canContentRenderOutsideBounds = newValue switch
+				{
+					bool b => b,
+					null => false,
+					_ => Convert.ToBoolean(newValue, global::System.Globalization.CultureInfo.InvariantCulture),
+				};
+				// TODO Uno: Phase 4 — once SCP CanContentRenderOutsideBoundsProperty is implemented on Skia, push it through:
+				// scp.CanContentRenderOutsideBounds = canContentRenderOutsideBounds;
+				_ = canContentRenderOutsideBounds; // suppress unused warning until DP is wired.
+			}
+		}
+
+		// Changes the bottom margin of the ScrollViewer's child to reflow the
+		// content around docked CoreInputView occlusions such as the software
+		// keyboard.
+		internal void ReflowAroundCoreInputViewOcclusions()
+		{
+			// TODO Uno: Phase 5 — CoreInputView occlusion-driven reflow. The Win32 CoreInputView API isn't
+			// available on Skia; the equivalent path is in InputManager.PointerManager / OnScreenKeyboard.
+			// Stubbed for now so the property-changed handler can call it without a side effect.
+		}
+
 		// Called to determine if our manipulation data is stale and we need to bring into view.
 		internal bool IsBringIntoViewportNeeded()
 		{
@@ -1718,6 +1972,56 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			global::System.Diagnostics.Debug.Assert(pDMStateChangeHandler is null || m_pDMStateChangeHandler is null);
 			m_pDMStateChangeHandler = pDMStateChangeHandler;
+		}
+
+		// allows SeZo to remove the indicators from view temporarily during view change.
+		internal void BlockIndicatorsFromShowing()
+		{
+			if (!m_blockIndicators && IsConscious())
+			{
+				m_blockIndicators = true;
+
+				VisualStateManager.GoToState(this, "NoIndicator", false);
+				if (!m_hasNoIndicatorStateStoryboardCompletedHandler)
+				{
+					m_showingMouseIndicators = false;
+				}
+
+				// TODO Uno: Phase 4 — call ScrollBar.BlockIndicatorFromShowing() once that ScrollBar method
+				// is available on the managed Skia path.
+				// m_trElementHorizontalScrollBar?.BlockIndicatorFromShowing();
+				// m_trElementVerticalScrollBar?.BlockIndicatorFromShowing();
+				m_keepIndicatorsShowing = false;
+			}
+		}
+
+		internal void ResetBlockIndicatorsFromShowing()
+		{
+			m_blockIndicators = false;
+			// TODO Uno: Phase 4 — call ScrollBar.ResetBlockIndicatorFromShowing() on the two scrollbars.
+			// m_trElementHorizontalScrollBar?.ResetBlockIndicatorFromShowing();
+			// m_trElementVerticalScrollBar?.ResetBlockIndicatorFromShowing();
+		}
+
+		// Change to the correct visual state for the ScrollViewer.
+		private protected override void ChangeVisualState(
+			// true to use transitions when updating the visual state, false
+			// to snap directly to the new visual state.
+			bool bUseTransitions)
+		{
+			if (!IsConscious())
+			{
+				ShowIndicators();
+			}
+			else if (!m_keepIndicatorsShowing)
+			{
+				VisualStateManager.GoToState(this, "NoIndicator", bUseTransitions);
+				VisualStateManager.GoToState(this, "ScrollBarSeparatorCollapsed", bUseTransitions);
+				if (!m_hasNoIndicatorStateStoryboardCompletedHandler)
+				{
+					m_showingMouseIndicators = false;
+				}
+			}
 		}
 
 		// Show the appropriate scrolling indicators.
@@ -1999,6 +2303,57 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void RaiseDirectManipulationCompleted()
 		{
 			DirectManipulationCompleted?.Invoke(this, EventArgs.Empty);
+		}
+
+		internal bool IsThumbDragging()
+		{
+			var result = false;
+
+			if (m_trElementHorizontalScrollBar is { } hScrollBar)
+			{
+				result |= hScrollBar.IsDragging;
+			}
+			if (m_trElementVerticalScrollBar is { } vScrollBar)
+			{
+				result |= vScrollBar.IsDragging;
+			}
+
+			return result;
+		}
+
+		// Set explicit DMOverpanMode flags to configure overpan modes for horizontal and vertical directions.
+		internal void SetOverpanModes(DMOverpanMode horizontalOverpanMode, DMOverpanMode verticalOverpanMode)
+		{
+			var horizontalOverpanModeChanged = horizontalOverpanMode != m_horizontalOverpanMode;
+			var verticalOverpanModeChanged = verticalOverpanMode != m_verticalOverpanMode;
+
+			if (horizontalOverpanModeChanged || verticalOverpanModeChanged)
+			{
+				m_horizontalOverpanMode = horizontalOverpanMode;
+				m_verticalOverpanMode = verticalOverpanMode;
+				// TODO Uno: Phase 4 — port OnViewportAffectingPropertyChanged.
+				// OnViewportAffectingPropertyChanged(
+				//     boundsChanged: false,
+				//     touchConfigurationChanged: false,
+				//     nonTouchConfigurationChanged: false,
+				//     configurationsChanged: false,
+				//     chainedMotionTypesChanged: false,
+				//     horizontalOverpanModeChanged,
+				//     verticalOverpanModeChanged,
+				//     out _);
+			}
+		}
+
+		// Prevents overpan effect so that panning will hard-stop at the boundaries of the scrollable region.
+		internal void DisableOverpanImpl()
+		{
+			SetOverpanModes(DMOverpanMode.None, DMOverpanMode.None);
+		}
+
+		// Reenables overpan.
+		internal void EnableOverpanImpl()
+		{
+			SetOverpanModes(DMOverpanMode.Default, DMOverpanMode.Default);
 		}
 
 		// Loaded event handler.
