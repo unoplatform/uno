@@ -660,6 +660,19 @@ namespace Microsoft.UI.Xaml.Controls
 				m_unboundHorizontalOffset = m_xPixelOffset;
 				m_unboundVerticalOffset = m_yPixelOffset;
 			}
+
+			// Forward delta-state to a registered IDirectManipulationStateChangeHandler
+			// during active DM so app code observing inertia/touch updates gets per-tick
+			// notifications. Skipped outside of DM (regular ChangeView calls don't fire
+			// delta states; they go through NotifyOffsetChanging instead).
+			if (m_isInDirectManipulation && m_pDMStateChangeHandler is not null)
+			{
+				m_pDMStateChangeHandler.NotifyStateChange(
+					DMManipulationState.DMManipulationDelta,
+					(float)horizontalOffset, (float)verticalOffset, zoomFactor,
+					0f, 0f,
+					m_isInertial, false, false);
+			}
 		}
 
 		// Stops an in-progress inertia phase. The C++ source uses this when an

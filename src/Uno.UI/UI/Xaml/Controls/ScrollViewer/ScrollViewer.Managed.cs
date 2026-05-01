@@ -169,6 +169,15 @@ namespace Microsoft.UI.Xaml.Controls
 			var targetH = horizontalOffset ?? HorizontalOffset;
 			var targetV = verticalOffset ?? VerticalOffset;
 			var targetZ = zoomFactor.HasValue ? (float)zoomFactor.Value : ZoomFactor;
+
+			// MUX Reference: ChangeViewInternal stores the requested target so
+			// GetTargetView returns it during the in-flight change (for nested SVs
+			// requesting MakeVisible against this SV mid-ChangeView). The fields are
+			// reset to -1 at the start of RaiseViewChanging once a ViewChanging event
+			// is dispatched.
+			m_targetChangeViewHorizontalOffset = targetH;
+			m_targetChangeViewVerticalOffset = targetV;
+			m_targetChangeViewZoomFactor = targetZ;
 			if (zoomFactor.HasValue)
 			{
 				NotifyZoomFactorChanging(targetZ);
