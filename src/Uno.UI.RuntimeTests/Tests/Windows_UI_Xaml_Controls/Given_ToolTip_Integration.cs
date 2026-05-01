@@ -494,5 +494,64 @@ public class Given_ToolTip_Integration
 			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 		}
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp VerifyToolTipPlacement (line 357).
+	// "Verify the ToolTip placement target."
+	// Walks all 4 PlacementModes (Top, Right, Bottom, Left) opening the tooltip via mouse hover
+	// and verifying it opens with the requested placement. The C++ test additionally calls
+	// VerifyToolTipPosition with TransformToVisual-based pixel-precise bounds checks; those
+	// are sensitive to fractional display-scale rounding (see ScrollViewer port's pre-existing
+	// 1.5x-scale failures), so this Uno port limits assertions to popup hosting + the
+	// PlacementMode round-trip - the actual layout placement is exercised by
+	// VerifyPlacementTargetIsHonored elsewhere in this class.
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task VerifyToolTipPlacement()
+	{
+		var button = await SetupToolTipTest();
+		var toolTip = CreateToolTip();
+		ToolTipService.SetToolTip(button, toolTip);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			PlacementMode[] placementModes = { PlacementMode.Top, PlacementMode.Right, PlacementMode.Bottom, PlacementMode.Left };
+			foreach (var mode in placementModes)
+			{
+				ToolTipService.SetPlacement(button, mode);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// Move mouse onto the button to trigger PointerEntered + the show timer.
+				// Move first to (0,0) to ensure we start outside any element that could be
+				// hovering already from the previous iteration.
+				mouse.MoveTo(new Point(0, 0));
+				await TestServices.WindowHelper.WaitForIdle();
+				mouse.MoveTo(button.GetAbsoluteBoundsRect().GetCenter());
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(toolTip.IsOpen, $"PlacementMode.{mode}: ToolTip should be open after mouse hover");
+				Assert.AreEqual(mode, ToolTipService.GetPlacement(button), $"PlacementMode.{mode}: round-trip mismatch");
+
+				var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+					TestServices.WindowHelper.WindowContent.XamlRoot);
+				Assert.AreEqual(1, popups.Count, $"PlacementMode.{mode}: expected one open popup");
+
+				// Move mouse away to dismiss before next iteration.
+				mouse.MoveTo(new Point(0, 0));
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, $"PlacementMode.{mode}: ToolTip should be closed after mouse leaves");
+			}
+		}
+		finally
+		{
+			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
 #endif
 }
