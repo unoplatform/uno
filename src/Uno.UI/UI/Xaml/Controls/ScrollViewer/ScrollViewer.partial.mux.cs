@@ -698,8 +698,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnHorizontalScrollBarScroll(object pSender, ScrollEventArgs pArgs)
 		{
 			// Do not process this request when the effective HorizontalScrollMode is Disabled.
-			// TODO Uno: Phase 4 — wire GetEffectiveHorizontalScrollMode (manipulation-time cache); use live property for now.
-			var scrollMode = HorizontalScrollMode;
+			var scrollMode = GetEffectiveHorizontalScrollMode(canUseCachedProperty: true);
 			if (scrollMode == ScrollMode.Disabled)
 			{
 				return;
@@ -715,8 +714,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnVerticalScrollBarScroll(object pSender, ScrollEventArgs pArgs)
 		{
 			// Do not process this request when the effective VerticalScrollMode is Disabled.
-			// TODO Uno: Phase 4 — wire GetEffectiveVerticalScrollMode (manipulation-time cache); use live property for now.
-			var scrollMode = VerticalScrollMode;
+			var scrollMode = GetEffectiveVerticalScrollMode(canUseCachedProperty: true);
 			if (scrollMode == ScrollMode.Disabled)
 			{
 				return;
@@ -1349,6 +1347,170 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
+		// Retrieves the effective IsHorizontalRailEnabled value: m_currentIsHorizontalRailEnabled or
+		// get_IsHorizontalRailEnabled depending on whether there is an active manip or not.
+		internal bool GetEffectiveIsHorizontalRailEnabled(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentIsHorizontalRailEnabled;
+			}
+			else
+			{
+				return IsHorizontalRailEnabled;
+			}
+		}
+
+		// Retrieves the effective IsVerticalRailEnabled value:
+		// m_currentIsVerticalRailEnabled or get_IsVerticalRailEnabled
+		// depending on whether there is an active manip or not.
+		internal bool GetEffectiveIsVerticalRailEnabled(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentIsVerticalRailEnabled;
+			}
+			else
+			{
+				return IsVerticalRailEnabled;
+			}
+		}
+
+		// Retrieves the effective IsScrollInertiaEnabled value:
+		// m_currentIsScrollInertiaEnabled or get_IsScrollInertiaEnabled
+		// depending on whether there is an active manip or not.
+		internal bool GetEffectiveIsScrollInertiaEnabled(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentIsScrollInertiaEnabled;
+			}
+			else
+			{
+				return IsScrollInertiaEnabled;
+			}
+		}
+
+		// Retrieves the effective IsZoomInertiaEnabled value:
+		// m_currentIsZoomInertiaEnabled or get_IsZoomInertiaEnabled depending
+		// on whether there is an active manip or not.
+		internal bool GetEffectiveIsZoomInertiaEnabled(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentIsZoomInertiaEnabled;
+			}
+			else
+			{
+				return IsZoomInertiaEnabled;
+			}
+		}
+
+		// Retrieves the effective horizontal scrollbar visibility:
+		// m_currentHorizontalScrollBarVisibility or get_HorizontalScrollBarVisibility
+		// depending on whether there is an active manip or not.
+		internal ScrollBarVisibility GetEffectiveHorizontalScrollBarVisibility(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentHorizontalScrollBarVisibility;
+			}
+			else
+			{
+				return HorizontalScrollBarVisibility;
+			}
+		}
+
+		// Retrieves the effective vertical scrollbar visibility:
+		// m_currentVerticalScrollBarVisibility or get_VerticalScrollBarVisibility
+		// depending on whether there is an active manip or not.
+		internal ScrollBarVisibility GetEffectiveVerticalScrollBarVisibility(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentVerticalScrollBarVisibility;
+			}
+			else
+			{
+				return VerticalScrollBarVisibility;
+			}
+		}
+
+		// Retrieves the horizontal alignment at the beginning of the current
+		// manipulation if any when canUseCachedProperty is True, or the result
+		// of ComputeHorizontalAlignment otherwise.
+		internal DMAlignment GetEffectiveHorizontalAlignment(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentHorizontalAlignment;
+			}
+			else
+			{
+				// TODO Uno: Phase 4 — port ComputeHorizontalAlignment. For now default to Center alignment.
+				return DMAlignment.Center;
+			}
+		}
+
+		// Retrieves the vertical alignment at the beginning of the current
+		// manipulation if any when canUseCachedProperty is True, or the result
+		// of ComputeHorizontalAlignment otherwise.
+		// (Note: name "ComputeHorizontalAlignment" in C++ source comment is a typo for "ComputeVerticalAlignment".)
+		internal DMAlignment GetEffectiveVerticalAlignment(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentVerticalAlignment;
+			}
+			else
+			{
+				// TODO Uno: Phase 4 — port ComputeVerticalAlignment. For now default to Center alignment.
+				return DMAlignment.Center;
+			}
+		}
+
+		// Retrieves the effective horizontal scroll mode: m_currentHorizontalScrollMode or
+		// get_HorizontalScrollMode depending on whether there is an active manip or not.
+		internal ScrollMode GetEffectiveHorizontalScrollMode(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentHorizontalScrollMode;
+			}
+			else
+			{
+				return HorizontalScrollMode;
+			}
+		}
+
+		// Retrieves the effective vertical scroll mode: m_currentVerticalScrollMode or
+		// get_VerticalScrollMode depending on whether there is an active manip or not.
+		internal ScrollMode GetEffectiveVerticalScrollMode(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentVerticalScrollMode;
+			}
+			else
+			{
+				return VerticalScrollMode;
+			}
+		}
+
+		// Retrieves the effective zoom mode: m_currentZoomMode or get_ZoomMode
+		// depending on whether there is an active manip or not.
+		internal ZoomMode GetEffectiveZoomMode(bool canUseCachedProperty)
+		{
+			if (IsInDirectManipulation && canUseCachedProperty)
+			{
+				return m_currentZoomMode;
+			}
+			else
+			{
+				return ZoomMode;
+			}
+		}
+
 		// Called by internal controls to apply a pseudo-LayoutTransform
 		// to the ScrollViewer.Content element.
 		internal void SetLayoutSize(global::Windows.Foundation.Size layoutSize)
@@ -1843,9 +2005,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 
-				// TODO Uno: Phase 4 — wire GetEffectiveVerticalScrollMode (which honours the manipulation-time cache).
-				// For now use the live property.
-				scrollMode = VerticalScrollMode;
+				scrollMode = GetEffectiveVerticalScrollMode(canUseCachedProperty: true);
 
 				if (spScrollInfo is not null)
 				{
@@ -1872,8 +2032,7 @@ namespace Microsoft.UI.Xaml.Controls
 					isContentVerticallyScrollable = true;
 				}
 
-				// TODO Uno: Phase 4 — wire GetEffectiveHorizontalScrollMode (which honours the manipulation-time cache).
-				scrollMode = HorizontalScrollMode;
+				scrollMode = GetEffectiveHorizontalScrollMode(canUseCachedProperty: true);
 
 				if (spScrollInfo is not null)
 				{
