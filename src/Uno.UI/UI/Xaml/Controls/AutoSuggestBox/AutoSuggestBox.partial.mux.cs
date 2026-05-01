@@ -421,15 +421,66 @@ namespace Microsoft.UI.Xaml.Controls
 			// TODO Uno: NOT PORTED - re-evaluate Description visibility once OnApplyTemplate is ported.
 		}
 
-		// TODO Uno: NOT PORTED - body of OnUnloaded (lines 438-448).
-		// Faithful body: if (!IsInLiveTree() && m_isOverlayVisible) { m_isOverlayVisible = false; TeardownOverlayState(); }
 		private void OnUnloaded(object sender, RoutedEventArgs e)
 		{
+			if (!IsInLiveTree && m_isOverlayVisible)
+			{
+				m_isOverlayVisible = false;
+				TeardownOverlayState();
+			}
 		}
 
-		// TODO Uno: NOT PORTED - OnTextBoxTextChanged (lines 450-503).
 		private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
 		{
+			string strQueryText;
+			AutoSuggestBoxTextChangedEventArgs spEventArgs;
+
+			m_textChangedCounter++;
+
+			spEventArgs = new AutoSuggestBoxTextChangedEventArgs();
+
+			spEventArgs.SetCounter(m_textChangedCounter);
+			spEventArgs.SetOwner(this);
+
+			spEventArgs.Reason = m_textChangeReason;
+
+			m_tpTextChangedEventArgs = spEventArgs;
+
+			try
+			{
+				m_tpTextChangedEventTimer.Stop();
+				m_tpTextChangedEventTimer.Start();
+
+				strQueryText = m_tpTextBoxPart.Text;
+
+				UpdateText(strQueryText);
+
+				if (!m_ignoreTextChanges)
+				{
+					if (m_textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+					{
+						m_userTypedText = strQueryText;
+						// make sure the suggestion list is shown when user inputs
+						UpdateSuggestionListVisibility();
+					}
+
+					if (m_tpSuggestionsPart is not null)
+					{
+						int selectedIndex = m_tpSuggestionsPart.SelectedIndex;
+
+						if (-1 != selectedIndex)
+						{
+							m_ignoreSelectionChanges = true;
+							m_tpSuggestionsPart.SelectedIndex = -1;
+							m_ignoreSelectionChanges = false;
+						}
+					}
+				}
+			}
+			finally
+			{
+				m_textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
+			}
 		}
 
 		// TODO Uno: NOT PORTED - OnTextBoxCandidateWindowBoundsChanged (lines 505-548).
@@ -437,10 +488,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - OnSizeChanged (lines 553-571).
-		// Faithful body: if (m_tpSuggestionsContainerPart is not null) { m_tpSuggestionsContainerPart.Width = ActualWidth; }
+		//------------------------------------------------------------------------------
+		// Handler of the SizeChanged event.
+		//------------------------------------------------------------------------------
 		private void OnSizeChanged(object sender, SizeChangedEventArgs e)
 		{
+			if (m_tpSuggestionsContainerPart is not null)
+			{
+				double actualWidth = ActualWidth;
+				m_tpSuggestionsContainerPart.Width = actualWidth;
+			}
 		}
 
 		// TODO Uno: NOT PORTED - OnSuggestionListKeyDown (lines 576-652).
@@ -483,9 +540,20 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - OnTextChangedEventTimerTick.
 		private void OnTextChangedEventTimerTick(object sender, object e)
 		{
+			m_tpTextChangedEventTimer.Stop();
+
+			if (m_tpTextChangedEventArgs is not null)
+			{
+				// In WinUI: GetTextChangedEventSourceNoRef + Raise. In Uno we invoke the public event directly.
+				TextChanged?.Invoke(this, m_tpTextChangedEventArgs);
+			}
+
+			// We expect apps to modify the ItemsSource in the TextChangedEvent (raised above).
+			// If that happened. we'll have a deferred update at this point, let's just process
+			// it now so we don't have to wait for the next tick.
+			ProcessDeferredUpdate();
 		}
 
 		// InputPane.Showing handler — TODO Uno: NOT PORTED body (lines from OnSipShowing in C++).
@@ -513,9 +581,26 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - UpdateTextBoxText.
 		private void UpdateTextBoxText(string value, AutoSuggestionBoxTextChangeReason reason)
 		{
+			string strText;
+
+			if (m_tpTextBoxPart is not null)
+			{
+				strText = m_tpTextBoxPart.Text;
+				if (value != strText)
+				{
+					// when TextBox text is changing, we need to let user know the reason so user can
+					// respond correctly.
+					// however the TextChanged event is raised asynchronously so we need to reset the
+					// reason in the TextChangedEvent.
+					// here we are sure the TextChangedEvent will be raised because the old content
+					// and new content are different.
+					m_textChangeReason = reason;
+					m_tpTextBoxPart.Text = value;
+					m_tpTextBoxPart.SelectionStart = value?.Length ?? 0;
+				}
+			}
 		}
 
 		// TODO Uno: NOT PORTED - UpdateSuggestionListItemsSource.
@@ -523,8 +608,69 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - ReevaluateIsOverlayVisible.
 		private void ReevaluateIsOverlayVisible()
+		{
+			if (!IsInLiveTree)
+			{
+				return;
+			}
+
+			bool isOverlayVisible = false;
+			// TODO Uno: NOT PORTED - LightDismissOverlayHelper::ResolveIsOverlayVisibleForControl(this, &isOverlayVisible).
+			// LightDismissOverlayMode is exposed as a NotImplemented stub on Uno's AutoSuggestBox; this method should
+			// resolve the effective overlay-visible value (from LightDismissOverlayMode + theme defaults) once the
+			// helper is available. Defaulting to false keeps overlay teardown a no-op in the meantime.
+
+			bool isSuggestionListOpen = IsSuggestionListOpen;
+
+			isOverlayVisible &= isSuggestionListOpen; // Overlay should only be visible when the suggestion list is.
+			isOverlayVisible &= !m_sSipIsOpen;        // Except if the SIP is also visible.
+
+			if (isOverlayVisible != m_isOverlayVisible)
+			{
+				m_isOverlayVisible = isOverlayVisible;
+
+				if (m_isOverlayVisible)
+				{
+					SetupOverlayState();
+				}
+				else
+				{
+					TeardownOverlayState();
+				}
+			}
+		}
+
+		// TODO Uno: NOT PORTED - SetupOverlayState (lines 2856-).
+		private void SetupOverlayState()
+		{
+		}
+
+		// TODO Uno: NOT PORTED - TeardownOverlayState (lines 2926-).
+		private void TeardownOverlayState()
+		{
+		}
+
+		// TODO Uno: NOT PORTED - ProcessDeferredUpdate. Stub keeps OnTextChangedEventTimerTick callable.
+		private void ProcessDeferredUpdate()
+		{
+		}
+
+		// TODO Uno: NOT PORTED - UpdateText body uses InvokeValidationCommand which is part of the input-validation
+		// feature (#4839). Until that lands, propagate the value to the public Text DP without invoking validation.
+		private void UpdateText(string value)
+		{
+			string strText = Text;
+			if (value != strText)
+			{
+				Text = value;
+			}
+
+			// IFC_RETURN(InvokeValidationCommand(this, strText.Get())); // TODO Uno: input validation (#4839)
+		}
+
+		// TODO Uno: NOT PORTED - UpdateSuggestionListVisibility.
+		private void UpdateSuggestionListVisibility()
 		{
 		}
 
@@ -561,7 +707,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO Uno: NOT PORTED - OnGotFocus / OnLostFocus / OnKeyDown overrides.
 		// TODO Uno: NOT PORTED - OnItemsChanged override.
 		// TODO Uno: NOT PORTED - TryGetSuggestionValue.
-		// TODO Uno: NOT PORTED - GetPlainText override.
+		// GetPlainText override (lines 2725-2740 of AutoSuggestBox_Partial.cpp).
+		// TODO Uno: NOT PORTED - GetPlainText. The C++ override returns the FrameworkElement plain-text representation
+		// for accessibility ("name" computation). FrameworkElement::GetStringFromObject(spHeader, ...) has no direct
+		// Uno equivalent; revisit alongside automation-peer parity work.
 
 		/// <summary>
 		/// Initiates a query submission as if the user pressed the query button. Used by
