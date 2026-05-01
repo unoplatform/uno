@@ -3757,13 +3757,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// ScrollContentPresenter layout after a DManip completes.
 		internal void NotifyLayoutRefreshed()
 		{
-			// TODO Uno: Phase 4 — port OnPrimaryContentChanged. The DM-side syncing path is not wired up yet.
-			// OnPrimaryContentChanged(
-			//     layoutRefreshed: true,
-			//     boundsChanged: false,
-			//     horizontalAlignmentChanged: false,
-			//     verticalAlignmentChanged: false,
-			//     zoomFactorBoundaryChanged: false);
+			OnPrimaryContentChanged(
+				layoutRefreshed: true,
+				boundsChanged: false,
+				horizontalAlignmentChanged: false,
+				verticalAlignmentChanged: false,
+				zoomFactorBoundaryChanged: false);
 		}
 
 		// Register this instance as being under control of a semantic zoom.
@@ -3771,12 +3770,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_ignoreSemanticZoomNavigationInput = true;
 
-			// TODO Uno: Phase 4 — once OnApplyTemplate populates m_trElementScrollContentPresenter, route to
-			// SCP.RegisterAsSemanticZoomPresenter().
-			// if (m_trElementScrollContentPresenter is not null)
-			// {
-			//     m_trElementScrollContentPresenter.RegisterAsSemanticZoomPresenter();
-			// }
+			if (m_trElementScrollContentPresenter is not null)
+			{
+				m_trElementScrollContentPresenter.RegisterAsSemanticZoomPresenter();
+			}
 		}
 
 		// Indicates whether we're at our highest zoom factor (as defined by MaxZoomFactor).
