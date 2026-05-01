@@ -421,6 +421,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!isResuming && Scroller is { } sv)
 			{
 				sv.NotifyDirectManipulationStarting();
+				sv.NotifyDirectManipulationStarted();
 				sv.RaiseDirectManipulationStarted();
 			}
 #endif

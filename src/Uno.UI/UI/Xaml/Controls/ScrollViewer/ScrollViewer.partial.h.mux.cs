@@ -556,17 +556,58 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isInDirectManipulation = true;
 			m_isDirectManipulationStopped = false;
 			m_isInertial = false;
+			m_dmanipState = DMManipulationState.DMManipulationStarting;
+
+			// Cache the current scroll/zoom-mode + scrollbar-visibility properties so the
+			// active manipulation uses these values even if the live DPs change mid-manip.
+			// MUX Reference: ScrollViewer_Partial.cpp HandleManipulationStarting captures
+			// these into m_current* fields before the manipulation begins.
+			m_currentHorizontalScrollMode = HorizontalScrollMode;
+			m_currentVerticalScrollMode = VerticalScrollMode;
+			m_currentZoomMode = ZoomMode;
+			m_currentHorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
+			m_currentVerticalScrollBarVisibility = VerticalScrollBarVisibility;
+			m_currentIsHorizontalRailEnabled = IsHorizontalRailEnabled;
+			m_currentIsVerticalRailEnabled = IsVerticalRailEnabled;
+			m_currentIsScrollInertiaEnabled = IsScrollInertiaEnabled;
+			m_currentIsZoomInertiaEnabled = IsZoomInertiaEnabled;
+		}
+
+		internal void NotifyDirectManipulationStarted()
+		{
+			m_dmanipState = DMManipulationState.DMManipulationStarted;
 		}
 
 		internal void NotifyDirectManipulationCompleted()
 		{
 			m_isInDirectManipulation = false;
 			m_isInertial = false;
+			m_dmanipState = DMManipulationState.DMManipulationCompleted;
+
+			// Reset target-view tracking flags so a subsequent ChangeViewInternal call
+			// uses fresh live property values.
+			m_isTargetHorizontalOffsetValid = false;
+			m_isTargetVerticalOffsetValid = false;
+			m_isTargetZoomFactorValid = false;
 		}
 
 		internal void NotifyInertiaStarting()
 		{
 			m_isInertial = true;
+		}
+
+		// Stops an in-progress inertia phase. The C++ source uses this when an
+		// external programmatic ChangeView arrives during inertia — the inertia
+		// is aborted and the new view is applied directly. On Skia, SCP's
+		// IDirectManipulationHandler.OnUpdated already drops the touch inertia
+		// when a programmatic Set call arrives; this bridge keeps the SV state
+		// machine consistent.
+		internal void StopInertialManipulation()
+		{
+			if (m_isInDirectManipulation && m_isInertial)
+			{
+				m_isDirectManipulationStopped = true;
+			}
 		}
 
 		// A direct manipulation in inertia phase can be interrupted via a call to StopInertialManipulation().

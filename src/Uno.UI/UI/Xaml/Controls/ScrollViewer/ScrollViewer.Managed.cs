@@ -157,6 +157,15 @@ namespace Microsoft.UI.Xaml.Controls
 			// block sources the same NextView/FinalView args the C++ port would.
 			// Phase-4 ChangeViewInternal will own this entirely; until then, this
 			// is the bridge.
+
+			// MUX Reference: when a programmatic ChangeView arrives during inertia,
+			// the inertia is aborted. This matches C++ ScrollViewer behavior where
+			// ChangeViewInternal calls StopInertialManipulation as a side effect.
+			if (IsInDirectManipulation && m_isInertial)
+			{
+				StopInertialManipulation();
+			}
+
 			var targetH = horizontalOffset ?? HorizontalOffset;
 			var targetV = verticalOffset ?? VerticalOffset;
 			var targetZ = zoomFactor.HasValue ? (float)zoomFactor.Value : ZoomFactor;
