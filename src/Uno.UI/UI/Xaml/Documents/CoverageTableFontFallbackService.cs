@@ -24,9 +24,7 @@ public sealed record FontFallbackCoverageRange(int Start, int End, IReadOnlyList
 /// </summary>
 /// <remarks>
 /// Construct this with your own <see cref="FontFallbackCoverageRange"/> table and stream-loading
-/// strategy (embedded resource, private CDN, OS lookup, etc.), or copy the data shipped with the
-/// default service to keep the same coverage while changing how font bytes are obtained - for
-/// example, to avoid CORS-restricted hosts on WebAssembly.
+/// strategy (embedded resource, private CDN, OS lookup, etc.).
 /// </remarks>
 public sealed class CoverageTableFontFallbackService : IFontFallbackService
 {
