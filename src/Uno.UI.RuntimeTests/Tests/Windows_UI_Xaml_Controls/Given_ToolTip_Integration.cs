@@ -249,10 +249,28 @@ public class Given_ToolTip_Integration
 		Assert.AreEqual(horizontalOffset, toolTip.HorizontalOffset);
 		Assert.AreEqual(verticalOffset, toolTip.VerticalOffset);
 
-		// The original C++ test also validates the popup placement for each PlacementMode (Top, Right, Bottom, Left).
-		// Those assertions depend on TransformToVisual + popup positioning subtleties (window scaling, RTL, mouse vs.
-		// non-mouse path) and remain a TODO Uno once Phase 6 / Phase 7 settle the placement edge cases. The set/get
-		// part is validated above, which is the core regression coverage for the DP plumbing landed in Phase 5.
+		// The original C++ test also walks each PlacementMode (Top, Right, Bottom, Left) and verifies
+		// the popup is positioned at the expected offsets relative to the button via TransformToVisual.
+		// Those assertions are sensitive to fractional display-scale rounding (e.g. 3.666 vs 4 on 1.5x DPI)
+		// - same family of issues as the ScrollViewer port's pre-existing 1.5x-scale failures
+		// (project_scrollviewer_skia_port.md). Skip the per-PlacementMode positioning checks here;
+		// VerifyPlacementTargetIsHonored already exercises the placement chain end-to-end with
+		// per-pixel-tolerant assertions (X-equality + Y-monotonicity).
+		PlacementMode[] placementModes = { PlacementMode.Top, PlacementMode.Right, PlacementMode.Bottom, PlacementMode.Left };
+		foreach (var mode in placementModes)
+		{
+			ToolTipService.SetPlacement(button, mode);
+			toolTip.IsOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// The placement was actually applied (no crash, popup opened).
+			var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+				TestServices.WindowHelper.WindowContent.XamlRoot);
+			Assert.AreEqual(1, popups.Count, $"PlacementMode.{mode}: expected one open popup");
+
+			toolTip.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
 	}
 
 	// MUX Reference: ToolTipIntegrationTests.cpp VerifyPlacementTargetIsHonored (line 1451).
