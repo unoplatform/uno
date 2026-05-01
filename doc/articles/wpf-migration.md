@@ -69,3 +69,7 @@ Full support for WCF and WCF Data Services are not included in modern .NET versi
 ### Desktop Integration
 
 If your app relies on heavy access to Windows-specific constructs such as the registry, you should rethink your approach to fit the Web's platform agnostic app model.
+
+## XAML and API Equivalents
+
+For a comprehensive reference of WPF-to-WinUI namespace, control, event, and syntax mappings, see the [WPF to WinUI XAML Equivalents Reference](wpf-winui-equivalents.md).

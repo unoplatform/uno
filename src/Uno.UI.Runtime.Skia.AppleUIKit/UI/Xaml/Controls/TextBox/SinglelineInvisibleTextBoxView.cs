@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Xaml.Controls;
@@ -40,6 +41,45 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		{
 			IsKeyboardHiddenOnEnter = true
 		};
+	}
+
+	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSend")]
+	private static extern void void_objc_msgSend_bool(IntPtr receiver, IntPtr selector, [MarshalAs(UnmanagedType.I1)] bool arg);
+
+	private static readonly Selector s_setAllowsNumberPadPopoverSelector = new("setAllowsNumberPadPopover:");
+
+	// iOS 26 introduced a floating number pad popover for UITextField on iPad when a numeric
+	// keyboard is active. The opt-out (-[UITextField setAllowsNumberPadPopover:]) is not yet in
+	// the dotnet/macios bindings (no PR/issue tracking it as of Xcode 26.2 Bindings Status), so
+	// we invoke the selector directly via objc_msgSend. Setting via KVC (setValue:forKey:) is
+	// unreliable for Swift-bridged BOOL properties and was observed to leave the field in a state
+	// where no keyboard would appear at all on iOS 26.
+	// Called from InvisibleTextBoxViewExtension.UpdateProperties after KeyboardType is set so the
+	// IsFloatingNumericKeypad gate (iPad idiom + numeric keyboard) is evaluated against the final
+	// value rather than the constructor default.
+	internal void TryDisableNumberPadPopover()
+	{
+		if (!global::Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover)
+		{
+			return;
+		}
+
+		if (!OperatingSystem.IsIOSVersionAtLeast(26))
+		{
+			return;
+		}
+
+		if (!InvisibleTextBoxViewExtension.IsIPadNumericKeyboard(KeyboardType))
+		{
+			return;
+		}
+
+		if (!RespondsToSelector(s_setAllowsNumberPadPopoverSelector))
+		{
+			return;
+		}
+
+		void_objc_msgSend_bool(Handle, s_setAllowsNumberPadPopoverSelector.Handle, false);
 	}
 
 	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;

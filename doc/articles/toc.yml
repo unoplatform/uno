@@ -294,6 +294,8 @@
         items:
           - name: Migrating WPF Apps to Web
             href: wpf-migration.md
+          - name: WPF to WinUI XAML Equivalents
+            href: wpf-winui-equivalents.md
       - name: UWP-only code
         items:
           - name: Overview
@@ -659,8 +661,12 @@
         href: xref:uno.features.uno.winrt
       - name: Accelerometer
         href: features/accelerometer.md
+      - name: Android Auto
+        href: features/android-auto.md
       - name: Android TV
         href: features/android-tv.md
+      - name: Wear OS (Android Watch)
+        href: features/android-wear.md
       - name: App Actions
         href: features/windows-ui-startscreen.md
       - name: App Suspension

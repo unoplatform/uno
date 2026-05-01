@@ -33,222 +33,65 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Text;
-using SkiaSharp;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.Helpers;
-using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
-internal class NotoFontFallbackService : IFontFallbackService
+internal static class NotoFontFallbackService
 {
-	private readonly HashSet<int> _missingCodepoints = new();
-	private Task? _fetchTask;
-	private readonly Func<int, Task<string?>> _memoizedGetFontNameForCodepoint;
-	private readonly Dictionary<string, SKTypeface?> _fetchedFonts = new();
+	public static IFontFallbackService Instance { get; } = CreateInstance();
 
-	public static NotoFontFallbackService Instance { get; } = new NotoFontFallbackService();
-
-	private NotoFontFallbackService()
+	private static IFontFallbackService CreateInstance()
 	{
-		_memoizedGetFontNameForCodepoint = ((Func<int, Task<string?>>)GetFontNameForCodepointInternal).AsMemoized();
+		var coverage = FallbackFontMaps.CodepointsToFontFamilies
+			.Select(t => new FontFallbackCoverageRange(t.start, t.end, t.fonts))
+			.ToList();
+
+		return new CoverageTableFontFallbackService(coverage, FetchNotoFontStream);
 	}
 
-	public Task<string?> GetFontNameForCodepoint(int codepoint) => _memoizedGetFontNameForCodepoint(codepoint);
-
-	private async Task<string?> GetFontNameForCodepointInternal(int codepoint)
+	private static async Task<Stream?> FetchNotoFontStream(
+		string fontFamily,
+		FontWeight weight,
+		FontStretch stretch,
+		FontStyle style,
+		CancellationToken ct)
 	{
-		NativeDispatcher.CheckThreadAccess();
-		var (name, typeface) = _fetchedFonts.AsEnumerable().FirstOrDefault(t => t.Value != null && t.Value.ContainsGlyph(codepoint));
-		if (typeface is null)
+		if (fontFamily == "Noto Sans CJK")
 		{
-			_missingCodepoints.Add(codepoint);
-			if (_fetchTask is null)
-			{
-				var fetchTask = FetchFontsForMissingCodepoints();
-				if (!fetchTask.IsCompleted)
-				{
-					_fetchTask = fetchTask;
-					await fetchTask;
-				}
-			}
-			else
-			{
-				await _fetchTask;
-			}
-			return _fetchedFonts.AsEnumerable().FirstOrDefault(t => t.Value != null && t.Value.ContainsGlyph(codepoint)).Key;
-		}
-		else
-		{
-			return name;
-		}
-	}
-
-	private async Task FetchFontsForMissingCodepoints()
-	{
-		NativeDispatcher.CheckThreadAccess();
-
-		var missingCodepoints = _missingCodepoints.ToList();
-		_missingCodepoints.Clear();
-
-		var fonts = GetMinimalFontsForCodepoints(missingCodepoints, FallbackFontMaps.CodepointsToFontFamilies);
-		foreach (var rawFont in fonts)
-		{
-			var font = rawFont;
-			if (font is "Noto Sans CJK")
-			{
-				// all CJK fonts have the same codepoint coverage, so we pick one based on locale
-				var locale = CultureInfo.CurrentCulture.Name.ToLowerInvariant();
-				var split = locale.Split('-');
-				var languageSubtag = split[0];
-				var scriptSubtag = split.Length < 2 ? "" : split[1];
-				var regionSubtag = split.Length < 3 ? "" : split[2];
-
-				font = (languageSubtag, scriptSubtag, regionSubtag) switch
-				{
-					("zh", "hant", _) => "TraditionalChinese",
-					("zh", "hans", _) => "SimplifiedChinese",
-					("ja", _, _) => "Japanese",
-					("ko", _, _) => "Korean",
-					_ => "SimplifiedChinese"
-				};
-			}
-
-			var map = FallbackFontMaps.FontWeightsToRawUrls[font];
-			// TODO: use weight/stretch/style to pick the best match
-			var uri = new Uri(map["Regular"]);
-			try
-			{
-				var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
-				var typeface = SKTypeface.FromStream(stream);
-				_fetchedFonts[font] = typeface;
-			}
-			catch (Exception e)
-			{
-				this.LogError()?.Error($"Failed to create an SKTypeface for {font} using {uri.OriginalString}", e);
-				_fetchedFonts[font] = null;
-			}
+			// All CJK fonts have the same codepoint coverage; pick a regional variant by current culture.
+			fontFamily = SelectCjkVariantForCurrentCulture();
 		}
 
-		if (_missingCodepoints.Count > 0)
-		{
-			await FetchFontsForMissingCodepoints();
-		}
-		else
-		{
-			_fetchTask = null;
-		}
-	}
-
-	public async Task<SKTypeface?> GetTypefaceForFontName(string fontName, FontWeight weight, FontStretch stretch, FontStyle style)
-	{
-		NativeDispatcher.CheckThreadAccess();
-		if (_fetchedFonts.TryGetValue(fontName, out var typeface))
-		{
-			return typeface;
-		}
-
-		if (_fetchTask is null)
+		if (!FallbackFontMaps.FontWeightsToRawUrls.TryGetValue(fontFamily, out var variants))
 		{
 			return null;
 		}
-		else
-		{
-			await _fetchTask;
-			return _fetchedFonts.GetValueOrDefault(fontName);
-		}
+
+		var uri = new Uri(variants["Regular"]);
+		return await AppDataUriEvaluator.ToStream(uri, ct);
 	}
 
-	public static List<string> GetMinimalFontsForCodepoints(IEnumerable<int> codepoints, IReadOnlyList<(int Start, int End, List<string> Fonts)> mergedRanges)
+	private static string SelectCjkVariantForCurrentCulture()
 	{
-		var requested = codepoints.Distinct().ToList();
-		requested.Sort();
-		if (requested.Count == 0)
-			return [];
+		var locale = CultureInfo.CurrentCulture.Name.ToLowerInvariant();
+		var split = locale.Split('-');
+		var languageSubtag = split[0];
+		var scriptSubtag = split.Length < 2 ? "" : split[1];
+		var regionSubtag = split.Length < 3 ? "" : split[2];
 
-		var uncovered = new HashSet<int>(requested);
-		var coverageByFont = BuildCoverageMap(requested, mergedRanges);
-		var selectedFonts = new List<string>();
-
-		while (uncovered.Count > 0)
+		return (languageSubtag, scriptSubtag, regionSubtag) switch
 		{
-			var (bestFont, coveredCount) = FindBestCoveringFont(uncovered, coverageByFont);
-			if (bestFont == null || coveredCount == 0)
-				break;
-
-			selectedFonts.Add(bestFont);
-			var handled = coverageByFont[bestFont];
-			foreach (var cp in handled)
-				uncovered.Remove(cp);
-
-			coverageByFont.Remove(bestFont);
-		}
-
-		return selectedFonts;
-	}
-
-	private static Dictionary<string, HashSet<int>> BuildCoverageMap(IEnumerable<int> requested, IReadOnlyList<(int Start, int End, List<string> Fonts)> mergedRanges)
-	{
-		var map = new Dictionary<string, HashSet<int>>(StringComparer.Ordinal);
-		foreach (var codepoint in requested)
-		{
-			var fonts = GetFontsForCodepoint(codepoint, mergedRanges);
-			foreach (var font in fonts)
-			{
-				if (!map.TryGetValue(font, out var covered))
-				{
-					covered = new HashSet<int>();
-					map[font] = covered;
-				}
-
-				covered.Add(codepoint);
-			}
-		}
-
-		return map;
-	}
-
-	private static List<string> GetFontsForCodepoint(int codepoint, IReadOnlyList<(int Start, int End, List<string> Fonts)> mergedRanges)
-	{
-		for (int i = 0; i < mergedRanges.Count; i++)
-		{
-			var span = mergedRanges[i];
-			if (codepoint < span.Start)
-				break;
-
-			if (codepoint >= span.Start && codepoint < span.End)
-				return span.Fonts;
-		}
-
-		return new List<string>();
-	}
-
-	private static (string? Font, int CoveredCount) FindBestCoveringFont(HashSet<int> uncovered, Dictionary<string, HashSet<int>> coverageByFont)
-	{
-		string? bestFont = null;
-		int bestCoverage = 0;
-
-		foreach (var (font, covered) in coverageByFont)
-		{
-			int current = 0;
-			foreach (var cp in covered)
-			{
-				if (uncovered.Contains(cp))
-					current++;
-			}
-
-			if (current > bestCoverage)
-			{
-				bestCoverage = current;
-				bestFont = font;
-			}
-		}
-
-		return (bestFont, bestCoverage);
+			("zh", "hant", _) => "TraditionalChinese",
+			("zh", "hans", _) => "SimplifiedChinese",
+			("ja", _, _) => "Japanese",
+			("ko", _, _) => "Korean",
+			_ => "SimplifiedChinese"
+		};
 	}
 }

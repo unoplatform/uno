@@ -102,7 +102,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => Win32ImeTextBoxExtension.Instance);
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
 
-		Win32Accessibility.Register();
+		AccessibilityRouter.EnsureInitialized();
 	}
 
 	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)

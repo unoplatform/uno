@@ -598,6 +598,18 @@ namespace Uno.UI
 			/// </summary>
 			public static List<(Stream dictionary, Stream affixes)> CustomSpellCheckDictionaries { get; set; }
 
+			/// <summary>
+			/// When set to <see langword="true"/>, disables the floating number pad popover that iOS 26
+			/// introduced for <c>UITextField</c> when a numeric keyboard is used on iPad (by setting
+			/// <c>UITextField.allowsNumberPadPopover</c> to <see langword="false"/>).
+			/// Defaults to <see langword="false"/> (native iOS 26 behavior is preserved).
+			/// </summary>
+			/// <remarks>
+			/// This is currently an iOS Skia-only feature and has no effect on other platforms or
+			/// on iOS versions prior to 26.
+			/// </remarks>
+			public static bool DisableNumberPadPopover { get; set; }
+
 #if __ANDROID__
 			/// <summary>
 			/// The legacy <see cref="Microsoft.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.

@@ -60,7 +60,6 @@ stages:
 
 - stage: runtime_tests_skia_android_coreclr
   displayName: Tests - Android+CoreCLR Skia
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
@@ -78,7 +77,6 @@ stages:
 
 - stage: runtime_tests_skia_android_nativeaot
   displayName: Tests - Android+NativeAOT Skia
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
