@@ -854,6 +854,141 @@ namespace Microsoft.UI.Xaml.Controls
 			pTargetExtentHeight = targetExtentHeight;
 		}
 
+		// Returns the value of ZoomSnapPoints which can be null if uninitialized.
+		// Mirrors the C++ m_spZoomSnapPoints field accessor pattern. Note that
+		// ZoomSnapPoints is currently NotImplemented on Skia at the public-API
+		// level (the DP is registered, but reads return null until snap-points
+		// land on Skia), so the AdjustZoomFactorWithMandatorySnapPoints loop
+		// below stays a no-op until that lands.
+		private global::System.Collections.Generic.IList<float> GetZoomSnapPoints()
+			=> GetValue(ZoomSnapPointsProperty) as global::System.Collections.Generic.IList<float>;
+
+		// Adjusts the provided target zoom factor based on potential mandatory
+		// zoom snap points.
+		// (C++ source line 12550)
+		internal void AdjustZoomFactorWithMandatorySnapPoints(
+			float minZoomFactor,
+			float maxZoomFactor,
+			ref float pTargetZoomFactor)
+		{
+			float adjustedZoomFactor = pTargetZoomFactor;
+			double smallestDistance = double.MaxValue;
+			SnapPointsType snapPointsType;
+			var zoomSnapPoints = GetZoomSnapPoints();
+
+			if (zoomSnapPoints is not null)
+			{
+				snapPointsType = ZoomSnapPointsType;
+
+				if (snapPointsType == SnapPointsType.MandatorySingle ||
+					snapPointsType == SnapPointsType.Mandatory)
+				{
+					// Pick the mandatory zoom snap point closest to *pTargetZoomFactor
+					if (zoomSnapPoints.Count > 0)
+					{
+						foreach (var zoomSnapPoint in zoomSnapPoints)
+						{
+							if (zoomSnapPoint >= minZoomFactor && zoomSnapPoint <= maxZoomFactor &&
+								Math.Abs(zoomSnapPoint - pTargetZoomFactor) < smallestDistance)
+							{
+								smallestDistance = Math.Abs(zoomSnapPoint - pTargetZoomFactor);
+								adjustedZoomFactor = zoomSnapPoint;
+							}
+						}
+						pTargetZoomFactor = adjustedZoomFactor;
+					}
+				}
+			}
+		}
+
+		// Adjusts the provided target HorizontalOffset, target VerticalOffset and target
+		// ZoomFactor based on potential mandatory scroll and zoom snap points.
+		// The provided min & max offsets and factor guarantee that the adjustment remains
+		// within the allowed boundaries.
+		// (C++ source line 12623)
+		internal void AdjustViewWithMandatorySnapPoints(
+			double minHorizontalOffset,
+			double maxHorizontalOffset,
+			double currentHorizontalOffset,
+			double minVerticalOffset,
+			double maxVerticalOffset,
+			double currentVerticalOffset,
+			float minZoomFactor,
+			float maxZoomFactor,
+			double viewportPixelWidth,
+			double viewportPixelHeight,
+			ref double pCurrentUnzoomedPixelExtentWidth,
+			ref double pCurrentUnzoomedPixelExtentHeight,
+			ref double pTargetHorizontalOffset,
+			ref double pTargetVerticalOffset,
+			ref float pTargetZoomFactor)
+		{
+			double targetExtentWidth = 0.0;
+			double targetExtentHeight = 0.0;
+
+			global::System.Diagnostics.Debug.Assert(viewportPixelWidth > 0);
+			global::System.Diagnostics.Debug.Assert(viewportPixelHeight > 0);
+
+			// Adjust the target zoom factor based on potential mandatory zoom snap points
+			AdjustZoomFactorWithMandatorySnapPoints(minZoomFactor, maxZoomFactor, ref pTargetZoomFactor);
+
+			// Compute expected extent width
+			if (pCurrentUnzoomedPixelExtentWidth == -1.0)
+			{
+				ComputePixelExtentWidth(true /*ignoreZoomFactor*/, null /*pProvider*/, out pCurrentUnzoomedPixelExtentWidth);
+			}
+			global::System.Diagnostics.Debug.Assert(pCurrentUnzoomedPixelExtentWidth != -1.0);
+			targetExtentWidth = pCurrentUnzoomedPixelExtentWidth * pTargetZoomFactor;
+
+			// ...and expected extent height
+			if (pCurrentUnzoomedPixelExtentHeight == -1.0)
+			{
+				ComputePixelExtentHeight(true /*ignoreZoomFactor*/, null /*pProvider*/, out pCurrentUnzoomedPixelExtentHeight);
+			}
+			global::System.Diagnostics.Debug.Assert(pCurrentUnzoomedPixelExtentHeight != -1.0);
+			targetExtentHeight = pCurrentUnzoomedPixelExtentHeight * pTargetZoomFactor;
+
+			// Compute expected max horizontal offset
+			if (maxHorizontalOffset == -1.0)
+			{
+				maxHorizontalOffset = Math.Max(minHorizontalOffset, targetExtentWidth - viewportPixelWidth);
+			}
+
+			// ... and expected max vertical offset
+			if (maxVerticalOffset == -1.0)
+			{
+				maxVerticalOffset = Math.Max(minVerticalOffset, targetExtentHeight - viewportPixelHeight);
+			}
+
+			global::System.Diagnostics.Debug.Assert(minHorizontalOffset >= 0.0);
+			global::System.Diagnostics.Debug.Assert(minVerticalOffset >= 0.0);
+			global::System.Diagnostics.Debug.Assert(maxHorizontalOffset >= 0.0);
+			global::System.Diagnostics.Debug.Assert(maxVerticalOffset >= 0.0);
+			global::System.Diagnostics.Debug.Assert(targetExtentWidth >= 0.0);
+			global::System.Diagnostics.Debug.Assert(targetExtentHeight >= 0.0);
+
+			// Adjust the target offsets based on potential mandatory scroll snap points
+			AdjustOffsetWithMandatorySnapPoints(
+				true /*isForHorizontalOffset*/,
+				minHorizontalOffset,
+				maxHorizontalOffset,
+				currentHorizontalOffset,
+				targetExtentWidth /*targetExtentDim*/,
+				viewportPixelWidth,
+				pTargetZoomFactor,
+				ref pTargetHorizontalOffset);
+
+			AdjustOffsetWithMandatorySnapPoints(
+				false /*isForHorizontalOffset*/,
+				minVerticalOffset,
+				maxVerticalOffset,
+				currentVerticalOffset,
+				targetExtentHeight /*targetExtentDim*/,
+				viewportPixelHeight,
+				pTargetZoomFactor,
+				ref pTargetVerticalOffset);
+		}
+
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
 		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
