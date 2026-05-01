@@ -203,6 +203,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_horizontalOverpanMode = DMOverpanMode.Default;
 			m_verticalOverpanMode = DMOverpanMode.Default;
+
+			// Wire up DP-changed callbacks for the snap-point and scroll-mode DPs so they
+			// dispatch through the ported handlers (mirrors the C++ OnPropertyChanged2 switch
+			// at ScrollViewer_Partial.cpp:349). The Uno cross-platform DPs don't have callbacks
+			// for these so we add them at construction time.
+			RegisterPropertyChangedCallback(HorizontalSnapPointsTypeProperty, (s, e) =>
+				((ScrollViewer)s).OnSnapPointsAffectingPropertyChanged(DMMotionTypes.PanX, ((ScrollViewer)s).IsInDirectManipulation));
+			RegisterPropertyChangedCallback(HorizontalSnapPointsAlignmentProperty, (s, e) =>
+				((ScrollViewer)s).OnSnapPointsAffectingPropertyChanged(DMMotionTypes.PanX, false));
+			RegisterPropertyChangedCallback(VerticalSnapPointsTypeProperty, (s, e) =>
+				((ScrollViewer)s).OnSnapPointsAffectingPropertyChanged(DMMotionTypes.PanY, ((ScrollViewer)s).IsInDirectManipulation));
+			RegisterPropertyChangedCallback(VerticalSnapPointsAlignmentProperty, (s, e) =>
+				((ScrollViewer)s).OnSnapPointsAffectingPropertyChanged(DMMotionTypes.PanY, false));
+			RegisterPropertyChangedCallback(HorizontalScrollModeProperty, (s, e) =>
+				((ScrollViewer)s).RefreshScrollBarIsIgnoringUserInput(true));
+			RegisterPropertyChangedCallback(VerticalScrollModeProperty, (s, e) =>
+				((ScrollViewer)s).RefreshScrollBarIsIgnoringUserInput(false));
 		}
 
 #if false
