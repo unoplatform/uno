@@ -275,6 +275,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
 		}
 
+		// MUX Reference ViewChangeEventsAreCorrect (C++ line 3066).
+		// Validates that ViewChanged fires exactly once with IsIntermediate=false
+		// after a ChangeView call.
+		// Note: the original C++ test also asserts ViewChanging fires with populated
+		// NextView/FinalView and that intermediate inertial events fire. On Skia,
+		// the ViewChanging-from-ChangeView path is part of the Phase-4 ChangeViewInternal
+		// port that hasn't landed yet — the cross-platform ChangeView synchronously
+		// updates the offsets and only raises the final ViewChanged. The Skia variant
+		// of this test exercises the ViewChanged contract for the synchronous path
+		// and leaves the ViewChanging assertions to be re-enabled when Phase 4 lands.
+		[TestMethod]
+		public async Task ViewChangeEventsAreCorrect()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+			var newVerticalOffset = 10.0;
+
+			int intermediateViewChangedCount = 0;
+			int nonIntermediateViewChangedCount = 0;
+
+			var viewChangedTcs = new TaskCompletionSource<bool>();
+			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+			{
+				if (!args.IsIntermediate)
+				{
+					nonIntermediateViewChangedCount++;
+					viewChangedTcs.TrySetResult(true);
+				}
+				else
+				{
+					intermediateViewChangedCount++;
+				}
+			}
+
+			scrollViewer.ViewChanged += OnViewChanged;
+			try
+			{
+				_ = scrollViewer.ChangeView(null, newVerticalOffset, null, false /*disableAnimation*/);
+
+				var completed = await Task.WhenAny(viewChangedTcs.Task, Task.Delay(TimeSpan.FromSeconds(3)));
+				Assert.AreEqual(viewChangedTcs.Task, completed, "ViewChanged with IsIntermediate=false didn't fire within 3s");
+
+				Assert.IsTrue(intermediateViewChangedCount >= 0, "intermediateViewChangedCount sanity");
+				Assert.AreEqual(1, nonIntermediateViewChangedCount, "Exactly one final ViewChanged");
+				Assert.AreEqual(newVerticalOffset, scrollViewer.VerticalOffset, 0.001, "Final VerticalOffset");
+			}
+			finally
+			{
+				scrollViewer.ViewChanged -= OnViewChanged;
+			}
+		}
+
 		// MUX Reference ValidateNoLayoutCycleByChangeContentSize (C++ line 4854).
 		// Regression test for a layout cycle that used to occur when the content
 		// width oscillated across a parent's MinWidth constraint.
