@@ -409,24 +409,47 @@ public partial class ScrollViewer
 			(element == content || SharedHelpers.IsAncestor(element, content));
 	}
 
+	// (C++ source line 16609)
 	private Rect GetDescendantBounds(UIElement content, UIElement descendant)
 	{
 		var descendantAsFE = descendant as FrameworkElement;
+		double width = 0.0;
+		double height = 0.0;
+
+		if (descendantAsFE is not null)
+		{
+			width = descendantAsFE.ActualWidth;
+			height = descendantAsFE.ActualHeight;
+		}
+
 		var descendantRect = new Rect(
 			0.0,
 			0.0,
-			descendantAsFE?.ActualWidth ?? 0,
-			descendantAsFE?.ActualHeight ?? 0);
+			width,
+			height);
 
-		var contentAsFE = content as FrameworkElement;
-		Thickness contentMargin = contentAsFE?.Margin ?? default;
+		return GetDescendantBounds(content, descendant, descendantRect);
+	}
+
+	// (C++ source line 16640)
+	private Rect GetDescendantBounds(UIElement content, UIElement descendant, Rect descendantRect)
+	{
+		Thickness contentMargin = default;
 
 		var transform = descendant.TransformToVisual(content);
-		return transform.TransformBounds(new Rect(
+
+		var contentAsFE = content as FrameworkElement;
+		if (contentAsFE is not null)
+		{
+			contentMargin = contentAsFE.Margin;
+		}
+
+		var bounds = new Rect(
 			contentMargin.Left + descendantRect.X,
 			contentMargin.Top + descendantRect.Y,
 			descendantRect.Width,
-			descendantRect.Height));
+			descendantRect.Height);
+		return transform.TransformBounds(bounds);
 	}
 
 	// Applies a flicker-less shift of the ScrollViewer's offset.
