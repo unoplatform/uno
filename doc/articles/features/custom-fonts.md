@@ -350,4 +350,3 @@ Uno.UI.FeatureConfiguration.Font.FallbackService = EmptyFontFallbackService.Inst
 ```
 
 This is distinct from leaving the property at its `null` default, which means "use the platform-registered default service."
-
