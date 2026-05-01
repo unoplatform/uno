@@ -347,11 +347,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if !__SKIA__
+		// On Skia these are provided by the WinUI port (ScrollContentPresenter.IScrollInfo.mux.cs).
 		public void SetVerticalOffset(double offset)
 			=> Set(verticalOffset: offset, disableAnimation: true);
 
 		public void SetHorizontalOffset(double offset)
 			=> Set(horizontalOffset: offset, disableAnimation: true);
+#endif
 
 		// Ensure the offset we're scrolling to is valid.
 		private double ValidateInputOffset(double offset, int minOffset, double maxOffset)
