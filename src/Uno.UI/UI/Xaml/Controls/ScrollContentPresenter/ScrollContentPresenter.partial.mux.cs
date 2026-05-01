@@ -1533,12 +1533,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// (C++ source line 3536)
 		internal void OnPropertyChanged2Core(DependencyProperty changedProperty)
 		{
-			// TODO Uno: Phase 4 — once SCP exposes CanContentRenderOutsideBoundsProperty on Skia
-			// (it's currently NotImplemented in Generated), wire this up. For now, no-op.
-			// if (changedProperty == CanContentRenderOutsideBoundsProperty)
-			// {
-			//     InvalidateArrange();
-			// }
+			if (changedProperty == CanContentRenderOutsideBoundsProperty)
+			{
+				InvalidateArrange();
+			}
 		}
 
 		// Enters the mode where the child's actual size is used for
