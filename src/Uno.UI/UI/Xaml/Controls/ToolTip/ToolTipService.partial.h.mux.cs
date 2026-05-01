@@ -138,6 +138,32 @@ internal class ToolTipServiceMetadata
 	{
 		m_tpLastEnterSource = value;
 	}
+
+	// MUX Reference: ToolTipService_Partial.cpp ToolTipServiceMetadata::EnsureNestedOwnersInstance (line 40).
+	internal void EnsureNestedOwnersInstance()
+	{
+		if (m_nestedOwners is null)
+		{
+			m_nestedOwners = new LinkedList<WeakReference>();
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp ToolTipServiceMetadata::DeleteElementFromNestedOwners (line 49).
+	// after delete, it automatically moved to next element.
+	internal LinkedListNode<WeakReference>? DeleteElementFromNestedOwners(LinkedListNode<WeakReference> node)
+	{
+		if (m_isErasingNestedOwners)
+		{
+			// nested erase is detected and we don't expect it. so throw E_UNEXPECTED exception
+			throw new global::System.InvalidOperationException("Nested erase detected in ToolTipServiceMetadata.m_nestedOwners.");
+		}
+
+		m_isErasingNestedOwners = true;
+		var next = node.Next;
+		m_nestedOwners!.Remove(node);
+		m_isErasingNestedOwners = false;
+		return next;
+	}
 }
 
 // MUX Reference: ToolTipService_Partial.h ToolTipService class (line 129).

@@ -10,6 +10,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -456,23 +457,255 @@ public partial class ToolTipService
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp AddToNestedOwners (line 979).
-	// Phase 4 closeout will port the full nested-owner list management. For now this stub
-	// is sufficient because tooltips don't nest in the common Slider / Button case.
-	private static void AddToNestedOwners(DependencyObject pOwner)
+	// Add current owner to list of nested owners, sorted by ancestry. The highest ancestor
+	// is at the end of the list.
+	internal static void AddToNestedOwners(DependencyObject pOwner)
 	{
-		// TODO Uno: Phase 4 closeout will port AddToNestedOwners faithfully.
+		if (pOwner is null)
+		{
+			return;
+		}
+
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners ||
+			pToolTipServiceMetadataNoRef.m_isPurgingInvalidNestedOwners)
+		{
+			pToolTipServiceMetadataNoRef.m_objectsToAdd.Add(new WeakReference(pOwner));
+			return;
+		}
+
+		try
+		{
+			pToolTipServiceMetadataNoRef.m_isAddingToNestedOwners = true;
+			pToolTipServiceMetadataNoRef.EnsureNestedOwnersInstance();
+
+			LinkedListNode<WeakReference>? insertionIndex = pToolTipServiceMetadataNoRef.m_nestedOwners!.First;
+
+			// Don't add if already in the list
+			for (var it = pToolTipServiceMetadataNoRef.m_nestedOwners.First; it is not null; it = it.Next)
+			{
+				var spCurrentDO = it.Value.Target as DependencyObject;
+				if (spCurrentDO is not null && ReferenceEquals(pOwner, spCurrentDO))
+				{
+					return;
+				}
+			}
+
+			// Add to list, which is increasingly sorted by ancestry
+			for (var it = pToolTipServiceMetadataNoRef.m_nestedOwners.First; it is not null; it = it.Next)
+			{
+				var spCurrentDO = it.Value.Target as DependencyObject;
+				if (spCurrentDO is not null)
+				{
+					var spContainer = GetContainerFromOwner(pOwner);
+					var spCurrentContainer = GetContainerFromOwner(spCurrentDO);
+
+					if (spCurrentContainer is not null && spContainer is not null &&
+						spCurrentContainer.IsAncestorOf(spContainer))
+					{
+						// Found insertion point
+						insertionIndex = it;
+						break;
+					}
+				}
+			}
+
+			var newRef = new WeakReference(pOwner);
+			if (insertionIndex is not null)
+			{
+				pToolTipServiceMetadataNoRef.m_nestedOwners.AddBefore(insertionIndex, new LinkedListNode<WeakReference>(newRef));
+			}
+			else
+			{
+				pToolTipServiceMetadataNoRef.m_nestedOwners.AddLast(newRef);
+			}
+			pToolTipServiceMetadataNoRef.m_isAddingToNestedOwners = false;
+			RunPendingOwnerListOperations(pToolTipServiceMetadataNoRef);
+		}
+		finally
+		{
+			pToolTipServiceMetadataNoRef.m_isAddingToNestedOwners = false;
+		}
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp RemoveFromNestedOwners (line 1116).
-	private static void RemoveFromNestedOwners(DependencyObject pOwner)
+	// If a nested owner has been removed from the visual tree or made invisible, remove it
+	// from the list, because it can no longer display tooltips.
+	internal static void RemoveFromNestedOwners(DependencyObject pOwner)
 	{
-		// TODO Uno: Phase 4 closeout will port RemoveFromNestedOwners faithfully.
+		global::System.Diagnostics.Debug.Assert(pOwner is not null);
+		if (pOwner is null)
+		{
+			return;
+		}
+
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_isAddingToNestedOwners ||
+			pToolTipServiceMetadataNoRef.m_isPurgingInvalidNestedOwners)
+		{
+			pToolTipServiceMetadataNoRef.m_objectsToRemove.Add(new WeakReference(pOwner));
+			return;
+		}
+
+		try
+		{
+			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = true;
+
+			// Remove from list of nested owners
+			if (pToolTipServiceMetadataNoRef.m_nestedOwners is not null)
+			{
+				var it = pToolTipServiceMetadataNoRef.m_nestedOwners.First;
+				while (it is not null)
+				{
+					var spCurrentDO = it.Value.Target as DependencyObject;
+					if (spCurrentDO is not null)
+					{
+						if (ReferenceEquals(pOwner, spCurrentDO))
+						{
+							pToolTipServiceMetadataNoRef.DeleteElementFromNestedOwners(it);
+							break;
+						}
+					}
+
+					it = it.Next;
+				}
+			}
+
+			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = false;
+			RunPendingOwnerListOperations(pToolTipServiceMetadataNoRef);
+		}
+		finally
+		{
+			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = false;
+		}
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp PurgeInvalidNestedOwners (line 1177).
 	internal static void PurgeInvalidNestedOwners()
 	{
-		// TODO Uno: Phase 4 closeout will port PurgeInvalidNestedOwners faithfully.
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		try
+		{
+			bool isListOperationInProgress =
+				pToolTipServiceMetadataNoRef.m_isAddingToNestedOwners ||
+				pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners;
+
+			pToolTipServiceMetadataNoRef.m_isPurgingInvalidNestedOwners = true;
+
+			if (pToolTipServiceMetadataNoRef.m_nestedOwners is null)
+			{
+				return;
+			}
+
+			var it = pToolTipServiceMetadataNoRef.m_nestedOwners.First;
+			while (it is not null)
+			{
+				var spCurrentDO = it.Value.Target as DependencyObject;
+
+				bool shouldErase = false;
+
+				if (spCurrentDO is null)
+				{
+					shouldErase = true;
+				}
+				else
+				{
+					var spCurrentContainer = GetContainerFromOwner(spCurrentDO);
+					bool bIsHitTestVisible = spCurrentContainer?.IsHitTestVisible ?? false;
+
+					shouldErase = !bIsHitTestVisible || spCurrentContainer is null || !spCurrentContainer.IsLoaded;
+				}
+
+				if (shouldErase)
+				{
+					if (isListOperationInProgress)
+					{
+						pToolTipServiceMetadataNoRef.m_objectsToRemove.Add(it.Value);
+						it = it.Next;
+					}
+					else
+					{
+						it = pToolTipServiceMetadataNoRef.DeleteElementFromNestedOwners(it);
+					}
+				}
+				else
+				{
+					it = it.Next;
+				}
+			}
+
+			if (!isListOperationInProgress)
+			{
+				pToolTipServiceMetadataNoRef.m_isPurgingInvalidNestedOwners = false;
+				RunPendingOwnerListOperations(pToolTipServiceMetadataNoRef);
+			}
+		}
+		finally
+		{
+			pToolTipServiceMetadataNoRef.m_isPurgingInvalidNestedOwners = false;
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp RunPendingOwnerListOperations (line 1255).
+	private static void RunPendingOwnerListOperations(ToolTipServiceMetadata pToolTipServiceMetadataNoRef)
+	{
+		while (pToolTipServiceMetadataNoRef.m_objectsToAdd.Count > 0)
+		{
+			// Cache the list so we don't modify it while iterating over it.
+			var objectsToAdd = new global::System.Collections.Generic.List<WeakReference>(pToolTipServiceMetadataNoRef.m_objectsToAdd);
+			pToolTipServiceMetadataNoRef.m_objectsToAdd.Clear();
+
+			foreach (var objectToAdd in objectsToAdd)
+			{
+				var objectToAddDO = objectToAdd.Target as DependencyObject;
+				if (objectToAddDO is not null)
+				{
+					AddToNestedOwners(objectToAddDO);
+				}
+			}
+		}
+
+		while (pToolTipServiceMetadataNoRef.m_objectsToRemove.Count > 0)
+		{
+			// Cache the list so we don't modify it while iterating over it.
+			var objectsToRemove = new global::System.Collections.Generic.List<WeakReference>(pToolTipServiceMetadataNoRef.m_objectsToRemove);
+			pToolTipServiceMetadataNoRef.m_objectsToRemove.Clear();
+
+			foreach (var objectToRemove in objectsToRemove)
+			{
+				var objectToRemoveDO = objectToRemove.Target as DependencyObject;
+				if (objectToRemoveDO is not null)
+				{
+					RemoveFromNestedOwners(objectToRemoveDO);
+				}
+			}
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp GetFirstNestedOwner (line 1317).
+	internal static DependencyObject? GetFirstNestedOwner()
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_nestedOwners is not null)
+		{
+			var it = pToolTipServiceMetadataNoRef.m_nestedOwners.First;
+			while (it is not null)
+			{
+				var spCurrentAsDO = it.Value.Target as DependencyObject;
+				if (spCurrentAsDO is not null)
+				{
+					return spCurrentAsDO;
+				}
+
+				it = it.Next;
+			}
+		}
+
+		return null;
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp OnOwnerPointerEntered (line 1354).
