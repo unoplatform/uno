@@ -3808,15 +3808,128 @@ namespace Microsoft.UI.Xaml.Controls
 			return DoubleUtil.LessThanOrClose(currentZoomFactor, minZoomFactor);
 		}
 
+		// Hooks up snap-point change handlers on m_trScrollSnapPointsInfo so that
+		// the SV is notified when its content's snap-points become invalid.
+		// (C++ source line 8517)
+		internal void HookScrollSnapPointsInfoEvents(bool isForHorizontalSnapPoints)
+		{
+			if (m_trScrollSnapPointsInfo is not null)
+			{
+				if (isForHorizontalSnapPoints && m_HorizontalSnapPointsChangedToken.Disposable is null)
+				{
+					global::System.EventHandler<object> handler = (s, e) => OnSnapPointsChanged(DMMotionTypes.PanX);
+					m_trScrollSnapPointsInfo.HorizontalSnapPointsChanged += handler;
+					m_HorizontalSnapPointsChangedToken.Disposable = global::Uno.Disposables.Disposable.Create(() =>
+					{
+						if (m_trScrollSnapPointsInfo is not null)
+						{
+							m_trScrollSnapPointsInfo.HorizontalSnapPointsChanged -= handler;
+						}
+					});
+				}
+
+				if (!isForHorizontalSnapPoints && m_VerticalSnapPointsChangedToken.Disposable is null)
+				{
+					global::System.EventHandler<object> handler = (s, e) => OnSnapPointsChanged(DMMotionTypes.PanY);
+					m_trScrollSnapPointsInfo.VerticalSnapPointsChanged += handler;
+					m_VerticalSnapPointsChangedToken.Disposable = global::Uno.Disposables.Disposable.Create(() =>
+					{
+						if (m_trScrollSnapPointsInfo is not null)
+						{
+							m_trScrollSnapPointsInfo.VerticalSnapPointsChanged -= handler;
+						}
+					});
+				}
+			}
+		}
+
+		// Unhooks any snap-point change handlers added by HookScrollSnapPointsInfoEvents.
+		// (C++ source line 8554)
+		internal void UnhookScrollSnapPointsInfoEvents(bool isForHorizontalSnapPoints)
+		{
+			if (m_trScrollSnapPointsInfo is not null)
+			{
+				if (isForHorizontalSnapPoints)
+				{
+					m_HorizontalSnapPointsChangedToken.Disposable = null;
+				}
+				else
+				{
+					m_VerticalSnapPointsChangedToken.Disposable = null;
+				}
+			}
+			else
+			{
+				// If the snap-points provider was already cleared, dispose the tokens so we don't leak handlers.
+				if (isForHorizontalSnapPoints)
+				{
+					m_HorizontalSnapPointsChangedToken.Disposable = null;
+				}
+				else
+				{
+					m_VerticalSnapPointsChangedToken.Disposable = null;
+				}
+			}
+		}
+
+		// Checks if the ScrollContentPresenter's content implements IScrollSnapPointsInfo
+		// and updates m_trScrollSnapPointsInfo accordingly.
+		// (C++ source line 8632)
+		internal void RefreshScrollSnapPointsInfo()
+		{
+			UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: true);
+			UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: false);
+			m_trScrollSnapPointsInfo = null;
+
+			if (m_trElementScrollContentPresenter is not null)
+			{
+				var content = m_trElementScrollContentPresenter.Content;
+				if (content is not null)
+				{
+					// First check if the ScrollContentPresenter's Content is an IScrollSnapPointsInfo
+					IScrollSnapPointsInfo spScrollSnapPointsInfo = content as IScrollSnapPointsInfo;
+
+					if (spScrollSnapPointsInfo is null)
+					{
+						// Then check if it's an ItemsPresenter with an IScrollSnapPointsInfo child
+						if (content is ItemsPresenter spItemsPresenter)
+						{
+							var childCount = global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(spItemsPresenter);
+							if (childCount > 0)
+							{
+								var spChildAsDO = global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(spItemsPresenter, 0);
+								spScrollSnapPointsInfo = spChildAsDO as IScrollSnapPointsInfo;
+							}
+						}
+					}
+
+					if (spScrollSnapPointsInfo is not null)
+					{
+						m_trScrollSnapPointsInfo = spScrollSnapPointsInfo;
+					}
+				}
+			}
+		}
+
 		// Called by HorizontalSnapPointsChangedHandler and
 		// VerticalSnapPointsChangedHandler when snap points changed
 		// or by OnZoomSnapPointsCollectionChanged when the ZoomSnapPoints observable collection changed,
 		// or by OnSnapPointsAffectingPropertyChanged when a property affecting snap points changed.
+		// (C++ source line 9881)
 		internal void OnSnapPointsChanged(DMMotionTypes motionType)
 		{
-			// TODO Uno: Phase 5 — push snap-point notification to the manipulation handler once the DM
-			// adapter exists. The native WinUI implementation calls
-			// CoreImports::ManipulationHandler_NotifySnapPointsChanged here.
+			if (m_hManipulationHandler is not null)
+			{
+				var spContentUIElement = GetContentUIElement();
+				if (spContentUIElement is not null)
+				{
+					// TODO Uno: Phase 4 — port ManipulationHandler_NotifySnapPointsChanged via the DM adapter.
+					// CoreImports::ManipulationHandler_NotifySnapPointsChanged(
+					//     m_hManipulationHandler,
+					//     spContentUIElement,
+					//     (byte)motionType);
+				}
+			}
 		}
 
 		// Called when the Content property changed.
@@ -4021,8 +4134,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// i.e. m_isManipulationHandlerInterestedInNotifications will be reset to FALSE.
 					// Any subsequent manipulation will cause the potentially new snap points to be pushed
 					// to DirectManipulation.
-					// TODO Uno: Phase 5 — port RefreshScrollSnapPointsInfo.
-					// RefreshScrollSnapPointsInfo();
+					RefreshScrollSnapPointsInfo();
 
 					if (m_trManipulatableElement is null && m_trElementScrollContentPresenter is { } pScp)
 					{
@@ -4048,9 +4160,8 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isManipulationHandlerInterestedInNotifications = wantsNotifications;
 			if (!wantsNotifications && !IsInDirectManipulation)
 			{
-				// TODO Uno: Phase 5 — port UnhookScrollSnapPointsInfoEvents.
-				// UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: true);
-				// UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: false);
+				UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: true);
+				UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: false);
 			}
 		}
 
