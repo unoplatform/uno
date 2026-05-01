@@ -304,8 +304,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Set the HorizontalOffset to the passed value.
-		public void SetHorizontalOffset(double offset) => SetHorizontalOffsetPrivate(offset, out _, out _, out _);
+		// Set the HorizontalOffset to the passed value. The public
+		// SetHorizontalOffset is declared in the cross-platform
+		// ScrollContentPresenter.cs and routes through the managed Set() so the
+		// SCP's HorizontalOffset DP gets updated. This Internal variant is the
+		// C++ entry-point used by the new port for internal flows that should
+		// not touch the cross-platform path.
+		internal void SetHorizontalOffsetInternal(double offset) => SetHorizontalOffsetPrivate(offset, out _, out _, out _);
 
 		internal void SetHorizontalOffsetPrivate(
 			double offset,
@@ -348,8 +353,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Set the VerticalOffset to the passed value.
-		public void SetVerticalOffset(double offset) => SetVerticalOffsetPrivate(offset, out _, out _, out _);
+		// Set the VerticalOffset to the passed value. See
+		// SetHorizontalOffsetInternal for the public/internal split rationale.
+		internal void SetVerticalOffsetInternal(double offset) => SetVerticalOffsetPrivate(offset, out _, out _, out _);
 
 		internal void SetVerticalOffsetPrivate(
 			double offset,
