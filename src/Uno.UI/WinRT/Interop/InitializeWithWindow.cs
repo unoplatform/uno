@@ -5,7 +5,7 @@ using MUXWindowId = Microsoft.UI.WindowId;
 
 namespace WinRT.Interop;
 
-public static class InitializeWithWindow
+public static partial class InitializeWithWindow
 {
 	public static void Initialize(object target, IntPtr hwnd)
 	{

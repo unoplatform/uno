@@ -21,24 +21,24 @@ namespace Microsoft.UI.Xaml.Markup
 		// Skipping already declared property ItemType
 		// Skipping already declared property KeyType
 		// Skipping already declared property UnderlyingType
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.BaseType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.ContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.FullName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsArray.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsCollection.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsConstructible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsDictionary.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsMarkupExtension.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsBindable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.ItemType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.KeyType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.BoxedType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.UnderlyingType.get
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlType.ActivateInstance()
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlType.CreateFromString(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlType.GetMember(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlType.AddToVector(object, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlType.AddToMap(object, object, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.IXamlType.RunInitializer()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.BaseType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.BoxedType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.ContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.FullName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsArray.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsBindable.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsCollection.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsConstructible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsDictionary.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.IsMarkupExtension.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.ItemType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.KeyType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.IXamlType.UnderlyingType.get
 	}
 }

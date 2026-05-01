@@ -277,6 +277,55 @@ public class Given_IdeChannelServer
 		result.Should().BeTrue("status must be sendable immediately on ClientConnected");
 	}
 
+	[TestMethod]
+	public async Task WhenDisposed_WaitForReadyDoesNotBlock()
+	{
+		var channelId = $"ide-channel-{Guid.NewGuid():N}";
+		var server = CreateServer();
+
+		// Create a pipe but don't connect a client — WaitForReady is pending.
+		(await Rebind(server, channelId)).Should().BeTrue();
+
+		// Dispose the server while WaitForReady would be pending.
+		server.Dispose();
+
+		// WaitForReady must return false promptly, not block forever.
+		var ready = await server.WaitForReady().AsTask().WaitAsync(TimeSpan.FromSeconds(2));
+		ready.Should().BeFalse("Dispose should complete ReadyTcs");
+	}
+
+	[TestMethod]
+	public async Task WhenTimerFires_ExceptionInSendDoesNotCrash()
+	{
+		var originalDelay = IdeChannelServer.KeepAliveDelayMs;
+		IdeChannelServer.KeepAliveDelayMs = 50; // Use a short delay so the timer fires quickly.
+		try
+		{
+			var channelId = $"ide-channel-{Guid.NewGuid():N}";
+			using var server = CreateServer();
+
+			(await Rebind(server, channelId)).Should().BeTrue();
+
+			using var client = CreateClient(channelId);
+			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+			await client.ConnectAsync(cts.Token);
+			(await server.WaitForReady()).Should().BeTrue();
+
+			// Disconnect the client abruptly — the next keep-alive should not throw.
+			client.Close();
+
+			// Wait long enough for multiple timer ticks to fire on the broken pipe.
+			await Task.Delay(300);
+
+			// The server should not have crashed — it should still be usable.
+			Manager(server).ChannelId.Should().Be(channelId);
+		}
+		finally
+		{
+			IdeChannelServer.KeepAliveDelayMs = originalDelay;
+		}
+	}
+
 	// ── Helpers ──────────────────────────────────────────────────────
 
 	private static IdeChannelServer CreateServer()

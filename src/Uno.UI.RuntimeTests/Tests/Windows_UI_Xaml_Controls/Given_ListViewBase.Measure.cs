@@ -490,6 +490,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Move_Then_SetSelectedIndex_No_Blank_Above()
+		{
+			const string Data = "Alfa,Bravo,Charlie,Delta,Echo,Foxtrot,Golf,Hotel,India,Juliett,Kilo,Lima,Mike,November,Oscar,Papa,Quebec,Romeo,Sierra,Tango,Uniform,Victor,Whiskey,X-ray,Yankee,Zulu";
+			const double ViewportHeight = 200;
+			const double LineHeight = 29; // FixedSizeItemTemplate Height
+
+			var items = new ObservableCollection<string>(Data
+				.Split(',')
+				// must fill beyond the extended viewport: 1(base vp) + 0.5(extended vp)
+				.Take(1 + (int)Math.Round(1.5 * ViewportHeight / LineHeight, MidpointRounding.ToPositiveInfinity))
+			);
+			var SUT = new ListView
+			{
+				MaxHeight = ViewportHeight,
+				SelectionMode = ListViewSelectionMode.Single,
+				ItemsSource = items,
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate, // Height = 29
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			// without ensuring this, we don't have a repro
+			var itemsStackPanel = SUT.FindFirstChild<ItemsStackPanel>();
+			Assert.IsNotNull(itemsStackPanel, "Expected ListView to use an ItemsStackPanel for virtualization.");
+
+			var materialized = itemsStackPanel.Children;
+			Assert.IsNotNull(materialized, "Expected ItemsStackPanel.Children to be available.");
+			Assert.IsTrue(materialized.Count > 0, "Expected at least one materialized child before validating virtualization.");
+			Assert.IsTrue(
+				materialized.Count < items.Count,
+				$"Expected materialized count ({materialized.Count}) < items count ({items.Count})");
+
+			// Repro: move item at index 2 to index 3, then select index 3
+			items.Move(2, 3);
+			SUT.SelectedIndex = 3;
+			await WindowHelper.WaitForIdle();
+
+			// Item 0 must be materialized — no blank above
+			var firstContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
+
+			var bounds = firstContainer.GetRelativeBounds(SUT);
+			Assert.AreEqual(0, bounds.Y, 1, "Item at index 0 should be at the top of the ListView");
+		}
+
 		// Works around ScrollIntoView() not implemented for all platforms
 		private static void ScrollTo(ListViewBase listViewBase, double vOffset)
 		{

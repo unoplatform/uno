@@ -37,8 +37,8 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlNavigationStartingEventArgs.Uri.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNavigationStartingEventArgs.Cancel.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNavigationStartingEventArgs.Cancel.set
+		// Forced skipping of method Windows.Web.UI.WebViewControlNavigationStartingEventArgs.Uri.get
 	}
 }

@@ -39,6 +39,9 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 
 @property (strong) UNOMetalViewDelegate* metalViewDelegate;
 
+/// The Skia rendering view (MTKView or UNOSoftView) inside the container content view.
+@property (strong) NSView* renderingView;
+
 @property OverlappedPresenterState overlappedPresenterState;
 
 - (void)sendEvent:(NSEvent *)event;
@@ -93,6 +96,10 @@ bool uno_window_set_modal(NSWindow *window, bool isModal);
 void uno_window_set_resizable(NSWindow *window, bool isResizable);
 void uno_window_set_min_size(NSWindow* window, double width, double height);
 void uno_window_set_max_size(NSWindow* window, double width, double height);
+
+// System backdrop material support (Mica/Acrylic)
+// material: 0 = None, 1 = Mica (Base), 2 = Mica (BaseAlt), 3 = Acrylic
+bool uno_window_set_system_backdrop(NSWindow* window, int material);
 
 // https://learn.microsoft.com/en-us/uwp/api/windows.system.virtualkey?view=winrt-22621
 typedef NS_ENUM(sint32, VirtualKey) {
@@ -348,12 +355,31 @@ void uno_set_window_screen_change_callbacks(window_did_change_screen_fn_ptr scre
 
 void uno_window_notify_screen_change(NSWindow *window);
 
+// IME (Input Method Editor) callbacks for NSTextInputClient protocol support
+typedef void (*ime_insert_text_callback_fn_ptr)(UNOWindow* window, const unichar* text, int32_t length);
+typedef void (*ime_set_marked_text_callback_fn_ptr)(UNOWindow* window, const unichar* text, int32_t length, int32_t selectedStart, int32_t selectedLength);
+typedef void (*ime_unmark_text_callback_fn_ptr)(UNOWindow* window);
+typedef void (*ime_get_caret_rect_callback_fn_ptr)(UNOWindow* window, double* x, double* y, double* width, double* height);
 
-@interface UNOMetalFlippedView : MTKView
+void uno_set_ime_callbacks(ime_insert_text_callback_fn_ptr insertText,
+                           ime_set_marked_text_callback_fn_ptr setMarkedText,
+                           ime_unmark_text_callback_fn_ptr unmarkText,
+                           ime_get_caret_rect_callback_fn_ptr getCaretRect);
+void uno_set_ime_active(UNOWindow* window, bool active);
+
+ime_insert_text_callback_fn_ptr uno_get_ime_insert_text_callback(void);
+ime_set_marked_text_callback_fn_ptr uno_get_ime_set_marked_text_callback(void);
+ime_unmark_text_callback_fn_ptr uno_get_ime_unmark_text_callback(void);
+ime_get_caret_rect_callback_fn_ptr uno_get_ime_get_caret_rect_callback(void);
+
+@interface UNOMetalFlippedView : MTKView <NSTextInputClient>
 
 @property(getter=isFlipped, readonly) BOOL flipped;
 
 @property CAShapeLayer *clipLayer;
+
+@property (nonatomic) BOOL imeActive;
+@property (nonatomic, readonly) BOOL keyEventHandledByIME;
 
 @end
 

@@ -2,53 +2,73 @@
     x:Class="UITests.Microsoft_UI_Xaml_Controls.ImageIconTests.ImageIconPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ImageIcon"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Windows10FallCreatorsUpdate="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-	xmlns:Windows10FallCreatorsUpdate="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
-	mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ImageIcon"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-		<ScrollViewer Grid.Column="1">
-			<StackPanel  Orientation="Vertical" Windows10FallCreatorsUpdate:Spacing="5">
-				<StackPanel Background="SlateGray">
-					<TextBlock Text="Switchable source Image Icon"/>
-					<StackPanel Orientation="Horizontal" Windows10FallCreatorsUpdate:Spacing="5">
-						<controls:ImageIcon x:Name="ImageIcon" Source="Assets/ingredient1.png" Height="auto" Width="200"/>
-						<ToggleButton Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked" Content="Use SVG" VerticalAlignment="Center"/>
-					</StackPanel>
-				</StackPanel>
-				<StackPanel Background="SlateGray">
-					<TextBlock Text="SVG source from web"/>
-					<controls:ImageIcon Source="https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg" Height="auto" Width="auto"/>
-				</StackPanel>
-				<StackPanel Background="SlateGray">
-					<TextBlock Text="Image Icon with SVG source from app Assets"/>
-					<controls:ImageIcon Source="ms-appx:///Assets/libre-camera-panorama.svg" Height="auto" Width="200"/>
-				</StackPanel>
-				<StackPanel Background="SlateBlue">
-					<TextBlock Text="Images with SVG sources (web - assets)"/>
-					<StackPanel Orientation="Horizontal">
-						<Image Source="https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg" Width="auto" Height="200"/>
-						<Image Source="Assets/libre-camera-panorama.svg" Width="auto" Height="200"/>
-					</StackPanel>
-				</StackPanel>
-			</StackPanel>
-		</ScrollViewer>
-		<controls:NavigationView>
-			<controls:NavigationView.MenuItems>
-				<controls:NavigationViewItem Content="&lt;- ImageIcon - Banana">
-					<controls:NavigationViewItem.Icon>
-						<controls:ImageIcon Source="/Assets/ingredient1.png"/>
-					</controls:NavigationViewItem.Icon>
-				</controls:NavigationViewItem>
-			</controls:NavigationView.MenuItems>
-		</controls:NavigationView>
-	</Grid>
+    <Grid Margin="12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Windows10FallCreatorsUpdate:Spacing="5" Orientation="Vertical">
+                <StackPanel Background="SlateGray">
+                    <TextBlock Text="Switchable source Image Icon" />
+                    <StackPanel Windows10FallCreatorsUpdate:Spacing="5" Orientation="Horizontal">
+                        <controls:ImageIcon
+                            x:Name="ImageIcon"
+                            Width="200"
+                            Height="auto"
+                            Source="Assets/ingredient1.png" />
+                        <ToggleButton
+                            VerticalAlignment="Center"
+                            Checked="ToggleButton_Checked"
+                            Content="Use SVG"
+                            Unchecked="ToggleButton_Unchecked" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Background="SlateGray">
+                    <TextBlock Text="SVG source from web" />
+                    <controls:ImageIcon
+                        Width="auto"
+                        Height="auto"
+                        Source="https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg" />
+                </StackPanel>
+                <StackPanel Background="SlateGray">
+                    <TextBlock Text="Image Icon with SVG source from app Assets" />
+                    <controls:ImageIcon
+                        Width="200"
+                        Height="auto"
+                        Source="ms-appx:///Assets/libre-camera-panorama.svg" />
+                </StackPanel>
+                <StackPanel Background="SlateBlue">
+                    <TextBlock Text="Images with SVG sources (web - assets)" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image
+                            Width="auto"
+                            Height="200"
+                            Source="https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg" />
+                        <Image
+                            Width="auto"
+                            Height="200"
+                            Source="Assets/libre-camera-panorama.svg" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <controls:NavigationView>
+            <controls:NavigationView.MenuItems>
+                <controls:NavigationViewItem Content="&lt;- ImageIcon - Banana">
+                    <controls:NavigationViewItem.Icon>
+                        <controls:ImageIcon Source="/Assets/ingredient1.png" />
+                    </controls:NavigationViewItem.Icon>
+                </controls:NavigationViewItem>
+            </controls:NavigationView.MenuItems>
+        </controls:NavigationView>
+    </Grid>
 </Page>

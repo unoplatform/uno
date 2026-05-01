@@ -4,7 +4,9 @@ using System.Runtime.InteropServices;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -36,6 +38,9 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSNativeWebViewProvider.Register();
 		MacOSMediaPlayerExtension.Register();
 		MacOSMediaPlayerPresenterExtension.Register();
+		AccessibilityRouter.EnsureInitialized();
+		MacOSAccessibility.RegisterCallbacks();
+		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => MacOSImeTextBoxExtension.Instance);
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)

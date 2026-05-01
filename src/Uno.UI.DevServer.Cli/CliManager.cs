@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
 using Uno.UI.DevServer.Cli.Mcp.Setup;
+using Uno.UI.RemoteControl.Host;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -128,12 +129,14 @@ internal class CliManager
 			}
 
 			workingDirectory ??= requestedWorkingDirectory;
-			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
+			var hostLaunchPlan = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
 
-			if (hostPath is null)
+			if (hostLaunchPlan is null)
 			{
 				return 1; // errors already logged
 			}
+
+			var hostPath = hostLaunchPlan.HostPath;
 
 			// Resolve add-ins via convention-based discovery for the start command
 			string? resolvedAddIns = null;
@@ -143,14 +146,24 @@ internal class CliManager
 			if (isStart)
 			{
 				resolvedAddIns = ResolveAddInsForCommand(workingDirectory);
+
+				// Launch in direct mode (no --command=start) so that ALL arguments
+				// reach the host via IConfiguration, even on older host binaries
+				// that don't forward --ideChannel in their two-process launcher.
+				var startHandler = CreateStartCommandHandler();
+				return await startHandler.RunAsync(
+					hostPath, originalArgs, workingDirectory, resolvedAddIns,
+					workspaceResolution?.SelectedSolutionPath,
+					enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
 			}
 
+			// Non-start commands (stop, list, cleanup) still use controller mode
 			var requiresHostOutputPassthrough = originalArgs.Length > 0 && (
 				string.Equals(originalArgs[0], "list", StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: resolvedAddIns);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: null, enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
 
 			var (ExitCode, StdOut, StdErr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
 			return ExitCode;
@@ -877,7 +890,7 @@ internal class CliManager
 			servers, jsonOutput, allScopes, allIdes, dryRun, ideDefinitionsPath, serverDefinitionsPath);
 	}
 
-	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)
+	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null, bool enableMajorRollForward = false)
 	{
 		// Use --command=<verb> (single token) instead of --command <verb> (two tokens)
 		// to work around argument splitting observed on some CI environments where
@@ -895,6 +908,59 @@ internal class CliManager
 			args.Add(addins);
 		}
 
-		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput);
+		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput, enableMajorRollForward: enableMajorRollForward);
+	}
+
+	private StartCommandHandler CreateStartCommandHandler()
+	{
+		return new StartCommandHandler(
+			_logger,
+			new AmbientRegistryLookup(),
+			TryRebindIdeChannelAsync,
+			psi => DevServerProcessHelper.RunDirectProcessAsync(psi, _logger));
+	}
+
+	private static async Task<bool> TryRebindIdeChannelAsync(int port, string ideChannel)
+	{
+		var url = $"http://127.0.0.1:{port.ToString(System.Globalization.CultureInfo.InvariantCulture)}/devserver/idechannel/{Uri.EscapeDataString(ideChannel)}";
+
+		using var httpClient = new HttpClient
+		{
+			Timeout = TimeSpan.FromSeconds(10),
+		};
+
+		try
+		{
+			using var response = await httpClient.PostAsync(url, content: null);
+			return response.IsSuccessStatusCode;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+
+	/// <summary>
+	/// Adapts <see cref="AmbientRegistry"/> to <see cref="IDevServerLookup"/>.
+	/// </summary>
+	private sealed class AmbientRegistryLookup : IDevServerLookup
+	{
+		private readonly AmbientRegistry _registry = new(Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
+
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindBySolution(string solution)
+		{
+			var existing = _registry.GetActiveDevServerForPath(solution);
+			return existing is not null
+				? (existing.ProcessId, existing.Port, existing.SolutionPath, existing.ParentProcessId)
+				: null;
+		}
+
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindByPort(int port)
+		{
+			var existing = _registry.GetActiveDevServerForPort(port);
+			return existing is not null
+				? (existing.ProcessId, existing.Port, existing.SolutionPath, existing.ParentProcessId)
+				: null;
+		}
 	}
 }

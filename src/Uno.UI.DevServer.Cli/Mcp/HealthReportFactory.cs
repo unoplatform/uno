@@ -12,15 +12,17 @@ internal static class HealthReportFactory
 		int toolCount,
 		ConnectionState? connectionState,
 		IReadOnlyList<string>? discoveredSolutions,
+		WorkspaceSelectionSnapshot? currentSelection = null,
 		int? hostProcessId = null,
 		string? hostEndpoint = null,
 		string? upstreamError = null,
 		bool forceRootsFallback = false,
-		bool rootsProvided = false)
+		bool rootsProvided = false,
+		bool hostRespondedNoMcp = false)
 	{
 		var issues = new List<ValidationIssue>();
 
-		if (!devServerStarted)
+		if (!devServerStarted && !hostRespondedNoMcp)
 		{
 			var remediation = forceRootsFallback && !rootsProvided
 				? "Call uno_app_initialize with the workspaceDirectory path to your Uno workspace folder to initialize the DevServer."
@@ -83,6 +85,22 @@ internal static class HealthReportFactory
 			});
 		}
 
+		if (hostRespondedNoMcp)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.HostMcpEndpointNotAvailable,
+				Severity = ValidationSeverity.Fatal,
+				Message = "The DevServer host responds to HTTP but the /mcp endpoint is not available. " +
+					"This means the installed host version does not support the MCP protocol " +
+					"(MCP support requires Uno.WinUI.DevServer 6.6 or later).",
+				Remediation = "Upgrade the Uno.WinUI.DevServer (or Uno.UI.DevServer) NuGet package in " +
+					"your project to version 6.6 or later. If the project uses the Uno.Sdk, update " +
+					"the SDK version in global.json. Hot Reload and other WebSocket-based features " +
+					"may still work with the current version, but MCP tools require the upgrade.",
+			});
+		}
+
 		issues.AddRange(DiscoveryIssueMapper.MapDiscoveryIssues(discovery));
 
 		var status = issues.Any(i => i.Severity == ValidationSeverity.Fatal)
@@ -90,6 +108,14 @@ internal static class HealthReportFactory
 			: issues.Count > 0
 				? HealthStatus.Degraded
 				: HealthStatus.Healthy;
+
+		var effectiveWorkspaceDirectory = discovery?.EffectiveWorkspaceDirectory ?? currentSelection?.EffectiveWorkspaceDirectory;
+		var selectedSolutionPath = discovery?.SelectedSolutionPath ?? currentSelection?.SelectedSolutionPath;
+		var resolutionKind = discovery?.ResolutionKind ?? currentSelection?.ResolutionKind;
+		var selectionSource = discovery?.SelectionSource ?? currentSelection?.SelectionSource;
+		var candidateSolutions = discovery?.CandidateSolutions.Count > 0
+			? discovery.CandidateSolutions
+			: currentSelection?.CandidateSolutions;
 
 		return new HealthReport
 		{
@@ -103,33 +129,47 @@ internal static class HealthReportFactory
 			DiscoveryDurationMs = discovery?.DiscoveryDurationMs ?? 0,
 			ConnectionState = connectionState,
 			DiscoveredSolutions = discoveredSolutions,
-			EffectiveWorkspaceDirectory = discovery?.EffectiveWorkspaceDirectory,
-			SelectedSolutionPath = discovery?.SelectedSolutionPath,
-			ResolutionKind = discovery?.ResolutionKind,
-			SelectionSource = discovery?.SelectionSource,
-			CandidateSolutions = discovery?.CandidateSolutions,
+			EffectiveWorkspaceDirectory = effectiveWorkspaceDirectory,
+			SelectedSolutionPath = selectedSolutionPath,
+			ResolutionKind = resolutionKind,
+			SelectionSource = selectionSource,
+			CandidateSolutions = candidateSolutions,
 			Issues = issues,
-			Discovery = MapDiscovery(discovery),
+			Discovery = MapDiscovery(discovery, currentSelection),
 		};
 	}
 
-	private static DiscoverySummary? MapDiscovery(DiscoveryInfo? info)
+	private static DiscoverySummary? MapDiscovery(DiscoveryInfo? info, WorkspaceSelectionSnapshot? currentSelection)
 	{
 		if (info is null)
 		{
-			return null;
+			if (currentSelection is null)
+			{
+				return null;
+			}
+
+			return new DiscoverySummary
+			{
+				EffectiveWorkspaceDirectory = currentSelection.EffectiveWorkspaceDirectory,
+				SelectedSolutionPath = currentSelection.SelectedSolutionPath,
+				ResolutionKind = currentSelection.ResolutionKind,
+				SelectionSource = currentSelection.SelectionSource,
+				CandidateSolutions = currentSelection.CandidateSolutions,
+			};
 		}
 
 		return new DiscoverySummary
 		{
 			RequestedWorkingDirectory = info.RequestedWorkingDirectory,
 			WorkingDirectory = info.WorkingDirectory,
-			EffectiveWorkspaceDirectory = info.EffectiveWorkspaceDirectory,
-			SelectedSolutionPath = info.SelectedSolutionPath,
+			EffectiveWorkspaceDirectory = info.EffectiveWorkspaceDirectory ?? currentSelection?.EffectiveWorkspaceDirectory,
+			SelectedSolutionPath = info.SelectedSolutionPath ?? currentSelection?.SelectedSolutionPath,
 			SelectedGlobalJsonPath = info.SelectedGlobalJsonPath,
-			ResolutionKind = info.ResolutionKind,
-			SelectionSource = info.SelectionSource,
-			CandidateSolutions = info.CandidateSolutions.Count > 0 ? info.CandidateSolutions : null,
+			ResolutionKind = info.ResolutionKind ?? currentSelection?.ResolutionKind,
+			SelectionSource = info.SelectionSource ?? currentSelection?.SelectionSource,
+			CandidateSolutions = info.CandidateSolutions.Count > 0
+				? info.CandidateSolutions
+				: currentSelection?.CandidateSolutions,
 			DotNetVersion = info.DotNetVersion,
 			UnoSdkVersion = info.UnoSdkVersion,
 			UnoSdkPath = info.UnoSdkPath,

@@ -53,10 +53,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.Kind.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.MinGain.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.MaxGain.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.NaturalProperties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateNatural(double minGain, double maxGain, double unityGainDistance, double cutoffDistance)
@@ -71,5 +67,9 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitterDecayModel.CreateCustom(double minGain, double maxGain) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterDecayModel%20AudioNodeEmitterDecayModel.CreateCustom%28double%20minGain%2C%20double%20maxGain%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.Kind.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.MaxGain.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.MinGain.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.NaturalProperties.get
 	}
 }

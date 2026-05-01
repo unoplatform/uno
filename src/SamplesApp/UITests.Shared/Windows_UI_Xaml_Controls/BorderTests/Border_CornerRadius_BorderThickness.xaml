@@ -1,173 +1,203 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_BorderThickness"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:UITests.Windows_UI_Xaml_Controls.BorderTests"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 mc:Ignorable="d"
-			 d:DesignHeight="300"
-			 d:DesignWidth="400">
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_BorderThickness"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.BorderTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-	<ScrollViewer>
-		<StackPanel Spacing="8"
-					Width="400">
-			<Grid x:Name="MyBackgroundUnderneath"
-				  Width="{x:Bind ElementWidth, Mode=OneWay}"
-				  Height="{x:Bind ElementHeight, Mode=OneWay}"
-				  Background="White">
-				<!-- Using Red with 50% Opacity for the BorderBrush and Blue with 50% Opacity for the Background here -->
-				<!-- Easier to catch specific issues for the Background and Border that way compare to using opaque colors for this test -->
-				<Border Width="{x:Bind ElementWidth, Mode=OneWay}"
-						Height="{x:Bind ElementHeight, Mode=OneWay}"
-						x:Name="MyBorder"
-						BorderThickness="{x:Bind MyBorderThickness, Mode=OneWay}"
-						CornerRadius="{x:Bind MyCornerRadius, Mode=OneWay}"
-						BorderBrush="#80FF0000"
-						Background="#800000FF" />
-				<Border BorderBrush="Yellow"
-						x:Name="LeftTarget"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-				<Border BorderBrush="Yellow"
-						x:Name="TopTarget"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Top"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-				<Border BorderBrush="Yellow"
-						x:Name="RightTarget"
-						HorizontalAlignment="Right"
-						VerticalAlignment="Center"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-				<Border BorderBrush="Yellow"
-						x:Name="BottomTarget"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Bottom"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-				<Border BorderBrush="Yellow"
-						x:Name="CenterTarget"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-				<Border BorderBrush="Yellow"
-						x:Name="TopLeftTarget"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Top"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-				<Border BorderBrush="Yellow"
-						x:Name="TopRightTarget"
-						HorizontalAlignment="Right"
-						VerticalAlignment="Top"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-				<Border BorderBrush="Yellow"
-						x:Name="BottomLeftTarget"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Bottom"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-				<Border BorderBrush="Yellow"
-						x:Name="BottomRightTarget"
-						HorizontalAlignment="Right"
-						VerticalAlignment="Bottom"
-						BorderThickness="1"
-						Height="10"
-						Width="10" />
-			</Grid>
+    <ScrollViewer>
+        <StackPanel Width="400" Spacing="8">
+            <Grid
+                x:Name="MyBackgroundUnderneath"
+                Width="{x:Bind ElementWidth, Mode=OneWay}"
+                Height="{x:Bind ElementHeight, Mode=OneWay}"
+                Background="White">
+                <!--  Using Red with 50% Opacity for the BorderBrush and Blue with 50% Opacity for the Background here  -->
+                <!--  Easier to catch specific issues for the Background and Border that way compare to using opaque colors for this test  -->
+                <Border
+                    x:Name="MyBorder"
+                    Width="{x:Bind ElementWidth, Mode=OneWay}"
+                    Height="{x:Bind ElementHeight, Mode=OneWay}"
+                    Background="#800000FF"
+                    BorderBrush="#80FF0000"
+                    BorderThickness="{x:Bind MyBorderThickness, Mode=OneWay}"
+                    CornerRadius="{x:Bind MyCornerRadius, Mode=OneWay}" />
+                <Border
+                    x:Name="LeftTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+                <Border
+                    x:Name="TopTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+                <Border
+                    x:Name="RightTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+                <Border
+                    x:Name="BottomTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+                <Border
+                    x:Name="CenterTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+                <Border
+                    x:Name="TopLeftTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+                <Border
+                    x:Name="TopRightTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+                <Border
+                    x:Name="BottomLeftTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+                <Border
+                    x:Name="BottomRightTarget"
+                    Width="10"
+                    Height="10"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    BorderBrush="Yellow"
+                    BorderThickness="1" />
+            </Grid>
 
-			<!-- Corner radius -->
-			<StackPanel Orientation="Horizontal"
-						Spacing="8">
-				<TextBlock Text="Corner Radius:" FontWeight="Bold" VerticalAlignment="Center" />
-				<CheckBox Content="Lock"
-						  x:Name="LockCornerRadiusCheck"
-						  VerticalAlignment="Center"
-						  IsChecked="{x:Bind LockCornerRadius, Mode=TwoWay}" />
-			</StackPanel>
-			<Slider Header="Top Left:"
-					Minimum="0"
-					Maximum="100"
-					x:Name="TopLeftCornerRadiusSlider"
-					Value="{x:Bind TopLeftCornerRadius, Mode=TwoWay}" />
-			<Slider Header="Top Right:"
-					Minimum="0"
-					Maximum="100"
-					x:Name="TopRightCornerRadiusSlider"
-					Value="{x:Bind TopRightCornerRadius, Mode=TwoWay}" />
-			<Slider Header="Bottom Right:"
-					Minimum="0"
-					Maximum="100"
-					x:Name="BottomRightCornerRadiusSlider"
-					Value="{x:Bind BottomRightCornerRadius, Mode=TwoWay}" />
-			<Slider Header="Bottom Left:"
-					Minimum="0"
-					Maximum="100"
-					x:Name="BottomLeftCornerRadiusSlider"
-					Value="{x:Bind BottomLeftCornerRadius, Mode=TwoWay}" />
+            <!--  Corner radius  -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontWeight="Bold"
+                    Text="Corner Radius:" />
+                <CheckBox
+                    x:Name="LockCornerRadiusCheck"
+                    VerticalAlignment="Center"
+                    Content="Lock"
+                    IsChecked="{x:Bind LockCornerRadius, Mode=TwoWay}" />
+            </StackPanel>
+            <Slider
+                x:Name="TopLeftCornerRadiusSlider"
+                Header="Top Left:"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind TopLeftCornerRadius, Mode=TwoWay}" />
+            <Slider
+                x:Name="TopRightCornerRadiusSlider"
+                Header="Top Right:"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind TopRightCornerRadius, Mode=TwoWay}" />
+            <Slider
+                x:Name="BottomRightCornerRadiusSlider"
+                Header="Bottom Right:"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind BottomRightCornerRadius, Mode=TwoWay}" />
+            <Slider
+                x:Name="BottomLeftCornerRadiusSlider"
+                Header="Bottom Left:"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind BottomLeftCornerRadius, Mode=TwoWay}" />
 
-			<!-- Border thickness -->
-			<StackPanel Orientation="Horizontal"
-						Spacing="10">
-				<TextBlock Text="Border Thickness:" FontWeight="Bold" VerticalAlignment="Center" />
-				<CheckBox Content="Lock"
-						  x:Name="LockBorderThicknessCheck"
-						  VerticalAlignment="Center"
-						  IsChecked="{x:Bind LockBorderThickness, Mode=TwoWay}" />
-			</StackPanel>
-			<Slider Header="Left:"
-					Minimum="0"
-					Maximum="100"
-					x:Name="LeftBorderThicknessSlider"
-					Value="{x:Bind LeftBorderThickness, Mode=TwoWay}" />
-			<Slider Header="Top:"
-					Minimum="0"
-					Maximum="100"
-					x:Name="TopBorderThicknessSlider"
-					Value="{x:Bind TopBorderThickness, Mode=TwoWay}" />
-			<Slider Header="Right:" 
-					Minimum="0"
-					Maximum="100"
-					x:Name="RightBorderThicknessSlider"
-					Value="{x:Bind RightBorderThickness, Mode=TwoWay}" />
-			<Slider Header="Bottom:"
-					Minimum="0"
-					Maximum="100"
-					x:Name="BottomBorderThicknessSlider"
-					Value="{x:Bind BottomBorderThickness, Mode=TwoWay}" />
+            <!--  Border thickness  -->
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontWeight="Bold"
+                    Text="Border Thickness:" />
+                <CheckBox
+                    x:Name="LockBorderThicknessCheck"
+                    VerticalAlignment="Center"
+                    Content="Lock"
+                    IsChecked="{x:Bind LockBorderThickness, Mode=TwoWay}" />
+            </StackPanel>
+            <Slider
+                x:Name="LeftBorderThicknessSlider"
+                Header="Left:"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind LeftBorderThickness, Mode=TwoWay}" />
+            <Slider
+                x:Name="TopBorderThicknessSlider"
+                Header="Top:"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind TopBorderThickness, Mode=TwoWay}" />
+            <Slider
+                x:Name="RightBorderThicknessSlider"
+                Header="Right:"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind RightBorderThickness, Mode=TwoWay}" />
+            <Slider
+                x:Name="BottomBorderThicknessSlider"
+                Header="Bottom:"
+                Maximum="100"
+                Minimum="0"
+                Value="{x:Bind BottomBorderThickness, Mode=TwoWay}" />
 
-			<!-- Element size -->
-			<StackPanel Orientation="Horizontal"
-						Spacing="8">
-				<TextBlock Text="Size:" FontWeight="Bold" VerticalAlignment="Center" />
-				<CheckBox Content="Lock"
-						  VerticalAlignment="Center"
-						  x:Name="LockSizeCheck"
-						  IsChecked="{x:Bind LockSize, Mode=TwoWay}" />
-			</StackPanel>
-			<Slider Header="Width:"
-					Minimum="0"
-					Maximum="200"
-					x:Name="WidthSlider"
-					Value="{x:Bind ElementWidth, Mode=TwoWay}" />
-			<Slider Header="Height:"
-					Minimum="0"
-					Maximum="200"
-					x:Name="HeightSlider"
-					Value="{x:Bind ElementHeight, Mode=TwoWay}" />	
-		</StackPanel>
-	</ScrollViewer>
+            <!--  Element size  -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontWeight="Bold"
+                    Text="Size:" />
+                <CheckBox
+                    x:Name="LockSizeCheck"
+                    VerticalAlignment="Center"
+                    Content="Lock"
+                    IsChecked="{x:Bind LockSize, Mode=TwoWay}" />
+            </StackPanel>
+            <Slider
+                x:Name="WidthSlider"
+                Header="Width:"
+                Maximum="200"
+                Minimum="0"
+                Value="{x:Bind ElementWidth, Mode=TwoWay}" />
+            <Slider
+                x:Name="HeightSlider"
+                Header="Height:"
+                Maximum="200"
+                Minimum="0"
+                Value="{x:Bind ElementHeight, Mode=TwoWay}" />
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

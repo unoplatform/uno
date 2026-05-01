@@ -1,0 +1,73 @@
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Anchoring"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="500"
+    d:DesignWidth="500"
+    mc:Ignorable="d">
+    <Grid Padding="12" RowDefinitions="Auto,Auto,*,Auto">
+        <StackPanel
+            Grid.Row="0"
+            Orientation="Horizontal"
+            Spacing="8">
+            <Button
+                x:Name="InsertAboveButton"
+                Click="InsertAbove_Click"
+                Content="Insert 80px above" />
+            <Button
+                x:Name="RemoveAboveButton"
+                Click="RemoveAbove_Click"
+                Content="Remove top" />
+            <Button
+                x:Name="InsertBelowButton"
+                Click="InsertBelow_Click"
+                Content="Insert 80px below" />
+            <Button
+                x:Name="ScrollTopButton"
+                Click="ScrollTop_Click"
+                Content="Top" />
+            <Button
+                x:Name="ScrollBottomButton"
+                Click="ScrollBottom_Click"
+                Content="Bottom" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="1"
+            Margin="0,8"
+            Orientation="Horizontal"
+            Spacing="12">
+            <TextBlock VerticalAlignment="Center" Text="VerticalAnchorRatio:" />
+            <ComboBox x:Name="RatioCombo" SelectionChanged="Ratio_SelectionChanged">
+                <ComboBoxItem Content="NaN (disabled)" />
+                <ComboBoxItem Content="0.0 (near edge)" />
+                <ComboBoxItem Content="0.5 (center)" IsSelected="True" />
+                <ComboBoxItem Content="1.0 (far edge)" />
+            </ComboBox>
+            <TextBlock
+                x:Name="CurrentAnchorText"
+                VerticalAlignment="Center"
+                Text="CurrentAnchor: —" />
+        </StackPanel>
+
+        <ScrollViewer
+            x:Name="TargetScrollViewer"
+            Grid.Row="2"
+            BorderThickness="1"
+            HorizontalScrollBarVisibility="Disabled"
+            HorizontalScrollMode="Disabled"
+            VerticalAnchorRatio="0.5"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Enabled">
+            <StackPanel x:Name="ContentPanel" Orientation="Vertical" />
+        </ScrollViewer>
+
+        <TextBlock
+            x:Name="OffsetText"
+            Grid.Row="3"
+            Margin="0,8,0,0"
+            Text="VerticalOffset: 0" />
+    </Grid>
+</UserControl>

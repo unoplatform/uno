@@ -44,7 +44,7 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.DeviceId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.PinType.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.PinLockState.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.PinType.get
 	}
 }

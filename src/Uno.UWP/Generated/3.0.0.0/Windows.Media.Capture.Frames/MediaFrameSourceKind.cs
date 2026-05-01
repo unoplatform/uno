@@ -24,9 +24,6 @@ namespace Windows.Media.Capture.Frames
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		Image = 5,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Metadata = 6,
-#endif
 	}
 #endif
 }

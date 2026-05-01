@@ -385,10 +385,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[Timeout(5 * 60 * 1000)] // On iOS, this test is slow
-#if __APPLE_UIKIT__
-		[Ignore("Test is flaky on UIKit targets: https://github.com/unoplatform/uno/issues/9080")]
-#endif
+		[Timeout(5 * 60 * 1000)]
+		[ActivePlatforms(Platform.Browser)]
 		public void ListView_SelectedItems()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");
@@ -454,7 +452,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.iOS)]
+		[ActivePlatforms(Platform.Browser)]
 		public void ListView_ObservableCollection_Creation_Count()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ListView.ListView_ObservableCollection_CreationCount");

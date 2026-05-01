@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.Contact> Contacts
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Contact> ShareOperation.Contacts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CContact%3E%20ShareOperation.Contacts");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.DataTransfer.DataPackageView Data
 		{
 			get
@@ -33,18 +43,6 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.Contact> Contacts
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Contact> ShareOperation.Contacts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CContact%3E%20ShareOperation.Contacts");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation.Data.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation.QuickLinkId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveThisQuickLink()
@@ -102,5 +100,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation.Contacts.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation.Data.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation.QuickLinkId.get
 	}
 }

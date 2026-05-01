@@ -46,8 +46,8 @@ namespace Windows.Devices.PointOfService
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.BarcodeScannerReport(uint, Windows.Storage.Streams.IBuffer, Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.ScanDataType.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.ScanData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.ScanDataLabel.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.ScanDataType.get
 	}
 }

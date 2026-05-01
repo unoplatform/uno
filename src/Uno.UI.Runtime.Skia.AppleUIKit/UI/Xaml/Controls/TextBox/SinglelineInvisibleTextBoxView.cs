@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -40,7 +43,49 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		};
 	}
 
+	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSend")]
+	private static extern void void_objc_msgSend_bool(IntPtr receiver, IntPtr selector, [MarshalAs(UnmanagedType.I1)] bool arg);
+
+	private static readonly Selector s_setAllowsNumberPadPopoverSelector = new("setAllowsNumberPadPopover:");
+
+	// iOS 26 introduced a floating number pad popover for UITextField on iPad when a numeric
+	// keyboard is active. The opt-out (-[UITextField setAllowsNumberPadPopover:]) is not yet in
+	// the dotnet/macios bindings (no PR/issue tracking it as of Xcode 26.2 Bindings Status), so
+	// we invoke the selector directly via objc_msgSend. Setting via KVC (setValue:forKey:) is
+	// unreliable for Swift-bridged BOOL properties and was observed to leave the field in a state
+	// where no keyboard would appear at all on iOS 26.
+	// Called from InvisibleTextBoxViewExtension.UpdateProperties after KeyboardType is set so the
+	// IsFloatingNumericKeypad gate (iPad idiom + numeric keyboard) is evaluated against the final
+	// value rather than the constructor default.
+	internal void TryDisableNumberPadPopover()
+	{
+		if (!global::Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover)
+		{
+			return;
+		}
+
+		if (!OperatingSystem.IsIOSVersionAtLeast(26))
+		{
+			return;
+		}
+
+		if (!InvisibleTextBoxViewExtension.IsIPadNumericKeyboard(KeyboardType))
+		{
+			return;
+		}
+
+		if (!RespondsToSelector(s_setAllowsNumberPadPopoverSelector))
+		{
+			return;
+		}
+
+		void_objc_msgSend_bool(Handle, s_setAllowsNumberPadPopoverSelector.Handle, false);
+	}
+
 	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
+
+	public override CGRect GetCaretRectForPosition(UITextPosition? position)
+		=> InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? Bounds : base.GetCaretRectForPosition(position);
 
 	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 
@@ -63,6 +108,8 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			baseAction.Invoke();
 		}
 	}
+
+	public bool IsComposing => AppleUIKitImeTextBoxExtension.Instance.IsComposing;
 
 	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
@@ -182,4 +229,64 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			}
 		}
 	}
+
+	#region IME Composition (UITextInput overrides)
+
+	public override void SetMarkedText(string markedText, NSRange selectedRange)
+	{
+		markedText ??= string.Empty;
+		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(markedText);
+		base.SetMarkedText(markedText, selectedRange);
+	}
+
+	public new void InsertText(string text)
+	{
+		var wasComposing = AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+		base.InsertText(text);
+
+		// Only fire composition events when completing an active IME composition
+		// (SetMarkedText was called first). Regular native keystrokes and
+		// BecomeFirstResponder's silent text restore should not trigger composition.
+		if (wasComposing)
+		{
+			AppleUIKitImeTextBoxExtension.Instance.OnInsertText(text);
+		}
+	}
+
+	public override void UnmarkText()
+	{
+		AppleUIKitImeTextBoxExtension.Instance.OnUnmarkText();
+		base.UnmarkText();
+	}
+
+	// UIKit uses the first-responder's firstRect/caretRect (UITextInput) to
+	// position the iPad floating numeric keypad. Returning the view's full
+	// Bounds makes the keypad anchor adjacent to the whole NumberBox rather
+	// than overlapping it when the field has non-default Padding or sits
+	// near a screen edge. Gated by the same condition the extension uses
+	// to anchor the native view (see InvisibleTextBoxViewExtension.
+	// IsFloatingNumericKeypad) so other scenarios keep native behavior.
+	public override CoreGraphics.CGRect GetFirstRectForRange(UITextRange range)
+	{
+		if (InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType))
+		{
+			return Bounds;
+		}
+
+		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();
+		if (caretRect != Windows.Foundation.Rect.Empty && Superview is not null)
+		{
+			// GetCaretRect returns Uno logical coordinates (relative to the XamlRoot).
+			// iOS expects the result in the view's own coordinate system, then uses the
+			// view hierarchy to convert to screen coordinates for the candidate window.
+			// Since our view is off-screen, convert from the superview's (window) coordinate
+			// space into our local coordinate space.
+			var windowRect = new CoreGraphics.CGRect(caretRect.X, caretRect.Y, caretRect.Width, caretRect.Height);
+			return ConvertRectFromView(windowRect, Superview);
+		}
+
+		return base.GetFirstRectForRange(range);
+	}
+
+	#endregion
 }

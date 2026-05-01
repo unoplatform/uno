@@ -23,17 +23,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Added.add
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Added.remove
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Removed.add
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Removed.remove
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Stopped.add
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Stopped.remove
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.ExecutionStateChanged.add
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.ExecutionStateChanged.remove
-		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -48,6 +37,17 @@ namespace Windows.System
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppResourceGroupInfoWatcher", "void AppResourceGroupInfoWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Added.add
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Added.remove
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.ExecutionStateChanged.add
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.ExecutionStateChanged.remove
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Removed.add
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Removed.remove
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Stopped.add
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Stopped.remove
+		// Forced skipping of method Windows.System.AppResourceGroupInfoWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.AppResourceGroupInfoWatcher, global::Windows.System.AppResourceGroupInfoWatcherEventArgs> Added

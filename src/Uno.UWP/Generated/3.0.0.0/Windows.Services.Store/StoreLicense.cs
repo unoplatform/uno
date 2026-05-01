@@ -63,10 +63,10 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreLicense.SkuStoreId.get
-		// Forced skipping of method Windows.Services.Store.StoreLicense.IsActive.get
 		// Forced skipping of method Windows.Services.Store.StoreLicense.ExpirationDate.get
 		// Forced skipping of method Windows.Services.Store.StoreLicense.ExtendedJsonData.get
 		// Forced skipping of method Windows.Services.Store.StoreLicense.InAppOfferToken.get
+		// Forced skipping of method Windows.Services.Store.StoreLicense.IsActive.get
+		// Forced skipping of method Windows.Services.Store.StoreLicense.SkuStoreId.get
 	}
 }

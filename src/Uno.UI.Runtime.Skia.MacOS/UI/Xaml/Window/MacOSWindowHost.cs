@@ -22,7 +22,7 @@ using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource
+internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource, IAccessibilityOwner
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly MacOSWindowNative _nativeWindow;
@@ -36,6 +36,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
+	private MacOSAccessibility? _accessibility;
+	private bool _accessibilityBuildQueued;
 
 	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow, XamlRoot xamlRoot)
 	{
@@ -196,11 +198,90 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
 
+		NativeUno.uno_set_ime_callbacks(&OnImeInsertText, &OnImeSetMarkedText, &OnImeUnmarkText, &OnImeGetCaretRect);
+
 		NativeUno.uno_set_window_screen_change_callbacks(&ScreenChanged, &ScreenParametersChanged);
 		ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new MacOSDisplayInformationExtension(o));
 	}
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+
+	internal void InitializeAccessibility()
+	{
+		if (_accessibility is not null || _nativeWindow.Handle == nint.Zero)
+		{
+			return;
+		}
+
+		_accessibility = new MacOSAccessibility(_nativeWindow.Handle);
+
+		if (_winUIWindow.RootElement is { } rootElement)
+		{
+			QueueTreeBuild(rootElement);
+		}
+		else
+		{
+			// Defer the tree build until the window is activated and has content.
+			_winUIWindow.Activated += OnWinUIWindowActivatedForAccessibility;
+		}
+	}
+
+	private void OnWinUIWindowActivatedForAccessibility(object sender, Microsoft.UI.Xaml.WindowActivatedEventArgs args)
+	{
+		// Sticky active-owner tracking (FR-007, research Decision 3): update on
+		// Activated (WA_ACTIVE / NSWindowDidBecomeMainNotification analog), never
+		// clear on Deactivated.
+		if (args.WindowActivationState != Windows.UI.Core.CoreWindowActivationState.Deactivated &&
+			_accessibility is not null)
+		{
+			AccessibilityRouter.SetActive(this);
+		}
+
+		if (_accessibility is not { IsAccessibilityEnabled: true })
+		{
+			return;
+		}
+
+		if (_winUIWindow.RootElement is { } rootElement)
+		{
+			QueueTreeBuild(rootElement);
+		}
+	}
+
+	private void QueueTreeBuild(UIElement rootElement)
+	{
+		if (_accessibilityBuildQueued)
+		{
+			return;
+		}
+		_accessibilityBuildQueued = true;
+
+		_ = rootElement.Dispatcher.RunAsync(
+			Windows.UI.Core.CoreDispatcherPriority.Low,
+			() =>
+			{
+				_accessibilityBuildQueued = false;
+				if (_accessibility is { IsAccessibilityEnabled: true })
+				{
+					_accessibility.BuildTree(rootElement);
+				}
+			});
+	}
+
+	internal void DisposeAccessibility()
+	{
+		if (_accessibility is not { } accessibility)
+		{
+			return;
+		}
+
+		_accessibility = null;
+		_winUIWindow.Activated -= OnWinUIWindowActivatedForAccessibility;
+		accessibility.Dispose();
+		AccessibilityRouter.NotifyDisposed(this);
+	}
 
 	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 
@@ -213,6 +294,28 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	private static void Unregister(nint handle) => _windows.Remove(handle);
+
+	/// <summary>
+	/// Returns the native window handle for the given XamlRoot, or 0 if not found.
+	/// Used by IME extension to activate/deactivate native IME routing.
+	/// </summary>
+	internal static nint GetNativeHandleForXamlRoot(XamlRoot? xamlRoot)
+	{
+		if (xamlRoot is null)
+		{
+			return 0;
+		}
+
+		foreach (var (handle, weak) in _windows)
+		{
+			if (weak.TryGetTarget(out var host) && host._xamlRoot == xamlRoot)
+			{
+				return handle;
+			}
+		}
+
+		return 0;
+	}
 
 	private static MacOSWindowHost? GetWindowHost(nint handle)
 	{
@@ -339,6 +442,79 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
+		}
+	}
+
+	// IME (Input Method Editor) callbacks for NSTextInputClient composition support
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeInsertText(nint handle, ushort* textPtr, int length)
+	{
+		try
+		{
+			var text = new string((char*)textPtr, 0, length);
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace($"OnImeInsertText: '{text}'");
+			}
+			MacOSImeTextBoxExtension.Instance.OnInsertText(text);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeSetMarkedText(nint handle, ushort* textPtr, int length, int selectedStart, int selectedLength)
+	{
+		try
+		{
+			var text = length > 0 ? new string((char*)textPtr, 0, length) : string.Empty;
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace($"OnImeSetMarkedText: '{text}' selected: [{selectedStart}..{selectedStart + selectedLength}]");
+			}
+			MacOSImeTextBoxExtension.Instance.OnSetMarkedText(text, selectedStart, selectedLength);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnImeUnmarkText(nint handle)
+	{
+		try
+		{
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace("OnImeUnmarkText");
+			}
+			MacOSImeTextBoxExtension.Instance.OnUnmarkText();
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeGetCaretRect(nint handle, double* x, double* y, double* width, double* height)
+	{
+		try
+		{
+			var rect = MacOSImeTextBoxExtension.Instance.GetCaretRect();
+			*x = rect.X;
+			*y = rect.Y;
+			*width = rect.Width;
+			*height = rect.Height;
+		}
+		catch (Exception e)
+		{
+			*x = *y = *width = *height = 0;
+			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 

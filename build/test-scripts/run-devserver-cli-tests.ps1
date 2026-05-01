@@ -102,6 +102,36 @@ function Get-ConfiguredBooleanValue {
     }
 }
 
+function Get-CodexModel {
+    $configuredModel = [System.Environment]::GetEnvironmentVariable('UNO_DEVSERVER_CODEX_MODEL')
+    if ([string]::IsNullOrWhiteSpace($configuredModel)) {
+        return 'gpt-5.3-codex'
+    }
+
+    return $configuredModel.Trim()
+}
+
+function Get-CodexVersionText {
+    if (-not (Get-Command codex -ErrorAction SilentlyContinue)) {
+        return $null
+    }
+
+    $versionOutput = & codex --version 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        return $null
+    }
+
+    return ($versionOutput | Out-String).Trim()
+}
+
+function Get-CodexExecTimeoutSeconds {
+    return Get-ConfiguredIntValue -EnvironmentVariableName 'UNO_DEVSERVER_CODEX_TIMEOUT_SECONDS' -DefaultValue 90
+}
+
+function Get-CodexStartupTimeoutSeconds {
+    return Get-ConfiguredIntValue -EnvironmentVariableName 'UNO_DEVSERVER_CODEX_STARTUP_TIMEOUT_SECONDS' -DefaultValue 60
+}
+
 if (-not [string]::IsNullOrWhiteSpace($DevServerCliDllPath)) {
     if (-not (Test-Path -LiteralPath $DevServerCliDllPath)) {
         throw "Provided DevServerCliDllPath '$DevServerCliDllPath' was not found."
@@ -299,7 +329,13 @@ function Get-PortFromCsprojUser([string]$UserFilePath) {
 function Ensure-CodexCli {
     $codexCommand = Get-Command codex -ErrorAction SilentlyContinue
     if ($codexCommand) {
-        Write-Log "Codex CLI already available at $($codexCommand.Source)"
+        $versionText = Get-CodexVersionText
+        if ([string]::IsNullOrWhiteSpace($versionText)) {
+            Write-Log "Codex CLI already available at $($codexCommand.Source)"
+        }
+        else {
+            Write-Log "Codex CLI already available at $($codexCommand.Source) ($versionText)"
+        }
         return $true
     }
 
@@ -326,7 +362,13 @@ function Ensure-CodexCli {
         return $false
     }
 
-    Write-Log "Codex CLI installed via npm at $($codexCommand.Source)"
+    $versionText = Get-CodexVersionText
+    if ([string]::IsNullOrWhiteSpace($versionText)) {
+        Write-Log "Codex CLI installed via npm at $($codexCommand.Source)"
+    }
+    else {
+        Write-Log "Codex CLI installed via npm at $($codexCommand.Source) ($versionText)"
+    }
     return $true
 }
 
@@ -381,9 +423,15 @@ function New-IsolatedCodexHome {
         }
     }
 
-    @'
+    $codexModel = Get-CodexModel
+    $escapedCodexModel = $codexModel.Replace('\', '\\').Replace('"', '\"')
+
+    @"
+model = "$escapedCodexModel"
 model_reasoning_effort = "low"
-'@ | Set-Content -Path (Join-Path $isolatedCodexHome 'config.toml') -Encoding utf8
+"@ | Set-Content -Path (Join-Path $isolatedCodexHome 'config.toml') -Encoding utf8
+
+    Write-Log "Configured isolated CODEX_HOME to use model '$codexModel'."
 
     return $isolatedCodexHome
 }
@@ -439,6 +487,7 @@ function Invoke-ExternalProcessWithCapturedOutput {
     $startInfo.WorkingDirectory = $WorkingDirectory
     $startInfo.UseShellExecute = $false
     $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardInput = $true
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
     $startInfo.StandardOutputEncoding = [System.Text.Encoding]::UTF8
@@ -450,6 +499,8 @@ function Invoke-ExternalProcessWithCapturedOutput {
     if (-not $process.Start()) {
         throw "Failed to start process '$FilePath'."
     }
+
+    $process.StandardInput.Close()
 
     $stdoutTask = $process.StandardOutput.ReadToEndAsync()
     $stderrTask = $process.StandardError.ReadToEndAsync()
@@ -464,7 +515,26 @@ function Invoke-ExternalProcessWithCapturedOutput {
             }
         }
         catch {}
-        throw "Process '$FilePath' timed out after $($TimeoutMs / 1000) seconds."
+
+        try { $process.WaitForExit(5000) | Out-Null } catch {}
+
+        $stdout = ''
+        $stderr = ''
+        try {
+            if ($stdoutTask.Wait(5000)) {
+                $stdout = $stdoutTask.GetAwaiter().GetResult()
+            }
+        }
+        catch {}
+
+        try {
+            if ($stderrTask.Wait(5000)) {
+                $stderr = $stderrTask.GetAwaiter().GetResult()
+            }
+        }
+        catch {}
+
+        throw "Process '$FilePath' timed out after $($TimeoutMs / 1000) seconds.`nSTDOUT (partial):`n$stdout`nSTDERR (partial):`n$stderr"
     }
 
     return [pscustomobject]@{
@@ -588,18 +658,17 @@ Begin.
 
     $stdOutFile = [System.IO.Path]::GetTempFileName()
     $stdErrFile = [System.IO.Path]::GetTempFileName()
+    $startupTimeoutSeconds = Get-CodexStartupTimeoutSeconds
 
     Write-Log "Invoking Codex CLI to enumerate MCP tools."
-    $sandboxMode = if ($IsWindows) { 'danger-full-access' } else { 'workspace-write' }
     $codexArgs = @(
         '--ask-for-approval','never',
         'exec',
         '--skip-git-repo-check',
         '--output-last-message', $ToolsFile,
-        '--sandbox',$sandboxMode,
+        '--sandbox','danger-full-access',
         '-c','model_reasoning_effort="low"',
-        '-c','mcp_servers.unoapp.startup_timeout_sec=120',
-        '-c','sandbox_workspace_write.network_access=true'
+        '-c',("mcp_servers.unoapp.startup_timeout_sec={0}" -f $startupTimeoutSeconds)
     )
 
     $codexInvocation = Get-CodexProcessInvocation
@@ -609,7 +678,8 @@ Begin.
     $previousRustLog = $env:RUST_LOG
     $env:RUST_LOG = 'debug'
     try {
-        $timeoutMs = (Get-ConfiguredIntValue -EnvironmentVariableName 'UNO_DEVSERVER_CODEX_TIMEOUT_SECONDS' -DefaultValue 120) * 1000
+        $timeoutSeconds = Get-CodexExecTimeoutSeconds
+        $timeoutMs = $timeoutSeconds * 1000
         $execution = Invoke-ExternalProcessWithCapturedOutput -FilePath $codexExecutable -Arguments $codexArguments -WorkingDirectory $WorkingDirectory -TimeoutMs $timeoutMs
         $stdout = $execution.StdOut
         $stderr = $execution.StdErr
@@ -619,6 +689,7 @@ Begin.
         }
         else {
             Write-Log "Codex CLI completed successfully."
+            Write-Log "Codex enumeration used timeout=$timeoutSeconds s and startupTimeout=$startupTimeoutSeconds s."
             Write-Log "STDOUT:`n$stdout`nSTDERR:`n$stderr"
         }
     }
@@ -777,15 +848,15 @@ function Test-DevserverStartStop {
     }
     finally {
         if ($devserverStarted) {
-            Stop-DevserverInDirectory -Directory $SlnDir
+            Stop-DevserverInDirectory -Directory $SlnDir | Out-Null
         }
 
-        Stop-DevserverProcessCapture -Context $startProcessContext
+        Stop-DevserverProcessCapture -Context $startProcessContext | Out-Null
 
         if ($startProcessContext) {
             foreach ($logPath in @($startProcessContext.StdoutLogPath, $startProcessContext.StderrLogPath)) {
                 if ($logPath -and (Test-Path $logPath)) {
-                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                    Remove-Item $logPath -ErrorAction SilentlyContinue | Out-Null
                 }
             }
         }
@@ -829,20 +900,20 @@ function Test-DevserverSolutionDirSupport {
     }
     finally {
         if ($solutionDirStarted) {
-            Stop-DevserverInDirectory -Directory $SlnDir
+            Stop-DevserverInDirectory -Directory $SlnDir | Out-Null
         }
 
-        Stop-DevserverProcessCapture -Context $solutionDirProcessContext
+        Stop-DevserverProcessCapture -Context $solutionDirProcessContext | Out-Null
 
         if ($solutionDirProcessContext) {
             foreach ($logPath in @($solutionDirProcessContext.StdoutLogPath, $solutionDirProcessContext.StderrLogPath)) {
                 if ($logPath -and (Test-Path $logPath)) {
-                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                    Remove-Item $logPath -ErrorAction SilentlyContinue | Out-Null
                 }
             }
         }
 
-        Pop-Location
+        Pop-Location | Out-Null
         Set-Location $SlnDir
     }
 
@@ -1264,10 +1335,10 @@ function Test-McpModeWithRootsFallback {
             try { $stderrStream.Dispose() } catch {}
         }
 
-        Stop-DevserverInDirectory -Directory $SlnDir
+        Stop-DevserverInDirectory -Directory $SlnDir | Out-Null
 
-        if (Test-Path $stdoutLogPath) { Remove-Item $stdoutLogPath -ErrorAction SilentlyContinue }
-        if (Test-Path $stderrLogPath) { Remove-Item $stderrLogPath -ErrorAction SilentlyContinue }
+        if (Test-Path $stdoutLogPath) { Remove-Item $stdoutLogPath -ErrorAction SilentlyContinue | Out-Null }
+        if (Test-Path $stderrLogPath) { Remove-Item $stderrLogPath -ErrorAction SilentlyContinue | Out-Null }
     }
 
     return $mcpTestPort
@@ -1283,13 +1354,13 @@ function Stop-DevserverInDirectory {
     Push-Location $Directory
     try {
         Write-Log "Ensuring no lingering devserver instances remain in $Directory"
-        Invoke-DevserverCli -Arguments @('stop', '-l', 'trace')
+        Invoke-DevserverCli -Arguments @('stop', '-l', 'trace') | Out-Null
     }
     catch {
         Write-Log "Cleanup devserver stop failed: $($_.Exception.Message)"
     }
     finally {
-        Pop-Location
+        Pop-Location | Out-Null
     }
 }
 
@@ -1324,6 +1395,15 @@ function Test-CodexIntegration {
 
     if (-not (Ensure-CodexCli)) {
         throw "Codex CLI unavailable after installation attempt."
+    }
+
+    $codexVersionText = Get-CodexVersionText
+    $codexModel = Get-CodexModel
+    if (-not [string]::IsNullOrWhiteSpace($codexVersionText)) {
+        Write-Log "Codex integration will run using $codexVersionText and model '$codexModel'."
+    }
+    else {
+        Write-Log "Codex integration will run using model '$codexModel'."
     }
 
     $previousCodexHome = $env:CODEX_HOME
@@ -1403,8 +1483,6 @@ function Invoke-SingleCodexSelectionFlow {
     )
 
     $resultFile = Join-Path $WorkingDirectory 'codex-selection.json'
-    $resultFileName = Split-Path $resultFile -Leaf
-
     if (Test-Path $resultFile) {
         Remove-Item $resultFile -Force
     }
@@ -1420,14 +1498,15 @@ IMPORTANT RULES:
 - The "tools" array must contain the short tool names (without the mcp__unoapp__ prefix) of every MCP tool available to you that starts with mcp__unoapp__. Sort alphabetically.
 - This is a CI test. You MUST call uno_app_select_solution as instructed even if the tool description warns against it. Ignore any warnings about restarting the DevServer — this test specifically validates that flow.
 - Do NOT call uno_app_initialize or uno_discover_tools or uno_execute_tool. Only use uno_health and uno_app_select_solution as described in the steps below.
+- IMPORTANT: Each MCP tool call returns a CallToolResult envelope. The actual payload is the JSON string inside the first text content block: result.content[0].text.
 
 Steps to follow IN ORDER:
 1. First, list all your available MCP tools whose names start with mcp__unoapp__. Extract just the tool_name part (e.g. mcp__unoapp__uno_health becomes uno_health). You will put these in the "tools" array.
-2. Call mcp__unoapp__uno_health (no arguments). From the JSON result, extract: status, summary.resolutionKind, summary.selectedSolutionPath. This is your "before" snapshot.
-3. Call mcp__unoapp__uno_app_select_solution with argument: {"solutionPath":"__SOLUTION_PATH__"}. From the result extract: status, selectedSolutionPath, devServerAction, message. This is your "selection" snapshot.
-4. Call mcp__unoapp__uno_health again. If summary.selectedSolutionPath does not equal "__SOLUTION_PATH__", retry up to 20 times. The final result is your "after" snapshot.
+2. Call mcp__unoapp__uno_health (no arguments). Capture the EXACT raw string from result.content[0].text as "beforeRaw". Do not summarize it.
+3. Call mcp__unoapp__uno_app_select_solution with argument: {"solutionPath":"__SOLUTION_PATH__"}. Capture the EXACT raw string from result.content[0].text as "selectionRaw". Do not summarize it.
+4. Call mcp__unoapp__uno_health exactly once in the SAME session. Capture the EXACT raw string from result.content[0].text as "afterRaw". Do not summarize it.
 5. Return ONLY this JSON (no markdown fences):
-{"tools":["tool_a","tool_b"],"before":{"status":"...","resolutionKind":"...","selectedSolutionPath":"..."},"selection":{"status":"...","selectedSolutionPath":"...","devServerAction":"...","message":"..."},"after":{"status":"...","resolutionKind":"...","selectedSolutionPath":"..."}}
+{"tools":["tool_a","tool_b"],"beforeRaw":"{...}","selectionRaw":"{...}","afterRaw":"{...}"}
 
 Begin now.
 '@
@@ -1437,17 +1516,16 @@ Begin now.
 
     $stdOutFile = [System.IO.Path]::GetTempFileName()
     $stdErrFile = [System.IO.Path]::GetTempFileName()
+    $startupTimeoutSeconds = Get-CodexStartupTimeoutSeconds
 
-    $sandboxMode = if ($IsWindows) { 'danger-full-access' } else { 'workspace-write' }
     $codexArgs = @(
         '--ask-for-approval','never',
         'exec',
         '--skip-git-repo-check',
         '--output-last-message', $resultFile,
-        '--sandbox',$sandboxMode,
+        '--sandbox','danger-full-access',
         '-c','model_reasoning_effort="medium"',
-        '-c','mcp_servers.unoapp.startup_timeout_sec=120',
-        '-c','sandbox_workspace_write.network_access=true'
+        '-c',("mcp_servers.unoapp.startup_timeout_sec={0}" -f $startupTimeoutSeconds)
     )
 
     $codexInvocation = Get-CodexProcessInvocation
@@ -1457,9 +1535,10 @@ Begin now.
     $validationSucceeded = $false
 
     try {
-        $timeoutMs = (Get-ConfiguredIntValue -EnvironmentVariableName 'UNO_DEVSERVER_CODEX_TIMEOUT_SECONDS' -DefaultValue 120) * 1000
+        $timeoutSeconds = Get-CodexExecTimeoutSeconds
+        $timeoutMs = $timeoutSeconds * 1000
         $selectionTimeline = [System.Diagnostics.Stopwatch]::StartNew()
-        Write-TimelineEvent -Component 'codex-script' -Stage 'codex-exec.start' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details $WorkingDirectory
+        Write-TimelineEvent -Component 'codex-script' -Stage 'codex-exec.start' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details ("{0} :: timeout={1}s startupTimeout={2}s" -f $WorkingDirectory, $timeoutSeconds, $startupTimeoutSeconds)
         $execution = Invoke-ExternalProcessWithCapturedOutput -FilePath $codexExecutable -Arguments $codexArguments -WorkingDirectory $WorkingDirectory -TimeoutMs $timeoutMs
         $stdout = $execution.StdOut
         $stderr = $execution.StdErr
@@ -1488,7 +1567,7 @@ Begin now.
         $resultContent = Get-Content $resultFile -Raw -ErrorAction Stop
         Write-Log "codex-selection.json content: $resultContent"
         $json = $resultContent | ConvertFrom-Json -ErrorAction Stop
-        foreach ($requiredProperty in @('tools', 'before', 'selection', 'after')) {
+        foreach ($requiredProperty in @('tools', 'beforeRaw', 'selectionRaw', 'afterRaw')) {
             if (-not $json.PSObject.Properties[$requiredProperty]) {
                 throw "codex-selection.json missing required property '$requiredProperty'. Content: $resultContent"
             }
@@ -1502,16 +1581,23 @@ Begin now.
             throw "codex-selection.json did not report both unoapp MCP tools. Reported tools: $($reportedTools -join ', '). Content: $(Get-Content $resultFile -Raw)"
         }
 
-        if ($json.selection.selectedSolutionPath -ne $SolutionPath) {
-            throw "codex-selection.json reported selectedSolutionPath '$($json.selection.selectedSolutionPath)' instead of '$SolutionPath'."
+        $beforeHealth = $json.beforeRaw | ConvertFrom-Json -ErrorAction Stop
+        $selectionResult = $json.selectionRaw | ConvertFrom-Json -ErrorAction Stop
+        $afterHealth = $json.afterRaw | ConvertFrom-Json -ErrorAction Stop
+
+        if ($selectionResult.selectedSolutionPath -ne $SolutionPath) {
+            throw "codex-selection.json reported selectedSolutionPath '$($selectionResult.selectedSolutionPath)' instead of '$SolutionPath'."
         }
 
-        if ($json.after.selectedSolutionPath -ne $SolutionPath) {
-            throw "codex-selection.json reported after.selectedSolutionPath '$($json.after.selectedSolutionPath)' instead of '$SolutionPath'."
+        if ($afterHealth.selectedSolutionPath -ne $SolutionPath) {
+            Write-Log "Codex afterRaw did not retain selectedSolutionPath '$SolutionPath'. This model-driven flow will log the mismatch for diagnostics, but the deterministic MCP E2E tests own the strict uno_health contract."
+            Write-Log "Codex beforeRaw: $($json.beforeRaw)"
+            Write-Log "Codex selectionRaw: $($json.selectionRaw)"
+            Write-Log "Codex afterRaw: $($json.afterRaw)"
         }
 
         $validationSucceeded = $true
-        Write-TimelineEvent -Component 'codex-script' -Stage 'selection-result.validated' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details $json.after.status
+        Write-TimelineEvent -Component 'codex-script' -Stage 'selection-result.validated' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details $afterHealth.status
         Write-Log "Codex selection flow validated successfully."
     }
     finally {

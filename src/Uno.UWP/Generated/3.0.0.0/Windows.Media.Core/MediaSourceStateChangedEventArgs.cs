@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaSourceStateChangedEventArgs.OldState.get
 		// Forced skipping of method Windows.Media.Core.MediaSourceStateChangedEventArgs.NewState.get
+		// Forced skipping of method Windows.Media.Core.MediaSourceStateChangedEventArgs.OldState.get
 	}
 }

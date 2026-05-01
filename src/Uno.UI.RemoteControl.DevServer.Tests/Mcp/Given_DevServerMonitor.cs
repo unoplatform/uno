@@ -297,6 +297,94 @@ public class Given_DevServerMonitor
 	}
 
 	// -------------------------------------------------------------------
+	// AmbientRegistry fallback decisions
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("ShouldAttemptAmbientFallback returns true when process exited and existing server is on different port")]
+	public void ShouldAttemptAmbientFallback_ProcessExited_DifferentPort_ReturnsTrue()
+	{
+		MonitorDecisions.ShouldAttemptAmbientFallback(
+			MonitorDecisions.ReadinessProbeResult.ProcessExited,
+			solution: "/path/to/solution.sln",
+			existingPort: 61077,
+			currentPort: 61098)
+			.Should().BeTrue();
+	}
+
+	[TestMethod]
+	[Description("ShouldAttemptAmbientFallback returns false when no existing server found")]
+	public void ShouldAttemptAmbientFallback_NoExistingServer_ReturnsFalse()
+	{
+		MonitorDecisions.ShouldAttemptAmbientFallback(
+			MonitorDecisions.ReadinessProbeResult.ProcessExited,
+			solution: "/path/to/solution.sln",
+			existingPort: null,
+			currentPort: 61098)
+			.Should().BeFalse();
+	}
+
+	[TestMethod]
+	[Description("ShouldAttemptAmbientFallback returns false when existing server is on same port")]
+	public void ShouldAttemptAmbientFallback_SamePort_ReturnsFalse()
+	{
+		MonitorDecisions.ShouldAttemptAmbientFallback(
+			MonitorDecisions.ReadinessProbeResult.ProcessExited,
+			solution: "/path/to/solution.sln",
+			existingPort: 61098,
+			currentPort: 61098)
+			.Should().BeFalse();
+	}
+
+	[TestMethod]
+	[Description("ShouldAttemptAmbientFallback returns false when probe result is not ProcessExited")]
+	public void ShouldAttemptAmbientFallback_TimedOut_ReturnsFalse()
+	{
+		MonitorDecisions.ShouldAttemptAmbientFallback(
+			MonitorDecisions.ReadinessProbeResult.TimedOut,
+			solution: "/path/to/solution.sln",
+			existingPort: 61077,
+			currentPort: 61098)
+			.Should().BeFalse();
+	}
+
+	[TestMethod]
+	[Description("ShouldAttemptAmbientFallback returns false when solution is null")]
+	public void ShouldAttemptAmbientFallback_NullSolution_ReturnsFalse()
+	{
+		MonitorDecisions.ShouldAttemptAmbientFallback(
+			MonitorDecisions.ReadinessProbeResult.ProcessExited,
+			solution: null,
+			existingPort: 61077,
+			currentPort: 61098)
+			.Should().BeFalse();
+	}
+
+	// -------------------------------------------------------------------
+	// Readiness acceptability
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("Only Ready is acceptable; ServerRespondedNoMcp is handled explicitly, not via IsReadinessAcceptable")]
+	public void IsReadinessAcceptable_OnlyReady_ReturnsTrue()
+	{
+		MonitorDecisions.IsReadinessAcceptable(MonitorDecisions.ReadinessProbeResult.Ready)
+			.Should().BeTrue();
+		MonitorDecisions.IsReadinessAcceptable(MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp)
+			.Should().BeFalse("ServerRespondedNoMcp is handled by kill-and-retry / fail-fast, not as acceptable");
+	}
+
+	[TestMethod]
+	[Description("TimedOut and ProcessExited are not acceptable readiness results")]
+	public void IsReadinessAcceptable_TimedOutAndProcessExited_ReturnsFalse()
+	{
+		MonitorDecisions.IsReadinessAcceptable(MonitorDecisions.ReadinessProbeResult.TimedOut)
+			.Should().BeFalse();
+		MonitorDecisions.IsReadinessAcceptable(MonitorDecisions.ReadinessProbeResult.ProcessExited)
+			.Should().BeFalse();
+	}
+
+	// -------------------------------------------------------------------
 	// FindGitRoot
 	// -------------------------------------------------------------------
 
@@ -437,6 +525,66 @@ public class Given_DevServerMonitor
 		finally
 		{
 			Directory.Delete(tempDir, recursive: true);
+		}
+	}
+
+	/// <summary>
+	/// Regression test for unoplatform/uno#22982: git.exe zombie processes.
+	/// When the DevServer runs as an MCP server behind a libuv-based client,
+	/// git.exe inherits the parent's stdin (a libuv named pipe) and hangs.
+	/// The fix is to set RedirectStandardInput = true in the ProcessStartInfo
+	/// so git gets a fresh empty pipe instead of the inherited handle.
+	/// </summary>
+	[TestMethod]
+	[Description("ProcessStartInfo for git check-ignore must redirect stdin to prevent libuv pipe inheritance (fixes #22982)")]
+	public void GetGitIgnoredPaths_ProcessStartInfo_RedirectsStdin()
+	{
+		var psi = SolutionFileFinder.CreateGitCheckIgnoreStartInfo(".", ["some/path"]);
+
+		psi.RedirectStandardInput.Should().BeTrue(
+			"git.exe must NOT inherit the parent's stdin — when stdin is a libuv named pipe "
+			+ "(from an MCP client), git hangs during I/O initialization (see #22982)");
+		psi.RedirectStandardOutput.Should().BeTrue();
+		psi.RedirectStandardError.Should().BeTrue();
+		psi.UseShellExecute.Should().BeFalse(
+			"UseShellExecute=false is required for stream redirection");
+	}
+
+	[TestMethod]
+	[Description("Calling GetGitIgnoredPaths twice with the same input should not spawn git twice (#22982)")]
+	public void GetGitIgnoredPaths_ReturnsCachedResult_WhenInputUnchanged()
+	{
+		var tempDir = Path.Combine(Path.GetTempPath(), $"cache-test-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			RunGit(tempDir, "init");
+			RunGit(tempDir, "config user.email test@test.com");
+			RunGit(tempDir, "config user.name Test");
+			File.WriteAllText(Path.Combine(tempDir, ".gitignore"), "ignored/\n");
+			RunGit(tempDir, "add .gitignore");
+			RunGit(tempDir, "commit -m init");
+
+			var ignoredDir = Path.Combine(tempDir, "ignored");
+			var visibleDir = Path.Combine(tempDir, "src");
+			Directory.CreateDirectory(ignoredDir);
+			Directory.CreateDirectory(visibleDir);
+
+			var paths = new List<string> { ignoredDir, visibleDir };
+
+			var result1 = SolutionFileFinder.GetGitIgnoredPaths(paths, tempDir);
+			var result2 = SolutionFileFinder.GetGitIgnoredPaths(paths, tempDir);
+
+			result1.Should().NotBeNull();
+			result2.Should().NotBeNull();
+			result1!.Should().Contain(ignoredDir);
+			// The second call should return the same cached result
+			result2.Should().BeEquivalentTo(result1,
+				"the second call with identical input should return the cached result without spawning git again");
+		}
+		finally
+		{
+			ForceDeleteDirectory(tempDir);
 		}
 	}
 

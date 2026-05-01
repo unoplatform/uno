@@ -33,7 +33,7 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.Keyboard.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.GameController.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverInputDevices.Keyboard.get
 	}
 }

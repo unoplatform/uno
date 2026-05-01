@@ -35,13 +35,6 @@ namespace Windows.UI.Text
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.ITextDocument.CaretType.get
-		// Forced skipping of method Windows.UI.Text.ITextDocument.CaretType.set
-		// Forced skipping of method Windows.UI.Text.ITextDocument.DefaultTabStop.get
-		// Forced skipping of method Windows.UI.Text.ITextDocument.DefaultTabStop.set
-		// Forced skipping of method Windows.UI.Text.ITextDocument.Selection.get
-		// Forced skipping of method Windows.UI.Text.ITextDocument.UndoLimit.get
-		// Forced skipping of method Windows.UI.Text.ITextDocument.UndoLimit.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		bool CanCopy();
 #endif
@@ -102,5 +95,12 @@ namespace Windows.UI.Text
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void Undo();
 #endif
+		// Forced skipping of method Windows.UI.Text.ITextDocument.CaretType.get
+		// Forced skipping of method Windows.UI.Text.ITextDocument.CaretType.set
+		// Forced skipping of method Windows.UI.Text.ITextDocument.DefaultTabStop.get
+		// Forced skipping of method Windows.UI.Text.ITextDocument.DefaultTabStop.set
+		// Forced skipping of method Windows.UI.Text.ITextDocument.Selection.get
+		// Forced skipping of method Windows.UI.Text.ITextDocument.UndoLimit.get
+		// Forced skipping of method Windows.UI.Text.ITextDocument.UndoLimit.set
 	}
 }

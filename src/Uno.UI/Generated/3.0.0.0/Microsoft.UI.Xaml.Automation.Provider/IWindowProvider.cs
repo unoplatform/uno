@@ -14,14 +14,14 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 		// Skipping already declared property Maximizable
 		// Skipping already declared property Minimizable
 		// Skipping already declared property VisualState
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.Close()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.SetVisualState(Microsoft.UI.Xaml.Automation.WindowVisualState)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.WaitForInputIdle(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.InteractionState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.IsModal.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.IsTopmost.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.Maximizable.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.Minimizable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.InteractionState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.VisualState.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.Close()
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.SetVisualState(Microsoft.UI.Xaml.Automation.WindowVisualState)
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IWindowProvider.WaitForInputIdle(int)
 	}
 }

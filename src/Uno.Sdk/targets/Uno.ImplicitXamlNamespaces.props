@@ -1,0 +1,8 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<UnoEnableImplicitXamlNamespaces Condition="'$(UnoEnableImplicitXamlNamespaces)'==''">true</UnoEnableImplicitXamlNamespaces>
+		<UnoGlobalXamlNamespaceUri Condition="'$(UnoGlobalXamlNamespaceUri)'==''">http://schemas.microsoft.com/winfx/2006/xaml/presentation/global</UnoGlobalXamlNamespaceUri>
+	</PropertyGroup>
+
+</Project>

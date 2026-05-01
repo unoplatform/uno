@@ -14,12 +14,12 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 		// Skipping already declared property Minimum
 		// Skipping already declared property SmallChange
 		// Skipping already declared property Value
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider.SetValue(double)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider.LargeChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider.Maximum.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider.Minimum.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider.SmallChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider.Value.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider.SetValue(double)
 	}
 }

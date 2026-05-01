@@ -1,42 +1,46 @@
 ﻿<UserControl
-	x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.Grid_in_StackPanel"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+    x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.Grid_in_StackPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-	<StackPanel Orientation="Vertical">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
+    <StackPanel Orientation="Vertical">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-			<Border Background="CornflowerBlue"
-					MinHeight="30"
-					MinWidth="20"/>
+            <Border
+                MinWidth="20"
+                MinHeight="30"
+                Background="CornflowerBlue" />
 
-			<Border Grid.Column="1"
-					Background="LimeGreen"
-					MaxWidth="30"
-					MinHeight="40"/>
+            <Border
+                Grid.Column="1"
+                MinHeight="40"
+                MaxWidth="30"
+                Background="LimeGreen" />
 
-			<Border Grid.Row="1"
-					Background="Tomato"
-					MinHeight="40" />
+            <Border
+                Grid.Row="1"
+                MinHeight="40"
+                Background="Tomato" />
 
-			<Border Grid.Column="1"
-					Grid.Row="1"
-					Background="Purple"
-					Height="50"
-					MaxWidth="60" />
-		</Grid>
-	</StackPanel>
+            <Border
+                Grid.Row="1"
+                Grid.Column="1"
+                Height="50"
+                MaxWidth="60"
+                Background="Purple" />
+        </Grid>
+    </StackPanel>
 </UserControl>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Uno.WinAppSDKSyncGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "sync"
+    }
+  }
+}

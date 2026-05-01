@@ -10,20 +10,6 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string HashAlgorithmName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CmsSignerInfo.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CmsSignerInfo.HashAlgorithmName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "string CmsSignerInfo.HashAlgorithmName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.Certificate Certificate
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.Security.Cryptography.Certificates
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate CmsSignerInfo.Certificate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string HashAlgorithmName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CmsSignerInfo.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CmsSignerInfo.HashAlgorithmName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "string CmsSignerInfo.HashAlgorithmName");
 			}
 		}
 #endif

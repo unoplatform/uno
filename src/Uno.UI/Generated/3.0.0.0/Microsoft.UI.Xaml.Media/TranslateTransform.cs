@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class TranslateTransform : global::Microsoft.UI.Xaml.Media.Transform
 	{
-		// Skipping already declared property Y
-		// Skipping already declared property X
 		// Skipping already declared property XProperty
 		// Skipping already declared property YProperty
+		// Skipping already declared property X
+		// Skipping already declared property Y
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TranslateTransform.TranslateTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.TranslateTransform()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.XProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.YProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.X.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.X.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.Y.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.Y.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.XProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.YProperty.get
 	}
 }

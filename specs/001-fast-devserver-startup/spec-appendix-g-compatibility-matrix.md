@@ -13,13 +13,13 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 
 | Launcher | Launches Host Via | Uses `--command start` | Passes `--addins` | AmbientRegistry Check | `.csproj.user` Write | Status |
 |----------|-------------------|:----------------------:|:------------------:|:---------------------:|:--------------------:|--------|
-| CLI `start` | Controller → Server | Yes | **Phase 0** | Yes (controller) | Yes (controller: `Program.Command.cs:101`) | Changing |
+| CLI `start` | CLI → Direct | **No** (direct launch) | Yes (`StartCommandHandler`) | Yes (CLI: `StartCommandHandler`) | Yes (CLI: `StartCommandHandler`) | **Implemented** |
 | CLI MCP (`--mcp-app`) | Controller (Phase 0); Direct (Phase 1b) | Phase 0: Yes; Phase 1b: No | **Phase 0** | **Must add** (1g-bis) | Phase 0: controller writes it; Phase 1b: **must re-implement** CLI-side | Changing |
 | VS (`uno.studio`) | `DevServerLauncher` → Direct | No | No (future) | **None today** | Yes (VS extension: `DevServerLauncher.cs:187`) | Unchanged |
 | Rider (`uno.rider`) | `DevServerService` → Direct | No | No (future) | **None today** | Yes (Rider extension: `DevServerService.cs:79`) | Unchanged |
 | VS Code (`uno.vscode`) | `extension.ts` → Direct | No | No (future) | **None today** | Yes (VS Code extension: `unoDebugConfigurationProvider.ts:226`) | Unchanged |
 
-> **Note**: The Host server-mode process (`Program.cs`) does **NOT** write `.csproj.user`. It only registers in AmbientRegistry (`Program.cs:221`). Each launcher is responsible for writing `.csproj.user` independently: the controller does it for CLI `start`, and each IDE extension does it for their own launch path.
+> **Note**: The Host server-mode process (`Program.cs`) does **NOT** write `.csproj.user`. It only registers in AmbientRegistry (`Program.cs:221`). Each launcher is responsible for writing `.csproj.user` independently: the CLI `StartCommandHandler` does it for CLI `start` (previously the controller), and each IDE extension does it for their own launch path.
 
 ### Risks
 
@@ -36,7 +36,7 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 - [ ] Host launched **with** `--addins` → MSBuild discovery skipped, provided paths used
 - [ ] Host launched **with** `--addins ""` (empty) → no add-ins loaded, no discovery
 - [ ] Host launched with both `--addins` and `--solution` → `--addins` for add-ins, `--solution` for Hot Reload
-- [ ] Controller launched with `--addins` → forwards `--addins` to child server process (Phase 0 requirement)
+- [ ] CLI `start` passes `--addins` directly to host in direct mode (no controller involved)
 - [ ] AmbientRegistry: controller pre-checks before starting (existing behavior preserved)
 - [ ] AmbientRegistry: server-mode Host only registers, does NOT pre-check (known limitation)
 
@@ -118,24 +118,81 @@ How different SDK versions affect add-in discovery.
 | .NET SDK | TFM | Host Binary Location | `dotnet tool` R2R Support | Notes |
 |----------|-----|---------------------|:-------------------------:|-------|
 | 9.0 | `net9.0` | `tools/rc/host/net9.0/` | No | Current |
-| 10.0 | `net10.0` | `tools/rc/host/net10.0/` | **Yes** (RID-specific tools) | Target for Phase 2 |
-| Preview | `net{x}.0` | May not match installed SDKs | Varies | Edge case |
+| 10.0 | `net10.0` | `tools/rc/host/net10.0/` | **Yes** (RID-specific tools) | Current |
+| 11.0+ | `net{N}.0` | `tools/rc/host/net{N}.0/` when shipped, otherwise fall back to highest `net{M}.0` with `M <= N` | Yes | Automatic via `UnoToolsLocator.TryResolveHostTfm` — no code change when a new major lands |
+| Preview | `net{x}.0` | May not match installed SDKs | Varies | Preview suffix stripped by `GetDotNetVersion`; same fallback path as above |
 | Multiple installed | Depends on `global.json` | Must match pinned SDK | N/A | See section 13 |
+
+### TFM fallback resolver
+
+`UnoToolsLocator.TryResolveHostLaunchPlan` is the single host-discovery code path
+shared by `ResolveHostExecutableAsync` (direct launch) and `DiscoverAsync` (MCP /
+doctor surfaces). Resolution is three-stage:
+
+1. **Exact match first**. `tools/rc/host/{requestedTfm}/Uno.UI.RemoteControl.Host.{exe,dll}`.
+2. **Compatible fallback capped at one major**. When the exact TFM directory is
+   absent, `TryResolveHostTfm` enumerates `tools/rc/host/net{X}.{Y}/` entries,
+   keeps the ones with `requestedMajor - 1 <= major <= requestedMajor` and
+   `(major, minor) <= (requestedMajor, requestedMinor)`, and returns the highest.
+   The one-major cap matches what `DOTNET_ROLL_FORWARD=Major` can actually cover
+   at runtime; picking further back would hand out a host the runtime cannot
+   load even with roll-forward enabled.
+3. **Refuse to roll up**. A TFM newer than the requested runtime is never
+   selected — .NET cannot load an assembly compiled against a future major.
+
+OS-suffixed monikers (`net10.0-windows…`) and pre-net5 monikers (`netstandard2.0`,
+`netcoreapp3.1`, `net472`) are filtered out — only the short `net{major}.{minor}` form
+is a candidate. The enumeration returns TFMs sorted numerically by `(major, minor)`,
+so the user-facing "present" list in error messages reads naturally.
+
+The resolver returns a `HostLaunchPlan { HostPath, RequiresMajorRollForward }`,
+with `RequiresMajorRollForward` set **only** when fallback was taken (exact match
+leaves it false). Every host-spawn site (`CliManager.BuildHostArgs`,
+`StartCommandHandler.BuildDirectLaunchArgs`/`BuildControllerModeArgs`,
+`DevServerMonitor.StartProcess`) threads the flag through to
+`DevServerProcessHelper.CreateDotnetProcessStartInfo(enableMajorRollForward: …)`,
+which sets `DOTNET_ROLL_FORWARD=Major` on the child process environment. This
+coupling means:
+
+- Exact match: no roll-forward override — pinned-major setups (global.json,
+  ambient `DOTNET_ROLL_FORWARD`) are respected.
+- Fallback: `DOTNET_ROLL_FORWARD=Major` is the guarantee that the selected host
+  (one major below the runtime) actually starts.
+
+### `disco --json` public contract
+
+`DiscoveryInfo.HostRequiresMajorRollForward` is surfaced in the `disco --json`
+payload as the `hostRequiresMajorRollForward` boolean. This is an **additive
+committed field**: `true` indicates that the resolver had to fall back to an
+older-major host and that the spawn path will set `DOTNET_ROLL_FORWARD=Major`;
+`false` indicates an exact-TFM match with no roll-forward override. External
+tools (IDE extensions, doctor-style diagnostics, CI scripts) may rely on it
+to distinguish "host is native to the current runtime" from "host is selected
+via fallback and may behave differently under upgrades". Renaming or removing
+this field is a breaking schema change for those consumers.
 
 ### Risks
 
 | Risk | Scenario | Impact | Mitigation |
 |------|----------|--------|------------|
-| TFM mismatch | `dotnet --version` reports 10.0 but Host only has `net9.0` binary | Host not found | Scan available TFMs, pick best match (section 13 Phase 3) |
+| TFM mismatch (one-major gap) | `dotnet --version` reports 10.0 but Host only has `net9.0` binary | Host not found | `TryResolveHostTfm` falls back to the highest `net{X}.{Y}` ≤ requested (within one major); `HostLaunchPlan.RequiresMajorRollForward` propagates to the spawn; `DOTNET_ROLL_FORWARD=Major` lets the older-TFM host start on the newer runtime |
+| TFM mismatch (multi-major gap) | Host ships only `net5.0`, runtime is `net10.0` | Runtime cannot load the host even with roll-forward | Resolver refuses (one-major cap) and returns null → clear "no compatible TFM" error instead of a silent crash at launch |
 | `global.json` pins older SDK | Project uses 9.0 but system default is 10.0 | Wrong TFM selected | Respect `global.json` SDK version, not `dotnet --version` |
-| Preview SDK version string | `10.0.100-preview.1` | Parser fails | Robust version parsing, ignore preview suffix for TFM |
+| Preview SDK version string | `10.0.100-preview.1` | Parser fails | `GetDotNetVersion` strips preview suffix before TFM computation |
+| New major lands (net11, net12, …) | Package has not shipped the new TFM yet | Resolver returns an older host | Expected behaviour — automatic via the fallback resolver, no code change |
 
 ### Validation
 
-- [ ] .NET 9.0 installed → `net9.0` TFM, Host found
-- [ ] .NET 10.0 installed → `net10.0` TFM, Host found
+- [x] .NET 9.0 installed → `net9.0` TFM, Host found
+- [x] .NET 10.0 installed → `net10.0` TFM, Host found
 - [ ] `global.json` pins 9.0 with 10.0 installed → `net9.0` TFM used
-- [ ] Host package only has `net9.0` but SDK is 10.0 → fallback to `net9.0` with warning
+- [x] Host package only has `net9.0` but SDK is 10.0 → fallback to `net9.0` and `DOTNET_ROLL_FORWARD=Major` on spawn (covered by `Given_UnoToolsLocator`)
+- [x] Host package has only `net11.0` but SDK is 10.0 → resolver returns null rather than pick a higher TFM
+- [x] Host package has only `net5.0`/`net6.0` but SDK is 10.0 → resolver returns null (multi-major gap refused, paired with `DOTNET_ROLL_FORWARD=Major` semantics)
+- [x] Exact TFM match → `HostLaunchPlan.RequiresMajorRollForward` is false, helper does not force `DOTNET_ROLL_FORWARD=Major` (pinned-major setups preserved)
+- [x] Non-`net{X}.{Y}` directories under `tools/rc/host/` are ignored
+- [x] `EnumerateHostTfms` result is sorted numerically by `(major, minor)` (not string-ordinal)
+- [x] `DiscoverAsync` and `ResolveHostExecutableAsync` share the same resolver (MCP `discover`, `doctor`, and direct launch agree)
 - [ ] Cache invalidated when `global.json` changes
 
 ---
@@ -158,14 +215,14 @@ How different SDK versions affect add-in discovery.
 **Key observations**:
 - **`resources/subscribe` is unsupported across ALL clients** — the `uno://health` resource subscription feature (section 1d) will not work for any current client. Polling or `tools/list_changed` are the only notification mechanisms.
 - **`tools/list_changed` is supported by only 3 clients** (Cursor, VS Code Copilot, Windsurf). All others need `--mcp-wait-tools-list` to block the initial `list_tools` until upstream responds.
-- **`roots` is supported by 4 of 8 clients** (Claude Code, Cursor, VS Code Copilot, Junie). The 4 without (Claude Desktop, Codex CLI, Windsurf, Antigravity) previously required the explicit `--force-roots-fallback` flag. This is now **auto-detected**: when the MCP client does not advertise `roots` capability and the workspace is not already resolved, the proxy enables roots fallback automatically. The `--force-roots-fallback` CLI flag remains available for explicit override. (*) Antigravity declares `roots` capability in the protocol but does not actually provide workspace roots per Uno's own docs (`doc/articles/get-started-ai-google-antigravity.md:52`). Treat as unsupported until verified.
+- **`roots` is supported by 4 of 8 clients** (Claude Code, Cursor, VS Code Copilot, Junie). The 4 without (Claude Desktop, Codex CLI, Windsurf, Antigravity) previously required the explicit `--force-roots-fallback` flag. This is now **auto-detected**: when the MCP client does not advertise `roots` capability and the workspace is not already resolved, the proxy enables roots fallback automatically. IDE registration profiles (`ide-profiles.json`) no longer hardcode the legacy flag. The `--force-roots-fallback` CLI flag remains accepted for explicit override but is rarely needed. (*) Antigravity declares `roots` capability in the protocol but does not actually provide workspace roots per Uno's own docs (`doc/articles/get-started-ai-google-antigravity.md`). Treat as unsupported until verified.
 - **Capability detection from `initialize` is the only reliable approach** — hardcoding client names is fragile and already stale. The auto-detection of roots fallback is an example of this principle in practice: the proxy inspects the client's declared capabilities at connection time rather than relying on per-client flags.
 
 ### Risks
 
 | Risk | Scenario | Impact | Mitigation |
 |------|----------|--------|------------|
-| Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds. Additionally, meta-tools `uno_discover_tools` and `uno_execute_tool` allow clients to discover and invoke upstream tools without re-querying `list_tools`. |
+| Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds. Additionally, meta-tools `uno_discover_tools` and `uno_execute_tool` remain available throughout the session as a stable compatibility path to upstream tools. |
 | Client doesn't support `resources` | `uno://health` not accessible | No diagnostics | `uno_health` tool as universal fallback |
 | Client doesn't support `roots` | Workspace not discovered | Discovery fails | Roots fallback auto-detected when client lacks `roots` capability and workspace is unresolved; `--force-roots-fallback` still available for explicit override |
 | No client supports `resources/subscribe` | Health push notifications never received | Clients must poll or rely on `tools/list_changed` | Design for pull-based health (tool call), not push-based (subscription) |
@@ -219,7 +276,7 @@ These scenarios test the interaction between different DevServer launchers runni
 | Business | 12 | `tools/list_changed` sent |
 | Expired/None | 0 | Warning in health |
 
-> **Note**: The tool cache (`tools-cache.json`) has been removed. For clients that do not re-query `list_tools` after `tools/list_changed`, the meta-tools `uno_discover_tools` and `uno_execute_tool` provide an alternative mechanism to discover and call upstream tools.
+> **Note**: The tool cache (`tools-cache.json`) has been removed. The meta-tools `uno_discover_tools` and `uno_execute_tool` provide a stable compatibility mechanism to discover and call upstream tools while the direct tool set changes during the session.
 
 ### Validation
 

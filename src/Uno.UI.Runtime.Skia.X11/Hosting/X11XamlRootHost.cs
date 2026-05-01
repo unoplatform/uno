@@ -128,6 +128,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
+		_framePacer = CreateFramePacer();
 		_renderThread = InitRenderThread();
 
 		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
@@ -142,6 +143,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
+				_framePacer.Dispose();
 				_renderRequested.Dispose();
 				_renderer?.Dispose();
 			}
@@ -169,6 +171,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
 			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.Id.Name))
+		{
+			SetWMClass(Windows.ApplicationModel.Package.Current.Id.Name);
 		}
 	}
 
@@ -261,6 +268,30 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 	}
 
+	private void SetWMClass(string name)
+	{
+		var resName = Marshal.StringToHGlobalAnsi(name);
+		var resClass = Marshal.StringToHGlobalAnsi(name);
+		try
+		{
+			var classHint = new XClassHint
+			{
+				res_name = resName,
+				res_class = resClass,
+			};
+
+			var display = RootX11Window.Display;
+			using var lockDisposable = X11Helper.XLock(display);
+			_ = XLib.XSetClassHint(display, RootX11Window.Window, ref classHint);
+			_ = XLib.XFlush(display);
+		}
+		finally
+		{
+			Marshal.FreeHGlobal(resName);
+			Marshal.FreeHGlobal(resClass);
+		}
+	}
+
 	public static X11XamlRootHost? GetXamlRootHostFromX11Window(X11Window window)
 	{
 		lock (_x11WindowToXamlRootHostMutex)
@@ -349,7 +380,26 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
-		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true)
+		if (FeatureConfiguration.Rendering.UseVulkanOnX11)
+		{
+			try
+			{
+				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+				_renderer = X11VulkanRenderer.Create(this, TopX11Window);
+			}
+			catch (Exception e)
+			{
+				this.Log().Info($"Vulkan rendering not available: {e.Message}. Falling back to OpenGL.");
+				if (_x11TopWindow is not null)
+				{
+					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
+					_x11TopWindow = null;
+				}
+				_renderer = null;
+			}
+		}
+
+		if (_renderer is null && (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true))
 		{
 			try
 			{
@@ -399,10 +449,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 			}
 		}
-		else
+		if (_renderer is null)
 		{
 			this.Log().Info($"Forcing software rendering.");
-			_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+			if (_x11TopWindow is null)
+			{
+				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+			}
 			_renderer = new X11SoftwareRenderer(this, TopX11Window);
 		}
 

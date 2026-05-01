@@ -8,8 +8,8 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class FocusNavigationRequestEventArgs
 	{
-		// Skipping already declared property Result
 		// Skipping already declared property Request
+		// Skipping already declared property Result
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.Request.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.Result.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.Result.set

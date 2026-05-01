@@ -15,6 +15,13 @@ namespace Windows.Graphics.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Graphics.Display.Core.HdmiDisplayInformation GetForCurrentView()
+		{
+			throw new global::System.NotImplementedException("The member HdmiDisplayInformation HdmiDisplayInformation.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HdmiDisplayInformation%20HdmiDisplayInformation.GetForCurrentView%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Display.Core.HdmiDisplayMode> GetSupportedDisplayModes()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<HdmiDisplayMode> HdmiDisplayInformation.GetSupportedDisplayModes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHdmiDisplayMode%3E%20HdmiDisplayInformation.GetSupportedDisplayModes%28%29");
@@ -57,13 +64,6 @@ namespace Windows.Graphics.Display.Core
 #endif
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayInformation.DisplayModesChanged.add
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayInformation.DisplayModesChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Graphics.Display.Core.HdmiDisplayInformation GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member HdmiDisplayInformation HdmiDisplayInformation.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HdmiDisplayInformation%20HdmiDisplayInformation.GetForCurrentView%28%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.Core.HdmiDisplayInformation, object> DisplayModesChanged

@@ -73,8 +73,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Preset.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetPresetAsync(global::Windows.Media.Devices.ColorTemperaturePreset preset)
@@ -82,10 +80,6 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member IAsyncAction WhiteBalanceControl.SetPresetAsync(ColorTemperaturePreset preset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WhiteBalanceControl.SetPresetAsync%28ColorTemperaturePreset%20preset%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Min.get
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Max.get
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Step.get
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Value.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(uint temperature)
@@ -93,5 +87,11 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member IAsyncAction WhiteBalanceControl.SetValueAsync(uint temperature) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WhiteBalanceControl.SetValueAsync%28uint%20temperature%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Max.get
+		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Min.get
+		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Preset.get
+		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Step.get
+		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Value.get
 	}
 }

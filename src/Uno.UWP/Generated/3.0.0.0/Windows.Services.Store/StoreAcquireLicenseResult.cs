@@ -33,7 +33,7 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreAcquireLicenseResult.StorePackageLicense.get
 		// Forced skipping of method Windows.Services.Store.StoreAcquireLicenseResult.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StoreAcquireLicenseResult.StorePackageLicense.get
 	}
 }

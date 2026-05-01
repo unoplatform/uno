@@ -1,37 +1,40 @@
 ﻿<UserControl
-	x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_IsEnabled"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+    x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_IsEnabled"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-	<StackPanel>
+    <StackPanel>
 
-		<Button x:Name="Button"
-					Content="Button" />
+        <Button x:Name="Button" Content="Button" />
 
-		<CheckBox x:Name="ButtonIsEnabled"
-					IsChecked="True"
-					Content="Button.IsEnabled"
-					Click="ButtonIsEnabled_Click" />
+        <CheckBox
+            x:Name="ButtonIsEnabled"
+            Click="ButtonIsEnabled_Click"
+            Content="Button.IsEnabled"
+            IsChecked="True" />
 
-		<CheckBox x:Name="ButtonCommand"
-					Content="Button.Command"
-					Click="ButtonCommand_Click" />
+        <CheckBox
+            x:Name="ButtonCommand"
+            Click="ButtonCommand_Click"
+            Content="Button.Command" />
 
-		<CheckBox x:Name="ButtonCommandParameter"
-					Content="Button.CommandParameter"
-					Click="ButtonCommandParameter_Click" />
+        <CheckBox
+            x:Name="ButtonCommandParameter"
+            Click="ButtonCommandParameter_Click"
+            Content="Button.CommandParameter" />
 
-		<CheckBox x:Name="ButtonCommandIsEnabled"
-					Content="Button.Command.IsEnabled"
-					Click="ButtonCommandIsEnabled_Click" />
+        <CheckBox
+            x:Name="ButtonCommandIsEnabled"
+            Click="ButtonCommandIsEnabled_Click"
+            Content="Button.Command.IsEnabled" />
 
-		<Button Command="{Binding AlternateEnableCommand}">Alternating Enability with a command</Button>
+        <Button Command="{Binding AlternateEnableCommand}">Alternating Enability with a command</Button>
 
-	</StackPanel>
+    </StackPanel>
 
 </UserControl>

@@ -36,8 +36,20 @@ namespace Windows.Globalization.PhoneNumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo.PhoneNumberInfo(string)
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo.CountryCode.get
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo.PhoneNumber.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse(string input, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
+		{
+			throw new global::System.NotImplementedException("The member PhoneNumberParseResult PhoneNumberInfo.TryParse(string input, out PhoneNumberInfo phoneNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneNumberParseResult%20PhoneNumberInfo.TryParse%28string%20input%2C%20out%20PhoneNumberInfo%20phoneNumber%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse(string input, string regionCode, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
+		{
+			throw new global::System.NotImplementedException("The member PhoneNumberParseResult PhoneNumberInfo.TryParse(string input, string regionCode, out PhoneNumberInfo phoneNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneNumberParseResult%20PhoneNumberInfo.TryParse%28string%20input%2C%20string%20regionCode%2C%20out%20PhoneNumberInfo%20phoneNumber%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetLengthOfGeographicalAreaCode()
@@ -87,19 +99,7 @@ namespace Windows.Globalization.PhoneNumberFormatting
 			throw new global::System.NotImplementedException("The member string PhoneNumberInfo.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberInfo.ToString%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse(string input, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
-		{
-			throw new global::System.NotImplementedException("The member PhoneNumberParseResult PhoneNumberInfo.TryParse(string input, out PhoneNumberInfo phoneNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneNumberParseResult%20PhoneNumberInfo.TryParse%28string%20input%2C%20out%20PhoneNumberInfo%20phoneNumber%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse(string input, string regionCode, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
-		{
-			throw new global::System.NotImplementedException("The member PhoneNumberParseResult PhoneNumberInfo.TryParse(string input, string regionCode, out PhoneNumberInfo phoneNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneNumberParseResult%20PhoneNumberInfo.TryParse%28string%20input%2C%20string%20regionCode%2C%20out%20PhoneNumberInfo%20phoneNumber%29");
-		}
-#endif
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo.CountryCode.get
+		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo.PhoneNumber.get
 	}
 }

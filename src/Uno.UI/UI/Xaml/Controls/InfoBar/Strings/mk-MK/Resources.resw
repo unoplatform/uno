@@ -146,7 +146,7 @@
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
-    <value>Икона на предупредување</value>
+    <value>Икона за предупредување</value>
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">
@@ -158,7 +158,7 @@
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>Информативна порака, сериозност: информативно</value>
+    <value>Информативна порака, информативна сериозност</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
@@ -166,7 +166,7 @@
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">
-    <value>Информативна порака, сериозност: предупредување</value>
+    <value>Информативна порака, предупредување за сериозност</value>
     <comment>Name used to announce severity warning to users.</comment>
   </data>
 </root>

@@ -53,15 +53,15 @@ namespace Windows.Networking.Vpn
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.ProfileName.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.ProfileName.set
-		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.AppTriggers.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.Routes.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.DomainNameInfoList.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.TrafficFilters.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.RememberCredentials.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.RememberCredentials.set
 		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.AlwaysOn.get
 		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.AlwaysOn.set
+		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.AppTriggers.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.DomainNameInfoList.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.ProfileName.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.ProfileName.set
+		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.RememberCredentials.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.RememberCredentials.set
+		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.Routes.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnProfile.TrafficFilters.get
 	}
 }

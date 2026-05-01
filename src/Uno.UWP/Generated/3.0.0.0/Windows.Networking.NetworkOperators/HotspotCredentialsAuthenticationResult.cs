@@ -53,9 +53,9 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.ResponseCode.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.LogoffUrl.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.AuthenticationReplyXml.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.LogoffUrl.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.ResponseCode.get
 	}
 }

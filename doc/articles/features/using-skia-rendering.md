@@ -6,7 +6,7 @@ uid: uno.features.renderer.skia
 
 Available on iOS, Android, macOS, Windows, Linux and WebAssembly, based on the [Skia](https://skia.org) drawing library, the Skia Renderer is a cross-platform unified rendering component of Uno Platform which provides a single UI experience across all supported platforms.
 
-The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal, OpenGL, and WebGL where applicable. Unlike Native rendering, Skia doesn’t rely on platform UI components.
+The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal, OpenGL, [Vulkan](xref:Uno.Skia.Vulkan), and WebGL where applicable. Unlike Native rendering, Skia doesn’t rely on platform UI components.
 
 The Skia Rendering backend has a very cheap cost for creating UI elements, which makes it very efficient for large user interfaces.
 

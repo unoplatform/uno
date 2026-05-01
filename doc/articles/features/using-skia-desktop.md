@@ -80,6 +80,23 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 </ItemGroup>
 ```
 
+## Rendering Backend Selection
+
+By default, Uno Platform uses OpenGL for hardware-accelerated rendering on desktop, with an automatic fallback to software rendering. You can override this per platform using the host builder:
+
+```csharp
+var host = UnoPlatformHostBuilder.Create()
+    .App(() => new App())
+    .UseX11(b => b.RenderingBackend(X11RenderingBackend.Vulkan))
+    .UseWin32(b => b.RenderingBackend(Win32RenderingBackend.Vulkan))
+    .UseMacOS()
+    .Build();
+```
+
+Each platform exposes its own `RenderingBackend` enum with only the backends it supports. For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
+
+Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
+
 ## Windows Specifics
 
 ### RDP Hardware Acceleration

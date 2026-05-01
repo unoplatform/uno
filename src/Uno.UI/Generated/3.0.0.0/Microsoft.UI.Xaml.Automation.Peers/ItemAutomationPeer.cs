@@ -12,9 +12,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ItemsControlAutomationPeer
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Realize()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemsControlAutomationPeer.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Realize()
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
 	}
 }

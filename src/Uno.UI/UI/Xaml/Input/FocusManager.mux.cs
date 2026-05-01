@@ -1994,9 +1994,12 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			AutomationPeer? pAP = null;
 			// TODO Uno: When automation is developed further, we want the second check to make sure not to create automation peers when not needed
-			if (_focusedElement != null) //&& S_OK == _pCoreService.UIAClientsAreListening(UIAXcp.AEAutomationFocusChanged)) 
+			if (_focusedElement != null) //&& S_OK == _pCoreService.UIAClientsAreListening(UIAXcp.AEAutomationFocusChanged))
 			{
-				pAP = (_focusedElement as UIElement)?.OnCreateAutomationPeerInternal();
+				// Use GetOrCreateAutomationPeer() (cached) instead of OnCreateAutomationPeerInternal() (uncached)
+				// so that the peer identity is stable. HasKeyboardFocusImpl() compares the peer with
+				// GetFocusedAutomationPeer() by reference, which only works when the same object is used.
+				pAP = (_focusedElement as UIElement)?.GetOrCreateAutomationPeer();
 
 				// There's one specific circumstance that we want to handle: attempting to focus a ContentControl inside a popup.
 				// The ContentControl is able to be keyboard focused, but because ContentControlAutomationPeer doesn't exist,
@@ -2013,13 +2016,16 @@ namespace Microsoft.UI.Xaml.Input
 
 					if (popupToFocus != null)
 					{
-						pAP = popupToFocus.OnCreateAutomationPeerInternal();
+						pAP = popupToFocus.GetOrCreateAutomationPeer();
 					}
 				}
 
 				if (pAP != null)
 				{
 					_focusedAutomationPeer = pAP;
+					// Also update the static focused peer so HasKeyboardFocusImpl() returns true.
+					// In WinUI this is kept coherent via m_tpAP; in Uno we sync explicitly here.
+					SetFocusedAutomationPeer(pAP);
 					var apToRaiseEvent = pAP.EventsSource ?? pAP;
 					apToRaiseEvent.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
 				}
@@ -2028,6 +2034,7 @@ namespace Microsoft.UI.Xaml.Input
 			if (pAP == null)
 			{
 				_focusedAutomationPeer = null;
+				SetFocusedAutomationPeer(null);
 			}
 		}
 

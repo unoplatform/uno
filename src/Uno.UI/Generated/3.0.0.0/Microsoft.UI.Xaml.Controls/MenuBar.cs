@@ -8,11 +8,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class MenuBar : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property Items
 		// Skipping already declared property ItemsProperty
+		// Skipping already declared property Items
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuBar.MenuBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.MenuBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.ItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBar.Items.get
 	}
 }

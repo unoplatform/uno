@@ -8,13 +8,13 @@ namespace Windows.UI.Input
 #endif
 	public partial class DraggingEventArgs
 	{
+		// Skipping already declared property ContactCount
 		// Skipping already declared property DraggingState
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Skipping already declared property ContactCount
+		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.ContactCount.get
+		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.DraggingState.get
 		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.Position.get
-		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.DraggingState.get
-		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.ContactCount.get
 	}
 }

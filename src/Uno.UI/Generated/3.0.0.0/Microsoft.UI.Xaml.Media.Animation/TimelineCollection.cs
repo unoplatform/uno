@@ -6,30 +6,38 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TimelineCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.Timeline>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.Timeline>
+	public partial class TimelineCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.Timeline>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Animation.Timeline>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.Timeline>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.TimelineCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.TimelineCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.Timeline, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.SetAt(uint, Microsoft.UI.Xaml.Media.Animation.Timeline)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.InsertAt(uint, Microsoft.UI.Xaml.Media.Animation.Timeline)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Append(Microsoft.UI.Xaml.Media.Animation.Timeline)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.GetMany(uint, Microsoft.UI.Xaml.Media.Animation.Timeline[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.ReplaceAll(Microsoft.UI.Xaml.Media.Animation.Timeline[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Insert(int, Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Add(Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Contains(Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.CopyTo(Microsoft.UI.Xaml.Media.Animation.Timeline[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Remove(Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Timeline>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Timeline>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.Timeline)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Timeline>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Timeline>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.Timeline>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.Timeline>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.Timeline>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Timeline>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.Timeline>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Timeline>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Timeline>
+		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.IEnumerable
 	}
 }

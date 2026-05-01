@@ -83,13 +83,6 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.FrameReference.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.VideoFormat.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.SoftwareBitmap.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.Direct3DSurface.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.CameraIntrinsics.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.InfraredMediaFrame.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.DepthMediaFrame.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.VideoFrame GetVideoFrame()
@@ -97,5 +90,12 @@ namespace Windows.Media.Capture.Frames
 			throw new global::System.NotImplementedException("The member VideoFrame VideoMediaFrame.GetVideoFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20VideoMediaFrame.GetVideoFrame%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.CameraIntrinsics.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.DepthMediaFrame.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.Direct3DSurface.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.FrameReference.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.InfraredMediaFrame.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.SoftwareBitmap.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.VideoFormat.get
 	}
 }

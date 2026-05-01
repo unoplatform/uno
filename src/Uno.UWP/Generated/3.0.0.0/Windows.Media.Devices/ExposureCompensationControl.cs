@@ -63,11 +63,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Min.get
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Max.get
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Step.get
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Value.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(float value)
@@ -75,5 +70,10 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member IAsyncAction ExposureCompensationControl.SetValueAsync(float value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ExposureCompensationControl.SetValueAsync%28float%20value%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Max.get
+		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Min.get
+		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Step.get
+		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Value.get
 	}
 }

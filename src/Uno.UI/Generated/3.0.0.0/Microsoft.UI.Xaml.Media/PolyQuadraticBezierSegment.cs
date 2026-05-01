@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class PolyQuadraticBezierSegment : global::Microsoft.UI.Xaml.Media.PathSegment
 	{
-		// Skipping already declared property Points
 		// Skipping already declared property PointsProperty
+		// Skipping already declared property Points
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PolyQuadraticBezierSegment.PolyQuadraticBezierSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyQuadraticBezierSegment.PolyQuadraticBezierSegment()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyQuadraticBezierSegment.PointsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyQuadraticBezierSegment.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyQuadraticBezierSegment.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyQuadraticBezierSegment.PointsProperty.get
 	}
 }

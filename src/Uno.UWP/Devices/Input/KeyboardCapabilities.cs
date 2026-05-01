@@ -4,18 +4,12 @@ namespace Windows.Devices.Input
 {
 	public partial class KeyboardCapabilities
 	{
-		[global::Uno.NotImplemented]
-		public int KeyboardPresent
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.KeyboardCapabilities", "KeyboardCapabilities.KeyboardPresent");
-				return 0;
-			}
-		}
+		public int KeyboardPresent => GetKeyboardPresent();
 
 		public KeyboardCapabilities()
 		{
 		}
+
+		private partial int GetKeyboardPresent();
 	}
 }

@@ -15,16 +15,6 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Authentication.Web.Provider.WebAccountProviderOperationKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderGetTokenSilentOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderGetTokenSilentOperation.Kind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.DateTimeOffset CacheExpirationTime
 		{
 			get
@@ -34,6 +24,16 @@ namespace Windows.Security.Authentication.Web.Provider
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation", "DateTimeOffset WebAccountProviderGetTokenSilentOperation.CacheExpirationTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Authentication.Web.Provider.WebAccountProviderOperationKind Kind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderGetTokenSilentOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderGetTokenSilentOperation.Kind");
 			}
 		}
 #endif
@@ -57,11 +57,6 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.ProviderRequest.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.ProviderResponses.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.CacheExpirationTime.set
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.CacheExpirationTime.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.Kind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportUserInteractionRequired()
@@ -90,6 +85,11 @@ namespace Windows.Security.Authentication.Web.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation", "void WebAccountProviderGetTokenSilentOperation.ReportError(WebProviderError value)");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.CacheExpirationTime.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.CacheExpirationTime.set
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.Kind.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.ProviderRequest.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation.ProviderResponses.get
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderSilentReportOperation

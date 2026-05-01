@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -2858,6 +2859,119 @@ public class Given_ElementTheme
 			$"Foreground should be consistent before and after hover. Before={beforeHoverFg}, After={afterHoverFg}");
 	}
 
+	[TestMethod]
+	public async Task When_CheckBox_In_Dark_Theme_Foreground_Stays_Correct_After_PointerOver()
+	{
+		// Repro: CheckBox in Dark-themed container shows correct white text,
+		// keeps white text during hover, but reverts to black (Light theme value)
+		// after mouse leaves. The visual state storyboard animation for
+		// UncheckedNormal re-applies {ThemeResource CheckBoxForegroundUnchecked}
+		// but resolves it with the wrong (app-level Light) theme context.
+		var container = new Border
+		{
+			Width = 300,
+			Height = 300,
+			RequestedTheme = ElementTheme.Dark,
+		};
+		var checkBox = new CheckBox { Content = "Accept terms" };
+		container.Child = checkBox;
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(checkBox);
+		await WindowHelper.WaitForIdle();
+
+		var contentPresenter = checkBox.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "CheckBox should have a ContentPresenter template child");
+
+		// Initial state: UncheckedNormal — foreground should be white in Dark theme
+		var initialFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(initialFg, "ContentPresenter should have a SolidColorBrush foreground initially");
+		Assert.IsTrue((initialFg.Value.R + initialFg.Value.G + initialFg.Value.B) / 3 > 128,
+			$"Initial foreground in Dark theme should be light/white. Got color={initialFg}");
+
+		// Hover: UncheckedPointerOver
+		VisualStateManager.GoToState(checkBox, "UncheckedPointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var hoverFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(hoverFg, "ContentPresenter should have foreground during hover");
+		Assert.IsTrue((hoverFg.Value.R + hoverFg.Value.G + hoverFg.Value.B) / 3 > 128,
+			$"Hover foreground in Dark theme should be light/white. Got color={hoverFg}");
+
+		// Leave hover: back to UncheckedNormal
+		VisualStateManager.GoToState(checkBox, "UncheckedNormal", false);
+		await WindowHelper.WaitForIdle();
+
+		var afterHoverFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(afterHoverFg, "ContentPresenter should have foreground after hover exit");
+		Assert.IsTrue((afterHoverFg.Value.R + afterHoverFg.Value.G + afterHoverFg.Value.B) / 3 > 128,
+			$"After hover exit, foreground in Dark theme should be light/white. Got color={afterHoverFg}");
+
+		// Foreground should be consistent across all states
+		Assert.AreEqual(initialFg, afterHoverFg,
+			$"Foreground should be consistent before and after hover. Before={initialFg}, After={afterHoverFg}");
+	}
+
+	[TestMethod]
+	public async Task When_Checked_CheckBox_In_Dark_Theme_Has_Correct_Fill()
+	{
+		// Repro: mirrors ElementLevelTheme.xaml — a page (default/Light theme)
+		// containing both Light and Dark themed borders with checked CheckBoxes.
+		// The Dark CheckBox's NormalRectangle.Fill should also be accent-colored,
+		// matching the Light one in intent (accent), but using its theme-specific shade.
+		var root = XamlHelper.LoadXaml<Grid>("""
+			<Grid Width="600" Height="300">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Grid.Column="0" RequestedTheme="Light">
+					<StackPanel>
+						<CheckBox x:Name="lightCb" Content="Light check" IsChecked="True" />
+						<Border x:Name="lightAccentRef" Background="{ThemeResource CheckBoxCheckBackgroundFillChecked}" Width="10" Height="10" />
+					</StackPanel>
+				</Border>
+				<Border Grid.Column="1" RequestedTheme="Dark">
+					<StackPanel>
+						<CheckBox x:Name="darkCb" Content="Dark check" IsChecked="True" />
+						<Border x:Name="darkAccentRef" Background="{ThemeResource CheckBoxCheckBackgroundFillChecked}" Width="10" Height="10" />
+					</StackPanel>
+				</Border>
+			</Grid>
+			""");
+
+		WindowHelper.WindowContent = root;
+		var lightCb = (CheckBox)root.FindName("lightCb");
+		var darkCb = (CheckBox)root.FindName("darkCb");
+		var lightAccentRef = (Border)root.FindName("lightAccentRef");
+		var darkAccentRef = (Border)root.FindName("darkAccentRef");
+		await WindowHelper.WaitForLoaded(darkCb);
+		await WindowHelper.WaitForIdle();
+
+		var lightRect = lightCb.FindVisualChildByName("NormalRectangle") as Microsoft.UI.Xaml.Shapes.Rectangle;
+		var darkRect = darkCb.FindVisualChildByName("NormalRectangle") as Microsoft.UI.Xaml.Shapes.Rectangle;
+		Assert.IsNotNull(lightRect, "Light CheckBox should have NormalRectangle");
+		Assert.IsNotNull(darkRect, "Dark CheckBox should have NormalRectangle");
+
+		var lightFill = (lightRect.Fill as SolidColorBrush)?.Color;
+		var darkFill = (darkRect.Fill as SolidColorBrush)?.Color;
+		var lightExpected = (lightAccentRef.Background as SolidColorBrush)?.Color;
+		var darkExpected = (darkAccentRef.Background as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(lightFill, "Light NormalRectangle.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(darkFill, "Dark NormalRectangle.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(lightExpected, "Light CheckBoxCheckBackgroundFillChecked should resolve to a SolidColorBrush");
+		Assert.IsNotNull(darkExpected, "Dark CheckBoxCheckBackgroundFillChecked should resolve to a SolidColorBrush");
+
+		Assert.AreEqual(lightExpected.Value, lightFill.Value,
+			$"Light CheckBox fill should match CheckBoxCheckBackgroundFillChecked. Expected={lightExpected}, Got={lightFill}");
+		Assert.AreEqual(darkExpected.Value, darkFill.Value,
+			$"Dark CheckBox fill should match CheckBoxCheckBackgroundFillChecked. Expected={darkExpected}, Got={darkFill}");
+		// Light and Dark themes use different shades of accent (e.g. #FF005A9E vs #FF76B9ED).
+		Assert.AreNotEqual(lightFill.Value, darkFill.Value,
+			$"Light and Dark fills should differ (different theme dictionaries). Light={lightFill}, Dark={darkFill}");
+	}
+
 	#endregion
 
 	#region WinUI Gap Fix Coverage
@@ -3253,6 +3367,622 @@ public class Given_ElementTheme
 		Assert.AreNotEqual(darkColor, lightForeground.Color,
 			$"TextBox foreground should change when theme changes. Dark: {darkColor}, Light: {lightForeground.Color}");
 	}
+
+	#endregion
+
+	#region Parent Theme Change Preserves Explicit Child Theme (BasicThemeResources Repro)
+
+	/// <summary>
+	/// Full reproduction of the BasicThemeResources sample page.
+	/// Instantiates the physical XAML file with three columns (Default, Dark, Light),
+	/// each containing four Border+TextBlock rows with {ThemeResource}/{StaticResource}
+	/// combinations. Verifies every text foreground color after initial load, after
+	/// switching to Dark, and after switching back to Default.
+	///
+	/// WinUI behaviour:
+	///   Initial (app=Light):  col0=black text, col1=white text, col2=black text
+	///   After Local Dark:     col0=white,      col1=white,      col2=black  (col2 keeps Light)
+	///   After Local Default:  col0=black,      col1=white,      col2=black  (col1 keeps Dark)
+	/// </summary>
+	[TestMethod]
+	public async Task When_ParentThemeChanges_BasicThemeResources_FullRepro()
+	{
+		var page = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.BasicThemeResources_Test();
+
+		WindowHelper.WindowContent = page;
+		await WindowHelper.WaitForLoaded(page);
+		await WindowHelper.WaitForIdle();
+
+		// --- Grab every named element ---
+		var col0Panel = (StackPanel)page.FindName("col0Panel");
+		var col1Panel = (StackPanel)page.FindName("col1Panel");
+		var col2Panel = (StackPanel)page.FindName("col2Panel");
+
+		(Border TRThemed, Border SRThemed, Border TRStatic, Border SRStatic) GetColumnBorders(int col) => (
+			(Border)page.FindName($"col{col}_ThemeResource_Themed"),
+			(Border)page.FindName($"col{col}_StaticResource_Themed"),
+			(Border)page.FindName($"col{col}_ThemeResource_Static"),
+			(Border)page.FindName($"col{col}_StaticResource_Static")
+		);
+		TextBlock[] GetColumnTexts(int col) => new[]
+		{
+			(TextBlock)page.FindName($"col{col}_text0"),
+			(TextBlock)page.FindName($"col{col}_text1"),
+			(TextBlock)page.FindName($"col{col}_text2"),
+			(TextBlock)page.FindName($"col{col}_text3"),
+		};
+
+		var (col0_bg0, col0_bg1, col0_bg2, col0_bg3) = GetColumnBorders(0);
+		var (col1_bg0, col1_bg1, col1_bg2, col1_bg3) = GetColumnBorders(1);
+		var (col2_bg0, col2_bg1, col2_bg2, col2_bg3) = GetColumnBorders(2);
+
+		var col0_texts = GetColumnTexts(0);
+		var col1_texts = GetColumnTexts(1);
+		var col2_texts = GetColumnTexts(2);
+
+		// Helper: extract foreground color of a TextBlock
+		static Windows.UI.Color? Fg(TextBlock tb) => (tb.Foreground as SolidColorBrush)?.Color;
+		static Windows.UI.Color Bg(Border b) => ((SolidColorBrush)b.Background).Color;
+
+		var yellow = Windows.UI.Color.FromArgb(255, 255, 255, 0);
+		var blue = Windows.UI.Color.FromArgb(255, 0, 0, 255);
+		var green = Windows.UI.Color.FromArgb(255, 0, 128, 0);
+		var gray = Windows.UI.Color.FromArgb(255, 128, 128, 128);
+
+		// =====================================================================
+		// INITIAL STATE  (app is Light, page has no explicit RequestedTheme)
+		// =====================================================================
+
+		// --- Backgrounds ---
+		// Col 0 (Default→Light): ThemeResource=Yellow, StaticResource=resolved-at-parse
+		Assert.AreEqual(yellow, Bg(col0_bg0), "Init col0 row0 ThemeResource bg should be Yellow (Light)");
+		Assert.AreEqual(green, Bg(col0_bg2), "Init col0 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col0_bg3), "Init col0 row3 StaticResource on static should be Green");
+
+		// Col 1 (Dark): ThemeResource=Blue
+		Assert.AreEqual(blue, Bg(col1_bg0), "Init col1 row0 ThemeResource bg should be Blue (Dark)");
+		Assert.AreEqual(green, Bg(col1_bg2), "Init col1 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col1_bg3), "Init col1 row3 StaticResource on static should be Green");
+
+		// Col 2 (Light): ThemeResource=Yellow
+		Assert.AreEqual(yellow, Bg(col2_bg0), "Init col2 row0 ThemeResource bg should be Yellow (Light)");
+		Assert.AreEqual(green, Bg(col2_bg2), "Init col2 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col2_bg3), "Init col2 row3 StaticResource on static should be Green");
+
+		// --- Foregrounds (text color): the key part of the repro ---
+		// Capture a Light-theme foreground and a Dark-theme foreground as reference
+		var lightFg = Fg(col0_texts[0]);
+		var darkFg = Fg(col1_texts[0]);
+		Assert.IsNotNull(lightFg, "col0 text should have a SolidColorBrush foreground");
+		Assert.IsNotNull(darkFg, "col1 text should have a SolidColorBrush foreground");
+		Assert.AreNotEqual(lightFg, darkFg,
+			$"Light foreground ({lightFg}) and Dark foreground ({darkFg}) must differ");
+
+		// Col 0 (Default→Light): all texts should have light foreground (black-ish)
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Init {tb.Name} should have Light foreground");
+		}
+
+		// Col 1 (Dark): all texts should have dark foreground (white-ish)
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Init {tb.Name} should have Dark foreground");
+		}
+
+		// Col 2 (Light): all texts should have light foreground (black-ish)
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Init {tb.Name} should have Light foreground");
+		}
+
+		// =====================================================================
+		// SET ROOT TO DARK  (simulates clicking "Local Dark" button)
+		// =====================================================================
+		page.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Backgrounds
+		Assert.AreEqual(blue, Bg(col0_bg0), "Dark: col0 row0 ThemeResource should switch to Blue");
+		Assert.AreEqual(blue, Bg(col1_bg0), "Dark: col1 row0 ThemeResource should stay Blue");
+		Assert.AreEqual(yellow, Bg(col2_bg0),
+			"Dark: col2 row0 ThemeResource MUST stay Yellow (explicit Light child)");
+
+		// Foregrounds — THE KEY ASSERTIONS
+		// Col 0 (Default→now Dark): white text
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Dark: {tb.Name} should switch to Dark foreground, got {Fg(tb)}");
+		}
+
+		// Col 1 (explicit Dark): white text (unchanged)
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Dark: {tb.Name} should stay Dark foreground, got {Fg(tb)}");
+		}
+
+		// Col 2 (explicit Light): MUST stay black text
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Dark: {tb.Name} MUST keep Light foreground, got {Fg(tb)}");
+		}
+
+		// ActualTheme
+		Assert.AreEqual(ElementTheme.Dark, col0Panel.ActualTheme, "Dark: col0 ActualTheme");
+		Assert.AreEqual(ElementTheme.Dark, col1Panel.ActualTheme, "Dark: col1 ActualTheme");
+		Assert.AreEqual(ElementTheme.Light, col2Panel.ActualTheme, "Dark: col2 ActualTheme must stay Light");
+
+		// =====================================================================
+		// SET ROOT BACK TO DEFAULT  (simulates clicking "Local Default" button)
+		// =====================================================================
+		page.RequestedTheme = ElementTheme.Default;
+		await WindowHelper.WaitForIdle();
+
+		// Backgrounds
+		Assert.AreEqual(yellow, Bg(col0_bg0), "Default: col0 row0 ThemeResource should revert to Yellow");
+		Assert.AreEqual(blue, Bg(col1_bg0),
+			"Default: col1 row0 ThemeResource MUST stay Blue (explicit Dark child)");
+		Assert.AreEqual(yellow, Bg(col2_bg0), "Default: col2 row0 ThemeResource should stay Yellow");
+
+		// Foregrounds
+		// Col 0 (Default→Light): black text
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Default: {tb.Name} should revert to Light foreground, got {Fg(tb)}");
+		}
+
+		// Col 1 (explicit Dark): MUST stay white text
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Default: {tb.Name} MUST keep Dark foreground, got {Fg(tb)}");
+		}
+
+		// Col 2 (explicit Light): black text
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Default: {tb.Name} should stay Light foreground, got {Fg(tb)}");
+		}
+	}
+
+	#endregion
+
+	#region ToolTip Theme Propagation
+
+	[TestMethod]
+	public async Task When_Slider_Tooltip_Opens_After_Dynamic_Theme_Switch_Foreground_Matches_Theme()
+	{
+		// Reproduces: Slider tooltip text stays black after switching container
+		// from Light to Dark theme, instead of turning white.
+		// The critical sequence: open tooltip in Light, close, switch to Dark, reopen.
+
+		var slider = new Slider
+		{
+			Minimum = 0,
+			Maximum = 100,
+			Value = 50,
+			Width = 300,
+			Orientation = Orientation.Horizontal,
+			IsThumbToolTipEnabled = true,
+		};
+
+		var container = new Border
+		{
+			RequestedTheme = ElementTheme.Light,
+			Width = 400,
+			Height = 200,
+			Child = slider,
+			Background = new SolidColorBrush(Colors.White),
+		};
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(container);
+		await WindowHelper.WaitForIdle();
+
+		// Get the Slider's thumb and its ToolTip
+		var thumb = MUXControlsTestApp.Utilities.VisualTreeUtils.FindVisualChildByName(slider, "HorizontalThumb");
+		Assert.IsNotNull(thumb, "HorizontalThumb should exist");
+
+		var toolTip = ToolTipService.GetToolTip(thumb) as ToolTip;
+#if HAS_UNO
+		// Uno stores Slider tooltips via GetToolTipReference (internal)
+		toolTip ??= ToolTipService.GetToolTipReference(thumb);
+#endif
+		Assert.IsNotNull(toolTip, "Slider thumb should have a ToolTip");
+
+		try
+		{
+			// Phase 1: Open tooltip in Light theme (establishes initial state)
+			toolTip.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			// Verify Light theme foreground (should be dark/black text)
+			var lightForeground = toolTip.Foreground as SolidColorBrush;
+			Assert.IsNotNull(lightForeground, "ToolTip Foreground should be a SolidColorBrush in Light theme");
+			Assert.IsTrue((lightForeground.Color.R + lightForeground.Color.G + lightForeground.Color.B) / 3 < 100,
+				$"In Light theme, ToolTip Foreground should be dark, but was {lightForeground.Color}");
+
+			// Close the tooltip
+			toolTip.IsOpen = false;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+
+			// Phase 2: Switch container to Dark theme
+			container.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			// Phase 3: Reopen tooltip - this is where the bug manifests
+			toolTip.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			// Verify Dark theme foreground (should be white/light text)
+			var darkForeground = toolTip.Foreground as SolidColorBrush;
+			Assert.IsNotNull(darkForeground, "ToolTip Foreground should be a SolidColorBrush in Dark theme");
+			Assert.IsTrue((darkForeground.Color.R + darkForeground.Color.G + darkForeground.Color.B) / 3 > 200,
+				$"In Dark theme, ToolTip Foreground should be light/white, but was {darkForeground.Color}");
+
+			// Also verify the TextBlock content has the correct effective Foreground
+			var textBlock = toolTip.Content as TextBlock;
+			Assert.IsNotNull(textBlock, "ToolTip content should be a TextBlock (Slider thumb tooltip)");
+
+			var textBlockForeground = textBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(textBlockForeground, "TextBlock Foreground should be a SolidColorBrush");
+			Assert.IsTrue((textBlockForeground.Color.R + textBlockForeground.Color.G + textBlockForeground.Color.B) / 3 > 200,
+				$"TextBlock Foreground should be light/white for Dark theme, but was {textBlockForeground.Color}");
+		}
+		finally
+		{
+			toolTip.IsOpen = false;
+#if HAS_UNO
+			VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+#endif
+		}
+	}
+
+	#endregion
+
+	#region Code-behind Style with ThemeResource (issue #455)
+
+	[TestMethod]
+	public async Task When_Style_Set_From_CodeBehind_ThemeResource_Foreground_Resolves_Correctly()
+	{
+		// Regression test: setting Style from code-behind should resolve
+		// ThemeResource values in the Style's setters using the correct theme.
+		// Issue: after element-level theming changes, ThemeResource values in
+		// code-behind-applied Styles could resolve with the wrong theme context.
+
+		var style = new Style(typeof(TextBox));
+		style.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush(Colors.Red)));
+
+		var textBox = new TextBox { Text = "Hello", Width = 200 };
+		var container = new Border { Child = textBox, Width = 200, Height = 50 };
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(textBox);
+		await WindowHelper.WaitForIdle();
+
+		// Apply style from code-behind AFTER the element is loaded
+		textBox.Style = style;
+		await WindowHelper.WaitForIdle();
+
+		var fg = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(fg, "Foreground should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Red, fg.Color, "Foreground should match the style setter value");
+	}
+
+	[TestMethod]
+	public async Task When_Style_With_ThemeResource_Set_From_CodeBehind_Uses_Correct_Theme()
+	{
+		// This test uses a style with ThemeResource-based Foreground and verifies
+		// it resolves to the correct theme variant when applied from code-behind.
+		// The app theme determines which brush to expect.
+
+		var appTheme = Application.Current.RequestedTheme;
+
+		// Create a style via XamlReader to get real ThemeResource resolution
+		var xaml = """
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			       TargetType="TextBox">
+				<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+			</Style>
+			""";
+		var style = (Style)XamlReader.Load(xaml);
+
+		var textBox = new TextBox { Text = "Hello", Width = 200 };
+		var container = new Border { Child = textBox, Width = 200, Height = 50 };
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(textBox);
+		await WindowHelper.WaitForIdle();
+
+		// Apply style from code-behind
+		textBox.Style = style;
+		await WindowHelper.WaitForIdle();
+
+		var fg = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(fg, "Foreground should be a SolidColorBrush after code-behind style");
+
+		// Also create a TextBox with the style set in XAML for comparison
+		var xaml2 = """
+			<TextBox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			         Text="Reference"
+			         Width="200"
+			         Style="{StaticResource DefaultTextBoxStyle}">
+			</TextBox>
+			""";
+		var refTextBox = (TextBox)XamlReader.Load(xaml2);
+		var refContainer = new StackPanel();
+		refContainer.Children.Add(refTextBox);
+
+		WindowHelper.WindowContent = refContainer;
+		await WindowHelper.WaitForLoaded(refTextBox);
+		await WindowHelper.WaitForIdle();
+
+		var refFg = refTextBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(refFg, "Reference Foreground should be a SolidColorBrush");
+
+		// The code-behind-applied ThemeResource should resolve to the same color
+		// as a normally-styled TextBox
+		Assert.AreEqual(refFg.Color, fg.Color,
+			$"Code-behind style ThemeResource Foreground ({fg.Color}) should match " +
+			$"XAML-applied style Foreground ({refFg.Color}) for theme {appTheme}");
+	}
+
+	[TestMethod]
+	public async Task When_Style_With_Template_Set_From_CodeBehind_VisualState_ThemeResources_Correct()
+	{
+		// Reproduces the core issue: a TextBox gets a custom Style (with Template)
+		// from code-behind. After the template is applied, visual state transitions
+		// should use correctly-resolved ThemeResource values.
+
+		// Create a custom style with a simplified template that has visual states
+		var xaml = """
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			       TargetType="TextBox">
+				<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+				<Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
+				<Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="TextBox">
+							<Grid>
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="CommonStates">
+										<VisualState x:Name="Normal" />
+										<VisualState x:Name="PointerOver">
+											<VisualState.Setters>
+												<Setter Target="BorderElement.Background"
+												        Value="{ThemeResource TextControlBackgroundPointerOver}" />
+												<Setter Target="ContentElement.Foreground"
+												        Value="{ThemeResource TextControlForegroundPointerOver}" />
+											</VisualState.Setters>
+										</VisualState>
+										<VisualState x:Name="Focused">
+											<VisualState.Setters>
+												<Setter Target="BorderElement.Background"
+												        Value="{ThemeResource TextControlBackgroundFocused}" />
+												<Setter Target="ContentElement.Foreground"
+												        Value="{ThemeResource TextControlForegroundFocused}" />
+											</VisualState.Setters>
+										</VisualState>
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+								<Border x:Name="BorderElement"
+								        Background="{TemplateBinding Background}"
+								        BorderBrush="{TemplateBinding BorderBrush}"
+								        BorderThickness="{TemplateBinding BorderThickness}">
+									<ScrollViewer x:Name="ContentElement"
+									              Foreground="{TemplateBinding Foreground}"
+									              HorizontalScrollMode="Auto"
+									              VerticalScrollMode="Auto" />
+								</Border>
+							</Grid>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			""";
+		var style = (Style)XamlReader.Load(xaml);
+
+		var textBox = new TextBox { Text = "Test text", Width = 200 };
+		var container = new StackPanel();
+		container.Children.Add(textBox);
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(textBox);
+		await WindowHelper.WaitForIdle();
+
+		// Apply custom style from code-behind
+		textBox.Style = style;
+		await WindowHelper.WaitForIdle();
+
+		// Check that Foreground resolved correctly after code-behind style
+		var afterStyleFg = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(afterStyleFg);
+
+		// The foreground should match the element's actual theme, not the app-level theme.
+		// Use ActualTheme (element-level) since ancestors may override RequestedTheme.
+		var elementTheme = textBox.ActualTheme;
+		if (elementTheme == ElementTheme.Dark)
+		{
+			var avg = (afterStyleFg.Color.R + afterStyleFg.Color.G + afterStyleFg.Color.B) / 3;
+			Assert.IsTrue(avg > 150,
+				$"In Dark element theme, Foreground should be light, but was {afterStyleFg.Color} (avg={avg})");
+		}
+		else
+		{
+			var avg = (afterStyleFg.Color.R + afterStyleFg.Color.G + afterStyleFg.Color.B) / 3;
+			Assert.IsTrue(avg < 100,
+				$"In Light element theme, Foreground should be dark, but was {afterStyleFg.Color} (avg={avg})");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Style_Set_From_CodeBehind_In_Opposite_Theme_Subtree()
+	{
+		// Most specific repro: element is in a subtree with a different theme
+		// than the application. Code-behind style should resolve ThemeResource
+		// to the SUBTREE's theme, not the application theme.
+
+		var appTheme = Application.Current.RequestedTheme;
+		var oppositeTheme = appTheme == ApplicationTheme.Dark
+			? ElementTheme.Light : ElementTheme.Dark;
+
+		var xaml = """
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			       TargetType="TextBox">
+				<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+			</Style>
+			""";
+		var style = (Style)XamlReader.Load(xaml);
+
+		// Create a container with opposite theme
+		var container = new Border
+		{
+			Width = 200,
+			Height = 50,
+			RequestedTheme = oppositeTheme
+		};
+		var textBox = new TextBox { Text = "Test", Width = 200 };
+		container.Child = textBox;
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(textBox);
+		await WindowHelper.WaitForIdle();
+
+		// Apply style from code-behind
+		textBox.Style = style;
+		await WindowHelper.WaitForIdle();
+
+		var fg = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(fg);
+
+		// TextBox is in the OPPOSITE theme subtree
+		if (oppositeTheme == ElementTheme.Dark)
+		{
+			// In dark subtree, foreground should be light
+			var avg = (fg.Color.R + fg.Color.G + fg.Color.B) / 3;
+			Assert.IsTrue(avg > 150,
+				$"In Dark subtree, TextBox Foreground should be light after code-behind style, " +
+				$"but was {fg.Color} (avg={avg})");
+		}
+		else
+		{
+			// In light subtree, foreground should be dark
+			var avg = (fg.Color.R + fg.Color.G + fg.Color.B) / 3;
+			Assert.IsTrue(avg < 100,
+				$"In Light subtree, TextBox Foreground should be dark after code-behind style, " +
+				$"but was {fg.Color} (avg={avg})");
+		}
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_Style_With_Template_Applied_CodeBehind_In_Light_Subtree_Under_Dark_App()
+	{
+		// Regression test: app is in Dark theme, but the root
+		// FrameworkElement has RequestedTheme="Light" (common in apps that
+		// default to light UI). Applying a Style with a custom template
+		// containing ThemeResource-backed visual state animations from
+		// code-behind must resolve ThemeResources from the Light dictionary,
+		// not the Dark app-level dictionary.
+
+		// Force the application theme to Dark so the Light Border below truly
+		// represents a divergent subtree theme; otherwise, in environments where
+		// the app is already Light the scenario degenerates to same-theme and
+		// the regression isn't exercised.
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var styleXaml = """
+				<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				       TargetType="TextBox">
+					<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="TextBox">
+								<Grid>
+									<ScrollViewer x:Name="ContentElement"
+									              Foreground="{TemplateBinding Foreground}"
+									              IsTabStop="False"
+									              ZoomMode="Disabled" />
+									<TextBlock x:Name="PlaceholderTextContentPresenter"
+									           Foreground="{ThemeResource TextControlPlaceholderForeground}"
+									           IsHitTestVisible="False"
+									           Text="{TemplateBinding PlaceholderText}" />
+									<VisualStateManager.VisualStateGroups>
+										<VisualStateGroup x:Name="CommonStates">
+											<VisualState x:Name="Normal" />
+											<VisualState x:Name="Focused">
+												<Storyboard>
+													<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
+														<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" />
+													</ObjectAnimationUsingKeyFrames>
+												</Storyboard>
+											</VisualState>
+										</VisualStateGroup>
+									</VisualStateManager.VisualStateGroups>
+								</Grid>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				""";
+			var style = (Style)XamlReader.Load(styleXaml);
+
+			var container = new Border
+			{
+				Width = 300,
+				Height = 50,
+				RequestedTheme = ElementTheme.Light
+			};
+			var textBox = new TextBox { Text = "Hello", Width = 200 };
+			container.Child = textBox;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(textBox);
+			await WindowHelper.WaitForIdle();
+
+			// Apply the style from code-behind
+			textBox.Style = style;
+			await WindowHelper.WaitForIdle();
+
+			// Foreground should come from the Light theme dictionary (dark color)
+			var fg = textBox.Foreground as SolidColorBrush;
+			Assert.IsNotNull(fg, "Foreground brush should not be null");
+			var avgBrightness = (fg.Color.R + fg.Color.G + fg.Color.B) / 3;
+
+			// In a Light theme subtree, TextControlForeground is dark (low brightness)
+			Assert.IsTrue(avgBrightness < 100,
+				$"TextBox in Light subtree: Foreground should be dark (from Light theme), " +
+				$"but was {fg.Color} (avg brightness={avgBrightness}). " +
+				$"If bright, ThemeResource resolved from the wrong (Dark/app-level) dictionary.");
+
+			// Also verify the reference TextBox (with default style) matches
+			var refTextBox = new TextBox { Text = "Reference", Width = 200 };
+			container.Child = refTextBox;
+			await WindowHelper.WaitForLoaded(refTextBox);
+			await WindowHelper.WaitForIdle();
+
+			var refFg = refTextBox.Foreground as SolidColorBrush;
+			Assert.IsNotNull(refFg, "Reference Foreground should not be null");
+
+			// Both should resolve to the same theme's TextControlForeground
+			Assert.AreEqual(refFg.Color, fg.Color,
+				$"Code-behind styled TextBox Foreground ({fg.Color}) should match " +
+				$"default-styled TextBox Foreground ({refFg.Color}) in same Light subtree.");
+		}
+	}
+#endif
 
 	#endregion
 }

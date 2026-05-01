@@ -53,8 +53,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.HomeProviderId.get
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.AccessPointName.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.WwanNetworkRegistrationState GetNetworkRegistrationState()
@@ -69,6 +67,8 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member WwanDataClass WwanConnectionProfileDetails.GetCurrentDataClass() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WwanDataClass%20WwanConnectionProfileDetails.GetCurrentDataClass%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.AccessPointName.get
+		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.HomeProviderId.get
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.IPKind.get
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.PurposeGuids.get
 	}

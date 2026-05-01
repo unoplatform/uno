@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ObjectKeyFrame : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Value
-		// Skipping already declared property KeyTime
 		// Skipping already declared property KeyTimeProperty
 		// Skipping already declared property ValueProperty
+		// Skipping already declared property KeyTime
+		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.ObjectKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.ObjectKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.ValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.KeyTime.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.Value.set
 	}
 }

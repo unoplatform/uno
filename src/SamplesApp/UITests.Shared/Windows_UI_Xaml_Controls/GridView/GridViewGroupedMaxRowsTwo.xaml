@@ -2,31 +2,31 @@
     x:Class="GenericApp.Views.Samples.Shared.Content.UITests.GridViewGroupedMaxRowsTwo"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Uno.UI.Samples.Content.UITests"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:u="using:nVentive.Umbrella.Views.Controls"
-	xmlns:controls="using:Uno.UI.Samples.Controls"
-	xmlns:uBehaviors="using:nVentive.Umbrella.Views.Behaviors"
-	xmlns:uWinRTBehaviors="using:Uno.UI.WinRT.Behaviors"
-	xmlns:ios="http://uno.ui/ios"
-    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:TODO="http://uno.ui/TODO"
     xmlns:android="http://uno.ui/android"
-	xmlns:TODO="http://uno.ui/TODO"
+    xmlns:controls="using:Uno.UI.Samples.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ios="http://uno.ui/ios"
+    xmlns:local="using:Uno.UI.Samples.Content.UITests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:u="using:nVentive.Umbrella.Views.Controls"
+    xmlns:uBehaviors="using:nVentive.Umbrella.Views.Behaviors"
+    xmlns:uWinRTBehaviors="using:Uno.UI.WinRT.Behaviors"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d ios android TODO">
 
     <controls:SampleControl SampleDescription="GridViewGroupedMaxRowsTwo">
         <controls:SampleControl.SampleContent>
             <DataTemplate>
-				<Border Background="Red">
-					<GridView ItemsSource="{Binding [GroupedSampleItemsAsSource]}"
-												ScrollViewer.HorizontalScrollBarVisibility="Auto"
-												ScrollViewer.HorizontalScrollMode="Auto"
-							  >
+                <Border Background="Red">
+                    <GridView
+                        ItemsSource="{Binding [GroupedSampleItemsAsSource]}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        ScrollViewer.HorizontalScrollMode="Auto">
                         <GridView.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <ItemsWrapGrid  MaximumRowsOrColumns="2" />
+                                <ItemsWrapGrid MaximumRowsOrColumns="2" />
                             </ItemsPanelTemplate>
                         </GridView.ItemsPanel>
                         <GridView.GroupStyle>
@@ -34,7 +34,12 @@
                                 <GroupStyle.HeaderTemplate>
                                     <DataTemplate>
                                         <Border Background="Blue">
-                                            <TextBlock Text="{Binding Key}" Foreground="Red" FontSize="32" Height="40" Width="200"/>
+                                            <TextBlock
+                                                Width="200"
+                                                Height="40"
+                                                FontSize="32"
+                                                Foreground="Red"
+                                                Text="{Binding Key}" />
                                         </Border>
                                     </DataTemplate>
                                 </GroupStyle.HeaderTemplate>
@@ -43,11 +48,15 @@
                         <GridView.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="White">
-                                    <TextBlock Text="{Binding}" Foreground="Blue" Height="16" Width="100"/>
+                                    <TextBlock
+                                        Width="100"
+                                        Height="16"
+                                        Foreground="Blue"
+                                        Text="{Binding}" />
                                 </Border>
                             </DataTemplate>
                         </GridView.ItemTemplate>
-					</GridView>
+                    </GridView>
                 </Border>
             </DataTemplate>
         </controls:SampleControl.SampleContent>

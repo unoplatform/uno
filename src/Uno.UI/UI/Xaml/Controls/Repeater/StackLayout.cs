@@ -23,6 +23,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_StackLayout);
 			LayoutId = "StackLayout";
+
+			UpdateIndexBasedLayoutOrientation(Orientation.Vertical);
 		}
 
 		#endregion
@@ -328,6 +330,8 @@ namespace Microsoft.UI.Xaml.Controls
 				//Horizontal Orientation means we have a Horizontal ScrollOrientation.
 				ScrollOrientation scrollOrientation = (orientation == Orientation.Horizontal) ? ScrollOrientation.Horizontal : ScrollOrientation.Vertical;
 				ScrollOrientation = scrollOrientation;
+
+				UpdateIndexBasedLayoutOrientation(orientation);
 			}
 			else if (property == SpacingProperty)
 			{
@@ -335,6 +339,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			InvalidateLayout();
+		}
+
+		private void UpdateIndexBasedLayoutOrientation(Orientation orientation)
+		{
+			SetIndexBasedLayoutOrientation(orientation == Orientation.Horizontal ?
+				IndexBasedLayoutOrientation.LeftToRight : IndexBasedLayoutOrientation.TopToBottom);
 		}
 
 		#region private helpers

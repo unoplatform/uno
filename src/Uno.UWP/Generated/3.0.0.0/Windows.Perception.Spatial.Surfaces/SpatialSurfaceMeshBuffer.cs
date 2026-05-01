@@ -53,9 +53,10 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.~SpatialSurfaceMeshBuffer()
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Data.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.ElementCount.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Format.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Stride.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.ElementCount.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Data.get
 	}
 }

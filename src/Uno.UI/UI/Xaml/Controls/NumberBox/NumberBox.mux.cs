@@ -215,7 +215,7 @@ partial class NumberBox
 
 				double shadowDepth = (double)SharedHelpers.FindResource(c_numberBoxPopupShadowDepthName, Application.Current.Resources, c_popupShadowDepth);
 
-				popupRoot.Translation = new System.Numerics.Vector3(translation.X, translation.Y, (float)shadowDepth);
+				popupRoot.Translation = new global::System.Numerics.Vector3(translation.X, translation.Y, (float)shadowDepth);
 			}
 		}
 

@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AutomationNameEllipsisBreadcrumbBarItem" xml:space="preserve">
-    <value>기타</value>
+    <value>더 보기</value>
     <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
   </data>
   <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">
-    <value>이동 경로 막대 항목</value>
+    <value>이동 경로 탐색 막대 항목</value>
     <comment>A simple description of the control for UIA</comment>
   </data>
 </root>

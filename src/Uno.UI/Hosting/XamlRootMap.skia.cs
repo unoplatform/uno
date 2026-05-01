@@ -61,4 +61,12 @@ internal static class XamlRootMap
 
 	internal static XamlRoot? GetRootForHost(IXamlRootHost host) =>
 		_reverseMap.TryGetValue(host, out var xamlRoot) ? xamlRoot : default;
+
+	/// <summary>
+	/// Snapshot enumeration of live (XamlRoot, host) pairs.
+	/// Returns a copied array so callers can safely iterate while
+	/// other code registers/unregisters hosts.
+	/// </summary>
+	internal static IEnumerable<KeyValuePair<XamlRoot, IXamlRootHost>> Enumerate() =>
+		_map.ToArray();
 }

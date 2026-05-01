@@ -145,6 +145,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static partial void XSetWMNormalHints(IntPtr display, IntPtr window, ref XSizeHints hints);
 
 		[LibraryImport(libX11)]
+		public static partial int XSetClassHint(IntPtr display, IntPtr window, ref XClassHint class_hints);
+
+		[LibraryImport(libX11)]
 		public static partial int XSendEvent(IntPtr display, IntPtr window, [MarshalAs(UnmanagedType.Bool)] bool propagate, IntPtr event_mask,
 			ref XEvent send_event);
 
@@ -262,6 +265,98 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		[LibraryImport(libX11, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
 		public static partial IntPtr XSetLocaleModifiers(string modifiers);
+
+		// XIM (X Input Method) APIs
+		[LibraryImport(libX11, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
+		public static partial IntPtr XOpenIM(IntPtr display, IntPtr rdb, string res_name, string res_class);
+
+		[LibraryImport(libX11)]
+		public static partial int XCloseIM(IntPtr im);
+
+		// XCreateIC is vararg in C, but __arglist is not supported on Linux .NET.
+		// We define fixed-signature overloads for specific parameter combinations.
+		// On x86_64 System V ABI, this is safe for integer/pointer-only arguments.
+		[DllImport(libX11, EntryPoint = "XCreateIC")]
+		public static extern IntPtr XCreateIC(
+			IntPtr im,
+			string inputStyle, IntPtr inputStyleValue,
+			string clientWindow, IntPtr clientWindowValue,
+			string focusWindow, IntPtr focusWindowValue,
+			IntPtr terminator);
+
+		// Overload for XIMPreeditCallbacks style (includes preedit attributes nested list).
+		[DllImport(libX11, EntryPoint = "XCreateIC")]
+		public static extern IntPtr XCreateIC(
+			IntPtr im,
+			string inputStyle, IntPtr inputStyleValue,
+			string clientWindow, IntPtr clientWindowValue,
+			string focusWindow, IntPtr focusWindowValue,
+			string preeditAttributes, IntPtr preeditAttributesValue,
+			IntPtr terminator);
+
+		// XVaCreateNestedList is vararg in C. Fixed-signature overload for 4 preedit callbacks.
+		[DllImport(libX11, EntryPoint = "XVaCreateNestedList")]
+		public static extern IntPtr XVaCreateNestedList(
+			int dummy,
+			string startCbName, IntPtr startCb,
+			string doneCbName, IntPtr doneCb,
+			string drawCbName, IntPtr drawCb,
+			string caretCbName, IntPtr caretCb,
+			IntPtr terminator);
+
+		[LibraryImport(libX11)]
+		public static partial void XDestroyIC(IntPtr ic);
+
+		[LibraryImport(libX11)]
+		public static partial void XSetICFocus(IntPtr ic);
+
+		[LibraryImport(libX11)]
+		public static partial void XUnsetICFocus(IntPtr ic);
+
+		[LibraryImport(libX11)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool XFilterEvent(ref XEvent xevent, IntPtr window);
+
+		[LibraryImport(libX11)]
+		public static partial int Xutf8LookupString(IntPtr ic, ref XKeyEvent xevent, byte* buffer, int bytes_buffer, out nint keysym, out int status);
+
+		[LibraryImport(libX11)]
+		public static partial int XmbLookupString(IntPtr ic, ref XKeyEvent xevent, byte* buffer, int bytes_buffer, out nint keysym, out int status);
+
+		// XSetICValues is vararg in C, but __arglist is not supported on Linux .NET.
+		// Fixed-signature overload for setting a preedit attribute (nested list).
+		[DllImport(libX11, EntryPoint = "XSetICValues")]
+		public static extern IntPtr XSetICValues(
+			IntPtr ic,
+			string attrName, IntPtr attrValue,
+			IntPtr terminator);
+
+		// XVaCreateNestedList overload for a single pointer attribute (e.g., XNSpotLocation with XPoint*).
+		[DllImport(libX11, EntryPoint = "XVaCreateNestedList")]
+		public static extern IntPtr XVaCreateNestedList(
+			int dummy,
+			string attrName, IntPtr attrValue,
+			IntPtr terminator);
+
+		// XIM constants
+		public const string XNInputStyle = "inputStyle";
+		public const string XNClientWindow = "clientWindow";
+		public const string XNFocusWindow = "focusWindow";
+		public const string XNSpotLocation = "spotLocation";
+		public const string XNPreeditAttributes = "preeditAttributes";
+
+		public const int XIMPreeditCallbacks = 0x0002;
+		public const int XIMPreeditNothing = 0x0008;
+		public const int XIMPreeditNone = 0x0010;
+		public const int XIMStatusNothing = 0x0400;
+		public const int XIMStatusNone = 0x0800;
+
+		// Xutf8LookupString status values
+		public const int XBufferOverflow = -1;
+		public const int XLookupNone = 1;
+		public const int XLookupKeySym = 2;
+		public const int XLookupBoth = 3;
+		public const int XLookupChars = 4;
 
 		[LibraryImport(libX11Randr)]
 		public static partial int XRRQueryExtension(IntPtr dpy,

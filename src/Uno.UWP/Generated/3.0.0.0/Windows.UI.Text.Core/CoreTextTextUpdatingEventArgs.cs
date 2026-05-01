@@ -15,20 +15,6 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.Core.CoreTextTextUpdatingResult Result
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreTextTextUpdatingResult CoreTextTextUpdatingEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextTextUpdatingResult%20CoreTextTextUpdatingEventArgs.Result");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "CoreTextTextUpdatingResult CoreTextTextUpdatingEventArgs.Result");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Globalization.Language InputLanguage
 		{
 			get
@@ -69,6 +55,20 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Text.Core.CoreTextTextUpdatingResult Result
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreTextTextUpdatingResult CoreTextTextUpdatingEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextTextUpdatingResult%20CoreTextTextUpdatingEventArgs.Result");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "CoreTextTextUpdatingResult CoreTextTextUpdatingEventArgs.Result");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Text
 		{
 			get
@@ -77,13 +77,6 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.Range.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.Text.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.NewSelection.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.InputLanguage.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.Result.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.Result.set
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.IsCanceled.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -91,5 +84,12 @@ namespace Windows.UI.Text.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreTextTextUpdatingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextTextUpdatingEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.InputLanguage.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.IsCanceled.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.NewSelection.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.Range.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.Result.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.Result.set
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.Text.get
 	}
 }

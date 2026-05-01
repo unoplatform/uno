@@ -36,7 +36,7 @@ namespace Windows.UI.ApplicationSettings
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProviderCommand(Windows.Security.Credentials.WebAccountProvider, Windows.UI.ApplicationSettings.WebAccountProviderCommandInvokedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProvider.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.Invoked.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProvider.get
 	}
 }

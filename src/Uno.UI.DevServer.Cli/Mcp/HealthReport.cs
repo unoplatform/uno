@@ -26,6 +26,15 @@ internal sealed record HealthReport
 	public DiscoverySummary? Discovery { get; init; }
 }
 
+internal sealed record WorkspaceSelectionSnapshot
+{
+	public string? EffectiveWorkspaceDirectory { get; init; }
+	public string? SelectedSolutionPath { get; init; }
+	public WorkspaceResolutionKind? ResolutionKind { get; init; }
+	public WorkspaceSelectionSource? SelectionSource { get; init; }
+	public IReadOnlyList<string>? CandidateSolutions { get; init; }
+}
+
 internal sealed record DiscoverySummary
 {
 	public string? RequestedWorkingDirectory { get; init; }
@@ -111,4 +120,5 @@ internal enum IssueCode
 	NoSolutionFound,
 	WorkspaceAmbiguous,
 	WorkspaceNotResolved,
+	HostMcpEndpointNotAvailable,
 }

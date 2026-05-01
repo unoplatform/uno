@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemIdentity.Ticket.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemIdentity.Id.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemIdentity.Ticket.get
 	}
 }

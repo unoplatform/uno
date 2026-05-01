@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared property NewSize
 		// Skipping already declared property PreviousSize
-		// Forced skipping of method Microsoft.UI.Xaml.SizeChangedEventArgs.PreviousSize.get
 		// Forced skipping of method Microsoft.UI.Xaml.SizeChangedEventArgs.NewSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.SizeChangedEventArgs.PreviousSize.get
 	}
 }

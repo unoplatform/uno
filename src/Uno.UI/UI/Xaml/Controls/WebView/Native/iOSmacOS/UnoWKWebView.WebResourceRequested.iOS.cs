@@ -174,7 +174,7 @@ partial class UnoWKWebView : ISupportsWebResourceRequested
 	/// <summary>
 	/// Syncs the custom headers to the JavaScript context.
 	/// </summary>
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Dictionary<string, string> serialization is preserved")]
+	[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Dictionary<string, string> serialization is preserved")]
 	private void SyncCustomHeadersToJavaScript()
 	{
 		try

@@ -32,8 +32,9 @@ internal class HealthService(
 	/// <summary>Set by ProxyLifecycleManager when the DevServer monitor has been started.</summary>
 	public bool DevServerStarted { get; set; }
 
-	/// <summary>Set by ProxyLifecycleManager on state transitions.</summary>
 	public ConnectionState ConnectionState { get; set; }
+
+	public WorkspaceSelectionSnapshot? CurrentSelection { get; set; }
 
 	public CallToolResult BuildHealthToolResponse()
 	{
@@ -68,10 +69,12 @@ internal class HealthService(
 			toolCount,
 			ConnectionState,
 			discoveredSolutions,
+			currentSelection: CurrentSelection,
 			upstreamError: upstreamTask.IsFaulted
 				? upstreamTask.Exception?.InnerException?.Message ?? "Unknown error"
 				: null,
 			forceRootsFallback: ForceRootsFallback,
-			rootsProvided: RootsProvided);
+			rootsProvided: RootsProvided,
+			hostRespondedNoMcp: devServerMonitor.HostRespondedNoMcp);
 	}
 }

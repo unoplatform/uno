@@ -33,8 +33,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.DesiredLevel.get
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.DesiredNits.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromLevel(double level)
@@ -56,5 +54,7 @@ namespace Windows.Graphics.Display
 			throw new global::System.NotImplementedException("The member BrightnessOverrideSettings BrightnessOverrideSettings.CreateFromDisplayBrightnessOverrideScenario(DisplayBrightnessOverrideScenario overrideScenario) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverrideSettings%20BrightnessOverrideSettings.CreateFromDisplayBrightnessOverrideScenario%28DisplayBrightnessOverrideScenario%20overrideScenario%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.DesiredLevel.get
+		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.DesiredNits.get
 	}
 }

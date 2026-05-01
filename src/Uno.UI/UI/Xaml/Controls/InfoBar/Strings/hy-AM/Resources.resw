@@ -126,11 +126,11 @@
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
-    <value>Ինֆոբարը բաց է թողնված</value>
+    <value>Տեղեկագոտին փակվեց</value>
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">
-    <value>Ինֆոբար</value>
+    <value>Տեղեկագոտի</value>
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
@@ -138,11 +138,11 @@
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
-    <value>Տեղեկատվական պատկերակ</value>
+    <value>Տեղեկատու պատկերակ</value>
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
-    <value>Հաջողության պատկերակ</value>
+    <value>Հաջողությունը հաստատող պատկերակ</value>
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
@@ -154,19 +154,19 @@
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>Ինֆո հաղորդագրություն, խստության սխալ</value>
+    <value>Տեղեկատու հաղորդագրություն, խստության սահմանման սխալ</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>Ինֆո հաղորդագրություն, տեղեկատվական խստություն</value>
+    <value>Տեղեկատու հաղորդագրություն, խստության մասին տեղեկություն</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
-    <value>Ինֆո հաղորդագրություն, խստության հաջողություն</value>
+    <value>Տեղեկատու հաղորդագրություն, խստության սահմանման հաջողություն</value>
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">
-    <value>Ինֆո հաղորդագրություն, խստության զգուշացում</value>
+    <value>Տեղեկատու հաղորդագրություն, խստության մասին զգուշացում</value>
     <comment>Name used to announce severity warning to users.</comment>
   </data>
 </root>

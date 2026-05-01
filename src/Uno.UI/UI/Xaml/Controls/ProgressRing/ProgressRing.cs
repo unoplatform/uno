@@ -177,6 +177,15 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!IsIndeterminate)
 			{
 				UpdateLottieProgress();
+
+				// Raise automation event for RangeValue property change (WinUI parity)
+				if (Automation.Peers.AutomationPeer.ListenerExistsHelper(Automation.Peers.AutomationEvents.PropertyChanged)
+					&& GetOrCreateAutomationPeer() is Automation.Peers.ProgressRingAutomationPeer peer)
+				{
+					peer.RaisePropertyChangedEvent(
+						Automation.RangeValuePatternIdentifiers.ValueProperty,
+						args.OldValue, args.NewValue);
+				}
 			}
 		}
 
@@ -188,8 +197,17 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!IsIndeterminate)
 			{
 				UpdateLottieProgress();
+
+				if (Automation.Peers.AutomationPeer.ListenerExistsHelper(Automation.Peers.AutomationEvents.PropertyChanged)
+					&& GetOrCreateAutomationPeer() is Automation.Peers.ProgressRingAutomationPeer peer)
+				{
+					peer.RaisePropertyChangedEvent(
+						Automation.RangeValuePatternIdentifiers.MaximumProperty,
+						args.OldValue, args.NewValue);
+				}
 			}
 		}
+
 		private void OnMinimumPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			CoerceMaximum();
@@ -198,6 +216,14 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!IsIndeterminate)
 			{
 				UpdateLottieProgress();
+
+				if (Automation.Peers.AutomationPeer.ListenerExistsHelper(Automation.Peers.AutomationEvents.PropertyChanged)
+					&& GetOrCreateAutomationPeer() is Automation.Peers.ProgressRingAutomationPeer peer)
+				{
+					peer.RaisePropertyChangedEvent(
+						Automation.RangeValuePatternIdentifiers.MinimumProperty,
+						args.OldValue, args.NewValue);
+				}
 			}
 		}
 

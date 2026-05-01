@@ -20,6 +20,13 @@ internal interface IIdeChannelManager
 	event Action? ClientConnected;
 
 	/// <summary>
+	/// Raised when a previously connected IDE client disconnects (pipe broken,
+	/// JsonRpc disposed, or explicit disconnect). Subscribers can use this to
+	/// start a grace-period countdown for self-termination.
+	/// </summary>
+	event Action? ClientDisconnected;
+
+	/// <summary>
 	/// Atomically rebinds the IDE channel to the given <paramref name="channelId"/>.
 	/// The pipe lifetime is owned by the session, not the caller.
 	/// </summary>

@@ -38,20 +38,41 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 	/// <inheritdoc />
 	public event Action? ClientConnected;
 
+	/// <inheritdoc />
+	public event Action? ClientDisconnected;
+
+	/// <summary>Tracks whether we've already fired <see cref="ClientDisconnected"/> for the current session.</summary>
+	private int _disconnectFired;
+
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
 		_logger = logger;
 
 		_keepAliveTimer = new Timer(_ =>
 		{
-			var session = Volatile.Read(ref _session);
-			if (session is { IsConnected: true, Proxy: { } proxy })
+			try
 			{
-				proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
+				var session = Volatile.Read(ref _session);
+				if (session is { IsConnected: true, Proxy: { } proxy })
+				{
+					proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
+				}
+				else if (session?.Proxy is not null)
+				{
+					// Had a client (Proxy was set) but pipe is no longer connected → client disconnected
+					_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+					RaiseClientDisconnected();
+				}
+				else
+				{
+					_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+				}
 			}
-			else
+			catch (Exception ex)
 			{
+				_logger.LogDebug(ex, "Keep-alive send failed; stopping timer.");
 				_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+				RaiseClientDisconnected();
 			}
 		});
 
@@ -195,6 +216,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 			_logger.LogInformation("IDE channel {ChannelId}: client connected, JsonRpc attached. Publishing state snapshot.", session.ChannelId);
 
+			Interlocked.Exchange(ref _disconnectFired, 0); // Reset so the next disconnect can fire
 			ScheduleKeepAlive();
 			session.Proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
 
@@ -203,7 +225,14 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 			// environment state snapshot publication.
 			// This must fire BEFORE ReadyTcs is set so callers awaiting WaitForReady
 			// can rely on the snapshot having been sent.
-			ClientConnected?.Invoke();
+			try
+			{
+				ClientConnected?.Invoke();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "A ClientConnected subscriber threw an exception.");
+			}
 
 			session.ReadyTcs.TrySetResult(true);
 		}
@@ -231,9 +260,27 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 		}
 	}
 
-	private const int KeepAliveDelay = 10000; // 10 seconds
+	internal static int KeepAliveDelayMs { get; set; } = 10_000;
 
-	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelay, KeepAliveDelay);
+	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelayMs, KeepAliveDelayMs);
+
+	private void RaiseClientDisconnected()
+	{
+		// Atomic check-and-set to ensure we only fire once per connection lifecycle,
+		// even if multiple keep-alive timer callbacks race.
+		if (Interlocked.CompareExchange(ref _disconnectFired, 1, 0) == 0)
+		{
+			_logger.LogInformation("IDE channel client disconnected.");
+			try
+			{
+				ClientDisconnected?.Invoke();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "A ClientDisconnected subscriber threw an exception.");
+			}
+		}
+	}
 
 	/// <inheritdoc />
 	public void Dispose()
@@ -245,6 +292,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 		if (session is not null)
 		{
 			session.Cts.Cancel();
+			session.ReadyTcs.TrySetResult(false); // Unblock any WaitForReady callers.
 			session.RpcServer?.Dispose();
 			try
 			{

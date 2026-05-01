@@ -258,6 +258,7 @@ Run these after making changes:
 3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
 4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
 5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
+6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
 ### SamplesApp: Register XAML files (CRITICAL)
 
@@ -281,7 +282,8 @@ Sample creation checklist:
 1. Create your sample XAML and code-behind under an appropriate folder in `UITests.Shared`.
 2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class.
 3. Register the XAML and code-behind in `UITests.Shared.projitems` (see XML above).
-4. Build and run `SamplesApp` to verify the sample appears.
+4. Format XAML: `dotnet xstyler -f src/SamplesApp/UITests.Shared/YourFolder/YourSample.xaml`
+5. Build and run `SamplesApp` to verify the sample appears.
 
 Theming guideline (brief): prefer `{ThemeResource}` for backgrounds/foregrounds so samples work in light and dark themes.
 
@@ -347,6 +349,27 @@ public MyType MyProperty
 - **Braces**: Always use, even for single-line conditionals
 - **Indentation**: Tabs (configured in .editorconfig)
 - **Extension methods**: In `[TypeName]Extensions.cs`, mark `internal`
+
+### XAML Formatting (SamplesApp)
+
+XAML files under `src/SamplesApp/` are formatted using [XamlStyler](https://github.com/Xavalon/XamlStyler).
+Configuration is in `src/SamplesApp/Settings.XamlStyler`.
+
+```bash
+# One-time setup (restore tools after cloning)
+dotnet tool restore
+
+# Format all SamplesApp XAML files
+dotnet xstyler -d src/SamplesApp -r
+
+# Format a single file
+dotnet xstyler -f src/SamplesApp/UITests.Shared/MyFile.xaml
+
+# Check without modifying (CI mode)
+dotnet xstyler -d src/SamplesApp -r -p
+```
+
+A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML files.
 
 ### Implementing New WinUI Features
 

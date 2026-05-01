@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI;
 
@@ -54,6 +55,15 @@ public sealed partial class AutomationProperties
 #if __WASM__ || __SKIA__
 	internal static string FindHtmlRole(UIElement uIElement)
 	{
+		// Uno-specific: allow explicit role override via AutomationPropertiesExtensions.Role
+		// (defined in Uno.UI.Toolkit). The provider is registered via RoleOverrideProvider.
+		var roleOverride = GetRoleOverride(uIElement);
+		if (!string.IsNullOrEmpty(roleOverride))
+		{
+			return roleOverride;
+		}
+
+		// Direct type checks for common controls (fast path, avoids peer creation)
 		if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Button_Available && uIElement is Button)
 		{
 			return "button";
@@ -66,10 +76,6 @@ public sealed partial class AutomationProperties
 		{
 			return "checkbox";
 		}
-		if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBlock_Available && uIElement is TextBlock)
-		{
-			return "label";
-		}
 		if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBox_Available && uIElement is TextBox)
 		{
 			return "textbox";
@@ -78,6 +84,86 @@ public sealed partial class AutomationProperties
 		{
 			return "slider";
 		}
+		if (uIElement is Image)
+		{
+			return "image";
+		}
+		if (uIElement is HyperlinkButton)
+		{
+			return "link";
+		}
+		if (uIElement is PasswordBox)
+		{
+			return "edit";
+		}
+		if (uIElement is RichEditBox)
+		{
+			return "edit";
+		}
+		if (uIElement is ComboBox)
+		{
+			return "combobox";
+		}
+		if (uIElement is ProgressBar)
+		{
+			return "progressbar";
+		}
+		if (uIElement is ProgressRing)
+		{
+			return "progressbar";
+		}
+		if (uIElement is ToggleSwitch)
+		{
+			return "checkbox";
+		}
+		if (uIElement is ListView or ListBox)
+		{
+			return "listbox";
+		}
+		if (uIElement is ListViewItem or ListBoxItem)
+		{
+			return "option";
+		}
+		if (uIElement is ScrollViewer)
+		{
+			return "pane";
+		}
+		if (uIElement is MenuBar)
+		{
+			return "menubar";
+		}
+		if (uIElement is MenuBarItem or MenuFlyoutItem)
+		{
+			return "menuitem";
+		}
+		if (uIElement is ToolTip)
+		{
+			return "tooltip";
+		}
+		if (uIElement is TreeView)
+		{
+			return "tree";
+		}
+		if (uIElement is TreeViewItem)
+		{
+			return "treeitem";
+		}
+		if (uIElement is Pivot)
+		{
+			return "tab";
+		}
+		if (uIElement is PivotItem)
+		{
+			return "tabitem";
+		}
+		if (uIElement is AppBar or CommandBar)
+		{
+			return "appbar";
+		}
+		if (uIElement is AppBarButton)
+		{
+			return "button";
+		}
 
 		var peer = uIElement.GetOrCreateAutomationPeer();
 		if (peer?.GetAutomationControlType() is { } type)
@@ -85,11 +171,39 @@ public sealed partial class AutomationProperties
 			return type switch
 			{
 				AutomationControlType.Button => "button",
-				AutomationControlType.RadioButton => "radio",
+				AutomationControlType.Calendar => "calendar",
 				AutomationControlType.CheckBox => "checkbox",
-				AutomationControlType.Text => "label",
-				AutomationControlType.Edit => "label",
+				AutomationControlType.Edit => "textbox",
 				AutomationControlType.Slider => "slider",
+				AutomationControlType.Spinner => "spinner",
+				AutomationControlType.StatusBar => "statusbar",
+				AutomationControlType.Tab => "tab",
+				AutomationControlType.TabItem => "tabitem",
+				// "label" is NOT a valid WAI-ARIA role. Screen readers (VoiceOver)
+				// ignore it and may announce the element as "group" instead.
+				// Text elements should use no explicit role — their text is
+				// communicated via aria-label or text content.
+				AutomationControlType.Text => null,
+				AutomationControlType.ToolBar => "toolbar",
+				AutomationControlType.ToolTip => "tooltip",
+				AutomationControlType.Tree => "tree",
+				AutomationControlType.TreeItem => "treeitem",
+				AutomationControlType.Custom => "custom",
+				AutomationControlType.Group => "group",
+				AutomationControlType.Thumb => "thumb",
+				AutomationControlType.DataGrid => "datagrid",
+				AutomationControlType.DataItem => "dataitem",
+				AutomationControlType.Document => "document",
+				AutomationControlType.SplitButton => "splitbutton",
+				AutomationControlType.Window => "window",
+				AutomationControlType.Pane => "pane",
+				AutomationControlType.Header => "header",
+				AutomationControlType.HeaderItem => "headeritem",
+				AutomationControlType.Table => "table",
+				AutomationControlType.TitleBar => "titlebar",
+				AutomationControlType.Separator => "separator",
+				AutomationControlType.SemanticZoom => "semanticzoom",
+				AutomationControlType.AppBar => "appbar",
 				_ => null,
 			};
 		}
@@ -97,4 +211,21 @@ public sealed partial class AutomationProperties
 		return null;
 	}
 #endif
+
+	/// <summary>
+	/// Attached property allowing role override to be supplied by external assemblies (e.g. Uno.UI.Toolkit).
+	/// This avoids the need for a delegate/provider and simplifies lookups.
+	/// </summary>
+	public static DependencyProperty RoleOverrideProperty { get; } =
+		DependencyProperty.RegisterAttached(
+			"RoleOverride",
+			typeof(string),
+			typeof(AutomationProperties),
+			new FrameworkPropertyMetadata(default(string)));
+
+	public static void SetRoleOverride(UIElement element, string value) =>
+		element.SetValue(RoleOverrideProperty, value);
+
+	public static string GetRoleOverride(UIElement element) =>
+		(string)element.GetValue(RoleOverrideProperty);
 }

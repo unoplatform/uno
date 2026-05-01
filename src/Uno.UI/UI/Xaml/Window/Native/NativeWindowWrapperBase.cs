@@ -303,6 +303,10 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	{
 	}
 
+	public virtual void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
+	{
+	}
+
 #if __APPLE_UIKIT__
 	public abstract Size GetWindowSize();
 #endif

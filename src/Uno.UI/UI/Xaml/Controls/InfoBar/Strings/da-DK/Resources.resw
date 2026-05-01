@@ -134,19 +134,19 @@
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
-    <value>Fejlikon</value>
+    <value>Ikon for fejl</value>
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
-    <value>Informationsikon</value>
+    <value>Ikon for information</value>
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
-    <value>Succesikon</value>
+    <value>Ikon for succes</value>
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
-    <value>Advarselsikon</value>
+    <value>Ikon for advarsel</value>
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">
@@ -158,7 +158,7 @@
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>Oplysningsmeddelelse, oplysninger om alvorlighedsgrad</value>
+    <value>Oplysningsmeddelelse, information om alvorlighedsgrad</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">

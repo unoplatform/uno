@@ -647,7 +647,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 	// ItemContainerProvider implementation
 	public IRawElementProviderSimple FindItemByProperty(
 		IRawElementProviderSimple startAfter,
-		AutomationProperty property,
+		AutomationProperty automationProperty,
 		object value)
 	{
 		AutomationPeer pStartAfter = null;
@@ -714,28 +714,28 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		}
 
 		// Fetch the Property value based on property type
-		AutomationProperty ePropertiesEnum = property;
+		AutomationProperty ePropertiesEnum = automationProperty;
 
-		if (property == AutomationElementIdentifiers.AutomationIdProperty ||
-			property == AutomationElementIdentifiers.NameProperty)
+		if (automationProperty == AutomationElementIdentifiers.AutomationIdProperty ||
+			automationProperty == AutomationElementIdentifiers.NameProperty)
 		{
 			// Value is already retrieved as strPropertyValue above
 		}
-		else if (property == AutomationElementIdentifiers.ControlTypeProperty)
+		else if (automationProperty == AutomationElementIdentifiers.ControlTypeProperty)
 		{
 			if (value is int valInt)
 			{
 				controlTypePropertyValue = (AutomationControlType)valInt;
 			}
 		}
-		else if (property == SelectionItemPatternIdentifiers.IsSelectedProperty)
+		else if (automationProperty == SelectionItemPatternIdentifiers.IsSelectedProperty)
 		{
 			if (value is bool valBool)
 			{
 				bIsSelectedPropertyValue = valBool;
 			}
 		}
-		else if (property == null)
+		else if (automationProperty == null)
 		{
 			// Empty property scenario
 		}
@@ -762,21 +762,21 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 					if (pItemPeer == null) continue;
 
-					if (property == null)
+					if (automationProperty == null)
 					{
 						bFound = true;
 					}
-					else if (property == AutomationElementIdentifiers.AutomationIdProperty)
+					else if (automationProperty == AutomationElementIdentifiers.AutomationIdProperty)
 					{
 						string strValue = pItemPeer.GetAutomationId();
 						bFound = (strValue == strPropertyValue);
 					}
-					else if (property == AutomationElementIdentifiers.NameProperty)
+					else if (automationProperty == AutomationElementIdentifiers.NameProperty)
 					{
 						string strValue = pItemPeer.GetName();
 						bFound = (strValue == strPropertyValue);
 					}
-					else if (property == AutomationElementIdentifiers.ControlTypeProperty)
+					else if (automationProperty == AutomationElementIdentifiers.ControlTypeProperty)
 					{
 						AutomationControlType controlTypeValue = pItemPeer.GetAutomationControlType();
 						if (controlTypeValue == controlTypePropertyValue)
@@ -784,7 +784,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 							bFound = true;
 						}
 					}
-					else if (property == SelectionItemPatternIdentifiers.IsSelectedProperty)
+					else if (automationProperty == SelectionItemPatternIdentifiers.IsSelectedProperty)
 					{
 						var selectorItem = pItemPeer as SelectorItemAutomationPeer;
 						// Note: SelectorItemAutomationPeer.IsSelected is likely an internal property or access via Pattern

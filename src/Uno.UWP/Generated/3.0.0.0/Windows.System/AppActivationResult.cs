@@ -33,7 +33,7 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppActivationResult.ExtendedError.get
 		// Forced skipping of method Windows.System.AppActivationResult.AppResourceGroupInfo.get
+		// Forced skipping of method Windows.System.AppActivationResult.ExtendedError.get
 	}
 }

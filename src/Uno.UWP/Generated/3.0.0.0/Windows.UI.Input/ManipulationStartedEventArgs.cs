@@ -8,13 +8,13 @@ namespace Windows.UI.Input
 #endif
 	public partial class ManipulationStartedEventArgs
 	{
+		// Skipping already declared property ContactCount
 		// Skipping already declared property Cumulative
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Skipping already declared property ContactCount
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.ContactCount.get
+		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Cumulative.get
 		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Position.get
-		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Cumulative.get
-		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.ContactCount.get
 	}
 }
