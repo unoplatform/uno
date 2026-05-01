@@ -54,6 +54,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		}
 
+#if !__SKIA__
+		// On Skia this lives on the WinUI port (ScrollViewer.Utility.mux.cs) as an internal static.
 		private double AdjustPixelViewportDim(double pixelViewportDim)
 		{
 			// Round to the closest lower integer.
@@ -62,6 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// +5.999 --> +5.0
 			return (double)(long)pixelViewportDim;
 		}
+#endif
 
 		internal partial bool ShouldSnapToTouchTextBox();
 #if !__SKIA__
