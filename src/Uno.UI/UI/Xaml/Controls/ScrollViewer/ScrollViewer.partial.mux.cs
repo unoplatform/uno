@@ -3255,12 +3255,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Called when the ZoomFactor value changed.
 		internal void OnZoomFactorChanged(float oldZoomFactor, float newZoomFactor)
 		{
-			// TODO Uno: Phase 4 — wire SetZoomFactor on the inner ScrollContentPresenter once
-			// HookupScrollingComponents lands.
-			// if (m_trElementScrollContentPresenter is not null)
-			// {
-			//     m_trElementScrollContentPresenter.SetZoomFactor(newZoomFactor);
-			// }
+			if (m_trElementScrollContentPresenter is not null)
+			{
+				m_trElementScrollContentPresenter.SetZoomFactor(newZoomFactor);
+			}
 
 			// TODO Uno: Phase 5 — snap-points reaction (m_trScrollSnapPointsInfo handling, GetEffectiveZoomMode,
 			// horizontal/vertical snap-point alignment checks, OnSnapPointsAffectingPropertyChanged calls).
