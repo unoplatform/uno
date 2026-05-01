@@ -422,6 +422,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.1, scrollViewer.MinZoomFactor, 0.001);
 		}
 
+		// TODO Uno: SCP.SizesContentToTemplatedParent + alignment behavior gap —
+		// port C++ ConstrainVerticalStackPanelAvailableSize (C++ 7123) /
+		// ConstrainHorizontalStackPanelAvailableSize (C++ 7130) /
+		// ConstrainStackPanelAvailableSize (C++ 7135) once SCP on Skia matches
+		// WinUI's behavior: with SizesContentToTemplatedParent=true and child
+		// alignment=Top/Left, the child is expected to be size-constrained to
+		// the viewport (scrollable extent = 0). On Skia the child stays
+		// unconstrained (scrollable extent stays 1100). Likely needs a fix in
+		// SCP.MeasureOverride's slotSize derivation under the
+		// UNO_HAS_MANAGED_SCROLL_PRESENTER branch.
+
 		// MUX Reference ReenterContent (C++ line 1697).
 		// Validates that resetting Content to null and then back to the original
 		// content preserves the SV's view (HorizontalOffset / VerticalOffset /
