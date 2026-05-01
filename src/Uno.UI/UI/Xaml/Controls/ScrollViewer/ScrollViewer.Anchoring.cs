@@ -124,6 +124,13 @@ public partial class ScrollViewer
 		}
 	}
 
+	// (C++ source line 16418)
+	internal void ClearAnchorCandidates()
+	{
+		m_anchorCandidates.Clear();
+		m_isAnchorElementDirty = true;
+	}
+
 	private void ResetAnchorElement()
 	{
 		if (m_anchorElement is not null)
