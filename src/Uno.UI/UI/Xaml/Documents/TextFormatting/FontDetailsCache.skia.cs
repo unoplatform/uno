@@ -215,11 +215,10 @@ internal static class FontDetailsCache
 	{
 		if (_fontFallbackService is { } fallbackService)
 		{
-			var fallbackServiceTask = fallbackService.GetFontFamilyForCodepoint(codepoint);
 			string? fallbackServiceResult = null;
 			try
 			{
-				fallbackServiceResult = await fallbackServiceTask;
+				fallbackServiceResult = await fallbackService.GetFontFamilyForCodepoint(codepoint);
 			}
 			catch (Exception e)
 			{
