@@ -718,6 +718,212 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isChildActualHeightUsedAsExtent = false;
 		}
 
+		// Provides the behavior for the Measure pass of layout. Classes can
+		// override this method to define their own Measure pass behavior.
+		// (C++ source line 1612 — simplified Skia port that omits headers, IManipulationDataProvider,
+		//  CalendarPanel, and SemanticZoom branches. Phase 6 will reintroduce them.)
+		internal global::Windows.Foundation.Size MeasureOverrideMux(global::Windows.Foundation.Size availableSize)
+		{
+			// TODO Uno: Phase 6 — header support (TopLeftHeader/TopHeader/LeftHeader). For now skip.
+
+			// Use the cross-platform `Content` field as the primary child.
+			var spChild = Content as UIElement;
+
+			// If there is no child but scroll data exists, it should be updated with an extent of 0.
+			var pScrollData = GetScrollData();
+
+			if (!IsScrollClient())
+			{
+				// Custom IScrollInfo implementations are not supported here. Defer to base measure.
+				if (spChild is not null)
+				{
+					return base.MeasureOverride(availableSize);
+				}
+				return default;
+			}
+
+			var spScrollOwner = pScrollData.GetScrollOwner();
+			var spScrollViewer = spScrollOwner as ScrollViewer;
+
+			var childAvailableSize = availableSize;
+
+			// TODO Uno: Phase 6 — SizesContentToTemplatedParent honour the SV's GetLatestAvailableSize().
+			// For now use the passed availableSize directly.
+
+			if (pScrollData.m_canHorizontallyScroll)
+			{
+				// TODO Uno: Phase 5 — honour child's WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility.
+				if (!m_isSemanticZoomPresenter)
+				{
+					childAvailableSize.Width = double.PositiveInfinity;
+				}
+			}
+
+			if (pScrollData.m_canVerticallyScroll)
+			{
+				// TODO Uno: Phase 5 — honour child's WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility.
+				if (!m_isSemanticZoomPresenter)
+				{
+					childAvailableSize.Height = double.PositiveInfinity;
+				}
+			}
+
+			float zoomFactor = 1.0f;
+			if (spScrollOwner is not null)
+			{
+				zoomFactor = spScrollOwner.GetZoomFactor();
+				global::System.Diagnostics.Debug.Assert(zoomFactor == m_fZoomFactor);
+			}
+
+			global::Windows.Foundation.Size desiredSize = default;
+			global::Windows.Foundation.Size desiredSizeZoomed = default;
+
+			if (spChild is not null)
+			{
+				spChild.Measure(childAvailableSize);
+				desiredSize = spChild.DesiredSize;
+
+				// TODO Uno: Phase 6 — CalendarPanel desired-viewport-size adjustment (toBeAdjustedDesiredSize).
+			}
+
+			if (pScrollData is not null)
+			{
+				if (spChild is null)
+				{
+					// Irrespective of the presence of headers, the desired size is (0, 0) when ScrollViewer.Content is null.
+					global::System.Diagnostics.Debug.Assert(desiredSizeZoomed.Width == 0.0f);
+					global::System.Diagnostics.Debug.Assert(desiredSizeZoomed.Height == 0.0f);
+					if (m_isChildActualWidthUsedAsExtent)
+					{
+						// No need to use the actual child width as the extent width.
+						StopUseOfActualWidthAsExtent();
+					}
+					if (m_isChildActualHeightUsedAsExtent)
+					{
+						// No need to use the actual child height as the extent height.
+						StopUseOfActualHeightAsExtent();
+					}
+					VerifyScrollData(pScrollData.m_viewport /*viewport*/, desiredSizeZoomed /*extent*/);
+				}
+				else
+				{
+					global::Windows.Foundation.Size layoutSize = default;
+					if (spScrollViewer is not null)
+					{
+						layoutSize = spScrollViewer.GetLayoutSize();
+					}
+
+					if (layoutSize.Width != 0.0f && layoutSize.Height != 0.0f)
+					{
+						// SemanticZoom case — TODO Uno Phase 5.
+						desiredSizeZoomed.Width = (float)((layoutSize.Width) * zoomFactor);
+						desiredSizeZoomed.Height = (float)((layoutSize.Height) * zoomFactor);
+					}
+					else
+					{
+						desiredSizeZoomed.Width = (float)(desiredSize.Width * zoomFactor);
+						desiredSizeZoomed.Height = (float)(desiredSize.Height * zoomFactor);
+					}
+
+					// TODO Uno: Phase 6 — m_isChildActualWidth/HeightUsedAsExtent special mode handling.
+
+					if (!m_isChildActualWidthUsedAsExtent && !m_isChildActualHeightUsedAsExtent)
+					{
+						// If we're handling scrolling (as the physical scrolling client, validate properties).
+						VerifyScrollData(pScrollData.m_viewport /*viewport*/, desiredSizeZoomed /*extent*/);
+					}
+				}
+			}
+
+			if (layoutSizeNonZero(spScrollViewer, out var ls))
+			{
+				// SemanticZoom's ScrollViewer case. Use the enforced layoutSize rather than the child's desiredSize.
+				desiredSize.Width = Math.Min(availableSize.Width, ls.Width);
+				desiredSize.Height = Math.Min(availableSize.Height, ls.Height);
+			}
+			else
+			{
+				desiredSize.Width = Math.Min(availableSize.Width, desiredSize.Width);
+				desiredSize.Height = Math.Min(availableSize.Height, desiredSize.Height);
+			}
+
+			m_isChildActualWidthUpdated = true;
+			m_isChildActualHeightUpdated = true;
+
+			// Let ScrollViewer know that child sizes might have changed.
+			// TODO Uno: Phase 5 — ScrollViewer.OnScrollContentPresenterMeasured already exists in Anchoring partial.
+			// spScrollViewer?.OnScrollContentPresenterMeasured();
+
+			return desiredSize;
+
+			static bool layoutSizeNonZero(ScrollViewer sv, out global::Windows.Foundation.Size size)
+			{
+				if (sv is not null)
+				{
+					size = sv.GetLayoutSize();
+					return size.Width != 0.0f && size.Height != 0.0f;
+				}
+				size = default;
+				return false;
+			}
+		}
+
+		// Provides the behavior for the Arrange pass of layout. Classes can
+		// override this method to define their own Arrange pass behavior.
+		// (C++ source line 2094 — simplified Skia port that omits headers, IManipulationDataProvider,
+		//  m_isChildActualWidth/HeightUsedAsExtent special mode, and the layout-cycle warning context.)
+		internal global::Windows.Foundation.Size ArrangeOverrideMux(global::Windows.Foundation.Size finalSize)
+		{
+			// Loop while the inner arrange marks an additional scroll request.
+			do
+			{
+				// NOTE: We are updating the clip only if there is a scroll owner that hosts
+				// this control. This is a limited fix for 22803.
+				// TODO Uno: Phase 4 — port UpdateClip(finalSize). For now defer to base.
+
+				// TODO Uno: Phase 6 — header arrangement (TopLeftHeader/TopHeader/LeftHeader).
+
+				var spChild = Content as UIElement;
+
+				// Verifies IScrollInfo properties & invalidates ScrollViewer if necessary.
+				m_scrollRequested = false;
+
+				var pScrollData = GetScrollData();
+				var spScrollOwner = pScrollData?.GetScrollOwner();
+				var spScrollViewer = spScrollOwner as ScrollViewer;
+				var isScrollClient = IsScrollClient();
+
+				if (isScrollClient && pScrollData is not null)
+				{
+					var extentSize = pScrollData.m_extent;
+					// TODO Uno: Phase 6 — m_isChildActualWidth/HeightUsedAsExtent special mode exit.
+					VerifyScrollData(finalSize /*viewport*/, extentSize /*extent*/);
+				}
+
+				if (spChild is not null && isScrollClient)
+				{
+					// TODO Uno: Phase 4 — DM completion + pre-DM-offset bookkeeping. For now use ComputedOffset directly.
+					// var currentZoomFactor = spScrollOwner?.GetZoomFactor() ?? 1.0f;
+
+					var desiredSize = spChild.DesiredSize;
+
+					var childRect = new global::Windows.Foundation.Rect(
+						0,
+						0,
+						Math.Max(desiredSize.Width, finalSize.Width),
+						Math.Max(desiredSize.Height, finalSize.Height));
+
+					spChild.Arrange(childRect);
+
+					// TODO Uno: Phase 6 — actual-size-as-extent mode entry/exit (StartUseOfActualWidth/HeightAsExtent +
+					// CanUseActualWidth/HeightAsExtent + LayoutRound + AreWithinTolerance comparison).
+				}
+			}
+			while (m_scrollRequested);
+
+			return finalSize;
+		}
+
 		// #endregion
 
 #pragma warning restore IDE0051
