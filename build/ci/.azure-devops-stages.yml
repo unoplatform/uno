@@ -21,6 +21,7 @@ stages:
 
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
+    - template: setup/.azure-devops-setup-validate-packages.yml
     - template: setup/.azure-devops-setup-doc-validations.yml
 
   - job: DetermineScope

@@ -1,0 +1,7 @@
+steps:
+- task: PowerShell@2
+  displayName: Validate packages.json (NuGet existence check)
+  inputs:
+    pwsh: true
+    filePath: build/ci/scripts/validate-packages-json.ps1
+    arguments: '-PackagesJsonPath "$(Build.SourcesDirectory)/src/Uno.Sdk/packages.json"'
