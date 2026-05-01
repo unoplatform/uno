@@ -1654,10 +1654,20 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			bool childPreventsInfiniteAvailableWidth = false;
+			bool childPreventsInfiniteAvailableHeight = false;
+			var spChildAsFE = Content as FrameworkElement;
+
 			if (pScrollData.m_canHorizontallyScroll)
 			{
-				// TODO Uno: Phase 5 — honour child's WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility.
-				if (!m_isSemanticZoomPresenter && !sizesContentToTemplatedParent)
+				childPreventsInfiniteAvailableWidth = spChildAsFE is not null &&
+					!spChildAsFE.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Horizontal);
+
+				// An infinite available width is given to the child unless:
+				// - this ScrollContentPresenter belongs to a SemanticZoom control.
+				// - the child FrameworkElement blocks an infinite available width — this is the case for a ModernCollectionBasePanel that is virtualizing vertically.
+				// - this ScrollContentPresenter's SizesContentToTemplatedParent property is set to True.
+				if (!m_isSemanticZoomPresenter && !childPreventsInfiniteAvailableWidth && !sizesContentToTemplatedParent)
 				{
 					childAvailableSize.Width = double.PositiveInfinity;
 				}
@@ -1665,8 +1675,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (pScrollData.m_canVerticallyScroll)
 			{
-				// TODO Uno: Phase 5 — honour child's WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility.
-				if (!m_isSemanticZoomPresenter && !sizesContentToTemplatedParent)
+				childPreventsInfiniteAvailableHeight = spChildAsFE is not null &&
+					!spChildAsFE.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Vertical);
+
+				// An infinite available height is given to the child unless:
+				// - this ScrollContentPresenter belongs to a SemanticZoom control.
+				// - the child FrameworkElement blocks an infinite available height — this is the case for a ModernCollectionBasePanel that is virtualizing horizontally.
+				// - this ScrollContentPresenter's SizesContentToTemplatedParent property is set to True.
+				if (!m_isSemanticZoomPresenter && !childPreventsInfiniteAvailableHeight && !sizesContentToTemplatedParent)
 				{
 					childAvailableSize.Height = double.PositiveInfinity;
 				}
