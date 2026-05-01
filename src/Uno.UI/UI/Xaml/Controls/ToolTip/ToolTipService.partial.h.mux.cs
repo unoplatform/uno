@@ -46,7 +46,7 @@ internal class ToolTipServiceMetadata
 	internal DependencyObject? m_tpOwner;
 	internal FrameworkElement? m_tpContainer;
 	internal ToolTip? m_tpCurrentToolTip;
-	// internal IDispatcherQueueTimer? m_tpSafeZoneCheckTimer; // TODO Uno: Phase 6 (DispatcherQueueTimer)
+	internal global::Microsoft.UI.Dispatching.DispatcherQueueTimer? m_tpSafeZoneCheckTimer;
 
 	// ToolTipService puts size change and mouse move handlers on the roots elements of each XamlRoot
 	// (i.e. RootVisual & Xaml islands). This collection tracks whether a root has handlers on it already.
@@ -117,6 +117,11 @@ internal class ToolTipServiceMetadata
 	internal void SetCloseTimer(DispatcherTimer? value)
 	{
 		m_tpCloseTimer = value;
+	}
+
+	internal void SetSafeZoneTimer(global::Microsoft.UI.Dispatching.DispatcherQueueTimer? value)
+	{
+		m_tpSafeZoneCheckTimer = value;
 	}
 
 	internal void SetOpenTimer(DispatcherTimer? value)

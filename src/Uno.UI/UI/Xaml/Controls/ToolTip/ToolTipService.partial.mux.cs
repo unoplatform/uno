@@ -255,6 +255,79 @@ public partial class ToolTipService
 		}
 	}
 
+	// MUX Reference: ToolTipService_Partial.cpp OnSafeZoneCheck (line 348).
+	// ToolTip will not be closed until Pointer moves out of safe zone.
+	// A timer is started when ToolTip is open, and then check if pointer is in the safe zone periodically.
+	// Because Keyboard also opens ToolTip, s_pointerPointWhenSafeZoneTimerStart is used to determine if pointer
+	// is moved or not after.
+	private static void OnSafeZoneCheck()
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		// When screen is off, stop the scheduled timer to avoid battery drain like BUG 1735672 and BUG 1735672
+		if (!pToolTipServiceMetadataNoRef.m_displayOn && pToolTipServiceMetadataNoRef.m_tpSafeZoneCheckTimer is not null)
+		{
+			pToolTipServiceMetadataNoRef.m_tpSafeZoneCheckTimer.Stop();
+			CancelAutomaticToolTip();
+			return;
+		}
+
+		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is { } tooltip)
+		{
+			// We don't not use PointerPointStatic get_Position here, since it is based on the current window.
+			// This prevents us from getting the right position in out of window ToolTip cases.
+			// We call GetCursorPos() to get the screen based position instead of each window based position.
+			// TODO Uno: Win32 GetCursorPos has no direct Skia equivalent. Read the last pointer position
+			// from PointerRoutedEventArgs.LastPointerEvent instead. This forfeits the screen-physical
+			// coordinate semantics but is acceptable since the new port runs in-window.
+			var lastPointer = Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.LastPointerEvent;
+			if (lastPointer is null)
+			{
+				return;
+			}
+			var pointerPoint = lastPointer.GetCurrentPoint(null);
+			if (pointerPoint is null)
+			{
+				return;
+			}
+			var pointerPosition = pointerPoint.Position;
+
+			var startPosition = s_pointerPointWhenSafeZoneTimerStart;
+			if (Math.Abs(startPosition.X - pointerPosition.X) < 0.1 && Math.Abs(startPosition.Y - pointerPosition.Y) < 0.1)
+			{
+				// Pointer not moved, avoid to dismiss keyboard opened ToolTip
+				return;
+			}
+
+			tooltip.HandlePointInSafeZone(pointerPosition);
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp StartSafeZoneCheckTimer (line 384).
+	private static void StartSafeZoneCheckTimer(ToolTipServiceMetadata pToolTipServiceMetadataNoRef)
+	{
+		if (pToolTipServiceMetadataNoRef.m_tpSafeZoneCheckTimer is null)
+		{
+			var interval = TimeSpan.FromTicks(ToolTipServiceConstants.s_safeZoneCheckTimerDuration);
+
+			var dispatcherQueue = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+			var dispatcherQueueTimer = dispatcherQueue.CreateTimer();
+
+			dispatcherQueueTimer.Tick += (sender, args) => OnSafeZoneCheck();
+			dispatcherQueueTimer.Interval = interval;
+
+			pToolTipServiceMetadataNoRef.SetSafeZoneTimer(dispatcherQueueTimer);
+		}
+
+		pToolTipServiceMetadataNoRef.m_tpSafeZoneCheckTimer!.Start();
+
+		// TODO Uno: Win32 GetCursorPos. On Skia capture the last pointer position via the
+		// LastPointerEvent. This is what subsequent OnSafeZoneCheck ticks compare against.
+		var lastPointer = Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.LastPointerEvent;
+		var pointerPoint = lastPointer?.GetCurrentPoint(null);
+		s_pointerPointWhenSafeZoneTimerStart = pointerPoint?.Position ?? default;
+	}
+
 	// MUX Reference: ToolTipService_Partial.cpp OpenAutomaticToolTip (line 423).
 	private static void OpenAutomaticToolTip(object? pUnused1, object? pUnused2)
 	{
@@ -313,10 +386,7 @@ public partial class ToolTipService
 			s_bOpeningAutomaticToolTip = false;
 		}
 
-		// TODO Uno (Phase 6): port StartSafeZoneCheckTimer.
-#if false
-		IFC(StartSafeZoneCheckTimer(pToolTipServiceMetadataNoRef));
-#endif
+		StartSafeZoneCheckTimer(pToolTipServiceMetadataNoRef);
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp CloseAutomaticToolTip (line 496).
@@ -329,13 +399,10 @@ public partial class ToolTipService
 			pToolTipServiceMetadataNoRef.m_tpCloseTimer.Stop();
 		}
 
-		// TODO Uno (Phase 6): SafeZoneCheckTimer (DispatcherQueueTimer) not yet wired.
-#if false
-		if (pToolTipServiceMetadataNoRef->m_tpSafeZoneCheckTimer)
+		if (pToolTipServiceMetadataNoRef.m_tpSafeZoneCheckTimer is not null)
 		{
-			IFC(pToolTipServiceMetadataNoRef->m_tpSafeZoneCheckTimer->Stop());
+			pToolTipServiceMetadataNoRef.m_tpSafeZoneCheckTimer.Stop();
 		}
-#endif
 
 		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is not null)
 		{
@@ -353,6 +420,59 @@ public partial class ToolTipService
 			{
 				RemoveFromNestedOwners(owner);
 			}
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp CloseToolTipInternal (line 895).
+	internal static void CloseToolTipInternal(KeyRoutedEventArgs? pIKeyRoutedEventArgs)
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_tpOpenTimer is null)
+		{
+			return;
+		}
+
+		// close the opened ToolTip or cancel mouse hover
+		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is null)
+		{
+			pToolTipServiceMetadataNoRef.m_tpOpenTimer.Stop();
+			return;
+		}
+
+		if (pIKeyRoutedEventArgs is not null)
+		{
+			var key = pIKeyRoutedEventArgs.Key;
+			if (IsSpecialKey(key))
+			{
+				return;
+			}
+		}
+
+		CloseAutomaticToolTip(null, null);
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp IsSpecialKey (line 933).
+	internal static bool IsSpecialKey(global::Windows.System.VirtualKey key)
+	{
+		switch (key)
+		{
+			case global::Windows.System.VirtualKey.Menu:
+			case global::Windows.System.VirtualKey.Back:
+			case global::Windows.System.VirtualKey.Delete:
+			case global::Windows.System.VirtualKey.Down:
+			case global::Windows.System.VirtualKey.End:
+			case global::Windows.System.VirtualKey.Home:
+			case global::Windows.System.VirtualKey.Insert:
+			case global::Windows.System.VirtualKey.Left:
+			case global::Windows.System.VirtualKey.PageDown:
+			case global::Windows.System.VirtualKey.PageUp:
+			case global::Windows.System.VirtualKey.Right:
+			case global::Windows.System.VirtualKey.Space:
+			case global::Windows.System.VirtualKey.Up:
+				return true;
+			default:
+				return false;
 		}
 	}
 

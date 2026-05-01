@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Windows.Foundation;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -342,13 +343,10 @@ public partial class ToolTip : ContentControl
 					pToolTipServiceMetadata.m_tpCloseTimer.Stop();
 				}
 
-				// TODO Uno (Phase 6): port the SafeZoneCheckTimer (DispatcherQueueTimer not yet wired).
-#if false
-				if (pToolTipServiceMetadata->m_tpSafeZoneCheckTimer)
+				if (pToolTipServiceMetadata.m_tpSafeZoneCheckTimer is not null)
 				{
-					IFC(pToolTipServiceMetadata->m_tpSafeZoneCheckTimer->Stop());
+					pToolTipServiceMetadata.m_tpSafeZoneCheckTimer.Stop();
 				}
-#endif
 
 				pToolTipServiceMetadata.SetCurrentToolTip(this);
 
@@ -1404,8 +1402,31 @@ public partial class ToolTip : ContentControl
 
 	// === Phase 6 helpers (safe-zone + Xaml-island roots) ===
 
+	// MUX Reference: ToolTip_Partial.cpp IsControlKeyOnly (line 2253).
+	// Returns true when the supplied key is the Control key with no other modifier
+	// (Alt/Shift/Windows). Used by HookupXamlIslandRoot to implement the Ctrl-only
+	// dismiss behavior (only Ctrl Down then Ctrl Up dismiss the ToolTip).
+	private static bool IsControlKeyOnly(VirtualKey key)
+	{
+		if (key == VirtualKey.Control)
+		{
+			var modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu);
+			bool altDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
+
+			modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift);
+			bool shiftDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
+
+			modifiers = global::Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.LeftWindows);
+			bool winDown = (modifiers & global::Windows.UI.Core.CoreVirtualKeyStates.Down) == global::Windows.UI.Core.CoreVirtualKeyStates.Down;
+
+			return !altDown && !shiftDown && !winDown;
+		}
+
+		return false;
+	}
+
 	// MUX Reference: ToolTip_Partial.cpp HandlePointInSafeZone (line 2221, Point overload).
-	private void HandlePointInSafeZone(Point point)
+	internal void HandlePointInSafeZone(Point point)
 	{
 		var owner = m_wrOwner?.Target as DependencyObject;
 		if (owner is not null)
