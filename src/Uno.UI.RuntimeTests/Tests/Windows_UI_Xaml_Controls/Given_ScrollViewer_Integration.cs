@@ -275,6 +275,90 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
 		}
 
+		// MUX Reference ValidateNoLayoutCycleByChangeContentSize (C++ line 4854).
+		// Regression test for a layout cycle that used to occur when the content
+		// width oscillated across a parent's MinWidth constraint.
+		[TestMethod]
+		public async Task ValidateNoLayoutCycleByChangeContentSize()
+		{
+			var rootGrid = (Grid)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"<Grid xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" " +
+				"xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" x:Name=\"rootGrid\" Background=\"Orange\">" +
+				"  <StackPanel Background=\"DarkGray\">" +
+				"    <Button x:Name=\"cycleButton\" Content=\"Cycle\" HorizontalAlignment=\"Center\" />" +
+				"    <Border x:Name=\"constrainOwner\" HorizontalAlignment=\"Left\" VerticalAlignment=\"Stretch\" MinWidth=\"800\" Background=\"Yellow\">" +
+				"      <ScrollViewer HorizontalScrollBarVisibility=\"Auto\" HorizontalScrollMode=\"Enabled\" VerticalScrollBarVisibility=\"Disabled\" VerticalScrollMode=\"Disabled\">" +
+				"        <Border>" +
+				"          <Rectangle x:Name=\"contentRect\" Fill=\"Red\" Height=\"100\" Width=\"2000\" />" +
+				"        </Border>" +
+				"      </ScrollViewer>" +
+				"    </Border>" +
+				"  </StackPanel>" +
+				"</Grid>");
+
+			TestServices.WindowHelper.WindowContent = rootGrid;
+			await TestServices.WindowHelper.WaitForLoaded(rootGrid);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Do the change content 4 times that ensures no layout cycle by changing the content size
+			for (int i = 0; i < 4; i++)
+			{
+				var constrainOwner = (Border)rootGrid.FindName("constrainOwner");
+				var contentRect = (Microsoft.UI.Xaml.Shapes.Rectangle)rootGrid.FindName("contentRect");
+				var constraint = constrainOwner.MinWidth;
+
+				contentRect.Width = contentRect.Width < constraint
+					? constraint + 100
+					: constraint - 100;
+
+				// Update the layout to ensure no layout cycle by changing the content size
+				constrainOwner.UpdateLayout();
+
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			// Completed the verification without a layout cycle crash.
+		}
+
+		// MUX Reference ValidateNoLayoutCycleByChangeAlignment (C++ line 4912).
+		// Regression test: changing a ScrollViewer's VerticalAlignment after layout
+		// must not cause a layout cycle crash.
+		[TestMethod]
+		public async Task ValidateNoLayoutCycleByChangeAlignment()
+		{
+			var rootGrid = new Grid
+			{
+				Background = new SolidColorBrush(Colors.SlateBlue),
+				Width = 400,
+				Height = 400,
+			};
+
+			TestServices.WindowHelper.WindowContent = rootGrid;
+			await TestServices.WindowHelper.WaitForLoaded(rootGrid);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var scrollViewer = new ScrollViewer();
+			var stackPanel = new StackPanel();
+			var rect = new Microsoft.UI.Xaml.Shapes.Rectangle
+			{
+				Width = 100,
+				Height = 200,
+				Fill = new SolidColorBrush(Colors.Red),
+			};
+
+			stackPanel.Children.Add(rect);
+			scrollViewer.Content = stackPanel;
+
+			rootGrid.Children.Add(scrollViewer);
+			rootGrid.UpdateLayout();
+
+			scrollViewer.VerticalAlignment = VerticalAlignment.Top;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Validate no layout cycle crash by changing the alignment.
+		}
+
 		// MUX Reference DefaultValuesAreCorrect (C++ line 3170).
 		// Validates that a fresh ScrollViewer has the documented default values for
 		// scroll modes, rail enablement, zoom mode, scroll bar visibility, and
