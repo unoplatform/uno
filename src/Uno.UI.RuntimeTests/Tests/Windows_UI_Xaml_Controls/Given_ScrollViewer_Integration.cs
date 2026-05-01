@@ -129,6 +129,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public Task CannotScrollToVerticalOffset() => DoScrollToOffset(Orientation.Vertical, canScroll: false);
 
+		// MUX Reference DoChangeView at C++ line 4014.
+		// Validates that ScrollViewer.ChangeView changes the view by the expected delta
+		// and raises ViewChanged with IsIntermediate=false at the end.
+		private static async Task DoChangeView(bool horizontal, bool vertical, bool zoom)
+		{
+			var orientation = horizontal ? Orientation.Horizontal : Orientation.Vertical;
+			var scrollViewer = await AddScrollViewer(orientation);
+
+			var oldHorizontalOffset = scrollViewer.HorizontalOffset;
+			var oldVerticalOffset = scrollViewer.VerticalOffset;
+			var oldZoomFactor = scrollViewer.ZoomFactor;
+
+			var expectedNewHorizontalOffset = oldHorizontalOffset + (horizontal ? 1 : 0);
+			var expectedNewVerticalOffset = oldVerticalOffset + (vertical ? 1 : 0);
+			var expectedNewZoomFactor = oldZoomFactor + (zoom ? 0.01f : 0.0f);
+
+			var viewChangedTcs = new TaskCompletionSource<bool>();
+			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+			{
+				if (!args.IsIntermediate)
+				{
+					viewChangedTcs.TrySetResult(true);
+				}
+			}
+			scrollViewer.ViewChanged += OnViewChanged;
+			try
+			{
+				bool couldChangeView = scrollViewer.ChangeView(
+					expectedNewHorizontalOffset,
+					expectedNewVerticalOffset,
+					expectedNewZoomFactor,
+					true /*disableAnimation*/);
+
+				Assert.IsTrue(couldChangeView, "ChangeView returned false");
+
+				var completed = await Task.WhenAny(viewChangedTcs.Task, Task.Delay(TimeSpan.FromSeconds(3)));
+				Assert.AreEqual(viewChangedTcs.Task, completed, "ViewChanged with IsIntermediate=false didn't fire within 3s");
+
+				Assert.AreEqual(expectedNewHorizontalOffset, scrollViewer.HorizontalOffset, 0.001, "HorizontalOffset");
+				Assert.AreEqual(expectedNewVerticalOffset, scrollViewer.VerticalOffset, 0.001, "VerticalOffset");
+				Assert.AreEqual(expectedNewZoomFactor, scrollViewer.ZoomFactor, 0.001, "ZoomFactor");
+			}
+			finally
+			{
+				scrollViewer.ViewChanged -= OnViewChanged;
+			}
+		}
+
+		// MUX Reference CanChangeViewHorizontally (C++ line 93).
+		[TestMethod]
+		public Task CanChangeViewHorizontally() => DoChangeView(horizontal: true, vertical: false, zoom: false);
+
+		// MUX Reference CanChangeViewVertically (C++ line 98).
+		[TestMethod]
+		public Task CanChangeViewVertically() => DoChangeView(horizontal: false, vertical: true, zoom: false);
+
 		// MUX Reference SizedTextBlock (C++ line 3802).
 		// Validates that a short text in a TextBlock with a large MinWidth pushes
 		// the large extent to the owning ScrollViewer; lifting MinWidth re-shrinks.
