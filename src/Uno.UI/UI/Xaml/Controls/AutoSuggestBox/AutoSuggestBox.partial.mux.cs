@@ -1443,8 +1443,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnItemsChanged(object e)
 		{
-			bool isTextBoxFocused = false;
-
 #if DBG
 			bool wasHandlingCollectionChange = m_handlingCollectionChange;
 			m_handlingCollectionChange = true;
@@ -1454,26 +1452,24 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				base.OnItemsChanged(e);
 
-				isTextBoxFocused = IsTextBoxFocusedElement();
-				if (isTextBoxFocused)
+				// TODO Uno: WinUI gates the deferred-update + visibility refresh on IsTextBoxFocusedElement,
+				// but Uno's deferred event dispatch can cause focus to bounce between TextBox and ancestors at the
+				// moment OnItemsChanged is called from the async TextChanged → handler-updates-ItemsSource path. The
+				// legacy Uno control unconditionally refreshed visibility on items-change and let
+				// UpdateSuggestionListVisibility itself decide whether to open the popup based on
+				// `_textBox.IsFocused`. Mirror that pattern: always defer the layout refresh and call
+				// UpdateSuggestionListVisibility — the focus gate now lives inside the visibility helper.
+				if (!m_deferringUpdate)
 				{
-					// Defer the update until after change notification is fully processed.
-					// UpdateSuggestionListPosition must not be called synchronously while handling
-					// the change notification (see comment in UpdateSuggestionListPosition).
-					// This also has the benefit of doing just one update for a batch of change notifications
-					// if we get a bunch at the same time.
-					if (!m_deferringUpdate)
-					{
-						WeakReference<AutoSuggestBox> wpThis = new WeakReference<AutoSuggestBox>(this);
+					WeakReference<AutoSuggestBox> wpThis = new WeakReference<AutoSuggestBox>(this);
 
-						Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()?.TryEnqueue(() => ProcessDeferredUpdateStatic(wpThis));
-						m_deferringUpdate = true;
-					}
-
-					// We should immediately update visibility, however, since we want the value of
-					// IsSuggestionListOpen to be properly updated by the time this returns.
-					UpdateSuggestionListVisibility();
+					Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()?.TryEnqueue(() => ProcessDeferredUpdateStatic(wpThis));
+					m_deferringUpdate = true;
 				}
+
+				// We should immediately update visibility, however, since we want the value of
+				// IsSuggestionListOpen to be properly updated by the time this returns.
+				UpdateSuggestionListVisibility();
 
 				// TODO Uno: NOT PORTED - AutomationPeer.ListenerExistsHelper(LayoutInvalidated) + RaiseAutomationEvent
 				// on the suggestion list's automation peer. Uno does not yet expose ListenerExistsHelper.
@@ -1495,6 +1491,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			}
 		}
+
+		// (legacy if (isTextBoxFocused) wrapper removed — focus gate now lives inside UpdateSuggestionListVisibility)
 
 		private static void ProcessDeferredUpdateStatic(WeakReference<AutoSuggestBox> wpThis)
 		{
@@ -2552,7 +2550,14 @@ namespace Microsoft.UI.Xaml.Controls
 			// ItemsSource (the typical AutoSuggestBox scenario) is non-empty.
 			int count = NumberOfItems;
 
-			if (maxHeight > 0)
+			// TODO Uno: WinUI gates the focus check at OnTextBoxTextChanged (only enters this method when text
+			// changed via UserInput) and at OnItemsChanged (only when textbox focused). Uno's deferred event
+			// dispatch + ListView-driven focus stealing on ItemsSource update can briefly drop
+			// m_tpTextBoxPart.IsFocused mid-update (focus bounces to a sibling, then returns), so checking
+			// .IsFocused at the wrong instant causes the popup to stay closed when it should open.
+			bool textBoxFocused = m_tpTextBoxPart is not null && m_tpTextBoxPart.IsFocused;
+
+			if (maxHeight > 0 && textBoxFocused)
 			{
 				// the suggestion list is only open when the maxsuggestionlistheight is greater than zero
 				// and the count of elements in the list is positive
