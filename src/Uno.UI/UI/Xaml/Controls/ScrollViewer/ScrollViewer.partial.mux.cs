@@ -379,8 +379,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Cleanup any existing template parts
 			if (m_trElementHorizontalScrollBar is { } hScrollBar)
 			{
-				// TODO Uno: Phase 4 — call StopUseOfActualSizeAsExtent on the ScrollBar once that helper lands.
-				// hScrollBar.StopUseOfActualSizeAsExtent();
+				hScrollBar.StopUseOfActualSizeAsExtent();
 				m_HorizontalScrollToken.Disposable = null;
 				m_horizontalThumbDragStartedToken.Disposable = null;
 				m_horizontalThumbDragCompletedToken.Disposable = null;
@@ -389,8 +388,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			if (m_trElementVerticalScrollBar is { } vScrollBar)
 			{
-				// TODO Uno: Phase 4 — call StopUseOfActualSizeAsExtent on the ScrollBar once that helper lands.
-				// vScrollBar.StopUseOfActualSizeAsExtent();
+				vScrollBar.StopUseOfActualSizeAsExtent();
 				m_VerticalScrollToken.Disposable = null;
 				m_verticalThumbDragStartedToken.Disposable = null;
 				m_verticalThumbDragCompletedToken.Disposable = null;
