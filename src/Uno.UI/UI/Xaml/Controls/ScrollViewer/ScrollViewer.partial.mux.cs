@@ -989,6 +989,38 @@ namespace Microsoft.UI.Xaml.Controls
 				ref pTargetVerticalOffset);
 		}
 
+		// (C++ source line 9044)
+		internal void CanScrollForFocusNavigation(VirtualKey key,
+			Microsoft.UI.Xaml.Input.FocusNavigationDirection direction,
+			out bool canScroll)
+		{
+			// check if we can scroll
+			// Check if current key should trigger chaining
+			bool continueRouting = ShouldContinueRoutingKeyDownEvent(key);
+
+			canScroll = !continueRouting;
+			if (canScroll)
+			{
+				ScrollMode scrollMode = ScrollMode.Disabled;
+
+				switch (direction)
+				{
+					case Microsoft.UI.Xaml.Input.FocusNavigationDirection.Up:
+					case Microsoft.UI.Xaml.Input.FocusNavigationDirection.Down:
+						scrollMode = VerticalScrollMode;
+						break;
+
+					case Microsoft.UI.Xaml.Input.FocusNavigationDirection.Left:
+					case Microsoft.UI.Xaml.Input.FocusNavigationDirection.Right:
+						scrollMode = HorizontalScrollMode;
+						break;
+				}
+
+				// if scroll mode is disabled, we cannot scroll
+				canScroll = (scrollMode != ScrollMode.Disabled);
+			}
+		}
+
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
 		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
