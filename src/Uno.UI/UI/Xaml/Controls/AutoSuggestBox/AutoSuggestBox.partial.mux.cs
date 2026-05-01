@@ -5,6 +5,7 @@
 #nullable disable
 
 using System;
+using System.Collections.Generic;
 using DirectUI;
 using Microsoft.UI.Xaml.Automation;
 using static DirectUI.ElevationHelper;
@@ -1701,6 +1702,15 @@ namespace Microsoft.UI.Xaml.Controls
 				// We need move the popup up (popup's bottom align to textbox) when textbox is at bottom position.
 				if (m_suggestionListPosition == SuggestionListPosition.Above)
 				{
+					// TODO Uno: WinUI binds the inner ListView's ItemsSource to ASB's Items via the default
+					// template, so by the time UpdateSuggestionListPosition runs the ListView already has the
+					// new items. In Uno we propagate ItemsSource imperatively through
+					// UpdateSuggestionListItemsSource (called at the end of this method), which means without
+					// this preflight call the ListView still holds the previous items and ActualHeight stays
+					// stale. Push items first, then re-measure so the popup repositions for the new height.
+					UpdateSuggestionListItemsSource();
+					(m_tpSuggestionsPart as UIElement)?.InvalidateMeasure();
+					(m_tpSuggestionsContainerPart as UIElement)?.InvalidateMeasure();
 					(m_tpSuggestionsContainerPart as UIElement)?.UpdateLayout();
 					height = m_tpSuggestionsContainerPart.ActualHeight;
 
@@ -2687,6 +2697,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// directly to skip the put_IsSuggestionListOpen override that takes focus. In Uno the focus side-effect
 			// lives in OnIsSuggestionListOpenPropertyChanged, so for now we set the DP directly and the focus side-effect
 			// will fire. Revisit if this causes focus thrash in tests.
+			//
 			IsSuggestionListOpen = isOpen;
 		}
 
@@ -2751,7 +2762,16 @@ namespace Microsoft.UI.Xaml.Controls
 						break;
 				}
 
+				// TODO Uno: WinUI's ControlledPeers property returns a non-null IVector by default;
+				// Uno's attached property currently defaults to null. Allocate a List<UIElement> on first
+				// use to avoid an NRE on Clear/Add. Revisit if AutomationProperties.ControlledPeersProperty
+				// is updated to default to an empty list.
 				var spControlledPeers = AutomationProperties.GetControlledPeers(m_tpTextBoxPart);
+				if (spControlledPeers is null)
+				{
+					spControlledPeers = new List<UIElement>();
+					m_tpTextBoxPart.SetValue(AutomationProperties.ControlledPeersProperty, spControlledPeers);
+				}
 
 				spControlledPeers.Clear();
 				if (spPeer is not null)
