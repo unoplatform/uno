@@ -109,6 +109,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// events:
 		// EventRegistrationToken m_sipEvents[2] {};
+		private IDisposable m_sipEvents0;
+		private IDisposable m_sipEvents1;
 
 		private readonly SerialDisposable m_epUnloadedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_epSizeChangedEventHandler = new SerialDisposable();
