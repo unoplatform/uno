@@ -596,6 +596,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO Uno: DXamlCore::ShouldUseDynamicScrollbars equivalent — likely always true in Uno.
 		private static bool IsConscious() => true;
 
+		// Inline header virtuals — root-ScrollViewer specializations override these. Default to false
+		// since regular ScrollViewers are never the root ScrollViewer.
+		protected virtual bool IsRootScrollViewer() => false;
+		protected virtual bool IsRootScrollViewerAllowImplicitStyle() => false;
+		protected virtual bool IsInputPaneShow() => false;
+
 		// #endregion
 
 #pragma warning restore IDE0060

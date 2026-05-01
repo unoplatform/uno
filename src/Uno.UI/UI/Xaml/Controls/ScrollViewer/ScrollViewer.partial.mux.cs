@@ -362,6 +362,78 @@ namespace Microsoft.UI.Xaml.Controls
 		// Scroll content to the end.
 		internal void PageEnd() => HandleHorizontalScroll(ScrollEventType.Last);
 
+		// PointerEntered event handler.
+		protected override void OnPointerEntered(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs pArgs)
+		{
+			// Don't process the pointer input when IHM is hidden on the root SV
+			if (IsRootScrollViewer() && !IsInputPaneShow())
+			{
+				return;
+			}
+
+			base.OnPointerEntered(pArgs);
+
+			var spPointer = pArgs.Pointer;
+			var pointerDeviceType = spPointer.PointerDeviceType;
+
+			// Mouse input dominates. If we are showing panning indicators and then mouse comes into play, mouse indicators win.
+			if (Microsoft.UI.Input.PointerDeviceType.Touch != pointerDeviceType)
+			{
+				m_preferMouseIndicators = true;
+				ShowIndicators();
+			}
+		}
+
+		// PointerMoved event handler.
+		protected override void OnPointerMoved(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs pArgs)
+		{
+			// Don't process the pointer input on the root SV
+			if (IsRootScrollViewer())
+			{
+				return;
+			}
+
+			base.OnPointerMoved(pArgs);
+
+			// TODO Uno: PointerRoutedEventArgs.IsGenerated isn't a public API on Uno; the WinUI source skips
+			// generated replays. The cross-platform path will route generated pointer events normally — likely
+			// fine since indicator behaviour is purely cosmetic here.
+
+			var spPointer = pArgs.Pointer;
+			var pointerDeviceType = spPointer.PointerDeviceType;
+
+			// Mouse input dominates. If we are showing panning indicators and then mouse comes into play, mouse indicators win.
+			if (Microsoft.UI.Input.PointerDeviceType.Touch != pointerDeviceType)
+			{
+				m_preferMouseIndicators = true;
+				ShowIndicators();
+			}
+		}
+
+		// PointerExited event handler.
+		protected override void OnPointerExited(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs pArgs)
+		{
+			// Don't process the pointer input on the root SV
+			if (IsRootScrollViewer())
+			{
+				return;
+			}
+
+			base.OnPointerExited(pArgs);
+
+			var spPointer = pArgs.Pointer;
+			var pointerDeviceType = spPointer.PointerDeviceType;
+
+			// Mouse input dominates. If we are showing panning indicators and then mouse comes into play, mouse indicators win.
+			if (Microsoft.UI.Input.PointerDeviceType.Touch != pointerDeviceType)
+			{
+				m_isPointerOverVerticalScrollbar = false;
+				m_isPointerOverHorizontalScrollbar = false;
+				m_preferMouseIndicators = true;
+				ShowIndicators();
+			}
+		}
+
 		// Handles the vertical ScrollBar.Scroll event and updates the UI.
 		internal void HandleVerticalScroll(ScrollEventType scrollEventType, double offset = 0.0)
 		{
