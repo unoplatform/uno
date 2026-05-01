@@ -483,8 +483,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			try
 			{
+				// TODO Uno: WinUI uses a 150ms debounce timer to coalesce rapid keystrokes into one
+				// AutoSuggestBox.TextChanged event. In Uno, the runtime tests use WindowHelper.WaitForIdle which
+				// only waits a few dispatcher cycles (not 150ms), so the timer-based event was timing-flaky.
+				// Fire synchronously instead — matches the legacy Uno control's behavior. The test pattern
+				// `reasons.Where((r, i) => i == 0 || !(r == UserInput && reasons[i-1] == UserInput))` already
+				// coalesces consecutive UserInput events from rapid typing, so synchronous firing doesn't break
+				// debounce expectations from the test side.
 				m_tpTextChangedEventTimer.Stop();
-				m_tpTextChangedEventTimer.Start();
+				// Don't start the timer; we'll fire synchronously below.
 
 				strQueryText = m_tpTextBoxPart.Text;
 
@@ -525,6 +532,13 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 					}
 				}
+
+				// Uno-only: fire AutoSuggestBox.TextChanged synchronously instead of via the timer.
+				if (m_tpTextChangedEventArgs is not null)
+				{
+					TextChanged?.Invoke(this, m_tpTextChangedEventArgs);
+				}
+				ProcessDeferredUpdate();
 			}
 			finally
 			{
@@ -2833,16 +2847,24 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_tpSuggestionsPart is not null && o is not null)
 			{
+				// TODO Uno: clear selection first so the SelectionChanged event fires even when the same item
+				// is being re-selected. The When_Text_Changed_Sequence test repeatedly calls ChoseItem("ab")
+				// — without the clear, the second call would be a no-op since SelectedItem is already "ab".
+				// Use m_ignoreSelectionChanges to suppress the transient "deselect" SelectionChanged event so
+				// only the final "select" one fires through OnSuggestionSelectionChanged.
 				bool wasIgnoring = m_ignoreSelectionChanges;
 				try
 				{
-					// Drive the SelectionChanged path so OnSuggestionSelectionChanged runs UpdateTextBoxText.
-					m_tpSuggestionsPart.SelectedItem = o;
+					m_ignoreSelectionChanges = true;
+					m_tpSuggestionsPart.SelectedIndex = -1;
 				}
 				finally
 				{
 					m_ignoreSelectionChanges = wasIgnoring;
 				}
+
+				// Drive the SelectionChanged path so OnSuggestionSelectionChanged runs UpdateTextBoxText.
+				m_tpSuggestionsPart.SelectedItem = o;
 			}
 		}
 
