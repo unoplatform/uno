@@ -113,6 +113,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(oldZoomFactor, scrollViewer.ZoomFactor, "ZoomFactor unchanged");
 		}
 
+		// MUX Reference CanInstantiate (C++ line 57).
+		// Validates that a ScrollViewer can be instantiated without error.
+		[TestMethod]
+		public void CanInstantiate()
+		{
+			var scrollViewer = new ScrollViewer();
+			Assert.IsNotNull(scrollViewer);
+		}
+
+		// MUX Reference CanEnterAndLeaveLiveTree (C++ line 62).
+		// Validates that a ScrollViewer can be added to and removed from the live
+		// visual tree without error.
+		[TestMethod]
+		public async Task CanEnterAndLeaveLiveTree()
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				Content = new Border { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.Cyan) },
+			};
+
+			TestServices.WindowHelper.WindowContent = scrollViewer;
+			await TestServices.WindowHelper.WaitForLoaded(scrollViewer);
+
+			Assert.IsTrue(scrollViewer.IsLoaded, "ScrollViewer should be loaded after entering tree");
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(scrollViewer.IsLoaded, "ScrollViewer should be unloaded after leaving tree");
+		}
+
 		// MUX Reference CanScrollToHorizontalOffset (C++ line 73).
 		[TestMethod]
 		public Task CanScrollToHorizontalOffset() => DoScrollToOffset(Orientation.Horizontal, canScroll: true);
@@ -275,56 +306,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
 		}
 
-		// MUX Reference ViewChangeEventsAreCorrect (C++ line 3066).
-		// Validates that ViewChanged fires exactly once with IsIntermediate=false
-		// after a ChangeView call.
-		// Note: the original C++ test also asserts ViewChanging fires with populated
-		// NextView/FinalView and that intermediate inertial events fire. On Skia,
-		// the ViewChanging-from-ChangeView path is part of the Phase-4 ChangeViewInternal
-		// port that hasn't landed yet — the cross-platform ChangeView synchronously
-		// updates the offsets and only raises the final ViewChanged. The Skia variant
-		// of this test exercises the ViewChanged contract for the synchronous path
-		// and leaves the ViewChanging assertions to be re-enabled when Phase 4 lands.
-		[TestMethod]
-		public async Task ViewChangeEventsAreCorrect()
-		{
-			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
-			var newVerticalOffset = 10.0;
-
-			int intermediateViewChangedCount = 0;
-			int nonIntermediateViewChangedCount = 0;
-
-			var viewChangedTcs = new TaskCompletionSource<bool>();
-			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
-			{
-				if (!args.IsIntermediate)
-				{
-					nonIntermediateViewChangedCount++;
-					viewChangedTcs.TrySetResult(true);
-				}
-				else
-				{
-					intermediateViewChangedCount++;
-				}
-			}
-
-			scrollViewer.ViewChanged += OnViewChanged;
-			try
-			{
-				_ = scrollViewer.ChangeView(null, newVerticalOffset, null, false /*disableAnimation*/);
-
-				var completed = await Task.WhenAny(viewChangedTcs.Task, Task.Delay(TimeSpan.FromSeconds(3)));
-				Assert.AreEqual(viewChangedTcs.Task, completed, "ViewChanged with IsIntermediate=false didn't fire within 3s");
-
-				Assert.IsTrue(intermediateViewChangedCount >= 0, "intermediateViewChangedCount sanity");
-				Assert.AreEqual(1, nonIntermediateViewChangedCount, "Exactly one final ViewChanged");
-				Assert.AreEqual(newVerticalOffset, scrollViewer.VerticalOffset, 0.001, "Final VerticalOffset");
-			}
-			finally
-			{
-				scrollViewer.ViewChanged -= OnViewChanged;
-			}
-		}
+		// TODO Uno: Phase-4 ChangeViewInternal port — re-enable C++
+		// ViewChangeEventsAreCorrect (C++ line 3066) once cross-platform ChangeView
+		// on Skia raises ViewChanging with populated NextView/FinalView. The original
+		// test specifically validates the ViewChanging contract during the inertial
+		// view change, so a ViewChanged-only variant would not match the original
+		// per the "don't simplify" porting rule.
 
 		// MUX Reference ValidateNoLayoutCycleByChangeContentSize (C++ line 4854).
 		// Regression test for a layout cycle that used to occur when the content
@@ -432,56 +419,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.1, scrollViewer.MinZoomFactor, 0.001);
 		}
 
-		// MUX Reference ChangeViewTwice (C++ line 1763).
-		// Validates that two consecutive ChangeView calls land on the SECOND call's
-		// parameters (the first is overridden) and ViewChanged fires with
-		// IsIntermediate=false at the end.
-		// Note: the original C++ test uses zoom 2.0 → 3.0 to validate zoom override; on
-		// Skia the cross-platform ChangeView path doesn't (yet) apply zoom factor — that
-		// arrives with the Phase-4 ChangeViewInternal port. This Skia variant uses
-		// offset-only deltas so the SECOND-overrides-FIRST semantics are still validated
-		// without depending on zoom support.
-		[TestMethod]
-		public async Task ChangeViewTwice()
-		{
-			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
-
-			var viewChangedTcs = new TaskCompletionSource<bool>();
-			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
-			{
-				if (!args.IsIntermediate)
-				{
-					viewChangedTcs.TrySetResult(true);
-				}
-			}
-			scrollViewer.ViewChanged += OnViewChanged;
-			try
-			{
-				// Content height is 1200 (12 * 100), SV is 100, scrollable = 1100.
-
-				// First ChangeView: target offset 100.
-				_ = scrollViewer.ChangeView(
-					horizontalOffset: null,
-					verticalOffset: 100.0,
-					zoomFactor: null,
-					disableAnimation: true);
-				// Second ChangeView: override with offset 500.
-				_ = scrollViewer.ChangeView(
-					horizontalOffset: null,
-					verticalOffset: 500.0,
-					zoomFactor: null,
-					disableAnimation: true);
-
-				var completed = await Task.WhenAny(viewChangedTcs.Task, Task.Delay(TimeSpan.FromSeconds(3)));
-				Assert.AreEqual(viewChangedTcs.Task, completed, "ViewChanged with IsIntermediate=false didn't fire within 3s");
-
-				Assert.AreEqual(0.0, scrollViewer.HorizontalOffset, 0.5, "HorizontalOffset");
-				Assert.AreEqual(500.0, scrollViewer.VerticalOffset, 0.5, "VerticalOffset (second call wins)");
-			}
-			finally
-			{
-				scrollViewer.ViewChanged -= OnViewChanged;
-			}
-		}
+		// TODO Uno: Phase-4 ChangeViewInternal port — re-enable C++ ChangeViewTwice
+		// (C++ line 1763) once cross-platform ChangeView on Skia applies zoom factor.
+		// The original test uses zoom 2.0 → 3.0 with verticalOffset=3500 to validate
+		// the second-overrides-first contract; without zoom application that
+		// becomes a different test, so it's deferred per the "don't simplify"
+		// porting rule.
 	}
 }
