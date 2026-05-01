@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -189,6 +190,69 @@ public partial class ToolTipService
 		}
 
 		return toolTip;
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp GetToolTipOwnersBoundary (line 820).
+	internal static Rect GetToolTipOwnersBoundary(DependencyObject ownerDO)
+	{
+		Rect bounds;
+		if (ownerDO is UIElement owner)
+		{
+			bounds = GetGlobalBoundsLogical(owner);
+		}
+		else if (ownerDO is Documents.TextElement textElement)
+		{
+			// TODO Uno (Phase 6 polish): port CCoreServices::GetTextElementBoundingRect equivalent.
+			// For now use the containing FrameworkElement's bounds.
+			var fe = textElement.GetContainingFrameworkElement();
+			if (fe is null)
+			{
+				return default;
+			}
+			bounds = GetGlobalBoundsLogical(fe);
+		}
+		else
+		{
+			return default;
+		}
+
+		// Validate non-NaN / non-Infinity bounds.
+		if (double.IsInfinity(bounds.Left) || double.IsNaN(bounds.Left) ||
+			double.IsInfinity(bounds.Top) || double.IsNaN(bounds.Top) ||
+			double.IsInfinity(bounds.Right) || double.IsNaN(bounds.Right) ||
+			double.IsInfinity(bounds.Bottom) || double.IsNaN(bounds.Bottom))
+		{
+			return default;
+		}
+
+		return bounds;
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp HandleToolTipSafeZone (line 862).
+	internal static void HandleToolTipSafeZone(Point point, UIElement toolTip, DependencyObject ownerDO)
+	{
+		// On WindowsCore, because message event queue, even if ToolTip is unhooked from CoreWindow during the same PointerMove event handling,
+		// CoreWindows.PointerMove event is still be received by ToolTip, and it makes the current ToolTip doesn't match with ToolTip from the event.
+		// so we should only handle the tooltip if it's the current ToolTip.
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		var current = pToolTipServiceMetadataNoRef.m_tpCurrentToolTip;
+		if (current is null || !ReferenceEquals(current, toolTip))
+		{
+			return;
+		}
+
+		// owner bounds in global space
+		Rect ownerBounds = GetToolTipOwnersBoundary(ownerDO);
+
+		// tooltip bounds in global space
+		Rect toolTipBounds = GetGlobalBoundsLogical(toolTip);
+
+		// outside of safe zone, close ToolTip
+		if (!IsToolTipInSafeZone(point, ownerBounds, toolTipBounds))
+		{
+			CancelAutomaticToolTip();
+		}
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp OpenAutomaticToolTip (line 423).
@@ -580,6 +644,127 @@ public partial class ToolTipService
 		{
 			pToolTipServiceMetadataNoRef.m_isRemovingFromNestedOwners = false;
 		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp IsToolTipInSafeZone (line 1062).
+	// The point is in safe zone if the point is in bounds of owner or tooltip, or if it's within the bounds of the convex
+	// hull created by the bounds of the owner plus tooltip.
+	internal static bool IsToolTipInSafeZone(Point point, Rect ownerBounds, Rect toolTipBounds)
+	{
+		if (IsPointInRect(point, ownerBounds) || IsPointInRect(point, toolTipBounds))
+		{
+			return true;
+		}
+
+		Point[] polygonPoints = new[]
+		{
+			new Point(ownerBounds.Left, ownerBounds.Top),
+			new Point(ownerBounds.Left, ownerBounds.Bottom),
+			new Point(ownerBounds.Right, ownerBounds.Bottom),
+			new Point(ownerBounds.Right, ownerBounds.Top),
+			new Point(toolTipBounds.Left, toolTipBounds.Top),
+			new Point(toolTipBounds.Left, toolTipBounds.Bottom),
+			new Point(toolTipBounds.Right, toolTipBounds.Bottom),
+			new Point(toolTipBounds.Right, toolTipBounds.Top),
+		};
+
+		// It's ok to pass in the same point buffer for input and output; ComputeConvexHull
+		// returns the hull in-place.
+		var hull = ComputeConvexHull(polygonPoints);
+
+		var testPoint = new Point(point.X, point.Y);
+		return IsPointInsidePolygon(testPoint, hull);
+	}
+
+	// Andrew's monotone chain convex-hull algorithm. Returns the hull points in
+	// counter-clockwise order. C++ uses the engine's ComputeConvexHull<XPOINTF>; this is
+	// the equivalent in pure C#.
+	private static Point[] ComputeConvexHull(Point[] points)
+	{
+		int n = points.Length;
+		if (n < 3)
+		{
+			return (Point[])points.Clone();
+		}
+
+		// Sort by X, then Y.
+		var sorted = (Point[])points.Clone();
+		global::System.Array.Sort(sorted, (a, b) =>
+		{
+			int cmp = a.X.CompareTo(b.X);
+			return cmp != 0 ? cmp : a.Y.CompareTo(b.Y);
+		});
+
+		var hull = new Point[2 * n];
+		int k = 0;
+
+		// Build lower hull.
+		for (int i = 0; i < n; i++)
+		{
+			while (k >= 2 && Cross(hull[k - 2], hull[k - 1], sorted[i]) <= 0)
+			{
+				k--;
+			}
+			hull[k++] = sorted[i];
+		}
+
+		// Build upper hull.
+		int t = k + 1;
+		for (int i = n - 2; i >= 0; i--)
+		{
+			while (k >= t && Cross(hull[k - 2], hull[k - 1], sorted[i]) <= 0)
+			{
+				k--;
+			}
+			hull[k++] = sorted[i];
+		}
+
+		var result = new Point[k - 1];
+		global::System.Array.Copy(hull, result, k - 1);
+		return result;
+	}
+
+	// 2D cross product of OA and OB vectors.
+	private static double Cross(Point O, Point A, Point B)
+	{
+		return (A.X - O.X) * (B.Y - O.Y) - (A.Y - O.Y) * (B.X - O.X);
+	}
+
+	// Ray-casting point-in-polygon test.
+	private static bool IsPointInsidePolygon(Point point, Point[] polygon)
+	{
+		int count = polygon.Length;
+		if (count < 3)
+		{
+			return false;
+		}
+
+		bool inside = false;
+		for (int i = 0, j = count - 1; i < count; j = i++)
+		{
+			if (((polygon[i].Y > point.Y) != (polygon[j].Y > point.Y)) &&
+				(point.X < (polygon[j].X - polygon[i].X) * (point.Y - polygon[i].Y) / (polygon[j].Y - polygon[i].Y) + polygon[i].X))
+			{
+				inside = !inside;
+			}
+		}
+
+		return inside;
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp IsPointInRect (line 1101).
+	internal static bool IsPointInRect(Point point, Rect rect)
+	{
+		return (point.Y >= rect.Top && point.Y <= rect.Bottom && point.X >= rect.Left && point.X <= rect.Right);
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp GetGlobalBoundsLogical (line 1108).
+	internal static Rect GetGlobalBoundsLogical(UIElement element)
+	{
+		// C++ delegates to CUIElement::GetGlobalBoundsLogical; the Uno equivalent is
+		// TransformToVisual(null) of the element's local bounds.
+		var local = new Rect(0, 0, (element as FrameworkElement)?.ActualWidth ?? 0, (element as FrameworkElement)?.ActualHeight ?? 0);
+		return element.TransformToVisual(null).TransformBounds(local);
 	}
 
 	// MUX Reference: ToolTipService_Partial.cpp PurgeInvalidNestedOwners (line 1177).
