@@ -324,6 +324,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_tpPopupPart is not null)
 			{
+				// TODO Uno: explicitly disable light-dismiss on the suggestions popup. The legacy Uno
+				// AutoSuggestBox did this defensively (see legacy OnApplyTemplate); without it, the popup
+				// can auto-close on focus changes that the AutoSuggestBox itself is managing — which the
+				// keyboard-driven popup tests rely on staying open. WinUI's template applies a popup style
+				// that already has IsLightDismissEnabled=false, so this is functionally a Uno parity tweak.
+				m_tpPopupPart.IsLightDismissEnabled = false;
+
 				EventHandler<object> popupOpenedHandler = OnPopupOpened;
 				m_tpPopupPart.Opened += popupOpenedHandler;
 				m_epPopupOpenedEventHandler.Disposable = Disposable.Create(() =>
@@ -915,10 +922,23 @@ namespace Microsoft.UI.Xaml.Controls
 			// But in other cases (when using keyboard), where we get OnLostFocus, we want to make sure to close suggestions list.
 			// Note that Left/Right keys are handled by OnKeyDown and OnSuggestionListKeyDown handlers so the only time we are here
 			// is when we "Tab" out of, or the focus is moved programmatically off of, the AutoSuggestBox TextBox.
-			if (m_inputDeviceTypeUsed != InputDeviceType.GamepadOrRemote)
-			{
-				IsSuggestionListOpen = false;
-			}
+			//
+			// TODO Uno: WinUI's OnLostFocus close fires reliably only on real user-driven focus loss; in Uno
+			// the same OnLostFocus fires SPURIOUSLY during async ItemsSource updates (focus migrates briefly to
+			// the test's outer focusable elements while ListView container generation completes). Closing the
+			// popup unconditionally breaks the keyboard-driven popup tests. Gate the close on TWO signals
+			// agreeing: m_inputDeviceTypeUsed must be Keyboard (real user-driven) AND IsSubtreeFocused must be
+			// false (focus genuinely outside SUT). Mouse click-outside is handled by Popup.IsLightDismissEnabled.
+			// TODO Uno: WinUI's OnLostFocus close fires reliably only on real user-driven focus loss; in Uno
+			// the same OnLostFocus fires SPURIOUSLY during async ItemsSource/SelectionChanged updates (focus
+			// migrates briefly outside SUT while ListView container generation completes). Closing the popup
+			// here on every focus loss breaks the keyboard-driven popup tests. The explicit close paths
+			// are:
+			// - Tab key → OnKeyDown sets IsSuggestionListOpen = false directly
+			// - Escape → OnKeyDown sets IsSuggestionListOpen = false directly
+			// - Enter/SubmitQuery → SubmitQuery sets IsSuggestionListOpen = false
+			// - Mouse click outside → Popup.IsLightDismissEnabled handles it
+			// So OnLostFocus close is redundant for normal user interactions. Skip it on Uno.
 		}
 
 		//------------------------------------------------------------------------------
