@@ -478,6 +478,52 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void ScrollToVerticalOffsetInternal(double offset)
 			=> HandleVerticalScroll(ScrollEventType.ThumbPosition, offset);
 
+		// (C++ source line 3316)
+		internal bool ChangeViewImpl(
+			double? pHorizontalOffset,
+			double? pVerticalOffset,
+			float? pZoomFactor)
+		{
+			return ChangeViewInternal(
+				pHorizontalOffset,
+				pVerticalOffset,
+				pZoomFactor,
+				null /*pOldZoomFactor*/,
+				false /*forceChangeToCurrentView*/,
+				true /*adjustWithMandatorySnapPoints*/,
+				true /*skipDuringTouchContact*/,
+				true /*skipAnimationWhileRunning*/,
+				false /*disableAnimation*/,
+				true /*applyAsManip*/,
+				false /*transformIsInertiaEnd*/,
+				false /*isForMakeVisible*/);
+		}
+
+		// Combines the abilities of ScrollToHorizontalOffset, ScrollToVerticalOffset
+		// and ZoomToFactor, with the option of animating to the target view and snapping
+		// to mandatory snap points.
+		// (C++ source line 3355)
+		internal bool ChangeViewWithOptionalAnimationImpl(
+			double? pHorizontalOffset,
+			double? pVerticalOffset,
+			float? pZoomFactor,
+			bool disableAnimation)
+		{
+			return ChangeViewInternal(
+				pHorizontalOffset,
+				pVerticalOffset,
+				pZoomFactor,
+				null /*pOldZoomFactor*/,
+				false /*forceChangeToCurrentView*/,
+				true /*adjustWithMandatorySnapPoints*/,
+				true /*skipDuringTouchContact*/,
+				true /*skipAnimationWhileRunning*/,
+				disableAnimation,
+				true /*applyAsManip*/,
+				false /*transformIsInertiaEnd*/,
+				false /*isForMakeVisible*/);
+		}
+
 		// Combines the abilities of ScrollToHorizontalOffset, ScrollToVerticalOffset
 		// and ZoomToFactor with optional animation, snap-point adjustment, and DM
 		// BringIntoViewport coordination.
