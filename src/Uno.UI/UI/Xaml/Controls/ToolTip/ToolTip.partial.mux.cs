@@ -237,6 +237,70 @@ public partial class ToolTip : ContentControl
 		return new ToolTipAutomationPeer(this);
 	}
 
+	// MUX Reference: ToolTip_Partial.cpp OnApplyTemplate (line 412).
+	// Apply a template to the ToolTip.
+	protected override void OnApplyTemplate()
+	{
+		base.OnApplyTemplate();
+
+		// This hunk of code traverses the ToolTip's VSM states and finds its Closed state.
+		// If this state is found, we add a Completed event handler to the Closed state's Storyboard.
+		// When we finish going to the Closed state, then we need to close the ToolTip's Popup.
+		// If no Closed state is found, we close the ToolTip's Popup immediately.
+		// This logic allows us to achieve a fade-out effect for ToolTip.
+		bool bClosedStateHandled = false;
+		int childCount = VisualTreeHelper.GetChildrenCount(this);
+		if (childCount > 0)
+		{
+			var spChild = VisualTreeHelper.GetChild(this, 0);
+			var spChildAsFE = spChild as FrameworkElement;
+
+			if (spChildAsFE is not null)
+			{
+				var spChildVisualStateGroups = VisualStateManager.GetVisualStateGroups(spChildAsFE);
+
+				if (spChildVisualStateGroups is not null)
+				{
+					// TODO: Clean this up to use the following call instead of manually iterating the groups:
+					// IFC_RETURN(VisualStateManager::TryGetState(spChildVisualStateGroups.Get(), hsClosedStateName, &spGroup, &spState, &bResult));
+
+					foreach (var spGroup in spChildVisualStateGroups)
+					{
+						var spVisualStates = spGroup.States;
+						if (spVisualStates is not null)
+						{
+							foreach (var spState in spVisualStates)
+							{
+								if (spState.Name == "Closed")
+								{
+									// Add handler close the Tooltip's Popup after its Closed state has completed.
+									var spStoryboard = spState.Storyboard;
+									if (spStoryboard is not null)
+									{
+										spStoryboard.Completed += ForceFinishClosing;
+									}
+
+									bClosedStateHandled = true;
+									break;
+								}
+							}
+
+							if (bClosedStateHandled)
+							{
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// TODO: 105819 - Dynamic Timeline needs to clear and recreate children collection when its inheritance context changes
+		// When the bug is fixed, uncomment UpdateVisualState() and delete the explicit GoToState call.
+		//IFC_RETURN(UpdateVisualState(FALSE));
+		GoToState(false, "Opened");
+	}
+
 	// MUX Reference: ToolTip_Partial.cpp OnPlacementCriteriaChanged (line 567).
 	private void OnPlacementCriteriaChanged()
 	{
