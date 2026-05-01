@@ -137,6 +137,82 @@ public partial class ToolTip : ContentControl
 		this.DataContext = spContainerDataContext;
 	}
 
+	// MUX Reference: ToolTip_Partial.cpp HookupParentPopup (line 113).
+	internal Popup HookupParentPopup()
+	{
+		IsTabStop = false;
+		IsHitTestVisible = false;
+
+		var spTarget = GetTarget();
+
+		var spPopup = new Popup();
+
+		// Set the Popup's ToolTip owner : This is a hint required by XamlIslandRoots
+		// ToolTips use parentless popups.  ToolTip targets point to an element in the
+		// XamlIslandRoot's tree and can be walked to find the root for that XamlIslandRoot.
+		// The popup can then be rooted under the correct PopupRoot so it displays
+		// relative to the island position.
+#if false
+		auto popup = do_pointer_cast<CPopup>(spPopup->GetHandle());
+		if(popup)
+		{
+			popup->m_toolTipOwnerWeakRef = xref::get_weakref(static_cast<FrameworkElement*>(spTarget.Get())->GetHandle());
+		}
+#endif
+		// TODO Uno (Phase 6): port the m_toolTipOwnerWeakRef hint once XamlIslandRoot
+		// support lands on Skia. The XamlIslandRoot routing it enables is gated on
+		// Phase 6 hookups.
+
+		// ToolTip sets the location to the out of Xaml Window by using the windowed Popup in Threshold Windows
+#if false
+		if (CPopup::DoesPlatformSupportWindowedPopup(DXamlCore::GetCurrent()->GetHandle()) &&
+			!static_cast<CPopup*>(spPopup.Cast<Popup>()->GetHandle())->IsWindowed())
+		{
+			// Set the windowed popup to support the render popup at the out of Xaml window
+			IFC_RETURN(static_cast<CPopup*>(spPopup.Cast<Popup>()->GetHandle())->SetIsWindowed());
+			ASSERT(static_cast<CPopup*>(spPopup.Cast<Popup>()->GetHandle())->IsWindowed());
+		}
+#endif
+		// TODO Uno (Phase 5): port the windowed-popup configuration once Skia exposes
+		// the equivalent of CPopup::SetIsWindowed.
+
+		// Don't show the Popup for disabled ToolTips.
+		bool bIsEnabled = IsEnabled;
+		if (!bIsEnabled)
+		{
+			spPopup.Opacity = 0;
+		}
+
+		if (spTarget is not null)
+		{
+			// Propagate FlowDirection from placement target to popup
+			var spFlowDirectionBinding = new Data.Binding
+			{
+				Source = spTarget,
+				Path = new PropertyPath("FlowDirection"),
+			};
+
+			spPopup.SetBinding(FrameworkElement.FlowDirectionProperty, spFlowDirectionBinding);
+
+			// Propagate Language from placement target to popup
+			spPopup.Language = spTarget.Language;
+		}
+
+		// Listening to the Opened and Closed events lets us guarantee that
+		// the popup is actually opened when we perform those functions.
+
+		spPopup.Opened += OnPopupOpened;
+		spPopup.Closed += OnPopupClosed;
+
+#if false
+		IFC_RETURN(spPopup.Cast<Popup>()->SetOwner(this));
+#endif
+		// TODO Uno (Phase 5): Popup.SetOwner is internal in WinUI for hit-testing
+		// routing back to the owning ToolTip. Uno's Popup does not yet expose this hook.
+
+		return spPopup;
+	}
+
 	// MUX Reference: ToolTip_Partial.cpp OnPropertyChanged2 (line 211).
 	// TODO Uno (Phase 2 closeout): Hook into OnPropertyChanged dispatch so IsOpen,
 	// HorizontalOffset, VerticalOffset, PlacementRect changes route through the port.
@@ -162,6 +238,22 @@ public partial class ToolTip : ContentControl
 		// TODO Uno (Phase 5): port the SizeChanged-driven re-placement.
 	}
 
+	// MUX Reference: ToolTip_Partial.cpp GetTarget (line 696).
+	// help method to get the target from placement override or placement target.
+	internal FrameworkElement? GetTarget()
+	{
+		// If the ToolTipService is opening the ToolTip, then its owner is the placement target,
+		// regardless of what the PlacementTarget has been set to.
+		var spTarget = m_wrTargetOverride?.Target as FrameworkElement;
+		if (spTarget is null)
+		{
+			var spTargetAsUIElement = PlacementTarget;
+			spTarget = spTargetAsUIElement as FrameworkElement;
+		}
+
+		return spTarget;
+	}
+
 	// === Phase 0 scaffolding methods retained until their corresponding C++ port lands ===
 
 	// Phase 0 scaffolding: invoked by Slider.mux.cs to reposition the slider thumb
@@ -170,6 +262,21 @@ public partial class ToolTip : ContentControl
 	internal void PerformPlacement(Rect? pTargetRect = null)
 	{
 		// TODO Uno: Phase 5 will port PerformPlacement faithfully.
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp OnPopupOpened (line 1911).
+	// Phase 2 closeout will port the AutomationPeer raise + pendingPopupOpenEventCount logic.
+	private void OnPopupOpened(object? pUnused1, object pUnused2)
+	{
+		// TODO Uno: Phase 2 closeout will port OnPopupOpened faithfully.
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp OnPopupClosed (line 1945).
+	// Phase 2 closeout will port the AutomationPeer raise + m_bIsPopupPositioned reset.
+	private void OnPopupClosed(object? pUnused1, object pUnused2)
+	{
+		// TODO Uno: Phase 2 closeout will port OnPopupClosed faithfully.
+		m_bIsPopupPositioned = false;
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp RemoveAutomaticStatusFromOpenToolTip (later in file).
