@@ -485,9 +485,40 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: NOT PORTED - OnTextBoxCandidateWindowBoundsChanged (lines 505-548).
-		private void OnTextBoxCandidateWindowBoundsChanged(TextBox sender, CandidateWindowBoundsChangedEventArgs args)
+		private void OnTextBoxCandidateWindowBoundsChanged(TextBox sender, CandidateWindowBoundsChangedEventArgs pArgs)
 		{
+			Rect candidateWindowBounds = pArgs.Bounds;
+
+			// do nothing if the candidate windows bound did not change
+			if (m_candidateWindowBoundsRect.Equals(candidateWindowBounds))
+			{
+				return;
+			}
+
+			m_candidateWindowBoundsRect = candidateWindowBounds;
+
+			// When the candidate window bounds change, there are three things that we need to do,
+			// since this changes the rect in which we need to draw the suggestion list:
+			//
+			// 1. Adjust the available height for and position of the suggestion list;
+			// 2. Adjust the size of the suggestion list; and
+			// 3. Adjust the position of the suggestion list.
+			//
+			// #1 must be done in a different way depending on whether or not the SIP is currently open,
+			// hence the if statement.  The others are the same regardless.
+
+			if (m_tpInputPane is not null && m_sSipIsOpen)
+			{
+				Rect sipOverlayArea = m_tpInputPane.OccludedRect;
+				AlignmentHelper(sipOverlayArea);
+			}
+			else
+			{
+				MaximizeSuggestionAreaWithoutInputPane();
+			}
+
+			UpdateSuggestionListPosition();
+			UpdateSuggestionListSize();
 		}
 
 		//------------------------------------------------------------------------------
@@ -1404,14 +1435,166 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: NOT PORTED - UpdateSuggestionListPosition (lines 1329+).
-		private void UpdateSuggestionListPosition()
-		{
-		}
-
-		// TODO Uno: NOT PORTED - UpdateSuggestionListSize (lines 1252+).
+		//------------------------------------------------------------------------------
+		// Updates the suggestion list's size based on the available space and the
+		// MaxSuggestionListHeight property.
+		//------------------------------------------------------------------------------
 		private void UpdateSuggestionListSize()
 		{
+			if (m_tpSuggestionsContainerPart is not null)
+			{
+				double maxSuggestionListHeight = MaxSuggestionListHeight;
+
+				// if the user specifies a negative value for the maxsuggestionlistsize, we use the available size
+				if ((m_availableSuggestionHeight > 0 && maxSuggestionListHeight > m_availableSuggestionHeight) || maxSuggestionListHeight < 0)
+				{
+					maxSuggestionListHeight = m_availableSuggestionHeight;
+				}
+
+				m_tpSuggestionsContainerPart.MaxHeight = maxSuggestionListHeight;
+
+				double actualWidth = ActualWidth;
+				m_tpSuggestionsContainerPart.Width = actualWidth;
+			}
+		}
+
+		//------------------------------------------------------------------------------
+		// Positions the suggestion list based on the value specified in the TextBoxPosition
+		//------------------------------------------------------------------------------
+		private void UpdateSuggestionListPosition()
+		{
+			// Don't call this function while processing a collection change.  When a collection change happens,
+			// ASB's OnItemsChanged gets called before the inner ListView's OnItemsChanged.  So if ASB calls UpdateLayout
+			// on the ListView during its OnItemsChanged, ListView will try to measure itself when it has a stale
+			// view of the collection.  Don't let this happen.
+#if DBG
+			MUX_ASSERT(!m_handlingCollectionChange);
+#endif
+
+			if (!m_isSipVisible)
+			{
+				MaximizeSuggestionAreaWithoutInputPane();
+			}
+
+			if (m_tpPopupPart is not null && m_tpTextBoxPart is not null && m_tpSuggestionsContainerPart is not null)
+			{
+				UIElement spThisAsUI = this;
+				DependencyObject spTextBoxScrollViewerAsDO;
+
+				double width = 0;
+				double height = 0;
+				double translateX = 0;
+				double translateY = 0;
+				double scaleY = 1;
+
+				double candidateWindowXOffset = 0;
+				double candidateWindowYOffset = 0;
+				Thickness margin;
+
+				Thickness suggestionListMargin = default;
+				if (m_tpSuggestionsPart is not null)
+				{
+					FrameworkElement spSuggestionAsFE = m_tpSuggestionsPart as FrameworkElement;
+					suggestionListMargin = spSuggestionAsFE?.Margin ?? default;
+				}
+
+				TextBox spTextBoxPeer = m_tpTextBoxPart;
+
+				// scroll viewer location
+				// getting the ScrollViewer (child of the textbox)
+				// we want to align the popup to the ScrollViewer part of the textbox
+				// after getting the ScrollViewer, we find its position relative to the AutoSuggestBox
+				// if the ScrollViewer is not present, we align to the textbox itself
+				spTextBoxScrollViewerAsDO = spTextBoxPeer.GetTemplateChild(c_TextBoxScrollViewerName);
+
+				if (spTextBoxScrollViewerAsDO is null)
+				{
+					Point textBoxLocation = new Point(0, 0);
+
+					GeneralTransform spTransform = m_tpTextBoxPart.TransformToVisual(spThisAsUI);
+					textBoxLocation = spTransform.TransformPoint(textBoxLocation);
+					translateY = textBoxLocation.Y;
+				}
+				else
+				{
+					UIElement spTextBoxScrollViewerAsUI = spTextBoxScrollViewerAsDO as UIElement;
+					Point scrollViewerLocation = new Point(0, 0);
+
+					GeneralTransform spTransform = spTextBoxScrollViewerAsUI.TransformToVisual(spThisAsUI);
+					scrollViewerLocation = spTransform.TransformPoint(scrollViewerLocation);
+					translateY = scrollViewerLocation.Y;
+				}
+
+				// We need move the popup up (popup's bottom align to textbox) when textbox is at bottom position.
+				if (m_suggestionListPosition == SuggestionListPosition.Above)
+				{
+					(m_tpSuggestionsContainerPart as UIElement)?.UpdateLayout();
+					height = m_tpSuggestionsContainerPart.ActualHeight;
+
+					translateY -= height;
+
+					if (IsSuggestionListVerticallyMirrored())
+					{
+						scaleY = -1;
+					}
+				}
+				else if (m_suggestionListPosition == SuggestionListPosition.Below)
+				{
+					// If the text box has an active handwritingView or if the ScrollViewer isn't present, get the height of the
+					// textbox/handwritingVirew itself. Otherweise add the ScrollViewer's height.
+					if (spTextBoxScrollViewerAsDO is null)
+					{
+						GetActualTextBoxSize(out width, out height);
+						translateY += height;
+						// bring up the suggestion list to avoid gap caused by margin
+						translateY -= suggestionListMargin.Top;
+					}
+					else
+					{
+						FrameworkElement spTextBoxScrollViewerAsFE = spTextBoxScrollViewerAsDO as FrameworkElement;
+						// ScrollViewer height
+						height = spTextBoxScrollViewerAsFE?.ActualHeight ?? 0;
+
+						translateY += height;
+					}
+				}
+
+				GetCandidateWindowPopupAdjustment(
+					false /* ignoreSuggestionListPosition */,
+					out candidateWindowXOffset,
+					out candidateWindowYOffset);
+
+				if (m_tpUpwardTransformPart is not null)
+				{
+					m_tpUpwardTransformPart.X = translateX + candidateWindowXOffset;
+					m_tpUpwardTransformPart.Y = translateY + candidateWindowYOffset;
+				}
+				else
+				{
+					m_tpPopupPart.HorizontalOffset = translateX + candidateWindowXOffset;
+					m_tpPopupPart.VerticalOffset = translateY + candidateWindowYOffset;
+				}
+
+				// If we've moved the suggestions list popup over in the x-direction, we still want the
+				// right side of the popup to be in the same place, so we add the offset to its right margin as well.
+				margin = m_tpSuggestionsContainerPart.Margin;
+				margin.Right = candidateWindowXOffset;
+				m_tpSuggestionsContainerPart.Margin = margin;
+
+				if (IsSuggestionListVerticallyMirrored())
+				{
+					ScaleTransform scaleTransform = m_tpListItemOrderTransformPart as ScaleTransform;
+
+					if (scaleTransform is not null)
+					{
+						scaleTransform.ScaleY = scaleY;
+					}
+				}
+				else
+				{
+					UpdateSuggestionListItemsSource();
+				}
+			}
 		}
 
 		private void AlignmentHelper(Rect sipOverlay)
@@ -1928,11 +2111,69 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: NOT PORTED - GetCandidateWindowPopupAdjustment (lines 2743+). Stub returns zero.
-		private void GetCandidateWindowPopupAdjustment(bool ignoreSuggestionListPosition, out double xOffset, out double yOffset)
+		private void GetCandidateWindowPopupAdjustment(bool ignoreSuggestionListPosition, out double pXOffset, out double pYOffset)
 		{
-			xOffset = 0;
-			yOffset = 0;
+			double xOffset = 0;
+			double yOffset = 0;
+			double textBoxWidth = 0;
+			double textBoxHeight = 0;
+			bool shouldOffsetInXDirection = false;
+
+			GetActualTextBoxSize(out textBoxWidth, out textBoxHeight);
+
+			// There are two cases in which we need to return a nonzero offset:
+			// either in the case where the candidate window is appearing above the top
+			// of the TextBox, or the case where the candidate window stretches below
+			// the bottom of the TextBox.  In either case, we only care if the candidate window
+			// height and width are not both zero, since if they are then the candidate window
+			// isn't actually being shown.
+			//
+			// Once we determine that we do need to return a nonzero offset, the next question
+			// is whether the suggestion list is being displayed in the position in question
+			// (i.e., either above or below the AutoSuggestBox).  If it's not, then we'll return
+			// offsets that are all zero, since we don't need to do anything,
+			// unless we were instructed to ignore the suggestion list position
+			// (used when we're setting the suggestion list position).
+			//
+			// Finally, if we do need to offset, we then see whether to offset in the x-direction or the y-direction.
+			// The general heuristic used is that if the candidate window spans more than half
+			// of the width of the TextBox, then we'll offset in the y-direction, since
+			// otherwise the popup will be squished into an unacceptably small width.
+			// Otherwise, we'll offset in the x-direction and apply a margin
+			// that will cause the popup to appear side-by-side with the candidate window.
+			shouldOffsetInXDirection = (m_candidateWindowBoundsRect.X + m_candidateWindowBoundsRect.Width) < (textBoxWidth / 2);
+
+			if (m_candidateWindowBoundsRect.Y < 0 && m_candidateWindowBoundsRect.Height > 0 &&
+				(m_suggestionListPosition == SuggestionListPosition.Above || ignoreSuggestionListPosition))
+			{
+				if (shouldOffsetInXDirection)
+				{
+					xOffset = m_candidateWindowBoundsRect.X + m_candidateWindowBoundsRect.Width;
+				}
+				else
+				{
+					yOffset = m_candidateWindowBoundsRect.Y;
+				}
+			}
+			else if (m_candidateWindowBoundsRect.Y + m_candidateWindowBoundsRect.Height > textBoxHeight &&
+				(m_suggestionListPosition == SuggestionListPosition.Below || ignoreSuggestionListPosition))
+			{
+				if (shouldOffsetInXDirection)
+				{
+					xOffset = m_candidateWindowBoundsRect.X + m_candidateWindowBoundsRect.Width;
+				}
+				else
+				{
+					// m_candidateWindowBoundsRect.Y - textBoxHeight gets us the starting point of the
+					// candidate window with respect to the lower bound of the TextBox's height,
+					// and then from there we add on m_candidateWindowBoundsRect.Height in order to ensure
+					// that the popup is flush with the bottom of the candidate window.
+					yOffset = m_candidateWindowBoundsRect.Y - textBoxHeight + m_candidateWindowBoundsRect.Height;
+				}
+			}
+
+			pXOffset = xOffset;
+			pYOffset = yOffset;
 		}
 
 		// TODO Uno: NOT PORTED - GetAdjustedLayoutBounds (lines 3127+). Stub returns the XamlRoot bounds.
@@ -1949,9 +2190,32 @@ namespace Microsoft.UI.Xaml.Controls
 			actualHeight = m_tpTextBoxPart?.ActualHeight ?? ActualHeight;
 		}
 
-		// TODO Uno: NOT PORTED - ChangeVisualState (lines 1806+). Stub keeps AlignmentHelper callable.
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox ChangeVisualState
+		//
+		// Applies the necessary visual state
+		//------------------------------------------------------------------------------
 		private void ChangeVisualState()
 		{
+			// XamlDisplay::Orientation values: 1 = Landscape, 2 = LandscapeFlipped, 4 = Portrait, 8 = PortraitFlipped (powers of 2 in the C++ enum).
+			// Until XamlDisplay::GetDisplayOrientation is wired in Uno (see OnSipShowingInternal TODO), m_displayOrientation stays None and
+			// neither branch fires. The structure is kept faithful so the visual state transition lights up automatically once that lands.
+			const int landscape = 1;
+			const int landscapeFlipped = 2;
+			const int portrait = 4;
+			const int portraitFlipped = 8;
+
+			if (m_displayOrientation == landscape || m_displayOrientation == landscapeFlipped)
+			{
+				VisualStateManager.GoToState(this, c_VisualStateLandscape, true);
+			}
+			else if (m_displayOrientation == portrait || m_displayOrientation == portraitFlipped)
+			{
+				VisualStateManager.GoToState(this, c_VisualStatePortrait, true);
+			}
+
+			// TODO Uno: NOT PORTED - checked_cast<CControl>(GetHandle())->EnsureValidationVisuals();
+			// CControl.EnsureValidationVisuals is the input-validation visual-tree refresh; revisit alongside #4839.
 		}
 
 		// Transforms coordinates to the target element's space.
@@ -2113,11 +2377,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Remaining method TODOs (deferred to next iter):
-		// TODO Uno: NOT PORTED - ChangeVisualState (lines 1806+).
-		// TODO Uno: NOT PORTED - UpdateSuggestionListSize / UpdateSuggestionListPosition (lines 1252/1329+).
-		// TODO Uno: NOT PORTED - GetCandidateWindowPopupAdjustment full body (currently returns zeros).
 		// TODO Uno: NOT PORTED - GetAdjustedLayoutBounds / GetActualTextBoxSize full bodies (currently use simple fallbacks).
-		// TODO Uno: NOT PORTED - GetDisplayOrientation.
+		// TODO Uno: NOT PORTED - GetDisplayOrientation (DisplayOrientationHelper.h).
 		// TODO Uno: NOT PORTED - SetupOverlayState / TeardownOverlayState / CreateLTEs / PositionLTEs / DestroyLTEs / ShouldUseParentedLTE.
 		// TODO Uno: NOT PORTED - OnInkingFunctionButtonClicked (static, line 3165+).
 		// TODO Uno: NOT PORTED - GetPlainText override. The C++ override returns the FrameworkElement
