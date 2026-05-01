@@ -480,6 +480,188 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// (C++ source line 2856)
+		internal void MakeVisible(
+			// Child element to bring into view
+			UIElement element,
+			// Target rectangle dimensions. If empty, bring the child element's
+			// RenderSize dimensions into view.
+			global::Windows.Foundation.Rect targetRect,
+			// Pass on forceIntoView from sender to ancestor ScrollViewer
+			bool forceIntoView,
+			// When set to True, the DManip ZoomToRect method is invoked.
+			bool useAnimation,
+			// Forwarded to the BringIntoView method to indicate whether its own
+			// MakeVisible calls should be skipped during an ongoing manipulation or not.
+			bool skipDuringManipulation,
+			double horizontalAlignmentRatio,
+			double verticalAlignmentRatio,
+			double offsetX,
+			double offsetY)
+		{
+			global::Windows.Foundation.Rect visibleBounds = default;
+			global::Windows.Foundation.Rect desiredView = default;
+			global::Windows.Foundation.Point visiblePoint = default;
+			global::Windows.Foundation.Point transformedPoint = default;
+
+			if (element is not null && m_trElementScrollContentPresenter is not null)
+			{
+				bool isAncestorOfChild = m_trElementScrollContentPresenter.IsAncestorOf(element);
+				bool isAncestorOfPresenter = this.IsAncestorOf(m_trElementScrollContentPresenter);
+
+				if (isAncestorOfChild &&
+					isAncestorOfPresenter &&
+					IsInLiveTree)
+				{
+					global::Windows.Foundation.Rect target = default;
+
+					bool empty = targetRect.IsEmpty || (targetRect.Width == 0 && targetRect.Height == 0);
+
+					if (empty)
+					{
+						var renderSize = element.RenderSize;
+						target.X = 0;
+						target.Y = 0;
+						target.Width = renderSize.Width;
+						target.Height = renderSize.Height;
+					}
+					else
+					{
+						target = targetRect;
+					}
+
+					// Get the rectangle for the scroll content present after bringing
+					// the containing child element into view. The new rectangle is the
+					// parameter for bringing the ScrollViewer's content into view by a
+					// ScrollViewer ancestor.
+					var spScrollInfo = GetScrollInfo();
+					if (spScrollInfo is not null)
+					{
+						double appliedOffsetX = 0.0;
+						double appliedOffsetY = 0.0;
+
+						visibleBounds = spScrollInfo.MakeVisible(
+							element,
+							target,
+							useAnimation,
+							horizontalAlignmentRatio,
+							verticalAlignmentRatio,
+							offsetX,
+							offsetY,
+							out appliedOffsetX,
+							out appliedOffsetY);
+
+						// Compute the remaining offsets to apply by potential parent contributors. The amount
+						// applied by the last contributor, spScrollInfo, must not be applied more than once.
+						if (appliedOffsetX != 0.0)
+						{
+							offsetX -= appliedOffsetX;
+						}
+						if (appliedOffsetY != 0.0)
+						{
+							offsetY -= appliedOffsetY;
+						}
+					}
+
+					empty = visibleBounds.IsEmpty || (visibleBounds.Width == 0 && visibleBounds.Height == 0);
+					if (!empty)
+					{
+						var spTransform = m_trElementScrollContentPresenter.TransformToVisual(this);
+						visiblePoint.X = visibleBounds.X;
+						visiblePoint.Y = visibleBounds.Y;
+						transformedPoint = spTransform.TransformPoint(visiblePoint);
+						desiredView.X = transformedPoint.X;
+						desiredView.Y = transformedPoint.Y;
+						desiredView.Width = visibleBounds.Width;
+						desiredView.Height = visibleBounds.Height;
+					}
+					else
+					{
+						desiredView = visibleBounds;
+					}
+
+					// TODO Uno: Phase 4 — port UIElement::BringIntoView(rect, forceIntoView,
+					// useAnimation, skipDuringManipulation, horizontalAlignmentRatio,
+					// verticalAlignmentRatio, offsetX, offsetY) which originates a
+					// RequestBringIntoView event up the visual tree so a parent ScrollViewer
+					// can complete the request. For now we only update this ScrollViewer's
+					// IScrollInfo above and bail out.
+					_ = desiredView;
+					_ = forceIntoView;
+					_ = skipDuringManipulation;
+				}
+			}
+		}
+
+		// OnBringIntoViewRequested is called from the event handler ScrollViewer
+		// registers for the event.  The default implementation checks to make sure the
+		// visual is a child of the scroll viewer, and then delegates to a method there.
+		// (C++ source line 2992)
+		protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs args)
+		{
+			// In certain circumstances (currently only the Pivot ScrollViewer), we never want
+			// the ScrollViewer to handle RequestBringIntoView, ever.  The reason in the case
+			// of the Pivot ScrollViewer is that it is solely intended to hold the Pivot items
+			// and provide a way to shift between them - we never want the Pivot ScrollViewer
+			// to move in order to bring something inside it into view.
+			// In such cases, we'll just ignore RequestBringIntoView events unconditionally.
+			if (m_isRequestBringIntoViewIgnored)
+			{
+				return;
+			}
+
+			var spTargetObject = args.TargetElement;
+			UIElement elementNoRef = spTargetObject;
+
+			if (elementNoRef is not null && this != elementNoRef)
+			{
+				bool isAncestor = this.IsAncestorOf(elementNoRef);
+				if (isAncestor)
+				{
+					// TODO Uno: BringIntoViewRequestedEventArgs.ForceIntoView is not yet
+					// surfaced in Uno; treat it as false until exposed.
+					bool forceIntoView = false;
+					bool useAnimation = args.AnimationDesired;
+					// TODO Uno: BringIntoViewRequestedEventArgs.InterruptDuringManipulation
+					// is not yet surfaced in Uno; default to true (the WinUI default).
+					bool skipDuringManipulation = true;
+					double horizontalAlignmentRatio = args.HorizontalAlignmentRatio;
+					double verticalAlignmentRatio = args.VerticalAlignmentRatio;
+					double offsetX = args.HorizontalOffset;
+					double offsetY = args.VerticalOffset;
+					bool bringIntoView = BringIntoViewOnFocusChange;
+
+					// Don't bring into view if ScrollViewer.BringIntoViewOnFocusChange = FALSE,
+					// unless forceIntoView is set. An app sets ScrollViewer.BringIntoViewOnFocusChange to FALSE
+					// when it wants to handle BringIntoView.
+					// To prevent incorrect scroll offsets, don't auto scroll into view when ScrollViewer
+					// is being manipulated by user. For example, don't scroll into view during zoomin/out
+					// in SemanticZoom using the keyboard.
+
+					// TODO Uno: Phase 4 — once IsInManipulation is wired up to the DM adapter,
+					// honour skipDuringManipulation. For now treat the SV as never being in
+					// manipulation so the bring-into-view request always fires.
+					if (forceIntoView || (bringIntoView && (!skipDuringManipulation || !IsInManipulation)))
+					{
+						var rect = args.TargetRect;
+						MakeVisible(
+							elementNoRef,
+							rect,
+							forceIntoView,
+							useAnimation,
+							skipDuringManipulation,
+							horizontalAlignmentRatio,
+							verticalAlignmentRatio,
+							offsetX,
+							offsetY);
+					}
+
+					// Set handled as true since MakeVisible will invoke BringIntoView for parent contributors.
+					args.Handled = true;
+				}
+			}
+		}
+
 		// Handles the vertical ScrollBar.Scroll event and updates the UI.
 		internal void HandleVerticalScroll(ScrollEventType scrollEventType, double offset = 0.0)
 		{

@@ -94,5 +94,27 @@ namespace DirectUI
 
 		// This scrolls to make the rectangle in the UIElement's coordinate space visible.
 		Rect MakeVisible(UIElement visual, Rect rectangle);
+
+		// This scrolls to make the rectangle in the UIElement's coordinate space visible.
+		// Alignment ratios are either NaN (i.e. no alignment to apply) or between
+		// 0 and 1. For instance when the alignment ratio is 0, the near edge of
+		// the 'rectangle' needs to align with the near edge of the viewport.
+		// 'offset' is an additional amount of scrolling requested, beyond the
+		// normal amount to bring the target into view and potentially align it.
+		// That additional offset is only applied when the 'rectangle' does not
+		// step outside the extents.
+		// The 'appliedOffset' returned specifies how much of 'offset' was applied
+		// so that potential parent bring-into-view contributors can attempt to
+		// apply the remainder offset.
+		Rect MakeVisible(
+			UIElement visual,
+			Rect rectangle,
+			bool useAnimation,
+			double horizontalAlignmentRatio,
+			double verticalAlignmentRatio,
+			double offsetX,
+			double offsetY,
+			out double appliedOffsetX,
+			out double appliedOffsetY);
 	}
 }
