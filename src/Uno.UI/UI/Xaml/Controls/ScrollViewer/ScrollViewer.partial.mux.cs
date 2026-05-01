@@ -25,6 +25,52 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Note: IsAnimationEnabled() is provided by the cross-platform ScrollViewer.cs partial.
 
+		// IsEnabled property changed handler.
+		// (C++ source line 509)
+		internal void OnIsEnabledChangedCore()
+		{
+			// The new IsEnabled status most likely changes the result of get_CanManipulateElements.
+			// TODO Uno: Phase 4 — port OnManipulatabilityAffectingPropertyChanged.
+			// OnManipulatabilityAffectingPropertyChanged(
+			//     pIsInLiveTree: null,
+			//     isCachedPropertyChanged: false,
+			//     isContentChanged: false,
+			//     isAffectingConfigurations: !IsInDirectManipulation,
+			//     isAffectingTouchConfiguration: false);
+
+			if (!IsEnabled)
+			{
+				// TODO Uno: Phase 4 — port SetConstantVelocities. The constant-velocity scroll path
+				// is not yet wired up on Skia.
+				// SetConstantVelocities(0, 0);
+			}
+
+			// TODO Uno: Phase 4 — call UpdateVisualState() once the new ChangeVisualState is the source of truth.
+			// UpdateVisualState();
+		}
+
+		// Called when the parent of this ScrollViewer changed. Makes sure the manipulation handler knows
+		// about the possible change in the get_CanManipulateElements return value.
+		// (C++ source line 549)
+		internal void OnTreeParentUpdatedCore(object pNewParent, bool isParentAlive)
+		{
+			// TODO Uno: Phase 4 — DM-container registration. The C++ source toggles this when the SV
+			// enters/leaves the live tree. On Skia the InputManager.PointerManager handles this implicitly.
+			// if (m_hManipulationHandler is null)
+			// {
+			//     put_IsDirectManipulationContainer(isParentAlive || pNewParent is not null);
+			// }
+			// else
+			// {
+			//     OnManipulatabilityAffectingPropertyChanged(
+			//         pIsInLiveTree: null,
+			//         isCachedPropertyChanged: false,
+			//         isContentChanged: false,
+			//         isAffectingConfigurations: false,
+			//         isAffectingTouchConfiguration: false);
+			// }
+		}
+
 		// Initializes a new instance of the ScrollViewer class.
 		// Note: this is the field-init logic from the C++ constructor. The actual public C# constructor
 		// lives on the cross-platform partial (ScrollViewer.cs) and calls InitializePartial(), which we
@@ -1843,6 +1889,75 @@ namespace Microsoft.UI.Xaml.Controls
 			//     isAffectingTouchConfiguration: false);
 		}
 
+		// Called when a characteristic changes that affects the DM viewport configurations.
+		internal void OnViewportConfigurationsAffectingPropertyChanged()
+		{
+			if (m_hManipulationHandler is not null)
+			{
+				if (IsInDirectManipulation)
+				{
+					// Viewport configurations need to be refreshed after the current manipulation completes.
+					m_areViewportConfigurationsInvalid = true;
+				}
+				else if (m_canManipulateElementsByTouch || m_canManipulateElementsNonTouch || m_canManipulateElementsWithBringIntoViewport)
+				{
+					m_areViewportConfigurationsInvalid = false;
+					// TODO Uno: Phase 4 — port GetManipulationConfigurations + OnViewportAffectingPropertyChanged.
+					// The DM viewport-configuration push is part of the DM adapter (Phase 4) and isn't wired up
+					// yet on Skia. Until then, this branch is a no-op (the m_areViewportConfigurationsInvalid
+					// gate above already handles the in-manipulation case).
+				}
+			}
+		}
+
+		// Called when the input manager may need to be told that a manipulatable element has changed.
+		internal void NotifyManipulatableElementChanged()
+		{
+			if (m_hManipulationHandler is not null)
+			{
+				var pManipulatableElementNoRef = GetContentUIElement();
+
+				if ((m_trManipulatableElement as object) != (pManipulatableElementNoRef as object))
+				{
+					// Refresh the m_trScrollSnapPointsInfo member based on the new content.
+					// The snap point event handlers are unhooked. The NotifyManipulatableElementChanged
+					// call below will cause the manipulation handler to stop listening to notifications.
+					// i.e. m_isManipulationHandlerInterestedInNotifications will be reset to FALSE.
+					// Any subsequent manipulation will cause the potentially new snap points to be pushed
+					// to DirectManipulation.
+					// TODO Uno: Phase 5 — port RefreshScrollSnapPointsInfo.
+					// RefreshScrollSnapPointsInfo();
+
+					if (m_trManipulatableElement is null && m_trElementScrollContentPresenter is { } pScp)
+					{
+						// The old manipulatable element was null. Unparent the potential headers so
+						// they get added to the CDMViewport that is about to be created.
+						// TODO Uno: Phase 6 — header unparenting + InvalidateMeasure.
+					}
+
+					// TODO Uno: Phase 4 — let the ManipulationHandler know about this manipulatable element change.
+					// CoreImports::ManipulationHandler_NotifyManipulatableElementChanged(...) — DM-only.
+
+					m_trManipulatableElement = pManipulatableElementNoRef;
+				}
+			}
+		}
+
+		// Used to tell the container if the manipulation handler wants to be aware of manipulation
+		// characteristic changes even though no manipulation is in progress.
+		internal void SetManipulationHandlerWantsNotifications(UIElement pManipulatedElement, bool wantsNotifications)
+		{
+			global::System.Diagnostics.Debug.Assert(pManipulatedElement is not null);
+
+			m_isManipulationHandlerInterestedInNotifications = wantsNotifications;
+			if (!wantsNotifications && !IsInDirectManipulation)
+			{
+				// TODO Uno: Phase 5 — port UnhookScrollSnapPointsInfoEvents.
+				// UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: true);
+				// UnhookScrollSnapPointsInfoEvents(isForHorizontalSnapPoints: false);
+			}
+		}
+
 		// Called when a property that changes responsiveness to occlusions changes.
 		internal void OnReduceViewportForCoreInputViewOcclusionsChanged()
 		{
@@ -2354,6 +2469,36 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void EnableOverpanImpl()
 		{
 			SetOverpanModes(DMOverpanMode.Default, DMOverpanMode.Default);
+		}
+
+		// Enters the mode where the child's actual size is used for
+		// the extent exposed through IScrollInfo.
+		// (C++ source line 16083)
+		internal void StartUseOfActualSizeAsExtent(bool isHorizontal)
+		{
+			if (isHorizontal && m_trElementHorizontalScrollBar is { } hScrollBar)
+			{
+				hScrollBar.StartUseOfActualSizeAsExtent();
+			}
+			else if (!isHorizontal && m_trElementVerticalScrollBar is { } vScrollBar)
+			{
+				vScrollBar.StartUseOfActualSizeAsExtent();
+			}
+		}
+
+		// Leaves the mode where the child's actual size is used for
+		// the extent exposed through IScrollInfo.
+		// (C++ source line 16097)
+		internal void StopUseOfActualSizeAsExtent(bool isHorizontal)
+		{
+			if (isHorizontal && m_trElementHorizontalScrollBar is { } hScrollBar)
+			{
+				hScrollBar.StopUseOfActualSizeAsExtent();
+			}
+			else if (!isHorizontal && m_trElementVerticalScrollBar is { } vScrollBar)
+			{
+				vScrollBar.StopUseOfActualSizeAsExtent();
+			}
 		}
 
 		// Loaded event handler.
