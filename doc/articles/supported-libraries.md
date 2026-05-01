@@ -26,7 +26,6 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
 
 * [Uno.Material](external/uno.themes/doc/material-getting-started.md)
 * [Uno.Cupertino](external/uno.themes/doc/cupertino-getting-started.md)
-* [Uno.Simple](external/uno.themes/doc/simple-getting-started.md)
 
 ## HTTP and API clients
 
