@@ -682,7 +682,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var oldOffset = spScrollInfo.VerticalOffset;
+			var oldOffset = spScrollInfo.GetVerticalOffset();
 			var newOffset = oldOffset;
 
 			switch (scrollEventType)
@@ -759,7 +759,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var oldOffset = spScrollInfo.HorizontalOffset;
+			var oldOffset = spScrollInfo.GetHorizontalOffset();
 			var newOffset = oldOffset;
 
 			switch (scrollEventType)
@@ -922,14 +922,14 @@ namespace Microsoft.UI.Xaml.Controls
 				// When the horizontal scrollbar becomes disabled, the horizontal offset needs to be reset to 0.
 				pScrollInfo.SetHorizontalOffset(0.0);
 			}
-			pScrollInfo.CanHorizontallyScroll = horizontal != ScrollBarVisibility.Disabled;
+			pScrollInfo.PutCanHorizontallyScroll(horizontal != ScrollBarVisibility.Disabled);
 
 			if (vertical == ScrollBarVisibility.Disabled)
 			{
 				// When the vertical scrollbar becomes disabled, the vertical offset needs to be reset to 0.
 				pScrollInfo.SetVerticalOffset(0.0);
 			}
-			pScrollInfo.CanVerticallyScroll = vertical != ScrollBarVisibility.Disabled;
+			pScrollInfo.PutCanVerticallyScroll(vertical != ScrollBarVisibility.Disabled);
 		}
 
 		// Handle the horizontal ScrollBar's Scroll event.
@@ -2219,11 +2219,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Synchonize the ScrollData's m_ComputedOffset.X and m_Offset.X fields
-			var offset = spScrollInfo.HorizontalOffset;
+			var offset = spScrollInfo.GetHorizontalOffset();
 			spScrollInfo.SetHorizontalOffset(offset);
 
 			// Synchonize the ScrollData's m_ComputedOffset.Y and m_Offset.Y fields
-			offset = spScrollInfo.VerticalOffset;
+			offset = spScrollInfo.GetVerticalOffset();
 			spScrollInfo.SetVerticalOffset(offset);
 		}
 
@@ -2740,9 +2740,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (spScrollInfo is not null)
 				{
-					minOffset = spScrollInfo.MinVerticalOffset;
-					viewportSize = spScrollInfo.ViewportHeight;
-					contentExtentSize = spScrollInfo.ExtentHeight;
+					minOffset = spScrollInfo.GetMinVerticalOffset();
+					viewportSize = spScrollInfo.GetViewportHeight();
+					contentExtentSize = spScrollInfo.GetExtentHeight();
 				}
 				else
 				{
@@ -2767,9 +2767,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (spScrollInfo is not null)
 				{
-					minOffset = spScrollInfo.MinHorizontalOffset;
-					viewportSize = spScrollInfo.ViewportWidth;
-					contentExtentSize = spScrollInfo.ExtentWidth;
+					minOffset = spScrollInfo.GetMinHorizontalOffset();
+					viewportSize = spScrollInfo.GetViewportWidth();
+					contentExtentSize = spScrollInfo.GetExtentWidth();
 				}
 				else
 				{
@@ -2869,14 +2869,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var horizontalOffset = spScrollInfo.HorizontalOffset;
-			var verticalOffset = spScrollInfo.VerticalOffset;
-			var minHorizontalOffset = spScrollInfo.MinHorizontalOffset;
-			var minVerticalOffset = spScrollInfo.MinVerticalOffset;
-			var extentWidth = spScrollInfo.ExtentWidth;
-			var extentHeight = spScrollInfo.ExtentHeight;
-			var viewportWidth = spScrollInfo.ViewportWidth;
-			var viewportHeight = spScrollInfo.ViewportHeight;
+			var horizontalOffset = spScrollInfo.GetHorizontalOffset();
+			var verticalOffset = spScrollInfo.GetVerticalOffset();
+			var minHorizontalOffset = spScrollInfo.GetMinHorizontalOffset();
+			var minVerticalOffset = spScrollInfo.GetMinVerticalOffset();
+			var extentWidth = spScrollInfo.GetExtentWidth();
+			var extentHeight = spScrollInfo.GetExtentHeight();
+			var viewportWidth = spScrollInfo.GetViewportWidth();
+			var viewportHeight = spScrollInfo.GetViewportHeight();
 
 			if (m_trElementHorizontalScrollBar is not null)
 			{

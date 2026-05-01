@@ -13,45 +13,51 @@ namespace DirectUI
 	// scrolling — when an inner panel implements IScrollInfo (e.g. virtualizing
 	// stack panels), ScrollViewer delegates scroll operations to it instead of
 	// scrolling its content via the ScrollContentPresenter.
+	// Method-shaped to match the C++ ABI directly (CanVerticallyScroll() / PutCanVerticallyScroll
+	// rather than C#-style properties). This keeps the WinUI port 1:1 with the C++ source so that
+	// behavior preserved by source-order can be cross-checked at the call site.
 	internal interface IScrollInfo
 	{
 		// Property that controls how scroll info measures its child during layout. If true, it
 		// measures child at infinite space in this dimension.
-		bool CanVerticallyScroll { get; set; }
+		bool GetCanVerticallyScroll();
+		void PutCanVerticallyScroll(bool value);
 
 		// Property that controls how scroll info measures its child during layout. If true, it
 		// measures child at infinite space in this dimension.
-		bool CanHorizontallyScroll { get; set; }
+		bool GetCanHorizontallyScroll();
+		void PutCanHorizontallyScroll(bool value);
 
 		// Gets the horizontal size of the extent.
-		double ExtentWidth { get; }
+		double GetExtentWidth();
 
 		// Gets the vertical size of the extent.
-		double ExtentHeight { get; }
+		double GetExtentHeight();
 
 		// Gets the horizontal size of the viewport for this content.
-		double ViewportWidth { get; }
+		double GetViewportWidth();
 
 		// Gets the vertical size of the viewport for this content.
-		double ViewportHeight { get; }
+		double GetViewportHeight();
 
 		// Gets the horizontal offset of the scrolled content.
-		double HorizontalOffset { get; }
+		double GetHorizontalOffset();
 
 		// Gets the vertical offset of the scrolled content.
-		double VerticalOffset { get; }
+		double GetVerticalOffset();
 
 		// Gets the minimal horizontal offset of the scrolled content.
-		double MinHorizontalOffset { get; }
+		double GetMinHorizontalOffset();
 
 		// Gets the minimal vertical offset of the scrolled content.
-		double MinVerticalOffset { get; }
+		double GetMinVerticalOffset();
 
 		// ScrollOwner is the container that controls any scrollbars, headers, etc...
 		// that are dependent on this IScrollInfo's properties. Implementers of
 		// IScrollInfo should call InvalidateScrollInfo() on this object when
 		// properties change.
-		object ScrollOwner { get; set; }
+		IScrollOwner GetScrollOwner();
+		void PutScrollOwner(IScrollOwner value);
 
 		// Scroll content by one line to the top.
 		void LineUp();

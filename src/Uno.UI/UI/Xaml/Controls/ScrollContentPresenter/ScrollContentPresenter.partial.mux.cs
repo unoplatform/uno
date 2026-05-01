@@ -11,6 +11,13 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+#if __SKIA__
+	// MUX Reference ScrollContentPresenter_Partial.h:64 — `class ScrollContentPresenter : IScrollInfo`.
+	partial class ScrollContentPresenter : IScrollInfo
+	{
+	}
+#endif
+
 	partial class ScrollContentPresenter
 	{
 #if __SKIA__
@@ -415,6 +422,38 @@ namespace Microsoft.UI.Xaml.Controls
 				m_scrollRequested = true;
 			}
 		}
+
+		// #region Explicit IScrollInfo implementation
+		// SCP exposes the WinUI ABI as method-shaped internal members; the
+		// IScrollInfo internal contract is bridged through explicit interface
+		// implementation so each member visibility stays consistent with what
+		// the WinUI source declared.
+		bool IScrollInfo.GetCanVerticallyScroll() => GetCanVerticallyScroll();
+		void IScrollInfo.PutCanVerticallyScroll(bool value) => PutCanVerticallyScroll(value);
+		bool IScrollInfo.GetCanHorizontallyScroll() => GetCanHorizontallyScroll();
+		void IScrollInfo.PutCanHorizontallyScroll(bool value) => PutCanHorizontallyScroll(value);
+		double IScrollInfo.GetExtentWidth() => GetExtentWidth();
+		double IScrollInfo.GetExtentHeight() => GetExtentHeight();
+		double IScrollInfo.GetViewportWidth() => GetViewportWidth();
+		double IScrollInfo.GetViewportHeight() => GetViewportHeight();
+		double IScrollInfo.GetHorizontalOffset() => GetHorizontalOffset();
+		double IScrollInfo.GetVerticalOffset() => GetVerticalOffset();
+		double IScrollInfo.GetMinHorizontalOffset() => GetMinHorizontalOffset();
+		double IScrollInfo.GetMinVerticalOffset() => GetMinVerticalOffset();
+		IScrollOwner IScrollInfo.GetScrollOwner() => GetScrollOwner();
+		void IScrollInfo.PutScrollOwner(IScrollOwner value) => PutScrollOwner(value);
+		global::Windows.Foundation.Rect IScrollInfo.MakeVisible(
+			UIElement visual,
+			global::Windows.Foundation.Rect rectangle,
+			bool useAnimation,
+			double horizontalAlignmentRatio,
+			double verticalAlignmentRatio,
+			double offsetX,
+			double offsetY,
+			out double appliedOffsetX,
+			out double appliedOffsetY)
+			=> MakeVisible(visual, rectangle, useAnimation, horizontalAlignmentRatio, verticalAlignmentRatio, offsetX, offsetY, out appliedOffsetX, out appliedOffsetY);
+		// #endregion
 
 		// ScrollContentPresenter implementation of its public MakeVisible method.
 		// Does not animate the move by default.
@@ -977,12 +1016,21 @@ namespace Microsoft.UI.Xaml.Controls
 			if (spScrollContainer is not null)
 			{
 				// 1. Try our content...
-				// TODO Uno: Phase 4/5 wiring — once IScrollInfo is implemented on SCP and IScrollOwner
-				// on SV (and the ItemsPresenter→inner-IScrollInfo lookup is wired up via
-				// IOrientedVirtualizingPanel), call:
-				//   spScrollContainer.PutScrollInfo(spScrollInfo);
-				//   PutScrollOwner(spScrollContainer);
-				// For now, the cross-platform `ScrollOwner` setter handles wiring.
+				// TODO Uno: Phase 5 — once virtualizing panels expose their inner
+				// IScrollInfo via IOrientedVirtualizingPanel (ItemsPresenter →
+				// IOrientedVirtualizingPanel → inner panel.IScrollInfo), prefer that
+				// IScrollInfo over the SCP itself.
+				IScrollInfo spScrollInfo = this;
+
+				// 2. Otherwise, present ourselves as the IScrollInfo to the SV.
+				spScrollContainer.PutScrollInfo(spScrollInfo);
+
+				// 3. Tell ScrollData to keep a weak reference to the SV as the
+				//    IScrollOwner so our InvalidateScrollInfoImpl call lands.
+				PutScrollOwner((IScrollOwner)spScrollContainer);
+
+				// 4. Keep the cross-platform ScrollOwner property in sync until the
+				//    legacy Skia path is fully retired.
 				ScrollOwner = spScrollContainer;
 			}
 		}
