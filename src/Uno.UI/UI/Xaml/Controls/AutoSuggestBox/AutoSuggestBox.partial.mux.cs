@@ -1351,14 +1351,77 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: NOT PORTED - SetupOverlayState (lines 2856-).
+		// SetupOverlayState (lines 2856-2924).
+		// TODO Uno: NOT PORTED - LayoutTransitionElement (LTE) APIs are not exposed by Uno (precedent:
+		// AppBar.Partial.cs keeps the equivalent block commented out). The faithful C++ logic is preserved
+		// inside #if false so the structure is recoverable when LTE/CoreImports.LayoutTransitionElement_Create
+		// is wired through. The non-LTE half — overlay rectangle creation + insertion into m_tpLayoutRootPart —
+		// is ported but with a managed SolidColorBrush placeholder in place of the
+		// AutoSuggestBoxLightDismissOverlayBackground theme-resource binding.
 		private void SetupOverlayState()
 		{
+			MUX_ASSERT(m_isOverlayVisible);
+			MUX_ASSERT(m_layoutUpdatedEventHandler.Disposable is null);
+
+			if (m_tpLayoutRootPart is not null)
+			{
+				// Create our overlay element if necessary.
+				if (m_overlayElement is null)
+				{
+					Shapes.Rectangle rectangle = new Shapes.Rectangle();
+					rectangle.Width = 1;
+					rectangle.Height = 1;
+					rectangle.IsHitTestVisible = false;
+
+					// Create a theme resource for the overlay brush.
+					// TODO Uno: NOT PORTED - CThemeResourceExtension binding for "AutoSuggestBoxLightDismissOverlayBackground".
+					// Uno cannot bind a SolidColorBrush to a ThemeResource via the legacy
+					// CThemeResourceExtension API. Resolve the brush imperatively from the merged dictionaries instead.
+					if (Application.Current?.Resources?.TryGetValue("AutoSuggestBoxLightDismissOverlayBackground", out object brushObj) == true
+						&& brushObj is Brush brush)
+					{
+						rectangle.Fill = brush;
+					}
+
+					m_overlayElement = rectangle;
+				}
+
+				// Add our overlay element to our layout root panel.
+				var layoutRootChildren = m_tpLayoutRootPart.Children;
+				layoutRootChildren.Insert(0, m_overlayElement);
+			}
+
+			CreateLTEs();
+
+			EventHandler<object> layoutUpdatedHandler = (sender, args) =>
+			{
+				if (m_isOverlayVisible)
+				{
+					PositionLTEs();
+				}
+			};
+			LayoutUpdated += layoutUpdatedHandler;
+			m_layoutUpdatedEventHandler.Disposable = Disposable.Create(() => LayoutUpdated -= layoutUpdatedHandler);
 		}
 
-		// TODO Uno: NOT PORTED - TeardownOverlayState (lines 2926-).
 		private void TeardownOverlayState()
 		{
+			MUX_ASSERT(!m_isOverlayVisible);
+			MUX_ASSERT(m_layoutUpdatedEventHandler.Disposable is not null);
+
+			DestroyLTEs();
+
+			// Remove our light-dismiss element from our layout root panel.
+			if (m_tpLayoutRootPart is not null)
+			{
+				var layoutRootChildren = m_tpLayoutRootPart.Children;
+
+				int indexOfOverlayElement = layoutRootChildren.IndexOf(m_overlayElement);
+				MUX_ASSERT(indexOfOverlayElement >= 0);
+				layoutRootChildren.RemoveAt(indexOfOverlayElement);
+			}
+
+			m_layoutUpdatedEventHandler.Disposable = null;
 		}
 
 		protected override void OnItemsChanged(object e)
@@ -2176,18 +2239,216 @@ namespace Microsoft.UI.Xaml.Controls
 			pYOffset = yOffset;
 		}
 
-		// TODO Uno: NOT PORTED - GetAdjustedLayoutBounds (lines 3127+). Stub returns the XamlRoot bounds.
+		// CreateLTEs / PositionLTEs / DestroyLTEs / ShouldUseParentedLTE (lines 2952-3125).
+		// TODO Uno: NOT PORTED - LayoutTransitionElement (LTE) APIs are not exposed by Uno (precedent:
+		// AppBar.Partial.cs keeps the equivalent block commented out). The non-LTE half — ShouldUseParentedLTE
+		// and the LayoutUpdated-driven repositioning skeleton — is ported faithfully so the structure lights up
+		// once CoreImports.LayoutTransitionElement_Create / SetDestinationOffset / Destroy are wired through.
+		private void CreateLTEs()
+		{
+			MUX_ASSERT(m_layoutTransition is null);
+			MUX_ASSERT(m_overlayLayoutTransition is null);
+			MUX_ASSERT(m_parentElementForLTEs is null);
+
+			// If we're under the PopupRoot or FullWindowMediaRoot, then we'll explicitly set
+			// our LTE's parent to make sure the LTE doesn't get placed under the TransitionRoot,
+			// which is lower in z-order than these other roots.
+			if (ShouldUseParentedLTE())
+			{
+				DependencyObject parent = Media.VisualTreeHelper.GetParent(this);
+				MUX_ASSERT(parent is not null);
+
+				m_parentElementForLTEs = parent as UIElement;
+			}
+
+#if false // TODO Uno: NOT PORTED - CoreImports.LayoutTransitionElement_Create
+			xref_ptr<CUIElement>    spNativeLTE;
+			ctl::ComPtr<DependencyObject>   spNativeLTEAsDO;
+
+			if (m_overlayElement)
+			{
+				// Create an LTE for our overlay element.
+				IFC_RETURN(CoreImports::LayoutTransitionElement_Create(
+					DXamlCore::GetCurrent()->GetHandle(),
+					m_overlayElement.Cast<FrameworkElement>()->GetHandle(),
+					m_parentElementForLTEs ? m_parentElementForLTEs.Cast<UIElement>()->GetHandle() : nullptr,
+					false /*isAbsolutelyPositioned*/,
+					spNativeLTE.ReleaseAndGetAddressOf()
+					));
+
+				// Configure the overlay LTE with a rendertransform that we'll use to position/size it.
+				{
+					IFC_RETURN(DXamlCore::GetCurrent()->GetPeer(spNativeLTE, KnownTypeIndex::UIElement, &spNativeLTEAsDO));
+					IFC_RETURN(SetPtrValueWithQI(m_overlayLayoutTransition, spNativeLTEAsDO.Get()));
+
+					ctl::ComPtr<CompositeTransform> compositeTransform;
+					IFC_RETURN(ctl::make(&compositeTransform));
+
+					IFC_RETURN(m_overlayLayoutTransition.Cast<UIElement>()->put_RenderTransform(compositeTransform.Get()));
+				}
+			}
+
+			IFC_RETURN(CoreImports::LayoutTransitionElement_Create(
+				DXamlCore::GetCurrent()->GetHandle(),
+				GetHandle(),
+				m_parentElementForLTEs ? m_parentElementForLTEs.Cast<UIElement>()->GetHandle() : nullptr,
+				false /*isAbsolutelyPositioned*/,
+				spNativeLTE.ReleaseAndGetAddressOf()
+			));
+			IFC_RETURN(DXamlCore::GetCurrent()->GetPeer(spNativeLTE, KnownTypeIndex::UIElement, &spNativeLTEAsDO));
+			IFC_RETURN(SetPtrValueWithQI(m_layoutTransition, spNativeLTEAsDO.Get()));
+
+			IFC_RETURN(PositionLTEs());
+#endif
+		}
+
+		private void PositionLTEs()
+		{
+			// MUX_ASSERT(m_layoutTransition is not null);  // TODO Uno: gated until LTE machinery is wired (see CreateLTEs).
+
+			DependencyObject parentDO;
+			UIElement parent;
+
+			parentDO = Media.VisualTreeHelper.GetParent(this);
+
+			// If we don't have a parent, then there's nothing for us to do.
+			if (parentDO is not null)
+			{
+				parent = parentDO as UIElement;
+
+#if false // TODO Uno: NOT PORTED - CoreImports.LayoutTransitionElement_SetDestinationOffset
+				GeneralTransform transform = TransformToVisual(parent);
+
+				Point offset = new Point(0, 0);
+				offset = transform.TransformPoint(offset);
+
+				CoreImports.LayoutTransitionElement_SetDestinationOffset(m_layoutTransition, offset.X, offset.Y);
+#endif
+			}
+
+#if false // TODO Uno: NOT PORTED - overlay LTE composite-transform sizing
+			// Since AutoSuggestBox's suggestion list does not dismiss on window resize, we have to make sure
+			// we update the overlay element's size.
+			if (m_overlayLayoutTransition is not null)
+			{
+				Transform transform = m_overlayLayoutTransition.RenderTransform;
+
+				CompositeTransform compositeTransform = transform as CompositeTransform;
+
+				Rect windowBounds = DXamlCore.GetCurrent().GetContentBoundsForElement(this);
+
+				compositeTransform.ScaleX = windowBounds.Width;
+				compositeTransform.ScaleY = windowBounds.Height;
+
+				GeneralTransform transformToVisual = TransformToVisual(null);
+
+				Point offsetFromRoot = new Point(0, 0);
+				offsetFromRoot = transformToVisual.TransformPoint(offsetFromRoot);
+
+				FlowDirection flowDirection = FlowDirection;
+
+				// Translate the light-dismiss layer so that it is positioned at the top-left corner of the window (for LTR cases)
+				// or the top-right corner of the window (for RTL cases).
+				// TransformToVisual(nullptr) will return an offset relative to the top-left corner of the window regardless of
+				// flow direction, so for RTL cases subtract the window width from the returned offset.x value to make it relative
+				// to the right edge of the window.
+				compositeTransform.TranslateX = flowDirection == FlowDirection.LeftToRight ? -offsetFromRoot.X : offsetFromRoot.X - windowBounds.Width;
+				compositeTransform.TranslateY = -offsetFromRoot.Y;
+			}
+#endif
+		}
+
+		private void DestroyLTEs()
+		{
+			// MUX_ASSERT(m_layoutTransition is not null);  // TODO Uno: gated until LTE machinery is wired.
+
+#if false // TODO Uno: NOT PORTED - CoreImports.LayoutTransitionElement_Destroy
+			IFC_RETURN(CoreImports::LayoutTransitionElement_Destroy(
+				DXamlCore::GetCurrent()->GetHandle(),
+				GetHandle(),
+				m_parentElementForLTEs ? m_parentElementForLTEs.Cast<UIElement>()->GetHandle() : nullptr,
+				m_layoutTransition.Cast<UIElement>()->GetHandle()
+				));
+#endif
+
+			m_layoutTransition = null;
+
+			if (m_overlayLayoutTransition is not null)
+			{
+#if false // TODO Uno: NOT PORTED - destroy our light-dismiss element's LTE.
+				IFC_RETURN(CoreImports::LayoutTransitionElement_Destroy(
+					DXamlCore::GetCurrent()->GetHandle(),
+					m_overlayElement.Cast<FrameworkElement>()->GetHandle(),
+					m_parentElementForLTEs ? m_parentElementForLTEs.Cast<UIElement>()->GetHandle() : nullptr,
+					m_overlayLayoutTransition.Cast<UIElement>()->GetHandle()
+					));
+#endif
+
+				m_overlayLayoutTransition = null;
+			}
+
+			m_parentElementForLTEs = null;
+		}
+
+		private bool ShouldUseParentedLTE()
+		{
+			// VisualTreeHelper does not expose a GetRootStatic equivalent in Uno; walk the parent chain manually.
+			DependencyObject rootDO = this;
+			DependencyObject parent;
+			while ((parent = Media.VisualTreeHelper.GetParent(rootDO)) is not null)
+			{
+				rootDO = parent;
+			}
+			if (rootDO is not null)
+			{
+				if (rootDO is Primitives.PopupRoot)
+				{
+					return true;
+				}
+				else if (rootDO is Uno.UI.Xaml.Core.FullWindowMediaRoot)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		private Rect GetAdjustedLayoutBounds()
 		{
+			// TODO Uno: NOT PORTED - DXamlCore::GetContentLayoutBoundsForElement(GetHandle(), &layoutBounds).
+			// XamlRoot.VisualTree.VisibleBounds is the closest Uno equivalent for the layout-bounds rect.
 			Rect layoutBounds = XamlRoot?.VisualTree?.VisibleBounds ?? default;
+
+			// TODO Uno: 12949603 — re-enable this in XamlOneCoreTransforms mode using OneCore-friendly APIs.
+			// It's disabled today because ClientToScreen deals in screen coordinates, which isn't allowed in strict mode.
+			// AutoSuggestBox effectively acts as though the client window is always at the very top of the screen.
+			// In Uno there is no DXamlCore.ClientToScreen equivalent yet — leave layoutBounds as-is.
+			// if (!XamlOneCoreTransforms.IsEnabled())
+			// {
+			//     Point point = new Point(0, 0);
+			//     DXamlCore.GetCurrent().ClientToScreen(ref point);
+			//     layoutBounds.Y -= point.Y;
+			// }
+
 			return layoutBounds;
 		}
 
-		// TODO Uno: NOT PORTED - GetActualTextBoxSize (lines 3144+). Stub uses ActualWidth/ActualHeight.
 		private void GetActualTextBoxSize(out double actualWidth, out double actualHeight)
 		{
-			actualWidth = m_tpTextBoxPart?.ActualWidth ?? ActualWidth;
-			actualHeight = m_tpTextBoxPart?.ActualHeight ?? ActualHeight;
+			if (m_tpTextBoxPart is not null)
+			{
+				// CTextBoxBase::GetActualSize returns the inner-text-area size in the C++ code; FrameworkElement
+				// ActualWidth/ActualHeight is the closest direct mapping in Uno (the inner ScrollViewer template
+				// part is queried separately by UpdateSuggestionListPosition for vertical alignment).
+				actualWidth = m_tpTextBoxPart.ActualWidth;
+				actualHeight = m_tpTextBoxPart.ActualHeight;
+			}
+			else
+			{
+				actualWidth = 0;
+				actualHeight = 0;
+			}
 		}
 
 		//------------------------------------------------------------------------------
@@ -2376,14 +2637,28 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Remaining method TODOs (deferred to next iter):
-		// TODO Uno: NOT PORTED - GetAdjustedLayoutBounds / GetActualTextBoxSize full bodies (currently use simple fallbacks).
-		// TODO Uno: NOT PORTED - GetDisplayOrientation (DisplayOrientationHelper.h).
-		// TODO Uno: NOT PORTED - SetupOverlayState / TeardownOverlayState / CreateLTEs / PositionLTEs / DestroyLTEs / ShouldUseParentedLTE.
-		// TODO Uno: NOT PORTED - OnInkingFunctionButtonClicked (static, line 3165+).
-		// TODO Uno: NOT PORTED - GetPlainText override. The C++ override returns the FrameworkElement
-		// plain-text representation for accessibility ("name" computation). FrameworkElement.GetStringFromObject
-		// has no direct Uno equivalent; revisit alongside automation-peer parity work.
+		// GetPlainText override (lines 2725-2740 of AutoSuggestBox_Partial.cpp).
+		// Returns the FrameworkElement plain-text representation for accessibility ("name" computation).
+		// TODO Uno: NOT PORTED - FrameworkElement.GetStringFromObject has no direct Uno equivalent; fall back to
+		// Header.ToString() when Header is set. Revisit alongside automation-peer parity work.
+		// internal override string GetPlainText() — Uno does not expose a virtual GetPlainText hook on
+		// FrameworkElement, so the override is omitted; the AutomationPeer (AutoSuggestBoxAutomationPeer)
+		// is the supported extension point for accessibility names.
+
+		// Remaining method TODOs (none — Phase 2 close-out):
+		// TODO Uno: NOT PORTED - GetDisplayOrientation (DisplayOrientationHelper.h). The XamlDisplay::Orientation
+		// enum + GetDisplayOrientation helper are not yet wired in Uno; m_displayOrientation stays at None
+		// and ChangeVisualState's branches do not fire. Revisit when Uno gains a display-orientation tracker.
+
+		//------------------------------------------------------------------------------
+		// AutoSuggestBox::OnInkingFunctionButtonClicked (static, line 3165+).
+		// Inking floatie's function button is a PenInputManager-driven path that has no Uno equivalent yet;
+		// the static handler is preserved here as a thin wrapper that forwards to ProgrammaticSubmitQuery.
+		//------------------------------------------------------------------------------
+		internal static void OnInkingFunctionButtonClicked(AutoSuggestBox autoSuggestBox)
+		{
+			autoSuggestBox?.ProgrammaticSubmitQuery();
+		}
 
 		//------------------------------------------------------------------------------
 		// Raises the QuerySubmitted event using the current content of the TextBox.
