@@ -22,8 +22,11 @@ $ErrorActionPreference = 'Stop'
 # (stable builds test with versions not yet public on NuGet.org)
 if (-not $WarningOnly) {
     $branch = $env:BUILD_SOURCEBRANCH
-    if ($branch -and $branch -like 'refs/heads/release/*') {
-        Write-Host "Detected release branch ($branch) - running in warning-only mode." -ForegroundColor Yellow
+    $targetBranch = $env:SYSTEM_PULLREQUEST_TARGETBRANCH
+    if (($branch -and $branch -like 'refs/heads/release/*') -or
+        ($targetBranch -and $targetBranch -like 'refs/heads/release/*')) {
+        $detected = if ($targetBranch -like 'refs/heads/release/*') { $targetBranch } else { $branch }
+        Write-Host "Detected release branch ($detected) - running in warning-only mode." -ForegroundColor Yellow
         $WarningOnly = $true
     }
 }
