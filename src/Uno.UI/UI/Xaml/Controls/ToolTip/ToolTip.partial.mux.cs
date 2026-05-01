@@ -866,11 +866,70 @@ public partial class ToolTip : ContentControl
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp ForwardOwnerThemePropertyToToolTip (line 2510).
-	// Phase 8 will port the full theme-walking logic. Currently a stub so OnIsOpenChanged
-	// compiles.
 	private void ForwardOwnerThemePropertyToToolTip()
 	{
-		// TODO Uno (Phase 8): port ForwardOwnerThemePropertyToToolTip.
+		// We'll only override the requested theme on the ToolTip if its value hasn't been explicitly set.
+		// Otherwise, we'll abide by its existing value.
+		if (!this.IsDependencyPropertySet(RequestedThemeProperty) ||
+			m_isToolTipRequestedThemeOverridden)
+		{
+			ElementTheme currentToolTipTheme = RequestedTheme;
+			ElementTheme requestedTheme = ElementTheme.Default;
+			DependencyObject? spCurrent = m_wrOwner?.Target as DependencyObject;
+			FrameworkElement? spCurrentAsFE = null;
+
+			// Walk up the tree from the placement target until we find an element with a RequestedTheme.
+			while (spCurrent is not null)
+			{
+				if (spCurrent is FrameworkElement spCurrentAsFE2)
+				{
+					spCurrentAsFE = spCurrentAsFE2;
+
+					requestedTheme = spCurrentAsFE2.RequestedTheme;
+					if (requestedTheme != ElementTheme.Default)
+					{
+						break;
+					}
+				}
+				else if (spCurrent is Documents.TextElement textElement)
+				{
+					var parent = textElement.GetContainingFrameworkElement();
+					if (parent is not null)
+					{
+						spCurrent = parent;
+						continue;
+					}
+					else
+					{
+						return;
+					}
+				}
+				else
+				{
+					return;
+				}
+
+				DependencyObject? spParent = Media.VisualTreeHelper.GetParent(spCurrent);
+				if (spParent is Primitives.PopupRoot)
+				{
+					// If the target is in a Popup and the Popup is in the Visual Tree, we want to inherit the theme
+					// from that Popup's parent. Otherwise we will get the App's theme, which might not be what
+					// is expected.
+					if (spCurrentAsFE is not null)
+					{
+						spParent = spCurrentAsFE.Parent;
+					}
+				}
+
+				spCurrent = spParent;
+			}
+
+			if (requestedTheme != currentToolTipTheme)
+			{
+				RequestedTheme = requestedTheme;
+				m_isToolTipRequestedThemeOverridden = true;
+			}
+		}
 	}
 
 #pragma warning restore IDE0051
