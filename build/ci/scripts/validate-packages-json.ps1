@@ -12,10 +12,21 @@
     Path to the packages.json file. Defaults to src/Uno.Sdk/packages.json relative to repo root.
 #>
 param(
-    [string]$PackagesJsonPath
+    [string]$PackagesJsonPath,
+    [switch]$WarningOnly
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Auto-detect: on release/* branches, switch to warning-only mode
+# (stable builds test with versions not yet public on NuGet.org)
+if (-not $WarningOnly) {
+    $branch = $env:BUILD_SOURCEBRANCH
+    if ($branch -and $branch -like 'refs/heads/release/*') {
+        Write-Host "Detected release branch ($branch) - running in warning-only mode." -ForegroundColor Yellow
+        $WarningOnly = $true
+    }
+}
 
 # Resolve path
 if (-not $PackagesJsonPath) {
@@ -108,9 +119,19 @@ Write-Host "Checked $checked package/version combinations." -ForegroundColor Cya
 
 if ($errors.Count -gt 0) {
     Write-Host ""
-    Write-Host "VALIDATION FAILED - $($errors.Count) error(s):" -ForegroundColor Red
+    if ($WarningOnly) {
+        Write-Host "VALIDATION WARNINGS - $($errors.Count) package(s) not found on NuGet.org (non-fatal):" -ForegroundColor Yellow
+    }
+    else {
+        Write-Host "VALIDATION FAILED - $($errors.Count) error(s):" -ForegroundColor Red
+    }
     foreach ($err in $errors) {
-        Write-Host "  - $err" -ForegroundColor Red
+        Write-Host "  - $err" -ForegroundColor $(if ($WarningOnly) { 'Yellow' } else { 'Red' })
+    }
+    if ($WarningOnly) {
+        Write-Host ""
+        Write-Host "Running in warning-only mode (stable branch) - not failing the build." -ForegroundColor Yellow
+        exit 0
     }
     exit 1
 }

@@ -5,3 +5,5 @@ steps:
     pwsh: true
     filePath: build/ci/scripts/validate-packages-json.ps1
     arguments: '-PackagesJsonPath "$(Build.SourcesDirectory)/src/Uno.Sdk/packages.json"'
+  env:
+    BUILD_SOURCEBRANCH: $(Build.SourceBranch)
