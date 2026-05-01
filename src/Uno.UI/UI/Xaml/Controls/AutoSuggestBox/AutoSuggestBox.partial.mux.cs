@@ -544,19 +544,132 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSuggestionListSize();
 		}
 
-		// TODO Uno: NOT PORTED - OnSuggestionSelectionChanged.
 		private void OnSuggestionSelectionChanged(object sender, SelectionChangedEventArgs args)
 		{
+			object spSelectedItem = m_tpSuggestionsPart.SelectedItem;
+			ListViewBase suggestionsPartAsLVB = m_tpSuggestionsPart as ListViewBase;
+			// TraceLoggingActivity<g_hTraceProvider, MICROSOFT_KEYWORD_TELEMETRY> traceLoggingActivity;
+
+			// ASB handles keyboard navigation on behalf of the suggestion box.
+			// Consequently, the latter won't scroll its viewport to follow the selected item.
+			// We have to do that ourselves explicitly.
+			{
+				object scrollToItem = spSelectedItem;
+
+				// We fallback on the first item in order to bring the viewport to the beginning.
+				if (scrollToItem is null)
+				{
+					var items = Items;
+					int itemsCount = items?.Count ?? 0;
+
+					if (itemsCount > 0)
+					{
+						scrollToItem = items[0];
+					}
+				}
+
+				if (scrollToItem is not null)
+				{
+					if (suggestionsPartAsLVB is not null)
+					{
+						suggestionsPartAsLVB.ScrollIntoView(scrollToItem);
+					}
+				}
+			}
+
+			if (m_ignoreSelectionChanges)
+			{
+				// Ignore the selection change if the change is trigged by the TextBoxText changed event.
+				return;
+			}
+
+			// Telemetry marker for suggestion selection changed.
+			// TraceLoggingWriteStart(traceLoggingActivity, "ASBSuggestionSelectionChanged");
+
+			// The only time we'll get here is when we're keyboarding through the suggestion list.
+			// In this case, we're going to be updating the TextBox's text
+			// as the user does that, so we should not be responding to TextChanged
+			// events in the TextBox, as they shouldn't be affecting anything.
+			// However, TextChanged is an asynchronous event, so we can't just
+			// set a boolean value to true at the start of this method
+			// and then set it back to false at the end of this method,
+			// because the TextChanged will come in after the end of this method.
+			// To get around this fact, we'll leverage the fact that, by the time
+			// this method returns, the TextChanged events will be added to the
+			// event queue.  We'll post a callback to change m_ignoreTextChanges
+			// back to false once all of the TextChanged events have been raised.
+			m_ignoreTextChanges = true;
+
+			if (spSelectedItem is not null)
+			{
+				bool updateTextOnSelect = UpdateTextOnSelect;
+				AutoSuggestBoxSuggestionChosenEventArgs spEventArgs;
+
+				if (updateTextOnSelect)
+				{
+					string strTextMemberPath = TextMemberPath;
+					if (m_spPropertyPathListener is null && !string.IsNullOrEmpty(strTextMemberPath))
+					{
+						m_spPropertyPathListener = new Uno.UI.DataBinding.BindingPath(strTextMemberPath, "", forAnimations: false, allowPrivateMembers: true);
+					}
+
+					string strSelectedItem = TryGetSuggestionValue(spSelectedItem, m_spPropertyPathListener);
+					UpdateTextBoxText(strSelectedItem, AutoSuggestionBoxTextChangeReason.SuggestionChosen);
+				}
+
+				// If the item was selected using Gamepad or Remote, move the focus to the selected item.
+				if (m_inputDeviceTypeUsed == InputDeviceType.GamepadOrRemote && suggestionsPartAsLVB is not null)
+				{
+					DependencyObject selectedItemDO = suggestionsPartAsLVB.ContainerFromItem(spSelectedItem);
+					if (selectedItemDO is UIElement selectedItemUI)
+					{
+						selectedItemUI.Focus(FocusState.Keyboard);
+					}
+				}
+
+				spEventArgs = new AutoSuggestBoxSuggestionChosenEventArgs();
+				spEventArgs.SelectedItem = spSelectedItem;
+
+				SuggestionChosen?.Invoke(this, spEventArgs);
+			}
+
+			// At this point everything that's going to post a TextChanged event
+			// to the event queue has done so, so we'll schedule a callback
+			// to reset the value of m_ignoreTextChanges to false once they've
+			// all been raised.
+			Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()?.TryEnqueue(() => ResetIgnoreTextChanges());
 		}
 
-		// TODO Uno: NOT PORTED - OnListViewItemClick.
 		private void OnListViewItemClick(object sender, ItemClickEventArgs args)
 		{
+			object spClickedItem = args.ClickedItem;
+
+			// When an suggestion is clicked, we want to raise QuerySubmitted using that
+			// as the chosen suggestion.  However, clicking on an item may additionally raise
+			// SelectionChanged, which will set the value of the TextBox and raise SuggestionChosen,
+			// both of which we want to occur before we raise QuerySubmitted.
+			// To account for this, we'll register a callback that will cause us to call SubmitQuery
+			// after everything else has happened.
+			Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()?.TryEnqueue(() => SubmitQuery(spClickedItem));
 		}
 
-		// TODO Uno: NOT PORTED - OnListViewContainerContentChanging.
 		private void OnListViewContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
 		{
+			if (m_tpListItemOrderTransformPart is not null)
+			{
+				Primitives.SelectorItem spContainer = args.ItemContainer;
+				if (spContainer is not null)
+				{
+					UIElement spContainerAsUI = spContainer as UIElement;
+					if (spContainerAsUI is not null)
+					{
+						Point origin = new Point(0.5, 0.5);
+
+						spContainerAsUI.RenderTransformOrigin = origin;
+						spContainerAsUI.RenderTransform = m_tpListItemOrderTransformPart;
+					}
+				}
+			}
 		}
 
 		//------------------------------------------------------------------------------
@@ -898,9 +1011,88 @@ namespace Microsoft.UI.Xaml.Controls
 			IsSuggestionListOpen = isOpen;
 		}
 
-		// TODO Uno: NOT PORTED - SetCurrentControlledPeer.
+		private string TryGetSuggestionValue(object o, Uno.UI.DataBinding.BindingPath pathListener)
+		{
+			if (o is null)
+			{
+				return null;
+			}
+
+			string value = null;
+			object spBoxedValue = null;
+
+			// Uno does not have ICustomPropertyProvider; we approximate the C++ ToString fallback by treating any
+			// non-string object whose path is null as a candidate for ToString().
+			if (pathListener is not null)
+			{
+				// Our caller has provided us with a PropertyPathListener. By setting the source of the listener, we can pull a value out.
+				// This is our boxedValue, which we effectively ToString below.
+				pathListener.DataContext = o;
+				spBoxedValue = pathListener.Value;
+			}
+			else
+			{
+				spBoxedValue = o; // the object itself is the value string, unbox it.
+			}
+
+			// calling the ToString function on items that can be represented by a string
+			if (spBoxedValue is not null)
+			{
+				value = spBoxedValue.ToString();
+			}
+			else
+			{
+				// FrameworkElement::GetStringFromObject(object, ...) — fall back to the original object's ToString.
+				value = o.ToString();
+			}
+
+			return value;
+		}
+
 		private void SetCurrentControlledPeer(ControlledPeer peer)
 		{
+			if (m_tpTextBoxPart is not null)
+			{
+				UIElement spPeer = null;
+
+				switch (peer)
+				{
+					case ControlledPeer.None:
+						// Leave spPeer as nullptr.
+						break;
+
+					case ControlledPeer.SuggestionsList:
+						if (m_tpSuggestionsPart is not null)
+						{
+							spPeer = m_tpSuggestionsPart as UIElement;
+						}
+						break;
+
+					default:
+						break;
+				}
+
+				var spControlledPeers = AutomationProperties.GetControlledPeers(m_tpTextBoxPart);
+
+				spControlledPeers.Clear();
+				if (spPeer is not null)
+				{
+					spControlledPeers.Add(spPeer);
+				}
+
+				// TODO Uno: NOT PORTED - AutomationPeer::ListenerExistsHelper + raise APControlledPeersProperty change.
+				// Uno does not yet expose ListenerExistsHelper / AutomationRaiseAutomationPropertyChanged for the
+				// ControlledPeers property; revisit alongside automation-peer parity.
+				// bool bAutomationListener = AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged);
+				// if (bAutomationListener)
+				// {
+				//     var spAutomationPeer = m_tpTextBoxPart.GetOrCreateAutomationPeer();
+				//     if (spAutomationPeer is not null)
+				//     {
+				//         CoreImports.AutomationRaiseAutomationPropertyChanged(spAutomationPeer, APControlledPeersProperty);
+				//     }
+				// }
+			}
 		}
 
 		// Remaining method TODOs (deferred to next iter):

@@ -174,9 +174,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_suppressSuggestionListVisibility;
 
 		private bool m_deferringUpdate;
-		// TODO Uno: PropertyPathListener — internal WinUI helper that observes property-path changes.
-		// Replace with Uno's BindingPath / PropertyPathParser equivalent when wiring TryGetSuggestionValue.
-		private object m_spPropertyPathListener;
+		// WinUI caches a PropertyPathListener built from TextMemberPath; Uno equivalent is `Uno.UI.DataBinding.BindingPath`.
+		private Uno.UI.DataBinding.BindingPath m_spPropertyPathListener;
 
 		private static bool m_sSipIsOpen;
 
