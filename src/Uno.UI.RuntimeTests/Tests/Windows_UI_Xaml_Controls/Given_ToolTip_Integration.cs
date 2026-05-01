@@ -446,5 +446,53 @@ public class Given_ToolTip_Integration
 			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 		}
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp CanToolTipOpenClose (line 180).
+	// "Verify the ToolTip open and close." The C++ test taps the button to open
+	// (relying on WinUI's touch-and-hold internal timing); the Uno port uses a
+	// mouse hover (MoveTo + show-delay) to align with the iter-#6 immediate-close
+	// behavior on PointerReleased / PointerExited.
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task CanToolTipOpenClose()
+	{
+		var button = await SetupToolTipTest();
+		var toolTip = CreateToolTip();
+		ToolTipService.SetToolTip(button, toolTip);
+		ToolTipService.SetPlacement(button, PlacementMode.Top);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			// Move mouse onto the button - PointerEntered fires, the open timer starts.
+			mouse.MoveTo(button.GetAbsoluteBoundsRect().GetCenter());
+			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// The ToolTip should now be open and hosted in a popup.
+			Assert.IsTrue(toolTip.IsOpen, "ToolTip should be open after mouse hover");
+			var popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+				TestServices.WindowHelper.WindowContent.XamlRoot);
+			Assert.AreEqual(1, popups.Count, "Expected one open popup for the tooltip");
+
+			// Move mouse away to dismiss.
+			mouse.MoveTo(new Point(0, 0));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(toolTip.IsOpen, "ToolTip should be closed after mouse leaves");
+			popups = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(
+				TestServices.WindowHelper.WindowContent.XamlRoot);
+			Assert.AreEqual(0, popups.Count, "Expected no popups after dismiss");
+		}
+		finally
+		{
+			Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+	}
 #endif
 }
