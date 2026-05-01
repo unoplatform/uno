@@ -223,4 +223,34 @@ public class Given_ToolTip_Integration
 			TestServices.WindowHelper.WindowContent.XamlRoot);
 		Assert.AreEqual(0, currentlyOpenPopups.Count);
 	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp CanSetAndGetOffsetProperties (line 85).
+	// "Validates that we can successfully set/get the ToolTip Offset properties."
+	[TestMethod]
+	public async Task CanSetAndGetOffsetProperties()
+	{
+		const double horizontalOffset = 20;
+		const double verticalOffset = 10;
+
+		var button = await SetupToolTipTest();
+		var toolTip = CreateToolTip();
+		ToolTipService.SetToolTip(button, toolTip);
+
+		// Verify default values for Tooltip Offset properties.
+		Assert.AreEqual(0, toolTip.HorizontalOffset);
+		Assert.AreEqual(0, toolTip.VerticalOffset);
+
+		// Set the Tooltip Offset properties.
+		toolTip.HorizontalOffset = horizontalOffset;
+		toolTip.VerticalOffset = verticalOffset;
+
+		// Verify get-after-set on the offset DPs.
+		Assert.AreEqual(horizontalOffset, toolTip.HorizontalOffset);
+		Assert.AreEqual(verticalOffset, toolTip.VerticalOffset);
+
+		// The original C++ test also validates the popup placement for each PlacementMode (Top, Right, Bottom, Left).
+		// Those assertions depend on TransformToVisual + popup positioning subtleties (window scaling, RTL, mouse vs.
+		// non-mouse path) and remain a TODO Uno once Phase 6 / Phase 7 settle the placement edge cases. The set/get
+		// part is validated above, which is the core regression coverage for the DP plumbing landed in Phase 5.
+	}
 }
