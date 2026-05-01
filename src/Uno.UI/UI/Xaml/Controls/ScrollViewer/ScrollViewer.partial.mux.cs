@@ -745,6 +745,115 @@ namespace Microsoft.UI.Xaml.Controls
 			pixelScrollableHeight = Math.Max(0.0, extent - viewport);
 		}
 
+		// Ensures the target horizontal offset for a ChangeView request does
+		// not exceed the maximum offset given the target zoom factor, viewport
+		// width, extent width and optionally the mandatory scroll snap points.
+		// (C++ source line 12164)
+		internal void AdjustTargetHorizontalOffset(
+			bool disableAnimation,
+			bool adjustWithMandatorySnapPoints,
+			float targetZoomFactor,
+			double minHorizontalOffset,
+			double currentHorizontalOffset,
+			double viewportPixelWidth,
+			ref double pTargetHorizontalOffset,
+			out double pCurrentUnzoomedPixelExtentWidth,
+			out double pMaxHorizontalOffset,
+			out double pTargetExtentWidth)
+		{
+			double targetHorizontalOffset = pTargetHorizontalOffset;
+			double currentUnzoomedPixelExtentWidth = 0.0;
+			double maxHorizontalOffset = 0.0;
+			double targetExtentWidth = 0.0;
+
+			pCurrentUnzoomedPixelExtentWidth = 0.0;
+			pMaxHorizontalOffset = 0.0;
+			pTargetExtentWidth = 0.0;
+
+			// Compute current extent width
+			ComputePixelExtentWidth(true /*ignoreZoomFactor*/, null /*pProvider*/, out currentUnzoomedPixelExtentWidth);
+
+			// Compute expected extent width
+			targetExtentWidth = currentUnzoomedPixelExtentWidth * targetZoomFactor;
+
+			// Compute expected max offset
+			maxHorizontalOffset = Math.Max(minHorizontalOffset, targetExtentWidth - viewportPixelWidth);
+
+			// Clamp target offset with expected max offset
+			if (targetHorizontalOffset > maxHorizontalOffset)
+			{
+				targetHorizontalOffset = maxHorizontalOffset;
+			}
+
+			// Adjust offset with mandatory scroll snap points
+			if (disableAnimation && adjustWithMandatorySnapPoints)
+			{
+				// TODO Uno: Phase 5 — RefreshScrollSnapPointsInfo + AdjustOffsetWithMandatorySnapPoints
+				// chain port. The C++ does:
+				// if (!m_trScrollSnapPointsInfo) { IFC_RETURN(RefreshScrollSnapPointsInfo()); }
+				// IFC_RETURN(AdjustOffsetWithMandatorySnapPoints(...));
+				// Our existing SnapPoints.cs has an AdjustOffsetWithMandatorySnapPoints helper
+				// but with a different signature; reconcile in Phase 5.
+			}
+
+			pTargetHorizontalOffset = targetHorizontalOffset;
+			pCurrentUnzoomedPixelExtentWidth = currentUnzoomedPixelExtentWidth;
+			pMaxHorizontalOffset = maxHorizontalOffset;
+			pTargetExtentWidth = targetExtentWidth;
+		}
+
+		// Ensures the target vertical offset for a ChangeView request does
+		// not exceed the maximum offset given the target zoom factor, viewport
+		// height, extent height and optionally the mandatory scroll snap points.
+		// (C++ source line 12230)
+		internal void AdjustTargetVerticalOffset(
+			bool disableAnimation,
+			bool adjustWithMandatorySnapPoints,
+			float targetZoomFactor,
+			double minVerticalOffset,
+			double currentVerticalOffset,
+			double viewportPixelHeight,
+			ref double pTargetVerticalOffset,
+			out double pCurrentUnzoomedPixelExtentHeight,
+			out double pMaxVerticalOffset,
+			out double pTargetExtentHeight)
+		{
+			double targetVerticalOffset = pTargetVerticalOffset;
+			double currentUnzoomedPixelExtentHeight = 0.0;
+			double maxVerticalOffset = 0.0;
+			double targetExtentHeight = 0.0;
+
+			pCurrentUnzoomedPixelExtentHeight = 0.0;
+			pMaxVerticalOffset = 0.0;
+			pTargetExtentHeight = 0.0;
+
+			// Compute current extent height
+			ComputePixelExtentHeight(true /*ignoreZoomFactor*/, null /*pProvider*/, out currentUnzoomedPixelExtentHeight);
+
+			// Compute expected extent height
+			targetExtentHeight = currentUnzoomedPixelExtentHeight * targetZoomFactor;
+
+			// Compute expected max offset
+			maxVerticalOffset = Math.Max(minVerticalOffset, targetExtentHeight - viewportPixelHeight);
+
+			// Clamp target offset with expected max offset
+			if (targetVerticalOffset > maxVerticalOffset)
+			{
+				targetVerticalOffset = maxVerticalOffset;
+			}
+
+			// Adjust offset with mandatory scroll snap points
+			if (disableAnimation && adjustWithMandatorySnapPoints)
+			{
+				// TODO Uno: Phase 5 — see AdjustTargetHorizontalOffset.
+			}
+
+			pTargetVerticalOffset = targetVerticalOffset;
+			pCurrentUnzoomedPixelExtentHeight = currentUnzoomedPixelExtentHeight;
+			pMaxVerticalOffset = maxVerticalOffset;
+			pTargetExtentHeight = targetExtentHeight;
+		}
+
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
 		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
