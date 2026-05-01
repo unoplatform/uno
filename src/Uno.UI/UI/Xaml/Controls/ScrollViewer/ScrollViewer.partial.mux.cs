@@ -1089,6 +1089,206 @@ namespace Microsoft.UI.Xaml.Controls
 			isExtentYChangeExpected = true;
 		}
 
+		// Computes the effect of the left margin and horizontal alignment when
+		// the content is smaller than the viewport.
+		// The extent parameter provided is valid when positive, and needs to be
+		// computed when strictly negative.
+		// (C++ source line 7318)
+		internal void ComputeTranslationXCorrection(
+			bool inManipulation,
+			bool forInitialTransformationAdjustment,
+			bool adjustDimensions,
+			object pProvider,
+			double leftMargin,
+			double extent,
+			float zoomFactor,
+			out float pTranslationX)
+		{
+			double viewport = 0;
+			double translationX = 0;
+			DMAlignment alignment;
+
+			global::System.Diagnostics.Debug.Assert(zoomFactor > 0.0f);
+
+			pTranslationX = 0.0f;
+
+			alignment = ComputeHorizontalAlignment(true /*canUseCachedProperties*/);
+
+			if (alignment == DMAlignment.Center || alignment == DMAlignment.Far)
+			{
+				if (extent < 0)
+				{
+					ComputePixelExtentWidth(false /*ignoreZoomFactor*/, pProvider, out extent);
+				}
+				ComputePixelViewportWidth(pProvider, true /*isProviderSet*/, out viewport);
+
+				if (!forInitialTransformationAdjustment && extent < viewport)
+				{
+					if (!inManipulation && extent / zoomFactor < viewport)
+					{
+						translationX = (1.0 / (double)zoomFactor - 1.0) * extent;
+					}
+					else
+					{
+						translationX = viewport - extent;
+					}
+
+					if (alignment == DMAlignment.Center)
+					{
+						translationX /= 2.0;
+					}
+				}
+				else if (extent / zoomFactor < viewport && !inManipulation)
+				{
+					translationX = extent / zoomFactor - viewport;
+
+					if (alignment == DMAlignment.Center)
+					{
+						translationX /= 2.0;
+					}
+				}
+
+				if (adjustDimensions && extent < viewport)
+				{
+					// Take into account the fact that DManip consumes integers instead of decimal numbers for content and viewport dimensions.
+
+					// Evaluate exact offset used by XAML layout engine
+					double offsetX = extent / zoomFactor - viewport;
+					if (alignment == DMAlignment.Center)
+					{
+						offsetX /= 2.0;
+					}
+
+					// Evaluate approximated offset used by DManip based on adjusted content extent and viewport width
+					double adjustedOffsetX = AdjustPixelContentDim(extent / zoomFactor) - AdjustPixelViewportDim(viewport);
+					if (alignment == DMAlignment.Center)
+					{
+						adjustedOffsetX /= 2.0;
+					}
+
+					// Adjust the returned translation based on the difference between the two XAML/DManip evaluations.
+					// translationX is computed differently above depending on forInitialTransformationAdjustment (a variation of
+					// viewport-extent vs. extent-viewport), so the sign of the adjustment depends on forInitialTransformationAdjustment too.
+					if (forInitialTransformationAdjustment)
+					{
+						translationX += adjustedOffsetX - offsetX;
+					}
+					else
+					{
+						translationX += offsetX - adjustedOffsetX;
+					}
+				}
+			}
+
+			// Skip the margin's contribution when the initial adjustment is computed - in that case
+			// GetManipulationPrimaryContentTransform is also called with forMargins==True.
+			if (!forInitialTransformationAdjustment)
+			{
+				translationX += ((double)zoomFactor - 1.0) * leftMargin;
+			}
+
+			pTranslationX = (float)translationX;
+		}
+
+		// Computes the effect of the top margin and vertical alignment when
+		// the content is smaller than the viewport.
+		// The extent parameter provided is valid when positive, and needs to be
+		// computed when strictly negative.
+		// (C++ source line 7430)
+		internal void ComputeTranslationYCorrection(
+			bool inManipulation,
+			bool forInitialTransformationAdjustment,
+			bool adjustDimensions,
+			object pProvider,
+			double topMargin,
+			double extent,
+			float zoomFactor,
+			out float pTranslationY)
+		{
+			double viewport = 0;
+			double translationY = 0;
+			DMAlignment alignment;
+
+			pTranslationY = 0.0f;
+
+			alignment = ComputeVerticalAlignment(true /*canUseCachedProperties*/);
+
+			if (alignment == DMAlignment.Center || alignment == DMAlignment.Far)
+			{
+				if (extent < 0)
+				{
+					ComputePixelExtentHeight(false /*ignoreZoomFactor*/, pProvider, out extent);
+				}
+				ComputePixelViewportHeight(pProvider, true /*isProviderSet*/, out viewport);
+
+				if (!forInitialTransformationAdjustment && extent < viewport)
+				{
+					if (!inManipulation && extent / zoomFactor < viewport)
+					{
+						translationY = (1.0 / (double)zoomFactor - 1.0) * extent;
+					}
+					else
+					{
+						translationY = viewport - extent;
+					}
+
+					if (alignment == DMAlignment.Center)
+					{
+						translationY /= 2.0;
+					}
+				}
+				else if (extent / zoomFactor < viewport && !inManipulation)
+				{
+					translationY = extent / zoomFactor - viewport;
+
+					if (alignment == DMAlignment.Center)
+					{
+						translationY /= 2.0;
+					}
+				}
+
+				if (adjustDimensions && extent < viewport)
+				{
+					// Take into account the fact that DManip consumes integers instead of decimal numbers for content and viewport dimensions.
+
+					// Evaluate exact offset used by XAML layout engine
+					double offsetY = extent / zoomFactor - viewport;
+					if (alignment == DMAlignment.Center)
+					{
+						offsetY /= 2.0;
+					}
+
+					// Evaluate approximated offset used by DManip based on adjusted content extent and viewport height
+					double adjustedOffsetY = AdjustPixelContentDim(extent / zoomFactor) - AdjustPixelViewportDim(viewport);
+					if (alignment == DMAlignment.Center)
+					{
+						adjustedOffsetY /= 2.0;
+					}
+
+					// Adjust the returned translation based on the difference between the two XAML/DManip evaluations.
+					// translationY is computed differently above depending on forInitialTransformationAdjustment (a variation of
+					// viewport-extent vs. extent-viewport), so the sign of the adjustment depends on forInitialTransformationAdjustment too.
+					if (forInitialTransformationAdjustment)
+					{
+						translationY += adjustedOffsetY - offsetY;
+					}
+					else
+					{
+						translationY += offsetY - adjustedOffsetY;
+					}
+				}
+			}
+
+			// Skip the margin's contribution when the initial adjustment is computed - in that case
+			// GetManipulationPrimaryContentTransform is also called with forMargins==True.
+			if (!forInitialTransformationAdjustment)
+			{
+				translationY += ((double)zoomFactor - 1.0) * topMargin;
+			}
+
+			pTranslationY = (float)translationY;
+		}
+
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
 		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
