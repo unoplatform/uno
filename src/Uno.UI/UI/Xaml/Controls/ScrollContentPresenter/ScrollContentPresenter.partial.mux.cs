@@ -506,7 +506,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Apply a template to the ScrollContentPresenter.
 		// (C++ source line 2587 — ScrollContentPresenter_Partial.cpp)
-		internal void OnApplyTemplate_Mux()
+		protected override void OnApplyTemplate()
 		{
 			if (m_isChildActualWidthUsedAsExtent)
 			{
@@ -520,9 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 				StopUseOfActualHeightAsExtent();
 			}
 
-			// Note: the cross-platform partial owns the actual `OnApplyTemplate` override; this entry-point
-			// is invoked from there once Phase 4 wiring lands. The base.OnApplyTemplate() is therefore not
-			// called here.
+			base.OnApplyTemplate();
 
 			// Get our scrolling owner and content talking.
 			HookupScrollingComponents();
@@ -668,7 +666,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Called by the owning ScrollViewer when the Content property is changing.
 		// (C++ source line 3493)
-		internal void OnContentChanging_Mux(object pOldContent)
+		internal void OnContentChanging(object pOldContent)
 		{
 			if (pOldContent is UIElement spOldChild)
 			{
@@ -680,7 +678,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Called when the parent of this ScrollContentPresenter changed.
 		// (C++ source line 3506)
-		internal void OnTreeParentUpdated_Mux(object pNewParent, bool isParentAlive)
+		internal void OnTreeParentUpdatedCore(object pNewParent, bool isParentAlive)
 		{
 			if (pNewParent is null)
 			{
@@ -695,7 +693,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Called when a ScrollContentPresenter dependency property changed.
 		// (C++ source line 3536)
-		internal void OnPropertyChanged2_Mux(DependencyProperty changedProperty)
+		internal void OnPropertyChanged2Core(DependencyProperty changedProperty)
 		{
 			// TODO Uno: Phase 4 — once SCP exposes CanContentRenderOutsideBoundsProperty on Skia
 			// (it's currently NotImplemented in Generated), wire this up. For now, no-op.
@@ -722,7 +720,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// override this method to define their own Measure pass behavior.
 		// (C++ source line 1612 — simplified Skia port that omits headers, IManipulationDataProvider,
 		//  CalendarPanel, and SemanticZoom branches. Phase 6 will reintroduce them.)
-		internal global::Windows.Foundation.Size MeasureOverrideMux(global::Windows.Foundation.Size availableSize)
+		// TODO Uno: Phase 4 — switch the cross-platform Skia MeasureOverride (ScrollContentPresenter.cs:163,
+		// in the UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__ block) to delegate to this method via
+		// `protected override Size MeasureOverride(Size s) => MeasureOverridePort(s);` once the dependent
+		// pieces of the existing Managed.cs scroll path (PointerWheelScroll, ValidateInputOffset 3-arg
+		// signature) are migrated. For now this method is dormant on Skia.
+		internal global::Windows.Foundation.Size MeasureOverridePort(global::Windows.Foundation.Size availableSize)
 		{
 			// TODO Uno: Phase 6 — header support (TopLeftHeader/TopHeader/LeftHeader). For now skip.
 
@@ -872,7 +875,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// override this method to define their own Arrange pass behavior.
 		// (C++ source line 2094 — simplified Skia port that omits headers, IManipulationDataProvider,
 		//  m_isChildActualWidth/HeightUsedAsExtent special mode, and the layout-cycle warning context.)
-		internal global::Windows.Foundation.Size ArrangeOverrideMux(global::Windows.Foundation.Size finalSize)
+		// TODO Uno: Phase 4 — same as MeasureOverridePort: switch the cross-platform Skia ArrangeOverride
+		// (ScrollContentPresenter.cs:231) to delegate here once the existing Managed.cs scroll path is
+		// migrated. For now this method is dormant on Skia.
+		internal global::Windows.Foundation.Size ArrangeOverridePort(global::Windows.Foundation.Size finalSize)
 		{
 			// Loop while the inner arrange marks an additional scroll request.
 			do
