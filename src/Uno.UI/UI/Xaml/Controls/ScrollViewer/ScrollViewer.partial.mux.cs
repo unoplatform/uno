@@ -3911,6 +3911,42 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Called when a property that affects the snap points changed.
+		// (C++ source line 9911)
+		internal void OnSnapPointsAffectingPropertyChanged(
+			DMMotionTypes motionType,
+			bool updateSnapPointsChangeSubscription)
+		{
+			switch (motionType)
+			{
+				case DMMotionTypes.PanX:
+					if (m_trScrollSnapPointsInfo is not null &&
+						(m_HorizontalSnapPointsChangedToken.Disposable is not null || m_isManipulationHandlerInterestedInNotifications || updateSnapPointsChangeSubscription))
+					{
+						// Refresh the horizontal scroll snap points either because the ScrollViewer is actively listening
+						// to IScrollSnapPointsInfo's HorizontalSnapPointsChanged event or because the manipulation handler
+						// declared itself as interested in changes.
+						OnSnapPointsChanged(DMMotionTypes.PanX);
+					}
+					break;
+
+				case DMMotionTypes.PanY:
+					if (m_trScrollSnapPointsInfo is not null &&
+						(m_VerticalSnapPointsChangedToken.Disposable is not null || m_isManipulationHandlerInterestedInNotifications || updateSnapPointsChangeSubscription))
+					{
+						// Refresh the vertical scroll snap points either because the ScrollViewer is actively listening
+						// to IScrollSnapPointsInfo's VerticalSnapPointsChanged event or because the manipulation handler
+						// declared itself as interested in changes.
+						OnSnapPointsChanged(DMMotionTypes.PanY);
+					}
+					break;
+
+				case DMMotionTypes.Zoom:
+					OnSnapPointsChanged(DMMotionTypes.Zoom);
+					break;
+			}
+		}
+
 		// Called by HorizontalSnapPointsChangedHandler and
 		// VerticalSnapPointsChangedHandler when snap points changed
 		// or by OnZoomSnapPointsCollectionChanged when the ZoomSnapPoints observable collection changed,
