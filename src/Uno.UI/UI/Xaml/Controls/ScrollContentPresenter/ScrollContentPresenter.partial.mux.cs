@@ -504,6 +504,220 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
+		// Apply a template to the ScrollContentPresenter.
+		// (C++ source line 2587 — ScrollContentPresenter_Partial.cpp)
+		internal void OnApplyTemplate_Mux()
+		{
+			if (m_isChildActualWidthUsedAsExtent)
+			{
+				// Since a new Content is set, assume that the default behavior of using its desired size as the IScrollInfo extent is acceptable.
+				StopUseOfActualWidthAsExtent();
+			}
+
+			if (m_isChildActualHeightUsedAsExtent)
+			{
+				// Since a new Content is set, assume that the default behavior of using its desired size as the IScrollInfo extent is acceptable.
+				StopUseOfActualHeightAsExtent();
+			}
+
+			// Note: the cross-platform partial owns the actual `OnApplyTemplate` override; this entry-point
+			// is invoked from there once Phase 4 wiring lands. The base.OnApplyTemplate() is therefore not
+			// called here.
+
+			// Get our scrolling owner and content talking.
+			HookupScrollingComponents();
+		}
+
+		// Helper method to get our owner and its scrolling content talking.
+		// Method introduces the current owner/content, and clears a from any previous content.
+		// (C++ source line 2649)
+		internal void HookupScrollingComponents()
+		{
+			// We need to introduce our IScrollInfo to our ScrollViewer (and break any
+			// previous links).
+			var spTemplatedParent = TemplatedParent;
+			var spScrollContainer = spTemplatedParent as ScrollViewer;
+
+			// If our content is not an IScrollInfo, we should have selected a style
+			// that contains one.
+			if (spScrollContainer is not null)
+			{
+				// 1. Try our content...
+				// TODO Uno: Phase 4/5 wiring — once IScrollInfo is implemented on SCP and IScrollOwner
+				// on SV (and the ItemsPresenter→inner-IScrollInfo lookup is wired up via
+				// IOrientedVirtualizingPanel), call:
+				//   spScrollContainer.PutScrollInfo(spScrollInfo);
+				//   PutScrollOwner(spScrollContainer);
+				// For now, the cross-platform `ScrollOwner` setter handles wiring.
+				ScrollOwner = spScrollContainer;
+			}
+		}
+
+		// Register this instance as under control of a semanticzoom control.
+		// (C++ source line 2781)
+		internal void RegisterAsSemanticZoomPresenter()
+		{
+			m_isSemanticZoomPresenter = true;
+		}
+
+		// Verifies scrolling data using the passed viewport and extent as
+		// newly computed values.  Checks the X/Y offset and coerces them
+		// into the range [0, Extent - ViewportSize].  If extent, viewport,
+		// or the newly coerced offsets are different than the existing
+		// offset, caches are updated and InvalidateScrollInfo() is called.
+		// (C++ source line 3123)
+		internal void VerifyScrollData(global::Windows.Foundation.Size viewport, global::Windows.Foundation.Size extent)
+		{
+			// Update cache values of viewport/extent sizes first, then coerce offsets
+			// as these sizes may have changed.
+			var pScrollData = GetScrollData();
+			var oldViewportWidth = (float)pScrollData.m_viewport.Width;
+			var oldViewportHeight = (float)pScrollData.m_viewport.Height;
+			var valid = (oldViewportWidth == viewport.Width && oldViewportHeight == viewport.Height);
+			pScrollData.m_viewport.Width = viewport.Width;
+			pScrollData.m_viewport.Height = viewport.Height;
+
+			var oldExtentWidth = (float)pScrollData.m_extent.Width;
+			var oldExtentHeight = (float)pScrollData.m_extent.Height;
+			valid &= (oldExtentWidth == extent.Width && oldExtentHeight == extent.Height);
+			pScrollData.m_extent.Width = extent.Width;
+			pScrollData.m_extent.Height = extent.Height;
+
+			CoerceOffsets(out var coerce);
+			valid &= coerce;
+
+			m_fLastZoomFactorApplied = m_fZoomFactor;
+
+			var spScrollOwner = pScrollData.GetScrollOwner();
+			if (!valid && spScrollOwner is not null)
+			{
+				// TODO Uno: layout-cycle warning context recording (StoreLayoutCycleWarningContext) is not ported.
+				spScrollOwner.InvalidateScrollInfoImpl();
+			}
+		}
+
+		// Coerce both of the offsets using CoerceOffset method and store them as the
+		// new computed offsets if they've changed.
+		// (C++ source line 3170)
+		internal void CoerceOffsets(out bool pIsValid)
+		{
+			global::System.Diagnostics.Debug.Assert(IsScrollClient());
+
+			var pScrollData = GetScrollData();
+
+			var offset = pScrollData.GetOffsetX();
+			var extent = pScrollData.m_extent.Width;
+			var viewport = pScrollData.m_viewport.Width;
+			var newX = CoerceOffset(offset, extent, viewport);
+
+			offset = pScrollData.GetOffsetY();
+			extent = pScrollData.m_extent.Height;
+			viewport = pScrollData.m_viewport.Height;
+			var newY = CoerceOffset(offset, extent, viewport);
+
+			var computedX = pScrollData.m_ComputedOffset.X;
+			var computedY = pScrollData.m_ComputedOffset.Y;
+			var valid = DoubleUtil.AreClose(newX, computedX) && DoubleUtil.AreClose(newY, computedY);
+
+			pScrollData.m_ComputedOffset.X = newX;
+			pScrollData.m_ComputedOffset.Y = newY;
+
+			if (!pScrollData.m_canHorizontallyScroll)
+			{
+				// Reset the horizontal offset when m_canHorizontallyScroll becomes False (for example
+				// when HorizontalScrollbarVisibility becomes Disabled while there is an existing offset)
+				global::System.Diagnostics.Debug.Assert(pScrollData.m_ComputedOffset.X == 0.0);
+				if (pScrollData.GetOffsetX() != 0.0f)
+				{
+					pScrollData.SetOffsetX(0.0f);
+				}
+			}
+
+			if (!pScrollData.m_canVerticallyScroll)
+			{
+				// Reset the vertical offset when m_canVerticallyScroll becomes False (for example
+				// when VerticalScrollbarVisibility becomes Disabled while there is an existing offset)
+				global::System.Diagnostics.Debug.Assert(pScrollData.m_ComputedOffset.Y == 0.0);
+				if (pScrollData.GetOffsetY() != 0.0f)
+				{
+					pScrollData.SetOffsetY(0.0f);
+				}
+			}
+
+			pIsValid = valid;
+		}
+
+		// Updates the zoom factor.
+		// (C++ source line 3338)
+		internal void SetZoomFactor(float newZoomFactor)
+		{
+			m_fZoomFactor = newZoomFactor;
+
+			if (IsScrollClient())
+			{
+				InvalidateMeasure();
+			}
+			else
+			{
+				// TODO Uno: Phase 5 — when an inner IManipulationDataProvider is the IScrollInfo, push
+				// SetZoomFactor onto it. Until that contract lands, this branch is a no-op.
+				// var spProvider = GetScrollOwner_Mux() as IManipulationDataProvider;
+				// spProvider?.SetZoomFactor(m_fZoomFactor);
+			}
+		}
+
+		// Called by the owning ScrollViewer when the Content property is changing.
+		// (C++ source line 3493)
+		internal void OnContentChanging_Mux(object pOldContent)
+		{
+			if (pOldContent is UIElement spOldChild)
+			{
+				// TODO Uno: ResetGlobalScaleFactor exists on the C++ UIElement; in Uno the equivalent
+				// scale-factor reset is implicit. No-op for now.
+				// spOldChild.ResetGlobalScaleFactor();
+			}
+		}
+
+		// Called when the parent of this ScrollContentPresenter changed.
+		// (C++ source line 3506)
+		internal void OnTreeParentUpdated_Mux(object pNewParent, bool isParentAlive)
+		{
+			if (pNewParent is null)
+			{
+				// TODO Uno: Phase 6 — once UnparentHeaders is ported, call it here. Headers are not
+				// yet wired up so leaving the call site commented out for now.
+				// UnparentHeaders();
+				m_trTopLeftHeader = null;
+				m_trTopHeader = null;
+				m_trLeftHeader = null;
+			}
+		}
+
+		// Called when a ScrollContentPresenter dependency property changed.
+		// (C++ source line 3536)
+		internal void OnPropertyChanged2_Mux(DependencyProperty changedProperty)
+		{
+			// TODO Uno: Phase 4 — once SCP exposes CanContentRenderOutsideBoundsProperty on Skia
+			// (it's currently NotImplemented in Generated), wire this up. For now, no-op.
+			// if (changedProperty == CanContentRenderOutsideBoundsProperty)
+			// {
+			//     InvalidateArrange();
+			// }
+		}
+
+		// TODO Uno: Phase 6 — port StopUseOfActualWidthAsExtent / StopUseOfActualHeightAsExtent.
+		// These methods clear the m_isChildActualWidth/HeightUsedAsExtent flag and re-evaluate measure.
+		// For now stubs are sufficient.
+		private void StopUseOfActualWidthAsExtent()
+		{
+			m_isChildActualWidthUsedAsExtent = false;
+		}
+
+		private void StopUseOfActualHeightAsExtent()
+		{
+			m_isChildActualHeightUsedAsExtent = false;
+		}
+
 		// #endregion
 
 #pragma warning restore IDE0051
