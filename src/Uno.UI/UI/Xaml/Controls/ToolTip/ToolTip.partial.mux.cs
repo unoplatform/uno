@@ -55,6 +55,59 @@ public partial class ToolTip : ContentControl
 		set => SetValue(PlacementProperty, value);
 	}
 
+	public static DependencyProperty HorizontalOffsetProperty { get; } =
+		DependencyProperty.Register(
+			nameof(HorizontalOffset), typeof(double),
+			typeof(ToolTip),
+			new FrameworkPropertyMetadata(default(double), OnPlacementCriteriaChangedDP));
+
+	public double HorizontalOffset
+	{
+		get => (double)GetValue(HorizontalOffsetProperty);
+		set => SetValue(HorizontalOffsetProperty, value);
+	}
+
+	public static DependencyProperty VerticalOffsetProperty { get; } =
+		DependencyProperty.Register(
+			nameof(VerticalOffset), typeof(double),
+			typeof(ToolTip),
+			new FrameworkPropertyMetadata(default(double), OnPlacementCriteriaChangedDP));
+
+	public double VerticalOffset
+	{
+		get => (double)GetValue(VerticalOffsetProperty);
+		set => SetValue(VerticalOffsetProperty, value);
+	}
+
+	public static DependencyProperty PlacementRectProperty { get; } =
+		DependencyProperty.Register(
+			nameof(PlacementRect), typeof(Rect?),
+			typeof(ToolTip),
+			new FrameworkPropertyMetadata(default(Rect?), OnPlacementCriteriaChangedDP));
+
+	public Rect? PlacementRect
+	{
+		get => (Rect?)GetValue(PlacementRectProperty);
+		set => SetValue(PlacementRectProperty, value);
+	}
+
+	public static DependencyProperty PlacementTargetProperty { get; } =
+		DependencyProperty.Register(
+			nameof(PlacementTarget), typeof(UIElement),
+			typeof(ToolTip),
+			new FrameworkPropertyMetadata(default(UIElement)));
+
+	public UIElement PlacementTarget
+	{
+		get => (UIElement)GetValue(PlacementTargetProperty);
+		set => SetValue(PlacementTargetProperty, value);
+	}
+
+	private static void OnPlacementCriteriaChangedDP(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		(sender as ToolTip)?.OnPlacementCriteriaChanged();
+	}
+
 #pragma warning disable CS0067 // Event is never used until OnIsOpenChanged dispatches in Phase 2 closeout.
 	public event RoutedEventHandler? Opened;
 
