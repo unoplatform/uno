@@ -150,8 +150,19 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
 			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
 
-		private partial void OnLoadedPartial() { }
-		private partial void OnUnloadedPartial() { }
+		private partial void OnLoadedPartial()
+		{
+#if __SKIA__
+			OnLoadedCore();
+#endif
+		}
+
+		private partial void OnUnloadedPartial()
+		{
+#if __SKIA__
+			OnUnloadedCore();
+#endif
+		}
 
 		#region Over scroll support
 		/// <summary>

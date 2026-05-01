@@ -1800,6 +1800,28 @@ namespace Microsoft.UI.Xaml.Controls
 			DirectManipulationCompleted?.Invoke(this, EventArgs.Empty);
 		}
 
+		// Loaded event handler.
+		// (C++ source line 15035)
+		internal void OnLoadedCore()
+		{
+			m_isLoaded = true;
+
+			// DManip needs to be aware of the content transform immediately via a ZoomToRect call.
+			// Prior attempts at synchronizing the XAML and DManip transforms may have failed because a viewport size, in pixels, was still 0.
+			// TODO Uno: Phase 4 — port OnPrimaryContentTransformChanged.
+			// OnPrimaryContentTransformChanged(translationXChanged: true, translationYChanged: true, zoomFactorChanged: true);
+		}
+
+		// Unloaded event handler.
+		// (C++ source line 15050)
+		internal void OnUnloadedCore()
+		{
+			m_isLoaded = false;
+
+			m_showingMouseIndicators = false;
+			m_keepIndicatorsShowing = false;
+		}
+
 		// Determine if content can be scrolled.
 		// It can, if for either dimension scrolling is enabled AND content size is greater than size of viewport.
 		internal void IsContentScrollable(
