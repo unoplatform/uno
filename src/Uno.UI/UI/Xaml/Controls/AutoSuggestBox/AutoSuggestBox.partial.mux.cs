@@ -312,6 +312,13 @@ namespace Microsoft.UI.Xaml.Controls
 					// TODO Uno: NOT PORTED - ListView.SetAllowItemFocusFromUIA(false). Internal WinUI helper that
 					// disables UIA-driven item focus on the suggestions ListView. Needs an equivalent on Uno's ListView.
 					// spListView.SetAllowItemFocusFromUIA(false);
+
+					// TODO Uno: prevent the suggestion ListView from stealing focus on ItemsSource updates.
+					// In WinUI the inner ListView has IsTabStop=false in the AutoSuggestBox template; in Uno the
+					// default-template ListView ends up grabbing focus during async items-source updates,
+					// dropping m_tpTextBoxPart.IsFocused mid-update and gating UpdateSuggestionListVisibility
+					// out of opening the popup. Force IsTabStop=false here as a defensive measure.
+					spListView.IsTabStop = false;
 				}
 			}
 
