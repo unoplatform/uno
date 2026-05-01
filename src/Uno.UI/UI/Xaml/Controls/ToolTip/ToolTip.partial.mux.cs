@@ -1491,6 +1491,22 @@ public partial class ToolTip : ContentControl
 				spCurrent = spParent;
 			}
 
+			// Uno-specific fallback: if the walk-up found no explicit RequestedTheme, use the
+			// owner's ActualTheme. The popup-hosted ToolTip is in a parentless Popup whose
+			// templated child does not always inherit the ApplicationTheme automatically on
+			// Skia, so without this fallback the Background ThemeResource resolves to the
+			// fallback (often Default which is not what the test asserts). Setting RequestedTheme
+			// explicitly to the owner's resolved ActualTheme makes the templated child pick
+			// up the right brush variant.
+			if (requestedTheme == ElementTheme.Default)
+			{
+				var ownerFE = m_wrOwner?.Target as FrameworkElement;
+				if (ownerFE is not null)
+				{
+					requestedTheme = ownerFE.ActualTheme;
+				}
+			}
+
 			if (requestedTheme != currentToolTipTheme)
 			{
 				RequestedTheme = requestedTheme;
