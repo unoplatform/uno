@@ -243,6 +243,94 @@ public partial class ToolTip : ContentControl
 		PerformPlacementInternal();
 	}
 
+	// MUX Reference: ToolTip_Partial.cpp OpenPopup (line 573).
+	private void OpenPopup()
+	{
+		var spPopup = m_wrPopup?.Target as Popup;
+		global::System.Diagnostics.Debug.Assert(spPopup is not null, "popup from weak reference expected to be non-null");
+		if (spPopup is null)
+		{
+			return;
+		}
+
+		// MUX Reference: VisualTree::GetForElementNoRef equivalent in Uno is XamlRoot.GetForElement.
+		var targetVisualTree = spPopup.XamlRoot;
+
+		// If the visual tree is null, there are two circumstances that might lead to this:
+		// either we haven't yet parented the popup to a visual tree, in which case we can fall back
+		// to using the visual tree of the tool tip target; or we may have gotten into the state
+		// where we're cleaning up and no longer have a visual tree associated with the popup at all,
+		// in which case we'll just do nothing.
+		if (targetVisualTree is null)
+		{
+			var owner = m_wrOwner?.Target as DependencyObject;
+
+			if (owner is not null)
+			{
+				targetVisualTree = XamlRoot.GetForElement(owner);
+			}
+
+			if (targetVisualTree is null)
+			{
+				return;
+			}
+
+			spPopup.XamlRoot = targetVisualTree;
+		}
+
+		spPopup.Child = this;
+
+		var spNewDataContext = DataContext;
+		spPopup.DataContext = spNewDataContext;
+
+		ToolTipService.EnsureHandlersAttachedToRootElement(targetVisualTree);
+
+		bool popupIsOpen = spPopup.IsOpen;
+		global::System.Diagnostics.Debug.Assert(!popupIsOpen);
+		spPopup.IsOpen = true;
+
+		// Count the number of times that we've opened the popup. Rapidly closing and reopening the popup can put the ToolTip
+		// in an inconsistent state when the Popup.Opened event gets delayed in being delivered, so we wait until that final
+		// Popup.Opened event in this scenario. See comment for m_pendingPopupOpenEventCount in header for details.
+		m_pendingPopupOpenEventCount++;
+
+		var spTemplate = Template;
+		if (spTemplate is not null)
+		{
+			ApplyTemplate();
+
+			// Expected structure:
+			//  CPopupRoot
+			//    CToolTip
+			//      CContentPresenter "LayoutRoot"
+			//
+			//  We apply shadow on ContentPresenter to capture FadeInThemeAnimation/FadeOutThemeAnimation
+
+			var contentPresenterAsDO = GetTemplateChild("LayoutRoot") as UIElement;
+
+			if (contentPresenterAsDO is not null)
+			{
+				if (ThemeShadow.IsDropShadowMode)
+				{
+					// Under drop shadows, ToolTip has a smaller shadow than normal.
+					// TODO Uno: Uno's ApplyElevationEffect only accepts depth; the C++ baseElevation
+					// (16) parameter has no Uno equivalent yet. Phase 6 polish will add it.
+					ElevationHelper.ApplyElevationEffect(contentPresenterAsDO, 0 /* depth */);
+				}
+				else
+				{
+					ElevationHelper.ApplyElevationEffect(contentPresenterAsDO);
+				}
+			}
+		}
+		else
+		{
+			// In phone scenarios we do no offer a default template. So instead of having an open popup that doesn't display anything,
+			// close it.
+			spPopup.IsOpen = false;
+		}
+	}
+
 	// MUX Reference: ToolTip_Partial.cpp Close (line 666).
 	private void Close()
 	{

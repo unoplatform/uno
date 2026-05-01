@@ -39,6 +39,14 @@ public partial class ToolTipService
 		}
 		return toolTip;
 	}
+
+	// MUX Reference: ToolTipService_Partial.cpp EnsureHandlersAttachedToRootElement (later in file).
+	// Phase 4 (pointer + focus event handling) will port this faithfully. Currently a stub
+	// so OpenPopup compiles.
+	internal static void EnsureHandlersAttachedToRootElement(XamlRoot? visualTree)
+	{
+		// TODO Uno: Phase 4 will port EnsureHandlersAttachedToRootElement.
+	}
 }
 
 // Phase 0 scaffolding: Slider.mux.cs calls ToolTipPositioning.IsLefthandedUser().
