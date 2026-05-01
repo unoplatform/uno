@@ -9,6 +9,7 @@
 
 #nullable enable
 
+using System;
 using DirectUI;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -20,7 +21,7 @@ public partial class ToolTipService
 
 	// MUX Reference: ToolTipService_Partial.cpp ToolTipServiceMetadata constructor (line 28).
 	// Phase 6 will activate the PowerSettingRegisterNotification display-state hook.
-	// For now the metadata is created lazily on first access via EnsureToolTipServiceMetadata.
+	// For now the metadata is created lazily on first access via GetToolTipServiceMetadata.
 
 	private static ToolTipServiceMetadata? s_toolTipServiceMetadata;
 
@@ -174,7 +175,108 @@ public partial class ToolTipService
 		return toolTip;
 	}
 
-	// MUX Reference: ToolTipService_Partial.cpp ConvertToToolTip (later in file, ~line 800).
+	// MUX Reference: ToolTipService_Partial.cpp OpenAutomaticToolTip (line 423).
+	private static void OpenAutomaticToolTip(object? pUnused1, object? pUnused2)
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_tpOpenTimer is not null)
+		{
+			pToolTipServiceMetadataNoRef.m_tpOpenTimer.Stop();
+		}
+
+		global::System.Diagnostics.Debug.Assert(pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is null);
+
+		// ToolTipService does not open ToolTips automatically on Xbox.
+		// TODO Uno (Phase 6): port XboxUtility::IsOnXbox check.
+#if false
+		if (XboxUtility::IsOnXbox())
+		{
+			goto Cleanup;
+		}
+#endif
+
+		uint showDurationSeconds;
+		// TODO Uno: SystemParametersInfo SPI_GETMESSAGEDURATION is Win32-only. Phase 6 polish
+		// can wire platform-specific APIs; for now we use the WinUI fallback constant.
+		showDurationSeconds = (uint)ToolTipServiceConstants.DEFAULT_SHOW_DURATION_SECONDS;
+		var showDurationTimeSpan = TimeSpan.FromSeconds(showDurationSeconds);
+
+		// If m_tpOwner or m_tpContainer is null, we received a Tick when the timer was already stopped.
+		// Can't just check if timer was stopped because we sometimes call this directly.
+		if (pToolTipServiceMetadataNoRef.m_tpOwner is null || pToolTipServiceMetadataNoRef.m_tpContainer is null)
+		{
+			return;
+		}
+
+		if (!pToolTipServiceMetadataNoRef.m_tpContainer.IsLoaded)
+		{
+			return;
+		}
+
+		var spToolTipObject = GetActualToolTipObject(pToolTipServiceMetadataNoRef.m_tpOwner);
+		global::System.Diagnostics.Debug.Assert(spToolTipObject is not null, "ToolTip must have been registered");
+		if (spToolTipObject is null)
+		{
+			return;
+		}
+
+		spToolTipObject.m_inputMode = s_lastEnterInputMode;
+
+		s_bOpeningAutomaticToolTip = true;
+		try
+		{
+			spToolTipObject.IsOpen = true;
+		}
+		finally
+		{
+			s_bOpeningAutomaticToolTip = false;
+		}
+
+		// TODO Uno (Phase 6): port StartSafeZoneCheckTimer.
+#if false
+		IFC(StartSafeZoneCheckTimer(pToolTipServiceMetadataNoRef));
+#endif
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp CloseAutomaticToolTip (line 496).
+	private static void CloseAutomaticToolTip(object? pUnused1, object? pUnused2)
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_tpCloseTimer is not null)
+		{
+			pToolTipServiceMetadataNoRef.m_tpCloseTimer.Stop();
+		}
+
+		// TODO Uno (Phase 6): SafeZoneCheckTimer (DispatcherQueueTimer) not yet wired.
+#if false
+		if (pToolTipServiceMetadataNoRef->m_tpSafeZoneCheckTimer)
+		{
+			IFC(pToolTipServiceMetadataNoRef->m_tpSafeZoneCheckTimer->Stop());
+		}
+#endif
+
+		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is not null)
+		{
+			global::System.Diagnostics.Debug.Assert(pToolTipServiceMetadataNoRef.m_tpCurrentPopup is not null);
+			pToolTipServiceMetadataNoRef.m_tpCurrentToolTip.IsOpen = false;
+
+			s_lastToolTipOpenedTime = Environment.TickCount;
+		}
+
+		if (pToolTipServiceMetadataNoRef.m_lastToolTipOwnerInSafeZone is not null)
+		{
+			var owner = pToolTipServiceMetadataNoRef.m_lastToolTipOwnerInSafeZone.Target as DependencyObject;
+			pToolTipServiceMetadataNoRef.m_lastToolTipOwnerInSafeZone = null;
+			if (owner is not null)
+			{
+				RemoveFromNestedOwners(owner);
+			}
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp ConvertToToolTip (line 537).
 	// Wraps a content object in a ToolTip if it isn't already one. Also handles the case
 	// where the object is already parented to a ToolTip (returns that parent).
 	private static ToolTip ConvertToToolTip(object objectIn)
@@ -199,7 +301,234 @@ public partial class ToolTipService
 		return toolTip;
 	}
 
-	// MUX Reference: ToolTipService_Partial.cpp OnToolTipChanged (later in file, ~line 525).
+	// MUX Reference: ToolTipService_Partial.cpp OnOwnerEnterInternal (line 583).
+	private static void OnOwnerEnterInternal(object pSender, object? pSource, AutomaticToolTipInputMode mode)
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		bool isSenderLastEnterSource =
+			pToolTipServiceMetadataNoRef.m_tpLastEnterSource is not null &&
+			ReferenceEquals(pToolTipServiceMetadataNoRef.m_tpLastEnterSource, pSource);
+		if (pToolTipServiceMetadataNoRef.m_tpLastEnterSource is not null && isSenderLastEnterSource)
+		{
+			// ToolTipService had processed this event once before, when it fired on the child
+			// skip it now
+			return;
+		}
+
+		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is not null)
+		{
+			var spSenderAsIDO = pSender as DependencyObject;
+			ToolTip? spToolTipObject = null;
+			if (spSenderAsIDO is not null)
+			{
+				spToolTipObject = GetActualToolTipObject(spSenderAsIDO);
+			}
+
+			if (!ReferenceEquals(spToolTipObject, pToolTipServiceMetadataNoRef.m_tpCurrentToolTip))
+			{
+				// first close the previous ToolTip if entering nested elements with tooltips
+				CloseAutomaticToolTip(null, null);
+			}
+			else
+			{
+				// reentering the same element
+				return;
+			}
+		}
+
+		// CStaticLock equivalent: not needed in C# managed model.
+		{
+			var spSenderAsDO = pSender as DependencyObject;
+			if (spSenderAsDO is null)
+			{
+				return;
+			}
+
+			var spContainer = GetContainerFromOwner(spSenderAsDO);
+
+			pToolTipServiceMetadataNoRef.SetOwner(spSenderAsDO);
+			pToolTipServiceMetadataNoRef.SetContainer(spContainer);
+			pToolTipServiceMetadataNoRef.SetLastEnterSource(pSource);
+		}
+
+		global::System.Diagnostics.Debug.Assert(pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is null);
+
+		// open the ToolTip after the InitialShowDelay interval expires
+		if (pToolTipServiceMetadataNoRef.m_tpOpenTimer is null)
+		{
+			var spNewDispatcherTimer = new DispatcherTimer();
+			pToolTipServiceMetadataNoRef.SetOpenTimer(spNewDispatcherTimer);
+
+			pToolTipServiceMetadataNoRef.m_tpOpenTimer!.Tick += OpenAutomaticToolTip;
+		}
+
+		s_lastEnterInputMode = mode;
+
+		bool useReshowTimer = (Environment.TickCount - s_lastToolTipOpenedTime) < ToolTipServiceConstants.BETWEEN_SHOW_DELAY_MS;
+		var initialShowDelayTimeSpan = GetInitialShowDelay(mode, useReshowTimer);
+		pToolTipServiceMetadataNoRef.m_tpOpenTimer!.Interval = initialShowDelayTimeSpan;
+		pToolTipServiceMetadataNoRef.m_tpOpenTimer!.Start();
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp OnOwnerLeaveInternal (line 670).
+	// Used to handle MouseLeave on a ToolTip's owner FrameworkElement.
+	private static void OnOwnerLeaveInternal(object pSender)
+	{
+		var spSenderAsDO = pSender as DependencyObject;
+		global::System.Diagnostics.Debug.Assert(spSenderAsDO is not null);
+		if (spSenderAsDO is null)
+		{
+			return;
+		}
+
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		bool areEqual = ReferenceEquals(spSenderAsDO, pToolTipServiceMetadataNoRef.m_tpOwner);
+		if (areEqual)
+		{
+			// No need to call RemoveFromNestedOwners() since CancelAutomaticToolTip calls it.
+			CancelAutomaticToolTip();
+		}
+		else
+		{
+			RemoveFromNestedOwners(spSenderAsDO);
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp CancelAutomaticToolTip (line 703).
+	// If there is an automatic ToolTip in the process of opening, stop it from opening.
+	// If one is already open, close it.
+	// Clear any state associated with the current automatic ToolTip and its owner.
+	internal static void CancelAutomaticToolTip()
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is null)
+		{
+			// ToolTip had not been opened yet
+
+			// There are some strange cases where the owner will get a leave but not an enter.
+			// The _openTimer is initialized in the enter, so we need to make sure it is there
+			// before we try to stop it.
+
+			if (pToolTipServiceMetadataNoRef.m_tpOpenTimer is not null)
+			{
+				pToolTipServiceMetadataNoRef.m_tpOpenTimer.Stop();
+			}
+		}
+		else
+		{
+			CloseAutomaticToolTip(null, null);
+		}
+
+		// CStaticLock equivalent: not needed in C# managed model.
+		if (pToolTipServiceMetadataNoRef.m_tpOwner is not null)
+		{
+			RemoveFromNestedOwners(pToolTipServiceMetadataNoRef.m_tpOwner);
+			pToolTipServiceMetadataNoRef.m_tpOwner = null;
+		}
+		pToolTipServiceMetadataNoRef.m_tpContainer = null;
+		pToolTipServiceMetadataNoRef.m_tpLastEnterSource = null;
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp EnsureHandlersAttachedToRootElement (line 744).
+	// Phase 4 closeout / Phase 6 will port the OnRootVisualPointerMoved + OnRootVisualSizeChanged
+	// handler attachment. For now this is a no-op stub so OpenPopup compiles.
+	internal static void EnsureHandlersAttachedToRootElement(XamlRoot? visualTree)
+	{
+		// TODO Uno: Phase 4 closeout will port EnsureHandlersAttachedToRootElement.
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp AddToNestedOwners (line 979).
+	// Phase 4 closeout will port the full nested-owner list management. For now this stub
+	// is sufficient because tooltips don't nest in the common Slider / Button case.
+	private static void AddToNestedOwners(DependencyObject pOwner)
+	{
+		// TODO Uno: Phase 4 closeout will port AddToNestedOwners faithfully.
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp RemoveFromNestedOwners (line 1116).
+	private static void RemoveFromNestedOwners(DependencyObject pOwner)
+	{
+		// TODO Uno: Phase 4 closeout will port RemoveFromNestedOwners faithfully.
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp PurgeInvalidNestedOwners (line 1177).
+	internal static void PurgeInvalidNestedOwners()
+	{
+		// TODO Uno: Phase 4 closeout will port PurgeInvalidNestedOwners faithfully.
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp OnOwnerPointerEntered (line 1354).
+	private static void OnOwnerPointerEntered(object sender, Input.PointerRoutedEventArgs e)
+	{
+		var spSenderAsDO = sender as DependencyObject;
+		if (spSenderAsDO is null)
+		{
+			return;
+		}
+
+		var spToolTipObject = GetActualToolTipObject(spSenderAsDO);
+		if (spToolTipObject is null)
+		{
+			return;
+		}
+
+		bool isAlreadyOpen = spToolTipObject.IsOpen;
+
+		if (!isAlreadyOpen)
+		{
+			var spPointerPoint = e.GetCurrentPoint(null);
+			if (spPointerPoint is null)
+			{
+				return;
+			}
+
+			var pointerDeviceType = spPointerPoint.PointerDeviceType;
+			bool isInPointerMode = pointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Touch;
+
+			s_lastPointerEnteredPoint = spPointerPoint.Position;
+
+			// Add to list of nested owners
+			AddToNestedOwners(spSenderAsDO);
+			var spOriginalSource = e.OriginalSource;
+
+			OnOwnerEnterInternal(
+				spSenderAsDO,
+				spOriginalSource,
+				isInPointerMode ? AutomaticToolTipInputMode.Touch : AutomaticToolTipInputMode.Mouse);
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp OnOwnerPointerExitedOrLostOrCanceled (line 1423).
+	// Used to handle PointerExited, PointerCaptureLost, and PointerCanceled on a ToolTip's owner FrameworkElement.
+	private static void OnOwnerPointerExitedOrLostOrCanceled(object sender, Input.PointerRoutedEventArgs e)
+	{
+		var pToolTipServiceMetadataNoRef = GetToolTipServiceMetadata();
+
+		// Opened ToolTip will be kept and will be closed when Pointer is out side of safe zone
+		// Not opened ToolTip will be cancelled
+		if (pToolTipServiceMetadataNoRef.m_tpCurrentToolTip is null)
+		{
+			// Cancel the ToolTip if it had not been opened yet
+			if (pToolTipServiceMetadataNoRef.m_tpOpenTimer is not null)
+			{
+				CancelAutomaticToolTip();
+			}
+		}
+		else
+		{
+			var owner = sender as DependencyObject;
+
+			if (owner is not null)
+			{
+				pToolTipServiceMetadataNoRef.m_lastToolTipOwnerInSafeZone = new WeakReference(owner);
+			}
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp OnToolTipChanged (line 1608).
 	// The cross-platform OnToolTipChanged in ToolTipService.mux.cs (gated #if !__SKIA__)
 	// dispatches the same way.
 	private static void OnToolTipChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -219,50 +548,102 @@ public partial class ToolTipService
 		}
 	}
 
+	// MUX Reference: ToolTipService_Partial.cpp OnOwnerGotFocus (line 1635).
+	private static void OnOwnerGotFocus(object sender, RoutedEventArgs e)
+	{
+		var spSenderAsDO = sender as DependencyObject;
+		if (spSenderAsDO is null)
+		{
+			return;
+		}
+
+		var spToolTipObject = GetActualToolTipObject(spSenderAsDO);
+		if (spToolTipObject is null)
+		{
+			return;
+		}
+
+		bool isAlreadyOpen = spToolTipObject.IsOpen;
+
+		if (!isAlreadyOpen)
+		{
+			var contentRoot = global::Uno.UI.Xaml.Core.VisualTree.GetContentRootForElement(spSenderAsDO);
+			var focusState = contentRoot?.FocusManager.GetRealFocusStateForFocusedElement();
+
+			// If the source of a programmatic focus was UIA, we should show the tooltip:
+			bool shouldShowToolTip = (focusState == FocusState.Keyboard) ||
+									 (focusState == FocusState.Programmatic
+										&& contentRoot?.InputManager?.GetWasUIAFocusSetSinceLastInput() == true);
+
+			if (shouldShowToolTip)
+			{
+				var spOriginalSource = e.OriginalSource;
+				OnOwnerEnterInternal(spSenderAsDO, spOriginalSource, AutomaticToolTipInputMode.Keyboard);
+			}
+		}
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp OnOwnerLostFocus (line 1696).
+	// Used to handle LostFocus on a ToolTip's owner FrameworkElement.
+	private static void OnOwnerLostFocus(object sender, RoutedEventArgs e)
+	{
+		OnOwnerLeaveInternal(sender);
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp GetInitialShowDelay (line 1744).
+	// For a given input mode, returns the initial delay before the ToolTip shows according to spec.
+	//
+	// There are normal and reshow timers.  The normal timer is used when first opening a ToolTip.
+	// The reshow timer is used when a previous ToolTip has been shown within BETWEEN_SHOW_DELAY_MS
+	// of invoking this one.
+	//
+	//          Touch   Mouse   Keyboard
+	//  --------------------------------
+	//  Normal     1x      2x         2x
+	//  Reshow      0    1.5x         2x
+	//
+	//  where x = SPI_GETMOUSEHOVERTIME (400 ms by default)
+	private static TimeSpan GetInitialShowDelay(AutomaticToolTipInputMode mode, bool isReshow)
+	{
+		// TODO Uno: SystemParametersInfo SPI_GETMOUSEHOVERTIME is Win32-only. Phase 6 polish
+		// can wire platform-specific APIs; for now we use the WinUI fallback constant.
+		long ulSPIGetMouseHoverTimeMS = ToolTipServiceConstants.DEFAULT_SPI_GETMOUSEHOVERTIME;
+
+		long ulSPIGetMouseHoverTimeTicks = ulSPIGetMouseHoverTimeMS * ToolTipServiceConstants.TICKS_PER_MILLISECOND;
+
+		switch (mode)
+		{
+			case AutomaticToolTipInputMode.Touch:
+				ulSPIGetMouseHoverTimeTicks *= isReshow ? 0 : 1;
+				break;
+			case AutomaticToolTipInputMode.Mouse:
+				ulSPIGetMouseHoverTimeTicks *= (long)(isReshow ? 1.5 : 2);
+				break;
+			case AutomaticToolTipInputMode.Keyboard:
+				ulSPIGetMouseHoverTimeTicks *= 2;
+				break;
+		}
+
+		return TimeSpan.FromTicks(ulSPIGetMouseHoverTimeTicks);
+	}
+
+	// MUX Reference: ToolTipService_Partial.cpp GetContainerFromOwner (line 1790).
+	private static FrameworkElement? GetContainerFromOwner(DependencyObject owner)
+	{
+		var toolTipObject = GetActualToolTipObject(owner);
+
+		if (toolTipObject is not null)
+		{
+			return toolTipObject.GetContainer();
+		}
+
+		return null;
+	}
+
 	private static void OnPlacementChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
 		// TODO Uno: Phase 3 closeout will mirror the cross-platform Placement-update behavior
 		// (propagate to the registered ToolTip's Placement).
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp EnsureHandlersAttachedToRootElement (later in file).
-	// Phase 4 (pointer + focus event handling) will port this faithfully. Currently a stub
-	// so OpenPopup compiles.
-	internal static void EnsureHandlersAttachedToRootElement(XamlRoot? visualTree)
-	{
-		// TODO Uno: Phase 4 will port EnsureHandlersAttachedToRootElement.
-	}
-
-	// === Phase 4 stubs (pointer + focus + leave handlers) ===
-
-	// MUX Reference: ToolTipService_Partial.cpp OnOwnerPointerEntered (later in file).
-	private static void OnOwnerPointerEntered(object sender, Input.PointerRoutedEventArgs e)
-	{
-		// TODO Uno: Phase 4 will port OnOwnerPointerEntered.
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp OnOwnerPointerExitedOrLostOrCanceled (later in file).
-	private static void OnOwnerPointerExitedOrLostOrCanceled(object sender, Input.PointerRoutedEventArgs e)
-	{
-		// TODO Uno: Phase 4 will port OnOwnerPointerExitedOrLostOrCanceled.
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp OnOwnerGotFocus (later in file).
-	private static void OnOwnerGotFocus(object sender, RoutedEventArgs e)
-	{
-		// TODO Uno: Phase 4 will port OnOwnerGotFocus.
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp OnOwnerLostFocus (later in file).
-	private static void OnOwnerLostFocus(object sender, RoutedEventArgs e)
-	{
-		// TODO Uno: Phase 4 will port OnOwnerLostFocus.
-	}
-
-	// MUX Reference: ToolTipService_Partial.cpp OnOwnerLeaveInternal (later in file).
-	private static void OnOwnerLeaveInternal(object pSender)
-	{
-		// TODO Uno: Phase 4 will port OnOwnerLeaveInternal (closes/cancels the tooltip when the owner leaves).
 	}
 
 #pragma warning restore IDE0060
