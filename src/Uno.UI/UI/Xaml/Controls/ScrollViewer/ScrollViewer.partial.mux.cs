@@ -478,6 +478,664 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void ScrollToVerticalOffsetInternal(double offset)
 			=> HandleVerticalScroll(ScrollEventType.ThumbPosition, offset);
 
+		// Combines the abilities of ScrollToHorizontalOffset, ScrollToVerticalOffset
+		// and ZoomToFactor with optional animation, snap-point adjustment, and DM
+		// BringIntoViewport coordination.
+		// (C++ source line 3385)
+		// NOTE: this is the WinUI ChangeViewInternal port. The DM-aware branches
+		// (m_canManipulateElementsWithBringIntoViewport / BringIntoViewportInternal /
+		// GetDManipView path) are preserved verbatim inside `#if false` blocks per
+		// the don't-simplify rule and become live when the Phase-4 DM adapter
+		// lands. The non-DM SetOffsetsWithExtents / SetHorizontalOffset /
+		// SetVerticalOffset / ZoomToFactorInternal path is the active one on Skia.
+		internal bool ChangeViewInternal(
+			double? pHorizontalOffset,
+			double? pVerticalOffset,
+			float? pZoomFactor,
+			float? pOldZoomFactor,
+			bool forceChangeToCurrentView,
+			bool adjustWithMandatorySnapPoints,
+			bool skipDuringTouchContact,
+			bool skipAnimationWhileRunning,
+			bool disableAnimation,
+			bool applyAsManip,
+			bool transformIsInertiaEnd,
+			bool isForMakeVisible)
+		{
+			bool isHandled = false;
+			bool isBringIntoViewportCallAllowed = true;
+			bool isBringIntoViewportCalled = false;
+			bool isScrollContentPresenterScrollClient = false;
+			bool isViewChangingDelayed = false;
+			bool isViewChangedDelayed = false;
+			bool canManipulateElementsByTouch = false;
+			bool canManipulateElementsNonTouch = false;
+			bool canManipulateElementsWithBringIntoViewport = false;
+			bool canHorizontallyScroll = false;
+			bool canVerticallyScroll = false;
+			bool clearInChangeViewBringIntoViewport = false;
+			double currentUnzoomedPixelExtentWidth = -1.0;
+			double currentUnzoomedPixelExtentHeight = -1.0;
+			double targetExtentWidth = -1.0;
+			double targetExtentHeight = -1.0;
+			double viewportWidth = 0.0;
+			double viewportHeight = 0.0;
+			double viewportPixelWidth = 0.0;
+			double viewportPixelHeight = 0.0;
+			double currentHorizontalOffset = 0.0;
+			double currentVerticalOffset = 0.0;
+			double currentTargetHorizontalOffset = 0.0;
+			double currentTargetVerticalOffset = 0.0;
+			double oldTargetChangeViewHorizontalOffset = -1.0;
+			double oldTargetChangeViewVerticalOffset = -1.0;
+			double minHorizontalOffset = -1.0;
+			double minVerticalOffset = -1.0;
+			double maxHorizontalOffset = -1.0;
+			double maxVerticalOffset = -1.0;
+			double targetHorizontalOffset = 0.0;
+			double targetVerticalOffset = 0.0;
+			double targetPixelHorizontalOffset = 0.0;
+			double targetPixelVerticalOffset = 0.0;
+			double adjustedTargetHorizontalOffset = 0.0;
+			double adjustedTargetVerticalOffset = 0.0;
+			float adjustedTargetZoomFactor = 1.0f;
+			float targetZoomFactor = 1.0f;
+			float currentZoomFactor = 1.0f;
+			float currentTargetZoomFactor = 1.0f;
+			float oldTargetChangeViewZoomFactor = -1.0f;
+			float minZoomFactor = 0.0f;
+			float maxZoomFactor = 0.0f;
+			float targetTranslateX = 0.0f;
+			float targetTranslateY = 0.0f;
+			global::Windows.Foundation.Rect bounds = default;
+			DMAlignment alignment = DMAlignment.None;
+			UIElement spContentUIElement = null;
+			UIElement spScrollInfoAsElement = null;
+			object spProvider = null;
+			IScrollInfo spScrollInfo = null;
+			Orientation orientation = Orientation.Horizontal;
+			global::Windows.Foundation.Size sizeFirstVisibleItem = default;
+
+			global::System.Diagnostics.Debug.Assert(!transformIsInertiaEnd || (forceChangeToCurrentView && disableAnimation));
+
+			// The provided pOldZoomFactor value is only used when m_isInZoomFactorSync is True.
+			// i.e. when a ZoomToFactor call causes us to push a new content transform to DManip.
+			// The value is expected to be nullptr in all other scenarios.
+			global::System.Diagnostics.Debug.Assert((pOldZoomFactor == null && !m_isInZoomFactorSync) || (pOldZoomFactor != null && pOldZoomFactor.Value > 0.0f && m_isInZoomFactorSync));
+
+			bool returnValue = false;
+
+			if (!pHorizontalOffset.HasValue && !pVerticalOffset.HasValue && !pZoomFactor.HasValue)
+			{
+				if (forceChangeToCurrentView)
+				{
+					// XAML is pushing new transform to DManip.
+					m_isInDirectManipulationSync = true;
+				}
+				else
+				{
+					// Not a single view characteristic was provided. Do no attempt any view change.
+					// Unless forceChangeToCurrentView is True, in which case invoke a BringIntoViewport
+					// for the current view to synchronize XAML and DManip.
+					goto Cleanup;
+				}
+			}
+
+			spScrollInfo = GetScrollInfo();
+			if (spScrollInfo is null)
+			{
+				// No IScrollInfo to interact with. Return False.
+				goto Cleanup;
+			}
+
+			currentHorizontalOffset = HorizontalOffset;
+			currentVerticalOffset = VerticalOffset;
+			currentZoomFactor = ZoomFactor;
+
+			if (transformIsInertiaEnd && m_targetChangeViewHorizontalOffset != -1.0)
+			{
+				// This ChangeViewInternal call follows a cancellation of inertia in CInputServices::StopInertialViewport.
+				// Store the previous ChangeView target (pixel-based offsets) so it can be used if the newly requested
+				// target is slightly different because of roundings required for ZoomToRect.
+				oldTargetChangeViewHorizontalOffset = m_targetChangeViewHorizontalOffset;
+				oldTargetChangeViewVerticalOffset = m_targetChangeViewVerticalOffset;
+				oldTargetChangeViewZoomFactor = m_targetChangeViewZoomFactor;
+
+				// Since inertia was cancelled, the previous ChangeView target is no longer valid.
+				// These values can no longer be used for setting the 3 currentTarget*** variables below.
+				m_targetChangeViewHorizontalOffset = -1.0;
+				m_targetChangeViewVerticalOffset = -1.0;
+				m_targetChangeViewZoomFactor = -1.0f;
+			}
+
+			// Take into account latest requests for offset and zoom factor changes, if any.
+			if (m_isTargetHorizontalOffsetValid)
+			{
+				currentTargetHorizontalOffset = m_targetHorizontalOffset;
+			}
+			else if (m_targetChangeViewHorizontalOffset >= 0.0)
+			{
+				currentTargetHorizontalOffset = m_targetChangeViewHorizontalOffset;
+			}
+			else
+			{
+				currentTargetHorizontalOffset = currentHorizontalOffset;
+			}
+
+			if (m_isTargetVerticalOffsetValid)
+			{
+				currentTargetVerticalOffset = m_targetVerticalOffset;
+			}
+			else if (m_targetChangeViewVerticalOffset >= 0.0)
+			{
+				currentTargetVerticalOffset = m_targetChangeViewVerticalOffset;
+			}
+			else
+			{
+				currentTargetVerticalOffset = currentVerticalOffset;
+			}
+
+			if (m_isTargetZoomFactorValid)
+			{
+				currentTargetZoomFactor = m_targetZoomFactor;
+			}
+			else if (m_targetChangeViewZoomFactor > 0.0f)
+			{
+				currentTargetZoomFactor = m_targetChangeViewZoomFactor;
+			}
+			else
+			{
+				currentTargetZoomFactor = currentZoomFactor;
+			}
+
+			if (!m_canManipulateElementsWithAsyncBringIntoViewport)
+			{
+				// When a projection is set for instance, and DManip is partially turned off, only perform non-animated view changes.
+				disableAnimation = true;
+			}
+
+			if (!disableAnimation)
+			{
+				// Do not attempt to animate when OS Settings have turned off animations.
+				disableAnimation = !IsAnimationEnabled;
+			}
+
+			spProvider = GetInnerManipulationDataProvider();
+			if (spProvider is FrameworkElement spProviderFE)
+			{
+				// TODO Uno: Phase 5 — IManipulationDataProvider port. PhysicalOrientation
+				// is read from the provider; defaults to Horizontal until that lands.
+
+				// When operating with a IManipulationDataProvider implementation, we do not support animations. Pretend the flag was set to False.
+				disableAnimation = true;
+
+				if ((orientation == Orientation.Horizontal && pHorizontalOffset.HasValue) ||
+					(orientation == Orientation.Vertical && pVerticalOffset.HasValue))
+				{
+					// Also IManipulationDataProvider does not currently provide a means to compute a pixel-based
+					// offset given a logical offset. So DManip ZoomToRect which are pixel-based are skipped in favor
+					// of ScrollToHorizontalOffset/ScrollToVerticalOffset/ZoomToFactor calls.
+					isBringIntoViewportCallAllowed = false;
+				}
+				_ = spProviderFE;
+			}
+
+			ComputePixelViewportWidth((spProvider is not null && orientation == Orientation.Horizontal) ? spProvider : null, true /*isProviderSet*/, out viewportPixelWidth);
+			ComputePixelViewportHeight((spProvider is not null && orientation == Orientation.Vertical) ? spProvider : null, true /*isProviderSet*/, out viewportPixelHeight);
+
+			minHorizontalOffset = spScrollInfo.GetMinHorizontalOffset();
+			minVerticalOffset = spScrollInfo.GetMinVerticalOffset();
+			minZoomFactor = MinZoomFactor;
+			maxZoomFactor = MaxZoomFactor;
+
+			if (pZoomFactor.HasValue)
+			{
+				targetZoomFactor = pZoomFactor.Value;
+
+				if (float.IsNaN(targetZoomFactor) || float.IsInfinity(targetZoomFactor))
+				{
+					// Use standard error string "The value cannot be infinite or Not a Number (NaN)."
+					throw new global::System.ArgumentException("The value cannot be infinite or Not a Number (NaN).");
+				}
+
+				// Clamp the provided value based on MinZoomFactor and MaxZoomFactor
+				if (targetZoomFactor < minZoomFactor)
+				{
+					targetZoomFactor = minZoomFactor;
+				}
+				else if (targetZoomFactor > maxZoomFactor)
+				{
+					targetZoomFactor = maxZoomFactor;
+				}
+			}
+			else
+			{
+				// Use current zoom factor, or latest requested zoom factor, since no target was specified.
+				targetZoomFactor = currentTargetZoomFactor;
+
+				// No need to clamp this value based on MinZoomFactor and MaxZoomFactor
+				// since the current dependency property is already clamped.
+			}
+
+			if (disableAnimation && adjustWithMandatorySnapPoints)
+			{
+				AdjustZoomFactorWithMandatorySnapPoints(minZoomFactor, maxZoomFactor, ref targetZoomFactor);
+			}
+
+			canHorizontallyScroll = spScrollInfo.GetCanHorizontallyScroll();
+			// Even when canHorizontallyScroll is False, the current horizontal offset may be greater than minHorizontalOffset.
+			// This is because IScrollInfo implementations like ItemsPresenter, VirtualizingStackPanel and WrapGrip allow
+			// their SetHorizontalOffset to set the offset to values other than minHorizontalOffset, via the ScrollToHorizontalOffset
+			// method. The ScrollContentPresenter however forces the offset to be minHorizontalOffset when it is the IScrollInfo implementer.
+			// When forceChangeToCurrentView is True (i.e. ScrollViewer::NotifyBringIntoViewportNeeded is being processed to sync up the XAML
+			// and DManip transforms) and the ScrollContentPresenter is not the IScrollInfo implementer (i.e. spProvider is set), the fact that
+			// get_CanHorizontallyScroll returned false must be overwritten such that a DManip ZoomToRect call with the current horizontal
+			// offset is made.
+			canHorizontallyScroll |= forceChangeToCurrentView && spProvider != null;
+			if (canHorizontallyScroll)
+			{
+				viewportWidth = spScrollInfo.GetViewportWidth();
+			}
+			if (canHorizontallyScroll && !double.IsPositiveInfinity(viewportWidth))
+			{
+				if (pHorizontalOffset.HasValue)
+				{
+					targetHorizontalOffset = pHorizontalOffset.Value;
+					if (double.IsNaN(targetHorizontalOffset) || double.IsInfinity(targetHorizontalOffset))
+					{
+						// Use standard error string "The value cannot be infinite or Not a Number (NaN)."
+						throw new global::System.ArgumentException("The value cannot be infinite or Not a Number (NaN).");
+					}
+					if (targetHorizontalOffset < minHorizontalOffset)
+					{
+						targetHorizontalOffset = minHorizontalOffset;
+					}
+				}
+				else
+				{
+					// Use current horizontal offset, or latest requested offset, since no target was specified.
+					targetHorizontalOffset = currentTargetHorizontalOffset;
+				}
+				if (spProvider == null || orientation == Orientation.Vertical)
+				{
+					// ScrollViewer operates with pixel-based horizontal offsets.
+					if (disableAnimation || double.IsInfinity((float)(targetHorizontalOffset / targetZoomFactor)))
+					{
+						// Clamp the pixel-based horizontal offset so it does not exceed the maximum value.
+						AdjustTargetHorizontalOffset(
+							disableAnimation,
+							adjustWithMandatorySnapPoints,
+							targetZoomFactor,
+							minHorizontalOffset,
+							currentHorizontalOffset,
+							viewportPixelWidth,
+							ref targetHorizontalOffset,
+							out currentUnzoomedPixelExtentWidth,
+							out maxHorizontalOffset,
+							out targetExtentWidth);
+					}
+					targetPixelHorizontalOffset = targetHorizontalOffset;
+				}
+				else
+				{
+					// ScrollViewer operates with logical-based horizontal offsets.
+					global::System.Diagnostics.Debug.Assert(spProvider != null && orientation == Orientation.Horizontal);
+					global::System.Diagnostics.Debug.Assert(disableAnimation);
+
+					if (isBringIntoViewportCallAllowed)
+					{
+						// The horizontal offset cannot be altered since the panel operates in logical-based units.
+						targetPixelHorizontalOffset = (m_xPixelOffsetRequested == -1) ? m_xPixelOffset : m_xPixelOffsetRequested;
+
+						if (m_isInZoomFactorSync)
+						{
+							// For horizontal virtualizing panels that use logical-based offsets, the pixel-based target horizontal
+							// offset needs to be adjusted based on the zoom factor change. The logical offset is unchanged though.
+							targetPixelHorizontalOffset *= targetZoomFactor / pOldZoomFactor.Value;
+						}
+					}
+
+					if (adjustWithMandatorySnapPoints)
+					{
+						// Make sure the logical offset snaps to an integer if near mandatory scroll snap points are effective.
+						AdjustLogicalOffsetWithMandatorySnapPoints(
+							true /*isForHorizontalOffset*/,
+							ref targetHorizontalOffset);
+					}
+				}
+			}
+			else
+			{
+				// canHorizontallyScroll == False or viewportWidth == DoubleUtil::PositiveInfinity. No matter the requested horizontal offset, it is assumed to be minHorizontalOffset.
+				maxHorizontalOffset = minHorizontalOffset;
+				targetHorizontalOffset = minHorizontalOffset;
+				if (spProvider == null || orientation == Orientation.Vertical)
+				{
+					// ScrollViewer operates with pixel-based horizontal offsets.
+					targetPixelHorizontalOffset = minHorizontalOffset;
+				}
+			}
+
+			canVerticallyScroll = spScrollInfo.GetCanVerticallyScroll();
+			canVerticallyScroll |= forceChangeToCurrentView && spProvider != null;
+			if (canVerticallyScroll)
+			{
+				viewportHeight = spScrollInfo.GetViewportHeight();
+			}
+			if (canVerticallyScroll && !double.IsPositiveInfinity(viewportHeight))
+			{
+				if (pVerticalOffset.HasValue)
+				{
+					targetVerticalOffset = pVerticalOffset.Value;
+					if (double.IsNaN(targetVerticalOffset) || double.IsInfinity(targetVerticalOffset))
+					{
+						throw new global::System.ArgumentException("The value cannot be infinite or Not a Number (NaN).");
+					}
+					if (targetVerticalOffset < minVerticalOffset)
+					{
+						targetVerticalOffset = minVerticalOffset;
+					}
+				}
+				else
+				{
+					// Use current horizontal offset, or latest requested offset, since no target was specified.
+					targetVerticalOffset = currentTargetVerticalOffset;
+				}
+				if (spProvider == null || orientation == Orientation.Horizontal)
+				{
+					// Clamp the pixel-based vertical offset so it does not exceed the maximum value.
+					AdjustTargetVerticalOffset(
+						disableAnimation,
+						adjustWithMandatorySnapPoints,
+						targetZoomFactor,
+						minVerticalOffset,
+						currentVerticalOffset,
+						viewportPixelHeight,
+						ref targetVerticalOffset,
+						out currentUnzoomedPixelExtentHeight,
+						out maxVerticalOffset,
+						out targetExtentHeight);
+					targetPixelVerticalOffset = targetVerticalOffset;
+				}
+				else
+				{
+					// ScrollViewer operates with logical-based vertical offsets.
+					global::System.Diagnostics.Debug.Assert(spProvider != null && orientation == Orientation.Vertical);
+					global::System.Diagnostics.Debug.Assert(disableAnimation);
+
+					if (isBringIntoViewportCallAllowed)
+					{
+						// The vertical offset cannot be altered since the panel operates in logical-based units.
+						targetPixelVerticalOffset = (m_yPixelOffsetRequested == -1) ? m_yPixelOffset : m_yPixelOffsetRequested;
+
+						if (m_isInZoomFactorSync)
+						{
+							// For vertical virtualizing panels that use logical-based offsets, the pixel-based target vertical
+							// offset needs to be adjusted based on the zoom factor change. The logical offset is unchanged though.
+							targetPixelVerticalOffset *= targetZoomFactor / pOldZoomFactor.Value;
+						}
+					}
+
+					if (adjustWithMandatorySnapPoints)
+					{
+						// Make sure the logical offset snaps to an integer if near mandatory scroll snap points are effective.
+						AdjustLogicalOffsetWithMandatorySnapPoints(
+							false /*isForHorizontalOffset*/,
+							ref targetVerticalOffset);
+					}
+				}
+			}
+			else
+			{
+				// canVerticallyScroll == False or viewportHeight == DoubleUtil::PositiveInfinity. No matter the requested horizontal offset, it is assumed to be minVerticalOffset.
+				maxVerticalOffset = minVerticalOffset;
+				targetVerticalOffset = minVerticalOffset;
+				if (spProvider == null || orientation == Orientation.Horizontal)
+				{
+					// ScrollViewer operates with pixel-based vertical offsets.
+					targetPixelVerticalOffset = minVerticalOffset;
+				}
+			}
+
+			if (transformIsInertiaEnd &&
+				Math.Abs(oldTargetChangeViewHorizontalOffset - targetPixelHorizontalOffset) < ScrollViewerScrollRoundingToleranceForBringIntoViewport &&
+				Math.Abs(oldTargetChangeViewVerticalOffset - targetPixelVerticalOffset) < ScrollViewerScrollRoundingToleranceForBringIntoViewport &&
+				Math.Abs(oldTargetChangeViewZoomFactor - targetZoomFactor) < ScrollViewerZoomRoundingToleranceForBringIntoViewport)
+			{
+				// Because of roundings required for calling the DManip ZoomToRect method, the end-of-inertia transform returned by DManip might not exactly match
+				// the target of the previous ChangeViewInternal call. Use the original target in order to land exactly where the original ChangeViewInternal caller
+				// intended to. This is feasible since disableAnimation is True and DManip's SetContentTransformValues is now invoked instead of ZoomToRect.
+				targetPixelHorizontalOffset = targetHorizontalOffset = oldTargetChangeViewHorizontalOffset;
+				targetPixelVerticalOffset = targetVerticalOffset = oldTargetChangeViewVerticalOffset;
+				targetZoomFactor = oldTargetChangeViewZoomFactor;
+			}
+
+			if (DoubleUtil.AreClose(currentTargetHorizontalOffset, targetHorizontalOffset) &&
+				DoubleUtil.AreClose(currentTargetVerticalOffset, targetVerticalOffset) &&
+				DoubleUtil.AreClose(currentTargetZoomFactor, targetZoomFactor) &&
+				!forceChangeToCurrentView)
+			{
+				// Target view is the current or imminent view
+				if (!disableAnimation)
+				{
+					global::System.Diagnostics.Debug.Assert(spProvider == null);
+
+					// Check if the target view is illegal from a mandatory snap points respect.
+					adjustedTargetHorizontalOffset = targetHorizontalOffset;
+					adjustedTargetVerticalOffset = targetVerticalOffset;
+					adjustedTargetZoomFactor = targetZoomFactor;
+
+					AdjustViewWithMandatorySnapPoints(
+						minHorizontalOffset,
+						maxHorizontalOffset,
+						currentHorizontalOffset,
+						minVerticalOffset,
+						maxVerticalOffset,
+						currentVerticalOffset,
+						minZoomFactor,
+						maxZoomFactor,
+						viewportPixelWidth,
+						viewportPixelHeight,
+						ref currentUnzoomedPixelExtentWidth,
+						ref currentUnzoomedPixelExtentHeight,
+						ref adjustedTargetHorizontalOffset,
+						ref adjustedTargetVerticalOffset,
+						ref adjustedTargetZoomFactor);
+
+					if (DoubleUtil.AreClose(currentTargetHorizontalOffset, adjustedTargetHorizontalOffset) &&
+						DoubleUtil.AreClose(currentTargetVerticalOffset, adjustedTargetVerticalOffset) &&
+						DoubleUtil.AreClose(currentTargetZoomFactor, adjustedTargetZoomFactor))
+					{
+						// Current or imminent view would be unaffected by mandatory snap points.
+						if (currentTargetZoomFactor != adjustedTargetZoomFactor)
+						{
+							// Since the current view is so close to the target view, move directly to it instead of animating.
+							disableAnimation = true;
+							// Use the adjusted view based on the mandatory snap points.
+							targetHorizontalOffset = adjustedTargetHorizontalOffset;
+							targetVerticalOffset = adjustedTargetVerticalOffset;
+							targetZoomFactor = adjustedTargetZoomFactor;
+						}
+						else
+						{
+							// The zoom factor is not changing at all and offsets are close. No need to perform a view change.
+							goto Cleanup;
+						}
+					}
+				}
+				else if (currentTargetZoomFactor == targetZoomFactor)
+				{
+					// The zoom factor is not changing at all and offsets are close. No need to perform a view change.
+					goto Cleanup;
+				}
+			}
+
+			if (disableAnimation && currentTargetZoomFactor == targetZoomFactor && !forceChangeToCurrentView)
+			{
+				// When only offset jumps are requested, do not use DManip's ZoomToRect
+				// to avoid flickers when the developer changes both an extent and offset.
+				// Instead use SetOffsetsWithExtents, ScrollToHorizontalOffset or
+				// ScrollToVerticalOffset which results in DManip's SetContentRect and no
+				// visual flicker.
+				isBringIntoViewportCallAllowed = false;
+			}
+
+#if false // TODO Uno: Phase 4 — DM adapter. The C++ block at lines 3953-4259 invokes
+		  // get_CanManipulateElements + BringIntoViewportInternal to drive an animated
+		  // DManip view change. The non-DM fallback below is the active path on Skia.
+			if (isBringIntoViewportCallAllowed)
+			{
+				get_CanManipulateElements(
+					out canManipulateElementsByTouch,
+					out canManipulateElementsNonTouch,
+					out canManipulateElementsWithBringIntoViewport);
+
+				if (canManipulateElementsWithBringIntoViewport && (!applyAsManip || m_canManipulateElementsWithAsyncBringIntoViewport))
+				{
+					// ... (DM-aware path: BringIntoViewportInternal call, DManip view snapshotting,
+					// targetTranslate computation via ComputeTranslation[X/Y]Correction, etc.) ...
+				}
+			}
+#endif
+
+			if (!isBringIntoViewportCalled || !isHandled)
+			{
+				// This ScrollViewer or its Content might not be in the tree.
+				global::System.Diagnostics.Debug.Assert(spScrollInfo is not null);
+				spContentUIElement = GetContentUIElement();
+				if (spContentUIElement is not null)
+				{
+					// Do not attempt a non-animated move to the requested view if there is no Content present.
+					// This is to minimize the discrepancy between ZoomToFactor and ScrollToHorizontalOffset/
+					// ScrollToVerticalOffset: ZoomToFactor is effective even when there is no Content, while
+					// ScrollToHorizontalOffset/ScrollToVerticalOffset are not.
+
+					// Batch up any potential ViewChanging and ViewChanged notifications resulting from calls to ZoomToFactor,
+					// SetOffsetsWithExtents, SetHorizontalOffset and SetVerticalOffset into a single notification.
+					if (!isViewChangingDelayed)
+					{
+						DelayViewChanging();
+						isViewChangingDelayed = true;
+					}
+					if (!isViewChangedDelayed)
+					{
+						DelayViewChanged();
+						isViewChangedDelayed = true;
+					}
+
+					spScrollInfoAsElement = GetScrollInfoAsElement();
+					isScrollContentPresenterScrollClient = IsScrollContentPresenterScrollClient();
+
+					if (!disableAnimation && adjustWithMandatorySnapPoints)
+					{
+						AdjustViewWithMandatorySnapPoints(
+							minHorizontalOffset,
+							maxHorizontalOffset,
+							currentHorizontalOffset,
+							minVerticalOffset,
+							maxVerticalOffset,
+							currentVerticalOffset,
+							minZoomFactor,
+							maxZoomFactor,
+							viewportPixelWidth,
+							viewportPixelHeight,
+							ref currentUnzoomedPixelExtentWidth,
+							ref currentUnzoomedPixelExtentHeight,
+							ref targetHorizontalOffset,
+							ref targetVerticalOffset,
+							ref targetZoomFactor);
+					}
+
+					bool zoomChanged = false;
+
+					// First take care of the potential zoom factor change so offsets can be adjusted accordingly.
+					ZoomToFactorInternal(targetZoomFactor, true /*delayAndFlushViewChanged*/, out zoomChanged);
+
+					if (isScrollContentPresenterScrollClient)
+					{
+						if (m_trElementScrollContentPresenter is not null)
+						{
+							// Jump to the target offsets
+							m_trElementScrollContentPresenter.SetOffsetsWithExtents(targetHorizontalOffset, targetVerticalOffset, currentUnzoomedPixelExtentWidth * targetZoomFactor, currentUnzoomedPixelExtentHeight * targetZoomFactor);
+						}
+					}
+					else
+					{
+						// Make sure the latest zoom factor gets applied so the SetHorizontalOffset/SetVerticalOffset
+						// can operate with the accurate zoom factor.
+						// We can skip this if the zoom factor didn't actually change.
+						if (spScrollInfoAsElement is not null && zoomChanged)
+						{
+							spScrollInfoAsElement.UpdateLayout();
+						}
+
+						// Jump to the target offsets
+						spScrollInfo.SetHorizontalOffset(targetHorizontalOffset);
+						spScrollInfo.SetVerticalOffset(targetVerticalOffset);
+					}
+
+					global::System.Diagnostics.Debug.Assert(isViewChangingDelayed);
+					isViewChangingDelayed = false;
+					FlushViewChanging();
+
+					global::System.Diagnostics.Debug.Assert(isViewChangedDelayed);
+					isViewChangedDelayed = false;
+					FlushViewChanged();
+
+					if (IsInManipulation && spScrollInfoAsElement is not null)
+					{
+						// Make sure the offset change request gets applied through a ScrollViewer.InvalidateScrollInfo call
+						// whenever there is an active manipulation, so the next DManip feedback does not override the changes
+						// requested. This situation occurs for instance when DManip's ZoomToRect was skipped because of a touch contact.
+						// A non-animated move was accomplished instead.
+						global::System.Diagnostics.Debug.Assert(!isHandled);
+						spScrollInfoAsElement.UpdateLayout();
+					}
+					isHandled = true;
+				}
+			}
+
+			returnValue = isHandled;
+
+		Cleanup:
+			m_isInDirectManipulationSync = false;
+			if (isViewChangingDelayed)
+			{
+				FlushViewChanging();
+			}
+			if (isViewChangedDelayed)
+			{
+				FlushViewChanged();
+			}
+			if (clearInChangeViewBringIntoViewport)
+			{
+				global::System.Diagnostics.Debug.Assert(m_isInChangeViewBringIntoViewport);
+				m_isInChangeViewBringIntoViewport = false;
+			}
+
+			// Suppress unused-variable warnings for stub-only locals (used only by the
+			// `#if false` DM block above).
+			_ = canManipulateElementsByTouch;
+			_ = canManipulateElementsNonTouch;
+			_ = canManipulateElementsWithBringIntoViewport;
+			_ = clearInChangeViewBringIntoViewport;
+			_ = bounds;
+			_ = alignment;
+			_ = targetTranslateX;
+			_ = targetTranslateY;
+			_ = targetExtentWidth;
+			_ = targetExtentHeight;
+			_ = sizeFirstVisibleItem;
+			_ = adjustedTargetZoomFactor;
+			_ = isBringIntoViewportCalled;
+			_ = skipAnimationWhileRunning;
+			_ = applyAsManip;
+			_ = isForMakeVisible;
+			_ = skipDuringTouchContact;
+
+			return returnValue;
+		}
+
 		// Scroll content by one page to the left.
 		internal void PageLeft() => HandleHorizontalScroll(ScrollEventType.LargeDecrement);
 
