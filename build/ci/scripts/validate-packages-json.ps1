@@ -44,6 +44,7 @@ Write-Host "Validating packages.json: $PackagesJsonPath" -ForegroundColor Cyan
 $json = Get-Content $PackagesJsonPath -Raw | ConvertFrom-Json
 $errors = @()
 $checked = 0
+$validatedPairs = @{}  # De-duplicate package+version pairs across groups
 
 # Placeholder versions that should not be validated against NuGet
 $placeholderVersions = @('DefaultUnoVersion')
@@ -83,11 +84,20 @@ foreach ($group in $json) {
                 continue
             }
 
+            # De-duplicate: skip if we already validated this package+version
+            $pairKey = "$($pkg.ToLowerInvariant())|$($version.ToLowerInvariant())"
+            if ($validatedPairs.ContainsKey($pairKey)) {
+                Write-Host "  [OK] $pkg $version ($label) - already validated" -ForegroundColor DarkGreen
+                continue
+            }
+            $validatedPairs[$pairKey] = $true
+
             $checked++
             $url = "https://api.nuget.org/v3-flatcontainer/$($pkg.ToLowerInvariant())/$($version.ToLowerInvariant())/$($pkg.ToLowerInvariant()).nuspec"
 
             try {
-                $response = Invoke-WebRequest -Uri $url -Method Head -UseBasicParsing -ErrorAction Stop
+                $response = Invoke-WebRequest -Uri $url -Method Head -UseBasicParsing `
+                    -TimeoutSec 30 -MaximumRetryCount 3 -RetryIntervalSec 2 -ErrorAction Stop
                 if ($response.StatusCode -eq 200) {
                     Write-Host "  [OK] $pkg $version ($label)" -ForegroundColor Green
                 }

@@ -27,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';androidauto;'))">
-		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Car.App" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Car.App.App" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';androidwear;'))">
