@@ -220,15 +220,153 @@ public partial class ToolTip : ContentControl
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp OnPropertyChanged2 (line 211).
-	// TODO Uno (Phase 2 closeout): Hook into OnPropertyChanged dispatch so IsOpen,
-	// HorizontalOffset, VerticalOffset, PlacementRect changes route through the port.
-	// For Phase 2 we approximate via the IsOpen DP-callback (OnIsOpenChangedStatic below).
+	// In C# we use individual DP PropertyChangedCallbacks instead of the WinUI single-method
+	// dispatch. The IsOpen DP routes through OnIsOpenChangedStatic below; HorizontalOffset /
+	// VerticalOffset / PlacementRect callbacks (Phase 5) will route through OnPlacementCriteriaChanged.
 
 	private static void OnIsOpenChangedStatic(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
-		// TODO Uno: Phase 2 closeout will wire OnIsOpenChanged faithfully (line 264 of C++).
-		// For now this is a no-op; the Phase 3 ToolTipService.OpenAutomaticToolTip path
-		// handles popup hosting.
+		(sender as ToolTip)?.OnIsOpenChanged((bool)args.NewValue);
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp OnIsOpenChanged (line 264).
+	private void OnIsOpenChanged(bool bIsOpen)
+	{
+		var pToolTipServiceMetadata = ToolTipService.GetToolTipServiceMetadata();
+
+		if (bIsOpen)
+		{
+			Popup? spPopup = null;
+
+			m_bIsOpenAsAutomaticToolTip = ToolTipService.s_bOpeningAutomaticToolTip;
+			if (m_bIsOpenAsAutomaticToolTip)
+			{
+				// If there is another ToolTip currently playing its closing animation, destroy it.
+				if (pToolTipServiceMetadata.m_tpCurrentPopup is { } currentPopup)
+				{
+					var spPopupChild = currentPopup.Child;
+					if (spPopupChild is ToolTip spPreviousToolTip)
+					{
+						spPreviousToolTip.ForceFinishClosing(null, null);
+					}
+
+					pToolTipServiceMetadata.m_tpCurrentPopup = null;
+				}
+
+				// Sometimes the current ToolTip is not fully closed by this point
+				// we need to ensure that it is as so it is not still in the live tree
+				// when we try to open it below
+				// We should only try to do this if the popup is still alive
+				// The only known issue so far with this is Slider Thumb tooltips, those
+				// are opened automatically by the Slider control during the PointerPressed
+				// event to show the current value.
+				if (m_bClosing)
+				{
+					var spResolvedPopup = m_wrPopup?.Target as Popup;
+					if (spResolvedPopup is not null)
+					{
+						ForceFinishClosing(null, null);
+					}
+				}
+
+				global::System.Diagnostics.Debug.Assert(m_wrTargetOverride is null);
+				global::System.Diagnostics.Debug.Assert(m_pToolTipServicePlacementModeOverride is null);
+				global::System.Diagnostics.Debug.Assert(pToolTipServiceMetadata.m_tpOwner is not null);
+
+				if (pToolTipServiceMetadata.m_tpCloseTimer is not null)
+				{
+					pToolTipServiceMetadata.m_tpCloseTimer.Stop();
+				}
+
+				// TODO Uno (Phase 6): port the SafeZoneCheckTimer (DispatcherQueueTimer not yet wired).
+#if false
+				if (pToolTipServiceMetadata->m_tpSafeZoneCheckTimer)
+				{
+					IFC(pToolTipServiceMetadata->m_tpSafeZoneCheckTimer->Stop());
+				}
+#endif
+
+				pToolTipServiceMetadata.SetCurrentToolTip(this);
+
+				SetPlacementOverrides(pToolTipServiceMetadata.m_tpContainer);
+
+				spPopup = HookupParentPopup();
+				global::System.Diagnostics.Debug.Assert(pToolTipServiceMetadata.m_tpCurrentPopup is null);
+				pToolTipServiceMetadata.SetCurrentPopup(spPopup);
+				m_wrPopup = new WeakReference(spPopup);
+
+				// TODO Uno (Phase 6): FrameworkElement.SetHasOpenToolTip is not exposed in Uno.
+#if false
+				if (pToolTipServiceMetadata->m_tpContainer)
+				{
+					IFC(static_cast<FrameworkElement*>(pToolTipServiceMetadata->m_tpContainer.Get())->SetHasOpenToolTip(TRUE));
+				}
+#endif
+			}
+			else
+			{
+				var spContainer = m_wrContainer?.Target as FrameworkElement;
+				SetPlacementOverrides(spContainer);
+
+				spPopup = m_wrPopup?.Target as Popup;
+				if (spPopup is not null)
+				{
+					// Make sure to finish closing if we are currently closing the Popup.
+					ForceFinishClosing(null, null);
+
+					// Since the Popup closes/opens asynchronously, we may not get a SizeChanged notification
+					// in the correct order, so we have to explicitly call PerformPlacement() the next time the
+					// Popup is opened.
+					m_bCallPerformPlacementAtNextPopupOpen = true;
+				}
+				else
+				{
+					spPopup = HookupParentPopup();
+					m_wrPopup = new WeakReference(spPopup);
+				}
+			}
+
+			ForwardOwnerThemePropertyToToolTip();
+
+			OpenPopup();
+
+			// Since ToolTip is kept open, need to hook up with CoreWindow or XamlIslandRoot to handle PointerMove and Key event
+			HookupOwnerLayoutChangedEvent();
+			HookupXamlIslandRoot();
+			UpdateOwnersBoundary(); // it's OK if boundary can't be got
+		}
+		else
+		{
+			UnhookOwnerLayoutChangedEvent();
+			UnhookFromXamlIslandRoot();
+
+			// When IsOpen is set to True, we wait for the Popup to be created and opened before updating state.
+			// When IsOpen is set to False, we go to the Closed state immediately and close the Popup after
+			// we have finished transitioning to the Closed state.
+			UpdateVisualState();
+
+			m_pToolTipServicePlacementModeOverride = null;
+			m_wrTargetOverride = null;
+
+			if (m_bIsOpenAsAutomaticToolTip)
+			{
+				pToolTipServiceMetadata.m_tpCurrentToolTip = null;
+				pToolTipServiceMetadata.m_tpCurrentPopup = null;
+
+				// TODO Uno (Phase 6): FrameworkElement.SetHasOpenToolTip is not exposed in Uno.
+#if false
+				if (pToolTipServiceMetadata->m_tpContainer)
+				{
+					IFC(static_cast<FrameworkElement*>(pToolTipServiceMetadata->m_tpContainer.Get())->SetHasOpenToolTip(FALSE));
+				}
+#endif
+
+				m_bIsOpenAsAutomaticToolTip = false;
+			}
+
+			m_bCallPerformPlacementAtNextPopupOpen = false;
+			m_inputMode = AutomaticToolTipInputMode.None;
+		}
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp OnCreateAutomationPeer (line 251).
@@ -299,6 +437,42 @@ public partial class ToolTip : ContentControl
 		// When the bug is fixed, uncomment UpdateVisualState() and delete the explicit GoToState call.
 		//IFC_RETURN(UpdateVisualState(FALSE));
 		GoToState(false, "Opened");
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp SetPlacementOverrides (line 516).
+	private void SetPlacementOverrides(FrameworkElement? pInputTargetOverride)
+	{
+		if (pInputTargetOverride is null)
+		{
+			return;
+		}
+
+		var spOwnerAsIDO = pInputTargetOverride;
+
+		// The override values below will be cleared in ToolTip when the ToolTip closes.
+
+		// ToolTipService overrides any Placement and PlacementTarget that have been set on the ToolTip.
+		var spOwnerPlacementTarget = ToolTipService.GetPlacementTarget(spOwnerAsIDO);
+		FrameworkElement? spTargetOverride = spOwnerPlacementTarget as FrameworkElement;
+		if (spTargetOverride is null)
+		{
+			spTargetOverride = pInputTargetOverride;
+		}
+
+		// Since we don't have coercion, we can't override the PlacementTarget like WPF does.
+		// Instead, we use m_wrTargetOverride for this purpose.
+		global::System.Diagnostics.Debug.Assert(spTargetOverride is not null);
+		if (spTargetOverride is not null)
+		{
+			m_wrTargetOverride = new WeakReference(spTargetOverride);
+		}
+
+		// We need to tell if the Placement property has been set already.
+		var ownerPlacement = ToolTipService.GetPlacement(spOwnerAsIDO);
+		if (ownerPlacement != DefaultPlacementMode)
+		{
+			m_pToolTipServicePlacementModeOverride = ownerPlacement;
+		}
 	}
 
 	// MUX Reference: ToolTip_Partial.cpp OnPlacementCriteriaChanged (line 567).
@@ -647,6 +821,24 @@ public partial class ToolTip : ContentControl
 
 	// === Helpers awaiting Phase 6 (Xaml-island roots + safe zone) ===
 
+	// MUX Reference: ToolTip_Partial.cpp UpdateOwnersBoundary (line 2268).
+	private void UpdateOwnersBoundary()
+	{
+		// TODO Uno (Phase 6): port UpdateOwnersBoundary.
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp HookupXamlIslandRoot (line 2278).
+	private void HookupXamlIslandRoot()
+	{
+		// TODO Uno (Phase 6): port HookupXamlIslandRoot.
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp HookupOwnerLayoutChangedEvent (line 2296).
+	private void HookupOwnerLayoutChangedEvent()
+	{
+		// TODO Uno (Phase 6): port HookupOwnerLayoutChangedEvent.
+	}
+
 	// MUX Reference: ToolTip_Partial.cpp UnhookOwnerLayoutChangedEvent (later in file).
 	private void UnhookOwnerLayoutChangedEvent()
 	{
@@ -661,6 +853,14 @@ public partial class ToolTip : ContentControl
 		m_xamlIslandRootPointerMovedHandler.Disposable = null;
 		m_xamlIslandRootKeyDownHandler.Disposable = null;
 		m_xamlIslandRootKeyUpHandler.Disposable = null;
+	}
+
+	// MUX Reference: ToolTip_Partial.cpp ForwardOwnerThemePropertyToToolTip (line 2510).
+	// Phase 8 will port the full theme-walking logic. Currently a stub so OnIsOpenChanged
+	// compiles.
+	private void ForwardOwnerThemePropertyToToolTip()
+	{
+		// TODO Uno (Phase 8): port ForwardOwnerThemePropertyToToolTip.
 	}
 
 #pragma warning restore IDE0051
