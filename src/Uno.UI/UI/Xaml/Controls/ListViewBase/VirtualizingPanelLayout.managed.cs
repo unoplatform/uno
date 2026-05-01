@@ -394,11 +394,18 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Calling {GetMethodTag()}, availableSize={availableSize}, _availableSize={_availableSize} {GetDebugInfo()}");
 			}
 
+			// Must be set before UpdateLayout: FillLayout → AddLine reads AvailableBreadth which reads _availableSize.
 			_availableSize = availableSize;
+
 			UpdateAverageLineHeight(); // Must be called before ScrapLayout(), or there won't be items to measure
 			ScrapLayout();
 			ApplyCollectionChanges();
 			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges, isScroll: false);
+
+			// OwnerPanel.UpdateLayout() inside UpdateLayout can trigger a nested ArrangeOverride which
+			// overwrites _availableSize with the stale viewport height; restore it so EstimatePanelSize
+			// uses the correct measure constraint.
+			_availableSize = availableSize;
 
 			return _lastMeasuredSize = EstimatePanelSize(isMeasure: true);
 		}
