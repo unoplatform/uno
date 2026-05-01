@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -252,5 +253,64 @@ public class Given_ToolTip_Integration
 		// Those assertions depend on TransformToVisual + popup positioning subtleties (window scaling, RTL, mouse vs.
 		// non-mouse path) and remain a TODO Uno once Phase 6 / Phase 7 settle the placement edge cases. The set/get
 		// part is validated above, which is the core regression coverage for the DP plumbing landed in Phase 5.
+	}
+
+	// MUX Reference: ToolTipIntegrationTests.cpp VerifyPlacementTargetIsHonored (line 1451).
+	// "Verify that setting ToolTipService.PlacementTarget on a ToolTip's owner causes it to appear
+	//  at that placement target when shown."
+	[TestMethod]
+	public async Task VerifyPlacementTargetIsHonored()
+	{
+		var toolTip = CreateToolTip();
+
+		var rootPanel = new StackPanel
+		{
+			// Center-align the root panel to ensure that both tooltips appear in the same
+			// relative position to their targets.
+			VerticalAlignment = VerticalAlignment.Center,
+		};
+
+		var topButton = new Button
+		{
+			Content = "Button.ToolTip",
+			HorizontalAlignment = HorizontalAlignment.Center,
+		};
+		rootPanel.Children.Add(topButton);
+
+		var bottomButton = new Button
+		{
+			Content = "Button.ToolTipPlacementTarget",
+			HorizontalAlignment = HorizontalAlignment.Center,
+		};
+		rootPanel.Children.Add(bottomButton);
+
+		ToolTipService.SetToolTip(topButton, toolTip);
+
+		TestServices.WindowHelper.WindowContent = rootPanel;
+		await TestServices.WindowHelper.WaitForLoaded(rootPanel);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		toolTip.IsOpen = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var toolTipBoundsFromTopButton = toolTip.TransformToVisual(null).TransformBounds(
+			new Rect(0, 0, toolTip.ActualWidth, toolTip.ActualHeight));
+
+		toolTip.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		ToolTipService.SetPlacementTarget(topButton, bottomButton);
+		toolTip.IsOpen = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var toolTipBoundsFromBottomButton = toolTip.TransformToVisual(null).TransformBounds(
+			new Rect(0, 0, toolTip.ActualWidth, toolTip.ActualHeight));
+
+		Assert.AreEqual(toolTipBoundsFromTopButton.X, toolTipBoundsFromBottomButton.X);
+		Assert.IsTrue(toolTipBoundsFromTopButton.Y < toolTipBoundsFromBottomButton.Y,
+			$"Expected top-button-anchored bounds Y ({toolTipBoundsFromTopButton.Y}) to be less than bottom-button-anchored bounds Y ({toolTipBoundsFromBottomButton.Y}).");
+
+		toolTip.IsOpen = false;
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 }
