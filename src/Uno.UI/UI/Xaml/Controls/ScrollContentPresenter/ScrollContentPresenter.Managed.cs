@@ -109,6 +109,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 #if __SKIA__
 			Visual.Clip = Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
+
+			// Wire DP-changed callbacks to invoke OnPropertyChanged2Core (the C++
+			// SCP::OnPropertyChanged2 dispatch — only checks
+			// CanContentRenderOutsideBoundsProperty for now). The Uno cross-platform
+			// SCP DP doesn't have a callback so we add one at construction time.
+			RegisterPropertyChangedCallback(CanContentRenderOutsideBoundsProperty, (s, e) =>
+				((ScrollContentPresenter)s).OnPropertyChanged2Core(CanContentRenderOutsideBoundsProperty));
 #endif
 		}
 
