@@ -9,6 +9,27 @@ public partial class ScrollViewer
 	// OnApplyTemplate. See ScrollViewer.partial.mux.cs for the implementation.
 	partial void OnApplyTemplatePartial() => OnApplyTemplate_MuxPartial();
 
+	// MUX Reference ScrollViewer_Partial.cpp:OnPropertyChanged2 ZoomMode case.
+	// When the ZoomMode property changes, both the manipulability and the
+	// primary-content extent push to DM need to refresh.
+	partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
+	{
+		OnManipulatabilityAffectingPropertyChanged(
+			pIsInLiveTree: null,
+			isCachedPropertyChanged: true,
+			isContentChanged: false,
+			isAffectingConfigurations: true,
+			isAffectingTouchConfiguration: false);
+
+		// When the zoom factor changes from static to manipulatable or vice-versa,
+		// a new content size may have to be pushed to DirectManipulation.
+		OnPrimaryContentAffectingPropertyChanged(
+			boundsChanged: true,
+			horizontalAlignmentChanged: false,
+			verticalAlignmentChanged: false,
+			zoomFactorBoundaryChanged: false);
+	}
+
 	private (double? horizontal, double? vertical) ClampOffsetsToFocusedTextBox(double? horizontalOffset, double? verticalOffset)
 	{
 		if (Presenter is not null && ShouldSnapToTouchTextBox())
