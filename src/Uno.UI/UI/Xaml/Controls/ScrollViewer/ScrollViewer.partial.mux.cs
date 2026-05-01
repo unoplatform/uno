@@ -478,6 +478,40 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void ScrollToVerticalOffsetInternal(double offset)
 			=> HandleVerticalScroll(ScrollEventType.ThumbPosition, offset);
 
+		// (C++ source line 14325)
+		internal void GetTargetView(
+			out double pTargetHorizontalOffset,
+			out double pTargetVerticalOffset,
+			out float pTargetZoomFactor)
+		{
+			global::System.Diagnostics.Debug.Assert(IsInManipulation);
+
+			// Return the target view of the latest ChangeView request if set.
+			if (m_targetChangeViewHorizontalOffset != -1.0)
+			{
+				// No ViewChanging event was raised since the last ChangeView request.
+				global::System.Diagnostics.Debug.Assert(m_targetChangeViewVerticalOffset != -1.0);
+				global::System.Diagnostics.Debug.Assert(m_targetChangeViewZoomFactor != -1.0f);
+				pTargetHorizontalOffset = m_targetChangeViewHorizontalOffset;
+				pTargetVerticalOffset = m_targetChangeViewVerticalOffset;
+				pTargetZoomFactor = m_targetChangeViewZoomFactor;
+			}
+			// Else return the end-of-inertia view if set.
+			else if (m_isInertial && m_isInertiaEndTransformValid)
+			{
+				pTargetHorizontalOffset = m_inertiaEndHorizontalOffset;
+				pTargetVerticalOffset = m_inertiaEndVerticalOffset;
+				pTargetZoomFactor = m_inertiaEndZoomFactor;
+			}
+			// Else no target view is available.
+			else
+			{
+				pTargetHorizontalOffset = -1.0;
+				pTargetVerticalOffset = -1.0;
+				pTargetZoomFactor = -1.0f;
+			}
+		}
+
 		// (C++ source line 1148)
 		internal DependencyObject GetPointedElement()
 			=> m_wrPointedElement?.Target as DependencyObject;
