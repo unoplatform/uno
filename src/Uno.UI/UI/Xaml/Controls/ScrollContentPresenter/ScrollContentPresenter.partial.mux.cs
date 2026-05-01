@@ -1639,13 +1639,25 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var childAvailableSize = availableSize;
 
-			// TODO Uno: Phase 6 — SizesContentToTemplatedParent honour the SV's GetLatestAvailableSize().
-			// For now use the passed availableSize directly.
+			bool sizesContentToTemplatedParent = false;
+			if (spScrollViewer is not null)
+			{
+				// When ScrollContentPresenter.SizesContentToTemplatedParent is True, the child's available size
+				// is set to the templated parent's (typically the ScrollViewer's) available size.
+				sizesContentToTemplatedParent = SizesContentToTemplatedParent;
+				if (sizesContentToTemplatedParent)
+				{
+					// Note: Accessing the templated parent with get_TemplatedParent and using LayoutInformation::GetAvailableSize
+					// would not work because it returns an out-of-date available size. So the owning ScrollViewer is asked directly
+					// what its latest available size was.
+					childAvailableSize = spScrollViewer.GetLatestAvailableSize();
+				}
+			}
 
 			if (pScrollData.m_canHorizontallyScroll)
 			{
 				// TODO Uno: Phase 5 — honour child's WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility.
-				if (!m_isSemanticZoomPresenter)
+				if (!m_isSemanticZoomPresenter && !sizesContentToTemplatedParent)
 				{
 					childAvailableSize.Width = double.PositiveInfinity;
 				}
@@ -1654,7 +1666,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (pScrollData.m_canVerticallyScroll)
 			{
 				// TODO Uno: Phase 5 — honour child's WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility.
-				if (!m_isSemanticZoomPresenter)
+				if (!m_isSemanticZoomPresenter && !sizesContentToTemplatedParent)
 				{
 					childAvailableSize.Height = double.PositiveInfinity;
 				}
