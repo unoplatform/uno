@@ -7,6 +7,7 @@
 using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Automation;
+using static DirectUI.ElevationHelper;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -505,14 +506,42 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - OnPopupOpened (lines 660-687).
+		//------------------------------------------------------------------------------
+		// Handler of the suggestions Popup's Opened event.
+		//
+		// Updates the suggestions list's position as its position can be changed before
+		// the previous Open operation.
+		//------------------------------------------------------------------------------
 		private void OnPopupOpened(object sender, object args)
 		{
+			// TraceLoggingActivity<g_hTraceProvider, MICROSOFT_KEYWORD_TELEMETRY> traceLoggingActivity;
+			// // Telemetry marker for suggestion list opening popup.
+			// TraceLoggingWriteStart(traceLoggingActivity, "ASBSuggestionListOpened");
+
+			// Bail out early if the popup has been unloaded already.
+			// It's possible for this async Popup.Opened event to fire after the island that contains the Popup is already
+			// closed.  If we continue on in this state, VisualTree::GetForElementNoRef() may return null, leading to failures.
+			bool isLoaded = m_tpPopupPart?.IsLoaded ?? false;
+			if (!isLoaded)
+			{
+				return;
+			}
+
+			// Apply a shadow effect to the popup's immediate child
+			ElevationHelper.ApplyElevationEffect(m_tpPopupPart);
+
+			UpdateSuggestionListPosition();
 		}
 
-		// TODO Uno: NOT PORTED - OnSuggestionsContainerLoaded (lines 694-).
+		//------------------------------------------------------------------------------
+		// Handler of the suggestions container's Loaded event.
+		//
+		// Sets the position of the suggestions list as soon as the container is loaded.
+		//------------------------------------------------------------------------------
 		private void OnSuggestionsContainerLoaded(object sender, RoutedEventArgs e)
 		{
+			UpdateSuggestionListPosition();
+			UpdateSuggestionListSize();
 		}
 
 		// TODO Uno: NOT PORTED - OnSuggestionSelectionChanged.
@@ -530,14 +559,68 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - OnTextBoxLoaded.
+		//------------------------------------------------------------------------------
+		// Handler of the text box's Loaded event.
+		//
+		// Retrieves the query button if it exists and attaches a handler to its Click event.
+		//------------------------------------------------------------------------------
 		private void OnTextBoxLoaded(object sender, RoutedEventArgs e)
 		{
+			ButtonBase spTextBoxQueryButtonPart = m_tpTextBoxPart.GetTemplateChild<ButtonBase>(c_TextBoxQueryButtonName);
+
+			m_tpTextBoxQueryButtonPart = spTextBoxQueryButtonPart;
+
+			if (m_tpTextBoxQueryButtonPart is not null)
+			{
+				SetTextBoxQueryButtonIcon();
+				if (m_epQueryButtonClickEventHandler.Disposable is null)
+				{
+					RoutedEventHandler queryButtonClickHandler = OnTextBoxQueryButtonClick;
+					m_tpTextBoxQueryButtonPart.Click += queryButtonClickHandler;
+					m_epQueryButtonClickEventHandler.Disposable = Disposable.Create(() =>
+					{
+						if (m_tpTextBoxQueryButtonPart is not null)
+						{
+							m_tpTextBoxQueryButtonPart.Click -= queryButtonClickHandler;
+						}
+					});
+				}
+				// Update query button's AutomationProperties.Name to "Search" by default
+				string automationName = AutomationProperties.GetName(m_tpTextBoxQueryButtonPart);
+				if (automationName is null)
+				{
+					// TODO Uno: NOT PORTED - DXamlCore::GetCurrentNoCreate()->GetLocalizedResourceString(UIA_AUTOSUGGESTBOX_QUERY, ...).
+					// Use a literal "Search" until the localized-resource lookup helper is available in Uno.
+					automationName = "Search";
+					AutomationProperties.SetName(m_tpTextBoxQueryButtonPart, automationName);
+				}
+			}
 		}
 
-		// TODO Uno: NOT PORTED - OnTextBoxUnloaded.
+		//------------------------------------------------------------------------------
+		// Handler of the text box's Unloaded event.
+		//
+		// Removes the handler to the query button
+		//------------------------------------------------------------------------------
 		private void OnTextBoxUnloaded(object sender, RoutedEventArgs e)
 		{
+			// Checking IsActive because Unloaded is async and we might have reloaded before this fires
+			// TODO Uno: NOT PORTED - GetHandle()->IsActive() check. Without it Uno detaches eagerly; revisit if leaks
+			// or double-detach issues surface during runtime tests.
+			if (m_tpTextBoxQueryButtonPart is not null && m_epQueryButtonClickEventHandler.Disposable is not null /* && !GetHandle()->IsActive() */)
+			{
+				m_epQueryButtonClickEventHandler.Disposable = null;
+			}
+		}
+
+		//------------------------------------------------------------------------------
+		// Handler of the query button's Click event.
+		//
+		// Raises the QuerySubmitted event.
+		//------------------------------------------------------------------------------
+		private void OnTextBoxQueryButtonClick(object sender, RoutedEventArgs e)
+		{
+			ProgrammaticSubmitQuery();
 		}
 
 		private void OnTextChangedEventTimerTick(object sender, object e)
@@ -566,19 +649,84 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		// TODO Uno: NOT PORTED - SetTextBoxQueryButtonIcon.
+		//------------------------------------------------------------------------------
+		// Sets the value of QueryButton.Content to the current value of QueryIcon.
+		//------------------------------------------------------------------------------
 		private void SetTextBoxQueryButtonIcon()
 		{
+			if (m_tpTextBoxQueryButtonPart is not null)
+			{
+				// TODO Uno: NOT PORTED - SetCursor(MouseCursorArrow). The C++ source pokes the framework cursor via
+				// CFrameworkElement::SetCursor; Uno's ProtectedCursor lives on UIElement and isn't yet wired through
+				// here. Revisit alongside the Composition cursor work.
+				// static_cast<CFrameworkElement*>(m_tpTextBoxQueryButtonPart.Cast<ButtonBase>()->GetHandle())->SetCursor(MouseCursorArrow);
+				IconElement spQueryIcon = QueryIcon;
+
+				if (spQueryIcon is not null)
+				{
+					SymbolIcon spQueryIconAsSymbolIcon = spQueryIcon as SymbolIcon;
+
+					if (spQueryIconAsSymbolIcon is not null)
+					{
+						// Setting FontSize to zero prevents SymbolIcon from setting a static FontSize on it's child TextBlock,
+						// allowing the binding to AutoSuggestBoxIconFontSize to be inherited properly.
+						spQueryIconAsSymbolIcon.SetFontSize(0);
+					}
+
+					m_tpTextBoxQueryButtonPart.Visibility = Visibility.Visible;
+					m_tpTextBoxQueryButtonPart.Content = spQueryIcon;
+				}
+				else
+				{
+					m_tpTextBoxQueryButtonPart.Visibility = Visibility.Collapsed;
+				}
+			}
 		}
 
-		// TODO Uno: NOT PORTED - ClearTextBoxQueryButtonIcon.
+		//------------------------------------------------------------------------------
+		// Sets the value of QueryButton.Content to the current value of QueryIcon.
+		//------------------------------------------------------------------------------
 		private void ClearTextBoxQueryButtonIcon()
 		{
+			if (m_tpTextBoxQueryButtonPart is not null)
+			{
+				m_tpTextBoxQueryButtonPart.Content = null;
+			}
 		}
 
-		// TODO Uno: NOT PORTED - HookToRootScrollViewer.
 		private void HookToRootScrollViewer()
 		{
+			FrameworkElement spRSViewerAsFE = null;
+			DependencyObject spCurrentAsDO = this;
+			DependencyObject spParentAsDO;
+
+			while (spCurrentAsDO is not null)
+			{
+				spParentAsDO = Media.VisualTreeHelper.GetParent(spCurrentAsDO);
+
+				if (spParentAsDO is not null)
+				{
+					FrameworkElement spParentAsFE = spParentAsDO as FrameworkElement;
+					spCurrentAsDO = spParentAsDO;
+
+					// checking to see if the element is of type rootScrollViewer
+					// using IFC will cause the application to throw an exception
+					ScrollViewer spRootScrollViewer = spParentAsDO as ScrollViewer;
+					if (spRootScrollViewer is not null)
+					{
+						spRSViewerAsFE = spParentAsFE;
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			if (spRSViewerAsFE is ScrollViewer rootScrollViewer)
+			{
+				m_wkRootScrollViewer = new WeakReference<ScrollViewer>(rootScrollViewer);
+			}
 		}
 
 		private void UpdateTextBoxText(string value, AutoSuggestionBoxTextChangeReason reason)
@@ -603,9 +751,45 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: NOT PORTED - UpdateSuggestionListItemsSource.
 		private void UpdateSuggestionListItemsSource()
 		{
+			if (m_tpSuggestionsPart is not null && m_tpListItemOrderTransformPart is null)
+			{
+				// If we have a m_tpListItemOrderTransformPart, we implement SuggestionListPosition::Above
+				// by applying a scale transform.  Also, in the win8.1 template where we do have a
+				// m_tpListItemOrderTransformPart, the suggestion list's ItemsSource is bound to the
+				// ASB's ItemsSource, so no need to update it.
+
+				if (m_suggestionListPosition == SuggestionListPosition.Above)
+				{
+					var spObservable = Items;
+
+					if (spObservable is not null)
+					{
+						// TODO Uno: NOT PORTED - ReversedVector. The C++ source wraps the items collection in a
+						// helper that exposes a reversed view (m_spReversedVector) and binds it as ItemsSource so the
+						// suggestion list reads bottom-up. Replace with a managed equivalent (e.g. Linq.Reverse() into
+						// a List<object>) once SuggestionListPosition::Above is wired through UpdateSuggestionListPosition.
+						// if (m_spReversedVector is null || !m_spReversedVector.IsBoundTo(spObservable))
+						// {
+						//     m_spReversedVector = new ReversedVector();
+						//     m_spReversedVector.SetSource(spObservable);
+						//     ((ItemsControl)m_tpSuggestionsPart).ItemsSource = m_spReversedVector;
+						//     ScrollLastItemIntoView();
+						// }
+						// return;
+					}
+				}
+
+				// We can't reverse the vector, fall back to propagating ItemsSource from ASB to the suggestion list
+				m_spReversedVector = null;
+
+				object spItemsSource = ItemsSource;
+				if (m_tpSuggestionsPart is ItemsControl suggestionsAsItemsControl)
+				{
+					suggestionsAsItemsControl.ItemsSource = spItemsSource;
+				}
+			}
 		}
 
 		private void ReevaluateIsOverlayVisible()
@@ -656,6 +840,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
+		// TODO Uno: NOT PORTED - UpdateSuggestionListPosition (lines 1329+).
+		private void UpdateSuggestionListPosition()
+		{
+		}
+
+		// TODO Uno: NOT PORTED - UpdateSuggestionListSize (lines 1252+).
+		private void UpdateSuggestionListSize()
+		{
+		}
+
 		// TODO Uno: NOT PORTED - UpdateText body uses InvokeValidationCommand which is part of the input-validation
 		// feature (#4839). Until that lands, propagate the value to the public Text DP without invoking validation.
 		private void UpdateText(string value)
@@ -669,9 +863,39 @@ namespace Microsoft.UI.Xaml.Controls
 			// IFC_RETURN(InvokeValidationCommand(this, strText.Get())); // TODO Uno: input validation (#4839)
 		}
 
-		// TODO Uno: NOT PORTED - UpdateSuggestionListVisibility.
 		private void UpdateSuggestionListVisibility()
 		{
+			bool isOpen = false;
+
+			// if the suggestion container exists, we are retrieving its maxsuggestionlistheight
+			double maxHeight = 0;
+			if (m_tpSuggestionsContainerPart is not null)
+			{
+				maxHeight = m_tpSuggestionsContainerPart.MaxHeight;
+			}
+
+			var spItemsReference = Items;
+
+			if (spItemsReference is not null && maxHeight > 0)
+			{
+				int count = spItemsReference.Count;
+
+				// the suggestion list is only open when the maxsuggestionlistheight is greater than zero
+				// and the count of elements in the list is positive
+				if (count > 0)
+				{
+					isOpen = true;
+				}
+			}
+
+			// We don't want to necessarily take focus in this case, since we probably already
+			// have focus somewhere internal to the AutoSuggestBox, so we'll bypass the custom
+			// setter for IsSuggestionListOpen that takes focus.
+			// TODO Uno: NOT PORTED - bypass-focus path. The C++ calls AutoSuggestBoxGenerated::put_IsSuggestionListOpen
+			// directly to skip the put_IsSuggestionListOpen override that takes focus. In Uno the focus side-effect
+			// lives in OnIsSuggestionListOpenPropertyChanged, so for now we set the DP directly and the focus side-effect
+			// will fire. Revisit if this causes focus thrash in tests.
+			IsSuggestionListOpen = isOpen;
 		}
 
 		// TODO Uno: NOT PORTED - SetCurrentControlledPeer.
@@ -712,15 +936,48 @@ namespace Microsoft.UI.Xaml.Controls
 		// for accessibility ("name" computation). FrameworkElement::GetStringFromObject(spHeader, ...) has no direct
 		// Uno equivalent; revisit alongside automation-peer parity work.
 
+		//------------------------------------------------------------------------------
+		// Raises the QuerySubmitted event using the current content of the TextBox.
+		//------------------------------------------------------------------------------
+		private void SubmitQuery(object pChosenSuggestion)
+		{
+			AutoSuggestBoxQuerySubmittedEventArgs spEventArgs = new AutoSuggestBoxQuerySubmittedEventArgs();
+
+			string strQueryText = m_tpTextBoxPart?.Text ?? string.Empty;
+			spEventArgs.QueryText = strQueryText;
+
+			spEventArgs.ChosenSuggestion = pChosenSuggestion;
+
+			QuerySubmitted?.Invoke(this, spEventArgs);
+
+			IsSuggestionListOpen = false;
+		}
+
 		/// <summary>
 		/// Initiates a query submission as if the user pressed the query button. Used by
 		/// AutoSuggestBoxAutomationPeer.Invoke and any caller that needs to programmatically
 		/// raise QuerySubmitted.
 		/// </summary>
-		// TODO Uno: NOT PORTED - body of ProgrammaticSubmitQuery (declared at AutoSuggestBox_Partial.h:36).
-		// The C++ implementation routes through SubmitQuery(nullptr).
 		internal void ProgrammaticSubmitQuery()
 		{
+			// Clicking the query button should always submit the query solely with the text
+			// in the TextBox, and should ignore any selected item in the suggestion list.
+			// To ensure that, we'll deselect any item in the suggestion list that might be selected
+			// before submitting the query.
+			m_ignoreSelectionChanges = true;
+			try
+			{
+				if (m_tpSuggestionsPart is not null)
+				{
+					m_tpSuggestionsPart.SelectedIndex = -1;
+				}
+			}
+			finally
+			{
+				m_ignoreSelectionChanges = false;
+			}
+
+			SubmitQuery(null);
 		}
 
 		/// <inheritdoc />
