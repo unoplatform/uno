@@ -1126,24 +1126,12 @@ namespace Microsoft.UI.Xaml.Controls
 		//------------------------------------------------------------------------------
 		private bool IsTextBoxFocusedElement()
 		{
-			bool focused = false;
-
-			if (m_tpTextBoxPart is not null)
-			{
-				DependencyObject spFocusedElement = XamlRoot is { } xamlRoot
-					? FocusManager.GetFocusedElement(xamlRoot) as DependencyObject
-					: null;
-				if (spFocusedElement is not null)
-				{
-					TextBox spFocusedElementAsTextBox = spFocusedElement as TextBox;
-					if (spFocusedElementAsTextBox is not null && spFocusedElementAsTextBox == m_tpTextBoxPart)
-					{
-						focused = true;
-					}
-				}
-			}
-
-			return focused;
+			// TODO Uno: WinUI uses GetFocusedElement to walk the focus tree; in Uno, FocusManager.GetFocusedElement
+			// can lag behind the inner TextBox's actual IsFocused state during DispatcherQueue-deferred event
+			// callbacks (e.g. the timer Tick → AutoSuggestBox.TextChanged → app updates ItemsSource → OnItemsChanged
+			// path). Using TextBox.IsFocused directly matches the legacy Uno control's behavior and is the
+			// authoritative answer for "is the inner TextBox the focused element of the AutoSuggestBox".
+			return m_tpTextBoxPart is not null && m_tpTextBoxPart.IsFocused;
 		}
 
 		//------------------------------------------------------------------------------
@@ -2558,12 +2546,14 @@ namespace Microsoft.UI.Xaml.Controls
 				maxHeight = m_tpSuggestionsContainerPart.MaxHeight;
 			}
 
-			var spItemsReference = Items;
+			// TODO Uno: WinUI's ItemsControl.Items() returns a unified view of inline items + ItemsSource.
+			// In Uno, AutoSuggestBox.Items only reflects the inline collection — ItemsSource items are accessed
+			// via the internal NumberOfItems helper. Use NumberOfItems so the suggestion list opens when
+			// ItemsSource (the typical AutoSuggestBox scenario) is non-empty.
+			int count = NumberOfItems;
 
-			if (spItemsReference is not null && maxHeight > 0)
+			if (maxHeight > 0)
 			{
-				int count = spItemsReference.Count;
-
 				// the suggestion list is only open when the maxsuggestionlistheight is greater than zero
 				// and the count of elements in the list is positive
 				if (count > 0)
