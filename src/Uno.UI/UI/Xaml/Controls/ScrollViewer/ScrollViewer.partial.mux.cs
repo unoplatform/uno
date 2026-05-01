@@ -3286,9 +3286,35 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (!m_isInDirectManipulationSync)
 			{
 				global::System.Diagnostics.Debug.Assert(!m_isDirectManipulationZoomFactorChange);
-				// Zoom factor change has to be pushed to DManip as the XAML and DManip transforms are kept in sync.
-				// TODO Uno: Phase 4 — port ChangeViewInternal. For now, the zoom factor change is applied directly
-				// without DM-side syncing — acceptable on the managed Skia path.
+				bool clearInZoomFactorSync = true;
+				m_isInZoomFactorSync = true;
+				try
+				{
+					// Zoom factor change has to be pushed to DManip as the XAML and DManip transforms are kept in sync.
+					ChangeViewInternal(
+						pHorizontalOffset: null,
+						pVerticalOffset: null,
+						pZoomFactor: null,
+						pOldZoomFactor: oldZoomFactor,
+						forceChangeToCurrentView: true,
+						adjustWithMandatorySnapPoints: false,
+						skipDuringTouchContact: false,
+						skipAnimationWhileRunning: false,
+						disableAnimation: true,
+						applyAsManip: false,
+						transformIsInertiaEnd: false,
+						isForMakeVisible: false);
+					// result returned is FALSE when the BringIntoViewport operation is delayed during a manipulation completion.
+					clearInZoomFactorSync = false;
+					m_isInZoomFactorSync = false;
+				}
+				finally
+				{
+					if (clearInZoomFactorSync)
+					{
+						m_isInZoomFactorSync = false;
+					}
+				}
 			}
 
 			m_isTargetZoomFactorValid = false;
@@ -4781,9 +4807,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Returns true while DM is in a zoom manipulation. Reflected through
 		// the existing MuxInternal m_isInDirectManipulationZoom field so we
-		// stay consistent with the rest of the SV state machine. Stubbed to
-		// false until the DM adapter lands.
-		bool IScrollOwner.IsInDirectManipulationZoom() => false;
+		// stay consistent with the rest of the SV state machine. The field
+		// stays false until the DM adapter lands but we still surface the
+		// real getter for parity with C++.
+		bool IScrollOwner.IsInDirectManipulationZoom() => m_isInDirectManipulationZoom;
 
 		// Tracks whether the SV is itself triggering an InvalidateMeasure on
 		// its inner panel (bug 261102 / 342668 workaround). Skia's pure-managed
