@@ -82,14 +82,21 @@ foreach ($group in $json) {
                 }
             }
             catch {
-                $statusCode = $_.Exception.Response.StatusCode.value__
-                if ($statusCode -eq 404) {
-                    Write-Host "  [MISSING] $pkg $version ($label) - NOT FOUND on NuGet" -ForegroundColor Red
-                    $errors += "Group '$groupName': $pkg $version ($label) does not exist on NuGet.org"
+                $httpResponse = $_.Exception.Response
+                if ($null -ne $httpResponse) {
+                    $statusCode = $httpResponse.StatusCode.value__
+                    if ($statusCode -eq 404) {
+                        Write-Host "  [MISSING] $pkg $version ($label) - NOT FOUND on NuGet" -ForegroundColor Red
+                        $errors += "Group '$groupName': $pkg $version ($label) does not exist on NuGet.org"
+                    }
+                    else {
+                        Write-Host "  [ERROR] $pkg $version ($label) - HTTP $statusCode" -ForegroundColor Yellow
+                        $errors += "Group '$groupName': $pkg $version ($label) - HTTP error $statusCode"
+                    }
                 }
                 else {
-                    Write-Host "  [ERROR] $pkg $version ($label) - HTTP $statusCode" -ForegroundColor Yellow
-                    $errors += "Group '$groupName': $pkg $version ($label) - HTTP error $statusCode"
+                    Write-Host "  [ERROR] $pkg $version ($label) - $($_.Exception.Message)" -ForegroundColor Yellow
+                    $errors += "Group '$groupName': $pkg $version ($label) - network error: $($_.Exception.Message)"
                 }
             }
         }

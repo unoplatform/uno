@@ -18,6 +18,7 @@ stages:
         README.md
         README/**
         build/**
+        src/Uno.Sdk/**
 
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
