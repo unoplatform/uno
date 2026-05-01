@@ -422,6 +422,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.1, scrollViewer.MinZoomFactor, 0.001);
 		}
 
+		// MUX Reference ReenterContent (C++ line 1697).
+		// Validates that resetting Content to null and then back to the original
+		// content preserves the SV's view (HorizontalOffset / VerticalOffset /
+		// ZoomFactor). The C++ test additionally renders before/after the toggle
+		// and asserts DComp pixel parity; the Skia variant skips that (no DComp)
+		// and keeps the public-API view assertions.
+		// Note: the requested verticalOffset=200 stays within the unzoomed
+		// scrollable height (1200-100=1100), so the assertion passes even though
+		// the visual-zoom rendering feature isn't yet on Skia. ZoomFactor DP is
+		// updated via the iter-#14 feature (commit 9dada7a6d4).
+		[TestMethod]
+		public async Task ReenterContent()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+
+			var viewChangedTcs = new TaskCompletionSource<bool>();
+			void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+			{
+				if (!args.IsIntermediate)
+				{
+					viewChangedTcs.TrySetResult(true);
+				}
+			}
+			scrollViewer.ViewChanged += OnViewChanged;
+			try
+			{
+				_ = scrollViewer.ChangeView(null /*horizontalOffset*/, 200.0 /*verticalOffset*/, 1.2f /*zoomFactor*/, true /*disableAnimation*/);
+
+				var completed = await Task.WhenAny(viewChangedTcs.Task, Task.Delay(TimeSpan.FromSeconds(3)));
+				Assert.AreEqual(viewChangedTcs.Task, completed, "Initial ViewChanged didn't fire within 3s");
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// Momentarily setting ScrollViewer.Content to null.
+				var content = scrollViewer.Content;
+				scrollViewer.Content = null;
+				scrollViewer.Content = content;
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0.0, scrollViewer.HorizontalOffset, 0.001, "HorizontalOffset");
+				Assert.AreEqual(200.0, scrollViewer.VerticalOffset, 0.001, "VerticalOffset");
+				Assert.AreEqual(1.2f, scrollViewer.ZoomFactor, 0.001, "ZoomFactor");
+			}
+			finally
+			{
+				scrollViewer.ViewChanged -= OnViewChanged;
+			}
+		}
+
 		// TODO Uno: visual zoom rendering — port C++ ChangeViewTwice (C++ line 1763)
 		// once SCP applies ZoomFactor as a visual transform and recomputes
 		// scrollable extents at the new zoom. The test asserts a final
