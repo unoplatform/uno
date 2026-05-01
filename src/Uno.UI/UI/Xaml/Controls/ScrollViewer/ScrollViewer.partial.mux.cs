@@ -647,6 +647,104 @@ namespace Microsoft.UI.Xaml.Controls
 			ComputePixelExtentHeight(false /*ignoreZoomFactor*/, spProvider, out pValue);
 		}
 
+		// Gets the viewport width in pixels even for logical scrolling scenarios.
+		// When isProviderSet is True, the provided pProvider param is valid even when NULL.
+		// (C++ source line 5698)
+		internal void ComputePixelViewportWidth(
+			object pProvider,
+			bool isProviderSet,
+			out double pValue)
+		{
+			pValue = 0.0;
+			object spProviderLocal = pProvider;
+			double viewportWidth = 0.0;
+
+			if (spProviderLocal is null && !isProviderSet)
+			{
+				spProviderLocal = GetInnerManipulationDataProvider(true /*isForHorizontalOrientation*/);
+			}
+
+			if (spProviderLocal is FrameworkElement spFE)
+			{
+				viewportWidth = spFE.ActualWidth;
+			}
+			else
+			{
+				viewportWidth = ViewportWidth;
+				if (double.IsPositiveInfinity(viewportWidth) && m_trElementScrollContentPresenter is not null)
+				{
+					// Since IScrollInfo reports an infinite horizontal viewport, fallback to using the
+					// m_trElementScrollContentPresenter's width
+					viewportWidth = m_trElementScrollContentPresenter.ActualWidth;
+				}
+			}
+
+			pValue = viewportWidth;
+		}
+
+		// Gets the viewport height in pixels even for logical scrolling scenarios.
+		// When isProviderSet is True, the provided pProvider param is valid even when NULL.
+		// (C++ source line 5741)
+		internal void ComputePixelViewportHeight(
+			object pProvider,
+			bool isProviderSet,
+			out double pValue)
+		{
+			pValue = 0.0;
+			double viewportHeight = 0.0;
+			object spProviderLocal = pProvider;
+
+			if (spProviderLocal is null && !isProviderSet)
+			{
+				spProviderLocal = GetInnerManipulationDataProvider(false /*isForHorizontalOrientation*/);
+			}
+
+			if (spProviderLocal is FrameworkElement spFE)
+			{
+				viewportHeight = spFE.ActualHeight;
+			}
+			else
+			{
+				viewportHeight = ViewportHeight;
+				if (double.IsPositiveInfinity(viewportHeight) && m_trElementScrollContentPresenter is not null)
+				{
+					// Since IScrollInfo reports an infinite vertical viewport, fallback to using the
+					// m_trElementScrollContentPresenter's height
+					viewportHeight = m_trElementScrollContentPresenter.ActualHeight;
+				}
+			}
+
+			pValue = viewportHeight;
+		}
+
+		// Gets the value of the scrollable width of the content in pixels even for logical scrolling scenarios.
+		// (C++ source line 5783)
+		internal void ComputePixelScrollableWidth(
+			object pProvider,
+			out double pixelScrollableWidth)
+		{
+			pixelScrollableWidth = 0.0;
+
+			ComputePixelExtentWidth(false /*ignoreZoomFactor*/, pProvider, out var extent);
+			ComputePixelViewportWidth(pProvider, true /*isProviderSet*/, out var viewport);
+
+			pixelScrollableWidth = Math.Max(0.0, extent - viewport);
+		}
+
+		// Gets the value of the scrollable height of the content in pixels even for logical scrolling scenarios.
+		// (C++ source line 5805)
+		internal void ComputePixelScrollableHeight(
+			object pProvider,
+			out double pixelScrollableHeight)
+		{
+			pixelScrollableHeight = 0.0;
+
+			ComputePixelExtentHeight(false /*ignoreZoomFactor*/, pProvider, out var extent);
+			ComputePixelViewportHeight(pProvider, true /*isProviderSet*/, out var viewport);
+
+			pixelScrollableHeight = Math.Max(0.0, extent - viewport);
+		}
+
 		// Note: OnPointerPressed and OnPointerReleased are already implemented on
 		// ScrollViewer.MuxInternal.cs (an older WinUI-derived partial). They mirror
 		// C++ ScrollViewer_Partial.cpp:2466 and :2502 closely; the only deviation
