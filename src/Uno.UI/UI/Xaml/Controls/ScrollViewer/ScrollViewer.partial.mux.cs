@@ -413,11 +413,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// CInputServices::ProcessInputMessageWithDirectManipulation does it instead.
 				// For PageUp/Down, Home and End keys though, that method must ignore the RightToLeft
 				// flow direction, otherwise a move to the opposite direction is performed.
-				// TODO Uno: ProcessInputMessage forwards the keystroke to the DM service. Until the
-				// DM adapter exists, fall through to non-animated scrolling.
-				// ProcessInputMessage(key == VirtualKey.PageUp || key == VirtualKey.PageDown ||
-				//                     key == VirtualKey.Home  || key == VirtualKey.End,
-				//                     out var isHandled);
+				ProcessInputMessage(
+					ignoreFlowDirection: key == VirtualKey.PageUp || key == VirtualKey.PageDown ||
+						key == VirtualKey.Home || key == VirtualKey.End,
+					out _);
 			}
 
 			{
@@ -3806,6 +3805,29 @@ namespace Microsoft.UI.Xaml.Controls
 			var minZoomFactor = MinZoomFactor;
 			var currentZoomFactor = ZoomFactor;
 			return DoubleUtil.LessThanOrClose(currentZoomFactor, minZoomFactor);
+		}
+
+		// Called when this DM container wants the DM handler to process the current
+		// input message, by forwarding it to DirectManipulation.
+		// The handler must set the isHandled flag to True if the message was handled.
+		// (C++ source line 9020)
+		internal void ProcessInputMessage(bool ignoreFlowDirection, out bool isHandled)
+		{
+			isHandled = false;
+			if (m_hManipulationHandler is not null)
+			{
+				var spContentUIElement = GetContentUIElement();
+				if (spContentUIElement is not null)
+				{
+					// TODO Uno: Phase 4 — port ManipulationHandler_ProcessInputMessage via the DM adapter.
+					// CoreImports::ManipulationHandler_ProcessInputMessage(
+					//     m_hManipulationHandler,
+					//     spContentUIElement,
+					//     ignoreFlowDirection,
+					//     out var fHandled);
+					// isHandled = fHandled;
+				}
+			}
 		}
 
 		// Hooks up snap-point change handlers on m_trScrollSnapPointsInfo so that
