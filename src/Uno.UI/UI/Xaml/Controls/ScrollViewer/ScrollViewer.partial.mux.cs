@@ -264,6 +264,21 @@ namespace Microsoft.UI.Xaml.Controls
 				((ScrollViewer)s).OnViewportConfigurationsAffectingPropertyChanged());
 			RegisterPropertyChangedCallback(IsVerticalRailEnabledProperty, (s, e) =>
 				((ScrollViewer)s).OnViewportConfigurationsAffectingPropertyChanged());
+
+			// Control.HorizontalContentAlignment / VerticalContentAlignment →
+			// OnPrimaryContentAffectingPropertyChanged with the corresponding flag.
+			RegisterPropertyChangedCallback(HorizontalContentAlignmentProperty, (s, e) =>
+				((ScrollViewer)s).OnPrimaryContentAffectingPropertyChanged(
+					boundsChanged: false,
+					horizontalAlignmentChanged: true,
+					verticalAlignmentChanged: false,
+					zoomFactorBoundaryChanged: false));
+			RegisterPropertyChangedCallback(VerticalContentAlignmentProperty, (s, e) =>
+				((ScrollViewer)s).OnPrimaryContentAffectingPropertyChanged(
+					boundsChanged: false,
+					horizontalAlignmentChanged: false,
+					verticalAlignmentChanged: true,
+					zoomFactorBoundaryChanged: false));
 		}
 
 #if false
