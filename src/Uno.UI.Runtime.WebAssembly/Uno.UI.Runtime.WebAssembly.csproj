@@ -17,7 +17,7 @@
 
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.WebAssembly</PackageId>
+		<PackageId>Uno.WinUI.Runtime.WebAssembly</PackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 	</PropertyGroup>

@@ -1,6 +1,5 @@
 parameters:
   vmLinuxImage: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:
@@ -19,7 +18,6 @@ jobs:
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
     # Disable analyzers for eligible projects in samples to improve performance

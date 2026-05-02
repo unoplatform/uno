@@ -20,7 +20,7 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>..\Uno.UI.RemoteControl\</PlatformItemsBasePath>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</PackageId>
+		<PackageId>Uno.WinUI.DevServer</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -60,17 +60,6 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-	
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<Page Remove="Themes\Generic.xaml" />
-
-		<Page Remove="RemoteControlStatusView.xaml" />
-		<Compile Remove="RemoteControlStatusView.cs" />
-		<None Include="RemoteControlStatusView.cs" />
-	</ItemGroup>
-	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<PageExclusions>$(MSBuildThisFileDirectory)**\*.xaml</PageExclusions>
-	</PropertyGroup>
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
