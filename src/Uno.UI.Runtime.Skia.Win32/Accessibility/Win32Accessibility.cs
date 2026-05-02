@@ -176,6 +176,30 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return null;
 		}
 
+		// Virtual/secondary peer: resolvedPeer shares an Owner UIElement with a
+		// *different* canonical peer (e.g. DataGridItemAutomationPeer whose Owner
+		// is the DataGrid, while the canonical peer for that element is
+		// DataGridAutomationPeer).  Returning the canonical provider here would
+		// make the DataGrid appear as its own child in the UIA tree.
+		// Give the virtual peer its own provider, keyed only in _peerProviders.
+		if (!ReferenceEquals(resolvedPeer, canonicalPeer))
+		{
+			if (_peerProviders.TryGetValue(resolvedPeer, out var existingVirtual))
+			{
+				return existingVirtual;
+			}
+
+			var virtualProvider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, resolvedPeer);
+			_peerProviders.AddOrUpdate(resolvedPeer, virtualProvider);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] Created virtual provider for {virtualProvider.DescribeElement()} (peer={resolvedPeer.GetType().Name})");
+			}
+
+			return virtualProvider;
+		}
+
 		if (_providers.TryGetValue(element, out var existingByElement)
 			&& existingByElement.RepresentsPeer(canonicalPeer))
 		{
@@ -637,6 +661,29 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"[UIA] UiaDisconnectProvider failed during dispose: {ex.Message}");
+				}
+			}
+		}
+
+		// Also disconnect virtual providers (keyed only in _peerProviders, not
+		// _providers).  These are created for secondary peers like
+		// DataGridItemAutomationPeer whose Owner UIElement is shared with the
+		// element's canonical peer.
+		foreach (var pair in _peerProviders)
+		{
+			if (!_providers.TryGetValue(pair.Value.Owner, out var elementProvider)
+				|| !ReferenceEquals(elementProvider, pair.Value))
+			{
+				try
+				{
+					_ = Win32UIAutomationInterop.UiaDisconnectProvider(pair.Value);
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"[UIA] UiaDisconnectProvider (virtual) failed during dispose: {ex.Message}");
+					}
 				}
 			}
 		}

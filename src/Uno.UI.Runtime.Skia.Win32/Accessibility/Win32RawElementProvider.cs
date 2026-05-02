@@ -293,6 +293,40 @@ internal class Win32RawElementProvider :
 		{
 			try
 			{
+				// Virtual providers have _owner set to the element that owns the
+				// canonical peer (e.g. DataGrid for DataGridItemAutomationPeer),
+				// not the element whose visual bounds we want.  Use the peer's own
+				// GetBoundingRectangle() in that case — it already returns global
+				// logical coordinates via GetGlobalBoundsWithOptions.
+				var representedPeer = _representedPeer is not null && _representedPeer.TryGetTarget(out var rp) ? rp : null;
+				if (representedPeer is not null
+					&& !ReferenceEquals(representedPeer, _owner.GetOrCreateAutomationPeer()))
+				{
+					var peerRect = representedPeer.GetBoundingRectangle();
+					if (peerRect.Width <= 0 || peerRect.Height <= 0)
+					{
+						return default;
+					}
+
+					float dpiScaleVirtual = Win32UIAutomationInterop.GetDpiForWindow(_hwnd)
+						/ (float)Win32UIAutomationInterop.USER_DEFAULT_SCREEN_DPI;
+					if (dpiScaleVirtual <= 0)
+					{
+						dpiScaleVirtual = 1.0f;
+					}
+
+					var clientOriginVirtual = new System.Drawing.Point(0, 0);
+					Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOriginVirtual);
+
+					return new UiaRect
+					{
+						Left = clientOriginVirtual.X + peerRect.X * dpiScaleVirtual,
+						Top = clientOriginVirtual.Y + peerRect.Y * dpiScaleVirtual,
+						Width = peerRect.Width * dpiScaleVirtual,
+						Height = peerRect.Height * dpiScaleVirtual,
+					};
+				}
+
 				var visual = _owner.Visual;
 				var size = visual.Size;
 
