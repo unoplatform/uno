@@ -51,6 +51,28 @@ namespace Uno.UI.RuntimeTests.Helpers
 				}
 			});
 		}
+
+		/// <summary>
+		/// Ensure light theme is applied at the application level for the course of a single test.
+		/// </summary>
+		public static IDisposable UseApplicationLightTheme()
+		{
+			var originalTheme = Application.Current.RequestedTheme;
+			var wasExplicit = Application.Current.IsThemeSetExplicitly;
+			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
+
+			return new DisposableAction(() =>
+			{
+				if (wasExplicit)
+				{
+					Application.Current.SetExplicitRequestedTheme(originalTheme);
+				}
+				else
+				{
+					Application.Current.SetExplicitRequestedTheme(null);
+				}
+			});
+		}
 #endif
 
 		public static ElementTheme CurrentTheme

@@ -3997,6 +3997,10 @@ public class Given_ElementTheme
 		// been through a prior theme walk (stored theme == Theme.None) should
 		// still get their ThemeResource bindings updated.
 
+		// Ensure we start in Light theme regardless of CI environment
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
 		var root = (Grid)XamlReader.Load(
 			"""
 			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -4054,6 +4058,10 @@ public class Given_ElementTheme
 	{
 		// Verify that nested elements (children, grandchildren) all get their
 		// ThemeResource bindings updated when the app theme changes.
+
+		// Ensure we start in Light theme regardless of CI environment
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
 
 		var root = (StackPanel)XamlReader.Load(
 			"""
