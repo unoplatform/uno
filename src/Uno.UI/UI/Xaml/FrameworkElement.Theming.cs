@@ -215,9 +215,11 @@ public partial class FrameworkElement
 	{
 		// 1. Determine if ActualTheme is changing
 		var oldTheme = GetTheme();
-		var appBaseTheme = Theming.FromElementTheme(
-			Application.Current?.ActualElementTheme ?? ElementTheme.Light);
-		var oldBase = oldTheme == Theme.None ? appBaseTheme : Theming.GetBaseValue(oldTheme);
+		// MUX Reference: Theming.cpp GetBaseValue(Theme::None) returns Theme::None,
+		// which never equals Light or Dark, ensuring themeChanged is always true for
+		// elements that haven't been through a theme walk yet. This guarantees
+		// UpdateThemeBindings is called on their first walk.
+		var oldBase = Theming.GetBaseValue(oldTheme);
 		var newBase = Theming.GetBaseValue(theme);
 
 		bool themeChanged = oldBase != newBase || forceRefresh;

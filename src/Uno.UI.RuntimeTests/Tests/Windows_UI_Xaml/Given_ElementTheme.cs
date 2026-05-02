@@ -3985,4 +3985,130 @@ public class Given_ElementTheme
 #endif
 
 	#endregion
+
+	#region Application Theme Change - ThemeResource Resolution
+
+	[TestMethod]
+#if !HAS_UNO
+	[Ignore("Test validates Uno-specific regression fix")]
+#endif
+	public async Task When_AppTheme_Changes_ThemeResource_Values_Update()
+	{
+		// Regression test for https://github.com/unoplatform/uno/issues/23177
+		// When switching app theme from Light to Dark, elements that haven't
+		// been through a prior theme walk (stored theme == Theme.None) should
+		// still get their ThemeResource bindings updated.
+
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Grid.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="TestBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="TestBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Grid.Resources>
+				<Border x:Name="target" Width="50" Height="50"
+				        Background="{ThemeResource TestBrush}" />
+			</Grid>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var border = (Border)root.FindName("target");
+
+		// Verify initial Light theme value
+		var initialBrush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(initialBrush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, initialBrush.Color,
+			$"Initial color should be Green (Light theme). Got {initialBrush.Color}");
+
+		// Switch to Dark theme at application level
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var darkBrush = border.Background as SolidColorBrush;
+			Assert.IsNotNull(darkBrush, "Background should be a SolidColorBrush after theme switch");
+			Assert.AreEqual(Colors.Red, darkBrush.Color,
+				$"After switching to Dark, ThemeResource should resolve to Red. Got {darkBrush.Color}");
+		}
+
+		// Verify switching back to Light works
+		await WindowHelper.WaitForIdle();
+		var restoredBrush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(restoredBrush, "Background should be a SolidColorBrush after restoring theme");
+		Assert.AreEqual(Colors.Green, restoredBrush.Color,
+			$"After restoring Light, ThemeResource should resolve to Green. Got {restoredBrush.Color}");
+	}
+
+	[TestMethod]
+#if !HAS_UNO
+	[Ignore("Test validates Uno-specific regression fix")]
+#endif
+	public async Task When_AppTheme_Changes_Nested_Elements_ThemeResources_Update()
+	{
+		// Verify that nested elements (children, grandchildren) all get their
+		// ThemeResource bindings updated when the app theme changes.
+
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="NestedBrush" Color="Blue" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="NestedBrush" Color="Orange" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</StackPanel.Resources>
+				<Border x:Name="child" Width="50" Height="50"
+				        Background="{ThemeResource NestedBrush}" />
+				<StackPanel>
+					<Border x:Name="grandchild" Width="50" Height="50"
+					        Background="{ThemeResource NestedBrush}" />
+				</StackPanel>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var child = (Border)root.FindName("child");
+		var grandchild = (Border)root.FindName("grandchild");
+
+		// Switch to Dark
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var childBrush = child.Background as SolidColorBrush;
+			var grandchildBrush = grandchild.Background as SolidColorBrush;
+
+			Assert.IsNotNull(childBrush);
+			Assert.IsNotNull(grandchildBrush);
+
+			Assert.AreEqual(Colors.Orange, childBrush.Color,
+				$"Child should use Dark resource (Orange). Got {childBrush.Color}");
+			Assert.AreEqual(Colors.Orange, grandchildBrush.Color,
+				$"Grandchild should use Dark resource (Orange). Got {grandchildBrush.Color}");
+		}
+	}
+
+	#endregion
 }
