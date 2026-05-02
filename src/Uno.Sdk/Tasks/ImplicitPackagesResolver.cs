@@ -115,6 +115,14 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? AndroidXCollectionVersion { get; set; }
 
+	public string? AndroidXLeanbackVersion { get; set; }
+
+	public string? AndroidXCarAppVersion { get; set; }
+
+	public string? AndroidXWearVersion { get; set; }
+
+	public string? AndroidXWearTilesVersion { get; set; }
+
 	public string? MicrosoftIdentityClientVersion { get; set; }
 
 	public ITaskItem[] ImplicitPackageReferences { get; set; } = [];
@@ -276,6 +284,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.AndroidXSwipeRefreshLayout, AndroidXSwipeRefreshLayoutVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXNavigation, AndroidXNavigationVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXCollection, AndroidXCollectionVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXLeanback, AndroidXLeanbackVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXCarApp, AndroidXCarAppVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXWear, AndroidXWearVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXWearTiles, AndroidXWearTilesVersion)
 			.UpdateManifest(PackageManifest.Group.CSharpMarkup, UnoCSharpMarkupVersion)
 			.UpdateManifest(PackageManifest.Group.Extensions, UnoExtensionsVersion)
 			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
