@@ -352,44 +352,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public async Task When_Path_ArcTo_Multiple_Arcs_Does_Not_Throw()
 		{
-			// Issue: Path with SVG arc command (lowercase 'a' for relative arcs) throws
-			// "Failed to load Page" / System.Exception in PathStreamGeometryContext.ArcTo.
-			// The specific data uses multiple arc segments with non-uniform X/Y radii (rx != ry).
-			// Expected: The Path should load and render without throwing.
-
-			Exception caught = null;
-			Path path = null;
-
-			try
+			var path = new Path
 			{
-				path = new Path
-				{
-					Data = (Geometry)XamlReader.Load(
-						@"<PathGeometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-							<PathGeometry.Figures>
-								<PathFigure StartPoint='822.6875,43.4375'>
-									<ArcSegment Point='821.3125,44.75' Size='1.375,1.3125' RotationAngle='0' IsLargeArc='False' SweepDirection='Clockwise' />
-									<ArcSegment Point='819.9375,43.4375' Size='1.375,1.3125' RotationAngle='0' IsLargeArc='False' SweepDirection='Clockwise' />
-									<ArcSegment Point='821.3125,42.125' Size='1.375,1.3125' RotationAngle='0' IsLargeArc='False' SweepDirection='Clockwise' />
-									<ArcSegment Point='822.6875,43.4375' Size='1.375,1.3125' RotationAngle='0' IsLargeArc='False' SweepDirection='Clockwise' />
-								</PathFigure>
-							</PathGeometry.Figures>
-						</PathGeometry>"),
-					Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
-				};
+				Data = "m 822.6875,43.4375 a 1.375,1.3125 0 0 1 -1.375,1.3125 1.375,1.3125 0 0 1 -1.375,-1.3125 1.375,1.3125 0 0 1 1.375,-1.3125 1.375,1.3125 0 0 1 1.375,1.3125 z",
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
 
-				WindowHelper.WindowContent = path;
-				await WindowHelper.WaitForLoaded(path);
-				await WindowHelper.WaitForIdle();
-			}
-			catch (Exception ex)
-			{
-				caught = ex;
-			}
-
-			Assert.IsNull(caught,
-				$"Expected Path with ArcSegments (non-uniform radii) to load without exception, but got: {caught?.Message}. " +
-				$"This reproduces the PathStreamGeometryContext.ArcTo exception.");
+			WindowHelper.WindowContent = path;
+			await WindowHelper.WaitForLoaded(path);
+			await WindowHelper.WaitForIdle();
 		}
 	}
 }
