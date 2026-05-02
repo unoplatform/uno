@@ -590,7 +590,7 @@
 					"helpUrl": "https://aka.platform.uno/feature-android-tv"
 				},
 				"AndroidAuto": {
-					"description": "Configures the Android head for Android Auto / Automotive OS (adds Xamarin.AndroidX.Car.App).",
+					"description": "Configures the Android head for Android Auto / Automotive OS (adds Xamarin.AndroidX.Car.App.App).",
 					"helpUrl": "https://aka.platform.uno/feature-android-auto"
 				},
 				"AndroidWear": {
