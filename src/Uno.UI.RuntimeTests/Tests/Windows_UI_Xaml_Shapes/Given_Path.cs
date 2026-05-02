@@ -349,7 +349,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		// Repro tests for https://github.com/unoplatform/uno/issues/2228
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public async Task When_Path_ArcTo_Multiple_Arcs_Does_Not_Throw()
 		{
 			// Issue: Path with SVG arc command (lowercase 'a' for relative arcs) throws
@@ -375,7 +375,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 								</PathFigure>
 							</PathGeometry.Figures>
 						</PathGeometry>"),
-					Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+					Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
 				};
 
 				WindowHelper.WindowContent = path;
