@@ -4017,16 +4017,15 @@ public class Given_ElementTheme
 						</ResourceDictionary.ThemeDictionaries>
 					</ResourceDictionary>
 				</Grid.Resources>
-				<Border x:Name="target" Width="50" Height="50"
-				        Background="{ThemeResource TestBrush}" />
+				<Border x:Name="border" Width="50" Height="50" Background="{ThemeResource TestBrush}" />
 			</Grid>
 			""");
+
+		var border = (Border)root.FindName("border");
 
 		WindowHelper.WindowContent = root;
 		await WindowHelper.WaitForLoaded(root);
 		await WindowHelper.WaitForIdle();
-
-		var border = (Border)root.FindName("target");
 
 		// Verify initial Light theme value
 		var initialBrush = border.Background as SolidColorBrush;
@@ -4079,21 +4078,19 @@ public class Given_ElementTheme
 						</ResourceDictionary.ThemeDictionaries>
 					</ResourceDictionary>
 				</StackPanel.Resources>
-				<Border x:Name="child" Width="50" Height="50"
-				        Background="{ThemeResource NestedBrush}" />
+				<Border x:Name="child" Width="50" Height="50" Background="{ThemeResource NestedBrush}" />
 				<StackPanel>
-					<Border x:Name="grandchild" Width="50" Height="50"
-					        Background="{ThemeResource NestedBrush}" />
+					<Border x:Name="grandchild" Width="50" Height="50" Background="{ThemeResource NestedBrush}" />
 				</StackPanel>
 			</StackPanel>
 			""");
 
+		var child = (Border)root.FindName("child");
+		var grandchild = (Border)root.FindName("grandchild");
+
 		WindowHelper.WindowContent = root;
 		await WindowHelper.WaitForLoaded(root);
 		await WindowHelper.WaitForIdle();
-
-		var child = (Border)root.FindName("child");
-		var grandchild = (Border)root.FindName("grandchild");
 
 		// Switch to Dark
 		using (ThemeHelper.UseApplicationDarkTheme())
