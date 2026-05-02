@@ -76,6 +76,10 @@
 				UnoFontsVersion="$(UnoFontsVersion)"
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
+				AndroidXLeanbackVersion="$(AndroidXLeanbackVersion)"
+				AndroidXCarAppVersion="$(AndroidXCarAppVersion)"
+				AndroidXWearVersion="$(AndroidXWearVersion)"
+				AndroidXWearTilesVersion="$(AndroidXWearTilesVersion)"
 				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
 				MicrosoftWebView2Version="$(MicrosoftWebView2Version)"
 				Condition=" '$(TargetFramework)' != '' ">
