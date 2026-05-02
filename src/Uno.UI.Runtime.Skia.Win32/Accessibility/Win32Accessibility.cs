@@ -157,6 +157,15 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
+		// Peer-first: every AutomationPeer gets exactly one provider.
+		// Checking _peerProviders before doing any element/canonical-peer resolution
+		// prevents peers that share an owner UIElement (e.g. DataGridItemAutomationPeer
+		// whose Owner == DataGrid) from colliding with the element's canonical provider.
+		if (_peerProviders.TryGetValue(resolvedPeer, out var existingByPeer))
+		{
+			return existingByPeer;
+		}
+
 		if (!resolvedPeer.TryGetProviderOwner(out var element))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -166,60 +175,34 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return null;
 		}
 
-		var canonicalPeer = element.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true) ?? resolvedPeer;
-		if (!canonicalPeer.TryGetProviderOwner(out element))
+		// Determine whether this peer is the canonical peer for its owner element.
+		// Only canonical peers are also indexed in _providers (element-keyed cache).
+		var canonicalPeer = element.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true);
+		var isCanonical = canonicalPeer is not null && ReferenceEquals(resolvedPeer, canonicalPeer);
+
+		// For canonical peers, also check the element-keyed cache.
+		if (isCanonical && _providers.TryGetValue(element, out var existingByElement))
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"[UIA] GetProviderForPeer: Canonical owner resolution failed for {canonicalPeer.GetType().Name}");
-			}
-			return null;
-		}
-
-		// Virtual/secondary peer: resolvedPeer shares an Owner UIElement with a
-		// *different* canonical peer (e.g. DataGridItemAutomationPeer whose Owner
-		// is the DataGrid, while the canonical peer for that element is
-		// DataGridAutomationPeer).  Returning the canonical provider here would
-		// make the DataGrid appear as its own child in the UIA tree.
-		// Give the virtual peer its own provider, keyed only in _peerProviders.
-		if (!ReferenceEquals(resolvedPeer, canonicalPeer))
-		{
-			if (_peerProviders.TryGetValue(resolvedPeer, out var existingVirtual))
-			{
-				return existingVirtual;
-			}
-
-			var virtualProvider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, resolvedPeer);
-			_peerProviders.AddOrUpdate(resolvedPeer, virtualProvider);
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"[UIA] Created virtual provider for {virtualProvider.DescribeElement()} (peer={resolvedPeer.GetType().Name})");
-			}
-
-			return virtualProvider;
-		}
-
-		if (_providers.TryGetValue(element, out var existingByElement)
-			&& existingByElement.RepresentsPeer(canonicalPeer))
-		{
-			_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
+			_peerProviders.AddOrUpdate(resolvedPeer, existingByElement);
 			return existingByElement;
 		}
 
-		if (_peerProviders.TryGetValue(canonicalPeer, out var existingByPeer))
+		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, resolvedPeer);
+		_peerProviders.AddOrUpdate(resolvedPeer, provider);
+		if (isCanonical)
 		{
-			_providers.AddOrUpdate(element, existingByPeer);
-			return existingByPeer;
+			_providers.AddOrUpdate(element, provider);
 		}
-
-		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, canonicalPeer);
-		_providers.AddOrUpdate(element, provider);
-		_peerProviders.AddOrUpdate(canonicalPeer, provider);
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={canonicalPeer.GetType().Name})");
+			this.Log().Debug($"[UIA] Created {(isCanonical ? "" : "virtual ")}provider for {provider.DescribeElement()} (peer={resolvedPeer.GetType().Name})");
+		}
+		else if (!isCanonical)
+		{
+			// Always warn on virtual provider creation — confirms the DataGridItem/DataGrid
+			// disambiguation path is being reached (diagnostic for self-reference regression).
+			this.Log().Warn($"[UIA] Virtual provider created: element={element.GetType().Name}, peer={resolvedPeer.GetType().Name}, canonicalPeer={canonicalPeer?.GetType().Name ?? "null"}");
 		}
 
 		return provider;

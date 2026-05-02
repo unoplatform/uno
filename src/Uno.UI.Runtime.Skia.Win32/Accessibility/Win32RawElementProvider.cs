@@ -682,9 +682,10 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 
-		// First, try the automation peer tree. This is the correct path for
-		// ItemAutomationPeer and other peers whose logical parent differs
-		// from the visual parent.
+		// Try the automation peer tree first. This is the correct path for
+		// virtual/item peers whose logical parent differs from the visual parent
+		// (e.g. DataGridItemAutomationPeer whose _owner is the DataGrid itself,
+		// not the DataGridRowsPresenter that logically contains it).
 		var myPeer = GetAutomationPeer();
 		if (myPeer?.GetParent() is { } parentPeer)
 		{
@@ -695,18 +696,27 @@ internal class Win32RawElementProvider :
 			}
 		}
 
-		// Fall back to the visual tree when the peer tree doesn't yield a
-		// provider (e.g. the parent peer has no owner element yet).
+		// Virtual providers have _owner set to the canonical element (e.g. DataGrid),
+		// not the element that logically contains them in the UIA tree.
+		// Walking the visual tree from that wrong _owner would return an incorrect
+		// ancestor as parent, so skip the visual tree fallback for virtual providers.
+		var representedPeer = RepresentedPeer;
+		if (representedPeer is not null
+			&& !ReferenceEquals(representedPeer, _owner.GetOrCreateAutomationPeer()))
+		{
+			return _accessibility.RootProvider;
+		}
+
+		// Canonical provider: fall back to visual tree when peer tree doesn't
+		// yield a provider (e.g. the parent peer has no owner element yet).
 		var current = VisualTreeHelper.GetParent(_owner) as UIElement;
 		while (current is not null)
 		{
-			// Check if this is the root element
 			if (_accessibility.RootProvider is { } root && ReferenceEquals(root.Owner, current))
 			{
 				return root;
 			}
 
-			// Check if this ancestor has an automation peer
 			if (current.GetOrCreateAutomationPeer() is not null)
 			{
 				return _accessibility.GetOrCreateProvider(current);
@@ -715,7 +725,6 @@ internal class Win32RawElementProvider :
 			current = VisualTreeHelper.GetParent(current) as UIElement;
 		}
 
-		// If no ancestor with a peer was found, return the root
 		return _accessibility.RootProvider;
 	}
 
@@ -742,30 +751,14 @@ internal class Win32RawElementProvider :
 	}
 
 	/// <summary>
-	/// Compares two automation peers for identity. Uses reference equality first,
-	/// then falls back to checking if they wrap the same UIElement.
+	/// Compares two automation peers for identity using reference equality only.
+	/// Owner-UIElement equality is intentionally avoided: multiple distinct peers
+	/// (e.g. DataGridAutomationPeer and DataGridItemAutomationPeer) may share the
+	/// same Owner UIElement, and treating them as equal would cause wrong sibling
+	/// navigation — the virtual peer would be mis-identified as the canonical one.
 	/// </summary>
 	private static bool IsSamePeer(AutomationPeer? a, AutomationPeer? b)
-	{
-		if (a is null || b is null)
-		{
-			return false;
-		}
-
-		if (ReferenceEquals(a, b))
-		{
-			return true;
-		}
-
-		// Fall back to comparing owner UIElements
-		if (a is FrameworkElementAutomationPeer feapA
-			&& b is FrameworkElementAutomationPeer feapB)
-		{
-			return ReferenceEquals(feapA.Owner, feapB.Owner);
-		}
-
-		return false;
-	}
+		=> a is not null && b is not null && ReferenceEquals(a, b);
 
 	// Hit testing helper
 
