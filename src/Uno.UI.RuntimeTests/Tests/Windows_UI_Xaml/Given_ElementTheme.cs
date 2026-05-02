@@ -3988,10 +3988,8 @@ public class Given_ElementTheme
 
 	#region Application Theme Change - ThemeResource Resolution
 
+#if HAS_UNO
 	[TestMethod]
-#if !HAS_UNO
-	[Ignore("Test validates Uno-specific regression fix")]
-#endif
 	public async Task When_AppTheme_Changes_ThemeResource_Values_Update()
 	{
 		// Regression test for https://github.com/unoplatform/uno/issues/23177
@@ -4052,9 +4050,6 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
-#if !HAS_UNO
-	[Ignore("Test validates Uno-specific regression fix")]
-#endif
 	public async Task When_AppTheme_Changes_Nested_Elements_ThemeResources_Update()
 	{
 		// Verify that nested elements (children, grandchildren) all get their
@@ -4109,6 +4104,7 @@ public class Given_ElementTheme
 				$"Grandchild should use Dark resource (Orange). Got {grandchildBrush.Color}");
 		}
 	}
+#endif
 
 	#endregion
 }
