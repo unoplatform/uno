@@ -194,15 +194,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			_providers.AddOrUpdate(element, provider);
 		}
 
+		if (!isCanonical)
+		{
+			this.Log().Warn($"[UIA] Virtual provider created: element={element.GetType().Name}, peer={resolvedPeer.GetType().Name}, canonicalPeer={canonicalPeer?.GetType().Name ?? "null"}");
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"[UIA] Created {(isCanonical ? "" : "virtual ")}provider for {provider.DescribeElement()} (peer={resolvedPeer.GetType().Name})");
-		}
-		else if (!isCanonical)
-		{
-			// Always warn on virtual provider creation — confirms the DataGridItem/DataGrid
-			// disambiguation path is being reached (diagnostic for self-reference regression).
-			this.Log().Warn($"[UIA] Virtual provider created: element={element.GetType().Name}, peer={resolvedPeer.GetType().Name}, canonicalPeer={canonicalPeer?.GetType().Name ?? "null"}");
 		}
 
 		return provider;

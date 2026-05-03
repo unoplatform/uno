@@ -35,12 +35,15 @@ internal class Win32RawElementProvider :
 	private readonly int _runtimeId;
 	private readonly bool _isRoot;
 	private readonly Win32Accessibility _accessibility;
+	private readonly AutomationPeer? _virtualRepresentedPeer;
 	private readonly WeakReference<AutomationPeer>? _representedPeer;
 	private IList<AutomationPeer>? _cachedAutomationChildren;
 	private const int MaxHitTestDepth = 1024;
 
 	internal UIElement Owner => _owner;
-	internal AutomationPeer? RepresentedPeer => _representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null;
+	internal AutomationPeer? RepresentedPeer
+		=> _virtualRepresentedPeer
+			?? (_representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null);
 
 	internal Win32RawElementProvider(
 		UIElement owner,
@@ -53,7 +56,26 @@ internal class Win32RawElementProvider :
 		_hwnd = hwnd;
 		_isRoot = isRoot;
 		_accessibility = accessibility;
-		_representedPeer = representedPeer is not null ? new WeakReference<AutomationPeer>(representedPeer) : null;
+
+		if (representedPeer is not null)
+		{
+			var canonicalPeer = owner.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true);
+
+			// Virtual providers must keep representing the exact peer they were
+			// created for. If that peer were held only weakly, the provider could
+			// later fall back to the owner's canonical peer (e.g. DataGrid), making
+			// a child provider masquerade as its parent and forming a navigation loop
+			// such as DataGridRowsPresenter -> DataGridItemProvider -> DataGridRowsPresenter.
+			if (canonicalPeer is not null && !ReferenceEquals(canonicalPeer, representedPeer))
+			{
+				_virtualRepresentedPeer = representedPeer;
+			}
+			else
+			{
+				_representedPeer = new WeakReference<AutomationPeer>(representedPeer);
+			}
+		}
+
 		_runtimeId = _nextRuntimeId++;
 	}
 
@@ -254,13 +276,15 @@ internal class Win32RawElementProvider :
 		{
 			var result = direction switch
 			{
-				NavigateDirection.Parent => FindParentProvider(),
-				NavigateDirection.FirstChild => GetFirstChild(),
-				NavigateDirection.LastChild => GetLastChild(),
-				NavigateDirection.NextSibling => GetNextSibling(),
-				NavigateDirection.PreviousSibling => GetPreviousSibling(),
+				NavigateDirection.Parent => GuardAgainstSelf(FindParentProvider(), nameof(FindParentProvider)),
+				NavigateDirection.FirstChild => GuardAgainstSelf(GetFirstChild(), nameof(GetFirstChild)),
+				NavigateDirection.LastChild => GuardAgainstSelf(GetLastChild(), nameof(GetLastChild)),
+				NavigateDirection.NextSibling => GuardAgainstSelf(GetNextSibling(), nameof(GetNextSibling)),
+				NavigateDirection.PreviousSibling => GuardAgainstSelf(GetPreviousSibling(), nameof(GetPreviousSibling)),
 				_ => null,
 			};
+
+			result = GuardAgainstSelf(result, $"Navigate({direction})");
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -298,7 +322,7 @@ internal class Win32RawElementProvider :
 				// not the element whose visual bounds we want.  Use the peer's own
 				// GetBoundingRectangle() in that case — it already returns global
 				// logical coordinates via GetGlobalBoundsWithOptions.
-				var representedPeer = _representedPeer is not null && _representedPeer.TryGetTarget(out var rp) ? rp : null;
+				var representedPeer = RepresentedPeer;
 				if (representedPeer is not null
 					&& !ReferenceEquals(representedPeer, _owner.GetOrCreateAutomationPeer()))
 				{
@@ -575,7 +599,7 @@ internal class Win32RawElementProvider :
 			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
 			if (provider is not null && !ReferenceEquals(provider, this))
 			{
-				return provider;
+				return GuardAgainstSelf(provider, nameof(GetFirstChild));
 			}
 		}
 		return null;
@@ -594,7 +618,7 @@ internal class Win32RawElementProvider :
 			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
 			if (provider is not null && !ReferenceEquals(provider, this))
 			{
-				return provider;
+				return GuardAgainstSelf(provider, nameof(GetLastChild));
 			}
 		}
 		return null;
@@ -624,7 +648,7 @@ internal class Win32RawElementProvider :
 				var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
 				if (provider is not null && !ReferenceEquals(provider, this))
 				{
-					return provider;
+					return GuardAgainstSelf(provider, nameof(GetNextSibling));
 				}
 			}
 			else if (IsSamePeer(siblings[i], myPeer))
@@ -656,7 +680,7 @@ internal class Win32RawElementProvider :
 		{
 			if (IsSamePeer(siblings[i], myPeer))
 			{
-				return previous;
+				return GuardAgainstSelf(previous, nameof(GetPreviousSibling));
 			}
 			var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
 			if (provider is not null && !ReferenceEquals(provider, this))
@@ -692,7 +716,7 @@ internal class Win32RawElementProvider :
 			var parentProvider = _accessibility.GetProviderForPeer(parentPeer);
 			if (parentProvider is not null)
 			{
-				return parentProvider;
+				return GuardAgainstSelf(parentProvider, nameof(FindParentProvider));
 			}
 		}
 
@@ -704,7 +728,7 @@ internal class Win32RawElementProvider :
 		if (representedPeer is not null
 			&& !ReferenceEquals(representedPeer, _owner.GetOrCreateAutomationPeer()))
 		{
-			return _accessibility.RootProvider;
+			return GuardAgainstSelf(_accessibility.RootProvider, nameof(FindParentProvider));
 		}
 
 		// Canonical provider: fall back to visual tree when peer tree doesn't
@@ -714,18 +738,18 @@ internal class Win32RawElementProvider :
 		{
 			if (_accessibility.RootProvider is { } root && ReferenceEquals(root.Owner, current))
 			{
-				return root;
+				return GuardAgainstSelf(root, nameof(FindParentProvider));
 			}
 
 			if (current.GetOrCreateAutomationPeer() is not null)
 			{
-				return _accessibility.GetOrCreateProvider(current);
+				return GuardAgainstSelf(_accessibility.GetOrCreateProvider(current), nameof(FindParentProvider));
 			}
 
 			current = VisualTreeHelper.GetParent(current) as UIElement;
 		}
 
-		return _accessibility.RootProvider;
+		return GuardAgainstSelf(_accessibility.RootProvider, nameof(FindParentProvider));
 	}
 
 	/// <summary>
@@ -1032,7 +1056,7 @@ internal class Win32RawElementProvider :
 
 	internal string DescribeElement()
 	{
-		var resolvedPeer = _representedPeer is not null && _representedPeer.TryGetTarget(out var rp) ? rp : null;
+		var resolvedPeer = RepresentedPeer;
 		var typeName = resolvedPeer is not null && resolvedPeer is not FrameworkElementAutomationPeer
 			? $"{resolvedPeer.GetType().Name}->{_owner.GetType().Name}"
 			: _owner.GetType().Name;
@@ -1149,8 +1173,38 @@ internal class Win32RawElementProvider :
 	}
 
 	private AutomationPeer? GetAutomationPeer()
-		=> (_representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null)
-			?? _owner.GetOrCreateAutomationPeer();
+	{
+		if (_virtualRepresentedPeer is not null)
+		{
+			return _virtualRepresentedPeer;
+		}
+
+		if (_representedPeer is not null)
+		{
+			if (_representedPeer.TryGetTarget(out var peer))
+			{
+				return peer;
+			}
+
+			this.Log().Warn($"[UIA] Represented peer was collected for {DescribeElement()} - falling back to owner peer {_owner.GetType().Name}");
+		}
+
+		return _owner.GetOrCreateAutomationPeer();
+	}
+
+	private T? GuardAgainstSelf<T>(T? result, string source)
+		where T : class, IRawElementProviderFragment
+	{
+		Debug.Assert(!ReferenceEquals(result, this), $"[UIA] {source} returned self for {DescribeElement()}");
+
+		if (ReferenceEquals(result, this))
+		{
+			this.Log().Warn($"[UIA] {source} returned self for {DescribeElement()}");
+			return null;
+		}
+
+		return result;
+	}
 
 	private bool ContainsPoint(double screenX, double screenY)
 	{
