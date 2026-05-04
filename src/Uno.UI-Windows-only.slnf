@@ -9,7 +9,6 @@
       "SamplesApp\\SamplesApp.Windows\\SamplesApp.Windows.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
-      "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",

@@ -1,0 +1,16 @@
+<Project>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)**\*.xaml.cs"
+             Exclude="$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)**\*.cs"
+             Exclude="$(MSBuildThisFileDirectory)**\*.xaml.cs;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**" />
+
+    <Page Include="$(MSBuildThisFileDirectory)**\*.xaml"
+          Exclude="$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>
