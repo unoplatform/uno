@@ -3230,6 +3230,7 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_App_Theme_Changes_Explicit_Element_Keeps_Own_Resources()
 	{
 		// Element with RequestedTheme=Light should keep Light resources
@@ -3295,6 +3296,7 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_UseApplicationDarkTheme_Disposed_IsThemeSetExplicitly_Restored()
 	{
 		// Verify IsThemeSetExplicitly is restored to false after dispose
@@ -3885,6 +3887,7 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Style_With_Template_Applied_CodeBehind_In_Light_Subtree_Under_Dark_App()
 	{
 		// Regression test: app is in Dark theme, but the root
