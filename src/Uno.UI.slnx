@@ -121,7 +121,6 @@
     </Project>
   </Folder>
   <Folder Name="/SamplesApp/">
-    <Project Path="SamplesApp/Benchmarks.Shared/SamplesApp.Benchmarks.shproj" />
     <Project Path="SamplesApp/SamplesApp.netcoremobile/SamplesApp.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Deploy Solution="Debug|Any CPU" />

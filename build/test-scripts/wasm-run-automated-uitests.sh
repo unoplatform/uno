@@ -25,7 +25,6 @@ export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-127.0.6533.
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP
 export UNO_UITEST_PLATFORM=Browser
-export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/wasm-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-wasm-automated-$SITE_SUFFIX.xml
 export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
 export UNO_ORIGINAL_TEST_RESULTS_DIRECTORY=$BUILD_SOURCESDIRECTORY/build
@@ -39,16 +38,11 @@ then
 	export TEST_FILTERS=" \
 		FullyQualifiedName !~ SamplesApp.UITests.Snap \
 		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests \
-		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests \
 "
 
 elif [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
 then
 		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.RuntimeTests"
-
-elif [ "$UITEST_AUTOMATED_GROUP" == 'Benchmarks' ];
-then
-		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests"
 fi
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ]; then

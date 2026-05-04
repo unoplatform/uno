@@ -127,10 +127,4 @@ It is possible to enable the chromium head using the configuration parameters in
 
 ## Creating performance benchmarks with BenchmarkDotNet
 
-Performance is measured using [BenchmarkDotNet](https://benchmarkdotnet.org/), in the suite located in the `SamplesApp.Benchmarks` shared project.
-
-A few points to consider when adding benchmarks:
-
-* Make a folder using the namespace separated by `_`
-* Avoid putting a large number of benchmarks in a single class. Those tests are run synchronously under
-WebAssembly, and this will allow for progress reporting to be visible.
+Performance is measured using [BenchmarkDotNet](https://benchmarkdotnet.org/), with the suite hosted inside `Uno.UI.RuntimeTests` and run as part of the Skia CI test pipeline. See [doc/benchmarks/](../../benchmarks/README.md) for adding benchmarks, running them locally, and interpreting the trend dashboard.

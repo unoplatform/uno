@@ -146,15 +146,6 @@ jobs:
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
-      'Benchmarks':
-        SITE_SUFFIX: 'net10.0-WinUI'
-        UITEST_AUTOMATED_GROUP: 'Benchmarks'
-        TEST_RUN_NAME: 'Benchmarks'
-        TEST_KIND: benchmark
-        UITEST_TEST_TIMEOUT: '15m'
-        IS_RUNTIME_TESTS: false
-        IS_UI_TESTS: true
-
       'Runtime Tests 0':
         SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'

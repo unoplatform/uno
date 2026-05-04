@@ -25,7 +25,6 @@
       "AddIns\\Uno.WinUI.Graphics3DGL\\Uno.WinUI.Graphics3DGL.csproj",
       "AddIns\\Uno.WinUI.SpellChecking\\Uno.WinUI.SpellChecking.csproj",
       "FontFallbackPreprocessor\\FontFallbackPreprocessor.csproj",
-      "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.Skia.Generic\\SamplesApp.Skia.Generic.csproj",
       "SamplesApp\\SamplesApp.Skia.netcoremobile\\SamplesApp.Skia.netcoremobile.csproj",

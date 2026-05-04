@@ -155,7 +155,6 @@
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
 	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
-	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
 
 	<Import Project="..\..\Uno.UI.Runtime.WebAssembly\buildTransitive\*.Runtime.WebAssembly.props" />
 	<Import Project="..\..\Uno.UI.Runtime.WebAssembly\buildTransitive\*.Runtime.WebAssembly.targets" />

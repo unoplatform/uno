@@ -65,8 +65,6 @@
 
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
 
-	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
-
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 
 	<ItemGroup>
