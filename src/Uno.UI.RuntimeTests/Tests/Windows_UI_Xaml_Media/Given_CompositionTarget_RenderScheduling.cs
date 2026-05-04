@@ -93,17 +93,24 @@ public class Given_CompositionTarget_RenderScheduling
 		}
 	}
 
-#if __ANDROID__
 	// End-to-end coverage of the Android lock/unlock fix. The platform-agnostic test above
 	// only invokes the static recovery primitive; this one drives the same recovery through
 	// the IUnoSkiaRenderView.OnResume entry point that ApplicationActivity calls on resume,
 	// so a regression in either the Vulkan _paused path or the renderview-side wiring
 	// (forgetting to call NotifyRenderingResumed / RequestRender / OnResume on the base
-	// GLSurfaceView) is caught here.
+	// GLSurfaceView) is caught here. Compiled into the generic Skia test assembly that is
+	// reused on Android Skia at runtime; gated by OperatingSystem.IsAndroid() so it skips
+	// cleanly on Skia Desktop where the Uno.UI.Runtime.Skia.Android types aren't present.
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_AndroidRenderView_OnResume_Recovers_Stuck_RenderCycle()
 	{
+		if (!OperatingSystem.IsAndroid())
+		{
+			Assert.Inconclusive("Android-Skia-only: requires the Uno.UI.Runtime.Skia.Android render view.");
+			return;
+		}
+
 		// IUnoSkiaRenderView and ApplicationActivity.RenderView are internal to
 		// Uno.UI.Runtime.Skia.Android, so reach into them via reflection.
 		var activityType = Type.GetType(
@@ -204,6 +211,12 @@ public class Given_CompositionTarget_RenderScheduling
 	[TestMethod]
 	public void When_ApplicationActivity_Overrides_Activity_Lifecycle()
 	{
+		if (!OperatingSystem.IsAndroid())
+		{
+			Assert.Inconclusive("Android-Skia-only: requires the Uno.UI.Runtime.Skia.Android assembly.");
+			return;
+		}
+
 		var activityType = Type.GetType(
 			"Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.Runtime.Skia.Android",
 			throwOnError: false);
@@ -220,6 +233,5 @@ public class Given_CompositionTarget_RenderScheduling
 		Assert.AreEqual(activityType, resumeOverride!.DeclaringType,
 			"ApplicationActivity must own the OnResume override so the render view lifecycle is forwarded.");
 	}
-#endif
 }
 #endif
