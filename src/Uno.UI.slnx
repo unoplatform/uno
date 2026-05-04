@@ -128,7 +128,6 @@
       <Deploy Solution="Debug|iPhone" />
       <Deploy Solution="Debug|iPhoneSimulator" />
     </Project>
-    <Project Path="SamplesApp/SamplesApp.Shared/SamplesApp.Shared.shproj" />
     <Project Path="SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
