@@ -4097,6 +4097,16 @@ public class Given_ElementTheme
 		await WindowHelper.WaitForLoaded(root);
 		await WindowHelper.WaitForIdle();
 
+		// Sanity-check: initial Light theme values should be Blue
+		var initialChildBrush = child.Background as SolidColorBrush;
+		var initialGrandchildBrush = grandchild.Background as SolidColorBrush;
+		Assert.IsNotNull(initialChildBrush);
+		Assert.IsNotNull(initialGrandchildBrush);
+		Assert.AreEqual(Colors.Blue, initialChildBrush.Color,
+			$"Child should start with Light resource (Blue). Got {initialChildBrush.Color}");
+		Assert.AreEqual(Colors.Blue, initialGrandchildBrush.Color,
+			$"Grandchild should start with Light resource (Blue). Got {initialGrandchildBrush.Color}");
+
 		// Switch to Dark
 		using (ThemeHelper.UseApplicationDarkTheme())
 		{
