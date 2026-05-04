@@ -11,14 +11,21 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = "Source")]
 	public partial class AnimatedVisualPlayer : FrameworkElement
 	{
+		// True while the source has been paused because the player became hidden (Visibility=Collapsed
+		// or removed from the tree). When we transition back to visible, this flag tells us we should
+		// resume playback automatically — matching the behavior of the native WinUI AnimatedVisualPlayer
+		// (see AnimationPlay::OnHiding / OnUnhiding in microsoft-ui-xaml).
+		private bool _wasPlayingWhenHidden;
+		private bool _isEffectivelyVisible;
+
 		public static DependencyProperty AutoPlayProperty { get; } = DependencyProperty.Register(
 			"AutoPlay", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(true, UpdateSourceOnChanged));
 
 		public static DependencyProperty IsAnimatedVisualLoadedProperty { get; } = DependencyProperty.Register(
-			"IsAnimatedVisualLoaded", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(false, UpdateSourceOnChanged));
+			"IsAnimatedVisualLoaded", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(false));
 
 		public static DependencyProperty IsPlayingProperty { get; } = DependencyProperty.Register(
-			"IsPlaying", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(false, UpdateSourceOnChanged));
+			"IsPlaying", typeof(bool), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(false, OnIsPlayingChanged));
 
 		public static DependencyProperty PlaybackRateProperty { get; } = DependencyProperty.Register(
 			"PlaybackRate", typeof(double), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(1.0, UpdateSourceOnChanged));
@@ -33,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"Stretch", typeof(Stretch), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, UpdateSourceOnChanged));
 
 		public static DependencyProperty DurationProperty { get; } = DependencyProperty.Register(
-			"Duration", typeof(TimeSpan), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(default(TimeSpan), UpdateSourceOnChanged));
+			"Duration", typeof(TimeSpan), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(default(TimeSpan)));
 
 		public bool AutoPlay
 		{
@@ -95,22 +102,57 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void Pause() => Source?.Pause();
+		private static void OnIsPlayingChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
+		{
+			// IsPlaying is set internally by the source. When it transitions to true while the player
+			// is not effectively visible (e.g. the source's AutoPlay fires after the player was loaded
+			// while collapsed), pause immediately so the rendering loop does not stay active for a
+			// surface no one can see.
+			if (d is AnimatedVisualPlayer player
+				&& args.NewValue is true
+				&& !player._isEffectivelyVisible
+				&& player.IsLoaded)
+			{
+				player._wasPlayingWhenHidden = true;
+				player.Source?.Pause();
+			}
+		}
+
+		public void Pause()
+		{
+			// Explicit user action — do not auto-resume on next visibility transition.
+			_wasPlayingWhenHidden = false;
+			Source?.Pause();
+		}
 
 		public IAsyncAction PlayAsync(double fromProgress, double toProgress, bool looped)
 		{
+			_wasPlayingWhenHidden = false;
 			Source?.Play(fromProgress, toProgress, looped);
 			return Task.CompletedTask.AsAsyncAction();
 		}
 
-		public void Resume() => Source?.Resume();
+		public void Resume()
+		{
+			_wasPlayingWhenHidden = false;
+			Source?.Resume();
+		}
 
 		public void SetProgress(double progress) => Source?.SetProgress(progress);
 
-		public void Stop() => Source?.Stop();
+		public void Stop()
+		{
+			_wasPlayingWhenHidden = false;
+			Source?.Stop();
+		}
 
 		private protected override void OnLoaded()
 		{
+			// Compute visibility before notifying the source, since Source.Update may synchronously
+			// trigger Play (e.g. for embedded JSON), which fires OnIsPlayingChanged and consults
+			// _isEffectivelyVisible to decide whether to immediately pause.
+			_isEffectivelyVisible = ComputeIsEffectivelyVisible();
+
 			Source?.Update(this);
 			Source?.Load();
 
@@ -122,6 +164,45 @@ namespace Microsoft.UI.Xaml.Controls
 			Source?.Unload();
 
 			base.OnUnloaded();
+		}
+
+		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		{
+			base.OnVisibilityChanged(oldValue, newValue);
+			UpdateEffectiveVisibility();
+		}
+
+		private bool ComputeIsEffectivelyVisible() => IsLoaded && Visibility == Visibility.Visible;
+
+		private void UpdateEffectiveVisibility()
+		{
+			var newValue = ComputeIsEffectivelyVisible();
+			if (newValue == _isEffectivelyVisible)
+			{
+				return;
+			}
+
+			_isEffectivelyVisible = newValue;
+
+			if (newValue)
+			{
+				// Becoming visible — resume playback if we paused it ourselves when going hidden.
+				if (_wasPlayingWhenHidden)
+				{
+					_wasPlayingWhenHidden = false;
+					Source?.Resume();
+				}
+			}
+			else
+			{
+				// Becoming hidden — pause if currently playing so the rendering loop can idle.
+				// Mirrors AnimationPlay::OnHiding in the WinUI native player.
+				if (IsPlaying)
+				{
+					_wasPlayingWhenHidden = true;
+					Source?.Pause();
+				}
+			}
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
