@@ -36,6 +36,8 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Combinatorial.MSTest" />
+		<PackageReference Include="BenchmarkDotNet" />
+		<PackageReference Include="BenchmarkDotNet.Annotations" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.netcoremobile.csproj" />
 	</ItemGroup>
 
