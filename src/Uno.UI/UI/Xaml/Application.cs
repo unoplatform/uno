@@ -359,8 +359,8 @@ namespace Microsoft.UI.Xaml
 		{
 			InitializeTextScalingPlatform();
 
-			// Subscribe first, then read the initial value so asynchronously discovered scales
-			// cannot be missed between initialization and observation setup.
+			// Initialize platform subscriptions first, then read the initial value so
+			// asynchronously discovered scales cannot be missed during startup.
 			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(UISettings.GetTextScaleFactorValue());
 		}
 

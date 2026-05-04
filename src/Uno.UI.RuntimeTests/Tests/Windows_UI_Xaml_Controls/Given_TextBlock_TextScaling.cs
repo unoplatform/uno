@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.ViewManagement;
 
@@ -172,6 +174,48 @@ public class Given_TextBlock_TextScaling
 		finally
 		{
 			FeatureConfiguration.Font.TextScaleFactor = originalOverride;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_TextScaleFactorChanges_Nested_Inlines_Are_Invalidated()
+	{
+		var originalOverride = FeatureConfiguration.Font.TextScaleFactor;
+		try
+		{
+			FeatureConfiguration.Font.TextScaleFactor = 1.0;
+
+			var textBlock = new TextBlock
+			{
+				FontSize = 14,
+				IsTextScaleFactorEnabled = true,
+				Inlines =
+				{
+					new Span
+					{
+						Inlines =
+						{
+							new Run { Text = "Nested text scaling" }
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(textBlock);
+			var unscaledSize = textBlock.DesiredSize;
+
+			FeatureConfiguration.Font.TextScaleFactor = 1.5;
+			CoreServices.Instance.UpdateFontScale(1.5);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var scaledSize = textBlock.DesiredSize;
+			Assert.IsTrue(scaledSize.Height > unscaledSize.Height,
+				$"Nested inline height ({scaledSize.Height}) should be larger than unscaled ({unscaledSize.Height})");
+		}
+		finally
+		{
+			FeatureConfiguration.Font.TextScaleFactor = originalOverride;
+			CoreServices.Instance.UpdateFontScale(originalOverride ?? 1.0);
 		}
 	}
 #endif

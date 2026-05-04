@@ -17,17 +17,33 @@ internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
 	public event EventHandler? TextScaleFactorChanged;
 
 	private DBusConnection? _connection;
+	private readonly object _gate = new();
 	private double _currentScale = 1.0;
 	private double CurrentScale
 	{
-		get => _currentScale;
+		get
+		{
+			lock (_gate)
+			{
+				return _currentScale;
+			}
+		}
 		set
 		{
 			if (NativeDispatcher.Main.HasThreadAccess)
 			{
-				if (!value.Equals(_currentScale))
+				var shouldRaise = false;
+				lock (_gate)
 				{
-					_currentScale = value;
+					if (!value.Equals(_currentScale))
+					{
+						_currentScale = value;
+						shouldRaise = true;
+					}
+				}
+
+				if (shouldRaise)
+				{
 					TextScaleFactorChanged?.Invoke(this, EventArgs.Empty);
 				}
 			}
