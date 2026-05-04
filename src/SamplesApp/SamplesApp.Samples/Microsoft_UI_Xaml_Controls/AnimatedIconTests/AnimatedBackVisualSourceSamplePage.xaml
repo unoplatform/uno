@@ -1,0 +1,91 @@
+<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.AnimatedIconTests.AnimatedBackVisualSourceSamplePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+      xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      mc:Ignorable="d">
+
+    <StackPanel Margin="24"
+                Spacing="24">
+
+        <TextBlock FontSize="20"
+                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                   Text="AnimatedBackVisualSource (animated back button)" />
+
+        <TextBlock TextWrapping="Wrap">
+            The AnimatedVisualPlayer below shows a back-arrow icon driven by AnimatedBackVisualSource.
+            Use the buttons to play between markers, similar to how AnimatedIcon would in NavigationView.
+        </TextBlock>
+
+        <!--  Back button styled like a typical NavigationView back button  -->
+        <Button x:Name="BackButton"
+                Width="48"
+                Height="48"
+                Margin="0,0,0,12"
+                HorizontalAlignment="Left"
+                Background="Transparent"
+                BorderBrush="{ThemeResource ButtonBorderThemeBrush}"
+                BorderThickness="1"
+                Click="OnBackClicked"
+                CornerRadius="24"
+                ToolTipService.ToolTip="Back">
+            <controls:AnimatedVisualPlayer x:Name="Player"
+                                           Width="24"
+                                           Height="24"
+                                           AutoPlay="False"
+                                           Stretch="Uniform">
+                <animatedvisuals:AnimatedBackVisualSource x:Name="BackSource"
+                                                          Foreground="Black" />
+            </controls:AnimatedVisualPlayer>
+        </Button>
+
+        <!--  Marker controls  -->
+        <StackPanel Orientation="Horizontal"
+                    Spacing="8">
+            <Button Click="OnNormalToPointerOver"
+                    Content="Normal → PointerOver" />
+            <Button Click="OnPointerOverToNormal"
+                    Content="PointerOver → Normal" />
+            <Button Click="OnNormalToPressed"
+                    Content="Normal → Pressed" />
+            <Button Click="OnPressedToNormal"
+                    Content="Pressed → Normal" />
+        </StackPanel>
+
+        <!--  Manual progress slider  -->
+        <StackPanel Orientation="Horizontal"
+                    Spacing="8">
+            <TextBlock VerticalAlignment="Center"
+                       Text="Progress:" />
+            <Slider x:Name="ProgressSlider"
+                    Width="320"
+                    Maximum="1.0"
+                    Minimum="0.0"
+                    StepFrequency="0.01"
+                    ValueChanged="OnProgressSliderChanged" />
+        </StackPanel>
+
+        <!--  Foreground color picker  -->
+        <StackPanel Orientation="Horizontal"
+                    Spacing="8">
+            <TextBlock VerticalAlignment="Center"
+                       Text="Foreground:" />
+            <Button x:Name="BlackBtn"
+                    Click="OnBlackForeground"
+                    Content="Black" />
+            <Button x:Name="RedBtn"
+                    Click="OnRedForeground"
+                    Content="Red" />
+            <Button x:Name="WhiteBtn"
+                    Click="OnWhiteForeground"
+                    Content="White" />
+        </StackPanel>
+
+        <TextBlock x:Name="StatusText"
+                   FontFamily="Consolas"
+                   Text="Idle" />
+    </StackPanel>
+</Page>
