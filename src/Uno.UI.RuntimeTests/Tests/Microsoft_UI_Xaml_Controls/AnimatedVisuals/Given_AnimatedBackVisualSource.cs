@@ -579,6 +579,70 @@ public class Given_AnimatedBackVisualSource
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Expander_IsExpanded_Chevron_Rotates()
+	{
+		// End-to-end: real Expander control. When IsExpanded flips to true, the chevron should
+		// rotate to ~180° (UP arrow). User reports it stays DOWN (rotation 0) regardless of
+		// IsExpanded, so this test pins down the actual scenario.
+		var expander = new Expander
+		{
+			Header = "Expand me",
+			Content = new TextBlock { Text = "content" },
+			Width = 300,
+			IsExpanded = false,
+		};
+
+		await UITestHelper.Load(expander);
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Locate the chevron AnimatedIcon by walking the visual tree.
+		AnimatedIcon chevron = FindAnimatedIcon(expander);
+		Assert.IsNotNull(chevron, "Should have located the AnimatedIcon chevron in the Expander template.");
+
+		var rotateShape = WalkForSpriteShape(ElementCompositionPreview.GetElementVisual(chevron));
+		Assert.IsNotNull(rotateShape, "Should have located the chevron's rotated SpriteShape.");
+
+		var collapsedRotation = rotateShape.RotationAngleInDegrees;
+		var collapsedState = (string)chevron.GetValue(AnimatedIcon.StateProperty);
+
+		expander.IsExpanded = true;
+
+		// Wait for the toggle's visual-state transitions to settle and the chevron's PlaySegment
+		// to complete.
+		await Task.Delay(TimeSpan.FromSeconds(2));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var expandedRotation = rotateShape.RotationAngleInDegrees;
+		var expandedState = (string)chevron.GetValue(AnimatedIcon.StateProperty);
+
+		Assert.IsTrue(MathF.Abs(expandedRotation - 180f) < 5f,
+			$"Chevron rotation should land at ~180° after Expander.IsExpanded=true. " +
+			$"collapsedState={collapsedState}, collapsedRot={collapsedRotation}, " +
+			$"expandedState={expandedState}, expandedRot={expandedRotation}.");
+	}
+
+	private static AnimatedIcon FindAnimatedIcon(DependencyObject root)
+	{
+		var count = VisualTreeHelper.GetChildrenCount(root);
+		for (int i = 0; i < count; i++)
+		{
+			var child = VisualTreeHelper.GetChild(root, i);
+			if (child is AnimatedIcon icon)
+			{
+				return icon;
+			}
+			var nested = FindAnimatedIcon(child);
+			if (nested is not null)
+			{
+				return nested;
+			}
+		}
+		return null;
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_AnimatedIcon_Rapid_State_Transitions_End_At_Final_State()
 	{
 		// Reproduce the actual Expander click sequence. Real-world clicks fire several state
