@@ -14,7 +14,7 @@ internal sealed class AnimationUnaryExpressionSyntax : AnimationExpressionSyntax
 		_operand = operand;
 	}
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
 		var value = _operand.Evaluate(expressionAnimation);
 		if (_operatorToken.Kind == ExpressionAnimationTokenKind.PlusToken)

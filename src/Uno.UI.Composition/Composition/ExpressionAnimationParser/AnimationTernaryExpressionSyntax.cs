@@ -16,7 +16,7 @@ internal sealed class AnimationTernaryExpressionSyntax : AnimationExpressionSynt
 		_whenFalse = whenFalse;
 	}
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
 		var value = _condition.Evaluate(expressionAnimation);
 		if (value is not bool valueBool)

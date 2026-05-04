@@ -16,7 +16,7 @@ internal class AnimationBinaryExpressionSyntax : AnimationExpressionSyntax
 		_right = right;
 	}
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
 		var leftValue = _left.Evaluate(expressionAnimation);
 		var rightValue = _right.Evaluate(expressionAnimation);
@@ -60,6 +60,12 @@ internal class AnimationBinaryExpressionSyntax : AnimationExpressionSyntax
 				(float leftFloat, int rightInt) => leftFloat * rightInt,
 				(Vector3 leftVector3, Vector3 rightVector3) => leftVector3 * rightVector3,
 				(Vector2 leftVector2, Vector2 rightVector2) => leftVector2 * rightVector2,
+				(float leftFloat, Vector2 rightVector2) => leftFloat * rightVector2,
+				(Vector2 leftVector2, float rightFloat) => leftVector2 * rightFloat,
+				(int leftInt, Vector2 rightVector2) => (float)leftInt * rightVector2,
+				(Vector2 leftVector2, int rightInt) => leftVector2 * (float)rightInt,
+				(float leftFloat, Vector3 rightVector3) => leftFloat * rightVector3,
+				(Vector3 leftVector3, float rightFloat) => leftVector3 * rightFloat,
 				_ => throw new ArgumentException($"Cannot evaluate binary * between types '{leftValue.GetType()}' and '{rightValue.GetType()}'.")
 			};
 		}
