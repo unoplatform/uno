@@ -26,6 +26,7 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 | Runtime Tests | `.github/agents/runtime-tests-agent.md` | Runtime test patterns and helpers reference |
 | WinUI Porting | `.github/agents/winui-porting-agent.md` | WinUI porting rules deep reference |
 | DevServer CLI | `.github/agents/devserver-agent.md` | DevServer CLI/Host build, test, MCP proxy |
+| Benchmarks | `.github/agents/benchmarks-agent.md` | Adding/modifying benchmarks, harness, and the trend dashboard |
 
 ---
 
@@ -443,6 +444,7 @@ Guidelines:
 - `.github/agents/runtime-tests-agent.md` - Runtime test execution
 - `.github/agents/winui-porting-agent.md` - WinUI C++ to C# porting
 - `.github/agents/devserver-agent.md` - DevServer CLI/Host maintenance
+- `.github/agents/benchmarks-agent.md` - Benchmarks, harness, dashboard
 
 ### Community
 - [Discord](https://platform.uno/discord)
