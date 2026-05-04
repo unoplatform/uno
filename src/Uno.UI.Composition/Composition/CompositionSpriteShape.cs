@@ -8,7 +8,10 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		private float _strokeThickness;
+		// Match WinUI's default. CompositionSpriteShape with a stroke brush and no explicit
+		// StrokeThickness should render a 1px stroke (used by Lottie sources like
+		// AnimatedChevronUpDownSmallVisualSource that don't set StrokeThickness explicitly).
+		private float _strokeThickness = 1.0f;
 		private CompositionStrokeCap _strokeStartCap;
 		private float _strokeMiterLimit;
 		private CompositionStrokeLineJoin _strokeLineJoin;
