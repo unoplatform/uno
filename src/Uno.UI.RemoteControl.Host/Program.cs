@@ -241,6 +241,7 @@ namespace Uno.UI.RemoteControl.Host
 				telemetry?.TrackEvent("startup", startupProperties, null);
 
 				_ = ParentProcessObserver.ObserveAsync(parentPID, ct.Cancel, telemetry, ct.Token);
+				IdeChannelObserver.Observe(parentPID, ideChannel, ideChannelManager, ct.Cancel, telemetry, ct.Token);
 
 				ambientRegistry = host.Services.GetRequiredService<AmbientRegistry>();
 				ambientRegistry.Register(solution, parentPID, httpPort, ideChannelManager.ChannelId);

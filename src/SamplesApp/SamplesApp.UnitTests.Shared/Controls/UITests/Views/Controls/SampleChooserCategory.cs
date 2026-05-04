@@ -30,6 +30,8 @@ namespace SampleControl.Entities
 
 		public int Count => SamplesContent.Count;
 
+		public MyInfo MyInfo => null;
+
 		public override bool Equals(object obj) =>
 			obj switch
 			{
@@ -74,5 +76,13 @@ namespace SampleControl.Entities
 		public static bool operator <=(SampleChooserCategory left, SampleChooserCategory right) => left.CompareTo(right) <= 0;
 
 		public static bool operator >=(SampleChooserCategory left, SampleChooserCategory right) => left.CompareTo(right) >= 0;
+	}
+
+	public class SomeInfo<T>
+	{
+	}
+
+	public class MyInfo : SomeInfo<MyInfo>
+	{
 	}
 }

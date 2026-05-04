@@ -335,6 +335,14 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				return null;
 			}
 
+			bool haveKey = typesToProperties.TryGetPreserveType(typeDefinition.FullName, out var key);
+
+			if (!haveKey)
+			{
+				key = new PreserveTypeDefinition(typeDefinition.FullName, typeDefinition);
+				typesToProperties[key] = EmptyPreservedPropertyInfo;
+			}
+
 			// Process generic arguments (e.g., List<Entity> should also process Entity)
 			if (typeReference is GenericInstanceType genericType)
 			{
@@ -345,13 +353,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				}
 			}
 
-			if (typesToProperties.TryGetPreserveType(typeDefinition.FullName, out var existingType))
+			if (haveKey)
 			{
 				// Already processed; return the *existing* key, so that callers can call `.AddContext()`
-				return existingType;
+				return key;
 			}
-
-			var key = new PreserveTypeDefinition(typeDefinition.FullName, typeDefinition);
 
 			if (HasBindableAttribute(typeDefinition))
 			{
@@ -366,7 +372,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			if (!typeDefinition.HasProperties)
 			{
-				typesToProperties[key] = EmptyPreservedPropertyInfo;
 				return key;
 			}
 
@@ -376,7 +381,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			{
 				declaredProperties.Add(new PreservePropertyInfo(property.Name, property.PropertyType));
 			}
-			typesToProperties[key] = declaredProperties;
+			typesToProperties[key!] = declaredProperties;
 
 			foreach (var property in declaredProperties)
 			{

@@ -13,6 +13,12 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.MUX.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
+using Windows.Foundation;
+using Windows.UI.Input.Preview.Injection;
+using Uno.UI;
+using Uno.UI.RuntimeTests;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -213,6 +219,52 @@ public class SelectorBarTests : MUXApiTestBase
 			}
 		}
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task VerifySelectorBarItemVisualStateAfterPointerReleasedOutsideBounds()
+	{
+		var selectorBar = new SelectorBar();
+		selectorBar.Items.Add(new SelectorBarItem { Text = "Item1" });
+		selectorBar.Items.Add(new SelectorBarItem { Text = "Item2" });
+		selectorBar.Items.Add(new SelectorBarItem { Text = "Item3" });
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		await UITestHelper.Load(selectorBar);
+
+		var item = selectorBar.Items[1];
+
+		// Get the bounds of the SelectorBarItem and compute its center.
+		var bounds = item.GetAbsoluteBoundsRect();
+		var center = new Point(bounds.GetMidX(), bounds.GetMidY());
+
+		// Press mouse on the SelectorBarItem.
+		mouse.MoveTo(center);
+		await TestServices.WindowHelper.WaitForIdle();
+		mouse.Press();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Verify.IsTrue(await ControlHelper.IsInVisualState(item, "CombinedStates", "UnselectedPressed"),
+			"SelectorBarItem should be in UnselectedPressed state after pointer press.");
+
+		// Move the mouse well outside the SelectorBarItem bounds and release.
+		var outsidePoint = new Point(bounds.Right + 200, bounds.Bottom + 200);
+		mouse.MoveTo(outsidePoint);
+		mouse.Release();
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// The visual state should return to UnselectedNormal, not be stuck on UnselectedPressed.
+		Verify.IsTrue(await ControlHelper.IsInVisualState(item, "CombinedStates", "UnselectedNormal"),
+			"SelectorBarItem should return to UnselectedNormal after pointer released outside bounds.");
+	}
+#endif
 
 	private string GetStringFromSelectorBarItem(SelectorBarItem selectorBarItem)
 	{

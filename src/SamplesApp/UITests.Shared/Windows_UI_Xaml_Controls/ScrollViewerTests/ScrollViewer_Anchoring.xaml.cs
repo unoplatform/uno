@@ -94,7 +94,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		private void Ratio_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (RatioCombo.SelectedIndex < 0)
+			if (RatioCombo.SelectedIndex < 0 || TargetScrollViewer is null)
 			{
 				return;
 			}

@@ -1326,7 +1326,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			_ = Dispatcher.RunIdleAsync(e =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				if (_hasPendingUpdate)
 				{
@@ -1345,6 +1345,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 			HorizontalOffset = _pendingHorizontalOffset;
 			VerticalOffset = _pendingVerticalOffset;
+
+			if (!isIntermediate && (oldHorizontalOffset != HorizontalOffset || oldVerticalOffset != VerticalOffset))
+			{
+				// Mirrors ScrollContentPresenter_Partial.cpp:871 (SetHorizontalOffsetPrivate /
+				// SetVerticalOffsetPrivate): discrete offset changes schedule an arrange so that
+				// AnchoringArrangeOverride re-selects CurrentAnchor against the new viewport.
+				// Intermediate ticks (DManip-driven inertia / drag) are skipped to match WinUI,
+				// which lets the compositor drive offsets during manipulation without re-running
+				// layout per frame.
+				InvalidateArrange();
+			}
 
 			// Not ideal, and doesn't match WinUI. This can miss raising some automation events.
 			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) &&
