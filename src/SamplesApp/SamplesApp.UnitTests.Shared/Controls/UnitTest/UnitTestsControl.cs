@@ -794,13 +794,25 @@ namespace Uno.UI.Samples.Tests
 		private IEnumerable<MethodInfo> FilterTests(UnitTestClassInfo testClassInfo, string[] filters)
 		{
 			var testClassNameContainsFilters = filters?.Any(f => testClassInfo.Type.FullName.Contains(f, StrComp)) ?? false;
+			var benchmarksOnly = string.Equals(
+				Environment.GetEnvironmentVariable("UITEST_RUNTIME_BENCHMARKS_ONLY"),
+				"true",
+				StringComparison.OrdinalIgnoreCase);
+
 			return testClassInfo.Tests
+				.Where(t => benchmarksOnly == HasBenchmarkCategory(t))
 				.Where(t => !(filters?.Any() ?? false)
 					|| testClassNameContainsFilters
 					|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
 					|| filters.Any(f => t.Name.Contains(f, StrComp))
 					|| filters.Any(f => $"{t.DeclaringType.FullName}.{t.Name}".Contains(f, StrComp)));
 		}
+
+		private static bool HasBenchmarkCategory(MethodInfo method)
+			=> method.GetCustomAttributes<TestCategoryAttribute>(true)
+				.Concat(method.DeclaringType?.GetCustomAttributes<TestCategoryAttribute>(true) ?? Array.Empty<TestCategoryAttribute>())
+				.SelectMany(c => c.TestCategories)
+				.Any(c => string.Equals(c, "Benchmark", StringComparison.OrdinalIgnoreCase));
 
 		private async Task ExecuteTestsForInstance(
 			CancellationToken ct,

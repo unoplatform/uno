@@ -1,0 +1,20 @@
+parameters:
+  vmLinuxPool: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+# GATED OFF FOR V1.
+# Android NativeAOT trims aggressively; BDN type discovery needs a preserve
+# attribute or rd.xml entry to keep [Benchmark] methods reachable. Enable in
+# a follow-up PR after verifying locally.
+
+jobs:
+- job: Skia_Android_NativeAOT_Benchmarks
+  displayName: 'Benchmarks - Skia Android (NativeAOT, gated off)'
+  condition: false
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 0
+  pool: ${{ parameters.vmLinuxPool }}
+  steps:
+  - bash: echo "Stage gated off in v1. See doc/benchmarks/provisioning.md."
+    displayName: Gated stage placeholder

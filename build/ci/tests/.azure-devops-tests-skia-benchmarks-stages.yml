@@ -1,0 +1,138 @@
+parameters:
+  vmImage: ''
+  vmMacImageTest: ''
+  vmLinuxImage: ''
+  vmLinuxPool: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+# Top-level benchmarks stage tree. Mirrors the runtime-tests-skia stages but
+# reuses the existing build artifacts and runs only the Benchmark-categorized
+# fixtures via UITEST_RUNTIME_BENCHMARKS_ONLY=true.
+#
+# Gated on master (or a manual pipeline-queue override of Build.SourceBranch).
+# A nightly schedule trigger is configured in the top-level pipeline.
+
+stages:
+- stage: benchmarks_skia_windows
+  displayName: Benchmarks - Skia Desktop Windows
+  dependsOn:
+    - runtime_tests_skia_build
+  jobs:
+  - template: .azure-devops-benchmarks-windows-skia.yml
+    parameters:
+      vmImage: '${{ parameters.vmImage }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_skia_linux
+  displayName: Benchmarks - Skia Desktop Linux X11
+  dependsOn:
+    - runtime_tests_skia_build
+  jobs:
+  - template: .azure-devops-benchmarks-linux-skia.yml
+    parameters:
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_skia_linux_framebuffer
+  displayName: Benchmarks - Skia Desktop Linux Framebuffer (A+B)
+  dependsOn:
+    - runtime_tests_skia_build
+  jobs:
+  - template: .azure-devops-benchmarks-linux-framebuffer-skia.yml
+    parameters:
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_skia_macos
+  displayName: Benchmarks - Skia Desktop macOS
+  dependsOn:
+    - runtime_tests_skia_build
+  jobs:
+  - template: .azure-devops-benchmarks-macos-skia.yml
+    parameters:
+      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_skia_android
+  displayName: Benchmarks - Skia Android (Mono)
+  dependsOn:
+    - Setup
+  jobs:
+  - template: .azure-devops-benchmarks-android-skia.yml
+    parameters:
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_skia_android_coreclr
+  displayName: Benchmarks - Skia Android (CoreCLR, gated off)
+  dependsOn:
+    - Setup
+  jobs:
+  - template: .azure-devops-benchmarks-android-coreclr-skia.yml
+    parameters:
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_skia_android_nativeaot
+  displayName: Benchmarks - Skia Android (NativeAOT, gated off)
+  dependsOn:
+    - Setup
+  jobs:
+  - template: .azure-devops-benchmarks-android-nativeaot-skia.yml
+    parameters:
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_skia_ios
+  displayName: Benchmarks - Skia iOS (gated off)
+  dependsOn:
+    - Setup
+  jobs:
+  - template: .azure-devops-benchmarks-ios-skia.yml
+    parameters:
+      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_skia_wasm
+  displayName: Benchmarks - Skia WebAssembly (gated off)
+  dependsOn:
+    - Setup
+  jobs:
+  - template: .azure-devops-benchmarks-webassembly-skia.yml
+    parameters:
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
+- stage: benchmarks_winappsdk
+  displayName: Benchmarks - WinAppSDK (native WinUI baseline)
+  dependsOn:
+    - Setup
+  jobs:
+  - template: .azure-devops-benchmarks-winappsdk.yml
+    parameters:
+      vmImage: '${{ parameters.vmImage }}'
+
+- stage: benchmarks_publish
+  displayName: Benchmarks - Publish trends
+  dependsOn:
+    - benchmarks_skia_windows
+    - benchmarks_skia_linux
+    - benchmarks_skia_linux_framebuffer
+    - benchmarks_skia_macos
+    - benchmarks_skia_android
+    - benchmarks_winappsdk
+  condition: succeededOrFailed()
+  jobs:
+  - template: .azure-devops-benchmarks-publish.yml
+    parameters:
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'

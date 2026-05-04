@@ -129,6 +129,21 @@ stages:
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
+# Benchmarks tree. Master + scheduled-nightly only (not on PRs). Each per-target
+# benchmark stage runs the existing SamplesApp/RuntimeTests binary with
+# UITEST_RUNTIME_BENCHMARKS_ONLY=true so only [TestCategory("Benchmark")] tests
+# execute. A downstream publish job merges per-platform artifacts and pushes to
+# the unoplatform/uno.benchmarks data branch.
+- ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Schedule')) }}:
+  - template: tests/.azure-devops-tests-skia-benchmarks-stages.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
+      vmMacImageTest: '$(macOSVMImage_UITests)'
+      vmLinuxImage: '$(linuxVMImage)'
+      vmLinuxPool: '$(linuxScaledPool)'
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
+
 - stage: android_tests
   displayName: Tests - Android Native
   condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeAndroid'], 'true')))

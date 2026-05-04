@@ -1,0 +1,22 @@
+parameters:
+  vmLinuxImage: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+# GATED OFF FOR V1.
+# WebAssembly Skia benchmarks need a verified-working BDN 0.14 path inside the
+# browser-AOT environment (RuntimeInformation diagnostics, no Reflection.Emit).
+# Enable this stage in a follow-up PR once verified locally with
+# `dotnet test --filter Category=Benchmark` against a Wasm Skia build.
+
+jobs:
+- job: Skia_Wasm_Benchmarks
+  displayName: 'Benchmarks - Skia WebAssembly (gated off)'
+  condition: false
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 0
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
+  steps:
+  - bash: echo "Stage gated off in v1. See doc/benchmarks/provisioning.md."
+    displayName: Gated stage placeholder

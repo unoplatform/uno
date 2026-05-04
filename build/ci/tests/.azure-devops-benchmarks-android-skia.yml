@@ -1,0 +1,67 @@
+parameters:
+  vmLinuxPool: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+jobs:
+- job: Skia_Android_Benchmarks
+  displayName: 'Benchmarks - Skia Android (Mono)'
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 0
+
+  pool: ${{ parameters.vmLinuxPool }}
+
+  variables:
+  - group: benchmark-publisher
+  - name: SamplesAppArtifactName
+    value: samplesapp-android-skia
+  - name: SamplesAppArtifactPath
+    value: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+  - name: PlatformSlug
+    value: skia-android-mono
+  - name: UITEST_RUNTIME_BENCHMARKS_ONLY
+    value: 'true'
+  - name: UNO_UWP_BUILD
+    value: ${{ parameters.UNO_UWP_BUILD }}
+  - name: XAML_FLAVOR_BUILD
+    value: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(SamplesAppArtifactPath)
+
+  - template: ../templates/jdk-setup.yml
+  - template: ../templates/dotnet-install.yml
+
+  - bash: |
+      set -euo pipefail
+      export UITEST_RUNTIME_BENCHMARKS_ONLY=true
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+      $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+    displayName: Run Benchmarks
+    env:
+      AGENT_NAME: $(Agent.Name)
+      ANDROID_SIMULATOR_APILEVEL: '34'
+
+  - bash: |
+      cd $(build.sourcesdirectory)/src/Uno.UI.Benchmarks.Publisher
+      dotnet run --configuration Release -- normalize \
+        --input $(Agent.TempDirectory) \
+        --output $(build.artifactstagingdirectory)/benchmarks/$(PlatformSlug).jsonl \
+        --target $(PlatformSlug) \
+        --commit $(Build.SourceVersion) \
+        --branch $(Build.SourceBranchName)
+    displayName: Normalize results
+    condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: Publish benchmark results
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)/benchmarks
+      ArtifactName: benchmark-results-$(PlatformSlug)
+      ArtifactType: Container

@@ -1,0 +1,78 @@
+parameters:
+  vmLinuxImage: ''
+
+jobs:
+- job: Benchmarks_Publish
+  displayName: 'Benchmarks - Merge + Publish trends'
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 0
+
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
+
+  variables:
+  - group: benchmark-publisher
+  - name: DataRepoUrl
+    value: 'https://github.com/unoplatform/uno.benchmarks.git'
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../templates/dotnet-install.yml
+
+  - bash: |
+      mkdir -p $(build.sourcesdirectory)/build/all-benchmark-results
+    displayName: Prepare merge directory
+
+  # Download every per-platform benchmark artifact. The downloads use
+  # continueOnError so a single missing platform does not break the merge.
+  - task: DownloadPipelineArtifact@2
+    displayName: Download skia-windows
+    continueOnError: true
+    inputs:
+      artifact: benchmark-results-skia-windows
+      path: $(build.sourcesdirectory)/build/all-benchmark-results/skia-windows
+  - task: DownloadPipelineArtifact@2
+    displayName: Download skia-linux-x11
+    continueOnError: true
+    inputs:
+      artifact: benchmark-results-skia-linux-x11
+      path: $(build.sourcesdirectory)/build/all-benchmark-results/skia-linux-x11
+  - task: DownloadPipelineArtifact@2
+    displayName: Download skia-linux-framebuffer
+    continueOnError: true
+    inputs:
+      artifact: benchmark-results-skia-linux-framebuffer
+      path: $(build.sourcesdirectory)/build/all-benchmark-results/skia-linux-framebuffer
+  - task: DownloadPipelineArtifact@2
+    displayName: Download skia-macos
+    continueOnError: true
+    inputs:
+      artifact: benchmark-results-skia-macos
+      path: $(build.sourcesdirectory)/build/all-benchmark-results/skia-macos
+  - task: DownloadPipelineArtifact@2
+    displayName: Download skia-android-mono
+    continueOnError: true
+    inputs:
+      artifact: benchmark-results-skia-android-mono
+      path: $(build.sourcesdirectory)/build/all-benchmark-results/skia-android-mono
+  - task: DownloadPipelineArtifact@2
+    displayName: Download winappsdk
+    continueOnError: true
+    inputs:
+      artifact: benchmark-results-winappsdk
+      path: $(build.sourcesdirectory)/build/all-benchmark-results/winappsdk
+
+  - bash: |
+      set -euo pipefail
+      cd $(build.sourcesdirectory)/src/Uno.UI.Benchmarks.Publisher
+      dotnet run --configuration Release -- merge \
+        --input-dir $(build.sourcesdirectory)/build/all-benchmark-results \
+        --commit $(Build.SourceVersion) \
+        --branch $(Build.SourceBranchName) \
+        --repo-url "$(DataRepoUrl)" \
+        --push
+    displayName: Merge and push to data branch
+    env:
+      BENCHMARK_REPO_TOKEN: $(BENCHMARK_REPO_TOKEN)

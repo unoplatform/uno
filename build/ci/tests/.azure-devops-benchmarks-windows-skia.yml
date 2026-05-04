@@ -1,0 +1,65 @@
+parameters:
+  vmImage: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+jobs:
+- job: Skia_Windows_Benchmarks
+  displayName: 'Benchmarks - Skia Desktop Windows'
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 0
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+  - group: benchmark-publisher
+  - name: SamplesAppArtifactName
+    value: samplesapp-desktop-skia
+  - name: SamplesAppArtifactPath
+    value: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+  - name: PlatformSlug
+    value: skia-windows
+  - name: UITEST_RUNTIME_BENCHMARKS_ONLY
+    value: 'true'
+  - name: UNO_UWP_BUILD
+    value: ${{ parameters.UNO_UWP_BUILD }}
+  - name: XAML_FLAVOR_BUILD
+    value: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(SamplesAppArtifactPath)
+
+  - template: ../templates/dotnet-install.yml
+
+  - pwsh: |
+      $env:UITEST_RUNTIME_BENCHMARKS_ONLY = 'true'
+      cd $(SamplesAppArtifactPath)
+      dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-windows-benchmark-results.xml
+    displayName: Run Benchmarks
+    env:
+      AGENT_NAME: $(Agent.Name)
+
+  - pwsh: |
+      cd $(build.sourcesdirectory)/src/Uno.UI.Benchmarks.Publisher
+      dotnet run --configuration Release -- normalize `
+        --input $(Agent.TempDirectory) `
+        --output $(build.artifactstagingdirectory)/benchmarks/$(PlatformSlug).jsonl `
+        --target $(PlatformSlug) `
+        --commit $(Build.SourceVersion) `
+        --branch $(Build.SourceBranchName)
+    displayName: Normalize results
+    condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: Publish benchmark results
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)/benchmarks
+      ArtifactName: benchmark-results-$(PlatformSlug)
+      ArtifactType: Container

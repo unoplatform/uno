@@ -1,0 +1,21 @@
+parameters:
+  vmMacImageTest: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+# GATED OFF FOR V1.
+# iOS Skia is full-AOT with linker stripping; BDN 0.14 InProcessNoEmit needs to be
+# verified locally and any [DynamicallyAccessedMembers] / linker-preserve plumbing
+# added before this stage can be enabled. Enable in a follow-up PR.
+
+jobs:
+- job: Skia_iOS_Benchmarks
+  displayName: 'Benchmarks - Skia iOS (gated off)'
+  condition: false
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 0
+  pool:
+    vmImage: ${{ parameters.vmMacImageTest }}
+  steps:
+  - bash: echo "Stage gated off in v1. See doc/benchmarks/provisioning.md."
+    displayName: Gated stage placeholder

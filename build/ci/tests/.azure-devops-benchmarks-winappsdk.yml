@@ -1,0 +1,58 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: WinAppSDK_Benchmarks
+  displayName: 'Benchmarks - WinAppSDK (native WinUI baseline)'
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 0
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+  - group: benchmark-publisher
+  - name: SamplesAppArtifactName
+    value: samplesapp-winappsdk
+  - name: SamplesAppArtifactPath
+    value: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+  - name: PlatformSlug
+    value: winappsdk
+  - name: UITEST_RUNTIME_BENCHMARKS_ONLY
+    value: 'true'
+
+  steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(SamplesAppArtifactPath)
+
+  - template: ../templates/dotnet-install.yml
+
+  - pwsh: |
+      $env:UITEST_RUNTIME_BENCHMARKS_ONLY = 'true'
+      build/test-scripts/run-winui-runtime-tests.ps1
+    displayName: Run Benchmarks
+    env:
+      AGENT_NAME: $(Agent.Name)
+
+  - pwsh: |
+      cd $(build.sourcesdirectory)/src/Uno.UI.Benchmarks.Publisher
+      dotnet run --configuration Release -- normalize `
+        --input $(Agent.TempDirectory) `
+        --output $(build.artifactstagingdirectory)/benchmarks/$(PlatformSlug).jsonl `
+        --target $(PlatformSlug) `
+        --commit $(Build.SourceVersion) `
+        --branch $(Build.SourceBranchName)
+    displayName: Normalize results
+    condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    retryCountOnTaskFailure: 3
+    displayName: Publish benchmark results
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)/benchmarks
+      ArtifactName: benchmark-results-$(PlatformSlug)
+      ArtifactType: Container
