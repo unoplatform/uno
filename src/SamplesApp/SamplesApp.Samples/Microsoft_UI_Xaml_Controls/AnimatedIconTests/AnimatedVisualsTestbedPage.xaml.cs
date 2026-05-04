@@ -73,6 +73,12 @@ public sealed partial class AnimatedVisualsTestbedPage : Page
 		_current = _sources[SourcePicker.SelectedIndex];
 		Player.Source = (IAnimatedVisualSource)_current.Source;
 
+		// The live button needs its own source instance (the same source can't be hosted by two
+		// players simultaneously because TryCreateAnimatedVisual builds non-shareable composition
+		// trees). Construct a fresh instance of the same type for the live preview.
+		var liveSource = (IAnimatedVisualSource)Activator.CreateInstance(_current.Source.GetType())!;
+		LivePlayer.Source = liveSource;
+
 		BuildMarkerButtons();
 
 		_suppressSliderCallback = true;
@@ -81,6 +87,45 @@ public sealed partial class AnimatedVisualsTestbedPage : Page
 		Player.SetProgress(0);
 
 		StatusText.Text = $"Loaded: {_current.Name}";
+	}
+
+	private async void OnLiveButtonPointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+	{
+		await PlayMarkerSegmentAsync(LivePlayer, "NormalToPointerOver");
+	}
+
+	private async void OnLiveButtonPointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+	{
+		await PlayMarkerSegmentAsync(LivePlayer, "PointerOverToNormal");
+	}
+
+	private async void OnLiveButtonPointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+	{
+		await PlayMarkerSegmentAsync(LivePlayer, "NormalToPressed", "PointerOverToPressed");
+	}
+
+	private async void OnLiveButtonPointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+	{
+		await PlayMarkerSegmentAsync(LivePlayer, "PressedToPointerOver", "PressedToNormal");
+	}
+
+	private static async Task PlayMarkerSegmentAsync(AnimatedVisualPlayer player, params string[] candidates)
+	{
+		if (player.Source is not IAnimatedVisualSource2 source2)
+		{
+			return;
+		}
+
+		var markers = source2.Markers;
+		foreach (var transition in candidates)
+		{
+			if (markers.TryGetValue(transition + "_Start", out var from) &&
+				markers.TryGetValue(transition + "_End", out var to))
+			{
+				await player.PlayAsync(from, to, false);
+				return;
+			}
+		}
 	}
 
 	private void BuildMarkerButtons()
