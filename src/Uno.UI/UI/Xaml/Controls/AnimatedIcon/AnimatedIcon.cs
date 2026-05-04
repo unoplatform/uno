@@ -53,8 +53,13 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			// Construct the visual from the Source property in on apply template so that it participates
-			// in the initial measure for the object.
-			ConstructAndInsertVisual();
+			// in the initial measure for the object. Reuse the existing animated visual if one was
+			// already constructed (e.g. on a template re-apply) so we don't lose its animation state —
+			// matches WinUI's `m_animatedVisual ? m_animatedVisual.RootVisual() : ConstructVisual()`.
+			if (m_animatedVisual is null)
+			{
+				ConstructAndInsertVisual();
+			}
 			var panel = VisualTreeHelper.GetChild(this, 0) as Panel;
 			m_rootPanel = panel;
 			m_currentState = GetState(this);
@@ -336,12 +341,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void TransitionAndUpdateStates(string fromState, string toState, float playbackMultiplier = 1.0f)
 		{
-			// TODO Uno specific - adjust for multithreaded access according to MUX source code.
+			// std::call_once equivalent: ensures the cleanup body runs at most once across the
+			// PlaySegment short-branch invocation and the unconditional tail call below. WinUI's
+			// std::call_once sets the flag the first time the function runs and skips subsequent
+			// calls — without `cleanedUpFlag = true` here the flag is always false and the
+			// "cleanup" body fires every time, dequeuing the same queued state twice and
+			// advancing m_previousState/m_currentState repeatedly.
 			bool cleanedUpFlag = false;
 			Action cleanupAction = () =>
 			{
 				if (!cleanedUpFlag)
 				{
+					cleanedUpFlag = true;
 					m_previousState = fromState;
 					m_currentState = toState;
 					if (m_queuedStates.Count > 0)
@@ -502,6 +513,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (duration < TimeSpan.FromMilliseconds(20) || !SharedHelpers.IsAnimationsEnabled())
 			{
 				m_progressPropertySet.InsertScalar(s_progressPropertyName, to);
+				if (cleanupAction != null)
+				{
+					cleanupAction();
+				}
 				OnAnimationCompleted(null, null);
 			}
 			else
@@ -538,10 +553,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				m_isPlaying = true;
 				m_progressPropertySet.StartAnimation(s_progressPropertyName, animation);
-				if (cleanupAction != null)
-				{
-					cleanupAction();
-				}
 				m_batch.End();
 			}
 		}
@@ -552,6 +563,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				SetRootPanelChildToFallbackIcon();
 			}
+			InvalidateMeasure();
 		}
 
 		private void UpdateMirrorTransform()
