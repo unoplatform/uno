@@ -375,7 +375,6 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Generators/">
-    <Project Path="SourceGenerators/SourceGeneratorHelpers/SourceGeneratorHelpers.shproj" />
     <Project Path="SourceGenerators/Uno.UI.SourceGenerators.Internal/Uno.UI.SourceGenerators.Internal.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
