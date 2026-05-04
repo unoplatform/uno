@@ -375,6 +375,11 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnPause()
 		{
+			// Park the GL/Vulkan render thread before the framework pause so the
+			// render thread is not running while Android tears down the surface.
+			// This matches the BaseActivity pattern (pause work before base call).
+			_renderView?.OnPause();
+
 			base.OnPause();
 
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13827.
@@ -384,10 +389,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			DismissKeyboard();
-
-			// GLSurfaceView contract: forward OnPause so the GL render thread is parked
-			// while the activity is not visible.
-			_renderView?.OnPause();
 		}
 
 		protected override void OnDestroy()
