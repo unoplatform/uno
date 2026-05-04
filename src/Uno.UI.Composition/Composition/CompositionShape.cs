@@ -5,6 +5,8 @@ using System.Numerics;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
+using static Microsoft.UI.Composition.SubPropertyHelpers;
+
 namespace Microsoft.UI.Composition;
 
 public partial class CompositionShape : CompositionObject, I2DTransformableObject
@@ -55,5 +57,61 @@ public partial class CompositionShape : CompositionObject, I2DTransformableObjec
 	{
 		get => _centerPoint;
 		set => SetProperty(ref _centerPoint, value);
+	}
+
+	internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+	{
+		if (propertyName.Equals(nameof(Offset), StringComparison.OrdinalIgnoreCase))
+		{
+			return GetVector2(subPropertyName, Offset);
+		}
+		else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
+		{
+			return GetVector2(subPropertyName, Scale);
+		}
+		else if (propertyName.Equals(nameof(CenterPoint), StringComparison.OrdinalIgnoreCase))
+		{
+			return GetVector2(subPropertyName, CenterPoint);
+		}
+		else if (propertyName.Equals(nameof(RotationAngle), StringComparison.OrdinalIgnoreCase))
+		{
+			return RotationAngle;
+		}
+		else if (propertyName.Equals(nameof(TransformMatrix), StringComparison.OrdinalIgnoreCase))
+		{
+			return GetMatrix3x2(subPropertyName, TransformMatrix);
+		}
+		else
+		{
+			return base.GetAnimatableProperty(propertyName, subPropertyName);
+		}
+	}
+
+	private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+	{
+		if (propertyName.Equals(nameof(Offset), StringComparison.OrdinalIgnoreCase))
+		{
+			Offset = UpdateVector2(subPropertyName, Offset, propertyValue);
+		}
+		else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
+		{
+			Scale = UpdateVector2(subPropertyName, Scale, propertyValue);
+		}
+		else if (propertyName.Equals(nameof(CenterPoint), StringComparison.OrdinalIgnoreCase))
+		{
+			CenterPoint = UpdateVector2(subPropertyName, CenterPoint, propertyValue);
+		}
+		else if (propertyName.Equals(nameof(RotationAngle), StringComparison.OrdinalIgnoreCase))
+		{
+			RotationAngle = ValidateValue<float>(propertyValue);
+		}
+		else if (propertyName.Equals(nameof(TransformMatrix), StringComparison.OrdinalIgnoreCase))
+		{
+			TransformMatrix = UpdateMatrix3x2(subPropertyName, TransformMatrix, propertyValue);
+		}
+		else
+		{
+			base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+		}
 	}
 }
