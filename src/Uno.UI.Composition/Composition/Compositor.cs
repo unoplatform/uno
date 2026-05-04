@@ -215,6 +215,39 @@ namespace Microsoft.UI.Composition
 		public IAsyncAction RequestCommitAsync()
 			=> Task.CompletedTask.AsAsyncAction();
 
+		// Tracks the active CompositionScopedBatch stack. CompositionScopedBatch hooks animations
+		// started while a batch is active so its Completed event fires when those animations
+		// actually stop (rather than synchronously when End() is called). The stack supports
+		// nested batches, though only the innermost batch tracks new animations.
+		private readonly Stack<CompositionScopedBatch> _scopedBatchStack = new();
+
+		internal void RegisterScopedBatch(CompositionScopedBatch batch) => _scopedBatchStack.Push(batch);
+
+		internal void UnregisterScopedBatch(CompositionScopedBatch batch)
+		{
+			if (_scopedBatchStack.Count > 0 && _scopedBatchStack.Peek() == batch)
+			{
+				_scopedBatchStack.Pop();
+				return;
+			}
+
+			// Defensive: if batches were ended out of order, remove this one wherever it is.
+			var preserved = new Stack<CompositionScopedBatch>();
+			while (_scopedBatchStack.Count > 0)
+			{
+				var top = _scopedBatchStack.Pop();
+				if (top == batch)
+				{
+					break;
+				}
+				preserved.Push(top);
+			}
+			while (preserved.Count > 0)
+			{
+				_scopedBatchStack.Push(preserved.Pop());
+			}
+		}
+
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
 		public CompositionBackdropBrush CreateBackdropBrush()
 			=> new CompositionBackdropBrush(this);
