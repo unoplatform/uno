@@ -50,6 +50,36 @@
                                                Stretch="Uniform" />
             </Border>
 
+            <!--  Live button preview: handles real PointerEntered / Exited / Pressed / Released  -->
+            <TextBlock Margin="0,8,0,0"
+                       Style="{ThemeResource BodyStrongTextBlockStyle}"
+                       Text="Live button (hover/press)" />
+            <TextBlock FontSize="12"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       TextWrapping="Wrap">
+                Hover / press the button below to drive the source through its
+                pointer-state markers (NormalToPointerOver, NormalToPressed, …).
+            </TextBlock>
+            <Button x:Name="LiveButton"
+                    Width="56"
+                    Height="56"
+                    HorizontalAlignment="Left"
+                    Background="{ThemeResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="28"
+                    Padding="0"
+                    PointerEntered="OnLiveButtonPointerEntered"
+                    PointerExited="OnLiveButtonPointerExited"
+                    PointerPressed="OnLiveButtonPointerPressed"
+                    PointerReleased="OnLiveButtonPointerReleased">
+                <controls:AnimatedVisualPlayer x:Name="LivePlayer"
+                                               Width="32"
+                                               Height="32"
+                                               AutoPlay="False"
+                                               Stretch="Uniform" />
+            </Button>
+
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
                 <TextBlock VerticalAlignment="Center"
