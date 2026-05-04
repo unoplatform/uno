@@ -178,7 +178,7 @@
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'">
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
 				<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 			</PropertyGroup>
 
