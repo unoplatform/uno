@@ -155,7 +155,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="Release_NoSamples|Any CPU" Project="false" />
     </Project>
-    <Project Path="SamplesApp/SamplesApp.UnitTests.Shared/SamplesApp.UnitTests.Shared.shproj" />
     <Project Path="SamplesApp/SamplesApp.Wasm.UITests/SamplesApp.Wasm.UITests.njsproj" Id="b4c15c47-85e2-444e-b9f3-d970e35601a9">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Platform Project="AnyCPU" />
