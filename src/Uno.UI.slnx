@@ -183,6 +183,12 @@
     <Project Path="SamplesApp/SamplesApp.Samples/SamplesApp.Samples.csproj">
       <Build Project="false" />
     </Project>
+    <Project Path="SamplesApp/SamplesApp.Shared/SamplesApp.Shared.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="SamplesApp/SamplesApp.UnitTests.Shared/SamplesApp.UnitTests.Shared.csproj">
+      <Build Project="false" />
+    </Project>
   </Folder>
   <Folder Name="/SamplesApp/UnoIslands/">
     <Project Path="SamplesApp/UnoIslands.Shared/UnoIslands.Shared.shproj" />
