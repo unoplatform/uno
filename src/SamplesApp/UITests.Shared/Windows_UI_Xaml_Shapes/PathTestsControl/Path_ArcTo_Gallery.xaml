@@ -45,7 +45,7 @@
 			<!-- ============================================================ -->
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="1. Issue #2228 repro — non-uniform radii" />
 			<TextBlock Style="{StaticResource SectionDescriptionStyle}"
-				Text="The exact path string from issue #2228 (rx=1.375, ry=1.3125). Original coordinates are tiny — shown in a Viewbox to be visible. Pre-fix, this threw NotImplementedException." />
+				Text="The path string from issue #2228 (rx=1.375, ry=1.3125), pre-translated to origin (the original used coords ~(820, 42); both forms are mathematically equivalent). Pre-fix, this threw NotImplementedException." />
 			<StackPanel Orientation="Horizontal">
 				<Border Style="{StaticResource CellStyle}">
 					<StackPanel>
@@ -53,12 +53,10 @@
 							Text="Repro (filled, scaled via Viewbox)" />
 						<Viewbox Width="180" Height="180">
 							<Canvas Width="3" Height="3">
-								<Path Data="m 822.6875,43.4375 a 1.375,1.3125 0 0 1 -1.375,1.3125 1.375,1.3125 0 0 1 -1.375,-1.3125 1.375,1.3125 0 0 1 1.375,-1.3125 1.375,1.3125 0 0 1 1.375,1.3125 z"
+								<Path Data="M 2.75,1.3125 a 1.375,1.3125 0 0 1 -1.375,1.3125 1.375,1.3125 0 0 1 -1.375,-1.3125 1.375,1.3125 0 0 1 1.375,-1.3125 1.375,1.3125 0 0 1 1.375,1.3125 z"
 								      Fill="DodgerBlue"
 								      Stroke="Black"
-								      StrokeThickness="0.05"
-								      Canvas.Left="-820"
-								      Canvas.Top="-42" />
+								      StrokeThickness="0.05" />
 							</Canvas>
 						</Viewbox>
 					</StackPanel>
@@ -69,11 +67,9 @@
 							Text="Repro (stroke only)" />
 						<Viewbox Width="180" Height="180">
 							<Canvas Width="3" Height="3">
-								<Path Data="m 822.6875,43.4375 a 1.375,1.3125 0 0 1 -1.375,1.3125 1.375,1.3125 0 0 1 -1.375,-1.3125 1.375,1.3125 0 0 1 1.375,-1.3125 1.375,1.3125 0 0 1 1.375,1.3125 z"
+								<Path Data="M 2.75,1.3125 a 1.375,1.3125 0 0 1 -1.375,1.3125 1.375,1.3125 0 0 1 -1.375,-1.3125 1.375,1.3125 0 0 1 1.375,-1.3125 1.375,1.3125 0 0 1 1.375,1.3125 z"
 								      Stroke="Crimson"
-								      StrokeThickness="0.05"
-								      Canvas.Left="-820"
-								      Canvas.Top="-42" />
+								      StrokeThickness="0.05" />
 							</Canvas>
 						</Viewbox>
 					</StackPanel>
@@ -282,7 +278,9 @@
 				<Border Style="{StaticResource CellStyle}">
 					<StackPanel>
 						<TextBlock Style="{StaticResource CellLabelStyle}" Text="Pacman (270° arc)" />
-						<Path Data="M90,90 L150,60 A60,60 0 1,1 150,120 Z" Fill="Gold" Stroke="DarkGoldenrod" StrokeThickness="2" Width="180" Height="180" Stretch="None" />
+						<!-- Wedge endpoints (132.43, 47.57)/(132.43, 132.43) sit exactly on the radius-60
+						     circle around (90, 90) at ±45°, so the closing arc is a true 270° opening. -->
+						<Path Data="M90,90 L132.43,47.57 A60,60 0 1,1 132.43,132.43 Z" Fill="Gold" Stroke="DarkGoldenrod" StrokeThickness="2" Width="180" Height="180" Stretch="None" />
 					</StackPanel>
 				</Border>
 				<Border Style="{StaticResource CellStyle}">

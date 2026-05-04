@@ -2,7 +2,9 @@ using AwesomeAssertions.Execution;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+#if !WINAPPSDK
 using Uno.Media;
+#endif
 using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
@@ -80,6 +82,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			withS.Bounds.Should().Be(equivalentExplicit.Bounds, 0.01);
 		}
 
+#if !WINAPPSDK
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
 		public void When_Path_FillRule_F0_Is_EvenOdd()
@@ -95,5 +98,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var geometry = (StreamGeometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "F1 M 0,0 L 10,0 10,10 0,10 Z");
 			Assert.AreEqual(FillRule.Nonzero, geometry.FillRule);
 		}
+#endif
 	}
 }

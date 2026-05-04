@@ -6,7 +6,9 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
+#if !WINAPPSDK
 using Uno.Media;
+#endif
 using SamplesApp.UITests;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
 using Uno.UI.RuntimeTests.Helpers;
@@ -348,6 +350,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		private void Brush_ImageOpened(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => throw new NotImplementedException();
 
 		// Repro tests for https://github.com/unoplatform/uno/issues/2228
+#if !WINAPPSDK
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
@@ -363,6 +366,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			await WindowHelper.WaitForLoaded(path);
 			await WindowHelper.WaitForIdle();
 		}
+#endif
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
@@ -388,6 +392,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.IsTrue(path.DesiredSize.Height > 0, $"Expected non-zero height, got {path.DesiredSize}");
 		}
 
+#if !WINAPPSDK
 		[TestMethod]
 #if !__SKIA__
 		[Ignore("StreamGeometryContext.PolyBezierTo is only implemented on Skia.")]
@@ -463,5 +468,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.IsLessThanOrEqualTo(1, Math.Abs(60 - path.DesiredSize.Width), $"Width: {path.DesiredSize}");
 			Assert.IsLessThanOrEqualTo(1, Math.Abs(40 - path.DesiredSize.Height), $"Height: {path.DesiredSize}");
 		}
+#endif
 	}
 }
