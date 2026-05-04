@@ -1,4 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿#nullable enable
+
+using BenchmarkDotNet.Attributes;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;

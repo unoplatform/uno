@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -177,7 +179,7 @@ public static class BenchmarkRunnerHost
 			},
 			Memory = new MemoryBlock
 			{
-				AllocatedBytesPerOp = allocBytes,
+				AllocatedBytesPerOp = allocBytes ?? 0,
 				Gen0Collections = report.GcStats.Gen0Collections,
 				Gen1Collections = report.GcStats.Gen1Collections,
 				Gen2Collections = report.GcStats.Gen2Collections,

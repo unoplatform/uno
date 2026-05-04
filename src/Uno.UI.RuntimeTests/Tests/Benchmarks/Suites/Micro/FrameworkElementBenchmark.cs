@@ -1,4 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿#nullable enable
+
+using BenchmarkDotNet.Attributes;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Benchmarks.Suites.Micro;

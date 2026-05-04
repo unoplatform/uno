@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

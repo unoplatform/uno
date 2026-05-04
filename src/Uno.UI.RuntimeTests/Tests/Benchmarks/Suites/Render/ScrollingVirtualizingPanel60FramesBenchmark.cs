@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿#nullable enable
+
+using System.Linq;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 

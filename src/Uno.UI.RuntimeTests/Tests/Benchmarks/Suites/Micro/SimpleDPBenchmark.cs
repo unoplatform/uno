@@ -1,11 +1,13 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿#nullable enable
+
+using BenchmarkDotNet.Attributes;
 using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Benchmarks.Suites.Micro;
 
 [BenchmarkCategory(BenchmarkCategory.Micro)]
 [MemoryDiagnoser]
-public class SimpleDPBenchmark
+public partial class SimpleDPBenchmark
 {
 	private DependencyObjectStub _sut = null!;
 
