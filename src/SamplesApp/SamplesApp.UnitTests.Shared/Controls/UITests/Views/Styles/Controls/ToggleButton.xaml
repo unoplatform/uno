@@ -2,6 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ios="http://nventive.com/ios"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -21,9 +23,6 @@
     <Style x:Key="BurgerButtonStyle" TargetType="ToggleButton">
         <Setter Property="Height" Value="48" />
         <Setter Property="Width" Value="48" />
-        <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}" />
-        <Setter Property="Content" Value="&#xE700;" />
-        <Setter Property="FontSize" Value="20" />
         <Setter Property="Foreground" Value="{ThemeResource AccentFillColorDefaultBrush}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -32,12 +31,46 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Grid Background="{TemplateBinding Background}">
-                        <ContentPresenter
+                        <controls:AnimatedIcon
+                            x:Name="BurgerIcon"
+                            Width="20"
+                            Height="20"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}"
-                            Foreground="{TemplateBinding Foreground}" />
+                            controls:AnimatedIcon.State="Normal"
+                            Foreground="{TemplateBinding Foreground}">
+                            <controls:AnimatedIcon.Source>
+                                <animatedvisuals:AnimatedGlobalNavigationButtonVisualSource />
+                            </controls:AnimatedIcon.Source>
+                        </controls:AnimatedIcon>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="BurgerIcon.(controls:AnimatedIcon.State)" Value="PointerOver" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="BurgerIcon.(controls:AnimatedIcon.State)" Value="Pressed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled" />
+                                <VisualState x:Name="Checked" />
+                                <VisualState x:Name="CheckedPointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="BurgerIcon.(controls:AnimatedIcon.State)" Value="PointerOver" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="CheckedPressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="BurgerIcon.(controls:AnimatedIcon.State)" Value="Pressed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="CheckedDisabled" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
