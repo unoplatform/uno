@@ -51,7 +51,9 @@ public partial class Compositor
 		// Resolve the CompositionTarget that needs invalidation. For Visuals it's the visual's
 		// own target; for a CompositionPropertySet that was created via Visual.Properties, fall
 		// back to the owning Visual's target so animations on `someVisual.Properties.Foo` still
-		// get ticked.
+		// get ticked. For property sets created standalone via Compositor.CreatePropertySet
+		// (e.g. AnimatedIcon's progress property set) fall back to any active CompositionTarget
+		// the compositor already knows about — without one the animation would never tick.
 		ICompositionTarget? target = host switch
 		{
 			Visual visual => visual.CompositionTarget,
