@@ -60,7 +60,9 @@
                 Hover / press the button below to drive the source through its
                 pointer-state markers (NormalToPointerOver, NormalToPressed, …).
             </TextBlock>
-            <Button x:Name="LiveButton"
+            <!--  Border instead of Button so the default ButtonBase visual states don't capture
+                  the pointer events we want to forward into the live player.  -->
+            <Border x:Name="LiveButton"
                     Width="56"
                     Height="56"
                     HorizontalAlignment="Left"
@@ -76,9 +78,11 @@
                 <controls:AnimatedVisualPlayer x:Name="LivePlayer"
                                                Width="32"
                                                Height="32"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
                                                AutoPlay="False"
                                                Stretch="Uniform" />
-            </Button>
+            </Border>
 
             <StackPanel Orientation="Horizontal"
                         Spacing="8">
