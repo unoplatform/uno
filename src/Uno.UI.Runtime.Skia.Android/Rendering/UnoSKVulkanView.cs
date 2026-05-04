@@ -80,8 +80,10 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	void IUnoSkiaRenderView.OnResume()
 	{
 		_paused = false;
-		// Force one synchronization frame so the render-scheduling state machine
-		// re-establishes its cycle even if a callback was dropped across the lifecycle.
+		// Recover the render-scheduling state machine from any callback dropped across
+		// the pause/resume boundary, then force one synchronization frame so the
+		// cycle re-establishes even if no new content has been requested.
+		CompositionTarget.NotifyRenderingResumed();
 		InvalidateRender();
 	}
 
