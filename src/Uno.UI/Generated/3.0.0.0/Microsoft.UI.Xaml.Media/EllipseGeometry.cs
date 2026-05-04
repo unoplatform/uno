@@ -3,11 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class EllipseGeometry : global::Microsoft.UI.Xaml.Media.Geometry
 	{
+		// Skipping already declared property CenterProperty
+		// Skipping already declared property RadiusXProperty
+		// Skipping already declared property RadiusYProperty
+		// Skipping already declared property Center
+		// Skipping already declared property RadiusX
+		// Skipping already declared property RadiusY
+		// Skipping already declared method Microsoft.UI.Xaml.Media.EllipseGeometry.EllipseGeometry()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.EllipseGeometry()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.CenterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusXProperty.get
