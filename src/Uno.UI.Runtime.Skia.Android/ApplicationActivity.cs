@@ -361,12 +361,15 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnResume()
 		{
-			base.OnResume();
-
-			// GLSurfaceView contract: forward OnResume so the GL render thread restarts.
-			// Without this the GL thread state can be inconsistent after a quick lock/unlock
-			// where Android preserves the surface, and the render-scheduling cycle stays dead.
+			// Restart the GL/Vulkan render thread before the framework resume so the
+			// render view is live by the time BaseActivity raises Application.Resuming
+			// and CoreWindow activation callbacks. Otherwise any handler that
+			// invalidates visuals during those callbacks fires while the view is
+			// still paused and the first post-resume frame request is dropped,
+			// leaving the UI stale until a later invalidation.
 			_renderView?.OnResume();
+
+			base.OnResume();
 
 			RaiseConfigurationChanges();
 
