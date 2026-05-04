@@ -1,0 +1,96 @@
+<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.AnimatedIconTests.AnimatedVisualsTestbedPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      mc:Ignorable="d">
+
+    <Grid Padding="24"
+          ColumnSpacing="24"
+          RowSpacing="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Left column: source picker + preview  -->
+        <StackPanel Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="0"
+                    Spacing="12">
+            <TextBlock FontSize="20"
+                       Style="{ThemeResource SubtitleTextBlockStyle}"
+                       Text="AnimatedVisualSource testbed" />
+
+            <TextBlock TextWrapping="Wrap">
+                Pick a source, then play any of its markers, scrub progress,
+                or recolor the foreground.
+            </TextBlock>
+
+            <ComboBox x:Name="SourcePicker"
+                      HorizontalAlignment="Stretch"
+                      Header="Source"
+                      SelectionChanged="OnSourceChanged" />
+
+            <Border BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    HorizontalAlignment="Center"
+                    Padding="16">
+                <controls:AnimatedVisualPlayer x:Name="Player"
+                                               Width="96"
+                                               Height="96"
+                                               AutoPlay="False"
+                                               Stretch="Uniform" />
+            </Border>
+
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock VerticalAlignment="Center"
+                           Text="Foreground:" />
+                <Button Click="OnBlackForeground"
+                        Content="Black" />
+                <Button Click="OnRedForeground"
+                        Content="Red" />
+                <Button Click="OnAccentForeground"
+                        Content="Accent" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock VerticalAlignment="Center"
+                           Text="Progress:" />
+                <Slider x:Name="ProgressSlider"
+                        Width="200"
+                        Maximum="1.0"
+                        Minimum="0.0"
+                        StepFrequency="0.01"
+                        ValueChanged="OnProgressSliderChanged" />
+            </StackPanel>
+
+            <TextBlock x:Name="StatusText"
+                       FontFamily="Consolas"
+                       Text="Idle"
+                       TextWrapping="Wrap" />
+        </StackPanel>
+
+        <!--  Right column: marker buttons (built dynamically per source)  -->
+        <TextBlock Grid.Row="0"
+                   Grid.Column="1"
+                   FontSize="14"
+                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                   Text="Markers" />
+
+        <ScrollViewer Grid.Row="1"
+                      Grid.Column="1">
+            <StackPanel x:Name="MarkersHost"
+                        Spacing="6" />
+        </ScrollViewer>
+    </Grid>
+</Page>
