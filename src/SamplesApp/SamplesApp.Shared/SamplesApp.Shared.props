@@ -1,27 +1,35 @@
 <Project>
   <ItemGroup>
-    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml"
+                           Link="App.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
 
     <Page Include="$(MSBuildThisFileDirectory)**\*.xaml"
           Exclude="$(MSBuildThisFileDirectory)App.xaml;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
 
     <Compile Include="$(MSBuildThisFileDirectory)**\*.xaml.cs"
              Exclude="$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)**\*.cs"
-             Exclude="$(MSBuildThisFileDirectory)**\*.xaml.cs;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**" />
+             Exclude="$(MSBuildThisFileDirectory)**\*.xaml.cs;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
 
-    <Content Include="$(MSBuildThisFileDirectory)Assets\**\*.*" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\**\*.*"
+             Link="Assets\%(RecursiveDir)%(Filename)%(Extension)" />
 
-    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\**\*.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\**\*.resw"
+                 Link="Strings\%(RecursiveDir)%(Filename)%(Extension)" />
 
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\SharedProjectEmbeddedFile.txt" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\SharedProjectEmbeddedFile.txt"
+                      Link="Embedded\SubFolder1\SubFolder2\SharedProjectEmbeddedFile.txt" />
   </ItemGroup>
 </Project>
