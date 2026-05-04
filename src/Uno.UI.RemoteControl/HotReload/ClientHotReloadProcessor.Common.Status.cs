@@ -416,19 +416,19 @@ public partial class ClientHotReloadProcessor
 		/// Marks the operation as complete and sends a terminal event to the server.
 		/// </summary>
 		/// <remarks>
-		/// <para>Accepts override from <see cref="HotReloadClientResult.Ignored"/>: an
-		/// Ignored op is <em>potentially</em> intermediate. HotDesign (or any other
-		/// consumer) may re-apply the deferred delta and call <see cref="ReportCompleted"/>
-		/// through <c>ReloadWithUpdatedTypes</c>, in which case Ignored was indeed a
-		/// transient phase. If no one re-applies, Ignored remains the effective final
-		/// state (downstream timers typically escalate it to <c>TimedOut</c>).</para>
+		/// <para>Accepts override from <see cref="HotReloadClientResult.Ignored"/> (the
+		/// underlying state used by <see cref="ReportDeferred"/>): a deferred op is
+		/// <em>potentially</em> intermediate — the drain that fires when all pause handles
+		/// are released will call <see cref="ReportCompleted"/> to promote it to Success/Failed.
+		/// If the drain never fires (e.g. the handle is never disposed), the op stays at
+		/// Ignored/deferred and downstream timers may escalate it to <c>TimedOut</c>.</para>
 		/// <para>The CAS loop allows the transition from either <c>-1</c>
 		/// (first-time completion) or <see cref="HotReloadClientResult.Ignored"/>
 		/// (deferred-then-applied) to <see cref="HotReloadClientResult.Success"/> /
 		/// <see cref="HotReloadClientResult.Failed"/>. Any other pre-existing state
 		/// (Success/Failed) is a programming error (double-complete).</para>
 		/// <para><see cref="IgnoreTime"/> and <see cref="IgnoreReason"/> are preserved
-		/// across the override — they document that the op went through an Ignored
+		/// across the override — they document that the op went through a Deferred
 		/// phase. The emitted event's <c>Kind</c> still surfaces the terminal
 		/// Succeeded/Failed because <c>HotReloadClientOperationEvent.Kind</c> gives
 		/// <see cref="EndTime"/> priority over <see cref="IgnoreTime"/>.</para>
@@ -438,7 +438,7 @@ public partial class ClientHotReloadProcessor
 			if (_isEmpty) return;
 
 			// IgnoreReason is intentionally NOT consulted here: an explicit ReportCompleted
-			// overrides any prior ReportIgnored. Only _exceptions decide Success vs Failed.
+			// overrides any prior ReportDeferred. Only _exceptions decide Success vs Failed.
 			var result = _exceptions.Count > 0
 				? HotReloadClientResult.Failed
 				: HotReloadClientResult.Success;
@@ -460,24 +460,41 @@ public partial class ClientHotReloadProcessor
 			SendEvent();
 		}
 
-		internal void ReportIgnored(string reason)
+		/// <summary>
+		/// Marks the operation as deferred: its visual-tree apply was postponed because one
+		/// or more UI-phase pauses were active. The op remains "live" — the drain that fires
+		/// when all pause handles are released will call <see cref="ReportCompleted"/> to
+		/// promote it to Success/Failed.
+		/// </summary>
+		/// <param name="reason">
+		/// Short description of who triggered the deferral (e.g. the pause holder summary).
+		/// Surfaced in diagnostic logs and the telemetry event.
+		/// </param>
+		internal void ReportDeferred(string reason)
 		{
 			if (_isEmpty) return;
 
 			IgnoreReason = reason;
 			IgnoreTime = DateTimeOffset.Now;
 
-			// Set _result = Ignored so existing consumers that treat "Result is not null" as
-			// "cycle reached a terminal state" (e.g. WaitForLocalHotReloadAsync) still wake
-			// up on Ignored. ReportCompleted's CAS loop is permissive enough to later override
-			// Ignored with Success/Failed when a re-apply fires. Only transition from -1 so
-			// that a spurious second ReportIgnored is a no-op rather than a state downgrade.
+			// Set _result = Ignored (the underlying enum value) so consumers that treat
+			// "Result is not null" as "cycle reached a terminal state" still wake up —
+			// notably WaitForLocalHotReloadAsync. ReportCompleted's CAS loop can later
+			// override Ignored → Success/Failed when the drain re-applies the delta.
+			// Only transition from -1; a spurious second ReportDeferred is a no-op.
 			if (Interlocked.CompareExchange(ref _result, (int)HotReloadClientResult.Ignored, -1) == -1)
 			{
 				_onUpdated?.Invoke();
 				SendEvent();
 			}
 		}
+
+		/// <summary>
+		/// Legacy name kept for backward compat with any external callers; delegates to
+		/// <see cref="ReportDeferred"/>.
+		/// </summary>
+		[Obsolete("Use ReportDeferred — semantically identical, clearer naming.", error: false)]
+		internal void ReportIgnored(string reason) => ReportDeferred(reason);
 
 		private void SendEvent()
 		{

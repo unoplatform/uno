@@ -53,6 +53,11 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			_instance = this;
 
+			// Subscribe the drain dispatcher so that pause-handle releases that
+			// drain pending types end up actually applying them through the
+			// standard visual-tree update path.
+			EnsureUIPauseDrainSubscribed();
+
 			CheckMetadataUpdatesSupport();
 
 			_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
@@ -171,7 +176,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{
-					this.Log().Info($"[HotReload] ProcessAssemblyReload ENTER — files=[{string.Join(",", assemblyDeltaReload.FilePaths)}], ModuleId={assemblyDeltaReload.ModuleId}, IsValid={assemblyDeltaReload.IsValid()}, Debugger.IsAttached={Debugger.IsAttached}, TypeMappings.IsPaused={TypeMappings.IsPaused}");
+					this.Log().Info($"[HotReload] ProcessAssemblyReload ENTER — files=[{string.Join(",", assemblyDeltaReload.FilePaths)}], ModuleId={assemblyDeltaReload.ModuleId}, IsValid={assemblyDeltaReload.IsValid()}, Debugger.IsAttached={Debugger.IsAttached}, VisualTree paused={Uno.HotReload.Client.UIUpdate.IsPaused(Uno.HotReload.Client.HotReloadUIPhases.VisualTree)}");
 				}
 
 				if (Debugger.IsAttached)
@@ -183,7 +188,7 @@ namespace Uno.UI.RemoteControl.HotReload
 						{
 							this.Log().Error("Hot Reload is not supported when the debugger is attached.");
 						}
-						_status.StartLocal([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
+						_status.StartLocal([]).ReportDeferred("Hot Reload is not supported when the debugger is attached");
 						return;
 					}
 				}

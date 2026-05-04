@@ -2,6 +2,7 @@
 using System.Reflection.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Uno.HotReload.Client;
 using Uno.UI.Helpers;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
@@ -99,12 +100,12 @@ public class Given_Frame : BaseTestClass
 		// Check the initial text of the TextBlock
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
-		// Pause HR
-		TypeMappings.Pause();
-		try
+		// Acquire an external visual-tree pause. While the pause is held,
+		// HR deltas queue but do not update the visual tree.
+		using (UIUpdate.Pause(HotReloadUIPhases.VisualTree))
 		{
-
-			// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
+			// While the pause is held, the file change happens server-side
+			// but the UI is not touched.
 			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 				FirstPageTextBlockOriginalText,
 				FirstPageTextBlockChangedText,
@@ -114,136 +115,19 @@ public class Given_Frame : BaseTestClass
 				},
 				ct);
 		}
-		finally
-		{
-			// Resume HR
-			TypeMappings.Resume();
-		}
 
-		// Check that the text has been updated
+		// After the pause is released, the queued types drain and the visual
+		// tree is updated. The revert was queued too, so we end back at the
+		// original text.
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 	}
 
-	/// <summary>
-	/// Checks that a simple change to a XAML element (change Text on TextBlock) will not be applied to
-	/// the currently visible page when HR is paused and that the change will be applied once HR is resumed
-	/// Open Page1
-	/// Pause HR
-	/// Change Page1 (no changes to Page1 UI)
-	/// Resume HR (changes applied to Page1 UI)
-	/// </summary>
-	[TestMethod]
-	// Note: This is a BROKEN feature that is about to get fixed, Types are ALWAYS updated, TypeMappings only **pauses** UI updated
-	//		 while current tests assume that Types are not updated at all when paused.
-	//		 The effect of this is that subsequent tests that rely on the original type state will fail.
-	[Ignore("This test is wrongly testing a BROKEN feature that will subsequent tests to fail.")]
-	public async Task Check_Can_Change_Page1_Pause_NoUIUpdate_HR()
-	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
-
-		var frame = new Microsoft.UI.Xaml.Controls.Frame();
-		UnitTestsUIContentHelper.Content = frame;
-
-		frame.Navigate(typeof(HR_Frame_Pages_Page1));
-
-		// Check the initial text of the TextBlock
-		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
-
-		// Pause HR
-		TypeMappings.Pause();
-		try
-		{
-
-			// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
-			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
-				FirstPageTextBlockOriginalText,
-				FirstPageTextBlockChangedText,
-				async () =>
-				{
-					await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
-				},
-				ct);
-		}
-		finally
-		{
-			// Resume HR
-			TypeMappings.Resume();
-		}
-
-		// Although HR has been un-paused (resumed) the UI should not have updated at this point
-		// due to false parameter passed to Resume method
-		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
-
-		// Force a refresh
-		Window.Current!.ForceHotReloadUpdate();
-
-		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
-
-		// Check that the text has been updated
-		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
-	}
-
-
-	/// <summary>
-	/// Checks that a simple change to a XAML element (change Text on TextBlock) will not be applied to
-	/// the currently visible page when HR is paused and that the change will be applied once HR is resumed
-	/// Open Page1
-	/// Pause HR
-	/// Change Page1 (no changes to Page1 UI)
-	/// Resume HR (changes applied to Page1 UI)
-	/// </summary>
-	[TestMethod]
-	[Ignore]
-	public async Task Check_Can_Change_Page1_Pause_ReloadCompleted_HR()
-	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
-
-		var frame = new Microsoft.UI.Xaml.Controls.Frame();
-		UnitTestsUIContentHelper.Content = frame;
-
-		frame.Navigate(typeof(HR_Frame_Pages_Page1));
-
-		// Check the initial text of the TextBlock
-		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
-
-		// Pause HR
-		TypeMappings.Pause();
-		try
-		{
-			var waitingTask = TestingUpdateHandler.WaitForReloadCompleted();
-
-			// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
-			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
-				FirstPageTextBlockOriginalText,
-				FirstPageTextBlockChangedText,
-				async () =>
-				{
-					// Confirm that reload completed has fired
-					var uiUpdated = await waitingTask.WaitAsync(ct);
-					Assert.IsFalse(uiUpdated, "UI should not have updated whilst ui updates paused");
-					await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
-				},
-				ct);
-		}
-		finally
-		{
-			// Resume HR
-			TypeMappings.Resume();
-		}
-
-		// Although HR has been un-paused (resumed) the UI should not have updated at this point
-		// due to false parameter passed to Resume method
-		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
-
-		// Force a refresh
-		Window.Current!.ForceHotReloadUpdate();
-
-		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
-
-		// Check that the text has been updated
-		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
-	}
-
+	// Note: Two previously-existing tests covering the legacy "TypeMappings.Pause + ForceHotReloadUpdate"
+	// shape were deleted along with the broken behavior they exercised (spec 041).
+	// The new pause/drain mechanism is covered by:
+	//   - Given_HotReloadUIPause (unit tests for the API itself)
+	//   - Check_Can_Change_Page1_Pause_HR above (visual-tree end-to-end)
+	//   - Given_HotReloadResilience.When_VisualTree_Paused_Then_ReloadCompleted_StillFires
 
 	/// <summary>
 	/// Checks that a simple xaml change to the current page will be retained when

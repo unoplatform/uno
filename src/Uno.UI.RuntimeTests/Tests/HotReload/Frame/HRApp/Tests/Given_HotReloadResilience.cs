@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.HotReload.Client;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
@@ -47,38 +48,49 @@ public class Given_HotReloadResilience : BaseTestClass
 	}
 
 	/// <summary>
-	/// Verifies that ReloadCompleted fires even when hot-reload is paused
-	/// (TypeMappings.IsPaused). This tests the finally-block resilience:
-	/// even if the update is skipped, the completion callback should execute.
+	/// Verifies that ReloadCompleted fires even when the visual-tree apply
+	/// is deferred via the new <see cref="UIUpdate.Pause"/> mechanism (spec 041).
+	/// Tests the finally-block resilience: even if the update is queued, the
+	/// completion callback should execute (immediately for non-FE-only deltas,
+	/// after drain for FE deltas).
 	/// </summary>
 	[TestMethod]
-	public async Task When_TypeMappings_Paused_Then_ReloadCompleted_StillFires()
+	public async Task When_VisualTree_Paused_Then_ReloadCompleted_StillFires()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
-		TypeMappings.Pause();
-		try
+		// Page must be in the tree so that the drain on dispose actually
+		// runs DoUpdateVisualTreeCore against it.
+		var page = new HR_Frame_Pages_Page1();
+		UnitTestsUIContentHelper.Content = page;
+
+		await UnitTestsUIContentHelper.WaitForIdle();
+
+		using (UIUpdate.Pause(HotReloadUIPhases.VisualTree))
 		{
-			// ReloadCompleted should fire with uiUpdated=false when paused
 			var completed = TestingUpdateHandler.WaitForReloadCompleted();
 
-			// Trigger an update - it should be skipped because TypeMappings is paused
-			// but ReloadCompleted should still fire
+			// While the pause is held, the update is queued and the op is
+			// reported as Ignored ("UI update paused by UpdateFile").
 			await HotReloadHelper.UpdateServerFile<HR_Frame_Pages_Page1>(
 				"Hello", "PausedTest", ct);
 
-			// The UpdateServerFile call above will return without waiting for
-			// visual tree update (because reloads are paused), but
-			// ReloadCompleted should fire once the delta is processed.
-			var result = await completed.WaitAsync(ct);
+			// ReloadCompleted has not fired yet — it fires when the drain
+			// eventually applies the queued types after Dispose below.
+			Assert.IsFalse(completed.IsCompleted, "ReloadCompleted should not fire while VisualTree is paused.");
+		}
 
-			Assert.IsFalse(result, "ReloadCompleted should report uiUpdated=false when TypeMappings is paused");
+		// After dispose, the pending visual-tree types are drained and the
+		// completion callback fires with uiUpdated=true.
+		try
+		{
+			var drained = TestingUpdateHandler.WaitForReloadCompleted();
+			var result = await drained.WaitAsync(ct);
+			Assert.IsTrue(result, "ReloadCompleted should report uiUpdated=true after pause is released and drain runs.");
 		}
 		finally
 		{
-			TypeMappings.Resume();
-
-			// Undo the file change
+			// Undo the file change so subsequent tests start from a known state.
 			await HotReloadHelper.UpdateServerFile<HR_Frame_Pages_Page1>(
 				"PausedTest", "Hello", CancellationToken.None);
 		}
