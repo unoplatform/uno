@@ -1,161 +1,178 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml.Performance.BenchmarksPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d">
-	<Grid Padding="12"
-	      RowSpacing="8">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.Performance.BenchmarksPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<TextBlock Grid.Row="0"
-		           FontSize="20"
-		           FontWeight="SemiBold"
-		           Text="Benchmarks" />
+        <TextBlock
+            Grid.Row="0"
+            FontSize="20"
+            FontWeight="SemiBold"
+            Text="Benchmarks" />
 
-		<TextBlock Grid.Row="1"
-		           x:Name="branchLabel"
-		           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-		           Text="branch: (unknown) · commit: (unknown)" />
+        <TextBlock
+            x:Name="branchLabel"
+            Grid.Row="1"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Text="branch: (unknown) · commit: (unknown)" />
 
-		<Grid Grid.Row="2"
-		      ColumnSpacing="8">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
-			<TextBox Grid.Column="0"
-			         x:Name="filterBox"
-			         PlaceholderText="Filter (substring of benchmark class name)" />
-			<Button Grid.Column="1"
-			        x:Name="runFilteredButton"
-			        Click="OnRunFiltered"
-			        Content="Run filtered" />
-			<Button Grid.Column="2"
-			        x:Name="runAllButton"
-			        Click="OnRunAll"
-			        Content="Run all" />
-			<Button Grid.Column="3"
-			        x:Name="copyMarkdownButton"
-			        Click="OnCopyMarkdown"
-			        Content="Copy as markdown"
-			        IsEnabled="False" />
-			<Button Grid.Column="4"
-			        x:Name="saveZipButton"
-			        Click="OnSaveZip"
-			        Content="Save zip"
-			        IsEnabled="False" />
-		</Grid>
+        <Grid Grid.Row="2" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                x:Name="filterBox"
+                Grid.Column="0"
+                PlaceholderText="Filter (substring of benchmark class name)" />
+            <Button
+                x:Name="runFilteredButton"
+                Grid.Column="1"
+                Click="OnRunFiltered"
+                Content="Run filtered" />
+            <Button
+                x:Name="runAllButton"
+                Grid.Column="2"
+                Click="OnRunAll"
+                Content="Run all" />
+            <Button
+                x:Name="copyMarkdownButton"
+                Grid.Column="3"
+                Click="OnCopyMarkdown"
+                Content="Copy as markdown"
+                IsEnabled="False" />
+            <Button
+                x:Name="saveZipButton"
+                Grid.Column="4"
+                Click="OnSaveZip"
+                Content="Save zip"
+                IsEnabled="False" />
+        </Grid>
 
-		<TextBlock Grid.Row="3"
-		           x:Name="statusLabel"
-		           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-		           Text="Idle" />
+        <TextBlock
+            x:Name="statusLabel"
+            Grid.Row="3"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Text="Idle" />
 
-		<Grid Grid.Row="4">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="*" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="180" />
-			</Grid.RowDefinitions>
+        <Grid Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="180" />
+            </Grid.RowDefinitions>
 
-			<ScrollViewer Grid.Row="0">
-				<ListView x:Name="resultsList">
-					<ListView.HeaderTemplate>
-						<DataTemplate>
-							<Grid Padding="8,6"
-							      ColumnSpacing="12">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="120" />
-									<ColumnDefinition Width="120" />
-									<ColumnDefinition Width="120" />
-									<ColumnDefinition Width="60" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0"
-								           FontWeight="SemiBold"
-								           Text="Benchmark" />
-								<TextBlock Grid.Column="1"
-								           FontWeight="SemiBold"
-								           Text="Mean"
-								           TextAlignment="Right" />
-								<TextBlock Grid.Column="2"
-								           FontWeight="SemiBold"
-								           Text="StdDev"
-								           TextAlignment="Right" />
-								<TextBlock Grid.Column="3"
-								           FontWeight="SemiBold"
-								           Text="Allocated"
-								           TextAlignment="Right" />
-								<TextBlock Grid.Column="4"
-								           FontWeight="SemiBold"
-								           Text="N"
-								           TextAlignment="Right" />
-							</Grid>
-						</DataTemplate>
-					</ListView.HeaderTemplate>
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<Grid Padding="8,4"
-							      ColumnSpacing="12">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="120" />
-									<ColumnDefinition Width="120" />
-									<ColumnDefinition Width="120" />
-									<ColumnDefinition Width="60" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0"
-								           Text="{Binding Name}" />
-								<TextBlock Grid.Column="1"
-								           Text="{Binding Mean}"
-								           TextAlignment="Right" />
-								<TextBlock Grid.Column="2"
-								           Text="{Binding Stddev}"
-								           TextAlignment="Right" />
-								<TextBlock Grid.Column="3"
-								           Text="{Binding Allocated}"
-								           TextAlignment="Right" />
-								<TextBlock Grid.Column="4"
-								           Text="{Binding N}"
-								           TextAlignment="Right" />
-							</Grid>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-			</ScrollViewer>
+            <ScrollViewer Grid.Row="0">
+                <ListView x:Name="resultsList">
+                    <ListView.HeaderTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8,6" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    FontWeight="SemiBold"
+                                    Text="Benchmark" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    FontWeight="SemiBold"
+                                    Text="Mean"
+                                    TextAlignment="Right" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    FontWeight="SemiBold"
+                                    Text="StdDev"
+                                    TextAlignment="Right" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    FontWeight="SemiBold"
+                                    Text="Allocated"
+                                    TextAlignment="Right" />
+                                <TextBlock
+                                    Grid.Column="4"
+                                    FontWeight="SemiBold"
+                                    Text="N"
+                                    TextAlignment="Right" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.HeaderTemplate>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8,4" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Name}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Text="{Binding Mean}"
+                                    TextAlignment="Right" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Text="{Binding Stddev}"
+                                    TextAlignment="Right" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    Text="{Binding Allocated}"
+                                    TextAlignment="Right" />
+                                <TextBlock
+                                    Grid.Column="4"
+                                    Text="{Binding N}"
+                                    TextAlignment="Right" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
 
-			<TextBlock Grid.Row="1"
-			           Margin="0,8,0,4"
-			           FontWeight="SemiBold"
-			           Text="Run log" />
+            <TextBlock
+                Grid.Row="1"
+                Margin="0,8,0,4"
+                FontWeight="SemiBold"
+                Text="Run log" />
 
-			<ScrollViewer Grid.Row="2"
-			              x:Name="logScroll"
-			              Background="{ThemeResource ControlFillColorTertiaryBrush}">
-				<TextBlock x:Name="logText"
-				           Padding="8"
-				           FontFamily="Consolas, Cascadia Mono, monospace"
-				           FontSize="12"
-				           IsTextSelectionEnabled="True"
-				           TextWrapping="Wrap" />
-			</ScrollViewer>
-		</Grid>
+            <ScrollViewer
+                x:Name="logScroll"
+                Grid.Row="2"
+                Background="{ThemeResource ControlFillColorTertiaryBrush}">
+                <TextBlock
+                    x:Name="logText"
+                    Padding="8"
+                    FontFamily="Consolas, Cascadia Mono, monospace"
+                    FontSize="12"
+                    IsTextSelectionEnabled="True"
+                    TextWrapping="Wrap" />
+            </ScrollViewer>
+        </Grid>
 
-		<TextBlock Grid.Row="5"
-		           x:Name="schemaNote"
-		           FontStyle="Italic"
-		           Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-		           Text="Results follow schema v1. Save the zip and load it on the dashboard's compare page for A/B against another branch." />
-	</Grid>
+        <TextBlock
+            x:Name="schemaNote"
+            Grid.Row="5"
+            FontStyle="Italic"
+            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+            Text="Results follow schema v1. Save the zip and load it on the dashboard's compare page for A/B against another branch." />
+    </Grid>
 </Page>
