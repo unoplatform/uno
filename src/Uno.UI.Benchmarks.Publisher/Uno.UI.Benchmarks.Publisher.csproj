@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<RollForward>major</RollForward>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<RootNamespace>Uno.UI.Benchmarks.Publisher</RootNamespace>
+		<AssemblyName>uno-bench-publisher</AssemblyName>
+	</PropertyGroup>
+
+</Project>
