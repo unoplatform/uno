@@ -657,7 +657,11 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 			}
 
-			m_transitionManager.ReattachToProvider();
+			// Uno-specific: re-supply the effective provider so layout-provided defaults survive an
+			// unload/load cycle. Mirrors the precedence in OnLayoutChanged / OnTransitionProviderChanged.
+			var effectiveProvider = ItemTransitionProvider
+				?? (m_ownsTransitionProvider ? Layout?.CreateDefaultItemTransitionProvider() : null);
+			m_transitionManager.ReattachToProvider(effectiveProvider);
 #endif
 		}
 

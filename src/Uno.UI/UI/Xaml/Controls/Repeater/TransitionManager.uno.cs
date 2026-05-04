@@ -18,12 +18,17 @@ partial class TransitionManager
 		m_transitionProvider = null;
 	}
 
-	internal void ReattachToProvider()
+	// Uno-specific: ItemsRepeater computes the effective provider (explicit DP, or layout-default
+	// when m_ownsTransitionProvider is true) and passes it in. Passing null is valid and matches the
+	// "no provider" state.
+	internal void ReattachToProvider(ItemCollectionTransitionProvider provider)
 	{
-		if (m_transitionProvider is null
-			&& m_owner.ItemTransitionProvider is { } current)
+		if (m_transitionProvider is not null
+			|| provider is null)
 		{
-			OnTransitionProviderChanged(current);
+			return;
 		}
+
+		OnTransitionProviderChanged(provider);
 	}
 }
