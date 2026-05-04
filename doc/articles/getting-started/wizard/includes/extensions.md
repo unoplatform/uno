@@ -110,6 +110,16 @@ dotnet new unoapp -loc
   dotnet new unoapp -nav regions
   ```
 
+- ##### Shell
+
+  Adds a `Shell.xaml` root navigation container to the project. The Shell wraps your pages in a nested route hierarchy, acting as the top-level host for navigation. Without Shell, the app navigates directly to `MainPage` using flat route maps.
+
+  When both Shell and Toolkit are enabled, the Shell includes an `ExtendedSplashScreen` from Uno Toolkit.
+
+  ```dotnetcli
+  dotnet new unoapp -shell
+  ```
+
 - ##### Blank
 
   Provides the default [WinUI frame navigation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.frame). This is the default navigation in the blank preset.
