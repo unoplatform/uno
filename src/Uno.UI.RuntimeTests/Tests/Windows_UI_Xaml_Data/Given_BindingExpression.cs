@@ -643,8 +643,12 @@ public class Given_BindingExpression
 		// Verify initial forward conversion: enum -> string
 		Assert.AreEqual("Hello", root.tbEnum.Text, "Forward conversion should produce enum name string");
 
-		// Modify the TextBox to trigger ConvertBack
+		// Modify the TextBox to trigger ConvertBack. TextBox's x:Bind path on TextProperty
+		// waits for LostFocus by design (see TextBox.OnTextChanged), so explicitly call
+		// UpdateSource to push the new value through ConvertBack deterministically.
 		root.tbEnum.Text = "World";
+		await TestServices.WindowHelper.WaitForIdle();
+		root.tbEnum.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Assert: converter received typeof(XBindTestEnum), not null

@@ -234,6 +234,7 @@ namespace Microsoft.UI.Xaml.Data
 			XBindSelector = xBindSelector;
 			XBindPropertyPaths = propertyPaths;
 			XBindBack = xBindBack;
+			XBindSourceType = null;
 		}
 
 		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, Type sourceType, string[] propertyPaths = null)

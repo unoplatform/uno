@@ -4503,6 +4503,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
+								sourceTypeExpression = propertyType?.GetFullyQualifiedTypeIncludingGlobal();
 								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ ___tctx.{rawBindBack}(({propertyType})__value); }} }}";
 							}
 							else
@@ -4570,6 +4571,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
+								sourceTypeExpression = propertyType?.GetFullyQualifiedTypeIncludingGlobal();
 								return $"(___tctx, __value) => {rawBindBack}(({propertyType})__value)";
 							}
 							else
