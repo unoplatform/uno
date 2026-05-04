@@ -7,6 +7,7 @@
       "AddIns\\Uno.UI.MediaPlayer.WebAssembly\\Uno.UI.MediaPlayer.WebAssembly.csproj",
       "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Crossruntime.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
+      "SamplesApp\\SamplesApp.Samples\\SamplesApp.Samples.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
       "SamplesApp\\SamplesApp.Wasm\\SamplesApp.Wasm.csproj",
