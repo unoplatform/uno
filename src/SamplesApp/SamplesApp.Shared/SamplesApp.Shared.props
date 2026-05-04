@@ -1,0 +1,27 @@
+<Project>
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+
+    <Page Include="$(MSBuildThisFileDirectory)**\*.xaml"
+          Exclude="$(MSBuildThisFileDirectory)App.xaml;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+
+    <Compile Include="$(MSBuildThisFileDirectory)**\*.xaml.cs"
+             Exclude="$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)**\*.cs"
+             Exclude="$(MSBuildThisFileDirectory)**\*.xaml.cs;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**" />
+
+    <Content Include="$(MSBuildThisFileDirectory)Assets\**\*.*" />
+
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\**\*.resw" />
+
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\SharedProjectEmbeddedFile.txt" />
+  </ItemGroup>
+</Project>
