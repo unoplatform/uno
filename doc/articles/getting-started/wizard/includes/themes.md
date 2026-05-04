@@ -2,9 +2,16 @@ Uno platform lets you decide easily which theme or skin to display throughout yo
 
 This option sets the generated theme or skin to be used in the generated app. The options available are:
 
+- **Simple**  
+    Simple is a lightweight design system that provides minimal, essential styling for controls. This is the default for the recommended preset.
+
+    ```dotnetcli
+    dotnet new unoapp -theme simple
+    ```
+
 - **Material**  
     Material is Google's design system.  
-    Learn more about [Material](https://material.io/). This option will result in an application that will have the material theme applied. This is the default for the recommended preset.  
+    Learn more about [Material](https://material.io/). This option will result in an application that will have the material theme applied.
 
     ```dotnetcli
     dotnet new unoapp -theme material
