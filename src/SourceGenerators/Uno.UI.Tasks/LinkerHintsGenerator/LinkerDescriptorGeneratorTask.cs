@@ -40,11 +40,15 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				using var resolver = BuildAssemblyResolver();
 				var assemblyList = BuildAssemblyList(resolver);
 
+				// Build the flat type list and shared cache once, then hand both to every generator.
+				var allTypes = BuildAllTypes(assemblyList);
+				var typeCache = new TypeDefinitionCache();
+
 				var bindableGenerator = new BindableTypeDescriptorGenerator(Log);
 				var attachedGenerator = new AttachedPropertiesDescriptorGenerator(Log);
 
-				bindableGenerator.Analyze(assemblyList);
-				attachedGenerator.Analyze(assemblyList);
+				bindableGenerator.Analyze(allTypes, typeCache);
+				attachedGenerator.Analyze(allTypes, typeCache);
 
 				bindableGenerator.WriteDescriptorIfResults(BindableDescriptorOutputPath);
 				attachedGenerator.WriteDescriptorIfResults(AttachedPropertiesDescriptorOutputPath);
@@ -56,6 +60,28 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				Log.LogError($"LinkerDescriptorGenerator failed: {ex.Message}");
 				Log.LogMessage(LinkerDescriptorGenerator.DefaultLogMessageLevel, ex.ToString());
 				return false;
+			}
+		}
+
+		private static List<TypeDefinition> BuildAllTypes(IEnumerable<AssemblyDefinition> assemblies)
+		{
+			var allTypes = new List<TypeDefinition>();
+			foreach (var assembly in assemblies)
+			{
+				foreach (var type in assembly.MainModule.Types)
+				{
+					CollectAllTypes(type, allTypes);
+				}
+			}
+			return allTypes;
+		}
+
+		private static void CollectAllTypes(TypeDefinition type, List<TypeDefinition> result)
+		{
+			result.Add(type);
+			foreach (var nested in type.NestedTypes)
+			{
+				CollectAllTypes(nested, result);
 			}
 		}
 
@@ -195,8 +221,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			Log = log;
 		}
 
-		/// <summary>Scan <paramref name="assemblies"/> and collect results.</summary>
-		public abstract void Analyze(IEnumerable<AssemblyDefinition> assemblies);
+		/// <summary>
+		/// Scan the pre-built flat list of all types and collect results.
+		/// The <paramref name="typeCache"/> is shared across all generators to avoid redundant resolutions.
+		/// </summary>
+		public abstract void Analyze(IReadOnlyList<TypeDefinition> allTypes, TypeDefinitionCache typeCache);
 
 		/// <summary>Returns <see langword="true"/> when <see cref="Analyze"/> found at least one member to preserve.</summary>
 		public abstract bool HasResults { get; }
@@ -217,18 +246,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			else
 			{
 				Log.LogMessage(DefaultLogMessageLevel, $"No results to preserve; skipping {outputPath}.");
-			}
-		}
-
-		protected static IEnumerable<TypeDefinition> GetAllTypes(TypeDefinition type)
-		{
-			yield return type;
-			foreach (var nested in type.NestedTypes)
-			{
-				foreach (var t in GetAllTypes(nested))
-				{
-					yield return t;
-				}
 			}
 		}
 
@@ -254,10 +271,9 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public override bool HasResults =>
 			_typesToProperties?.GetTypeProperties().Any(kvp => kvp.Value.Count > 0) ?? false;
 
-		public override void Analyze(IEnumerable<AssemblyDefinition> assemblies)
+		public override void Analyze(IReadOnlyList<TypeDefinition> allTypes, TypeDefinitionCache typeCache)
 		{
-			var bindableTypes = FindBindableTypes(assemblies);
-			var typeCache = new TypeDefinitionCache();
+			var bindableTypes = FindBindableTypes(allTypes);
 			_typesToProperties = FindReferencedPropertyTypes(bindableTypes, typeCache);
 
 			var typesWithProperties = _typesToProperties.GetTypeProperties().Count(kvp => kvp.Value.Count > 0);
@@ -275,19 +291,16 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			GenerateLinkerDescriptor(_typesToProperties, outputPath);
 		}
 
-		private List<TypeDefinition> FindBindableTypes(IEnumerable<AssemblyDefinition> assemblies)
+		private List<TypeDefinition> FindBindableTypes(IReadOnlyList<TypeDefinition> allTypes)
 		{
 			var bindableTypes = new List<TypeDefinition>();
 
-			foreach (var assembly in assemblies)
+			foreach (var type in allTypes)
 			{
-				foreach (var type in assembly.MainModule.Types.SelectMany(GetAllTypes))
+				if (HasBindableAttribute(type))
 				{
-					if (HasBindableAttribute(type))
-					{
-						bindableTypes.Add(type);
-						Log.LogMessage(DefaultLogMessageLevel, $"Found bindable type: {type.FullName}");
-					}
+					bindableTypes.Add(type);
+					Log.LogMessage(DefaultLogMessageLevel, $"Found bindable type: {type.FullName}");
 				}
 			}
 
@@ -498,9 +511,12 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		public override bool HasResults => (_typeMethods?.Count ?? 0) > 0;
 
-		public override void Analyze(IEnumerable<AssemblyDefinition> assemblies)
+		public override void Analyze(IReadOnlyList<TypeDefinition> allTypes, TypeDefinitionCache typeCache)
 		{
-			_typeMethods = FindAttachedPropertyMethods(assemblies);
+			// typeCache is not needed here: attached-property discovery inspects type members
+			// directly (fields, properties, methods) and never needs to resolve a TypeReference.
+			// The parameter is accepted for a uniform Analyze signature across all generators.
+			_typeMethods = FindAttachedPropertyMethods(allTypes);
 			Log.LogMessage(DefaultLogMessageLevel, $"Found {_typeMethods.Values.Sum(v => v.Count)} attached property methods to preserve in {_typeMethods.Count} types.");
 		}
 
@@ -515,19 +531,16 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			GenerateLinkerDescriptor(_typeMethods, outputPath);
 		}
 
-		private Dictionary<TypeDefinition, List<string>> FindAttachedPropertyMethods(IEnumerable<AssemblyDefinition> assemblies)
+		private Dictionary<TypeDefinition, List<string>> FindAttachedPropertyMethods(IReadOnlyList<TypeDefinition> allTypes)
 		{
 			var result = new Dictionary<TypeDefinition, List<string>>();
 
-			foreach (var assembly in assemblies)
+			foreach (var type in allTypes)
 			{
-				foreach (var type in assembly.MainModule.Types.SelectMany(GetAllTypes))
+				var methods = FindGetSetMethodsForType(type);
+				if (methods.Count > 0)
 				{
-					var methods = FindGetSetMethodsForType(type);
-					if (methods.Count > 0)
-					{
-						result[type] = methods;
-					}
+					result[type] = methods;
 				}
 			}
 
