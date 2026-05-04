@@ -47,6 +47,14 @@ public partial class CompositionAnimation
 		Vector3Parameters[key] = value;
 	}
 
+	public void ClearAllParameters()
+	{
+		ReferenceParameters.Clear();
+		ScalarParameters.Clear();
+		Vector2Parameters.Clear();
+		Vector3Parameters.Clear();
+	}
+
 	public string Target
 	{
 		get => _target;
