@@ -78,7 +78,7 @@
 
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
 
-	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+	<Import Project="..\UITests.Shared\UITests.Shared.props" />
 
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" />
 

@@ -1,5 +1,5 @@
 ---
-description: Create a SamplesApp sample page with correct registration, theming, and attributes. Use when adding UI samples for controls.
+description: Create a SamplesApp sample page with correct theming and attributes. Use when adding UI samples for controls.
 ---
 
 ## User Input
@@ -14,9 +14,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Overview
 
-You are executing the **Add Sample Skill**. This skill creates a SamplesApp sample page with correct XAML, code-behind, attribute setup, and — critically — the manual registration in `UITests.Shared.projitems` that is required because `EnableAutomaticXamlPageInclusion` is `false`.
-
-**The #1 silent failure when adding samples is forgetting the projitems registration.** This skill ensures it never happens.
+You are executing the **Add Sample Skill**. This skill creates a SamplesApp sample page with correct XAML, code-behind, and attribute setup. Files dropped under `src/SamplesApp/UITests.Shared/` are auto-discovered by glob — no manual project registration is required.
 
 ---
 
@@ -98,39 +96,14 @@ public sealed partial class ControlName_Scenario : Page
 | `IgnoreInSnapshotTests` | `bool` | Skip in automated screenshot tests |
 | `ViewModelType` | `Type` | Auto-set as DataContext |
 
-### Phase 3: Register in projitems (CRITICAL)
-
-**File:** `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
-
-This step is **MANDATORY** — `EnableAutomaticXamlPageInclusion` is `false`, so without manual registration the sample will silently not appear.
-
-1. Add `<Page>` entry in the appropriate `<ItemGroup>`:
-   ```xml
-   <Page Include="$(MSBuildThisFileDirectory)FolderName\SampleName.xaml">
-     <SubType>Designer</SubType>
-     <Generator>MSBuild:Compile</Generator>
-   </Page>
-   ```
-
-2. Add `<Compile>` entry in the appropriate `<ItemGroup>`:
-   ```xml
-   <Compile Include="$(MSBuildThisFileDirectory)FolderName\SampleName.xaml.cs">
-     <DependentUpon>SampleName.xaml</DependentUpon>
-   </Compile>
-   ```
-
-3. **Insert in alphabetical order** within the existing `<ItemGroup>` entries for the same folder.
-
-4. **Verify** the entries are correctly placed by checking nearby entries in the projitems file.
-
-### Phase 4: Format XAML
+### Phase 3: Format XAML
 
 Run XamlStyler on the new XAML file to ensure it matches the project's formatting standards:
 ```bash
 dotnet xstyler -f src/SamplesApp/UITests.Shared/FolderName/SampleName.xaml
 ```
 
-### Phase 5: Verification
+### Phase 4: Verification
 
 1. **Build** to verify compilation:
    ```bash
@@ -145,13 +118,12 @@ dotnet xstyler -f src/SamplesApp/UITests.Shared/FolderName/SampleName.xaml
 ## Key File References
 
 - **Sample attribute source:** `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Views/Controls/SampleAttribute.cs`
-- **Registration file:** `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
+- **Sample folder:** `src/SamplesApp/UITests.Shared/` (XAML and `.cs` are picked up by glob)
 - **Example samples:** Browse `src/SamplesApp/UITests.Shared/Windows_UI_Xaml_Controls/` for patterns
 
 ## Common Mistakes to Avoid
 
-1. **Forgetting projitems registration** — the sample will compile but not appear in the browser
-2. **Hardcoding Background colors** — use `{ThemeResource ApplicationPageBackgroundThemeBrush}` instead
-3. **Wrong namespace in code-behind** — must match the folder structure under `UITests.`
-4. **Missing `InitializeComponent()` call** — XAML won't be loaded
-5. **Wrong `x:Class` in XAML** — must match the fully qualified class name in code-behind
+1. **Hardcoding Background colors** — use `{ThemeResource ApplicationPageBackgroundThemeBrush}` instead
+2. **Wrong namespace in code-behind** — must match the folder structure under `UITests.`
+3. **Missing `InitializeComponent()` call** — XAML won't be loaded
+4. **Wrong `x:Class` in XAML** — must match the fully qualified class name in code-behind

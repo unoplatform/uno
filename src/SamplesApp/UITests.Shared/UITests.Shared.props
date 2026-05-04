@@ -1,0 +1,60 @@
+<Project>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)**\*.xaml"
+          Exclude="$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+
+    <Compile Include="$(MSBuildThisFileDirectory)**\*.xaml.cs"
+             Exclude="$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)**\*.cs"
+             Exclude="$(MSBuildThisFileDirectory)**\*.xaml.cs;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**" />
+
+    <Content Include="$(MSBuildThisFileDirectory)Assets\**\*.*" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\**\*.json" />
+    <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml" />
+    <Content Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif" />
+
+    <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\**\*.resw" />
+
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\LockScreen.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\Wallpaper.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\MsAppDataUriTest.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\mslug.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Lottie\loading.json" />
+  </ItemGroup>
+
+  <!-- Files in Assets/ and Lottie/ that are registered as EmbeddedResource above must not also be Content. -->
+  <ItemGroup>
+    <Content Remove="$(MSBuildThisFileDirectory)Assets\mslug.png" />
+    <Content Remove="$(MSBuildThisFileDirectory)Lottie\loading.json" />
+  </ItemGroup>
+
+  <!-- Asset registered as None (intentionally not deployed). -->
+  <ItemGroup>
+    <Content Remove="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
+  </ItemGroup>
+
+  <!-- Incomplete/dead samples that don't compile (preserved on disk for reference). -->
+  <ItemGroup>
+    <Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\ItemsView_Nested.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\ItemsView_Nested.xaml.cs" />
+
+    <Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton_Modes.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton_Modes.xaml.cs" />
+
+    <Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml\EventTrigger_Loaded.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml\EventTrigger_Loaded.xaml.cs" />
+
+    <Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FontFallback.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FontFallback.xaml.cs" />
+
+    <Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\ScrollViewTestHooksHelper.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)ItemExclusions.props" />
+</Project>
