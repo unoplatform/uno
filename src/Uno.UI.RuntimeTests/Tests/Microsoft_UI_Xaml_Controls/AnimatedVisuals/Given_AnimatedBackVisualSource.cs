@@ -456,6 +456,66 @@ public class Given_AnimatedBackVisualSource
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_AnimatedIcon_State_Changes_Plays_Animation()
+	{
+		// Regression coverage: AnimatedIcon previously hard-coded the source visual to null on
+		// Uno (so the FallbackIconSource was always used), and m_progressPropertySet had no
+		// owner so its keyframe animation never ticked. Both bugs combined to make the
+		// CheckBox / Expander tick / chevron snap instantly to their destination state.
+		var icon = new AnimatedIcon
+		{
+			Width = 48,
+			Height = 48,
+			Source = new AnimatedAcceptVisualSource(),
+		};
+		icon.SetValue(AnimatedIcon.StateProperty, "NormalOff");
+
+		var border = new Border
+		{
+			Width = 48,
+			Height = 48,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Child = icon,
+		};
+
+		await UITestHelper.Load(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Trigger a state change. The icon should drive Progress over time toward the
+		// NormalOn marker rather than snapping there in a single tick.
+		icon.SetValue(AnimatedIcon.StateProperty, "NormalOn");
+
+		// One WaitForIdle gives the compositor a single tick — at this point the keyframe
+		// animation should have started but should NOT have completed yet (durations are
+		// usually 100-300ms for Lottie state transitions).
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Now wait long enough for the animation to actually finish.
+		await Task.Delay(TimeSpan.FromMilliseconds(800));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var screenshot = await UITestHelper.ScreenShot(border);
+
+		// At NormalOn the checkmark should be drawn — at least some non-white pixels in the
+		// central region.
+		bool foundMark = false;
+		for (int x = 8; x < 40 && !foundMark; x++)
+		{
+			for (int y = 8; y < 40 && !foundMark; y++)
+			{
+				var pixel = screenshot.GetPixel(x, y);
+				if (pixel.R < 200 || pixel.G < 200 || pixel.B < 200)
+				{
+					foundMark = true;
+				}
+			}
+		}
+
+		Assert.IsTrue(foundMark, "AnimatedIcon's NormalOn state should leave the checkmark drawn.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_ScopedBatch_Waits_For_Animation()
 	{
 		// Regression: CompositionScopedBatch.End() previously fired Completed synchronously,
