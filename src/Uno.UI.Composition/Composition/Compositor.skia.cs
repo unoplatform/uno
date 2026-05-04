@@ -35,6 +35,14 @@ public partial class Compositor
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
+		// Feed the animation into the innermost active scoped batch so its Completed event waits
+		// for the animation to actually stop instead of firing synchronously when batch.End() is
+		// called.
+		if (animation is KeyFrameAnimation keyFrameAnimation && _scopedBatchStack.Count > 0)
+		{
+			_scopedBatchStack.Peek().TrackAnimation(keyFrameAnimation);
+		}
+
 		if (!animation.IsTrackedByCompositor)
 		{
 			return;

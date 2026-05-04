@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using Uno;
 using Windows.Foundation;
 
@@ -8,12 +9,21 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionScopedBatch : global::Microsoft.UI.Composition.CompositionObject
 	{
+		// Tracks the keyframe animations that were started while this batch was active. Completed
+		// fires only after all of them have finished (or the batch was cleared by End() with no
+		// pending work).
+		private readonly HashSet<KeyFrameAnimation> _pendingAnimations = new();
+		private readonly EventHandler _onAnimationStopped;
+		private bool _hasPending;
+
 		internal CompositionScopedBatch() => throw new NotSupportedException("Use the ctor with Compositor");
 
 		internal CompositionScopedBatch(Compositor compositor, CompositionBatchTypes batchType) : base(compositor)
 		{
 			BatchType = batchType;
 			IsActive = true;
+			_onAnimationStopped = OnTrackedAnimationStopped;
+			compositor.RegisterScopedBatch(this);
 		}
 
 		public bool IsActive { get; private set; }
@@ -22,10 +32,39 @@ namespace Microsoft.UI.Composition
 
 		internal CompositionBatchTypes BatchType { get; }
 
-		// Uno doesn't currently track individual composition animations grouped into a scoped batch,
-		// so we approximate the WinUI semantics by raising Completed synchronously when End() is called
-		// for non-infinite batches. This is sufficient for AnimatedVisualPlayer's PlayAsync flow which
-		// uses the batch as a fence to know when an animation has finished.
+		// Called by Compositor.RegisterAnimation when an animation is started while this batch is the
+		// active one. Tracks the animation so we can fire Completed when it stops.
+		internal void TrackAnimation(KeyFrameAnimation animation)
+		{
+			if (IsEnded || !IsActive)
+			{
+				return;
+			}
+
+			if (_pendingAnimations.Add(animation))
+			{
+				_hasPending = true;
+				animation.Stopped += _onAnimationStopped;
+			}
+		}
+
+		private void OnTrackedAnimationStopped(object? sender, EventArgs e)
+		{
+			if (sender is KeyFrameAnimation animation)
+			{
+				animation.Stopped -= _onAnimationStopped;
+				_pendingAnimations.Remove(animation);
+			}
+
+			if (IsEnded && _pendingAnimations.Count == 0)
+			{
+				Completed?.Invoke(this, new CompositionBatchCompletedEventArgs());
+			}
+		}
+
+		// End() means "no more animations will be added". The Completed event fires once all
+		// already-tracked animations have stopped. If no animations were tracked (e.g. a batch
+		// wrapping only an InsertScalar), fire Completed immediately so callers don't deadlock.
 		public void End()
 		{
 			if (IsEnded)
@@ -34,8 +73,15 @@ namespace Microsoft.UI.Composition
 			}
 
 			IsEnded = true;
+			IsActive = false;
+			Compositor.UnregisterScopedBatch(this);
 
-			if ((BatchType & CompositionBatchTypes.InfiniteAnimation) == 0)
+			if ((BatchType & CompositionBatchTypes.InfiniteAnimation) != 0)
+			{
+				return;
+			}
+
+			if (!_hasPending || _pendingAnimations.Count == 0)
 			{
 				Completed?.Invoke(this, new CompositionBatchCompletedEventArgs());
 			}
@@ -44,17 +90,6 @@ namespace Microsoft.UI.Composition
 		public void Resume() => IsActive = true;
 
 		public void Suspend() => IsActive = false;
-
-		internal void CompleteByObserver()
-		{
-			if (IsEnded)
-			{
-				return;
-			}
-
-			IsEnded = true;
-			Completed?.Invoke(this, new CompositionBatchCompletedEventArgs());
-		}
 
 		public event TypedEventHandler<object, global::Microsoft.UI.Composition.CompositionBatchCompletedEventArgs>? Completed;
 	}
