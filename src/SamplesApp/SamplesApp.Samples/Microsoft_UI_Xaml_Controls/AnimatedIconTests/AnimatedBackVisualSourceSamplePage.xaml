@@ -37,8 +37,7 @@
                                            Height="24"
                                            AutoPlay="False"
                                            Stretch="Uniform">
-                <animatedvisuals:AnimatedBackVisualSource x:Name="BackSource"
-                                                          Foreground="Black" />
+                <animatedvisuals:AnimatedBackVisualSource x:Name="BackSource" />
             </controls:AnimatedVisualPlayer>
         </Button>
 
