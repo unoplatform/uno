@@ -7,7 +7,7 @@ namespace Microsoft.UI.Composition;
 internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 {
 	private object? _result;
-	private ExpressionAnimation? _expressionAnimation;
+	private CompositionAnimation? _expressionAnimation;
 
 	public ExpressionAnimationToken Identifier { get; }
 
@@ -16,7 +16,7 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 		Identifier = identifier;
 	}
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
 		if (_expressionAnimation is not null)
 		{
@@ -29,7 +29,12 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 
 		if (expressionAnimation.ReferenceParameters.TryGetValue(identifierValue, out var value))
 		{
-			value.AddContext(expressionAnimation, null);
+			// Only ExpressionAnimation receives context propagation; key-frame animations re-evaluate
+			// the expression on demand, so we don't need to register for property-changed callbacks.
+			if (expressionAnimation is ExpressionAnimation)
+			{
+				value.AddContext(expressionAnimation, null);
+			}
 			_result = value;
 		}
 		else if (expressionAnimation.ScalarParameters.TryGetValue(identifierValue, out var scalarValue))
@@ -66,9 +71,9 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 
 	public override void Dispose()
 	{
-		if (_expressionAnimation is not null && _result is not null)
+		if (_expressionAnimation is ExpressionAnimation expressionAnimation && _result is not null)
 		{
-			(_result as CompositionObject)?.RemoveContext(_expressionAnimation, null);
+			(_result as CompositionObject)?.RemoveContext(expressionAnimation, null);
 		}
 
 		_result = null;

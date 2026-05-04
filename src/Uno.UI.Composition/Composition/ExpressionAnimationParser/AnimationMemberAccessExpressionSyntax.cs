@@ -16,7 +16,7 @@ internal class AnimationMemberAccessExpressionSyntax : AnimationExpressionSyntax
 	public AnimationExpressionSyntax Expression { get; }
 	public ExpressionAnimationToken Identifier { get; }
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
 		var leftValue = Expression.Evaluate(expressionAnimation);
 		var propertyName = (string)Identifier.Value;
