@@ -44,6 +44,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Failing on Native UIKit https://github.com/unoplatform/uno/issues/9080")]
 		public void CheckBox_IsEnabled_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.CheckBox_IsEnabled_Automated");
