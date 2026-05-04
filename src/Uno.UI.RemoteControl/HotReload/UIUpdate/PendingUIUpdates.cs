@@ -123,7 +123,7 @@ internal static class PendingUIUpdates
 			? "(none)"
 			: string.Join(", ", _activeHandles.Select(h => h.ToString()));
 
-	/// <summary>Increments the pause counter for every phase in <paramref name="phases"/>.</summary>
+	/// <summary>Increments the pause counter for every phase in phases.</summary>
 	internal static void Acquire(HotReloadUIPauseHandle handle)
 	{
 		var phases = handle.Phases;
@@ -198,7 +198,7 @@ internal static class PendingUIUpdates
 	}
 
 	/// <summary>
-	/// Decrements the pause counter for every phase in <paramref name="phases"/>.
+	/// Decrements the pause counter for every phase in phases.
 	/// When <em>all</em> phase counters reach zero, raises <see cref="DrainRequested"/>
 	/// with snapshots of the pending type lists.
 	/// </summary>
