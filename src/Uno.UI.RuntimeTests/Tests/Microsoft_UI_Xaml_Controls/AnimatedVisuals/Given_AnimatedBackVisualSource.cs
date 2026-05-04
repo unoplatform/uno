@@ -456,6 +456,97 @@ public class Given_AnimatedBackVisualSource
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Settings_Source_Plays_Without_Crash()
+	{
+		// Regression: AnimatedSettingsVisualSource animates RotationAngleInDegrees on a sprite
+		// shape, which CompositionShape.SetAnimatableProperty didn't handle and was forwarded
+		// to base SetAnimatableProperty -> TryUpdateFromProperties -> threw "Unable to set
+		// property 'RotationAngleInDegrees'" the moment the icon was hosted.
+		var player = new AnimatedVisualPlayer
+		{
+			Width = 48,
+			Height = 48,
+			AutoPlay = false,
+			Source = new AnimatedSettingsVisualSource(),
+		};
+		var border = new Border
+		{
+			Width = 48,
+			Height = 48,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Child = player,
+		};
+
+		await UITestHelper.Load(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(player.IsAnimatedVisualLoaded, "Settings source should load.");
+
+		// Drive a progress change to fan out into RotationAngleInDegrees animations.
+		player.SetProgress(0.5);
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PlayAsync_From_Button_Click()
+	{
+		// Mirrors the AnimatedBackVisualSourceSamplePage button: an AnimatedVisualPlayer hosted
+		// inside a Button whose Click handler calls PlayAsync twice. Validates that the bound
+		// progress chain still drives the icon when the player is nested in a control.
+		var player = new AnimatedVisualPlayer
+		{
+			Width = 24,
+			Height = 24,
+			AutoPlay = false,
+			Stretch = Stretch.Uniform,
+			Source = new AnimatedBackVisualSource(),
+		};
+		var button = new Microsoft.UI.Xaml.Controls.Button
+		{
+			Width = 48,
+			Height = 48,
+			Content = player,
+			Padding = new Thickness(0),
+			BorderThickness = new Thickness(0),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+
+		await UITestHelper.Load(button);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsTrue(player.IsAnimatedVisualLoaded, "Player nested in Button should load.");
+
+		var markers = ((AnimatedBackVisualSource)player.Source).Markers;
+
+		var play1 = player.PlayAsync(markers["NormalToPressed_Start"], markers["NormalToPressed_End"], false).AsTask();
+		var step1 = await Task.WhenAny(play1, Task.Delay(TimeSpan.FromSeconds(5)));
+		Assert.AreSame(play1, step1, "Normal→Pressed PlayAsync should complete within 5 seconds when nested in a Button.");
+
+		var play2 = player.PlayAsync(markers["PressedToNormal_Start"], markers["PressedToNormal_End"], false).AsTask();
+		var step2 = await Task.WhenAny(play2, Task.Delay(TimeSpan.FromSeconds(5)));
+		Assert.AreSame(play2, step2, "Pressed→Normal PlayAsync should complete within 5 seconds when nested in a Button.");
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var screenshot = await UITestHelper.ScreenShot(button);
+		bool foundBlack = false;
+		for (int x = 0; x < (int)button.ActualWidth && !foundBlack; x++)
+		{
+			for (int y = 0; y < (int)button.ActualHeight && !foundBlack; y++)
+			{
+				var pixel = screenshot.GetPixel(x, y);
+				if (pixel.R < 100 && pixel.G < 100 && pixel.B < 100)
+				{
+					foundBlack = true;
+				}
+			}
+		}
+
+		Assert.IsTrue(foundBlack, "Icon should remain visible after the simulated click sequence.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Source_Switched_While_Playing()
 	{
 		// Regression: switching to a different IAnimatedVisualSource while a play was in flight
