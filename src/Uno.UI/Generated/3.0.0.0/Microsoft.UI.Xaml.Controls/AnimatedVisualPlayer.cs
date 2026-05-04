@@ -62,16 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsAnimatedVisualLoaded
 		// Skipping already declared property IsPlaying
 		// Skipping already declared property PlaybackRate
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionObject ProgressObject
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer", "ProgressObject");
-			}
-		}
-#endif
+		// Skipping already declared property ProgressObject
 		// Skipping already declared property Source
 		// Skipping already declared property Stretch
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.AnimatedVisualPlayer()
