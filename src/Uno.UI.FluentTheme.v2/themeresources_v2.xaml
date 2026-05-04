@@ -16022,7 +16022,6 @@
                 </VisualState>
                 <VisualState x:Name="Checked">
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForeground}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16045,7 +16044,6 @@
                 </VisualState>
                 <VisualState x:Name="CheckedPointerOver">
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16068,7 +16066,6 @@
                 </VisualState>
                 <VisualState x:Name="CheckedPressed">
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16091,7 +16088,6 @@
                 </VisualState>
                 <VisualState x:Name="CheckedDisabled">
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ToggleButtonGrid" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderDisabledBorderBrush}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16125,9 +16121,6 @@
                 <controls:AnimatedIcon.FallbackIconSource>
                   <controls:FontIconSource Glyph="{StaticResource ExpanderChevronDownGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="12" IsTextScaleFactorEnabled="False" />
                 </controls:AnimatedIcon.FallbackIconSource>
-                <controls:AnimatedIcon.RenderTransform>
-                  <RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
-                </controls:AnimatedIcon.RenderTransform>
               </controls:AnimatedIcon>
             </Border>
           </Grid>
@@ -16233,7 +16226,6 @@
                 </VisualState>
                 <VisualState x:Name="Checked">
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForeground}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16256,7 +16248,6 @@
                 </VisualState>
                 <VisualState x:Name="CheckedPointerOver">
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16279,7 +16270,6 @@
                 </VisualState>
                 <VisualState x:Name="CheckedPressed">
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16302,7 +16292,6 @@
                 </VisualState>
                 <VisualState x:Name="CheckedDisabled">
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ToggleButtonGrid" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderDisabledBorderBrush}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16336,9 +16325,6 @@
                 <controls:AnimatedIcon.FallbackIconSource>
                   <controls:FontIconSource Glyph="{StaticResource ExpanderChevronUpGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="12" IsTextScaleFactorEnabled="False" />
                 </controls:AnimatedIcon.FallbackIconSource>
-                <controls:AnimatedIcon.RenderTransform>
-                  <RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
-                </controls:AnimatedIcon.RenderTransform>
               </controls:AnimatedIcon>
             </Border>
           </Grid>
