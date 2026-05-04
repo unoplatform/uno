@@ -209,8 +209,7 @@ namespace Microsoft.UI.Xaml
 			global::Windows.UI.ViewManagement.UISettings.ObserveTextScaleFactorChanges();
 			global::Windows.UI.ViewManagement.UISettings.TextScaleFactorChangedInternal += (_, _) =>
 			{
-				var uiSettings = new global::Windows.UI.ViewManagement.UISettings();
-				CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
+				CoreServices.Instance.UpdateFontScale(global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue());
 			};
 		}
 	}

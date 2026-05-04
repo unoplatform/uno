@@ -363,8 +363,7 @@ namespace Microsoft.UI.Xaml
 			SystemThemeHelper.RefreshSystemTheme();
 
 			// Update text scale factor from OS
-			var uiSettings = new global::Windows.UI.ViewManagement.UISettings();
-			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
+			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue());
 		}
 
 #pragma warning disable CS0618 // deprecated members

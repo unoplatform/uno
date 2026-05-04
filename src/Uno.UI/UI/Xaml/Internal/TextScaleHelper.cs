@@ -58,6 +58,6 @@ internal static class TextScaleHelper
 			scale = max;
 		}
 
-		return scale;
+		return Math.Max(scale, 1.0);
 	}
 }

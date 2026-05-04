@@ -272,8 +272,7 @@ public partial class Window : UIWindow
 			scalableViews.ForEach(v => v.RefreshFont());
 
 			// Update text scale factor from OS
-			var uiSettings = new global::Windows.UI.ViewManagement.UISettings();
-			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
+			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue());
 		}
 		catch (Exception ex)
 		{

@@ -7,7 +7,9 @@ public partial class UISettings
 {
 	public double TextScaleFactor
 	{
-		get => UIFont.PreferredBody.PointSize / 17.0;
+		get => GetTextScaleFactorValue();
 	}
+
+	internal static double GetTextScaleFactorValue() => UIFont.PreferredBody.PointSize / 17.0;
 }
 #endif

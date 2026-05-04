@@ -212,6 +212,7 @@ namespace Windows.UI.ViewManagement
 		// UISettings.UIKit.cs, UISettings.skia.cs. Fallback for WASM/reference/unit tests:
 #if !__ANDROID__ && !__APPLE_UIKIT__ && !__SKIA__
 		public double TextScaleFactor => 1.0;
+		internal static double GetTextScaleFactorValue() => 1.0;
 #endif
 
 		[NotImplemented]

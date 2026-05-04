@@ -357,11 +357,11 @@ namespace Microsoft.UI.Xaml
 
 		private void InitializeTextScaling()
 		{
-			// Read the initial text scale factor from the platform
-			var initialSettings = new UISettings();
-			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(initialSettings.TextScaleFactor);
-
 			InitializeTextScalingPlatform();
+
+			// Subscribe first, then read the initial value so asynchronously discovered scales
+			// cannot be missed between initialization and observation setup.
+			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(UISettings.GetTextScaleFactorValue());
 		}
 
 		partial void InitializeTextScalingPlatform();

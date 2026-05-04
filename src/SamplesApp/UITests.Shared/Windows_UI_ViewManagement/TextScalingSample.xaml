@@ -1,44 +1,97 @@
-<Page
-	x:Class="UITests.Windows_UI_ViewManagement.TextScalingSample"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page
+    x:Class="UITests.Windows_UI_ViewManagement.TextScalingSample"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<ScrollViewer>
-		<StackPanel Spacing="12" Padding="20">
-			<TextBlock Text="Text Scaling Sample" FontSize="24" FontWeight="Bold" />
+    <ScrollViewer>
+        <StackPanel Padding="20" Spacing="12">
+            <TextBlock
+                FontSize="24"
+                FontWeight="Bold"
+                Text="Text Scaling Sample" />
 
-			<StackPanel Orientation="Horizontal" Spacing="8">
-				<TextBlock Text="Current TextScaleFactor:" VerticalAlignment="Center" />
-				<TextBlock x:Name="ScaleFactorText" FontWeight="SemiBold" VerticalAlignment="Center" />
-				<Button Content="Refresh" Click="OnRefreshClick" />
-			</StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock VerticalAlignment="Center" Text="Current TextScaleFactor:" />
+                <TextBlock
+                    x:Name="ScaleFactorText"
+                    VerticalAlignment="Center"
+                    FontWeight="SemiBold" />
+                <Button Click="OnRefreshClick" Content="Refresh" />
+            </StackPanel>
 
-			<StackPanel Orientation="Horizontal" Spacing="8">
-				<TextBlock Text="IsTextScaleFactorEnabled:" VerticalAlignment="Center" />
-				<ToggleSwitch x:Name="ScaleToggle" IsOn="True" Toggled="OnScaleToggled" />
-			</StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock VerticalAlignment="Center" Text="IsTextScaleFactorEnabled:" />
+                <ToggleSwitch
+                    x:Name="ScaleToggle"
+                    IsOn="True"
+                    Toggled="OnScaleToggled" />
+            </StackPanel>
 
-			<TextBlock Text="Scaled Text (IsTextScaleFactorEnabled=True)" FontSize="16" FontWeight="SemiBold" Margin="0,12,0,0" />
+            <TextBlock
+                Margin="0,12,0,0"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Scaled Text (IsTextScaleFactorEnabled=True)" />
 
-			<TextBlock x:Name="ScaledText8" Text="Font Size 8 - The quick brown fox" FontSize="8" />
-			<TextBlock x:Name="ScaledText10" Text="Font Size 10 - The quick brown fox" FontSize="10" />
-			<TextBlock x:Name="ScaledText12" Text="Font Size 12 - The quick brown fox" FontSize="12" />
-			<TextBlock x:Name="ScaledText14" Text="Font Size 14 - The quick brown fox (default)" FontSize="14" />
-			<TextBlock x:Name="ScaledText16" Text="Font Size 16 - The quick brown fox" FontSize="16" />
-			<TextBlock x:Name="ScaledText20" Text="Font Size 20 - The quick brown fox" FontSize="20" />
-			<TextBlock x:Name="ScaledText28" Text="Font Size 28 - The quick brown fox" FontSize="28" />
-			<TextBlock x:Name="ScaledText36" Text="Font Size 36 - The quick brown fox" FontSize="36" />
+            <TextBlock
+                x:Name="ScaledText8"
+                FontSize="8"
+                Text="Font Size 8 - The quick brown fox" />
+            <TextBlock
+                x:Name="ScaledText10"
+                FontSize="10"
+                Text="Font Size 10 - The quick brown fox" />
+            <TextBlock
+                x:Name="ScaledText12"
+                FontSize="12"
+                Text="Font Size 12 - The quick brown fox" />
+            <TextBlock
+                x:Name="ScaledText14"
+                FontSize="14"
+                Text="Font Size 14 - The quick brown fox (default)" />
+            <TextBlock
+                x:Name="ScaledText16"
+                FontSize="16"
+                Text="Font Size 16 - The quick brown fox" />
+            <TextBlock
+                x:Name="ScaledText20"
+                FontSize="20"
+                Text="Font Size 20 - The quick brown fox" />
+            <TextBlock
+                x:Name="ScaledText28"
+                FontSize="28"
+                Text="Font Size 28 - The quick brown fox" />
+            <TextBlock
+                x:Name="ScaledText36"
+                FontSize="36"
+                Text="Font Size 36 - The quick brown fox" />
 
-			<TextBlock Text="Unscaled Text (IsTextScaleFactorEnabled=False)" FontSize="16" FontWeight="SemiBold" Margin="0,12,0,0" />
+            <TextBlock
+                Margin="0,12,0,0"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Unscaled Text (IsTextScaleFactorEnabled=False)" />
 
-			<TextBlock Text="Font Size 8 - The quick brown fox" FontSize="8" IsTextScaleFactorEnabled="False" />
-			<TextBlock Text="Font Size 14 - The quick brown fox (default)" FontSize="14" IsTextScaleFactorEnabled="False" />
-			<TextBlock Text="Font Size 20 - The quick brown fox" FontSize="20" IsTextScaleFactorEnabled="False" />
-			<TextBlock Text="Font Size 36 - The quick brown fox" FontSize="36" IsTextScaleFactorEnabled="False" />
-		</StackPanel>
-	</ScrollViewer>
+            <TextBlock
+                FontSize="8"
+                IsTextScaleFactorEnabled="False"
+                Text="Font Size 8 - The quick brown fox" />
+            <TextBlock
+                FontSize="14"
+                IsTextScaleFactorEnabled="False"
+                Text="Font Size 14 - The quick brown fox (default)" />
+            <TextBlock
+                FontSize="20"
+                IsTextScaleFactorEnabled="False"
+                Text="Font Size 20 - The quick brown fox" />
+            <TextBlock
+                FontSize="36"
+                IsTextScaleFactorEnabled="False"
+                Text="Font Size 36 - The quick brown fox" />
+        </StackPanel>
+    </ScrollViewer>
 </Page>

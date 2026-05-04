@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Tmds.DBus.Protocol;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.WinUI.Runtime.Skia.X11.DBus;
 using Windows.UI.ViewManagement;
 
@@ -15,18 +16,38 @@ internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
 
 	public event EventHandler? TextScaleFactorChanged;
 
+	private DBusConnection? _connection;
 	private double _currentScale = 1.0;
+	private double CurrentScale
+	{
+		get => _currentScale;
+		set
+		{
+			if (NativeDispatcher.Main.HasThreadAccess)
+			{
+				if (!value.Equals(_currentScale))
+				{
+					_currentScale = value;
+					TextScaleFactorChanged?.Invoke(this, EventArgs.Empty);
+				}
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(() => CurrentScale = value);
+			}
+		}
+	}
 
-	public double GetTextScaleFactor() => _currentScale;
+	public double GetTextScaleFactor() => CurrentScale;
 
 	public static X11TextScaleFactorExtension Instance { get; } = new();
 
 	private X11TextScaleFactorExtension()
 	{
-		_ = ReadInitialScale().ConfigureAwait(false);
+		_ = Initialize().ConfigureAwait(false);
 	}
 
-	private async Task ReadInitialScale()
+	private async Task Initialize()
 	{
 		try
 		{
@@ -36,41 +57,49 @@ internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
 				return;
 			}
 
-			double newScale;
-			using (var connection = new DBusConnection(sessionsAddressBus))
+			_connection = new DBusConnection(sessionsAddressBus);
+			await _connection.ConnectAsync();
+
+			var desktopService = new DBusService(_connection, Service);
+			var settings = desktopService.CreateSettings(ObjectPath);
+
+			var version = await settings.GetVersionAsync();
+			if (version != 2)
 			{
-				await connection.ConnectAsync();
-
-				var desktopService = new DBusService(connection, Service);
-				var settings = desktopService.CreateSettings(ObjectPath);
-
-				var version = await settings.GetVersionAsync();
-				if (version != 2)
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
+					this.Log().Error($"Text scale detection is only implemented for version 2 of the Settings portal, but version {version} was found");
+				}
+				return;
+			}
+
+			var result = await settings.ReadOneAsync("org.gnome.desktop.interface", "text-scaling-factor");
+			CurrentScale = result.GetDouble();
+
+			// Intentionally keep the connection/watch alive for the lifetime of the app.
+			await settings.WatchSettingChangedAsync((exception, tuple) =>
+			{
+				if (exception is not null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"{nameof(settings.WatchSettingChangedAsync)} threw an exception", exception);
+					}
 					return;
 				}
 
-				var result = await settings.ReadOneAsync("org.gnome.desktop.interface", "text-scaling-factor");
-				newScale = result.GetDouble();
-			}
-
-			if (!newScale.Equals(_currentScale))
-			{
-				_currentScale = newScale;
-				RaiseTextScaleFactorChanged();
-			}
+				if (tuple is { Namespace: "org.gnome.desktop.interface", Key: "text-scaling-factor" })
+				{
+					CurrentScale = tuple.Value.GetDouble();
+				}
+			});
 		}
 		catch (Exception e)
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Warn("Unable to read text-scaling-factor via DBus.", e);
+				this.Log().Error("Unable to observe text-scaling-factor via DBus.", e);
 			}
 		}
-	}
-
-	internal void RaiseTextScaleFactorChanged()
-	{
-		TextScaleFactorChanged?.Invoke(this, EventArgs.Empty);
 	}
 }

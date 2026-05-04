@@ -16,15 +16,15 @@ internal interface ITextScaleFactorExtension
 public partial class UISettings
 {
 	private static ITextScaleFactorExtension? _textScaleFactorExtension;
-	private static bool _textScaleFactorExtensionResolved;
 
-	public double TextScaleFactor => GetTextScaleFactorExtension()?.GetTextScaleFactor() ?? 1.0;
+	public double TextScaleFactor => GetTextScaleFactorValue();
+
+	internal static double GetTextScaleFactorValue() => GetTextScaleFactorExtension()?.GetTextScaleFactor() ?? 1.0;
 
 	private static ITextScaleFactorExtension? GetTextScaleFactorExtension()
 	{
-		if (!_textScaleFactorExtensionResolved)
+		if (_textScaleFactorExtension is null)
 		{
-			_textScaleFactorExtensionResolved = true;
 			ApiExtensibility.CreateInstance(typeof(UISettings), out _textScaleFactorExtension);
 		}
 

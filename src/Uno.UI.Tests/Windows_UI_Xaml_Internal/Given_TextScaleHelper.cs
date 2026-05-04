@@ -119,4 +119,23 @@ public class Given_TextScaleHelper
 			FeatureConfiguration.Font.TextScaleFactor = originalManual;
 		}
 	}
+
+	[TestMethod]
+	public void When_GetEffectiveFontScale_LessThanOne_Clamps_To_One()
+	{
+		var originalManual = FeatureConfiguration.Font.TextScaleFactor;
+		var originalMax = FeatureConfiguration.Font.MaximumTextScaleFactor;
+		try
+		{
+			FeatureConfiguration.Font.TextScaleFactor = null;
+			FeatureConfiguration.Font.MaximumTextScaleFactor = null;
+
+			Assert.AreEqual(1.0, TextScaleHelper.GetEffectiveFontScale(0.8));
+		}
+		finally
+		{
+			FeatureConfiguration.Font.TextScaleFactor = originalManual;
+			FeatureConfiguration.Font.MaximumTextScaleFactor = originalMax;
+		}
+	}
 }
