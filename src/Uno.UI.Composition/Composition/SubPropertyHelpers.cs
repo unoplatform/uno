@@ -11,17 +11,36 @@ internal static class SubPropertyHelpers
 {
 	internal static T ValidateValue<T>(object? value)
 	{
-		if (value is not T t)
+		if (value is T t)
 		{
-			if (Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture) is T changed)
-			{
-				return changed;
-			}
-
-			throw new ArgumentException($"Cannot convert value of type '{value?.GetType()}' to {typeof(T)}");
+			return t;
 		}
 
-		return t;
+		// Only attempt Convert.ChangeType for values that implement IConvertible — vector and
+		// matrix structs explicitly do not, and feeding them to Convert.ChangeType throws an
+		// InvalidCastException that surfaces as a confusing top-level handler crash. Non-matching
+		// values (typically a vector evaluation racing through a scalar property setter during a
+		// source switch) are dropped — the caller's property keeps its previous value.
+		if (value is IConvertible)
+		{
+			try
+			{
+				if (Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture) is T changed)
+				{
+					return changed;
+				}
+			}
+			catch (InvalidCastException)
+			{
+				// fall through to default
+			}
+			catch (FormatException)
+			{
+				// fall through to default
+			}
+		}
+
+		return default!;
 	}
 
 	internal static Color UpdateColor(ReadOnlySpan<char> subPropertyName, Color existingValue, object? propertyValue)

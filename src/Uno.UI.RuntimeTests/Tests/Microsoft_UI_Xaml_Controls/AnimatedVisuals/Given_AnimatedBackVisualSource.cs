@@ -456,6 +456,82 @@ public class Given_AnimatedBackVisualSource
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Source_Switched_While_Playing()
+	{
+		// Regression: switching to a different IAnimatedVisualSource while a play was in flight
+		// crashed because the outgoing source's bound expression chain was driven through one
+		// last propagation pass with cross-typed values.
+		var player = new AnimatedVisualPlayer
+		{
+			Width = 48,
+			Height = 48,
+			AutoPlay = false,
+			Source = new AnimatedBackVisualSource(),
+		};
+		var border = new Border
+		{
+			Width = 48,
+			Height = 48,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Child = player,
+		};
+
+		await UITestHelper.Load(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var markers = ((AnimatedBackVisualSource)player.Source).Markers;
+		_ = player.PlayAsync(markers["NormalToPressed_Start"], markers["NormalToPressed_End"], false);
+
+		// Swap to a different source mid-play. Must not throw.
+		player.Source = new AnimatedAcceptVisualSource();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(player.IsAnimatedVisualLoaded, "New source should be loaded after a mid-play switch.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Source_Switched_Many_Times()
+	{
+		// Regression: VisualCollection.RemoveAll raised a Reset NotifyCollectionChangedEventArgs
+		// with non-null changedItems, which violates the BCL contract and threw on the second
+		// switch. This test exercises the swap path multiple times.
+		var player = new AnimatedVisualPlayer
+		{
+			Width = 48,
+			Height = 48,
+			AutoPlay = false,
+			Source = new AnimatedBackVisualSource(),
+		};
+		var border = new Border
+		{
+			Width = 48,
+			Height = 48,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Child = player,
+		};
+
+		await UITestHelper.Load(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		IAnimatedVisualSource[] sources =
+		{
+			new AnimatedAcceptVisualSource(),
+			new AnimatedFindVisualSource(),
+			new AnimatedSettingsVisualSource(),
+			new AnimatedBackVisualSource(),
+		};
+
+		foreach (var source in sources)
+		{
+			player.Source = source;
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(player.IsAnimatedVisualLoaded, $"Switching to {source.GetType().Name} should load.");
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_ContainerShape_Renders_Children()
 	{
 		// Verify our newly-added CompositionContainerShape actually paints its child shapes.
