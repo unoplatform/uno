@@ -17,6 +17,11 @@ namespace Microsoft.UI.Composition
 		{
 		}
 
+		// The CompositionObject this property set was created for via the Properties getter.
+		// Property changes on this set need to bubble up to the owner so expression animations
+		// referencing the owner (e.g. `_.Progress`) re-evaluate when the property set changes.
+		internal CompositionObject? Owner { get; set; }
+
 		public void InsertColor(string propertyName, Color value) => SetValue(propertyName, value);
 
 		public void InsertMatrix3x2(string propertyName, Matrix3x2 value) => SetValue(propertyName, value);
@@ -77,12 +82,35 @@ namespace Microsoft.UI.Composition
 		private void SetValue<T>(string propertyName, T value)
 			where T : struct
 		{
-			if (_properties.TryGetValue(propertyName, out var existingValue) && !(existingValue is T _))
+			if (_properties.TryGetValue(propertyName, out var existingValue))
 			{
-				throw new ArgumentException("Cannot insert a different type for an existing property.");
+				if (existingValue is not T _)
+				{
+					throw new ArgumentException("Cannot insert a different type for an existing property.");
+				}
+
+				if (EqualityComparer<T>.Default.Equals((T)existingValue, value))
+				{
+					return;
+				}
 			}
 
 			_properties[propertyName] = value;
+
+			// Notify any expression animations and bindings that hold a reference to this property set
+			// so they re-evaluate against the new value. WinUI's CompositionPropertySet propagates
+			// changes via DComp dependency-tracking; we replicate it here through the Uno context system.
+			OnPropertyChanged(propertyName, false);
+
+			// Also notify the owning CompositionObject so expression animations that referenced
+			// that object (e.g. `_.Progress` where _ resolves to a Visual whose Properties contain
+			// `Progress`) get re-evaluated. Property access via `obj.Foo` is resolved through the
+			// owner's GetAnimatableProperty, so the expression's listener was registered on the
+			// owner rather than on this property set.
+			if (Owner is { } owner && owner != this)
+			{
+				owner.PropagateChanged();
+			}
 		}
 	}
 }
