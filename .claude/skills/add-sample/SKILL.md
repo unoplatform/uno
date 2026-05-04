@@ -14,7 +14,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Overview
 
-You are executing the **Add Sample Skill**. This skill creates a SamplesApp sample page with correct XAML, code-behind, and attribute setup. Files dropped under `src/SamplesApp/UITests.Shared/` are auto-discovered by glob — no manual project registration is required.
+You are executing the **Add Sample Skill**. This skill creates a SamplesApp sample page with correct XAML, code-behind, and attribute setup. Files dropped under `src/SamplesApp/SamplesApp.Samples/` are auto-discovered by glob — no manual project registration is required.
 
 ---
 
@@ -26,7 +26,7 @@ You are executing the **Add Sample Skill**. This skill creates a SamplesApp samp
    - **Control name**: The control being demonstrated (e.g., `Button`, `TreeView`, `NavigationView`)
    - **Scenario**: What the sample demonstrates (e.g., `BasicUsage`, `CustomStyle`, `DataBinding`)
 
-2. Find existing folder under `src/SamplesApp/UITests.Shared/` matching the control's namespace:
+2. Find existing folder under `src/SamplesApp/SamplesApp.Samples/` matching the control's namespace:
    - WinUI controls: `Microsoft_UI_Xaml_Controls/` (e.g., `Microsoft_UI_Xaml_Controls/NavigationViewTests/`)
    - XAML framework: `Windows_UI_Xaml_Controls/` (e.g., `Windows_UI_Xaml_Controls/Button/`)
    - Shapes: `Windows_UI_Xaml_Shapes/`
@@ -100,7 +100,7 @@ public sealed partial class ControlName_Scenario : Page
 
 Run XamlStyler on the new XAML file to ensure it matches the project's formatting standards:
 ```bash
-dotnet xstyler -f src/SamplesApp/UITests.Shared/FolderName/SampleName.xaml
+dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/FolderName/SampleName.xaml
 ```
 
 ### Phase 4: Verification
@@ -118,8 +118,8 @@ dotnet xstyler -f src/SamplesApp/UITests.Shared/FolderName/SampleName.xaml
 ## Key File References
 
 - **Sample attribute source:** `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Views/Controls/SampleAttribute.cs`
-- **Sample folder:** `src/SamplesApp/UITests.Shared/` (XAML and `.cs` are picked up by glob)
-- **Example samples:** Browse `src/SamplesApp/UITests.Shared/Windows_UI_Xaml_Controls/` for patterns
+- **Sample folder:** `src/SamplesApp/SamplesApp.Samples/` (XAML and `.cs` are picked up by glob)
+- **Example samples:** Browse `src/SamplesApp/SamplesApp.Samples/Windows_UI_Xaml_Controls/` for patterns
 
 ## Common Mistakes to Avoid
 

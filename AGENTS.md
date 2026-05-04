@@ -262,12 +262,12 @@ Run these after making changes:
 
 ### SamplesApp: Add XAML files
 
-When adding XAML samples to the `SamplesApp`, drop the files anywhere under `src/SamplesApp/UITests.Shared/` — they are auto-discovered by glob (no manual registration required).
+When adding XAML samples to the `SamplesApp`, drop the files anywhere under `src/SamplesApp/SamplesApp.Samples/` — they are auto-discovered by glob (no manual registration required).
 
 Sample creation checklist:
-1. Create your sample XAML and code-behind under an appropriate folder in `src/SamplesApp/UITests.Shared/`.
+1. Create your sample XAML and code-behind under an appropriate folder in `src/SamplesApp/SamplesApp.Samples/`.
 2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class.
-3. Format XAML: `dotnet xstyler -f src/SamplesApp/UITests.Shared/YourFolder/YourSample.xaml`
+3. Format XAML: `dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/YourFolder/YourSample.xaml`
 4. Build and run `SamplesApp` to verify the sample appears.
 
 Theming guideline (brief): prefer `{ThemeResource}` for backgrounds/foregrounds so samples work in light and dark themes.
@@ -348,7 +348,7 @@ dotnet tool restore
 dotnet xstyler -d src/SamplesApp -r
 
 # Format a single file
-dotnet xstyler -f src/SamplesApp/UITests.Shared/MyFile.xaml
+dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/MyFile.xaml
 
 # Check without modifying (CI mode)
 dotnet xstyler -d src/SamplesApp -r -p

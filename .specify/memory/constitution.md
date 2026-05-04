@@ -186,7 +186,7 @@ respected in all contributions:
 
 **SamplesApp Samples**:
 - Drop XAML samples and their code-behind anywhere under
-  `src/SamplesApp/UITests.Shared/`. Files are auto-discovered by glob;
+  `src/SamplesApp/SamplesApp.Samples/`. Files are auto-discovered by glob;
   no project registration is required.
 - The `[Sample]` attribute MUST be applied to the code-behind class.
 
