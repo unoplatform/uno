@@ -8,6 +8,8 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class Geometry : global::Microsoft.UI.Xaml.DependencyObject
 	{
+		// Skipping already declared property Empty
+		// Skipping already declared property StandardFlatteningTolerance
 		// Skipping already declared property TransformProperty
 		// Skipping already declared property Bounds
 		// Skipping already declared property Transform
