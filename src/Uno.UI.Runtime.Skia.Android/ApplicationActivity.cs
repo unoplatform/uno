@@ -363,6 +363,11 @@ namespace Microsoft.UI.Xaml
 		{
 			base.OnResume();
 
+			// GLSurfaceView contract: forward OnResume so the GL render thread restarts.
+			// Without this the GL thread state can be inconsistent after a quick lock/unlock
+			// where Android preserves the surface, and the render-scheduling cycle stays dead.
+			_renderView?.OnResume();
+
 			RaiseConfigurationChanges();
 
 			//WebAuthenticationBroker.OnResume();
@@ -379,6 +384,10 @@ namespace Microsoft.UI.Xaml
 			}
 
 			DismissKeyboard();
+
+			// GLSurfaceView contract: forward OnPause so the GL render thread is parked
+			// while the activity is not visible.
+			_renderView?.OnPause();
 		}
 
 		protected override void OnDestroy()

@@ -34,6 +34,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
+	private volatile bool _paused;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private readonly object _renderLock = new();
 	private IntPtr _nativeWindow; // Must stay alive while Vulkan surfaces reference it
@@ -64,6 +65,24 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	public void ResetRendererContext()
 	{
 		// Vulkan context will be recreated on next surface creation
+	}
+
+	void IUnoSkiaRenderView.OnPause()
+	{
+		// Mirror GLSurfaceView's contract: stop touching the Vulkan context while the
+		// activity is paused. The render loop wakes from its wait, sees _paused, and
+		// re-enters the wait without rendering. _renderRequested is preserved so any
+		// frame requested during pause is honored after OnResume.
+		_paused = true;
+		_renderEvent.Set();
+	}
+
+	void IUnoSkiaRenderView.OnResume()
+	{
+		_paused = false;
+		// Force one synchronization frame so the render-scheduling state machine
+		// re-establishes its cycle even if a callback was dropped across the lifecycle.
+		InvalidateRender();
 	}
 
 	#region SurfaceHolder.Callback
@@ -142,7 +161,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
 				_renderEvent.Reset();
 
-				if (!_surfaceReady || _disposed || !_renderRequested)
+				if (!_surfaceReady || _disposed || _paused || !_renderRequested)
 					continue;
 
 				_renderRequested = false;
