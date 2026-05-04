@@ -1,4 +1,4 @@
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Benchmarks.Suites.Micro;

@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;

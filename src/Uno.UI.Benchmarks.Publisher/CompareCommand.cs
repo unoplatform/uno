@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -96,8 +97,8 @@ internal static class CompareCommand
 		{
 			sb.AppendLine(string.Join(",",
 				r.Name,
-				r.A?.Stats?.MeanNs.ToString("F2") ?? "",
-				r.B?.Stats?.MeanNs.ToString("F2") ?? "",
+				r.A?.Stats?.MeanNs.ToString("F2", CultureInfo.InvariantCulture) ?? "",
+				r.B?.Stats?.MeanNs.ToString("F2", CultureInfo.InvariantCulture) ?? "",
 				DeltaNumeric(r),
 				DeltaPercentNumeric(r),
 				DeltaAllocNumeric(r)));
@@ -115,12 +116,13 @@ internal static class CompareCommand
 			return "—";
 		}
 		var v = ns.Value;
+		var inv = CultureInfo.InvariantCulture;
 		return v switch
 		{
-			< 1_000 => $"{v:F1} ns",
-			< 1_000_000 => $"{v / 1_000:F2} µs",
-			< 1_000_000_000 => $"{v / 1_000_000:F2} ms",
-			_ => $"{v / 1_000_000_000:F2} s",
+			< 1_000 => $"{v.ToString("F1", inv)} ns",
+			< 1_000_000 => $"{(v / 1_000).ToString("F2", inv)} µs",
+			< 1_000_000_000 => $"{(v / 1_000_000).ToString("F2", inv)} ms",
+			_ => $"{(v / 1_000_000_000).ToString("F2", inv)} s",
 		};
 	}
 
@@ -141,7 +143,7 @@ internal static class CompareCommand
 			return "—";
 		}
 		var pct = (r.B.Stats.MeanNs - r.A.Stats.MeanNs) / r.A.Stats.MeanNs * 100;
-		return (pct >= 0 ? "+" : "") + pct.ToString("F1") + "%";
+		return (pct >= 0 ? "+" : "") + pct.ToString("F1", CultureInfo.InvariantCulture) + "%";
 	}
 
 	private static string DeltaAlloc(CompareRow r)
@@ -151,21 +153,21 @@ internal static class CompareCommand
 			return "—";
 		}
 		var d = r.B.Memory.AllocatedBytesPerOp - r.A.Memory.AllocatedBytesPerOp;
-		return (d >= 0 ? "+" : "") + d + " B";
+		return (d >= 0 ? "+" : "") + d.ToString(CultureInfo.InvariantCulture) + " B";
 	}
 
 	private static string DeltaNumeric(CompareRow r)
-		=> r.A?.Stats is null || r.B?.Stats is null ? "" : (r.B.Stats.MeanNs - r.A.Stats.MeanNs).ToString("F2");
+		=> r.A?.Stats is null || r.B?.Stats is null ? "" : (r.B.Stats.MeanNs - r.A.Stats.MeanNs).ToString("F2", CultureInfo.InvariantCulture);
 
 	private static string DeltaPercentNumeric(CompareRow r)
 		=> r.A?.Stats is null || r.B?.Stats is null || r.A.Stats.MeanNs == 0
 			? ""
-			: ((r.B.Stats.MeanNs - r.A.Stats.MeanNs) / r.A.Stats.MeanNs * 100).ToString("F2");
+			: ((r.B.Stats.MeanNs - r.A.Stats.MeanNs) / r.A.Stats.MeanNs * 100).ToString("F2", CultureInfo.InvariantCulture);
 
 	private static string DeltaAllocNumeric(CompareRow r)
 		=> r.A?.Memory is null || r.B?.Memory is null
 			? ""
-			: (r.B.Memory.AllocatedBytesPerOp - r.A.Memory.AllocatedBytesPerOp).ToString();
+			: (r.B.Memory.AllocatedBytesPerOp - r.A.Memory.AllocatedBytesPerOp).ToString(CultureInfo.InvariantCulture);
 
 	private sealed record CompareRow(string Name, ResultRow? A, ResultRow? B);
 }
