@@ -17,7 +17,11 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		MaxFloatFloatFunctionSpecification.Instance,
 		Vector2FloatFloatFunctionSpecification.Instance,
 		Vector3FloatFloatFloatFunctionSpecification.Instance,
-		ClampFloatFloatFloatFunctionSpecification.Instance
+		Vector4FloatFloatFloatFloatFunctionSpecification.Instance,
+		ClampFloatFloatFloatFunctionSpecification.Instance,
+		PowFloatFloatFunctionSpecification.Instance,
+		SquareFloatFunctionSpecification.Instance,
+		ColorRgbFunctionSpecification.Instance
 		);
 
 	public AnimationFunctionCallSyntax(AnimationExpressionSyntax identifierOrMemberAccess, ImmutableArray<AnimationExpressionSyntax> arguments)
@@ -26,7 +30,7 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		_arguments = arguments;
 	}
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
 		if (_identifierOrMemberAccess is AnimationIdentifierNameSyntax identifier)
 		{
@@ -40,7 +44,7 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		throw new InvalidOperationException($"Unexpected type '{_identifierOrMemberAccess.GetType()}'");
 	}
 
-	private object EvaluateSpecification(IAnimationFunctionSpecification specification, ExpressionAnimation expressionAnimation)
+	private object EvaluateSpecification(IAnimationFunctionSpecification specification, CompositionAnimation expressionAnimation)
 	{
 		if (_arguments.Length != specification.ParametersLength)
 		{
@@ -51,7 +55,7 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		return specification.Evaluate(_arguments.Select(arg => arg.Evaluate(expressionAnimation)).ToArray());
 	}
 
-	private object EvaluateFromIdentifier(AnimationIdentifierNameSyntax identifier, ExpressionAnimation expressionAnimation)
+	private object EvaluateFromIdentifier(AnimationIdentifierNameSyntax identifier, CompositionAnimation expressionAnimation)
 	{
 		var name = (string)identifier.Identifier.Value;
 		foreach (var specification in _specifications)
@@ -69,7 +73,7 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		throw new NotSupportedException($"Unsupported function call '{name}' with argument length '{_arguments.Length}'.");
 	}
 
-	private object EvaluateFromMemberAccess(AnimationMemberAccessExpressionSyntax memberAccess, ExpressionAnimation expressionAnimation)
+	private object EvaluateFromMemberAccess(AnimationMemberAccessExpressionSyntax memberAccess, CompositionAnimation expressionAnimation)
 	{
 		// From https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.expressionanimation?view=winrt-22621
 		// Supported calls with member access syntax are:
