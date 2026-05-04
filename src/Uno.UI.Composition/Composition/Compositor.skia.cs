@@ -33,29 +33,44 @@ public partial class Compositor
 
 	internal bool IsAnimating => _runningAnimations.Count > 0;
 
-	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject visual)
+	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
-		if (animation.IsTrackedByCompositor)
+		if (!animation.IsTrackedByCompositor)
 		{
-			if (visual is Visual { CompositionTarget: { } target })
-			{
-				_runningAnimations.Add(animation, target);
+			return;
+		}
 
-				if (_runningTargets.TryGetValue(target, out int count))
-				{
-					_runningTargets[target] = count + 1;
-				}
-				else
-				{
-					_runningTargets[target] = 1;
-					target.RequestNewFrame();
-				}
+		// Resolve the CompositionTarget that needs invalidation. For Visuals it's the visual's
+		// own target; for a CompositionPropertySet that was created via Visual.Properties, fall
+		// back to the owning Visual's target so animations on `someVisual.Properties.Foo` still
+		// get ticked.
+		ICompositionTarget? target = host switch
+		{
+			Visual visual => visual.CompositionTarget,
+			CompositionPropertySet { Owner: Visual ownerVisual } => ownerVisual.CompositionTarget,
+			_ => null,
+		};
 
-				if (this.Log().IsTraceEnabled())
-				{
-					this.Log().Trace($"Register running targets {target.GetHashCode():X8}={count} Animations={_runningAnimations.Count}");
-				}
-			}
+		if (target is null)
+		{
+			return;
+		}
+
+		_runningAnimations.Add(animation, target);
+
+		if (_runningTargets.TryGetValue(target, out int count))
+		{
+			_runningTargets[target] = count + 1;
+		}
+		else
+		{
+			_runningTargets[target] = 1;
+			target.RequestNewFrame();
+		}
+
+		if (this.Log().IsTraceEnabled())
+		{
+			this.Log().Trace($"Register running targets {target.GetHashCode():X8}={count} Animations={_runningAnimations.Count}");
 		}
 	}
 

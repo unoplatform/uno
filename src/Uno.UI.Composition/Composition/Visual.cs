@@ -165,7 +165,14 @@ namespace Microsoft.UI.Composition
 			{
 				if (!ReferenceEquals(_parent, value))
 				{
-					StopAllAnimations();
+					// Stop tracked animations only when the visual is being detached from a
+					// parent (becoming an orphan). Stopping on attach would tear down animations
+					// that were configured before the visual was inserted into the tree (a common
+					// pattern with composition-driven animated visual sources, e.g. LottieGen).
+					if (value is null)
+					{
+						StopAllAnimations();
+					}
 				}
 
 				_parent = value;
@@ -245,6 +252,14 @@ namespace Microsoft.UI.Composition
 			{
 				return GetVector3(subPropertyName, Scale);
 			}
+			else if (propertyName.Equals(nameof(IsVisible), StringComparison.OrdinalIgnoreCase))
+			{
+				return IsVisible;
+			}
+			else if (propertyName.Equals(nameof(Opacity), StringComparison.OrdinalIgnoreCase))
+			{
+				return Opacity;
+			}
 			else
 			{
 				return base.GetAnimatableProperty(propertyName, subPropertyName);
@@ -292,6 +307,10 @@ namespace Microsoft.UI.Composition
 			else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
 			{
 				Scale = UpdateVector3(subPropertyName, Scale, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(IsVisible), StringComparison.OrdinalIgnoreCase))
+			{
+				IsVisible = ValidateValue<bool>(propertyValue);
 			}
 			else if (IsTranslationEnabled && propertyName.Equals("Translation", StringComparison.OrdinalIgnoreCase))
 			{
