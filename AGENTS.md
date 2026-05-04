@@ -260,30 +260,15 @@ Run these after making changes:
 5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
 6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
-### SamplesApp: Register XAML files (CRITICAL)
+### SamplesApp: Add XAML files
 
-When adding XAML samples to the `SamplesApp`, you must register the XAML and its code-behind in `src/SamplesApp/UITests.Shared/UITests.Shared.projitems` or the sample will not appear in the app.
-
-- ALWAYS add your XAML file to `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
-- Without this registration, your sample will NOT be visible in SamplesApp
-- Add both the XAML page and the code-behind file. Example:
-
-```xml
-<Page Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml">
-  <SubType>Designer</SubType>
-  <Generator>MSBuild:Compile</Generator>
-</Page>
-<Compile Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml.cs">
-  <DependentUpon>YourSample.xaml</DependentUpon>
-</Compile>
-```
+When adding XAML samples to the `SamplesApp`, drop the files anywhere under `src/SamplesApp/UITests.Shared/` — they are auto-discovered by glob (no manual registration required).
 
 Sample creation checklist:
-1. Create your sample XAML and code-behind under an appropriate folder in `UITests.Shared`.
+1. Create your sample XAML and code-behind under an appropriate folder in `src/SamplesApp/UITests.Shared/`.
 2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class.
-3. Register the XAML and code-behind in `UITests.Shared.projitems` (see XML above).
-4. Format XAML: `dotnet xstyler -f src/SamplesApp/UITests.Shared/YourFolder/YourSample.xaml`
-5. Build and run `SamplesApp` to verify the sample appears.
+3. Format XAML: `dotnet xstyler -f src/SamplesApp/UITests.Shared/YourFolder/YourSample.xaml`
+4. Build and run `SamplesApp` to verify the sample appears.
 
 Theming guideline (brief): prefer `{ThemeResource}` for backgrounds/foregrounds so samples work in light and dark themes.
 
