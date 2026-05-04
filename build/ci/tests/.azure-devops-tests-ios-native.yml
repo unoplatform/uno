@@ -127,8 +127,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
-      JobDisplayName: 'Automated Tests ${{ AutomatedTestGroup.key }}'
-      TestRunName: 'iOS Native Automated Tests ${{ AutomatedTestGroup.key }}'
+      JobDisplayName: 'UI Tests ${{ AutomatedTestGroup.key }}'
+      TestRunName: 'iOS Native UI Tests ${{ AutomatedTestGroup.key }}'
       JobTimeoutInMinutes: 90
       SamplesAppArtifactName: 'samplesapp-ios-native'
       vmImage: ${{ parameters.vmImageTest }}

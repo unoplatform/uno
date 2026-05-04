@@ -60,7 +60,7 @@ jobs:
 
 - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
   - job: Wasm_UITests_Snap
-    displayName: 'WebAssembly Snapshot Tests'
+    displayName: 'Snapshot Tests'
     cancelTimeoutInMinutes: 0
     dependsOn:
     - Wasm_UITests_Build
@@ -107,10 +107,10 @@ jobs:
         BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
         SITE_SUFFIX: "$(SITE_SUFFIX)"
 
-      displayName: 'Running UI Tests'
+      displayName: 'Run Snapshot Tests'
 
     - task: CopyFiles@2
-      displayName: 'Publish Wasm Tests results'
+      displayName: 'Copy Snapshot Tests Results'
       inputs:
         SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
         Contents: '**/*.*'
@@ -232,7 +232,7 @@ jobs:
       UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
       SITE_SUFFIX: "$(SITE_SUFFIX)"
 
-    displayName: 'Running UI Tests'
+    displayName: 'Run UI Tests'
 
   - task: PublishTestResults@2
     condition: always()
