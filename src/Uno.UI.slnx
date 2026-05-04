@@ -180,6 +180,9 @@
       <Platform Solution="*|x86" Project="x86" />
       <Deploy />
     </Project>
+    <Project Path="SamplesApp/SamplesApp.Samples/SamplesApp.Samples.csproj">
+      <Build Project="false" />
+    </Project>
   </Folder>
   <Folder Name="/SamplesApp/UnoIslands/">
     <Project Path="SamplesApp/UnoIslands.Shared/UnoIslands.Shared.shproj" />
