@@ -456,6 +456,53 @@ public class Given_AnimatedBackVisualSource
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_ChevronUpDownSmall_Strokes_With_Default_Thickness()
+	{
+		// Regression: AnimatedChevronUpDownSmallVisualSource (and any other Lottie-generated
+		// source that strokes a path without explicitly setting StrokeThickness) relied on the
+		// WinUI default of 1.0. Uno's CompositionSpriteShape defaulted to 0, so the chevron
+		// rendered nothing. This test confirms the stroked chevron actually paints visible
+		// pixels at progress 0 (NormalOff state).
+		var player = new AnimatedVisualPlayer
+		{
+			Width = 96,
+			Height = 96,
+			AutoPlay = false,
+			Source = new AnimatedChevronUpDownSmallVisualSource(),
+		};
+		var border = new Border
+		{
+			Width = 96,
+			Height = 96,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Child = player,
+		};
+
+		await UITestHelper.Load(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(player.IsAnimatedVisualLoaded, "Chevron source should load.");
+
+		var screenshot = await UITestHelper.ScreenShot(border);
+
+		bool foundStroke = false;
+		for (int x = 0; x < 96 && !foundStroke; x++)
+		{
+			for (int y = 0; y < 96 && !foundStroke; y++)
+			{
+				var pixel = screenshot.GetPixel(x, y);
+				if (pixel.R < 200 && pixel.G < 200 && pixel.B < 200)
+				{
+					foundStroke = true;
+				}
+			}
+		}
+
+		Assert.IsTrue(foundStroke, "Chevron should render visible stroke pixels with the default StrokeThickness of 1.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_AnimatedIcon_State_Changes_Plays_Animation()
 	{
 		// Regression coverage: AnimatedIcon previously hard-coded the source visual to null on
