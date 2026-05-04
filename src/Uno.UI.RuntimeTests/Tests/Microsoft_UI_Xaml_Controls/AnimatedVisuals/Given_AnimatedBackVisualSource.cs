@@ -456,6 +456,44 @@ public class Given_AnimatedBackVisualSource
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_ScopedBatch_Waits_For_Animation()
+	{
+		// Regression: CompositionScopedBatch.End() previously fired Completed synchronously,
+		// which broke AnimatedIcon's PlaySegment flow (the icon plays a keyframe animation
+		// inside a scoped batch and counts on Completed firing when the animation actually
+		// stops, not when End() returns). Symptom: clicking a CheckBox showed no draw-the-tick
+		// animation because OnAnimationCompleted ran instantly and pinned Progress to 1.
+		var compositor = await GetCompositorAsync();
+		var anchor = new Border { Width = 1, Height = 1 };
+		await UITestHelper.Load(anchor);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var visual = ElementCompositionPreview.GetElementVisual(anchor);
+		visual.Properties.InsertScalar("Progress", 0f);
+
+		var batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+		var completedTcs = new TaskCompletionSource<object>();
+		batch.Completed += (_, _) => completedTcs.TrySetResult(null);
+
+		var animation = compositor.CreateScalarKeyFrameAnimation();
+		animation.Duration = TimeSpan.FromMilliseconds(200);
+		animation.InsertKeyFrame(0, 0f);
+		animation.InsertKeyFrame(1, 1f);
+		animation.IterationBehavior = AnimationIterationBehavior.Count;
+		animation.IterationCount = 1;
+
+		visual.Properties.StartAnimation("Progress", animation);
+		batch.End();
+
+		// Completed should NOT have fired yet — animation still running.
+		Assert.IsFalse(completedTcs.Task.IsCompleted, "ScopedBatch.Completed must wait for the animation to finish.");
+
+		var done = await Task.WhenAny(completedTcs.Task, Task.Delay(TimeSpan.FromSeconds(5)));
+		Assert.AreSame(completedTcs.Task, done, "ScopedBatch.Completed should fire within 5 seconds after the animation finishes.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Settings_Source_Plays_Without_Crash()
 	{
 		// Regression: AnimatedSettingsVisualSource animates RotationAngleInDegrees on a sprite
