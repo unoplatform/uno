@@ -180,8 +180,14 @@ partial class AnimatedVisualPlayer
 	{
 		EnsureWinUIRootVisual();
 
-		// Stop any ongoing playback before swapping content.
-		StopWinUI();
+		// Drop any in-flight play directly. Going through StopWinUI/SetProgressWinUI would
+		// propagate a Progress write through the bound expression chain of the OUTGOING source,
+		// which can hit half-disposed state (e.g. cross-typed SetAnimatableProperty calls or
+		// missing visuals). We're about to replace the content anyway.
+		var inflight = m_nowPlaying;
+		m_nowPlaying = null;
+		IsPlaying = false;
+		inflight?.Detach();
 
 		UpdateContent();
 	}
@@ -240,7 +246,10 @@ partial class AnimatedVisualPlayer
 	{
 		if (m_animatedVisualRoot is not null)
 		{
-			StopWinUI();
+			// Tear down the outgoing animated visual's bound progress expression so it stops
+			// listening for player progress changes; otherwise the OLD source's keyframe chain
+			// would still re-evaluate when the new source updates the player's Progress.
+			m_animatedVisualRoot.Properties.StopAnimation("Progress");
 
 			var animatedVisual = m_animatedVisual;
 			if (animatedVisual is not null)
@@ -834,6 +843,23 @@ partial class AnimatedVisualPlayer
 				_owner.m_nowPlaying = null;
 				_owner.IsPlaying = false;
 			}
+
+			_tcs.TrySetResult(null);
+		}
+
+		// Tear down without writing through the bound progress chain. Used when the source is
+		// being replaced — we want to stop awaiting callers and detach handlers, but pushing a
+		// final Progress value would propagate through the outgoing source's expressions.
+		public void Detach()
+		{
+			if (_animation is { } animation && _stoppedHandler is { } handler)
+			{
+				animation.Stopped -= handler;
+				_stoppedHandler = null;
+			}
+
+			// Stop the keyframe animation so the compositor stops ticking it.
+			_owner.m_progressPropertySet?.StopAnimation("Progress");
 
 			_tcs.TrySetResult(null);
 		}
