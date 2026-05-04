@@ -3,26 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented]
-#endif
 	public partial class CompositionContainerShape : global::Microsoft.UI.Composition.CompositionShape
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionContainerShape()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionShapeCollection Shapes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionShapeCollection CompositionContainerShape.Shapes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionShapeCollection%20CompositionContainerShape.Shapes");
-			}
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.CompositionContainerShape.CompositionContainerShape()
+		// Skipping already declared property Shapes
 		// Forced skipping of method Microsoft.UI.Composition.CompositionContainerShape.Shapes.get
 	}
 }

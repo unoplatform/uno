@@ -9,9 +9,9 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionShapeCollection : CompositionObject, IList<CompositionShape>
 	{
 		private readonly List<CompositionShape> _shapes = new List<CompositionShape>();
-		private readonly ShapeVisual _shapeVisual;
+		private readonly ShapeVisual? _shapeVisual;
 
-		internal CompositionShapeCollection(Compositor compositor, ShapeVisual shapeVisual) : base(compositor)
+		internal CompositionShapeCollection(Compositor compositor, ShapeVisual? shapeVisual) : base(compositor)
 			=> this._shapeVisual = shapeVisual;
 
 		public int Count => _shapes.Count;
