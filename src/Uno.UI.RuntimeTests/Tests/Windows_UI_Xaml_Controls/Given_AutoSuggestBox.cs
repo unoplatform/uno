@@ -1242,19 +1242,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Popup_Above_AutoSuggestBox_And_SuggestionsList_changes()
 		{
+			// Setup an AutoSuggestBox near the bottom of page (covered by description bar),
+			// so its suggestion list only opens from above. Enter "a" (3 matches) then "ab" (2 matches),
+			// and compare the Y-position(top) of the popup before and after, which should increase (given that bottom is fixed).
+
+			var suggestions = new List<string> { "ab1", "ab2", "ac" };
+
 			var SUT = new AutoSuggestBox()
 			{
 				VerticalAlignment = VerticalAlignment.Bottom
 			};
-			var suggestions = new List<string> { "ab1", "ab2", "ac" };
 			SUT.ItemsSource = suggestions;
-
 			SUT.TextChanged += (sender, args) =>
 			{
 				if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 				{
-					var filteredSuggestions =
-						suggestions.Where(s => s.StartsWith(sender.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+					var filteredSuggestions = suggestions
+						.Where(s => s.StartsWith(sender.Text, StringComparison.OrdinalIgnoreCase))
+						.ToList();
 					sender.ItemsSource = filteredSuggestions;
 				}
 			};
