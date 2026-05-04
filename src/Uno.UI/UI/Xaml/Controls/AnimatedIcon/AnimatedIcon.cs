@@ -33,7 +33,13 @@ namespace Microsoft.UI.Xaml.Controls
 			m_progressPropertySet = Microsoft.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
 			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
 #else
-			m_progressPropertySet = new CompositionPropertySet(null);
+			// Use the shared compositor so the property set is owned by a real compositor and
+			// animations started on it get ticked. Previously this was `new CompositionPropertySet(null)`
+			// (a workaround from when AnimatedIcon's animations weren't supported), which left
+			// PlaySegment unable to actually animate Progress and made the icon snap to the final
+			// state on every transition.
+			m_progressPropertySet = Microsoft.UI.Composition.Compositor.GetSharedCompositor().CreatePropertySet();
+			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
 #endif
 			Loaded += OnLoaded;
 			Unloaded += OnIconUnloaded;
@@ -81,6 +87,16 @@ namespace Microsoft.UI.Xaml.Controls
 #if HAS_UNO
 			// Uno specific: Called to ensure OnApplyTemplate runs and Foreground is subscribed
 			EnsureInitialized();
+
+			// Attach the AnimatedIcon's element visual as the Owner of m_progressPropertySet so
+			// animations started on it (PlaySegment) get a CompositionTarget to tick against.
+			// Without this, m_progressPropertySet has no owner and Compositor.RegisterAnimation
+			// can't find a target — the keyframe animation never advances and the icon snaps to
+			// its destination state.
+			if (m_progressPropertySet?.Owner is null)
+			{
+				m_progressPropertySet!.Owner = ElementCompositionPreview.GetElementVisual(this);
+			}
 #endif
 
 			// AnimatedIcon might get added to a UI which has already set the State property on an ancestor.
@@ -578,11 +594,13 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					TrySetForegroundProperty(source);
 
-					//object diagnostics{ };
 #if HAS_UNO
-					// TODO Uno - TryCreateAnimatedVisual method does not currently exist on IAnimatedVisualSource
-					IAnimatedVisual visual = null;
+					// Use the AnimatedIcon's own element compositor so the visual lives in the same
+					// compositor as the rest of the visual tree.
+					var sourceCompositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
+					IAnimatedVisual visual = source.TryCreateAnimatedVisual(sourceCompositor, out _);
 #else
+					object diagnostics;
 					var visual = source.TryCreateAnimatedVisual(Window.Current.Compositor, diagnostics);
 #endif
 					m_animatedVisual = visual;
