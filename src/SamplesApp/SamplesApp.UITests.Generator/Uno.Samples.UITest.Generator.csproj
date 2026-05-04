@@ -11,5 +11,5 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-2.final" PrivateAssets="all" />
 	</ItemGroup>
 
-	<Import Project="..\..\SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />
+	<Import Project="..\..\SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.props" />
 </Project>

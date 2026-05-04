@@ -3,7 +3,6 @@
     "path": "Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Tests.csproj",
-      "SourceGenerators\\SourceGeneratorHelpers\\SourceGeneratorHelpers.shproj",
       "SourceGenerators\\System.Xaml.Tests\\Uno.Xaml.Tests.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",

@@ -128,7 +128,6 @@
       <Deploy Solution="Debug|iPhone" />
       <Deploy Solution="Debug|iPhoneSimulator" />
     </Project>
-    <Project Path="SamplesApp/SamplesApp.Shared/SamplesApp.Shared.shproj" />
     <Project Path="SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
@@ -155,7 +154,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="Release_NoSamples|Any CPU" Project="false" />
     </Project>
-    <Project Path="SamplesApp/SamplesApp.UnitTests.Shared/SamplesApp.UnitTests.Shared.shproj" />
     <Project Path="SamplesApp/SamplesApp.Wasm.UITests/SamplesApp.Wasm.UITests.njsproj" Id="b4c15c47-85e2-444e-b9f3-d970e35601a9">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Platform Project="AnyCPU" />
@@ -182,7 +180,15 @@
       <Platform Solution="*|x86" Project="x86" />
       <Deploy />
     </Project>
-    <Project Path="SamplesApp/UITests.Shared/UITests.Shared.shproj" />
+    <Project Path="SamplesApp/SamplesApp.Samples/SamplesApp.Samples.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="SamplesApp/SamplesApp.Shared/SamplesApp.Shared.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="SamplesApp/SamplesApp.UnitTests.Shared/SamplesApp.UnitTests.Shared.csproj">
+      <Build Project="false" />
+    </Project>
   </Folder>
   <Folder Name="/SamplesApp/UnoIslands/">
     <Project Path="SamplesApp/UnoIslands.Shared/UnoIslands.Shared.shproj" />
@@ -375,7 +381,6 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Generators/">
-    <Project Path="SourceGenerators/SourceGeneratorHelpers/SourceGeneratorHelpers.shproj" />
     <Project Path="SourceGenerators/Uno.UI.SourceGenerators.Internal/Uno.UI.SourceGenerators.Internal.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>

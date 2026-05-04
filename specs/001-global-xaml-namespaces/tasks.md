@@ -63,7 +63,7 @@
 
 ### Implementation for User Story 1
 
-- [X] T016 [US1] Create test XAML files for runtime tests — UserControls without `xmlns` declarations that use Button, TextBlock, Grid, StackPanel, x:Name, x:Bind, x:Key, and Style resources; register in `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
+- [X] T016 [US1] Create test XAML files for runtime tests — UserControls without `xmlns` declarations that use Button, TextBlock, Grid, StackPanel, x:Name, x:Bind, x:Key, and Style resources; place under `src/SamplesApp/SamplesApp.Samples/`
 - [X] T017 [US1] Wire up the full pipeline: ensure `XamlCodeGeneration.cs` passes the feature flag and implicit prefixes from `GlobalNamespaceResolver` through to `XamlFileParser` and `XamlFileGenerator`, so the foundational changes (Phase 2) are fully connected
 - [X] T018 [US1] Verify existing SamplesApp XAML files (which have explicit `xmlns`) still compile without regressions — build `Uno.UI-Skia-only.slnf` and run `dotnet test src/Uno.UI/Uno.UI.Tests.csproj`
 
@@ -108,7 +108,7 @@
 ### Implementation for User Story 3
 
 - [X] T027 [US3] Verify `GlobalNamespaceResolver.GetGlobalClrNamespaces()` correctly scans `XmlnsDefinition` attributes from **referenced assemblies** (via `Compilation.References` → `IAssemblySymbol.GetAttributes()`) and handles the `AssemblyName` constructor argument in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/GlobalNamespaceResolver.cs`
-- [X] T028 [US3] Add test XAML files that reference types from other assemblies without prefixes; register in `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
+- [X] T028 [US3] Add test XAML files that reference types from other assemblies without prefixes; place under `src/SamplesApp/SamplesApp.Samples/`
 
 **Checkpoint**: Third-party library types resolve unprefixed when their namespace is registered to the global URI.
 
