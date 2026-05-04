@@ -41,8 +41,12 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	public (object Value, bool ShouldStop) Evaluate()
 	{
-		var elapsed = new TimeSpan(_compositor.TimestampInTicks - _totalPause - _startTimestamp);
-		if (elapsed >= _totalDuration)
+		// While paused, freeze elapsed time at the pause point — otherwise the evaluator would
+		// keep advancing as wall-clock time passes (and report "shouldStop" once it exceeds the
+		// duration), even though the animation is being held in place by an AnimationController.
+		var nowTimestamp = _pauseTimestamp ?? _compositor.TimestampInTicks;
+		var elapsed = new TimeSpan(nowTimestamp - _totalPause - _startTimestamp);
+		if (_pauseTimestamp is null && elapsed >= _totalDuration)
 		{
 			return (_finalValue.Value, true);
 		}
@@ -64,7 +68,17 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	private (object Value, bool ShouldStop) EvaluateInternal(float currentFrame)
 	{
-		var nextKeyFrame = _keyFrames.Keys.FirstOrDefault(k => k >= currentFrame, _keyFrames.Keys.Last());
+		var lastKey = _keyFrames.Keys.Last();
+		// Past the final keyframe: hold the last value. Without this the math below collapses
+		// to "previousKeyFrame == nextKeyFrame", producing a divide-by-zero in the lerp ratio
+		// and returning NaN — which would make any animated property (Opacity, Scale, …) drop
+		// off into invisibility.
+		if (currentFrame >= lastKey)
+		{
+			return (_keyFrames[lastKey].Value, false);
+		}
+
+		var nextKeyFrame = _keyFrames.Keys.FirstOrDefault(k => k >= currentFrame, lastKey);
 		if (nextKeyFrame == currentFrame)
 		{
 			// currentFrame is one that exists in the dictionary already.

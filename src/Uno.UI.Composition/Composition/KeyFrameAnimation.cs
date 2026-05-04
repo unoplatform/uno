@@ -67,6 +67,18 @@ namespace Microsoft.UI.Composition
 			_keyframeEvaluator!.Pause();
 		}
 
+		// Default base-class implementations: derived animations that want to evaluate the
+		// expression at runtime override these (see ScalarKeyFrameAnimation and Vector2KeyFrameAnimation).
+		// Vector3/Vector4 currently treat expression keyframes as no-ops which mirrors the prior
+		// NotImplemented behavior.
+		public virtual void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
+		{
+		}
+
+		public virtual void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+		{
+		}
+
 		internal void Resume()
 		{
 			_keyframeEvaluator!.Resume();

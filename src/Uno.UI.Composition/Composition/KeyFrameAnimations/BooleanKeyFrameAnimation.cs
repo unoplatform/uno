@@ -19,6 +19,11 @@ public partial class BooleanKeyFrameAnimation : KeyFrameAnimation
 	public void InsertKeyFrame(float normalizedProgressKey, bool value)
 		=> _keyFrames[normalizedProgressKey] = new() { Value = value };
 
+	// BooleanKeyFrameAnimation does not interpolate, so the easing function is unused on the
+	// underlying evaluator. The overload exists only to mirror the WinUI API surface.
+	public void InsertKeyFrame(float normalizedProgressKey, bool value, CompositionEasingFunction easingFunction)
+		=> _keyFrames[normalizedProgressKey] = new() { Value = value, EasingFunction = easingFunction };
+
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 		base.Start(propertyName, subPropertyName, compositionObject);

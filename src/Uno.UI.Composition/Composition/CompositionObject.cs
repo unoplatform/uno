@@ -50,7 +50,7 @@ namespace Microsoft.UI.Composition
 				return @this;
 			}
 
-			return new CompositionPropertySet(Compositor);
+			return new CompositionPropertySet(Compositor) { Owner = this };
 		}
 
 		// Overrides are based on:
