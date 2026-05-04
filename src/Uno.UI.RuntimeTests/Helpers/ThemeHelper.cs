@@ -35,6 +35,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 #if HAS_UNO
 		public static IDisposable UseApplicationDarkTheme()
 		{
+			AssertFullWindowForApplicationTheme();
 			var originalTheme = Application.Current.RequestedTheme;
 			var wasExplicit = Application.Current.IsThemeSetExplicitly;
 			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
@@ -57,6 +58,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseApplicationLightTheme()
 		{
+			AssertFullWindowForApplicationTheme();
 			var originalTheme = Application.Current.RequestedTheme;
 			var wasExplicit = Application.Current.IsThemeSetExplicitly;
 			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
@@ -72,6 +74,24 @@ namespace Uno.UI.RuntimeTests.Helpers
 					Application.Current.SetExplicitRequestedTheme(null);
 				}
 			});
+		}
+
+		// The SamplesApp test runner pins RequestedTheme=Light on its outer Frame
+		// (App.Tests.cs HandleRuntimeTests). When tests run in the embedded host
+		// (UseActualWindowRoot=false), that Frame sits between the application root
+		// and the test content, so app-level theme changes cannot reach the test
+		// subtree. [RequiresFullWindow] reparents to the actual window root and
+		// bypasses the Frame.
+		private static void AssertFullWindowForApplicationTheme()
+		{
+			if (!TestServices.WindowHelper.UseActualWindowRoot)
+			{
+				Assert.Fail(
+					"ThemeHelper.UseApplicationDarkTheme/UseApplicationLightTheme require " +
+					"[RequiresFullWindow] on the test method. Without it, the SamplesApp " +
+					"runtime-test Frame (RequestedTheme=Light, set in App.Tests.cs) blocks " +
+					"app-level theme propagation to the test content.");
+			}
 		}
 #endif
 

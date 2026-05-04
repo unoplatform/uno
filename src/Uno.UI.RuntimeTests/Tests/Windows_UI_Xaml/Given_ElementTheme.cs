@@ -3990,6 +3990,7 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_AppTheme_Changes_ThemeResource_Values_Update()
 	{
 		// Regression test for https://github.com/unoplatform/uno/issues/23177
@@ -4053,6 +4054,7 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_AppTheme_Changes_Nested_Elements_ThemeResources_Update()
 	{
 		// Verify that nested elements (children, grandchildren) all get their
