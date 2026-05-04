@@ -456,6 +456,207 @@ public class Given_AnimatedBackVisualSource
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_ChevronUpDownSmall_Rotates_When_Seeked_To_NormalOn()
+	{
+		// Diagnostic: drive the chevron source's progress directly and verify the underlying
+		// SpriteShape's RotationAngleInDegrees lands at the rotated state when progress is
+		// past the NormalOffToNormalOn marker end.
+		var compositor = await GetCompositorAsync();
+		var source = new AnimatedChevronUpDownSmallVisualSource();
+		var visual = source.TryCreateAnimatedVisual(compositor, out _);
+		Assert.IsNotNull(visual);
+
+		var anchor = new Border { Width = 96, Height = 96, Background = new SolidColorBrush(Microsoft.UI.Colors.White) };
+		await UITestHelper.Load(anchor);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Mount the visual so its CompositionTarget is real.
+		ElementCompositionPreview.SetElementChildVisual(anchor, visual.RootVisual);
+
+		// Find the SpriteShape that has the rotation animation. The Lottie source builds
+		// ShapeVisual → SpriteShape. Walk the visual tree.
+		CompositionSpriteShape rotateShape = null;
+		void Walk(Visual v)
+		{
+			if (rotateShape is not null) return;
+			if (v is ShapeVisual sv)
+			{
+				foreach (var shape in sv.Shapes)
+				{
+					if (shape is CompositionSpriteShape s)
+					{
+						rotateShape = s;
+						return;
+					}
+				}
+			}
+			if (v is ContainerVisual cv)
+			{
+				foreach (var child in cv.Children)
+				{
+					Walk(child);
+					if (rotateShape is not null) return;
+				}
+			}
+		}
+		Walk(visual.RootVisual);
+		Assert.IsNotNull(rotateShape, "Should have located a CompositionSpriteShape for the chevron path.");
+
+		// Sample rotation at several progress points along the NormalOffToNormalOn marker
+		// timeline. Per the Lottie keyframes:
+		//   progress 0.1925 (start) → rotation ≈ 0 (DOWN arrow)
+		//   progress 0.288 → rotation = 180 (UP arrow, peak of cubic-bezier ramp)
+		//   progress 0.304 (end) → rotation = 180 (held by HoldThenStep)
+		// If our chain is wired correctly, the rotation should be near 180 at progress 0.288.
+		visual.RootVisual.Properties.InsertScalar("Progress", 0.1925f);
+		await TestServices.WindowHelper.WaitForIdle();
+		var atStart = rotateShape.RotationAngleInDegrees;
+
+		visual.RootVisual.Properties.InsertScalar("Progress", 0.288f);
+		await TestServices.WindowHelper.WaitForIdle();
+		var atPeak = rotateShape.RotationAngleInDegrees;
+
+		visual.RootVisual.Properties.InsertScalar("Progress", 0.304f);
+		await TestServices.WindowHelper.WaitForIdle();
+		var atEnd = rotateShape.RotationAngleInDegrees;
+
+		// At the rotation peak (0.288) the value should be ~180. Tolerate ±5° to allow for
+		// keyframe interpolation imprecision.
+		Assert.IsTrue(MathF.Abs(atPeak - 180f) < 5f,
+			$"Rotation at progress 0.288 should be ~180°. start={atStart}, peak={atPeak}, end={atEnd}. " +
+			"This indicates the Progress → controller → keyframe-animation chain isn't propagating to RotationAngleInDegrees.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_AnimatedIcon_Drives_Chevron_Rotation_On_State_Change()
+	{
+		// Reproduce the Expander chevron scenario: AnimatedIcon hosting AnimatedChevronUpDownSmall
+		// transitions from State="NormalOff" (collapsed = down arrow) to "NormalOn" (expanded = up
+		// arrow). After the play completes, the underlying SpriteShape's RotationAngleInDegrees
+		// must end at 180° to render the up arrow (the natural path is drawn pointing down, so
+		// rotation 0 = down, rotation 180 = up).
+		var icon = new AnimatedIcon
+		{
+			Width = 96,
+			Height = 96,
+			Source = new AnimatedChevronUpDownSmallVisualSource(),
+		};
+		icon.SetValue(AnimatedIcon.StateProperty, "NormalOff");
+
+		var border = new Border
+		{
+			Width = 96,
+			Height = 96,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Child = icon,
+		};
+
+		await UITestHelper.Load(border);
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var rotateShape = WalkForSpriteShape(ElementCompositionPreview.GetElementVisual(icon));
+		Assert.IsNotNull(rotateShape, "Should have located the chevron's rotated SpriteShape under the AnimatedIcon.");
+
+		var collapsedRotation = rotateShape.RotationAngleInDegrees;
+
+		icon.SetValue(AnimatedIcon.StateProperty, "NormalOn");
+
+		// Lottie source duration is ~2.6s; the NormalOffToNormalOn segment is ~11% of that ≈ 310ms.
+		// 1500ms is comfortably more than enough for the play (and the deferred Completed event)
+		// to settle.
+		await Task.Delay(TimeSpan.FromMilliseconds(1500));
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var expandedRotation = rotateShape.RotationAngleInDegrees;
+
+		Assert.IsTrue(MathF.Abs(expandedRotation - 180f) < 5f,
+			$"Chevron rotation should be ~180° after NormalOff→NormalOn play. " +
+			$"collapsed={collapsedRotation}, expanded={expandedRotation}.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_AnimatedIcon_Rapid_State_Transitions_End_At_Final_State()
+	{
+		// Reproduce the actual Expander click sequence. Real-world clicks fire several state
+		// transitions in rapid succession because the parent control walks through pointer
+		// states and then settles on the toggled state. With QueueOne (the default queue
+		// behavior), only the most recently queued state survives — and the chevron should
+		// land at that state's rotation when the dust settles.
+		var icon = new AnimatedIcon
+		{
+			Width = 96,
+			Height = 96,
+			Source = new AnimatedChevronUpDownSmallVisualSource(),
+		};
+		icon.SetValue(AnimatedIcon.StateProperty, "NormalOff");
+
+		var border = new Border
+		{
+			Width = 96,
+			Height = 96,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+			Child = icon,
+		};
+
+		await UITestHelper.Load(border);
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var rotateShape = WalkForSpriteShape(ElementCompositionPreview.GetElementVisual(icon));
+		Assert.IsNotNull(rotateShape);
+
+		// Drive the chevron through the same state transitions a Toggle visual-state machine
+		// would when the user presses, releases (toggling on), and then leaves the pointer.
+		icon.SetValue(AnimatedIcon.StateProperty, "PointerOverOff");
+		icon.SetValue(AnimatedIcon.StateProperty, "PressedOff");
+		icon.SetValue(AnimatedIcon.StateProperty, "PointerOverOn");
+		icon.SetValue(AnimatedIcon.StateProperty, "NormalOn");
+
+		// Wait long enough for the queued transitions to drain. Each marker segment is up to
+		// ~310ms; with QueueOne we'd expect the current play to finish then the most recently
+		// queued one to play. 5 seconds is well over that.
+		await Task.Delay(TimeSpan.FromSeconds(5));
+		await TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var finalRotation = rotateShape.RotationAngleInDegrees;
+
+		Assert.IsTrue(MathF.Abs(finalRotation - 180f) < 5f,
+			$"After rapid state transitions ending at NormalOn, chevron rotation should be ~180°. final={finalRotation}.");
+	}
+
+	private static CompositionSpriteShape WalkForSpriteShape(Visual v)
+	{
+		if (v is ShapeVisual sv)
+		{
+			foreach (var shape in sv.Shapes)
+			{
+				if (shape is CompositionSpriteShape s)
+				{
+					return s;
+				}
+			}
+		}
+		if (v is ContainerVisual cv)
+		{
+			foreach (var child in cv.Children)
+			{
+				var found = WalkForSpriteShape(child);
+				if (found is not null)
+				{
+					return found;
+				}
+			}
+		}
+		return null;
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_ChevronUpDownSmall_Strokes_With_Default_Thickness()
 	{
 		// Regression: AnimatedChevronUpDownSmallVisualSource (and any other Lottie-generated
