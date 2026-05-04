@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Graphics.Effects;
 using Windows.UI;
 
@@ -74,6 +76,9 @@ namespace Microsoft.UI.Composition
 
 		public CompositionSpriteShape CreateSpriteShape(CompositionGeometry geometry)
 			=> new CompositionSpriteShape(this, geometry);
+
+		public CompositionContainerShape CreateContainerShape()
+			=> new CompositionContainerShape(this);
 
 		public CompositionPathGeometry CreatePathGeometry()
 			=> new CompositionPathGeometry(this);
@@ -193,6 +198,9 @@ namespace Microsoft.UI.Composition
 		public ExpressionAnimation CreateExpressionAnimation()
 			=> new ExpressionAnimation(this);
 
+		public BooleanKeyFrameAnimation CreateBooleanKeyFrameAnimation()
+			=> new BooleanKeyFrameAnimation(this);
+
 		public Vector2KeyFrameAnimation CreateVector2KeyFrameAnimation()
 			=> new Vector2KeyFrameAnimation(this);
 
@@ -201,6 +209,11 @@ namespace Microsoft.UI.Composition
 
 		public Vector4KeyFrameAnimation CreateVector4KeyFrameAnimation()
 			=> new Vector4KeyFrameAnimation(this);
+
+		// Uno currently does not buffer composition commits, so RequestCommitAsync completes immediately.
+		// This still satisfies callers that schedule cleanup work after a commit fence (e.g. AnimatedVisualPlayer).
+		public IAsyncAction RequestCommitAsync()
+			=> Task.CompletedTask.AsAsyncAction();
 
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
 		public CompositionBackdropBrush CreateBackdropBrush()
