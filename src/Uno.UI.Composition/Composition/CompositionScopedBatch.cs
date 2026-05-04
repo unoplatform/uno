@@ -58,8 +58,27 @@ namespace Microsoft.UI.Composition
 
 			if (IsEnded && _pendingAnimations.Count == 0)
 			{
-				Completed?.Invoke(this, new CompositionBatchCompletedEventArgs());
+				RaiseCompleted();
 			}
+		}
+
+		private void RaiseCompleted()
+		{
+			// WinUI raises Completed on a composition thread, so subscribers on the UI thread
+			// effectively run on a later turn. Uno's compositor lives on the UI thread; a
+			// synchronous invocation re-enters subscribers (e.g. AnimatedIcon.OnAnimationCompleted
+			// which itself starts a new animation) and can cascade into a stack overflow when
+			// each completion immediately starts another animation. Posting through the
+			// dispatcher matches WinUI semantics and breaks the synchronous chain.
+			if (!Dispatching.DispatcherQueue.Main.TryEnqueue(InvokeCompleted))
+			{
+				InvokeCompleted();
+			}
+		}
+
+		private void InvokeCompleted()
+		{
+			Completed?.Invoke(this, new CompositionBatchCompletedEventArgs());
 		}
 
 		// End() means "no more animations will be added". The Completed event fires once all
@@ -83,7 +102,7 @@ namespace Microsoft.UI.Composition
 
 			if (!_hasPending || _pendingAnimations.Count == 0)
 			{
-				Completed?.Invoke(this, new CompositionBatchCompletedEventArgs());
+				RaiseCompleted();
 			}
 		}
 
