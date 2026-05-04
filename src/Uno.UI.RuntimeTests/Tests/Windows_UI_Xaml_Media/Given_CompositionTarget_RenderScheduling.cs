@@ -205,11 +205,16 @@ public class Given_CompositionTarget_RenderScheduling
 		}
 	}
 
-	// Lightweight check that ApplicationActivity still overrides the Activity lifecycle
-	// callbacks. We can't safely invoke Activity.OnPause/OnResume from a runtime test, but
-	// silent removal of the overrides is a likely regression mode and easy to detect.
+	// Verifies the activity-side wiring: ApplicationActivity.OnPause/OnResume must
+	// (a) override the base lifecycle callbacks, (b) actually forward to
+	// IUnoSkiaRenderView.OnPause/OnResume on the active render view, and (c) do so
+	// BEFORE delegating to base.OnPause/OnResume. Reversing the order lets the framework
+	// tear down the surface or raise Application.Resuming before the render thread is
+	// parked/restarted, producing the freeze and dropped-first-frame regressions this PR
+	// fixed. We can't safely invoke Activity.OnPause/OnResume from a runtime test (it
+	// would disrupt the running activity), so we inspect the IL of the overrides instead.
 	[TestMethod]
-	public void When_ApplicationActivity_Overrides_Activity_Lifecycle()
+	public void When_ApplicationActivity_Lifecycle_Forwards_To_RenderView_Before_Base()
 	{
 		if (!OperatingSystem.IsAndroid())
 		{
@@ -222,16 +227,83 @@ public class Given_CompositionTarget_RenderScheduling
 			throwOnError: false);
 		Assert.IsNotNull(activityType, "Microsoft.UI.Xaml.ApplicationActivity must be loadable on Android Skia.");
 
-		var pauseOverride = activityType!.GetMethod("OnPause", BindingFlags.NonPublic | BindingFlags.Instance);
-		var resumeOverride = activityType.GetMethod("OnResume", BindingFlags.NonPublic | BindingFlags.Instance);
+		var renderViewIface = activityType!.Assembly.GetType(
+			"Uno.UI.Runtime.Skia.Android.IUnoSkiaRenderView", throwOnError: false);
+		Assert.IsNotNull(renderViewIface, "IUnoSkiaRenderView must be present in the Android Skia assembly.");
 
-		Assert.IsNotNull(pauseOverride, "ApplicationActivity must declare an OnPause override.");
-		Assert.IsNotNull(resumeOverride, "ApplicationActivity must declare an OnResume override.");
+		AssertForwardsBeforeBase(activityType, renderViewIface!, "OnPause");
+		AssertForwardsBeforeBase(activityType, renderViewIface!, "OnResume");
+	}
 
-		Assert.AreEqual(activityType, pauseOverride!.DeclaringType,
-			"ApplicationActivity must own the OnPause override so the render view lifecycle is forwarded.");
-		Assert.AreEqual(activityType, resumeOverride!.DeclaringType,
-			"ApplicationActivity must own the OnResume override so the render view lifecycle is forwarded.");
+	private static void AssertForwardsBeforeBase(Type activityType, Type renderViewIface, string lifecycleMethodName)
+	{
+		var lifecycleOverride = activityType.GetMethod(
+			lifecycleMethodName, BindingFlags.NonPublic | BindingFlags.Instance);
+		Assert.IsNotNull(lifecycleOverride,
+			$"ApplicationActivity must declare an {lifecycleMethodName} override.");
+		Assert.AreEqual(activityType, lifecycleOverride!.DeclaringType,
+			$"ApplicationActivity must own the {lifecycleMethodName} override (got {lifecycleOverride.DeclaringType}).");
+
+		var forwardMethod = renderViewIface.GetMethod(lifecycleMethodName);
+		Assert.IsNotNull(forwardMethod,
+			$"IUnoSkiaRenderView must declare {lifecycleMethodName}.");
+
+		// Walk up the inheritance chain to find the closest base type that declares its
+		// own lifecycle method; that's the target of base.OnPause()/base.OnResume() in IL.
+		var baseToken = 0;
+		var baseFound = false;
+		for (var t = activityType.BaseType; t != null && !baseFound; t = t.BaseType)
+		{
+			var candidate = t.GetMethod(
+				lifecycleMethodName,
+				BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+			if (candidate != null)
+			{
+				baseToken = candidate.MetadataToken;
+				baseFound = true;
+			}
+		}
+		Assert.IsTrue(baseFound,
+			$"Could not locate the base {lifecycleMethodName} that ApplicationActivity overrides.");
+
+		var il = lifecycleOverride.GetMethodBody()?.GetILAsByteArray();
+		Assert.IsNotNull(il,
+			$"IL for ApplicationActivity.{lifecycleMethodName} must be available for inspection.");
+
+		var forwardOffset = FindCallSiteToken(il!, forwardMethod!.MetadataToken);
+		var baseOffset = FindCallSiteToken(il!, baseToken);
+
+		Assert.IsTrue(forwardOffset >= 0,
+			$"ApplicationActivity.{lifecycleMethodName} must invoke IUnoSkiaRenderView.{lifecycleMethodName} on the active render view.");
+		Assert.IsTrue(baseOffset >= 0,
+			$"ApplicationActivity.{lifecycleMethodName} must invoke base.{lifecycleMethodName}.");
+		Assert.IsTrue(forwardOffset < baseOffset,
+			$"IUnoSkiaRenderView.{lifecycleMethodName} must be invoked BEFORE base.{lifecycleMethodName}: " +
+			$"reversed order causes surface-teardown races on pause and dropped first-frame on resume " +
+			$"(forwardOffset=0x{forwardOffset:X}, baseOffset=0x{baseOffset:X}).");
+	}
+
+	// Scans an IL body for a `call` (0x28) or `callvirt` (0x6F) instruction whose
+	// 4-byte metadata token matches the target, returning the instruction offset (or -1).
+	// Restricting the scan to those two opcodes makes false positives essentially nil.
+	private static int FindCallSiteToken(byte[] il, int targetToken)
+	{
+		for (var i = 0; i + 5 <= il.Length; i++)
+		{
+			var op = il[i];
+			if (op != 0x28 && op != 0x6F)
+			{
+				continue;
+			}
+
+			var token = BitConverter.ToInt32(il, i + 1);
+			if (token == targetToken)
+			{
+				return i;
+			}
+		}
+
+		return -1;
 	}
 }
 #endif
