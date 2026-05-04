@@ -2,29 +2,43 @@
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)**\*.xaml"
           Exclude="$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
 
     <Compile Include="$(MSBuildThisFileDirectory)**\*.xaml.cs"
              Exclude="$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)**\*.cs"
-             Exclude="$(MSBuildThisFileDirectory)**\*.xaml.cs;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**" />
+             Exclude="$(MSBuildThisFileDirectory)**\*.xaml.cs;$(MSBuildThisFileDirectory)**\bin\**;$(MSBuildThisFileDirectory)**\obj\**">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
 
-    <Content Include="$(MSBuildThisFileDirectory)Assets\**\*.*" />
-    <Content Include="$(MSBuildThisFileDirectory)Lottie\**\*.json" />
-    <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml" />
-    <Content Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\**\*.*"
+             Link="Assets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Content Include="$(MSBuildThisFileDirectory)Lottie\**\*.json"
+             Link="Lottie\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml"
+             Link="Asset_GetFileFromApplicationUriAsync.xml" />
+    <Content Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif"
+             Link="Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif" />
 
-    <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\**\*.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\**\*.resw"
+                 Link="UITestsStrings\%(RecursiveDir)%(Filename)%(Extension)" />
 
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\LockScreen.png" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\Wallpaper.png" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\MsAppDataUriTest.png" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\mslug.png" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Lottie\loading.json" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\LockScreen.png"
+                      Link="EmbeddedResources\LockScreen.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\Wallpaper.png"
+                      Link="EmbeddedResources\Wallpaper.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\MsAppDataUriTest.png"
+                      Link="EmbeddedResources\MsAppDataUriTest.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Assets\mslug.png"
+                      Link="Assets\mslug.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Lottie\loading.json"
+                      Link="Lottie\loading.json" />
   </ItemGroup>
 
   <!-- Files in Assets/ and Lottie/ that are registered as EmbeddedResource above must not also be Content. -->
@@ -36,7 +50,8 @@
   <!-- Asset registered as None (intentionally not deployed). -->
   <ItemGroup>
     <Content Remove="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
-    <None Include="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png"
+          Link="Assets\colors300-transitive.png" />
   </ItemGroup>
 
   <!-- Incomplete/dead samples that don't compile (preserved on disk for reference). -->
