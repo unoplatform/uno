@@ -77,6 +77,10 @@ public partial class CompositionShape : CompositionObject, I2DTransformableObjec
 		{
 			return RotationAngle;
 		}
+		else if (propertyName.Equals(nameof(RotationAngleInDegrees), StringComparison.OrdinalIgnoreCase))
+		{
+			return RotationAngleInDegrees;
+		}
 		else if (propertyName.Equals(nameof(TransformMatrix), StringComparison.OrdinalIgnoreCase))
 		{
 			return GetMatrix3x2(subPropertyName, TransformMatrix);
@@ -104,6 +108,10 @@ public partial class CompositionShape : CompositionObject, I2DTransformableObjec
 		else if (propertyName.Equals(nameof(RotationAngle), StringComparison.OrdinalIgnoreCase))
 		{
 			RotationAngle = ValidateValue<float>(propertyValue);
+		}
+		else if (propertyName.Equals(nameof(RotationAngleInDegrees), StringComparison.OrdinalIgnoreCase))
+		{
+			RotationAngleInDegrees = ValidateValue<float>(propertyValue);
 		}
 		else if (propertyName.Equals(nameof(TransformMatrix), StringComparison.OrdinalIgnoreCase))
 		{

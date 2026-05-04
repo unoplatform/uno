@@ -236,6 +236,10 @@ namespace Microsoft.UI.Composition
 			{
 				return RotationAngle;
 			}
+			else if (propertyName.Equals(nameof(RotationAngleInDegrees), StringComparison.OrdinalIgnoreCase))
+			{
+				return RotationAngleInDegrees;
+			}
 			else if (propertyName.Equals(nameof(RotationAxis), StringComparison.OrdinalIgnoreCase))
 			{
 				return GetVector3(subPropertyName, RotationAxis);
@@ -291,6 +295,10 @@ namespace Microsoft.UI.Composition
 			else if (propertyName.Equals(nameof(RotationAngle), StringComparison.OrdinalIgnoreCase))
 			{
 				RotationAngle = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(RotationAngleInDegrees), StringComparison.OrdinalIgnoreCase))
+			{
+				RotationAngleInDegrees = ValidateValue<float>(propertyValue);
 			}
 			else if (propertyName.Equals(nameof(RotationAxis), StringComparison.OrdinalIgnoreCase))
 			{
