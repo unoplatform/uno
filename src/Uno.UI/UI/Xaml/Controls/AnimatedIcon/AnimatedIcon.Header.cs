@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private string m_currentState = "";
 		private string m_previousState = "";
 		private Queue<string> m_queuedStates = new Queue<string>();
-		private int m_queueLength = 2;
+		private int m_queueLength = 4;
 		private string m_pendingState = "";
 		private string m_lastAnimationSegment = "";
 		private string m_lastAnimationSegmentStart = "";
