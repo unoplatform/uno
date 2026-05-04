@@ -30,27 +30,7 @@ internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
 		}
 		set
 		{
-			if (NativeDispatcher.Main.HasThreadAccess)
-			{
-				var shouldRaise = false;
-				lock (_gate)
-				{
-					if (!value.Equals(_currentScale))
-					{
-						_currentScale = value;
-						shouldRaise = true;
-					}
-				}
-
-				if (shouldRaise)
-				{
-					TextScaleFactorChanged?.Invoke(this, EventArgs.Empty);
-				}
-			}
-			else
-			{
-				NativeDispatcher.Main.Enqueue(() => CurrentScale = value);
-			}
+			SetCurrentScale(value);
 		}
 	}
 
@@ -61,6 +41,30 @@ internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
 	private X11TextScaleFactorExtension()
 	{
 		_ = Initialize().ConfigureAwait(false);
+	}
+
+	private void SetCurrentScale(double value)
+	{
+		if (!NativeDispatcher.Main.HasThreadAccess)
+		{
+			NativeDispatcher.Main.Enqueue(() => SetCurrentScale(value));
+			return;
+		}
+
+		var shouldRaise = false;
+		lock (_gate)
+		{
+			if (!value.Equals(_currentScale))
+			{
+				_currentScale = value;
+				shouldRaise = true;
+			}
+		}
+
+		if (shouldRaise)
+		{
+			TextScaleFactorChanged?.Invoke(this, EventArgs.Empty);
+		}
 	}
 
 	private async Task Initialize()

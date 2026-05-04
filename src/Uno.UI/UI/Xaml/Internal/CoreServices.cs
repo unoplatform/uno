@@ -5,7 +5,6 @@
 #nullable enable
 
 using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.UI.Xaml;
@@ -235,9 +234,12 @@ namespace Uno.UI.Xaml.Core
 			// Invalidate cached font info on Inlines
 			if (element is TextBlock textBlock)
 			{
-				foreach (var inline in textBlock.Inlines.SelectMany(InlineExtensions.Enumerate))
+				foreach (var inline in textBlock.Inlines)
 				{
-					inline.InvalidateTextScaleFontInfo();
+					foreach (var descendant in InlineExtensions.Enumerate(inline))
+					{
+						descendant.InvalidateTextScaleFontInfo();
+					}
 				}
 			}
 #elif __WASM__
