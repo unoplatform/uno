@@ -57,7 +57,7 @@ jobs:
 
 - job: Skia_Windows_Runtime_Tests_Build
   displayName: 'Runtime Tests'
-  timeoutInMinutes: 60
+  timeoutInMinutes: 20
   cancelTimeoutInMinutes: 0
 
   pool:
