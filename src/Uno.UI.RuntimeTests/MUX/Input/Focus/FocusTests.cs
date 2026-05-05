@@ -1768,6 +1768,199 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 		//	});
 		//	await TestServices.WindowHelper.WaitForIdle();
 		//}
+
+		[TestMethod]
+		[TestProperty("Description", "Verify that TabFocusNavigation=Cycle keeps focus within the container when sibling controls exist")]
+		public async Task VerifyCycleDoesNotEscapeToSiblings()
+		{
+			const string rootPanelXaml =
+					@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+						<StackPanel x:Name='topBar'>
+							<Button x:Name='outsideBtn1' Content='Outside1'/>
+							<Button x:Name='outsideBtn2' Content='Outside2'/>
+						</StackPanel>
+						<StackPanel TabFocusNavigation='Cycle' x:Name='cycleContainer'>
+							<Button x:Name='insideA' Content='InsideA'/>
+							<Button x:Name='insideB' Content='InsideB'/>
+							<Button x:Name='insideC' Content='InsideC'/>
+						</StackPanel>
+					</StackPanel>";
+
+			StackPanel rootPanel = null;
+			Button insideA = null;
+			Button insideB = null;
+			Button insideC = null;
+			Button outsideBtn1 = null;
+
+			UIExecutor.Execute(() =>
+			{
+				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				insideA = (Button)rootPanel.FindName("insideA");
+				insideB = (Button)rootPanel.FindName("insideB");
+				insideC = (Button)rootPanel.FindName("insideC");
+				outsideBtn1 = (Button)rootPanel.FindName("outsideBtn1");
+
+				TestServices.WindowHelper.WindowContent = rootPanel;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Start focus inside the cycle container
+			await FocusHelper.EnsureFocusAsync(insideA, FocusState.Keyboard);
+
+			string eventOrder = "";
+
+			Action<object, RoutedEventArgs> action = (s, e) =>
+			{
+				UIExecutor.Execute(() =>
+				{
+					eventOrder += $"[{(s as FrameworkElement).Name}]";
+				});
+			};
+
+			// Tab forward through the cycle container multiple times - focus should never leave
+			using (var testerA = new EventTester<Button, RoutedEventArgs>(insideA, "GotFocus", action))
+			using (var testerB = new EventTester<Button, RoutedEventArgs>(insideB, "GotFocus", action))
+			using (var testerC = new EventTester<Button, RoutedEventArgs>(insideC, "GotFocus", action))
+			using (var testerOut1 = new EventTester<Button, RoutedEventArgs>(outsideBtn1, "GotFocus", action))
+			{
+				// Tab forward: A->B, B->C, C->A (cycle), A->B, B->C, C->A (cycle)
+				for (int i = 0; i < 6; i++)
+				{
+					await SimulateTabAsync(rootPanel);
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+
+				// Expect: B, C, A, B, C, A - never outsideBtn1 or outsideBtn2
+				const string expected = "[insideB][insideC][insideA][insideB][insideC][insideA]";
+				Verify.AreEqual(expected, eventOrder);
+			}
+		}
+
+		[TestMethod]
+		[TestProperty("Description", "Verify that Shift-Tab within a Cycle container cycles backward without escaping")]
+		public async Task VerifyCycleDoesNotEscapeOnShiftTab()
+		{
+			const string rootPanelXaml =
+					@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+						<Button x:Name='outsideBtn' Content='Outside'/>
+						<StackPanel TabFocusNavigation='Cycle' x:Name='cycleContainer'>
+							<Button x:Name='insideA' Content='InsideA'/>
+							<Button x:Name='insideB' Content='InsideB'/>
+							<Button x:Name='insideC' Content='InsideC'/>
+						</StackPanel>
+					</StackPanel>";
+
+			StackPanel rootPanel = null;
+			Button insideA = null;
+			Button insideB = null;
+			Button insideC = null;
+			Button outsideBtn = null;
+
+			UIExecutor.Execute(() =>
+			{
+				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				insideA = (Button)rootPanel.FindName("insideA");
+				insideB = (Button)rootPanel.FindName("insideB");
+				insideC = (Button)rootPanel.FindName("insideC");
+				outsideBtn = (Button)rootPanel.FindName("outsideBtn");
+
+				TestServices.WindowHelper.WindowContent = rootPanel;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Start focus on the first element in the cycle container
+			await FocusHelper.EnsureFocusAsync(insideA, FocusState.Keyboard);
+
+			string eventOrder = "";
+
+			Action<object, RoutedEventArgs> action = (s, e) =>
+			{
+				UIExecutor.Execute(() =>
+				{
+					eventOrder += $"[{(s as FrameworkElement).Name}]";
+				});
+			};
+
+			using (var testerA = new EventTester<Button, RoutedEventArgs>(insideA, "GotFocus", action))
+			using (var testerB = new EventTester<Button, RoutedEventArgs>(insideB, "GotFocus", action))
+			using (var testerC = new EventTester<Button, RoutedEventArgs>(insideC, "GotFocus", action))
+			using (var testerOut = new EventTester<Button, RoutedEventArgs>(outsideBtn, "GotFocus", action))
+			{
+				// Shift-Tab from A should go to C (cycle backward), then B, then A, then C again
+				for (int i = 0; i < 4; i++)
+				{
+					await SimulateShiftTabAsync(rootPanel);
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+
+				const string expected = "[insideC][insideB][insideA][insideC]";
+				Verify.AreEqual(expected, eventOrder);
+			}
+		}
+
+		[TestMethod]
+		[TestProperty("Description", "Verify Cycle works with deeply nested children")]
+		public async Task VerifyCycleWithDeeplyNestedChildren()
+		{
+			const string rootPanelXaml =
+					@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+						<Button x:Name='outsideBtn' Content='Outside'/>
+						<Border TabFocusNavigation='Cycle'>
+							<Grid>
+								<StackPanel>
+									<Button x:Name='insideA' Content='InsideA'/>
+									<Button x:Name='insideB' Content='InsideB'/>
+								</StackPanel>
+							</Grid>
+						</Border>
+					</StackPanel>";
+
+			StackPanel rootPanel = null;
+			Button insideA = null;
+			Button insideB = null;
+			Button outsideBtn = null;
+
+			UIExecutor.Execute(() =>
+			{
+				rootPanel = (StackPanel)XamlReader.Load(rootPanelXaml);
+				insideA = (Button)rootPanel.FindName("insideA");
+				insideB = (Button)rootPanel.FindName("insideB");
+				outsideBtn = (Button)rootPanel.FindName("outsideBtn");
+
+				TestServices.WindowHelper.WindowContent = rootPanel;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await FocusHelper.EnsureFocusAsync(insideA, FocusState.Keyboard);
+
+			string eventOrder = "";
+
+			Action<object, RoutedEventArgs> action = (s, e) =>
+			{
+				UIExecutor.Execute(() =>
+				{
+					eventOrder += $"[{(s as FrameworkElement).Name}]";
+				});
+			};
+
+			using (var testerA = new EventTester<Button, RoutedEventArgs>(insideA, "GotFocus", action))
+			using (var testerB = new EventTester<Button, RoutedEventArgs>(insideB, "GotFocus", action))
+			using (var testerOut = new EventTester<Button, RoutedEventArgs>(outsideBtn, "GotFocus", action))
+			{
+				// Tab: A->B, B->A (cycle), A->B, B->A (cycle)
+				for (int i = 0; i < 4; i++)
+				{
+					await SimulateTabAsync(rootPanel);
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+
+				const string expected = "[insideB][insideA][insideB][insideA]";
+				Verify.AreEqual(expected, eventOrder);
+			}
+		}
 	}
 }
 #endif
