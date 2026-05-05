@@ -7,3 +7,4 @@ steps:
     arguments: '-PackagesJsonPath "$(Build.SourcesDirectory)/src/Uno.Sdk/packages.json"'
   env:
     BUILD_SOURCEBRANCH: $(Build.SourceBranch)
+    SYSTEM_PULLREQUEST_TARGETBRANCH: $(System.PullRequest.TargetBranch)

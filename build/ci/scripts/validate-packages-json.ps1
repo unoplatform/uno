@@ -18,8 +18,9 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# Auto-detect: on release/* branches, switch to warning-only mode
-# (stable builds test with versions not yet public on NuGet.org)
+# Auto-detect: on release/* or feature/* branches, switch to warning-only mode
+# (stable builds test with versions not yet public on NuGet.org;
+#  feature branches may reference packages from other feature builds)
 if (-not $WarningOnly) {
     $branch = $env:BUILD_SOURCEBRANCH
     $targetBranch = $env:SYSTEM_PULLREQUEST_TARGETBRANCH
@@ -27,6 +28,12 @@ if (-not $WarningOnly) {
         ($targetBranch -and $targetBranch -like 'refs/heads/release/*')) {
         $detected = if ($targetBranch -like 'refs/heads/release/*') { $targetBranch } else { $branch }
         Write-Host "Detected release branch ($detected) - running in warning-only mode." -ForegroundColor Yellow
+        $WarningOnly = $true
+    }
+    elseif (($branch -and $branch -like 'refs/heads/feature/*') -or
+            ($targetBranch -and $targetBranch -like 'refs/heads/feature/*')) {
+        $detected = if ($targetBranch -like 'refs/heads/feature/*') { $targetBranch } else { $branch }
+        Write-Host "Detected feature branch ($detected) - running in warning-only mode." -ForegroundColor Yellow
         $WarningOnly = $true
     }
 }
