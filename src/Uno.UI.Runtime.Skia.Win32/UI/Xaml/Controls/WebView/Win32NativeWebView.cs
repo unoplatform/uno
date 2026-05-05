@@ -154,9 +154,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		_nativeWebView.Settings.IsScriptEnabled = true;
 		_nativeWebView.Settings.IsWebMessageEnabled = true;
 		_nativeWebView.Settings.AreDefaultScriptDialogsEnabled = true;
-#if DEBUG
-		_nativeWebView.Settings.AreDevToolsEnabled = true;
-#endif
+		_nativeWebView.Settings.AreDevToolsEnabled = FeatureConfiguration.WebView2.EnableDevTools;
 		_controller.Bounds = new Rectangle(0, 0, 500, 500);
 
 		// This dance with weak refs is necessary because there seems like _nativeWebView when it has a ref back

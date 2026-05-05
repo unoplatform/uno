@@ -130,23 +130,22 @@ It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfigur
 
 ## WebView2
 
-### Inspectable (iOS)
+### EnableDevTools
 
-To enable inspecting applications using `WebView2` controls from macOS with the Safari Developer Tools, set the `IsInspectable` configuration flag to `true` in your `App.Xaml.cs`:
+Toggles the platform-native developer tools for the underlying web engine of `WebView2` (Chromium DevTools on Windows / Linux Skia, Chrome DevTools remote debugging on Android, Safari Web Inspector on iOS / Mac Catalyst / macOS). Defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds. Set it during application startup before any `WebView2` is materialized:
 
 ```csharp
 public App()
 {
+    Uno.UI.FeatureConfiguration.WebView2.EnableDevTools = true;
     this.InitializeComponent();
-#if __IOS__
-    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
-#endif
 }
 ```
 
+See [WebView2 → Enabling native developer tools](xref:Uno.Controls.WebView2#enabling-native-developer-tools) for the per-platform inspection workflow.
+
 > [!IMPORTANT]
->
-> This feature will only work for security reasons when the application runs in Debug mode.
+> On Apple platforms the OS only honors this flag for development-signed apps (DEBUG builds). The legacy iOS-only `IsInspectable` property is now an obsolete alias for `EnableDevTools`.
 
 ## `ApplicationData`
 
