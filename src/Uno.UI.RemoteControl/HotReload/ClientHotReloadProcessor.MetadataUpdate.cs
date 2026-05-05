@@ -21,6 +21,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
+using Uno.HotReload.Client;
 using Uno.Threading;
 using static Uno.UI.RemoteControl.HotReload.MetadataUpdater.ElementUpdateAgent;
 
@@ -56,12 +57,58 @@ partial class ClientHotReloadProcessor
 
 	internal static Window? CurrentWindow { get; private set; }
 
-	private static (bool value, string reason) ShouldReload()
+	private static int _uiPauseDrainSubscribed;
+
+#pragma warning disable IDE0051 // Kept for upcoming call path; local suppression to avoid broad rule changes.
+	private static void EnsureUIPauseDrainSubscribed()
 	{
-		var isPaused = TypeMappings.IsPaused;
-		return isPaused
-			? (false, "type mapping prevent reload")
-			: (true, string.Empty);
+		if (Interlocked.Exchange(ref _uiPauseDrainSubscribed, 1) != 0)
+		{
+			return;
+		}
+
+		PendingUIUpdates.DrainRequested += ResumeUIUpdate;
+	}
+#pragma warning restore IDE0051
+
+	private static void ResumeUIUpdate(object? sender, PendingUIUpdates.DrainEventArgs args)
+	{
+		if (!args.HasAny)
+		{
+			return;
+		}
+
+		if (Instance is not { } instance || CurrentWindow is not { } window)
+		{
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn($"[HotReload UI Pause] Drain skipped — no instance or window. " +
+					$"RD={args.ResourceDictionaries.Length} VT={args.VisualTree.Length} type(s) lost.");
+			}
+
+			return;
+		}
+
+		// Build a unified type list for the HR-op. RD and VT types may overlap; the set union
+		// ensures duplicates are deduplicated when creating the local operation.
+		var allTypes = args.ResourceDictionaries.Union(args.VisualTree).ToArray();
+		var hr = instance._status.ContinueOrStartLocal(HotReloadSource.Manual, allTypes);
+
+#if HAS_UNO_WINUI || WINDOWS_WINUI
+		window.DispatcherQueue.TryEnqueue(async () =>
+		{
+			using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+			await instance.DoUpdateVisualTreeCore(hr, window, allTypes, args.ResourceDictionaries, args.VisualTree);
+		});
+#else
+		_ = window.Dispatcher.RunAsync(
+			Windows.UI.Core.CoreDispatcherPriority.Normal,
+			async () =>
+			{
+				using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+				await instance.DoUpdateVisualTreeCore(hr, window, allTypes, args.ResourceDictionaries, args.VisualTree);
+			});
+#endif
 	}
 
 	internal static void SetWindow(Window window, bool disableIndicator)
@@ -94,26 +141,33 @@ partial class ClientHotReloadProcessor
 	}
 #endif
 
+	private static int _reloadWithUpdatedTypesWarned;
+
 	/// <summary>
-	/// Run on UI thread to reload the visual tree with updated types.
-	/// Called by HotDesign via reflection — do not remove.
+	/// Legacy entry point invoked by HotDesign via reflection
+	/// (<c>ReflectionExtensions.ClientHotReloadProcessorExtensions.ReloadUI</c>).
+	/// Inert as of spec 041 — HotDesign should no longer call this; the
+	/// visual-tree apply is driven through the standard UpdateApplicationCore
+	/// path with the new <c>Uno.HotReload.Client.UIUpdate.Pause</c> mechanism.
+	/// Kept signature-compatible so older HD builds linking against the symbol
+	/// name continue to load. Logs a one-time warning when reached.
 	/// </summary>
 #pragma warning disable IDE0051 // Invoked by HotDesign via reflection (ReflectionExtensions.ReloadUI)
-	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
+	[Obsolete("Use Uno.HotReload.Client.UIUpdate.Pause inside UpdateFile instead.", error: false)]
+	private static Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
 #pragma warning restore IDE0051
 	{
-		// Invoked by hot-design (... until we expose real API)
-		if (Instance is { } instance)
+		if (Interlocked.Exchange(ref _reloadWithUpdatedTypesWarned, 1) == 0
+			&& _log.IsEnabled(LogLevel.Warning))
 		{
-			using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+			_log.Warn(
+				$"[HotReload] ReloadWithUpdatedTypes is obsolete and now a no-op (spec 041). " +
+				$"Hot Design must remove its long-lived TypeMappings pause and rely on " +
+				$"Uno.HotReload.Client.UIUpdate.Pause inside UpdateFile only. " +
+				$"Caller invoked with {updatedTypes?.Length ?? 0} type(s).");
+		}
 
-			// Note: We use ContinueOrStartLocal as HD is actually just delaying updates, we should not create a new one for that.
-			await instance.DoUpdateVisualTreeCore(hrOp ?? instance._status.ContinueOrStartLocal(HotReloadSource.Manual, updatedTypes), window, updatedTypes);
-		}
-		else if (_log.IsEnabled(LogLevel.Warning))
-		{
-			_log.Warn($"[HotReload] Received hot reload update with no active processor instance. Ignoring update for {updatedTypes.Length} type(s): [{string.Join(", ", updatedTypes.Select(t => t.FullName ?? t.Name))}]");
-		}
+		return Task.CompletedTask;
 	}
 
 	private async Task UpdateVisualTree(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
@@ -121,64 +175,91 @@ partial class ClientHotReloadProcessor
 		using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
 
 		var op = hrOp ?? HotReloadClientOperation.Empty;
-
-		if (ShouldReload() is { value: false } prevent)
-		{
-			if (_log.IsEnabled(LogLevel.Warning))
-			{
-				_log.Warn($"[HotReload] DoUpdateVisualTreeCore SKIPPED — reason='{prevent.reason}', TypeMappings.IsPaused={TypeMappings.IsPaused}");
-			}
-
-			// Refresh global resources even on the skip path. UpdateGlobalResources
-			// only invokes static `Initialize` / `RegisterResourceDictionariesBySource`
-			// methods on `*GlobalStaticResources` types — it does not touch the
-			// visual tree, so it is safe with TypeMappings.IsPaused. This is also
-			// the ONLY place a resource-only delta (e.g. App.xaml theme edit) can
-			// be applied while HD is active, because:
-			//   - HotDesign's HotReloadUpdateHandler.UpdateApplication strips
-			//     non-FrameworkElement types before calling AppUpdater.UpdateToLatestUI
-			//   - HotDesign's XamlUpdateService.RunUIUpdate early-returns true when
-			//     the type list is empty, so it never dispatches
-			//     ReloadUIAfterHotReload back into us
-			// Without this hoist, GSR-only or GSR+FE deltas never reach
-			// UpdateGlobalResources at all while HD is active.
-			UpdateGlobalResources(updatedTypes);
-
-			// HotDesign's drain only fires for FrameworkElement subtypes. If the
-			// delta has none, RunUIUpdate short-circuits on the empty filtered
-			// list and ReloadWithUpdatedTypes (which is the only caller of
-			// op.ReportCompleted) never runs — leaving the op stuck in Ignored
-			// forever, with the server-side wait only resolving via timeout.
-			// Resources have already been applied above; complete the op
-			// directly so the wait resolves cleanly.
-			var needsUiUpdate = updatedTypes.Any(t => t.IsSubclassOf(typeof(FrameworkElement)));
-			if (!needsUiUpdate)
-			{
-				op.ReportCompleted();
-				return;
-			}
-
-			op.ReportIgnored(prevent.reason);
-			return;
-		}
-
-		await DoUpdateVisualTreeCore(op, window, updatedTypes);
+		await DoUpdateVisualTreeCore(op, window, updatedTypes, rdTypes: null, vtTypes: null);
 	}
 
-	private async Task DoUpdateVisualTreeCore(HotReloadClientOperation hrOp, Window window, Type[] updatedTypes)
+	/// <summary>
+	/// Core visual-tree update. When called from <see cref="UpdateVisualTree"/> both
+	/// <paramref name="rdTypes"/> and <paramref name="vtTypes"/> are <see langword="null"/>
+	/// and the method reads the current pause state to decide whether each phase executes
+	/// immediately or is queued. When called from <see cref="ResumeUIUpdate"/> the snapshots
+	/// are pre-computed and both phases always execute (the drain guarantees all counters are
+	/// zero at that point).
+	/// </summary>
+	private async Task DoUpdateVisualTreeCore(
+		HotReloadClientOperation hrOp,
+		Window window,
+		Type[] updatedTypes,
+		Type[]? rdTypes,
+		Type[]? vtTypes)
 	{
 		if (_log.IsEnabled(LogLevel.Information))
 		{
-			_log.Info($"[HotReload] DoUpdateVisualTreeCore ENTER — {updatedTypes.Length} type(s): [{string.Join(", ", updatedTypes.Select(t => t.FullName ?? t.Name))}], TypeMappings.IsPaused={TypeMappings.IsPaused}");
+			_log.Info($"[HotReload] DoUpdateVisualTreeCore ENTER — {updatedTypes.Length} type(s): " +
+				$"[{string.Join(", ", updatedTypes.Select(t => t.FullName ?? t.Name))}] " +
+				$"VT paused={UIUpdate.IsPaused(HotReloadUIPhases.VisualTree)} " +
+				$"RD paused={UIUpdate.IsPaused(HotReloadUIPhases.ResourceDictionaries)}");
 		}
 
 		var handlerActions = ElementAgent?.ElementHandlerActions;
 		var uiUpdating = true;
+
+		// Declared before the try so the finally block can log them.
+		Type[]? rdToApply = null;
+		Type[]? vtToApply = null;
+
 		try
 		{
 			hrOp.SetCurrent();
 
-			UpdateGlobalResources(updatedTypes);
+			// ── Resource Dictionaries ──────────────────────────────────────────────
+			// rdTypes is non-null only on the drain path (all counters already zero).
+			// On the normal path check the live pause state.
+			var rdPaused = rdTypes is null && PendingUIUpdates.IsPaused(HotReloadUIPhases.ResourceDictionaries);
+			rdToApply = rdTypes ?? (rdPaused ? null : updatedTypes);
+
+			if (rdPaused)
+			{
+				PendingUIUpdates.Enqueue(HotReloadUIPhases.ResourceDictionaries, updatedTypes);
+			}
+			else if (rdToApply is { Length: > 0 })
+			{
+				UpdateGlobalResources(rdToApply);
+			}
+
+			// ── Visual Tree ───────────────────────────────────────────────────────
+			// vtTypes is non-null only on the drain path.
+			var vtPaused = vtTypes is null && PendingUIUpdates.IsPaused(HotReloadUIPhases.VisualTree);
+			vtToApply = vtTypes ?? (vtPaused ? null : updatedTypes);
+
+			if (vtPaused)
+			{
+				PendingUIUpdates.Enqueue(HotReloadUIPhases.VisualTree, updatedTypes);
+
+				if (_log.IsEnabled(LogLevel.Information))
+				{
+					_log.Info($"[HotReload] VisualTree update DEFERRED — {updatedTypes.Length} type(s) queued. " +
+						$"Paused by: {UIUpdate.GetPauseHoldersSummary()}");
+				}
+
+				// If there are no FrameworkElement subtypes the drain will be a visual no-op —
+				// complete the op now so the server-side await doesn't time out waiting.
+				var hasFe = updatedTypes.Any(t => t.IsSubclassOf(typeof(FrameworkElement)));
+				if (!hasFe)
+				{
+					hrOp.ReportCompleted();
+					return;
+				}
+
+				hrOp.ReportDeferred($"VisualTree paused by: {UIUpdate.GetPauseHoldersSummary()}");
+				return;
+			}
+
+			if (vtToApply is null || vtToApply.Length == 0)
+			{
+				hrOp.ReportCompleted();
+				return;
+			}
 
 			FrameworkElement? rootElement = null;
 #if HAS_UNO || HAS_UNO_WINUI
@@ -218,7 +299,7 @@ partial class ClientHotReloadProcessor
 			{
 				foreach (var a in h.Value)
 				{
-					a.BeforeVisualTreeUpdate(updatedTypes);
+					a.BeforeVisualTreeUpdate(vtToApply);
 				}
 			}).ToArray();
 
@@ -277,22 +358,22 @@ partial class ClientHotReloadProcessor
 
 						if (isCapturingState)
 						{
-							handler.CaptureState(fe, dict, updatedTypes);
-							if (dict.Any())
+							handler.CaptureState(fe, dict, vtToApply);
+							if (dict.Count > 0)
 							{
 								capturedStates[key] = dict;
 							}
 						}
 						else
 						{
-							await handler.RestoreState(fe, dict, updatedTypes);
+							await handler.RestoreState(fe, dict, vtToApply);
 						}
 					}
 
-					if (updatedTypes.Contains(liveType))
+					if (vtToApply.Contains(liveType))
 					{
 						// This may happen if one of the nested types has been hot reloaded, but not the type itself.
-						// For instance, a DataTemplate in a resource dictionary may mark the type as updated in `updatedTypes`
+						// For instance, a DataTemplate in a resource dictionary may mark the type as updated in `vtToApply`
 						// but it will not be considered as a new type even if "CreateNewOnMetadataUpdate" was set.
 
 						return (fe, [], liveType);
@@ -373,7 +454,7 @@ partial class ClientHotReloadProcessor
 			{
 				foreach (var a in h.Value)
 				{
-					a.AfterVisualTreeUpdate(updatedTypes);
+					a.AfterVisualTreeUpdate(vtToApply);
 				}
 			}).ToArray();
 		}
@@ -394,12 +475,12 @@ partial class ClientHotReloadProcessor
 			{
 				if (_log.IsEnabled(LogLevel.Information))
 				{
-					_log.Info($"[HotReload] DoUpdateVisualTreeCore COMPLETED — {updatedTypes.Length} type(s)");
+					_log.Info($"[HotReload] DoUpdateVisualTreeCore COMPLETED — {vtToApply?.Length ?? 0} VT type(s), {rdToApply?.Length ?? 0} RD type(s)");
 				}
 			}
 			else if (_log.IsEnabled(LogLevel.Warning))
 			{
-				_log.Warn($"[HotReload] DoUpdateVisualTreeCore DID NOT UPDATE — {updatedTypes.Length} type(s), TypeMappings.IsPaused={TypeMappings.IsPaused}");
+				_log.Warn($"[HotReload] DoUpdateVisualTreeCore DID NOT UPDATE — {vtToApply?.Length ?? 0} VT type(s)");
 			}
 
 			// Action: ReloadCompleted
@@ -407,7 +488,7 @@ partial class ClientHotReloadProcessor
 			{
 				foreach (var a in h.Value)
 				{
-					a.ReloadCompleted(updatedTypes, uiUpdating);
+					a.ReloadCompleted(vtToApply, uiUpdating);
 				}
 			}).ToArray();
 
@@ -665,7 +746,7 @@ partial class ClientHotReloadProcessor
 	{
 		if (_log.IsEnabled(LogLevel.Information))
 		{
-			_log.Info($"[HotReload] UpdateApplicationCore called with {types.Length} type(s): [{string.Join(", ", types.Select(t => t.FullName ?? t.Name))}], TypeMappings.IsPaused={TypeMappings.IsPaused}, CurrentWindow={(CurrentWindow is not null ? "set" : "null")}");
+			_log.Info($"[HotReload] UpdateApplicationCore called with {types.Length} type(s): [{string.Join(", ", types.Select(t => t.FullName ?? t.Name))}], VisualTree paused={UIUpdate.IsPaused(HotReloadUIPhases.VisualTree)}, CurrentWindow={(CurrentWindow is not null ? "set" : "null")}");
 		}
 
 		var hr = Instance?._status.StartLocal(types);

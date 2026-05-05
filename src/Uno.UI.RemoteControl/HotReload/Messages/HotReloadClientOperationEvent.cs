@@ -65,9 +65,9 @@ public class HotReloadClientOperationEvent : IMessage
 	/// <see cref="EndTime"/> is set the op has reached a terminal
 	/// <see cref="HotReloadClientOperationKind.Succeeded"/> / <see cref="HotReloadClientOperationKind.Failed"/>
 	/// state, even if it passed through an intermediate <see cref="HotReloadClientOperationKind.Ignored"/>
-	/// phase (e.g. <c>TypeMappings.IsPaused</c> deferred the first apply and HotDesign later
-	/// re-applied the delta). Consumers that want to distinguish "completed after being
-	/// ignored" from "completed directly" can still inspect <see cref="IgnoreTime"/> /
+	/// phase (e.g. <c>Uno.HotReload.Client.UIUpdate.Pause(VisualTree)</c> deferred the first apply and the
+	/// drain on pause release later applied the delta). Consumers that want to distinguish "completed
+	/// after being ignored" from "completed directly" can still inspect <see cref="IgnoreTime"/> /
 	/// <see cref="IgnoreReason"/> on the event — they are preserved deliberately.</para>
 	/// </remarks>
 	[JsonIgnore]

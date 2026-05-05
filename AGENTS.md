@@ -350,6 +350,23 @@ public MyType MyProperty
 - **Indentation**: Tabs (configured in .editorconfig)
 - **Extension methods**: In `[TypeName]Extensions.cs`, mark `internal`
 
+### Events
+
+🚫 **NEVER declare `event Action` or `event Action<T>`**. Always use `EventHandler` or
+`EventHandler<TEventArgs>`. Raw `Action`/`Func` delegates as event fields bypass the
+standard `add`/`remove` contract and cannot be reliably subscribed across assembly
+boundaries.
+
+✅ Correct:
+```csharp
+public event EventHandler<MyEventArgs>? SomethingHappened;
+```
+
+🚫 Wrong — every agent must reject this:
+```csharp
+public event Action<MyData>? SomethingHappened; // NEVER
+```
+
 ### XAML Formatting (SamplesApp)
 
 XAML files under `src/SamplesApp/` are formatted using [XamlStyler](https://github.com/Xavalon/XamlStyler).
