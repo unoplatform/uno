@@ -47,29 +47,9 @@
 	Comment out this section if you need to update Resource.designer.cs files.
 	See DEVELOPMENT.md#Android for details.
 	-->
-	<Choose>
-		<When Condition="'$(TargetPlatformIdentifier)' == 'Android' and '$(AndroidApplication)' != 'true'">
-			<PropertyGroup >
-				<AndroidGenerateResourceDesigner>false</AndroidGenerateResourceDesigner>
-				<AndroidUseIntermediateDesignerFile>false</AndroidUseIntermediateDesignerFile>
-			</PropertyGroup>
-		</When>
-		<Otherwise>
-			<PropertyGroup>
-				<!--
-				This works around the fact that AndroidResgenFile is
-				automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
-				is set to true.
-				-->
-				<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-				<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
-			</PropertyGroup>
-		</Otherwise>
-	</Choose>
-
-	<Target Name="AndroidResourceGenWorkaround_16_2" AfterTargets="_UpdateAndroidResgen" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and !Exists($(_AndroidResourceDesignerFile))">
-		<WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
-	</Target>
+	<PropertyGroup Condition="'$(TargetPlatformIdentifier)' == 'Android' and '$(AndroidApplication)' != 'true'">
+		<AndroidGenerateResourceDesigner>false</AndroidGenerateResourceDesigner>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<MSTestVersion>4.2.1</MSTestVersion>
