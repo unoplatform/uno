@@ -264,6 +264,40 @@ public class SelectorBarTests : MUXApiTestBase
 		Verify.IsTrue(await ControlHelper.IsInVisualState(item, "CombinedStates", "UnselectedNormal"),
 			"SelectorBarItem should return to UnselectedNormal after pointer released outside bounds.");
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task VerifySelectorBarItemBecomesSelectedAfterMouseClick()
+	{
+		var selectorBar = new SelectorBar();
+		selectorBar.Items.Add(new SelectorBarItem { Text = "Item1" });
+		selectorBar.Items.Add(new SelectorBarItem { Text = "Item2" });
+		selectorBar.Items.Add(new SelectorBarItem { Text = "Item3" });
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		await UITestHelper.Load(selectorBar);
+
+		Verify.IsNull(selectorBar.SelectedItem);
+
+		var item = selectorBar.Items[1];
+		var bounds = item.GetAbsoluteBoundsRect();
+		var center = new Point(bounds.GetMidX(), bounds.GetMidY());
+
+		mouse.MoveTo(center);
+		await TestServices.WindowHelper.WaitForIdle();
+		mouse.Press();
+		await TestServices.WindowHelper.WaitForIdle();
+		mouse.Release();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Verify.AreEqual(item, selectorBar.SelectedItem,
+			"SelectorBarItem should be selected after a mouse press+release inside its bounds.");
+	}
 #endif
 
 	private string GetStringFromSelectorBarItem(SelectorBarItem selectorBarItem)
