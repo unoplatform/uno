@@ -90,6 +90,20 @@
 		</Compile>
 	</ItemGroup>
 	<ItemGroup>
+		<!--
+			Explicit references to the Skia variants of UWP/Foundation/Composition/Dispatching.
+			Uno.UI.Skia.csproj transitively pulls Uno.Reference.csproj (UWP) which builds
+			Uno.UI.Dispatching from NativeDispatcher.reference.cs (a stub that throws
+			"Ref assembly" on every call). The Reference variants are correct for
+			ahead-of-time-resolved package consumers (the Skia runtime swaps them at
+			deploy time), but the unit-test runner is its own .exe and needs the real
+			Skia partials so HasThreadAccessOverride and DispatchOverride exist.
+		-->
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
+
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />

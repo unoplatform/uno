@@ -30,9 +30,16 @@ namespace Uno.UI.Tests
 			Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
 
-			// The unit-test process does not own a real Skia dispatcher; relax the
-			// dependency-property threading enforcement so the test thread can poke
-			// the DP system the same way the in-memory mock dispatcher used to allow.
+			// The unit-test process does not own a real Skia host (Win32/X11/...); install
+			// no-op overrides for the NativeDispatcher hooks so DependencyQueue access does
+			// not throw. The Skia variant's GetHasThreadAccess() / EnqueueNative()
+			// require these to be set, and the runtime hosts normally do that on startup.
+			Uno.UI.Dispatching.NativeDispatcher.HasThreadAccessOverride = () => true;
+			Uno.UI.Dispatching.NativeDispatcher.DispatchOverride = (action, _) => action();
+
+			// Belt-and-suspenders: the unit-test thread is not the Skia main thread, so
+			// also relax the DP threading enforcement (the in-memory mock used to make
+			// HasThreadAccess return true unconditionally).
 			global::Uno.UI.FeatureConfiguration.DependencyProperty.DisableThreadingCheck = true;
 		}
 	}
