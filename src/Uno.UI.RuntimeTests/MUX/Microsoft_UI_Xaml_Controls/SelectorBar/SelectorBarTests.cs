@@ -278,7 +278,7 @@ public class SelectorBarTests : MUXApiTestBase
 		selectorBar.Items.Add(new SelectorBarItem { Text = "Item3" });
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-		var mouse = injector.GetMouse();
+		using var mouse = injector.GetMouse();
 
 		await UITestHelper.Load(selectorBar);
 
