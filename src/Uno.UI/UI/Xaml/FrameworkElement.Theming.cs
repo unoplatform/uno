@@ -257,7 +257,7 @@ public partial class FrameworkElement
 
 		try
 		{
-			// 3. FREEZE inherited properties first (WinUI: framework.cpp line 3301-3307)
+			// 3. FREEZE inherited properties first (MUX Reference: framework.cpp line 3301-3307)
 			if (RequestedTheme != ElementTheme.Default)
 			{
 				NotifyThemeChangedForInheritedProperties(theme, freeze: true);
@@ -291,17 +291,24 @@ public partial class FrameworkElement
 				UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
 			}
 
-			// 5. Propagate to children (they may push their own context)
+			// 5. Persist theme (MUX Reference: Theming.cpp line 155)
+			//    Done BEFORE propagating to children and raising the event so
+			//    that ActualTheme returns the new value both in this element's
+			//    and in descendants' ActualThemeChanged handlers. oldTheme was
+			//    already captured at the top of this method, UpdateThemeBindings
+			//    resolves resources from the pushed subtree context (not from
+			//    _theme), and PropagateThemeToChildren forwards the passed
+			//    `theme` parameter, so moving this earlier is safe.
+			SetTheme(theme);
+
+			// 6. Propagate to children (they may push their own context)
 			PropagateThemeToChildren(theme, forceRefresh);
 
-			// 6. Raise event LAST (WinUI: framework.cpp line 3317)
+			// 7. Raise event LAST (MUX Reference: framework.cpp line 3317)
 			if (effectiveThemeChanged)
 			{
 				RaiseActualThemeChanged();
 			}
-
-			// 7. Persist theme AFTER core walk (MUX Reference: Theming.cpp line 155)
-			SetTheme(theme);
 		}
 		finally
 		{
