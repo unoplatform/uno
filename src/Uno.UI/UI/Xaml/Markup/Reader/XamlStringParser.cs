@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +10,14 @@ using Uno.Foundation.Logging;
 using System.IO;
 using System.Reflection;
 using Uno.Xaml;
+using Windows.Foundation.Metadata;
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
 	internal class XamlStringParser
 	{
+		private static readonly char[] _splitChars = new[] { '(', ',', ')' };
+
 		private int _depth;
 
 		public XamlStringParser()
@@ -25,14 +29,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			var document = XmlReader.Create(new StringReader(content));
 
 			// Initialize the reader using an empty context, because when the tasl
-			// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
+			// is run under the BeforeCompile in VS IDE, the loaded assemblies are used
 			// to interpret the meaning of objects, which is not correct in Uno.UI context.
 			var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
 
 			// Force the line info, otherwise it will be enabled only when the debugger is attached.
 			var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
 
-			using (var reader = new XamlXmlReader(document, context, settings, (_, _) => IsIncludedResult.Default))
+			using (var reader = new XamlXmlReader(document, context, settings, IsIncluded))
 			{
 				if (reader.Read())
 				{
@@ -41,6 +45,129 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 
 			return null;
+		}
+
+		[UnconditionalSuppressMessage(
+			"Trimming",
+			"IL2026:Members attributed with RequiresUnreferencedCode may break when trimming",
+			Justification = "Conditional XAML namespaces resolve types declared by the XAML author at runtime.")]
+		[UnconditionalSuppressMessage(
+			"Trimming",
+			"IL2057:Unrecognized value passed to the parameter 'typeName' of method 'System.Type.GetType(String)'",
+			Justification = "Conditional XAML namespaces resolve types declared by the XAML author at runtime.")]
+		[UnconditionalSuppressMessage(
+			"Trimming",
+			"IL2062:Value passed to a parameter with 'DynamicallyAccessedMembersAttribute' cannot be statically determined",
+			Justification = "ApiInformation.IsTypePresent is invoked with type names declared in XAML and is itself trim-aware.")]
+		private static IsIncludedResult IsIncluded(string localName, string namespaceUri)
+		{
+			// Format mirrors XamlFileParser.IsIncluded — the conditional namespace is
+			// '<xmlns>?<MethodName>(<args>)'. See WinUI's XamlPredicateService.cpp
+			// for the canonical predicate-name list.
+			XamlPredicateService.CrackConditionalXmlns(namespaceUri, out var baseXmlns, out var predicateSubstring);
+			if (predicateSubstring.Length == 0)
+			{
+				return IsIncludedResult.Default;
+			}
+
+			var elements = predicateSubstring.Split(_splitChars);
+			var methodName = elements[0];
+
+			switch (methodName)
+			{
+				case "IsApiContractPresent":
+				case "IsApiContractNotPresent":
+					if (elements.Length < 4 || !ushort.TryParse(elements[2].Trim(), out var majorVersion))
+					{
+						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
+					}
+
+					var contractIncluded = methodName == "IsApiContractPresent"
+						? ApiInformation.IsApiContractPresent(elements[1], majorVersion)
+						: !ApiInformation.IsApiContractPresent(elements[1], majorVersion);
+					return (contractIncluded
+						? IsIncludedResult.ForceInclude
+						: IsIncludedResult.ForceExclude).WithUpdatedNamespace(baseXmlns);
+
+				case "IsTypePresent":
+				case "IsTypeNotPresent":
+					if (elements.Length < 2)
+					{
+						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
+					}
+
+					var typePresent = ApiInformation.IsTypePresent(elements[1]);
+					var typeIncluded = methodName == "IsTypePresent"
+						? typePresent
+						: !typePresent;
+					return (typeIncluded
+						? IsIncludedResult.ForceInclude
+						: IsIncludedResult.ForceExclude).WithUpdatedNamespace(baseXmlns);
+
+				default:
+					// Treat unknown predicate names as references to a custom IXamlCondition implementation
+					// authored as a fully qualified CLR type name (e.g. Foo.Bar.MyCondition(arg)).
+					if (TryEvaluateCustomCondition(methodName, elements, out var customResult))
+					{
+						return (customResult
+							? IsIncludedResult.ForceInclude
+							: IsIncludedResult.ForceExclude).WithUpdatedNamespace(baseXmlns);
+					}
+
+					return IsIncludedResult.Default.WithUpdatedNamespace(baseXmlns);
+			}
+		}
+
+		[UnconditionalSuppressMessage(
+			"Trimming",
+			"IL2026:Members attributed with RequiresUnreferencedCode may break when trimming",
+			Justification = "Custom IXamlCondition types are declared by the XAML author and resolved at runtime.")]
+		[UnconditionalSuppressMessage(
+			"Trimming",
+			"IL2072:Value passed to a parameter with 'DynamicallyAccessedMembersAttribute' cannot be statically determined",
+			Justification = "Custom IXamlCondition types are declared by the XAML author and resolved at runtime.")]
+		private static bool TryEvaluateCustomCondition(string typeName, string[] splitElements, out bool result)
+		{
+			result = false;
+
+			// IsIncluded receives the namespace URI but not the document's xmlns prefix
+			// declarations, so prefix-qualified names like 'cond:MyCondition' cannot be
+			// resolved here. We require fully qualified CLR type names instead.
+			if (string.IsNullOrEmpty(typeName) || typeName.IndexOf(':') >= 0 || typeName.IndexOf('.') < 0)
+			{
+				return false;
+			}
+
+			// Single string argument matches Microsoft.UI.Xaml.Markup.IXamlCondition.Evaluate(string).
+			// The XAML parser splits 'TypeName(arg)' into [TypeName, arg, ""] via _splitChars.
+			var argument = splitElements.Length >= 2 ? splitElements[1] : string.Empty;
+
+			Type conditionType = null;
+			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+			{
+				var resolved = assembly.GetType(typeName, throwOnError: false);
+				if (resolved is not null)
+				{
+					conditionType = resolved;
+					break;
+				}
+			}
+
+			if (conditionType is null)
+			{
+				return false;
+			}
+
+			try
+			{
+				result = XamlPredicateService.Evaluate(conditionType, argument);
+				return true;
+			}
+			catch
+			{
+				// Defensive: if instantiation/evaluation fails, fall back to default include behavior.
+				return false;
+			}
 		}
 
 		private XamlFileDefinition Visit(XamlXmlReader reader)

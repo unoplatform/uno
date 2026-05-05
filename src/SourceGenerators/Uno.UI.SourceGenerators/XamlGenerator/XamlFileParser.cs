@@ -446,8 +446,68 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						? __uno::Uno.Xaml.IsIncludedResult.ForceIncludeWithCacheDisabled
 						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude).WithUpdatedNamespace(namespaceUri);
 				default:
+					if (TryEvaluateXamlCondition(namespaceUri, methodName, elements, out var customResult))
+					{
+						return (customResult
+							? __uno::Uno.Xaml.IsIncludedResult.ForceIncludeWithCacheDisabled
+							: __uno::Uno.Xaml.IsIncludedResult.ForceExclude).WithUpdatedNamespace(namespaceUri);
+					}
+
 					return __uno::Uno.Xaml.IsIncludedResult.Default.WithUpdatedNamespace(namespaceUri); // TODO: support IsPropertyPresent
 			}
+		}
+
+		/// <summary>
+		/// Attempts to evaluate an unknown predicate as a custom <c>IXamlCondition</c>
+		/// implementation referenced by its fully qualified type name.
+		/// </summary>
+		/// <remarks>
+		/// Mirrors the fallback path described in WinUI's
+		/// <c>XamlPredicateService::CrackConditionalPredicate</c> that resolves
+		/// arbitrary types implementing the predicate interface. Because the source
+		/// generator cannot execute user code, the predicate cannot be evaluated at
+		/// build time; we treat it as <c>true</c> so the gated markup survives
+		/// compilation. The runtime XAML reader still evaluates the condition
+		/// normally via <see cref="Microsoft.UI.Xaml.Markup.XamlPredicateService"/>.
+		///
+		/// The expected XAML form is
+		/// <c>xmlns:foo="&lt;baseXmlns&gt;?Fully.Qualified.TypeName(argument)"</c>.
+		/// Prefix-qualified type names of the form <c>prefix:TypeName</c> require
+		/// document-level namespace context that the parser callback does not
+		/// receive, so they are not evaluated at compile time and are handled by
+		/// the existing default-include fallback.
+		/// </remarks>
+		private bool TryEvaluateXamlCondition(string namespaceUri, string methodName, string[] elements, out bool result)
+		{
+			result = false;
+
+			// methodName must be a fully qualified CLR type name. Prefix-qualified
+			// names like "cond:FeatureFlagCondition" cannot be resolved here because
+			// the XML parser callback does not surface declared xmlns prefixes.
+			if (string.IsNullOrEmpty(methodName) || methodName.IndexOf(':') >= 0 || methodName.IndexOf('.') < 0)
+			{
+				return false;
+			}
+
+			var typeSymbol = _metadataHelper.FindTypeByFullName(methodName);
+			if (typeSymbol is not INamedTypeSymbol namedType)
+			{
+				return false;
+			}
+
+			var ixamlCondition = _metadataHelper.FindTypeByFullName("Microsoft.UI.Xaml.Markup.IXamlCondition");
+			if (ixamlCondition is null
+				|| !namedType.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, ixamlCondition)))
+			{
+				return false;
+			}
+
+			// We treat the gated markup as included at compile time. Runtime XAML loading
+			// (XamlReader.Load) will evaluate the condition via XamlPredicateService.
+			// XAML files using custom conditions can be authored once and the condition is
+			// honored for runtime-loaded markup; compiled XAML always includes both branches.
+			result = true;
+			return true;
 		}
 
 		private void VisitRoot(XamlXmlReader reader, ref XamlFileDefinition xamlFile, ref XamlFileParserContext ctx, in CancellationToken ct)
