@@ -179,7 +179,7 @@ namespace Microsoft.UI.Xaml.Documents
 				)
 			);
 
-		protected virtual void OnIsTextScaleFactorEnabledChanged() { }
+		private protected virtual void OnIsTextScaleFactorEnabledChanged() { }
 
 		#endregion
 

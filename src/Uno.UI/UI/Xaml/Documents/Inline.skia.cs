@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private void InvalidateFontInfo() => _fontInfo = null;
 
-		protected override void OnIsTextScaleFactorEnabledChanged()
+		private protected override void OnIsTextScaleFactorEnabledChanged()
 		{
 			base.OnIsTextScaleFactorEnabledChanged();
 			InvalidateFontInfo();
