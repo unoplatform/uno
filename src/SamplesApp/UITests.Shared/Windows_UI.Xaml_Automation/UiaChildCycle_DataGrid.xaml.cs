@@ -123,7 +123,8 @@ public class UiaCycleChildAutomationPeer : FrameworkElementAutomationPeer
 	{
 		var peers = new List<AutomationPeer>();
 
-		// Normal visual children first (the TextBlock — won't have a peer, will be skipped)
+		// Preserve any normal visual children first. For example, the TextBlock may
+		// contribute its own automation peer via base.GetChildrenCore().
 		if (base.GetChildrenCore() is { } baseChildren)
 		{
 			peers.AddRange(baseChildren);
@@ -135,7 +136,7 @@ public class UiaCycleChildAutomationPeer : FrameworkElementAutomationPeer
 		var container = ((UiaCycleChild)Owner).Container;
 		if (container is not null)
 		{
-			var containerPeer = container.GetOrCreateAutomationPeer();
+			var containerPeer = FrameworkElementAutomationPeer.CreatePeerForElement(container);
 			if (containerPeer is not null)
 			{
 				peers.Add(containerPeer);

@@ -34,8 +34,9 @@
 
             <TextBlock TextWrapping="WrapWholeWords">
                 1. Open inspect.exe and point it at 'CycleContainer' below.
-                2. Expand the children. You should see a finite tree:
-                CycleContainer → CycleChild → (no children that loop back).
+                2. Expand the children. You should see a finite tree. `CycleContainer` may show
+                both an extra text child and `CycleChild`, but neither branch should loop back to
+                `CycleContainer` or repeat indefinitely.
                 3. All RuntimeIds must be different — no node should appear as its own ancestor.
                 4. Accessibility Insights 'Control View' should also show a clean tree.
             </TextBlock>
