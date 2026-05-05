@@ -1,0 +1,78 @@
+﻿<Page
+    x:Class="UITests.Shared.Lottie.AnimatedVisualPlayerVisibility"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="12" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            FontSize="13"
+            TextWrapping="Wrap">
+            <Run FontWeight="SemiBold">Repro for #23189</Run>
+            — On Skia, hiding an<Run FontFamily="Consolas">AnimatedVisualPlayer</Run>
+            (or its parent) or calling<Run FontFamily="Consolas">Stop()</Run>
+            should release the<Run FontFamily="Consolas">CompositionTarget.Rendering</Run>
+            subscription so the system render loop can idle.<LineBreak />
+            Enable the FPS overlay (Skia diagnostics) and watch the framerate drop to idle when the player is hidden or stopped.</TextBlock>
+
+        <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal"
+            Spacing="8">
+            <ToggleButton x:Name="PlayerVisibleToggle" IsChecked="True">
+                Player Visible
+            </ToggleButton>
+            <ToggleButton x:Name="ParentVisibleToggle" IsChecked="True">
+                Parent Visible
+            </ToggleButton>
+            <ToggleButton x:Name="InTreeToggle" IsChecked="True">
+                In Visual Tree
+            </ToggleButton>
+            <Button x:Name="PlayButton" Content="Play (loop)" />
+            <Button x:Name="StopButton" Content="Stop" />
+            <Button x:Name="PauseButton" Content="Pause" />
+            <Button x:Name="ResumeButton" Content="Resume" />
+        </StackPanel>
+
+        <Border
+            x:Name="ParentContainer"
+            Grid.Row="2"
+            Padding="8"
+            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="1">
+            <winui:AnimatedVisualPlayer
+                x:Name="Player"
+                AutoPlay="True"
+                Stretch="Uniform">
+                <lottie:LottieVisualSource UriSource="ms-appx:///Lottie/LightBulb.json" />
+            </winui:AnimatedVisualPlayer>
+        </Border>
+
+        <StackPanel
+            Grid.Row="3"
+            Orientation="Horizontal"
+            Spacing="16">
+            <CheckBox IsChecked="{Binding IsPlaying, ElementName=Player, Mode=OneWay}" IsEnabled="False">
+                IsPlaying
+            </CheckBox>
+            <CheckBox IsChecked="{Binding IsAnimatedVisualLoaded, ElementName=Player, Mode=OneWay}" IsEnabled="False">
+                IsAnimatedVisualLoaded
+            </CheckBox>
+            <TextBlock VerticalAlignment="Center">
+                Effective Visibility:<Run x:Name="EffectiveVisibilityText" FontWeight="SemiBold" /></TextBlock>
+        </StackPanel>
+    </Grid>
+</Page>
