@@ -327,7 +327,10 @@ namespace Microsoft.UI.Xaml.Controls
 				var easing = CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10);
 				var animation = compositor.CreateVector2KeyFrameAnimation();
 				animation.InsertKeyFrame(1.0f, target, easing);
-				animation.Duration = TimeSpan.FromSeconds(1);
+				// Distance-based duration: snappy for small motions (keyboard arrows ~30 px → 200 ms),
+				// smoother for larger jumps (wheel notch ~200 px → ~450 ms, big ChangeView → capped at 600 ms).
+				var distance = Vector2.Distance(visual.AnchorPoint, target);
+				animation.Duration = TimeSpan.FromMilliseconds(Math.Clamp(150 + distance * 1.5, 200, 600));
 				void OnFrame(CompositionAnimation? _) => Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), true);
 				void OnStopped(object? _, EventArgs __)
 				{
