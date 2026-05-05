@@ -318,8 +318,6 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 
 			try
 			{
-				TrySubscribeScrollSource(child);
-
 				var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 				if (accessibilityView == AccessibilityView.Raw)
 				{
@@ -351,8 +349,6 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		if (_accessibilityTreeInitialized && !_isCreatingAOM)
 		{
-			TryUnsubscribeScrollSource(child);
-
 			var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 			if (accessibilityView == AccessibilityView.Raw)
 			{
@@ -406,8 +402,6 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
-		TrySubscribeScrollSource(rootElement);
-
 		var rootHandle = rootElement.Visual.Handle;
 		var totalOffset = GetAbsoluteOffset(rootElement.Visual);
 		var peer = rootElement.GetOrCreateAutomationPeer();
@@ -437,8 +431,6 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	private void BuildAccessibilityTreeRecursive(nint parentHandle, UIElement child)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
-
-		TrySubscribeScrollSource(child);
 
 		var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 		if (accessibilityView == AccessibilityView.Raw)
@@ -481,9 +473,9 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 				}
 			}
 
-			if (role == null && this.Log().IsEnabled(LogLevel.Debug))
+			if (role == null && this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] No role resolved for {child.GetType().Name} handle={child.Visual.Handle} peer={peer.GetType().Name} — will default to group in native layer");
+				this.Log().Trace($"[A11y] No role resolved for {child.GetType().Name} handle={child.Visual.Handle} peer={peer.GetType().Name} — will default to group in native layer");
 			}
 
 			try
