@@ -1,0 +1,38 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_ViewManagement.SoftInputTests_InFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <!--
+        Test: TextBox inside a Flyout.
+        Expected: Flyout should NOT dismiss when the keyboard appears (especially on WASM).
+    -->
+    <StackPanel
+        Padding="12"
+        VerticalAlignment="Center"
+        Spacing="12">
+        <TextBlock
+            FontSize="18"
+            FontWeight="Bold"
+            Text="Soft Input: In Flyout" />
+        <TextBlock Text="Tap the button to open a flyout with a TextBox. When you tap the TextBox and the keyboard appears, the flyout should remain open and not dismiss or reposition." TextWrapping="Wrap" />
+        <TextBlock x:Name="StatusText" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+
+        <Button HorizontalAlignment="Center" Content="Open Flyout with TextBox">
+            <Button.Flyout>
+                <Flyout>
+                    <StackPanel MinWidth="300" Spacing="8">
+                        <TextBlock Text="Enter text below:" />
+                        <TextBox PlaceholderText="Type here..." />
+                        <TextBox PlaceholderText="And here (test focus change)..." />
+                        <Button Content="Close" />
+                    </StackPanel>
+                </Flyout>
+            </Button.Flyout>
+        </Button>
+    </StackPanel>
+</Page>
