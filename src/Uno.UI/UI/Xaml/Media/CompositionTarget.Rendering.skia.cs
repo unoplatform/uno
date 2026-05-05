@@ -199,11 +199,12 @@ public partial class CompositionTarget
 			{
 				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
+			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			SkiaRenderHelper.RenderPicture(
 				canvas,
 				lastRenderedFrame.frame,
 				SKColors.Transparent,
-				_fpsHelper);
+				_fpsHelper.DrawFps);
 			canvas.Restore();
 
 			ReturnFrame(lastRenderedFrame);

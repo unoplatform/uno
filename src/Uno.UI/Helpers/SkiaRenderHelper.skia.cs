@@ -49,9 +49,8 @@ internal static class SkiaRenderHelper
 		return (picture, path, nativeVisualsInZOrder);
 	}
 
-	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, Action<SKCanvas>? postRenderAction)
 	{
-		using var fpsHelperDisposable = fpsHelper.BeginFrame();
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(background);
@@ -64,7 +63,7 @@ internal static class SkiaRenderHelper
 				}
 			}
 
-			fpsHelper.DrawFps(canvas);
+			postRenderAction?.Invoke(canvas);
 		}
 
 		// update the control
