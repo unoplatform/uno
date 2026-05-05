@@ -493,5 +493,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(defaultButton.Padding, accentButton.Padding, "Padding should match between default and AccentButtonStyle buttons");
 			Assert.AreEqual(defaultButton.ActualHeight, accentButton.ActualHeight, "ActualHeight should match between default and AccentButtonStyle buttons");
 		}
+
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12028")]
+		public async Task When_Button_Does_Not_Stay_Pressed_During_Async_Click_Handler()
+		{
+			// A Button should return to Normal/PointerOver visual state as soon as the
+			// pointer is released, even when the Click handler starts a long-running async operation.
+			// If the button stays in "Pressed" state during the async operation, that is a visual state bug.
+
+			var asyncTaskCompleted = false;
+			var asyncTaskStarted = new TaskCompletionSource<bool>();
+
+			var button = new Button { Content = "Async Button", Width = 200, Height = 50 };
+			button.Click += async (_, _) =>
+			{
+				asyncTaskStarted.SetResult(true);
+				await Task.Delay(500); // simulate long-running async work
+				asyncTaskCompleted = true;
+			};
+
+			var buttonRect = await UITestHelper.Load(button);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var center = buttonRect.GetCenter();
+
+			// Move over button (sets PointerOver state)
+			mouse.MoveTo(center);
+			await WindowHelper.WaitForIdle();
+
+			// Press the button
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// Verify "Pressed" state is active while held
+			var templateRoot = VisualTreeHelper.GetChild(button, 0) as FrameworkElement;
+			var commonStatesGroup = templateRoot == null ? null :
+				VisualStateManager.GetVisualStateGroups(templateRoot)
+					.FirstOrDefault(g => g.Name == "CommonStates");
+
+			// Release — Click fires, async handler starts
+			mouse.Release();
+			await asyncTaskStarted.Task.WaitAsync(TimeSpan.FromSeconds(3));
+			await WindowHelper.WaitForIdle();
+
+			// After pointer release, button must NOT be in Pressed state anymore
+			Assert.IsFalse(asyncTaskCompleted, "Async should still be running at this point");
+			Assert.IsNotNull(commonStatesGroup, "CommonStates group should exist in button template");
+
+			var currentState = commonStatesGroup.CurrentState?.Name;
+			Assert.AreNotEqual(
+				"Pressed",
+				currentState,
+				$"Button must not remain in Pressed state after pointer release (async task still running). Current state: '{currentState}'");
+
+			// Wait for async to finish to clean up
+			await WindowHelper.WaitFor(() => asyncTaskCompleted, timeoutMS: 2000);
+		}
 	}
 }
