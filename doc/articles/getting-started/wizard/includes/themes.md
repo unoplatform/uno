@@ -3,7 +3,8 @@ Uno platform lets you decide easily which theme or skin to display throughout yo
 This option sets the generated theme or skin to be used in the generated app. The options available are:
 
 - **Simple**  
-    Simple is a lightweight design system that provides minimal, essential styling for controls. This is the default for the recommended preset.
+    Simple is a lightweight design system that provides minimal, essential styling for controls.  
+    Learn more about [Simple](xref:Uno.Themes.Simple.GetStarted). This is the default for the recommended preset.
 
     ```dotnetcli
     dotnet new unoapp -theme simple
