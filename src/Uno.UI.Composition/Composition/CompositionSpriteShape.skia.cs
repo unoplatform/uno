@@ -23,6 +23,14 @@ namespace Microsoft.UI.Composition
 		private SkiaGeometrySource2D? _geometryWithTransformations;
 		private SkiaGeometrySource2D? _fillGeometryWithTransformations;
 
+		// A transform that gets baked into the geometry without affecting stroke thickness or
+		// the canvas. Set by Microsoft.UI.Xaml.Shapes.Shape to apply Stretch sizing — WinUI's
+		// Path/Rectangle keep stroke thickness at the declared value regardless of stretch, and
+		// this channel lets Uno match that while keeping CompositionShape.Scale/RotationAngle/
+		// TransformMatrix as proper Composition API transforms (which DO scale strokes via the
+		// canvas, matching WinUI's CompositionSpriteShape).
+		private SKMatrix _geometryTransform = SKMatrix.CreateIdentity();
+
 		/// <summary>
 		/// This is largely a hack that's needed for MUX.Shapes.Path with Data set to a PathGeometry that has some
 		/// figures with IsFilled = False. CompositionSpriteShapes don't have the concept of a "selectively filled
@@ -37,6 +45,37 @@ namespace Microsoft.UI.Composition
 		{
 			private get => _fillGeometry;
 			set => SetProperty(ref _fillGeometry, value);
+		}
+
+		internal void SetGeometryTransform(SKMatrix transform)
+		{
+			_geometryTransform = transform;
+			RebuildGeometryWithTransformations();
+		}
+
+		private void RebuildGeometryWithTransformations()
+		{
+			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D geometry)
+			{
+				_geometryWithTransformations = _geometryTransform.IsIdentity
+					? geometry
+					: geometry.Transform(_geometryTransform);
+				if (FillGeometry?.BuildGeometry() is SkiaGeometrySource2D fillGeometry)
+				{
+					_fillGeometryWithTransformations = _geometryTransform.IsIdentity
+						? fillGeometry
+						: fillGeometry.Transform(_geometryTransform);
+				}
+				else
+				{
+					_fillGeometryWithTransformations = _geometryWithTransformations;
+				}
+			}
+			else
+			{
+				_geometryWithTransformations = null;
+				_fillGeometryWithTransformations = null;
+			}
 		}
 
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
@@ -134,19 +173,14 @@ namespace Microsoft.UI.Composition
 					// Generate stroke geometry for bounds that will be passed to a brush.
 					// - [Future]: This generated geometry should also be used for hit testing.
 
-					// If we have something like this:
-					// <Path Data="M 0 0 L 50 0 L 50 50 L 0 50 z"
-					//		 Stroke="Red"
-					//		 StrokeThickness="5"
-					//		 Width="70"
-					//		 Stretch="Fill"
-					//		 HorizontalAlignment="Center"
-					//		 VerticalAlignment="Center" />
-					// The geometry itself is a 50x50 rectangle, and then we set the shape Width to 70 and let it
-					// to stretch over the available height, and we have a stroke thickness as 1px
-					// On Windows, the stroke is simply 1px, it doesn't scale with the height.
-					// So, to get a correct stroke geometry, we must apply the transformations first.
-
+					// Note on stretch vs Composition transforms:
+					// Microsoft.UI.Xaml.Shapes.Shape applies its Stretch via SetGeometryTransform,
+					// which pre-bakes the scale into _geometryWithTransformations and leaves the stroke
+					// at its declared thickness — matching WinUI's Path/Rectangle behavior where
+					// StrokeThickness stays constant regardless of stretch. Composition-API transforms
+					// (Scale/RotationAngle/TransformMatrix) flow through CombinedTransformMatrix and are
+					// applied to the canvas in CompositionShape.Render, so they DO scale the stroke,
+					// matching WinUI's CompositionSpriteShape semantics.
 					var strokeFillPath = _sparePath;
 					strokeFillPath.Rewind();
 					// Get the stroke geometry, after scaling has been applied.
@@ -209,29 +243,8 @@ namespace Microsoft.UI.Composition
 
 			switch (propertyName)
 			{
-				case nameof(Geometry) or nameof(CombinedTransformMatrix) or nameof(FillGeometry):
-					if (Geometry?.BuildGeometry() is SkiaGeometrySource2D geometry)
-					{
-						var transform = CombinedTransformMatrix;
-						_geometryWithTransformations = transform.IsIdentity
-							? geometry
-							: geometry.Transform(transform.ToSKMatrix());
-						if (FillGeometry?.BuildGeometry() is SkiaGeometrySource2D fillGeometry)
-						{
-							_fillGeometryWithTransformations = transform.IsIdentity
-								? fillGeometry
-								: fillGeometry.Transform(transform.ToSKMatrix());
-						}
-						else
-						{
-							_fillGeometryWithTransformations = _geometryWithTransformations;
-						}
-					}
-					else
-					{
-						_geometryWithTransformations = null;
-						_fillGeometryWithTransformations = null;
-					}
+				case nameof(Geometry) or nameof(FillGeometry):
+					RebuildGeometryWithTransformations();
 					break;
 			}
 		}
