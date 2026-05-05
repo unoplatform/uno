@@ -2,6 +2,8 @@
     x:Class="Uno.UI.Samples.Controls.SampleChooserControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:converters="using:Uno.UI.Samples.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:entities="using:SampleControl.Entities"
@@ -614,10 +616,19 @@
 
                         <!--  Overflow More(...) Button  -->
                         <Button
+                            x:Name="OverflowSettingsButton"
                             Grid.Column="10"
                             Margin="0,0,8,0"
-                            Style="{StaticResource SampleControlButtonStyle}">
-                            <SymbolIcon Symbol="More" />
+                            Style="{StaticResource AnimatedIconButtonStyle}">
+                            <controls:AnimatedIcon
+                                x:Name="OverflowSettingsIcon"
+                                Width="20"
+                                Height="20"
+                                Foreground="{ThemeResource AccentFillColorDefaultBrush}">
+                                <controls:AnimatedIcon.Source>
+                                    <animatedvisuals:AnimatedSettingsVisualSource />
+                                </controls:AnimatedIcon.Source>
+                            </controls:AnimatedIcon>
                             <Button.Flyout>
                                 <MenuFlyout>
                                     <MenuFlyoutSubItem x:Name="ThemeMenuFlyout" Text="Theme">
