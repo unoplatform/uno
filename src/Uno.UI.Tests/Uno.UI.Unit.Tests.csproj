@@ -9,6 +9,12 @@
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 		<AssemblyName>Uno.UI.Tests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
+		<!--
+			This define lets the test runner alone signal it is the unit-test host
+			(distinct from runtime-test or production builds) so files Compile-linked
+			from Uno.UI.RuntimeTests can hide RuntimeTests-only attributes.
+		-->
+		<DefineConstants>$(DefineConstants);IS_UNIT_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -23,6 +29,7 @@
 
 	<ItemGroup Label="GlobalUsings">
 		<Using Include="AwesomeAssertions" />
+		<Using Include="Uno.UI.Tests.Helpers" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -32,11 +39,6 @@
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" PrivateAssets="all" />
-
-		<!-- https://github.com/NuGet/Home/issues/7344 -->
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<!-- https://github.com/NuGet/Home/issues/7344 -->
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -88,14 +90,14 @@
 		</Compile>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Tests.csproj" />
+		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
-		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Tests.csproj" />
+		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
-		<ProjectReference Include="..\Uno.UI\Uno.UI.Tests.csproj" />
-		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Tests.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
