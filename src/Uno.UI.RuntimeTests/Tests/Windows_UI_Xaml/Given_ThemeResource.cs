@@ -344,6 +344,81 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.Blue, (border.Background as SolidColorBrush)?.Color,
 				"After hot reload, brush should be updated to Blue even for ThemeResource-only bindings");
 		}
+
+		// When an app-level Style containing {ThemeResource} setters is retrieved from
+		// Application.Current.Resources and assigned programmatically to an already-loaded control,
+		// the setter must resolve against the current theme AND stay in sync with theme changes.
+		// Prior to the ResourceResolver / DependencyObjectStore.Theming fixes, the programmatic path
+		// created a ThemeResourceReference without pinning the providing dictionary.
+		//
+		// Uses element-level RequestedTheme on a container we own, which triggers the per-element
+		// NotifyThemeChanged walk and avoids any host-chrome/Frame RequestedTheme that would
+		// short-circuit an app-level PropagateResourcesChanged walk in the runtime-test harness.
+		[TestMethod]
+		public async Task When_AppLevel_Style_With_ThemeResource_Applied_Programmatically()
+		{
+			var themedBrushes = new ResourceDictionary();
+			var lightDict = new ResourceDictionary();
+			lightDict["Issue455_Foreground"] = new SolidColorBrush(Colors.Red);
+			var darkDict = new ResourceDictionary();
+			darkDict["Issue455_Foreground"] = new SolidColorBrush(Colors.Blue);
+			themedBrushes.ThemeDictionaries["Light"] = lightDict;
+			themedBrushes.ThemeDictionaries["Default"] = darkDict;
+
+			var styleHost = (ResourceDictionary)XamlReader.Load(
+				"""
+				<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+									xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Style x:Key="Issue455_TextBlockStyle" TargetType="TextBlock">
+						<Setter Property="Foreground" Value="{ThemeResource Issue455_Foreground}" />
+					</Style>
+				</ResourceDictionary>
+				""");
+
+			using var brushesCleanup = StyleHelper.UseAppLevelResources(themedBrushes);
+			using var styleCleanup = StyleHelper.UseAppLevelResources(styleHost);
+
+			var host = new Border
+			{
+				RequestedTheme = ElementTheme.Dark,
+				Child = new TextBlock { Text = "Test" },
+			};
+			var textBlock = (TextBlock)host.Child;
+
+			WindowHelper.WindowContent = host;
+			await WindowHelper.WaitForLoaded(host);
+			await WindowHelper.WaitForIdle();
+
+			var style = Application.Current.Resources["Issue455_TextBlockStyle"] as Style;
+			Assert.IsNotNull(style, "Issue455_TextBlockStyle should be registered in Application.Resources.");
+
+			textBlock.Style = style;
+			await WindowHelper.WaitForIdle();
+
+			var foreground = textBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(foreground, "Foreground should be set by the Style's ThemeResource Setter.");
+			Assert.AreEqual(Colors.Blue, foreground.Color,
+				"After programmatic Style assignment under DARK element theme, the {ThemeResource} " +
+				"setter must resolve against the Default (dark) theme dictionary (Blue).");
+
+			host.RequestedTheme = ElementTheme.Light;
+			await WindowHelper.WaitForIdle();
+
+			foreground = textBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(foreground, "Foreground should still be present after theme change.");
+			Assert.AreEqual(Colors.Red, foreground.Color,
+				"After element theme change to Light, the programmatically-applied Style's {ThemeResource} " +
+				"setter must re-resolve to the Light brush (Red).");
+
+			host.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			foreground = textBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(foreground);
+			Assert.AreEqual(Colors.Blue, foreground.Color,
+				"After switching back to Dark, the programmatically-applied Style's ThemeResource " +
+				"must re-resolve to Blue.");
+		}
 #endif
 	}
 }

@@ -307,10 +307,12 @@ namespace Uno.UI
 			var effectivePrecedence = precedence ?? DependencyPropertyValuePrecedences.Local;
 
 			// Set the initial value from statically-available top-level resources.
-			// This uses the 3-parameter TryStaticRetrieval overload, which does not capture
-			// the providing ResourceDictionary. For theme resources, dictionary pinning is
-			// deferred until the load-time re-resolution path.
-			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
+			// Use the overload that also returns the providing ResourceDictionary so we can
+			// pin it on the ThemeResourceReference. Without pinning, theme changes go through
+			// the top-level fallback path, which is fragile in combination with element-level
+			// themes, VisualState transitions and Style assignments that bypass the XAML parser
+			// (e.g. applying a cached app-level Style programmatically after the control is loaded).
+			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value, out var providingDictionary))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
@@ -319,12 +321,10 @@ namespace Uno.UI
 
 				if (isThemeResource)
 				{
-					// Create ThemeResourceReference without pinned dictionary for now.
-					// The providing dictionary will be captured during the first
-					// _resourceBindings resolution at load time (via the re-pin logic
-					// in InnerUpdateResourceBindingsUnsafe).
+					// Pin the providing dictionary so subsequent theme changes can re-resolve
+					// via the O(1) pinned-dictionary path (matches WinUI's CThemeResource).
 					var themeRef = new ThemeResourceReference(
-						specializedKey, null, value, isResolved: true, context,
+						specializedKey, providingDictionary, value, isResolved: true, context,
 						updateReason, effectivePrecedence);
 					(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
 
