@@ -331,10 +331,26 @@ namespace Uno.Xaml
 			var sti = GetStartTagInfo ();
 			using (PushIgnorables(sti.Members))
 			{
-				if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
+				if (IsIgnored(r.Prefix, r.NamespaceURI, out var elementUpdatedNamespace))
 				{
 					r.Skip();
 					yield break;
+				}
+
+				// When a conditional namespace evaluates to true, the IsIncluded callback
+				// strips the '?<predicate>(...)' suffix via WithUpdatedNamespace. Re-issue
+				// the StartTagInfo against the cleaned namespace so subsequent type lookup
+				// sees the base xmlns instead of the conditional URI.
+				if (!string.IsNullOrEmpty(elementUpdatedNamespace) && elementUpdatedNamespace != sti.Namespace)
+				{
+					sti = new StartTagInfo
+					{
+						Name = sti.Name,
+						Namespace = elementUpdatedNamespace,
+						TypeName = new XamlTypeName(elementUpdatedNamespace, sti.Name, sti.TypeName.TypeArguments),
+						Members = sti.Members,
+						Attributes = sti.Attributes,
+					};
 				}
 
 				if (r.NodeType != XmlNodeType.Element)
