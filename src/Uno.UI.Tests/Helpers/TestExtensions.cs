@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
@@ -29,8 +30,20 @@ internal static class TestExtensions
 		ForceLoadedRecursive(element);
 	}
 
+	private static readonly MethodInfo s_onFwEltLoading = typeof(FrameworkElement)
+		.GetMethod("OnFwEltLoading", BindingFlags.Instance | BindingFlags.NonPublic);
+
 	private static void ForceLoadedRecursive(UIElement element)
 	{
+		// FrameworkElement.OnFwEltLoading wraps the OnLoading + OnLoadingPartial pair
+		// and raises the Loading event. RaiseLoaded then drives OnFwEltLoaded and
+		// updates IsLoaded. Together they reproduce what the legacy mock did via the
+		// ad-hoc EnterTree() helper.
+		if (element is FrameworkElement fe)
+		{
+			s_onFwEltLoading?.Invoke(fe, null);
+		}
+
 		element.RaiseLoaded();
 
 		var count = VisualTreeHelper.GetChildrenCount(element);
