@@ -16,8 +16,6 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI",
 				"Uno.UI.dll",
 				[
-					// On CI the test assemblies set must be first, as it contains all dependent assemblies
-					"Uno.UI.Tests",
 					"Uno.UI.Skia",
 					"Uno.UI.Reference",
 				],
@@ -27,8 +25,6 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UWP",
 				"Uno.dll",
 				[
-					// On CI the test assemblies set must be first, as it contains all dependent assemblies
-					"Uno.Tests",
 					"Uno.Skia",
 					"Uno.Reference",
 				],
@@ -38,8 +34,6 @@ internal static partial class UnoAssemblyHelper
 				"Uno.Foundation",
 				"Uno.Foundation.dll",
 				[
-					// On CI the test assemblies set must be first, as it contains all dependent assemblies
-					"Uno.Foundation.Tests",
 					"Uno.Foundation.Skia",
 					"Uno.Foundation.Reference",
 				],
@@ -49,8 +43,6 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI.Composition",
 				"Uno.UI.Composition.dll",
 				[
-					// On CI the test assemblies set must be first, as it contains all dependent assemblies
-					"Uno.UI.Composition.Tests",
 					"Uno.UI.Composition.Skia",
 					"Uno.UI.Composition.Reference",
 				],
