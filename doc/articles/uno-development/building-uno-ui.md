@@ -137,7 +137,7 @@ To workaround a performance issue, all `Resource.designer.cs` generation is disa
 
 If you need to add a new `@(AndroidResource)` value to be used from C# code inside of Uno.UI libraries:
 
-1. Comment out the `<PropertyGroup>` in `Directory.Build.targets` that sets `$(AndroidGenerateResourceDesigner)` and `$(AndroidUseIntermediateDesignerFile)` to `false`.
+1. Comment out the `<PropertyGroup>` in `Directory.Build.targets` that sets `$(AndroidGenerateResourceDesigner)` to `false`.
 
 2. Build Uno.UI as you normally would. You will get compiler errors about duplicate fields, but `obj\Debug\net6.0-android\Resource.designer.cs` should now be generated.
 
