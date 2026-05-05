@@ -386,6 +386,77 @@ public class Given_ElementTheme
 			$"If White, ActualTheme was stale and the wrong dictionary was used.");
 	}
 
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_ThemeResource_Resolved_During_Event_Returns_New_Value()
+	{
+		// Exact CSharpMarkup ThemeBindingProvider scenario:
+		// 1. App-level theme changes (not local RequestedTheme)
+		// 2. ActualThemeChanged fires on element
+		// 3. Handler reads element.ActualTheme to pick theme dictionary
+		// 4. Resolves resource from the chosen dictionary
+		//
+		// Before the fix (SetTheme after RaiseActualThemeChanged), step 3
+		// returned the OLD theme, causing step 4 to select the wrong
+		// dictionary and produce stale colors.
+		//
+		// MUX Reference: framework.cpp CUIElement::NotifyThemeChangedCore
+		// sets theme BEFORE raising the event.
+
+		using var lightScope = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var element = new Border { Width = 100, Height = 100 };
+
+		// Set up theme dictionaries with distinct sentinel values
+		var lightDict = new ResourceDictionary();
+		lightDict["SentinelColor"] = Colors.White;
+		var darkDict = new ResourceDictionary();
+		darkDict["SentinelColor"] = Colors.Black;
+		element.Resources.ThemeDictionaries["Light"] = lightDict;
+		element.Resources.ThemeDictionaries["Dark"] = darkDict;
+
+		WindowHelper.WindowContent = element;
+		await WindowHelper.WaitForLoaded(element);
+
+		Assert.AreEqual(ElementTheme.Light, element.ActualTheme, "Should start Light");
+
+		ElementTheme? themeDuringEvent = null;
+		Windows.UI.Color? colorDuringAppThemeEvent = null;
+
+		element.ActualThemeChanged += (s, e) =>
+		{
+			var fe = (FrameworkElement)s;
+			themeDuringEvent = fe.ActualTheme;
+
+			// This is what CSharpMarkup's ThemeBindingProvider does:
+			// read ActualTheme, pick the matching dictionary, resolve resource.
+			var themeKey = fe.ActualTheme == ElementTheme.Dark ? "Dark" : "Light";
+			if (fe.Resources.ThemeDictionaries.TryGetValue(themeKey, out var dict)
+				&& dict is ResourceDictionary rd
+				&& rd.TryGetValue("SentinelColor", out var val))
+			{
+				colorDuringAppThemeEvent = (Windows.UI.Color)val;
+			}
+		};
+
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, themeDuringEvent,
+				"ActualTheme should be Dark inside handler during app-level theme change");
+			Assert.IsNotNull(colorDuringAppThemeEvent,
+				"Resource should have been resolved during the event");
+			Assert.AreEqual(Colors.Black, (Windows.UI.Color)colorDuringAppThemeEvent,
+				$"Handler should resolve from Dark dictionary (Black), " +
+				$"but got {colorDuringAppThemeEvent}. " +
+				$"If White, ActualTheme was stale (CSharpMarkup canary scenario).");
+		}
+	}
+#endif
+
 	#endregion
 
 	#region Theme Resources
