@@ -76,7 +76,7 @@ public class Given_Flyout_PropertyPropagation
 			flyout.ShowAt(flyoutOwner);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var popup = flyout.GetPopupPanel().Popup;
+			var popup = flyout._popup;
 
 			Assert.IsFalse(popup.AllowFocusOnInteraction);
 			Assert.IsTrue(popup.AllowFocusWhenDisabled);
