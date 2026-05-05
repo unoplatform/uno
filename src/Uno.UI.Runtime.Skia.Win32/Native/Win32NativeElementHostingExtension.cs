@@ -150,23 +150,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			{
 				_showWindowOnNextRender = false;
 				_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-
-				// SW_SHOWNORMAL restores the window using its saved WINDOWPLACEMENT.rcNormalPosition,
-				// which still holds the old screen coordinates from before re-parenting. Those coordinates
-				// are now misinterpreted as parent-relative, placing the window at the wrong position.
-				// Re-applying SetWindowPos after ShowWindow overrides that restoration.
-				var posSuccess = PInvoke.SetWindowPos(
-					(HWND)window.Hwnd,
-					HWND.Null,
-					(int)_lastArrangeRect.X,
-					(int)_lastArrangeRect.Y,
-					(int)_lastArrangeRect.Width,
-					(int)_lastArrangeRect.Height,
-					SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
-				if (!posSuccess)
-				{
-					this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
-				}
 			}
 		}
 	}
