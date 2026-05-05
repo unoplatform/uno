@@ -183,6 +183,13 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 					commandBuffer.PresentDrawable(drawable);
 					commandBuffer.Commit();
 				}
+
+				if (_owner?.RootElement?.Visual.CompositionTarget is CompositionTarget ct)
+				{
+					NativeDispatcher.Main.Enqueue(
+						ct.OnFramePresented,
+						NativeDispatcherPriority.High);
+				}
 			}
 			finally
 			{

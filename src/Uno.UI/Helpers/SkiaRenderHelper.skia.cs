@@ -185,11 +185,15 @@ internal static class SkiaRenderHelper
 		private long _currentFrameBeginTimestamp;
 		private bool _measureThisFrame;
 		private long _pictureReadyTimestamp;
-		// Generation counter incremented by OnFrameRecorded (UI thread).
-		// OnFramePresentRequested (native render thread) reads it and remembers the last-presented value.
-		// Mismatches give us dropped-vs-unpresented accounting without relying on _lastRenderedFrame,
-		// which is always re-populated by CompositionTarget.ReturnFrame after each Draw.
+		// Generation counter incremented by OnFrameRecorded (UI thread) on every new SKPicture.
+		// OnFramePresentRequested (render thread, at Draw entry) compares this against
+		// _lastDrawnGeneration (the previous Draw's generation) to detect re-presents.
+		// OnFrameRecorded compares against _lastDrawnGeneration to detect unpresented frames
+		// (a new Render overwriting one that never made it to Draw).
+		// OnFramePresentCompleted (UI thread, post-present) advances _lastPresentedGeneration
+		// for draw-to-present delay sampling only.
 		private long _currentFrameGeneration;
+		private long _lastDrawnGeneration;
 		private long _lastPresentedGeneration;
 		private long _lastTimerTickGeneration;
 		private int _consecutiveIdleTicks;
@@ -262,6 +266,10 @@ internal static class SkiaRenderHelper
 		/// swapped into _lastRenderedFrame. Stamps the moment the picture became ready. If the
 		/// previous generation was never consumed by Draw before this new recording starts,
 		/// that previous CPU work is wasted — count it as "drawn-but-not-presented".
+		/// Uses <see cref="_lastDrawnGeneration"/> (set at Draw entry on the render thread)
+		/// rather than <see cref="_lastPresentedGeneration"/> (set post-present on the UI thread):
+		/// once Draw has started on a generation, the work is no longer wasted, even if the
+		/// post-present bookkeeping hasn't run yet on the UI thread.
 		/// </summary>
 		public void OnFrameRecorded()
 		{
@@ -271,8 +279,8 @@ internal static class SkiaRenderHelper
 			}
 
 			var current = Interlocked.Read(ref _currentFrameGeneration);
-			var lastPresented = Interlocked.Read(ref _lastPresentedGeneration);
-			if (current > lastPresented)
+			var lastDrawn = Interlocked.Read(ref _lastDrawnGeneration);
+			if (current > lastDrawn)
 			{
 				Interlocked.Increment(ref _unpresentedThisSecond);
 			}
@@ -282,10 +290,12 @@ internal static class SkiaRenderHelper
 		}
 
 		/// <summary>
-		/// Called from CompositionTarget.Draw at entry. If no new frame has been recorded
-		/// since the previous Draw, the native VSync fired but the UI thread didn't produce
-		/// anything new — we'll re-blit the same picture. Count that as a dropped frame.
-		/// Otherwise, sample the delay from picture-ready to present.
+		/// Called from CompositionTarget.Draw at entry. If this Draw's generation matches
+		/// the previous Draw's generation, the UI thread didn't produce a new frame between
+		/// the two Draws — count that as a dropped frame. Comparing consecutive Draws
+		/// (instead of against <see cref="_lastPresentedGeneration"/>) keeps the metric
+		/// race-free even if <see cref="OnFramePresentCompleted"/> runs out of order on
+		/// the UI thread relative to the render thread's Draw sequence.
 		/// </summary>
 		public void OnFramePresentRequested()
 		{
@@ -295,7 +305,6 @@ internal static class SkiaRenderHelper
 			}
 
 			var current = Interlocked.Read(ref _currentFrameGeneration);
-			var lastPresented = Interlocked.Read(ref _lastPresentedGeneration);
 
 			// No frame has ever been recorded yet (counter just enabled / very first VSync).
 			// Treating this as a dropped frame would inflate the metric at startup.
@@ -304,9 +313,31 @@ internal static class SkiaRenderHelper
 				return;
 			}
 
-			if (current == lastPresented)
+			var previousDrawn = Interlocked.Exchange(ref _lastDrawnGeneration, current);
+			if (current == previousDrawn)
 			{
 				Interlocked.Increment(ref _droppedThisSecond);
+			}
+		}
+
+		/// <summary>
+		/// Called from CompositionTarget.OnFramePresented after the frame is actually on
+		/// screen (render thread on Win32 after SwapBuffers/BitBlt; end of
+		/// OnNativePlatformFrameRequested on all other hosts). Samples the draw-to-present
+		/// delay and advances the generation counter.
+		/// </summary>
+		public void OnFramePresentCompleted()
+		{
+			if (!IsEnabled)
+			{
+				return;
+			}
+
+			var drawn = Interlocked.Read(ref _lastDrawnGeneration);
+			var lastPresented = Interlocked.Read(ref _lastPresentedGeneration);
+
+			if (drawn == 0 || drawn == lastPresented)
+			{
 				return;
 			}
 
@@ -318,7 +349,7 @@ internal static class SkiaRenderHelper
 				_drawToPresentTimesHead = (_drawToPresentTimesHead + 1) % _drawToPresentTimeTicks.Length;
 			}
 
-			Interlocked.Exchange(ref _lastPresentedGeneration, current);
+			Interlocked.Exchange(ref _lastPresentedGeneration, drawn);
 		}
 
 		public void DrawFps(SKCanvas canvas)

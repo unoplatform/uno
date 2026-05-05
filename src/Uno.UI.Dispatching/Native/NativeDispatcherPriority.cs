@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.Dispatching
+namespace Uno.UI.Dispatching
 {
 	internal enum NativeDispatcherPriority
 	{
