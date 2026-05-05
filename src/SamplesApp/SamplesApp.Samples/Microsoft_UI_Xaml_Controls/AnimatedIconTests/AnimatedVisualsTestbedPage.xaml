@@ -1,17 +1,19 @@
-<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.AnimatedIconTests.AnimatedVisualsTestbedPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-      mc:Ignorable="d">
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.AnimatedIconTests.AnimatedVisualsTestbedPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-    <Grid Padding="24"
-          ColumnSpacing="24"
-          RowSpacing="16">
+    <Grid
+        Padding="24"
+        ColumnSpacing="24"
+        RowSpacing="16">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="280" />
+            <ColumnDefinition Width="380" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -20,111 +22,137 @@
         </Grid.RowDefinitions>
 
         <!--  Left column: source picker + preview  -->
-        <StackPanel Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="0"
-                    Spacing="12">
-            <TextBlock FontSize="20"
-                       Style="{ThemeResource SubtitleTextBlockStyle}"
-                       Text="AnimatedVisualSource testbed" />
+        <StackPanel
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Spacing="12">
+            <TextBlock
+                FontSize="20"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="AnimatedVisualSource testbed" />
 
             <TextBlock TextWrapping="Wrap">
                 Pick a source, then play any of its markers, scrub progress,
                 or recolor the foreground.
             </TextBlock>
 
-            <ComboBox x:Name="SourcePicker"
-                      HorizontalAlignment="Stretch"
-                      Header="Source"
-                      SelectionChanged="OnSourceChanged" />
+            <ComboBox
+                x:Name="SourcePicker"
+                HorizontalAlignment="Stretch"
+                Header="Source"
+                SelectionChanged="OnSourceChanged" />
 
-            <Border BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="4"
+            <!--  Side-by-side preview: scrubber-driven visual + interactive button  -->
+            <Grid HorizontalAlignment="Stretch" ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel
+                    Grid.Column="0"
                     HorizontalAlignment="Center"
-                    Padding="16">
-                <controls:AnimatedVisualPlayer x:Name="Player"
-                                               Width="96"
-                                               Height="96"
-                                               AutoPlay="False"
-                                               Stretch="Uniform" />
-            </Border>
+                    Spacing="6">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        Text="Visual state tester" />
+                    <Border
+                        Width="160"
+                        Height="160"
+                        Padding="20"
+                        Background="{ThemeResource LayerFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12">
+                        <controls:AnimatedVisualPlayer
+                            x:Name="Player"
+                            AutoPlay="False"
+                            Stretch="Uniform" />
+                    </Border>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="11"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="Driven by markers / slider" />
+                </StackPanel>
 
-            <!--  Live button preview: handles real PointerEntered / Exited / Pressed / Released  -->
-            <TextBlock Margin="0,8,0,0"
-                       Style="{ThemeResource BodyStrongTextBlockStyle}"
-                       Text="Live button (hover/press)" />
-            <TextBlock FontSize="12"
-                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                       TextWrapping="Wrap">
-                Hover / press the button below to drive the source through its
-                pointer-state markers (NormalToPointerOver, NormalToPressed, …).
-            </TextBlock>
-            <!--  Border instead of Button so the default ButtonBase visual states don't capture
-                  the pointer events we want to forward into the live player.  -->
-            <Border x:Name="LiveButton"
-                    Width="56"
-                    Height="56"
-                    HorizontalAlignment="Left"
-                    Background="{ThemeResource ControlFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    CornerRadius="28"
-                    Padding="0"
-                    PointerEntered="OnLiveButtonPointerEntered"
-                    PointerExited="OnLiveButtonPointerExited"
-                    PointerPressed="OnLiveButtonPointerPressed"
-                    PointerReleased="OnLiveButtonPointerReleased">
-                <controls:AnimatedVisualPlayer x:Name="LivePlayer"
-                                               Width="32"
-                                               Height="32"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               AutoPlay="False"
-                                               Stretch="Uniform" />
-            </Border>
+                <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    Spacing="6">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        Text="Live button" />
+                    <!--
+                        Border instead of Button so the default ButtonBase visual states don't capture
+                        the pointer events we want to forward into the live player.
+                    -->
+                    <Border
+                        x:Name="LiveButton"
+                        Width="160"
+                        Height="160"
+                        Padding="20"
+                        Background="{ThemeResource ControlFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        PointerEntered="OnLiveButtonPointerEntered"
+                        PointerExited="OnLiveButtonPointerExited"
+                        PointerPressed="OnLiveButtonPointerPressed"
+                        PointerReleased="OnLiveButtonPointerReleased">
+                        <controls:AnimatedVisualPlayer
+                            x:Name="LivePlayer"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            AutoPlay="False"
+                            Stretch="Uniform" />
+                    </Border>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="11"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="Hover / press to drive states" />
+                </StackPanel>
+            </Grid>
 
-            <StackPanel Orientation="Horizontal"
-                        Spacing="8">
-                <TextBlock VerticalAlignment="Center"
-                           Text="Foreground:" />
-                <Button Click="OnBlackForeground"
-                        Content="Black" />
-                <Button Click="OnRedForeground"
-                        Content="Red" />
-                <Button Click="OnAccentForeground"
-                        Content="Accent" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock VerticalAlignment="Center" Text="Foreground:" />
+                <Button Click="OnBlackForeground" Content="Black" />
+                <Button Click="OnRedForeground" Content="Red" />
+                <Button Click="OnAccentForeground" Content="Accent" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal"
-                        Spacing="8">
-                <TextBlock VerticalAlignment="Center"
-                           Text="Progress:" />
-                <Slider x:Name="ProgressSlider"
-                        Width="200"
-                        Maximum="1.0"
-                        Minimum="0.0"
-                        StepFrequency="0.01"
-                        ValueChanged="OnProgressSliderChanged" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock VerticalAlignment="Center" Text="Progress:" />
+                <Slider
+                    x:Name="ProgressSlider"
+                    Width="200"
+                    Maximum="1.0"
+                    Minimum="0.0"
+                    StepFrequency="0.01"
+                    ValueChanged="OnProgressSliderChanged" />
             </StackPanel>
 
-            <TextBlock x:Name="StatusText"
-                       FontFamily="Consolas"
-                       Text="Idle"
-                       TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="StatusText"
+                FontFamily="Consolas"
+                Text="Idle"
+                TextWrapping="Wrap" />
         </StackPanel>
 
         <!--  Right column: marker buttons (built dynamically per source)  -->
-        <TextBlock Grid.Row="0"
-                   Grid.Column="1"
-                   FontSize="14"
-                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                   Text="Markers" />
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="1"
+            FontSize="14"
+            Style="{ThemeResource SubtitleTextBlockStyle}"
+            Text="Markers" />
 
-        <ScrollViewer Grid.Row="1"
-                      Grid.Column="1">
-            <StackPanel x:Name="MarkersHost"
-                        Spacing="6" />
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <StackPanel x:Name="MarkersHost" Spacing="6" />
         </ScrollViewer>
     </Grid>
 </Page>
