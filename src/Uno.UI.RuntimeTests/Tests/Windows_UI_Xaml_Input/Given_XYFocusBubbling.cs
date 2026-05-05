@@ -12,6 +12,7 @@ using static Uno.UI.Xaml.Input.XYFocusBubbling;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Input;
 
 [TestClass]
+[RunsOnUIThread]
 public class Given_XYFocusBubbling
 {
 	[TestMethod]
