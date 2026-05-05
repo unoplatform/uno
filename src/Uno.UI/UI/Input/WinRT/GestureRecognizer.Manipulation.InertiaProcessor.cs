@@ -286,7 +286,6 @@ public partial class GestureRecognizer
 			public void Dispose()
 				=> _timer?.Stop();
 
-#if IS_UNIT_TESTS
 			/// <summary>
 			/// For test purposes only!
 			/// </summary>
@@ -300,7 +299,6 @@ public partial class GestureRecognizer
 					time += frameDuration;
 				}
 			}
-#endif
 		}
 
 		private interface IInertiaProcessorTimer

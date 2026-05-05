@@ -1921,11 +1921,9 @@ namespace Microsoft.UI.Xaml
 			eventArgs.PropertyInternal = property;
 			eventArgs.OldValueInternal = previousValue;
 			eventArgs.NewValueInternal = newValue;
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 			eventArgs.OldPrecedenceInternal = previousPrecedence;
 			eventArgs.NewPrecedenceInternal = newPrecedence;
 			eventArgs.BypassesPropagationInternal = bypassesPropagation;
-#endif
 
 			// Raise the changes for the callback register to the property itself
 			if (propertyMetadata.HasPropertyChanged)
