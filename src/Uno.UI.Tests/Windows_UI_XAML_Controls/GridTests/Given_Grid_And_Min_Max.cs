@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +11,6 @@ using Microsoft.UI.Xaml.Controls;
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 {
 	[TestClass]
-#if !IS_UNIT_TESTS && !WINAPPSDK
-	[RuntimeTests.RunsOnUIThread]
-#endif
 	public class Given_Grid_And_Min_Max
 	{
 		[TestMethod]

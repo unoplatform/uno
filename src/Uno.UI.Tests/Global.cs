@@ -29,6 +29,11 @@ namespace Uno.UI.Tests
 
 			Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
+
+			// The unit-test process does not own a real Skia dispatcher; relax the
+			// dependency-property threading enforcement so the test thread can poke
+			// the DP system the same way the in-memory mock dispatcher used to allow.
+			global::Uno.UI.FeatureConfiguration.DependencyProperty.DisableThreadingCheck = true;
 		}
 	}
 }

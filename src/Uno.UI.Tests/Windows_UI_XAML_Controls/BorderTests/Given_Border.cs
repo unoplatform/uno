@@ -1,4 +1,4 @@
-﻿#if !WINAPPSDK
+#if !WINAPPSDK
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Uno.Extensions;
@@ -17,9 +17,6 @@ using AwesomeAssertions.Execution;
 namespace Uno.UI.Tests.BorderTests
 {
 	[TestClass]
-#if !IS_UNIT_TESTS
-	[RuntimeTests.RunsOnUIThread]
-#endif
 	public partial class Given_Border : Context
 	{
 		private partial class View : FrameworkElement
