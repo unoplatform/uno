@@ -69,20 +69,15 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 	void IUnoSkiaRenderView.OnPause()
 	{
-		// Mirror GLSurfaceView's contract: stop touching the Vulkan context while the
-		// activity is paused. The render loop wakes from its wait, sees _paused, and
-		// re-enters the wait without rendering. _renderRequested is preserved so any
-		// frame requested during pause is honored after OnResume.
+		// _renderRequested is preserved across pause for replay on resume.
 		_paused = true;
-		_renderEvent.Set();
 	}
 
 	void IUnoSkiaRenderView.OnResume()
 	{
 		_paused = false;
-		// Recover the render-scheduling state machine from any callback dropped across
-		// the pause/resume boundary, then force one synchronization frame so the
-		// cycle re-establishes even if no new content has been requested.
+		// Recover the render-scheduling state machine from any callback dropped
+		// across the pause/resume boundary, then force one frame.
 		CompositionTarget.NotifyRenderingResumed();
 		InvalidateRender();
 	}
@@ -159,10 +154,8 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 			while (_surfaceReady && !_disposed)
 			{
-				// Block until a state change wakes us. Every transition that should
-				// wake this thread — InvalidateRender, OnPause, OnResume (via
-				// InvalidateRender), SurfaceDestroyed, Dispose — calls _renderEvent.Set(),
-				// so the wait stays parked while _paused is true instead of polling.
+				// Park until a Set() wakes us. OnPause does not wake the loop —
+				// it just flips _paused so a mid-render iteration skips back to Wait.
 				_renderEvent.Wait();
 				_renderEvent.Reset();
 
