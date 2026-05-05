@@ -159,8 +159,11 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 			while (_surfaceReady && !_disposed)
 			{
-				// Wait for a render request
-				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
+				// Block until a state change wakes us. Every transition that should
+				// wake this thread — InvalidateRender, OnPause, OnResume (via
+				// InvalidateRender), SurfaceDestroyed, Dispose — calls _renderEvent.Set(),
+				// so the wait stays parked while _paused is true instead of polling.
+				_renderEvent.Wait();
 				_renderEvent.Reset();
 
 				if (!_surfaceReady || _disposed || _paused || !_renderRequested)
