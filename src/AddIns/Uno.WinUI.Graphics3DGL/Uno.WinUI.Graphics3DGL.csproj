@@ -42,15 +42,13 @@
 			<PropertyGroup>
 				<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 
-				<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);WINDOWS_UWP</DefineConstants>
-				<DefineConstants Condition="'$(UNO_UWP_BUILD)'=='true'">$(DefineConstants);WINAPPSDK</DefineConstants>
 				<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
 				<UseRidGraph>true</UseRidGraph>
 				<WindowsPackageType>None</WindowsPackageType>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
+				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
 				<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
 				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Rendering\WindowsRenderingNativeMethods.cs" />
@@ -59,10 +57,6 @@
 			</ItemGroup>
 		</When>
 	</Choose>
-
-	<PropertyGroup>
-		<DefineConstants Condition="$(UNO_UWP_BUILD) == true">$(DefineConstants);UNO_UWP_BUILD</DefineConstants>
-	</PropertyGroup>
 
 	<PropertyGroup>
 		<DefaultItemExcludes>$(DefaultItemExcludes);angle/**</DefaultItemExcludes>

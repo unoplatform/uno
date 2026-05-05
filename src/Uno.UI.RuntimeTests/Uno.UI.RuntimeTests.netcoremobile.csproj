@@ -19,10 +19,6 @@
 		-->
 		<NoWarn>$(NoWarn);NU1703;CS0105</NoWarn>
 
-		<!--
-		Ignore duplicate namespace that may after the WinUI conversion
-		-->
-		<NoWarn Condition="'$(UNO_UWP_BUILD)'=='false'">$(NoWarn);CS0105</NoWarn>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 	</PropertyGroup>
@@ -96,14 +92,6 @@
 		<EmbeddedResource Include="Assets\UnoA4_Protected.pdf" />
 		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
 	</ItemGroup>
-
-	<!-- Multiwindowing is only supported on Uno.WinUI -->
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml.cs" />
-	</ItemGroup>
-	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
-	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />

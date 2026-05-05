@@ -13,7 +13,7 @@
 		<AssemblyName>Uno.UI.Maps</AssemblyName>
 		<RootNamespace>Uno.UI.Maps</RootNamespace>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Maps</PackageId>
+		<PackageId>Uno.WinUI.Maps</PackageId>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
@@ -86,11 +86,11 @@
 		</Page>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+	<ItemGroup>
 		<!-- Maps are not yet supported by WinUI 3.0 -->
 		<Compile Remove="**\*.cs" />
 	</ItemGroup>
-	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+	<PropertyGroup>
 		<!-- Maps are not yet supported by WinUI 3.0 -->
 		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
 	</PropertyGroup>

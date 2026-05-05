@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+	<ItemGroup>
 		<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
 		<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
@@ -48,18 +48,4 @@
 		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UNO_UWP_BUILD)">
-		<!-- WinUI-only samples -->
-		<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
-		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
-
-		<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\**" />
-		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\**" />
-
-		<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\SelectorBarTests\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\SelectorBarTests\**" />
-		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\SelectorBarTests\**" />
-	</ItemGroup>
 </Project>

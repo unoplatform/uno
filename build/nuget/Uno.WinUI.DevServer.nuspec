@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata minClientVersion="5.0">
-		<id>Uno.UI.DevServer</id>
+		<id>Uno.WinUI.DevServer</id>
 		<version>0.1.0.0</version>
-		<title>Uno.UI.DevServer</title>
+		<title>Uno.WinUI.DevServer</title>
 		<authors>Uno Platform</authors>
 		<owners>unoplatform</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>

@@ -12,7 +12,7 @@
 		<DefineConstants>$(DefineConstants);IS_MPE_X11</DefineConstants>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.MediaPlayer.Skia.X11</PackageId>
+		<PackageId>Uno.WinUI.MediaPlayer.Skia.X11</PackageId>
 		<Description>This package provides support for MediaPlayerElement for Uno Platform Skia+X11 apps</Description>
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>

@@ -60,8 +60,7 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_OverridePackageId>uno.ui</_OverridePackageId>
-			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">uno.winui</_OverridePackageId>
+			<_OverridePackageId>uno.winui</_OverridePackageId>
 
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId).devserver\$(UnoNugetOverrideVersion)\tools\rc\processors\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>

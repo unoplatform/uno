@@ -7,7 +7,6 @@ parameters:
   xCodeRootTest: ''
   xCodeRootBuild: ''
   poolName: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:
@@ -23,13 +22,10 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
-
   variables:
     SamplesAppArtifactName: samplesapp-desktop-skia
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
@@ -72,7 +68,6 @@ jobs:
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UnoEnableHRuntimeTests: true
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
@@ -129,7 +124,6 @@ jobs:
 #   displayName: 'WPF Islands Runtime Tests'
 #   timeoutInMinutes: 45
 #   cancelTimeoutInMinutes: 0
-#   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 #   pool:
 #     vmImage: ${{ parameters.vmImage }}
 
@@ -137,7 +131,6 @@ jobs:
 #     SamplesAppArtifactName: samplesapp-wpf-islands-skia
 #     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-#     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
 #     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
 #   steps:

@@ -10,7 +10,7 @@
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.XamlHost.Skia.Wpf</PackageId>
+		<PackageId>Uno.WinUI.XamlHost.Skia.Wpf</PackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<UseWPF>true</UseWPF>
