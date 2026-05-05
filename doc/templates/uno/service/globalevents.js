@@ -16,13 +16,20 @@ window.refresh = function (article) {
 
 $(document).on('wordpressMenuHasLoaded', function () {
     const path = window.location.pathname;
-    const docsUrl = '/docs/articles/';
+    const docsPathPattern = /\/(docs\/)?articles\//;
     const wpNavBar = document.getElementById('menu-menu-principal');
+    if (!wpNavBar) {
+        return;
+    }
+
     const items = wpNavBar.getElementsByTagName('a');
+    const isDocsPage = docsPathPattern.test(path);
 
     for (let i = 0; i < items.length; i++) {
+        const itemHref = items[i].href;
+        const isDocsLink = docsPathPattern.test(itemHref);
 
-        if (items[i].href.includes(docsUrl) && path.includes(docsUrl) && !items[i].href.includes('#')) {
+        if (isDocsLink && isDocsPage && !itemHref.includes('#')) {
             $(items[i]).addClass('activepath');
         }
     }
