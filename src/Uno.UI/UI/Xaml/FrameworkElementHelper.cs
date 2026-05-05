@@ -92,9 +92,9 @@ namespace Uno.UI
 			{
 				foreach (var child in element.GetChildren())
 				{
-					if (child is FrameworkElement fe)
+					if (child is FrameworkElement childAsFE)
 					{
-						SetUseMeasurePathDisabled(fe, state, eager: true, invalidate);
+						SetUseMeasurePathDisabled(childAsFE, state, eager: true, invalidate);
 					}
 				}
 			}
@@ -124,9 +124,9 @@ namespace Uno.UI
 			{
 				foreach (var child in element.GetChildren())
 				{
-					if (child is FrameworkElement fe)
+					if (child is FrameworkElement childAsFE)
 					{
-						SetUseArrangePathDisabled(fe, state, eager: true, invalidate);
+						SetUseArrangePathDisabled(childAsFE, state, eager: true, invalidate);
 					}
 				}
 			}
