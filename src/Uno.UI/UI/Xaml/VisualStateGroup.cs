@@ -402,16 +402,9 @@ namespace Microsoft.UI.Xaml
 					// We need to invoke them using the right resource context.
 					ResourceResolver.PushNewScope(_xamlScope);
 
-					// This block is a manual enumeration to avoid the foreach pattern
-					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var settersEnumerator = target.setters.GetEnumerator();
-
-					while (settersEnumerator.MoveNext())
+					foreach (var setter in target.setters.OfType<Setter>())
 					{
-						if (settersEnumerator.Current is Setter setter)
-						{
-							setter.ApplyValue(element);
-						}
+						setter.ApplyValue(element);
 					}
 				}
 				finally

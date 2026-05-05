@@ -1412,12 +1412,8 @@ namespace Microsoft.UI.Xaml
 				{
 					if (_updatedProperties is not null)
 					{
-						// This block is a manual enumeration to avoid the foreach pattern
-						// See https://github.com/dotnet/runtime/issues/56309 for details
-						var propertiesEnumerator = _updatedProperties.GetEnumerator();
-						while (propertiesEnumerator.MoveNext())
+						foreach (var dp in _updatedProperties)
 						{
-							var dp = propertiesEnumerator.Current;
 							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 						}
 					}
@@ -1617,12 +1613,8 @@ namespace Microsoft.UI.Xaml
 			// call to IsAncestor.
 			var actualInstanceAlias = ActualInstance;
 
-			// This block is a manual enumeration to avoid the foreach pattern
-			// See https://github.com/dotnet/runtime/issues/56309 for details
-			var forwardedEnumerator = _inheritedForwardedProperties.GetEnumerator();
-			while (forwardedEnumerator.MoveNext())
+			foreach (var sourceInstanceProperties in _inheritedForwardedProperties)
 			{
-				var sourceInstanceProperties = forwardedEnumerator.Current;
 
 				if (
 					IsAncestor(actualInstanceAlias, ancestors, sourceInstanceProperties.Value.Target)

@@ -463,14 +463,8 @@ namespace Uno.UI
 		/// </summary>
 		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
-			// This block is a manual enumeration to avoid the foreach pattern
-			// See https://github.com/dotnet/runtime/issues/56309 for details
-			var sourcesEnumerator = CurrentScope.Sources.GetEnumerator();
-
-			while (sourcesEnumerator.MoveNext())
+			foreach (var source in CurrentScope.Sources)
 			{
-
-				var source = sourcesEnumerator.Current;
 
 				var dictionary = (source.Target as FrameworkElement)?.TryGetResources()
 					?? source.Target as ResourceDictionary;
@@ -509,11 +503,8 @@ namespace Uno.UI
 		/// </summary>
 		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value, out ResourceDictionary providingDictionary)
 		{
-			var sourcesEnumerator = CurrentScope.Sources.GetEnumerator();
-
-			while (sourcesEnumerator.MoveNext())
+			foreach (var source in CurrentScope.Sources)
 			{
-				var source = sourcesEnumerator.Current;
 
 				var dictionary = (source.Target as FrameworkElement)?.TryGetResources()
 					?? source.Target as ResourceDictionary;

@@ -511,12 +511,9 @@ namespace Microsoft.UI.Xaml
 			}
 			else if (instance is ViewGroup g)
 			{
-				// This block is a manual enumeration to avoid the foreach pattern
-				// See https://github.com/dotnet/runtime/issues/56309 for details
-				var childrenEnumerator = g.GetChildren().GetEnumerator();
-				while (childrenEnumerator.MoveNext())
+				foreach (var child in g.GetChildren())
 				{
-					PropagateOnTemplateReused(childrenEnumerator.Current);
+					PropagateOnTemplateReused(child);
 				}
 			}
 		}
