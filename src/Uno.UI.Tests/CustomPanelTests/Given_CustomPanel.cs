@@ -44,7 +44,7 @@ namespace Uno.UI.Tests.CustomPanelTests
 			SUT.Arrange(new Rect(0, 0, 10, 10));
 
 			Assert.AreEqual(new Size(10, 10), size);
-			Assert.AreEqual(new Rect(0, 0, 10, 10), item1.Arranged);
+			Assert.AreEqual(new Rect(0, 0, 10, 10), item1.LayoutSlotWithMarginsAndAlignments);
 			Assert.AreEqual(1, SUT.GetChildren().Count());
 		}
 
