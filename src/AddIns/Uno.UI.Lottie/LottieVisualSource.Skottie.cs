@@ -50,22 +50,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 
 		private bool _wasPlaying;
-#if __SKIA__
-		// On Skia we don't subscribe to CompositionTarget.Rendering — that would keep the global
-		// render loop alive at full FPS even while the player is collapsed, off-screen, or in a
-		// hidden host. Instead, the player advances its own clock from inside its paint callback
-		// and self-invalidates at the end of each paint to schedule the next frame. The Skia
-		// compositor's render walk skips visuals whose ancestor is collapsed (or whose host is
-		// hidden), so the pump dies naturally when there is nothing to draw.
-		private bool _isSkiaClockPlaying;
-		private long? _lastPaintTimestamp;
-		private TimeSpan _accumulatedSkiaTime;
-		// Maximum real time that may pass between two paints before we treat the gap as a "paused
-		// while invisible" interval rather than legitimate per-frame progress. At 60 Hz a healthy
-		// frame interval is ~16 ms; 150 ms gives plenty of headroom for legitimately slow frames
-		// while still recognising a hidden-then-shown subtree.
-		private static readonly TimeSpan PaintGapThreshold = TimeSpan.FromMilliseconds(150);
-#else
+#if !__SKIA__
 		private DispatcherQueueTimer? _timer;
 #endif
 		private object _gate = new();
@@ -330,10 +315,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					_invalidationController.Begin();
 				}
 
-#if __SKIA__
-				AdvanceSkiaClock();
-#endif
-
 				var frameTime = GetFrameTime();
 
 				var scale = ImageSizeHelper.BuildScale(_player.Stretch, localSize.ToSize(), animation.Size.ToSize());
@@ -363,40 +344,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_invalidationController.Reset();
 
 #if __SKIA__
-				// Schedule the next paint. The compositor will walk the visual tree on the next
-				// frame and only paint us if we're actually visible — if not, this invalidate is
-				// a no-op and the pump stops.
-				if (_isSkiaClockPlaying)
+				if (_stopwatch.IsRunning)
 				{
 					_skCanvasElement?.Invalidate();
 				}
 #endif
 			}
 		}
-
-#if __SKIA__
-		private void AdvanceSkiaClock()
-		{
-			if (!_isSkiaClockPlaying)
-			{
-				return;
-			}
-
-			var nowTicks = Stopwatch.GetTimestamp();
-			if (_lastPaintTimestamp.HasValue)
-			{
-				var deltaTicks = nowTicks - _lastPaintTimestamp.Value;
-				var delta = TimeSpan.FromSeconds(deltaTicks / (double)Stopwatch.Frequency);
-				if (delta < PaintGapThreshold)
-				{
-					_accumulatedSkiaTime += delta;
-				}
-				// else: the visual was not painted for a while — treat as a paused boundary and
-				// resume from where we left off without advancing the animation clock.
-			}
-			_lastPaintTimestamp = nowTicks;
-		}
-#endif
 
 		private SKColor GetBackgroundColor()
 		{
@@ -415,24 +369,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return _progress ?? TimeSpan.Zero;
 			}
 
-#if __SKIA__
-			var elapsed = _accumulatedSkiaTime;
-#else
-			var elapsed = _stopwatch.Elapsed;
-#endif
-
-			var frameTime = TimeSpan.FromSeconds((elapsed + playState.GetFromProgressUsingDuration(_animation.Duration)).TotalSeconds * _player.PlaybackRate);
+			var frameTime = TimeSpan.FromSeconds((_stopwatch.Elapsed + playState.GetFromProgressUsingDuration(_animation.Duration)).TotalSeconds * _player.PlaybackRate);
 
 			if (frameTime > playState.GetToProgressUsingDuration(_animation.Duration))
 			{
 				if (playState.Looped)
 				{
-#if __SKIA__
-					_accumulatedSkiaTime = TimeSpan.Zero;
-					_lastPaintTimestamp = Stopwatch.GetTimestamp();
-#else
 					_stopwatch.Restart();
-#endif
 					_invalidationController?.End();
 					_invalidationController?.Begin();
 				}
@@ -453,26 +396,16 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			if (_animation != null)
 			{
-#if __SKIA__
-				if (_isSkiaClockPlaying)
-				{
-					Stop();
-				}
-#else
 				if (_stopwatch.IsRunning)
 				{
 					Stop();
 				}
-#endif
 
 				_playState = new(fromProgress, toProgress, looped);
 
 				_progress = null;
 
 #if __SKIA__
-				_accumulatedSkiaTime = TimeSpan.Zero;
-				_lastPaintTimestamp = null;
-				_isSkiaClockPlaying = true;
 				// Kick the first paint. Subsequent paints schedule themselves from Render().
 				Invalidate();
 #else
@@ -481,8 +414,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				_timer.Interval = TimeSpan.FromSeconds(Math.Max(1 / 120d, 1 / _animation.Fps));
 				_timer.Start();
-				_stopwatch.Restart();
 #endif
+				_stopwatch.Restart();
 
 				SetIsPlaying(true);
 			}
@@ -509,14 +442,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				_playState = null;
 				SetIsPlaying(false);
-#if __SKIA__
-				_isSkiaClockPlaying = false;
-				_lastPaintTimestamp = null;
-				_accumulatedSkiaTime = TimeSpan.Zero;
-#else
+#if !__SKIA__
 				_timer?.Stop();
-				_stopwatch.Stop();
 #endif
+				_stopwatch.Stop();
 				_invalidationController?.End();
 			}
 
@@ -532,13 +461,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Pause()
 		{
-#if __SKIA__
-			_isSkiaClockPlaying = false;
-			_lastPaintTimestamp = null;
-#else
+#if !__SKIA__
 			_timer?.Stop();
-			_stopwatch.Stop();
 #endif
+			_stopwatch.Stop();
 
 			SetIsPlaying(false);
 		}
@@ -546,13 +472,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		public void Resume()
 		{
 #if __SKIA__
-			_isSkiaClockPlaying = true;
-			_lastPaintTimestamp = null;
 			Invalidate();
 #else
-			_stopwatch.Start();
 			_timer?.Start();
 #endif
+			_stopwatch.Start();
 
 			SetIsPlaying(true);
 		}
