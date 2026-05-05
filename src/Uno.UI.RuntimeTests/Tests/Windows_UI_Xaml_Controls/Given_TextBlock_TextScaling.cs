@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI;
-using Uno.UI.Xaml.Core;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.ViewManagement;
 
@@ -205,7 +204,7 @@ public class Given_TextBlock_TextScaling
 			var unscaledSize = textBlock.DesiredSize;
 
 			FeatureConfiguration.Font.TextScaleFactor = 1.5;
-			CoreServices.Instance.UpdateFontScale(1.5);
+			global::Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(1.5);
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var scaledSize = textBlock.DesiredSize;
@@ -215,7 +214,7 @@ public class Given_TextBlock_TextScaling
 		finally
 		{
 			FeatureConfiguration.Font.TextScaleFactor = originalOverride;
-			CoreServices.Instance.UpdateFontScale(originalOverride ?? 1.0);
+			global::Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(originalOverride ?? 1.0);
 		}
 	}
 #endif

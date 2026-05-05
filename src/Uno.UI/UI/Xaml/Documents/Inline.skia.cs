@@ -93,6 +93,6 @@ namespace Microsoft.UI.Xaml.Documents
 		/// Invalidates the cached font info due to a text scale factor change.
 		/// Called from CoreServices.RecursiveInvalidateTextScale().
 		/// </summary>
-		internal void InvalidateTextScaleFontInfo() => _fontInfo = null;
+		internal virtual void InvalidateTextScaleFontInfo() => _fontInfo = null;
 	}
 }

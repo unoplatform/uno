@@ -1,6 +1,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml.Core;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Internal;
 
@@ -136,6 +137,39 @@ public class Given_TextScaleHelper
 		{
 			FeatureConfiguration.Font.TextScaleFactor = originalManual;
 			FeatureConfiguration.Font.MaximumTextScaleFactor = originalMax;
+		}
+	}
+
+	[TestMethod]
+	public void When_ManualOverride_Changes_UpdateFontScale_Reevaluates_EffectiveScale()
+	{
+		var coreServices = CoreServices.Instance;
+		var originalManual = FeatureConfiguration.Font.TextScaleFactor;
+		var originalMax = FeatureConfiguration.Font.MaximumTextScaleFactor;
+		var originalIgnore = FeatureConfiguration.Font.IgnoreTextScaleFactor;
+		try
+		{
+			FeatureConfiguration.Font.MaximumTextScaleFactor = null;
+			FeatureConfiguration.Font.IgnoreTextScaleFactor = false;
+			FeatureConfiguration.Font.TextScaleFactor = 1.0;
+			coreServices.UpdateFontScale(1.0);
+
+			var uiSettings = new UISettings();
+			var changeCount = 0;
+			uiSettings.TextScaleFactorChanged += (_, _) => changeCount++;
+
+			FeatureConfiguration.Font.TextScaleFactor = 1.5;
+			coreServices.UpdateFontScale(1.0);
+
+			Assert.AreEqual(1, changeCount,
+				"Changing the manual text scale override should trigger effective-scale invalidation even when the OS scale is unchanged.");
+		}
+		finally
+		{
+			FeatureConfiguration.Font.TextScaleFactor = originalManual;
+			FeatureConfiguration.Font.MaximumTextScaleFactor = originalMax;
+			FeatureConfiguration.Font.IgnoreTextScaleFactor = originalIgnore;
+			coreServices.UpdateFontScale(1.0);
 		}
 	}
 }

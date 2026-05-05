@@ -24,6 +24,7 @@ namespace Uno.UI.Xaml.Core
 
 		private VisualTree? _mainVisualTree;
 		private double _fontScale = 1.0;
+		private double _lastEffectiveFontScale;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 
@@ -35,6 +36,7 @@ namespace Uno.UI.Xaml.Core
 		public CoreServices()
 		{
 			ContentRootCoordinator = new ContentRootCoordinator(this);
+			_lastEffectiveFontScale = FontScale;
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			EventManager = EventManager.Create();
 #endif
@@ -197,12 +199,12 @@ namespace Uno.UI.Xaml.Core
 		// MUX Reference xcpcore.cpp, tag winui3/release/1.8.1, line 11076
 		internal void UpdateFontScale(double newScale)
 		{
-			var effectiveOld = TextScaleHelper.GetEffectiveFontScale(_fontScale);
 			_fontScale = newScale;
-			var effectiveNew = TextScaleHelper.GetEffectiveFontScale(_fontScale);
+			var effectiveNew = FontScale;
 
-			if (effectiveOld != effectiveNew)
+			if (_lastEffectiveFontScale != effectiveNew)
 			{
+				_lastEffectiveFontScale = effectiveNew;
 				UISettings.OnTextScaleFactorChanged();
 				RecursiveInvalidateTextScale();
 			}
