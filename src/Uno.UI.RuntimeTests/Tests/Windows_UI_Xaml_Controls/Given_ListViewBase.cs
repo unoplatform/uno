@@ -5481,4 +5481,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 		}
 	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/2136
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_ItemsStackPanel_Stretch
+	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2136")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ListView_ItemsStackPanel_Children_Are_Stretched_To_Full_Width()
+		{
+			// Issue: ItemsStackPanel does not stretch its children to fill the available width on WASM.
+			// Navigation items appear top-aligned instead of being centered/stretched.
+			// Expected: Items inside a vertical ItemsStackPanel should stretch to fill the panel width.
+
+			const double ContainerWidth = 300;
+
+			var sut = new ListView
+			{
+				Width = ContainerWidth,
+				Height = 400,
+				ItemsSource = new[] { "Item 1", "Item 2", "Item 3" },
+				ItemTemplate = (DataTemplate)XamlReader.Load(
+					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						<Border Height=""50"" Background=""Blue"" HorizontalAlignment=""Stretch"">
+							<TextBlock Text=""{Binding}"" VerticalAlignment=""Center"" HorizontalAlignment=""Center"" />
+						</Border>
+					</DataTemplate>"),
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// Get the items panel root - it should be an ItemsStackPanel
+			var panel = sut.ItemsPanelRoot;
+			Assert.IsNotNull(panel, "ItemsPanelRoot should not be null.");
+
+			// The panel itself should be as wide as the container
+			Assert.AreEqual(ContainerWidth, panel.ActualWidth, 2d,
+				$"Expected ItemsPanelRoot to have ActualWidth={ContainerWidth}, but got {panel.ActualWidth}.");
+
+			// Check that the first visible container is stretched to the full width
+			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(0) != null, timeoutMS: 3000);
+			var container = sut.ContainerFromIndex(0) as ListViewItem;
+			Assert.IsNotNull(container, "Expected container for index 0.");
+
+			Assert.AreEqual(ContainerWidth, container.ActualWidth, 2d,
+				$"Expected ListViewItem to be stretched to {ContainerWidth}px width, but got {container.ActualWidth}. " +
+				$"On WASM with ItemsStackPanel, items are not being stretched to fill the available width.");
+		}
+	}
 }
