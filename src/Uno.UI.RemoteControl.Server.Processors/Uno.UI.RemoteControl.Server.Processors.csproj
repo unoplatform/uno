@@ -67,6 +67,21 @@
 		<ProjectReference Include="..\Uno.HotReload\Uno.HotReload.csproj" />
 	</ItemGroup>
 
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+		<PropertyGroup>
+			<_OverridePackageId>uno.winui</_OverridePackageId>
+
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId).devserver\$(UnoNugetOverrideVersion)\tools\rc\processors\$(TargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)*.*" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
 	<Target Name="GetTargetPath" />
 
 </Project>

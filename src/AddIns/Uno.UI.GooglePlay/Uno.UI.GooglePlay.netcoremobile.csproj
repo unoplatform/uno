@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.GooglePlay</AssemblyName>
 		<RootNamespace>Uno.UI.GooglePlay</RootNamespace>
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.GooglePlay</PackageId>
+		<PackageId>Uno.WinUI.GooglePlay</PackageId>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<NoWarn>$(NoWarn);Uno0001</NoWarn>

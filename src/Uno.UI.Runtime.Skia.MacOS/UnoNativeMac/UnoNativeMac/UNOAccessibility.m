@@ -1,22 +1,27 @@
 //
 //  UNOAccessibility.m
 //
+//  Per-window macOS accessibility implementation. Each open NSWindow owns a
+//  UNOAccessibilityContext attached via objc_setAssociatedObject. Managed
+//  callers drive context lifecycle via uno_accessibility_init_context /
+//  uno_accessibility_destroy_context; all other entry points resolve to a
+//  context either from the window argument or from the element's back-pointer.
+//
 
 #import "UNOAccessibility.h"
 #import "UNOWindow.h"
+#import <objc/runtime.h>
 
 // Native macOS notifications not publicly documented
 static NSString* const kAccessibilityLiveRegionCreatedNotification = @"AXLiveRegionCreated";
 static NSString* const kAccessibilityLiveRegionChangedNotification = @"AXLiveRegionChanged";
 static NSString* const kAccessibilityExpandedChanged = @"AXExpandedChanged";
 
-static NSMutableDictionary<NSNumber*, UNOAccessibilityElement*> *g_elements = nil;
+// Associated-object key used to attach a UNOAccessibilityContext to an NSWindow.
+// Address is used as a unique identifier; the byte value itself is never read.
+static const void * const kUNOAccessibilityContextKey = &kUNOAccessibilityContextKey;
 
-static UNOAccessibilityElement *g_rootElement = nil;
-static UNOAccessibilityElement *g_focusedElement = nil;
-static NSWindow *g_window = nil;
-
-// Callbacks to managed code
+// Callbacks to managed code — set once at process startup, not per-window.
 static accessibility_invoke_fn_ptr g_invokeCallback = NULL;
 static accessibility_focus_fn_ptr g_focusCallback = NULL;
 static accessibility_increment_fn_ptr g_incrementCallback = NULL;
@@ -24,15 +29,42 @@ static accessibility_decrement_fn_ptr g_decrementCallback = NULL;
 static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 
+#pragma mark - UNOAccessibilityContext
+
+@implementation UNOAccessibilityContext
+
+- (instancetype)initWithWindow:(NSWindow *)window {
+	self = [super init];
+	if (self) {
+		_window = window;
+		_elements = [[NSMutableDictionary alloc] init];
+	}
+	return self;
+}
+
+@end
+
+UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window) {
+	if (!window) {
+		return nil;
+	}
+	id associated = objc_getAssociatedObject(window, kUNOAccessibilityContextKey);
+	if ([associated isKindOfClass:[UNOAccessibilityContext class]]) {
+		return (UNOAccessibilityContext *)associated;
+	}
+	return nil;
+}
+
 #pragma mark - UNOAccessibilityElement
 
 @implementation UNOAccessibilityElement
 
-- (instancetype)initWithHandle:(intptr_t)handle parent:(nullable id)parent {
+- (instancetype)initWithHandle:(intptr_t)handle parent:(nullable id)parent context:(nullable UNOAccessibilityContext *)context {
 	self = [super init];
 	if (self) {
 		_unoHandle = handle;
 		_unoParent = parent;
+		_unoContext = context;
 		_unoChildren = [[NSMutableArray alloc] init];
 		_unoFocusable = NO;
 		_unoVisible = YES;
@@ -352,12 +384,13 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 #pragma mark - NSAccessibility protocol - Frame (screen coordinates)
 
 - (NSRect)accessibilityFrame {
-	if (!g_window) {
+	NSWindow *window = _unoContext.window;
+	if (!window) {
 		return NSZeroRect;
 	}
 	// _unoFrame is in window coordinates (top-left origin, as used by Uno)
 	// Convert from Uno's top-left origin to macOS screen coordinates (bottom-left origin)
-	NSView *contentView = [g_window contentView];
+	NSView *contentView = [window contentView];
 	CGFloat contentHeight = contentView.bounds.size.height;
 
 	NSRect windowRect = NSMakeRect(
@@ -367,7 +400,7 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 		_unoFrame.size.height
 	);
 
-	NSRect screenRect = [g_window convertRectToScreen:windowRect];
+	NSRect screenRect = [window convertRectToScreen:windowRect];
 
 	return screenRect;
 }
@@ -379,15 +412,15 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 		return _unoParent;
 	}
 	// If no parent, return the window (root of the accessibility tree)
-	return g_window;
+	return _unoContext.window;
 }
 
 - (NSWindow *)accessibilityWindow {
-	return g_window;
+	return _unoContext.window;
 }
 
 - (BOOL)isAccessibilityFocused {
-	return g_focusedElement == self;
+	return _unoContext.focusedElement == self;
 }
 
 - (NSArray *)accessibilityChildren {
@@ -463,19 +496,11 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 
 #pragma mark - NSAccessibility protocol - Expand/Collapse
 
-// VoiceOver queries isAccessibilityExpanded/isAccessibilityDisclosed via the modern
-// NSAccessibility protocol. ANY BOOL return value (including NO) causes VoiceOver to
-// announce "collapsed" or "expanded". The only way to prevent this for non-expandable
-// elements is to make them not respond to these selectors at all.
-// See respondsToSelector: override below.
-
 - (NSInteger)accessibilityDisclosureLevel {
-	// Only called when respondsToSelector: returns YES (i.e., _unoHasExpandCollapse)
 	return 0; // Level 0 = top level
 }
 
 - (BOOL)isAccessibilityDisclosed {
-	// Only called when respondsToSelector: returns YES (i.e., _unoHasExpandCollapse)
 	return _unoIsExpanded;
 }
 
@@ -486,7 +511,6 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 }
 
 - (BOOL)isAccessibilityExpanded {
-	// Only called when respondsToSelector: returns YES (i.e., _unoHasExpandCollapse)
 	return _unoIsExpanded;
 }
 
@@ -850,7 +874,7 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 #pragma mark - NSAccessibility protocol - Hit Testing
 
 - (id)accessibilityHitTest:(NSPoint)point {
-	if (!g_window) {
+	if (!_unoContext.window) {
 		return nil;
 	}
 
@@ -875,21 +899,55 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 
 #pragma mark - C API for P/Invoke
 
-void uno_accessibility_init(NSWindow* window) {
-	// Clear all stale state from any previous window. When tests create and
-	// destroy many windows rapidly, g_elements would otherwise accumulate
-	// thousands of stale entries pointing to deallocated views, causing
-	// crashes in Metal rendering and the macOS accessibility system.
-	if (g_elements) {
-		[g_elements removeAllObjects];
-	} else {
-		g_elements = [[NSMutableDictionary alloc] init];
+void uno_accessibility_init_context(NSWindow* window) {
+	if (!window) {
+		return;
 	}
-	g_rootElement = nil;
-	g_focusedElement = nil;
-	g_window = window;
+
+	// Idempotent: if a context is already attached, reset its contents but keep
+	// the context object so any outstanding weak references from elements
+	// remain valid.
+	UNOAccessibilityContext *existing = uno_a11y_context_for_window(window);
+	if (existing) {
+		[existing.elements removeAllObjects];
+		existing.rootElement = nil;
+		existing.focusedElement = nil;
 #if DEBUG
-	NSLog(@"UNOAccessibility: initialized for window %p (cleared stale elements)", window);
+		NSLog(@"UNOAccessibility: re-initialized context for window %p", window);
+#endif
+		return;
+	}
+
+	UNOAccessibilityContext *context = [[UNOAccessibilityContext alloc] initWithWindow:window];
+	objc_setAssociatedObject(window, kUNOAccessibilityContextKey, context, OBJC_ASSOCIATION_RETAIN);
+#if DEBUG
+	NSLog(@"UNOAccessibility: initialized context for window %p", window);
+#endif
+}
+
+void uno_accessibility_destroy_context(NSWindow* window) {
+	if (!window) {
+		return;
+	}
+
+	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+	if (!context) {
+		return;
+	}
+
+	// Break back-pointers from elements so any pending VoiceOver queries
+	// see a detached element rather than following a dangling context.
+	for (UNOAccessibilityElement *element in context.elements.allValues) {
+		element.unoContext = nil;
+	}
+	[context.elements removeAllObjects];
+	context.rootElement = nil;
+	context.focusedElement = nil;
+	context.window = nil;
+
+	objc_setAssociatedObject(window, kUNOAccessibilityContextKey, nil, OBJC_ASSOCIATION_RETAIN);
+#if DEBUG
+	NSLog(@"UNOAccessibility: destroyed context for window %p", window);
 #endif
 }
 
@@ -911,35 +969,53 @@ void uno_accessibility_set_value_callback(accessibility_set_value_fn_ptr setValu
 	g_setValueCallback = setValue;
 }
 
-static UNOAccessibilityElement* _Nullable findElement(intptr_t handle) {
-#if DEBUG
-	if (!g_elements) {
-		NSLog(@"UNOAccessibility: WARNING - g_elements is nil! uno_accessibility_init() may not have been called");
+static UNOAccessibilityElement* _Nullable findElement(UNOAccessibilityContext *context, intptr_t handle) {
+	if (!context) {
 		return nil;
 	}
-	UNOAccessibilityElement *element = g_elements[@(handle)];
-	if (!element) {
-		NSLog(@"UNOAccessibility: WARNING - Element with handle=%ld not found. Current elements in dict: %lu", (long)handle, (unsigned long)g_elements.count);
-	}
-	return element;
-#else
-	return g_elements[@(handle)];
-#endif
+	return context.elements[@(handle)];
 }
 
-void uno_accessibility_add_element(intptr_t parentHandle, intptr_t handle, int32_t index,
+// Resolves an element from its handle by scanning every open NSWindow's
+// context. Used by per-element setters that take only a handle. Typical
+// application state has a small number of windows so linear scan is fine.
+static UNOAccessibilityElement* _Nullable findElementGlobal(intptr_t handle) {
+	for (NSWindow *window in [NSApp windows]) {
+		UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+		if (!context) {
+			continue;
+		}
+		UNOAccessibilityElement *element = context.elements[@(handle)];
+		if (element) {
+			return element;
+		}
+	}
+	return nil;
+}
+
+void uno_accessibility_add_element(NSWindow* window,
+	intptr_t parentHandle, intptr_t handle, int32_t index,
 	float width, float height, float x, float y,
 	const char* role, const char* label,
 	bool focusable, bool visible) {
 
-	UNOAccessibilityElement *parent = nil;
-	if (parentHandle != 0) {
-		parent = findElement(parentHandle);
+	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+	if (!context) {
+#if DEBUG
+		NSLog(@"UNOAccessibility: add_element with no context for window %p — dropping (handle=%ld)", window, (long)handle);
+#endif
+		return;
 	}
 
-	// If an element with this handle already exists, remove it from its old parent
-	// to prevent orphaned references in parent child lists
-	UNOAccessibilityElement *existing = g_elements[@(handle)];
+	UNOAccessibilityElement *parent = nil;
+	if (parentHandle != 0) {
+		parent = findElement(context, parentHandle);
+	}
+
+	// If an element with this handle already exists in THIS context, remove it
+	// from its old parent to prevent orphaned references. Handles are process-
+	// unique GCHandle intptrs; two contexts never share a handle.
+	UNOAccessibilityElement *existing = context.elements[@(handle)];
 	if (existing) {
 		id existingParent = existing.unoParent;
 		if (existingParent && [existingParent isKindOfClass:[UNOAccessibilityElement class]]) {
@@ -947,14 +1023,17 @@ void uno_accessibility_add_element(intptr_t parentHandle, intptr_t handle, int32
 		}
 	}
 
-	UNOAccessibilityElement *element = [[UNOAccessibilityElement alloc] initWithHandle:handle parent:parent ?: (id)g_window];
+	UNOAccessibilityElement *element = [[UNOAccessibilityElement alloc]
+		initWithHandle:handle
+		parent:parent ?: (id)context.window
+		context:context];
 	element.unoFrame = NSMakeRect(x, y, width, height);
 	element.unoRole = role ? [NSString stringWithUTF8String:role] : nil;
 	element.unoLabel = label ? [NSString stringWithUTF8String:label] : nil;
 	element.unoFocusable = focusable;
 	element.unoVisible = visible;
 
-	g_elements[@(handle)] = element;
+	context.elements[@(handle)] = element;
 
 	if (parent) {
 		if (index >= 0 && index < (int32_t)parent.unoChildren.count) {
@@ -964,23 +1043,23 @@ void uno_accessibility_add_element(intptr_t parentHandle, intptr_t handle, int32
 		}
 	} else {
 		// This is a root-level element
-		g_rootElement = element;
+		context.rootElement = element;
 	}
 
 #if DEBUG
-	NSLog(@"UNOAccessibility: added element handle=%ld role=%s label=%s parent=%ld", (long)handle, role ?: "(null)", label ?: "(null)", (long)parentHandle);
+	NSLog(@"UNOAccessibility: [window %p] added element handle=%ld role=%s label=%s parent=%ld", window, (long)handle, role ?: "(null)", label ?: "(null)", (long)parentHandle);
 #endif
 }
 
-void uno_accessibility_remove_element(intptr_t parentHandle, intptr_t handle) {
-	UNOAccessibilityElement *element = findElement(handle);
+void uno_accessibility_remove_element(NSWindow* window, intptr_t parentHandle, intptr_t handle) {
+	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+	UNOAccessibilityElement *element = findElement(context, handle);
 	if (!element) {
 		return;
 	}
 
 	// Use iterative removal instead of recursion to prevent stack overflow
-	// when removing deeply nested element trees. Collect all handles to remove
-	// by walking the tree breadth-first, then remove them in a single pass.
+	// when removing deeply nested element trees.
 	NSMutableArray<NSNumber*> *handlesToRemove = [[NSMutableArray alloc] init];
 	NSMutableArray<UNOAccessibilityElement*> *queue = [[NSMutableArray alloc] initWithObjects:element, nil];
 
@@ -996,31 +1075,32 @@ void uno_accessibility_remove_element(intptr_t parentHandle, intptr_t handle) {
 		}
 	}
 
-	UNOAccessibilityElement *parent = findElement(parentHandle);
+	UNOAccessibilityElement *parent = findElement(context, parentHandle);
 	if (parent) {
 		[parent.unoChildren removeObject:element];
 	}
 
 	for (NSNumber *key in handlesToRemove) {
-		UNOAccessibilityElement *elem = g_elements[key];
+		UNOAccessibilityElement *elem = context.elements[key];
 		if (elem) {
-			if (g_focusedElement == elem) {
-				g_focusedElement = nil;
+			if (context.focusedElement == elem) {
+				context.focusedElement = nil;
 			}
-			if (g_rootElement == elem) {
-				g_rootElement = nil;
+			if (context.rootElement == elem) {
+				context.rootElement = nil;
 			}
+			elem.unoContext = nil;
 		}
-		[g_elements removeObjectForKey:key];
+		[context.elements removeObjectForKey:key];
 	}
 
 #if DEBUG
-	NSLog(@"UNOAccessibility: removed element handle=%ld (and %lu descendants)", (long)handle, (unsigned long)(handlesToRemove.count - 1));
+	NSLog(@"UNOAccessibility: [window %p] removed element handle=%ld (and %lu descendants)", window, (long)handle, (unsigned long)(handlesToRemove.count - 1));
 #endif
 }
 
 void uno_accessibility_update_label(intptr_t handle, const char* label) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoLabel = label ? [NSString stringWithUTF8String:label] : nil;
 		NSAccessibilityPostNotification(element, NSAccessibilityTitleChangedNotification);
@@ -1028,14 +1108,14 @@ void uno_accessibility_update_label(intptr_t handle, const char* label) {
 }
 
 void uno_accessibility_update_frame(intptr_t handle, float width, float height, float x, float y) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoFrame = NSMakeRect(x, y, width, height);
 	}
 }
 
 void uno_accessibility_update_visibility(intptr_t handle, bool visible) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoVisible = visible;
 		if (element.unoParent && [element.unoParent isKindOfClass:[UNOAccessibilityElement class]]) {
@@ -1045,14 +1125,14 @@ void uno_accessibility_update_visibility(intptr_t handle, bool visible) {
 }
 
 void uno_accessibility_update_focusable(intptr_t handle, bool focusable) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoFocusable = focusable;
 	}
 }
 
 void uno_accessibility_update_value(intptr_t handle, const char* value) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoValue = value ? [NSString stringWithUTF8String:value] : nil;
 		NSAccessibilityPostNotification(element, NSAccessibilityValueChangedNotification);
@@ -1060,37 +1140,36 @@ void uno_accessibility_update_value(intptr_t handle, const char* value) {
 }
 
 void uno_accessibility_update_enabled(intptr_t handle, bool enabled) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoEnabled = enabled;
-		// Notify VoiceOver of the enabled state change so it re-reads the element
 		NSAccessibilityPostNotification(element, NSAccessibilityValueChangedNotification);
 	}
 }
 
 void uno_accessibility_update_help(intptr_t handle, const char* help) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoHelp = help ? [NSString stringWithUTF8String:help] : nil;
 	}
 }
 
 void uno_accessibility_update_description(intptr_t handle, const char* description) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoDescription = description ? [NSString stringWithUTF8String:description] : nil;
 	}
 }
 
 void uno_accessibility_update_role_description(intptr_t handle, const char* roleDescription) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoRoleDescription = roleDescription ? [NSString stringWithUTF8String:roleDescription] : nil;
 	}
 }
 
 void uno_accessibility_update_role(intptr_t handle, const char* role) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoRole = role ? [NSString stringWithUTF8String:role] : nil;
 		NSAccessibilityPostNotification(element, NSAccessibilityLayoutChangedNotification);
@@ -1098,26 +1177,25 @@ void uno_accessibility_update_role(intptr_t handle, const char* role) {
 }
 
 void uno_accessibility_update_heading_level(intptr_t handle, int32_t headingLevel) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoHeadingLevel = headingLevel;
 	}
 }
 
 void uno_accessibility_update_is_password(intptr_t handle, bool isPassword) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoIsPassword = isPassword;
 	}
 }
 
 void uno_accessibility_update_expand_collapse(intptr_t handle, bool hasExpandCollapse, bool isExpanded) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoHasExpandCollapse = hasExpandCollapse;
 		element.unoIsExpanded = isExpanded;
 		if (hasExpandCollapse) {
-			// Use Row notifications for row/treeitem roles, and AXExpandedChanged for everything else
 			NSAccessibilityRole role = [element accessibilityRole];
 			if (role == NSAccessibilityRowRole || role == NSAccessibilityOutlineRole) {
 				NSAccessibilityPostNotification(element,
@@ -1130,14 +1208,14 @@ void uno_accessibility_update_expand_collapse(intptr_t handle, bool hasExpandCol
 }
 
 void uno_accessibility_update_has_range_value(intptr_t handle, bool hasRangeValue) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoHasRangeValue = hasRangeValue;
 	}
 }
 
 void uno_accessibility_update_range_bounds(intptr_t handle, double minValue, double maxValue) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoRangeMin = minValue;
 		element.unoRangeMax = maxValue;
@@ -1145,7 +1223,7 @@ void uno_accessibility_update_range_bounds(intptr_t handle, double minValue, dou
 }
 
 void uno_accessibility_update_selected(intptr_t handle, bool isSelected) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoIsSelected = isSelected;
 		NSAccessibilityPostNotification(element, NSAccessibilitySelectedChildrenChangedNotification);
@@ -1153,7 +1231,7 @@ void uno_accessibility_update_selected(intptr_t handle, bool isSelected) {
 }
 
 void uno_accessibility_update_position_in_set(intptr_t handle, int32_t position, int32_t setSize) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoPositionInSet = position;
 		element.unoSizeOfSet = setSize;
@@ -1161,7 +1239,7 @@ void uno_accessibility_update_position_in_set(intptr_t handle, int32_t position,
 }
 
 void uno_accessibility_update_landmark(intptr_t handle, const char* landmarkRole) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoLandmarkRole = landmarkRole ? [NSString stringWithUTF8String:landmarkRole] : nil;
 		NSAccessibilityPostNotification(element, NSAccessibilityLayoutChangedNotification);
@@ -1169,21 +1247,21 @@ void uno_accessibility_update_landmark(intptr_t handle, const char* landmarkRole
 }
 
 void uno_accessibility_update_required(intptr_t handle, bool required) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoRequired = required;
 	}
 }
 
 void uno_accessibility_update_read_only(intptr_t handle, bool readOnly) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoIsReadOnly = readOnly;
 	}
 }
 
 void uno_accessibility_update_selection(intptr_t handle, int32_t selectionStart, int32_t selectionLength) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoSelectionStart = selectionStart;
 		element.unoSelectionLength = selectionLength;
@@ -1192,22 +1270,28 @@ void uno_accessibility_update_selection(intptr_t handle, int32_t selectionStart,
 }
 
 void uno_accessibility_update_modal(intptr_t handle, bool isModal) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoIsModal = isModal;
-		if (isModal) {
-			// When a modal opens, VoiceOver needs the modal flag and a focus/layout refresh
-			// so it restricts navigation to the dialog subtree.
-			NSAccessibilityPostNotification(g_window, NSAccessibilityFocusedUIElementChangedNotification);
+		NSWindow *window = element.unoContext.window;
+		if (window) {
+			if (isModal) {
+				// When a modal opens, VoiceOver needs the modal flag and a focus/layout refresh
+				// so it restricts navigation to the dialog subtree.
+				NSAccessibilityPostNotification(window, NSAccessibilityFocusedUIElementChangedNotification);
+			}
+			NSAccessibilityPostNotification(window, NSAccessibilityLayoutChangedNotification);
 		}
-		NSAccessibilityPostNotification(g_window, NSAccessibilityLayoutChangedNotification);
 	}
 }
 
 void uno_accessibility_set_focused(intptr_t handle) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
-		g_focusedElement = element;
+		UNOAccessibilityContext *context = element.unoContext;
+		if (context) {
+			context.focusedElement = element;
+		}
 		NSAccessibilityPostNotification(element, NSAccessibilityFocusedUIElementChangedNotification);
 #if DEBUG
 		NSLog(@"UNOAccessibility: focus set to handle=%ld label=%@", (long)handle, element.unoLabel);
@@ -1215,12 +1299,14 @@ void uno_accessibility_set_focused(intptr_t handle) {
 	}
 }
 
-void uno_accessibility_announce(const char* text, bool assertive) {
+void uno_accessibility_announce(NSWindow* window, const char* text, bool assertive) {
 	if (!text) return;
 
 	NSString *announcement = [NSString stringWithUTF8String:text];
 
-	// Use NSAccessibilityAnnouncementRequestedNotification to make VoiceOver speak
+	// Use NSAccessibilityAnnouncementRequestedNotification to make VoiceOver speak.
+	// Posting on the specific window (when provided) associates the announcement
+	// with that window's context in screen-reader multi-window scenarios.
 	NSDictionary *userInfo = @{
 		NSAccessibilityAnnouncementKey: announcement,
 		NSAccessibilityPriorityKey: assertive
@@ -1228,58 +1314,62 @@ void uno_accessibility_announce(const char* text, bool assertive) {
 			: @(NSAccessibilityPriorityMedium)
 	};
 
+	id target = window ?: (id)NSApp;
 	NSAccessibilityPostNotificationWithUserInfo(
-		NSApp,
+		target,
 		NSAccessibilityAnnouncementRequestedNotification,
 		userInfo
 	);
 
 #if DEBUG
-	NSLog(@"UNOAccessibility: announce '%@' (assertive=%d)", announcement, assertive);
+	NSLog(@"UNOAccessibility: [window %p] announce '%@' (assertive=%d)", window, announcement, assertive);
 #endif
 }
 
-void uno_accessibility_post_layout_changed(void) {
-	if (g_rootElement) {
-		NSAccessibilityPostNotification(g_rootElement, NSAccessibilityLayoutChangedNotification);
+void uno_accessibility_post_layout_changed(NSWindow* window) {
+	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+	if (context.rootElement) {
+		NSAccessibilityPostNotification(context.rootElement, NSAccessibilityLayoutChangedNotification);
 #if DEBUG
-		NSLog(@"UNOAccessibility: posted layout changed notification");
+		NSLog(@"UNOAccessibility: [window %p] posted layout changed notification", window);
 #endif
 	}
 }
 
-void uno_accessibility_post_children_changed(void) {
+void uno_accessibility_post_children_changed(NSWindow* window) {
 	// NSAccessibilityCreatedNotification on the window is the only way
 	// to make VoiceOver pick up structural changes reliably.
-	if (g_window) {
-		NSAccessibilityPostNotification(g_window, NSAccessibilityCreatedNotification);
+	if (window) {
+		NSAccessibilityPostNotification(window, NSAccessibilityCreatedNotification);
 #if DEBUG
-		NSLog(@"UNOAccessibility: posted children changed (created) notification");
+		NSLog(@"UNOAccessibility: [window %p] posted children changed (created) notification", window);
 #endif
 	}
 }
 
 void uno_accessibility_post_live_region_created(intptr_t handle) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		NSAccessibilityPostNotification(element, kAccessibilityLiveRegionCreatedNotification);
 	}
 }
 
 void uno_accessibility_post_live_region_changed(intptr_t handle) {
-	UNOAccessibilityElement *element = findElement(handle);
+	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		NSAccessibilityPostNotification(element, kAccessibilityLiveRegionChangedNotification);
 	}
 }
 
-NSArray* uno_accessibility_get_root_children(void) {
-	if (!g_rootElement) {
+NSArray* uno_accessibility_get_root_children(NSWindow* window) {
+	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+	if (!context.rootElement) {
 		return nil;
 	}
-	return @[g_rootElement];
+	return @[context.rootElement];
 }
 
-id uno_accessibility_get_focused_element(void) {
-	return g_focusedElement;
+id uno_accessibility_get_focused_element(NSWindow* window) {
+	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+	return context.focusedElement;
 }

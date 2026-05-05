@@ -338,9 +338,14 @@ internal readonly struct ParsedText : IParsedText
 
 	#region IParsedText
 
+	// compositionRange is accepted to satisfy the IParsedText contract, but
+	// composition underline rendering is implemented by UnicodeText (the actual
+	// renderer used by TextBlock/TextBox). ParsedText is only the initial empty
+	// fallback and never has an active composition to render.
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
-		IEnumerable<TextHighlighter> highlighters)
+		IEnumerable<TextHighlighter> highlighters,
+		(int startIndex, int length)? compositionRange)
 	{
 		if (_renderLines.Count == 0)
 		{

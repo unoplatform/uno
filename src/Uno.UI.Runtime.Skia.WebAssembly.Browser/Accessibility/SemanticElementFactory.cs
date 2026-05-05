@@ -306,6 +306,8 @@ internal static partial class SemanticElementFactory
 		var value = "";
 		var isReadOnly = false;
 		string? placeholder = null;
+		var selectionStart = 0;
+		var selectionEnd = 0;
 
 		if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 		{
@@ -316,13 +318,11 @@ internal static partial class SemanticElementFactory
 		// Extract placeholder text from the control
 		if (peer is FrameworkElementAutomationPeer feap)
 		{
-			if (feap.Owner is TextBox tb)
+			if (feap.Owner is TextBox textBox)
 			{
-				placeholder = tb.PlaceholderText;
-			}
-			else if (feap.Owner is PasswordBox pb)
-			{
-				placeholder = pb.PlaceholderText;
+				placeholder = textBox.PlaceholderText;
+				selectionStart = Math.Max(0, Math.Min(textBox.SelectionStart, value.Length));
+				selectionEnd = Math.Max(selectionStart, Math.Min(textBox.SelectionStart + textBox.SelectionLength, value.Length));
 			}
 		}
 
@@ -337,7 +337,9 @@ internal static partial class SemanticElementFactory
 			value ?? "",
 			multiline,
 			password,
-			isReadOnly);
+			isReadOnly,
+			selectionStart,
+			selectionEnd);
 
 		// Set native placeholder on the input element
 		if (!string.IsNullOrEmpty(placeholder))
@@ -987,7 +989,7 @@ internal static partial class SemanticElementFactory
 		internal static partial void CreateRadioElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, bool isChecked, string? label, string? groupName);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createTextBoxElement")]
-		internal static partial void CreateTextBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string value, bool multiline, bool password, bool isReadOnly);
+		internal static partial void CreateTextBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string value, bool multiline, bool password, bool isReadOnly, int selectionStart, int selectionEnd);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createComboBoxElement")]
 		internal static partial void CreateComboBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, bool expanded, string? selectedValue);

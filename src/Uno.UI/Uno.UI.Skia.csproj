@@ -23,7 +23,7 @@
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
 		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
+		<PackageId>Uno.WinUI</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

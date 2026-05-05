@@ -3,16 +3,16 @@
     "transport": "stdio",
     "variants": {
       "stable": {
-        "command": "dnx",
-        "args": ["-y", "uno.devserver", "--mcp-app"]
+        "command": "dotnet",
+        "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]
       },
       "prerelease": {
-        "command": "dnx",
-        "args": ["-y", "--prerelease", "uno.devserver", "--mcp-app"]
+        "command": "dotnet",
+        "args": ["dnx", "-y", "--prerelease", "uno.devserver", "--mcp-app"]
       },
       "pinned": {
-        "command": "dnx",
-        "args": ["-y", "--version", "{version}", "uno.devserver", "--mcp-app"]
+        "command": "dotnet",
+        "args": ["dnx", "-y", "--version", "{version}", "uno.devserver", "--mcp-app"]
       }
     },
     "detection": {

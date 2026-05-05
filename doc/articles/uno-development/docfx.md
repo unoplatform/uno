@@ -145,8 +145,8 @@ You typically only need to generate implemented views when you are working on th
 If you do need to generate them:
 
 1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio.
-2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
-3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
+2. Edit the properties of the `Uno.WinAppSDKSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
+3. Set `Uno.WinAppSDKSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
 
 > [!NOTE]
 > By default, the build does not fail on DocFX errors (it prints them in the console). This is for simplicity since you don't need the implemented views for most documentation work. To test DocFX and break on error, run the `npm run strict` command.

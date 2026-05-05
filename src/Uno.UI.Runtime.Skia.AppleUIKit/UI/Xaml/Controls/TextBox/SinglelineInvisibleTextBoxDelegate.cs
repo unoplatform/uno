@@ -43,6 +43,13 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 				return false;
 			}
 
+			// During IME composition, allow text changes through without
+			// MaxLength interference — the composition system manages length.
+			if (textBoxView.IsComposing)
+			{
+				return true;
+			}
+
 			// TODO:MZ:
 			//if (textBox.OnKey(replacementString.FirstOrDefault()))
 			//{

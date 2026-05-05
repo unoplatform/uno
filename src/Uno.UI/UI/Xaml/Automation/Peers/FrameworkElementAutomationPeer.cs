@@ -34,6 +34,15 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	private AutomationControlType m_ControlType;
 
+	// Recursion guard for GetNameCore → GetLabeledBy → GetName cycle.
+	// Prevents StackOverflowException when elements have circular LabeledBy references.
+	[ThreadStatic]
+	private static HashSet<AutomationPeer> t_peersResolvingName;
+
+#if !__ANDROID__ && !__APPLE_UIKIT__
+	private const int MaxAutomationTreeDepth = 512;
+#endif
+
 	public UIElement Owner { get; }
 
 	public FrameworkElementAutomationPeer() { }
@@ -108,42 +117,19 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	protected override Rect GetBoundingRectangleCore()
 	{
-		Rect rect = default;
-
-		var isOneCoreTransforms = IsEnabled();
-
-		// In OneCoreTransforms mode, we ignore the clip on the all CScrollContentPresenters for the magnifier. This is
-		// needed because Santorini's Magnifier places a RenderTransform on itself to do the magnification, which will
-		// push parts of the shell (which lives underneath the Magnifier in the tree) beyond the bounds of the window.
-		// Those parts still need to report bounds in order to be accessed by UIA and be scrolled back into view by the
-		// shell.
-		//
-		// Note that ignoring the root CScrollContentPresenter clip alone does not guarantee non-zero bounds to be
-		// returned. The window size could have been given to layout and could have caused layout clips to be applied
-		// in the tree. This works for Magnifier because the Magnifier control uses only a RenderTransform for
-		// magnification, which does not affect layout at all.
-		//
-		// Also note that we still respect the root CScrollContentPresenter clip for IsOffscreen (see IsOffscreenCore).
-		// GetBoundingRectangle is not required to clip the bounds to the window, but IsOffscreen needs to remain accurate.
-		// https://docs.microsoft.com/en-us/windows/desktop/api/uiautomationcore/nf-uiautomationcore-irawelementproviderfragment-get_boundingrectangle
-		if (!IsOffscreenHelper(isOneCoreTransforms))
+		// Uno does not use OneCoreTransforms mode (WinUI's XamlOneCoreTransforms::IsEnabled()),
+		// so we always pass ignoreClippingOnScrollContentPresenters=false and skip DPI scaling.
+		if (!IsOffscreenHelper(false /* ignoreClippingOnScrollContentPresenters */))
 		{
 			var bounds = Owner.GetGlobalBoundsWithOptions(
 				false /* ignoreClipping */,
-				isOneCoreTransforms,
+				false /* ignoreClippingOnScrollContentPresenters */,
 				false /* useTargetInformation */);
 
-			rect = new Rect(bounds.X, bounds.Y, bounds.Width, bounds.Height);
+			return new Rect(bounds.X, bounds.Y, bounds.Width, bounds.Height);
 		}
 
-		if (isOneCoreTransforms)
-		{
-			// In OneCoreTransforms mode, GetGlobalBounds returns logical pixels so we must convert to RasterizedClient
-			var scale = RootScale.GetRasterizationScaleForElement(GetRootNoRef());
-			return new Rect(rect.X * scale, rect.Y * scale, rect.Width * scale, rect.Height * scale);
-		}
-
-		return rect;
+		return default;
 	}
 
 	protected override IList<AutomationPeer> GetChildrenCore()
@@ -155,10 +141,20 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	private void GetAutomationPeerChildren(UIElement element, List<AutomationPeer> children)
 	{
+		GetAutomationPeerChildren(element, children, 0);
+	}
+
+	private void GetAutomationPeerChildren(UIElement element, List<AutomationPeer> children, int depth)
+	{
 		//UNO TODO: Properly implement GetAutomationPeerChildren on FrameworkElementAutomationPeer
 		//Temporarily disabled as android, ios, macos doesn't use UIElement
 
 #if !__ANDROID__ && !__APPLE_UIKIT__
+		if (depth > MaxAutomationTreeDepth)
+		{
+			return;
+		}
+
 		var childCount = element.GetChildren().Count;
 		if (childCount > 0)
 		{
@@ -177,7 +173,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 					}
 					else
 					{
-						GetAutomationPeerChildren(spChild, children);
+						GetAutomationPeerChildren(spChild, children, depth + 1);
 					}
 				}
 			}
@@ -264,9 +260,23 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 			return name;
 		}
 
-		if (GetLabeledBy() is AutomationPeer labelAutomationPeer && labelAutomationPeer.GetName() is string label && !string.IsNullOrEmpty(label))
+		// Guard against circular LabeledBy references (A→B→A) which would cause
+		// StackOverflowException. Track which peers are currently resolving their
+		// name so we can break cycles.
+		var resolving = t_peersResolvingName ??= new HashSet<AutomationPeer>(ReferenceEqualityComparer.Instance);
+		if (resolving.Add(this))
 		{
-			return label;
+			try
+			{
+				if (GetLabeledBy() is AutomationPeer labelAutomationPeer && labelAutomationPeer.GetName() is string label && !string.IsNullOrEmpty(label))
+				{
+					return label;
+				}
+			}
+			finally
+			{
+				resolving.Remove(this);
+			}
 		}
 
 		if ((Owner as FrameworkElement)?.GetPlainText() is string plainText && !string.IsNullOrEmpty(plainText))

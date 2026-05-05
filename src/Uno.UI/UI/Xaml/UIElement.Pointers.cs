@@ -1187,6 +1187,13 @@ namespace Microsoft.UI.Xaml
 #endif
 			}
 
+			// A non-System ManipulationMode means this element claims the gesture; cancel any ancestor DMs
+			// that exist at this point AND set a flag so InputManager.PointerManager.AfterPressForDirectManipulation
+			// re-runs the cancel walk once the press bubble has settled — otherwise DMs registered LATER in
+			// the bubble (typically by a ScrollContentPresenter higher up the tree, after this element has
+			// already been visited via ctx=OnManagedBubbling) would survive and steal the pointer on the next
+			// move. The flag is plumbed through InputManager.PointerManager.CancelDirectManipulations, so
+			// end-user calls to UIElement.CancelDirectManipulations get the same after-bubble redo.
 			if (!ManipulationMode.HasFlag(ManipulationModes.System))
 			{
 				CancelDirectManipulations();

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -7,92 +9,36 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
-using Uno.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
 /// <summary>
 /// Manages the Win32 UIAutomation provider tree for Skia-rendered Uno applications.
-/// Creates UIA providers lazily for elements that have automation peers, enabling
-/// Narrator and other screen readers. The UIA tree follows the automation peer tree
-/// (which flattens layout-only elements) rather than the raw visual tree.
+/// Per top-level <see cref="Microsoft.UI.Xaml.Window"/>: creates UIA providers lazily
+/// for elements that have automation peers so Narrator / other screen readers can
+/// navigate the tree. The UIA tree follows the automation peer tree (which flattens
+/// layout-only elements) rather than the raw visual tree.
 /// </summary>
-internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
+internal sealed class Win32Accessibility : SkiaAccessibilityBase
 {
-	private static Win32Accessibility? _instance;
-
-	private nint _hwnd;
-	private bool _accessibilityTreeInitialized;
-	private Win32RawElementProvider? _rootProvider;
+	private readonly nint _hwnd;
+	private readonly DispatcherQueue _dispatcherQueue;
+	private readonly Win32RawElementProvider _rootProvider;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
-	private DispatcherQueue? _dispatcherQueue;
+	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
 	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new();
-
-	internal static Win32Accessibility Instance => _instance ??= new Win32Accessibility();
+	private bool _structureChangeFlushQueued;
 
 	internal Win32RawElementProvider? RootProvider => _rootProvider;
 
-	private Win32Accessibility()
-	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Initializing {nameof(Win32Accessibility)}");
-		}
-
-		AccessibilityAnnouncer.AccessibilityImpl = this;
-		UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAdded;
-		UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemoved;
-		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = OnSizeOrOffsetChanged;
-		AutomationPeer.AutomationPeerListener = this;
-	}
-
-	internal static void Register()
-	{
-		// Force singleton creation, which registers all callbacks
-		_ = Instance;
-	}
-
-	// IUnoAccessibility
-
-	public bool IsAccessibilityEnabled => _hwnd != nint.Zero;
-
-	public void AnnouncePolite(string text)
-	{
-		if (!IsAccessibilityEnabled || _rootProvider is null)
-		{
-			return;
-		}
-
-		_ = Win32UIAutomationInterop.UiaRaiseNotificationEvent(
-			_rootProvider,
-			Win32UIAutomationInterop.AutomationNotificationKind_Other,
-			Win32UIAutomationInterop.AutomationNotificationProcessing_CurrentThenMostRecent,
-			text,
-			"UnoAnnouncement");
-	}
-
-	public void AnnounceAssertive(string text)
-	{
-		if (!IsAccessibilityEnabled || _rootProvider is null)
-		{
-			return;
-		}
-
-		_ = Win32UIAutomationInterop.UiaRaiseNotificationEvent(
-			_rootProvider,
-			Win32UIAutomationInterop.AutomationNotificationKind_Other,
-			Win32UIAutomationInterop.AutomationNotificationProcessing_ImportantMostRecent,
-			text,
-			"UnoAnnouncement");
-	}
-
-	// Initialization
-
-	internal void Initialize(nint hwnd, UIElement rootElement)
+	internal Win32Accessibility(nint hwnd, UIElement rootElement, DispatcherQueue dispatcherQueue)
 	{
 		_hwnd = hwnd;
+		_dispatcherQueue = dispatcherQueue;
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -100,12 +46,14 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 
 		// Create root provider only; child providers are created lazily during navigation.
-		_rootProvider = new Win32RawElementProvider(rootElement, _hwnd, isRoot: true, this);
+		var rootPeer = rootElement.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true);
+		_rootProvider = new Win32RawElementProvider(rootElement, _hwnd, isRoot: true, this, rootPeer);
 		_providers.AddOrUpdate(rootElement, _rootProvider);
-		_dispatcherQueue = rootElement.DispatcherQueue;
-		_accessibilityTreeInitialized = true;
+		if (rootPeer is not null)
+		{
+			_peerProviders.AddOrUpdate(rootPeer, _rootProvider);
+		}
 
-		var rootPeer = rootElement.GetOrCreateAutomationPeer();
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
 			this.Log().Info(
@@ -114,47 +62,48 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 				$"children count={rootElement.GetChildren().Count}, " +
 				$"window=0x{_hwnd:X}");
 		}
-
-		// Dump the initial automation tree at Info level for diagnostics
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			DumpAutomationTree(rootElement, 0);
-		}
 	}
 
-	private void DumpAutomationTree(UIElement element, int depth)
+	public override bool IsAccessibilityEnabled => !IsDisposed && _hwnd != nint.Zero;
+
+	// ──────────────────────────────────────────────────────────────
+	//  Announcements — override base to dispatch at the UIA layer
+	//  (base's debouncing/throttling still runs; AnnounceOnPlatform
+	//  implements the actual raise.)
+	// ──────────────────────────────────────────────────────────────
+
+	protected override void AnnounceOnPlatform(string text, bool assertive)
 	{
-		if (depth > 6)
+		if (!IsAccessibilityEnabled)
 		{
 			return;
 		}
 
-		var indent = new string(' ', depth * 2);
-		var peer = element.GetOrCreateAutomationPeer();
-		var peerType = peer?.GetType().Name ?? "no-peer";
-		string peerName;
-		try { peerName = peer?.GetName() ?? ""; }
-		catch { peerName = "<error>"; }
-		var controlType = peer != null ? peer.GetAutomationControlType().ToString() : "none";
-		var automationId = AutomationProperties.GetAutomationId(element);
-		var automationName = AutomationProperties.GetName(element);
+		var processing = assertive
+			? Win32UIAutomationInterop.AutomationNotificationProcessing_ImportantMostRecent
+			: Win32UIAutomationInterop.AutomationNotificationProcessing_CurrentThenMostRecent;
 
-		this.Log().Debug(
-			$"[UIA] {indent}{element.GetType().Name}" +
-			$" peer={peerType}" +
-			$" name=\"{peerName}\"" +
-			$" type={controlType}" +
-			$" a11yId={automationId}" +
-			$" a11yName={automationName}" +
-			$" vis={element.Visibility}");
-
-		foreach (var child in element.GetChildren())
+		try
 		{
-			DumpAutomationTree(child, depth + 1);
+			_ = Win32UIAutomationInterop.UiaRaiseNotificationEvent(
+				_rootProvider,
+				Win32UIAutomationInterop.AutomationNotificationKind_Other,
+				processing,
+				text,
+				"UnoAnnouncement");
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] AnnounceOnPlatform failed: {ex.Message}");
+			}
 		}
 	}
 
-	// Provider management
+	// ──────────────────────────────────────────────────────────────
+	//  Provider management
+	// ──────────────────────────────────────────────────────────────
 
 	/// <summary>
 	/// Gets or lazily creates a UIA provider for the given element.
@@ -167,12 +116,11 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 			return existing;
 		}
 
-		if (!_accessibilityTreeInitialized || !IsAccessibilityEnabled)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
 		}
 
-		// Only create providers for elements with automation peers
 		var peer = element.GetOrCreateAutomationPeer();
 		if (peer is null)
 		{
@@ -183,63 +131,82 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 			return null;
 		}
 
-		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this);
-		_providers.AddOrUpdate(element, provider);
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={peer.GetType().Name})");
-		}
-
-		return provider;
+		return GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
 	}
 
 	/// <summary>
 	/// Resolves an <see cref="AutomationPeer"/> to its corresponding UIA provider.
-	/// When <paramref name="resolveEventsSource"/> is true, the peer's EventsSource
-	/// is resolved first (matching WinUI3 CUIAWrapper behavior where navigation
-	/// substitutes the EventsSource peer before creating a wrapper).
 	/// </summary>
 	internal Win32RawElementProvider? GetProviderForPeer(AutomationPeer peer, bool resolveEventsSource = false)
 	{
-		var resolvedPeer = peer;
-
-		if (resolveEventsSource)
-		{
-			var eventsSource = peer.GetAPEventsSource();
-			if (eventsSource is not null)
-			{
-				resolvedPeer = eventsSource;
-			}
-		}
-
-		if (TryGetPeerOwner(resolvedPeer, out var element))
-		{
-			return GetOrCreateProvider(element);
-		}
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"[UIA] GetProviderForPeer: Could not resolve owner for {resolvedPeer.GetType().Name}");
-		}
-		return null;
+		return GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource));
 	}
 
 	internal Win32RawElementProvider? GetProvider(UIElement element)
 	{
-		_providers.TryGetValue(element, out var provider);
+		if (_providers.TryGetValue(element, out var provider))
+		{
+			return provider;
+		}
+
+		var peer = element.GetOrCreateAutomationPeer();
+		return peer is null
+			? null
+			: GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
+	}
+
+	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
+	{
+		if (!resolvedPeer.TryGetProviderOwner(out var element))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] GetProviderForPeer: Could not resolve owner for {resolvedPeer.GetType().Name}");
+			}
+			return null;
+		}
+
+		var canonicalPeer = element.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true) ?? resolvedPeer;
+		if (!canonicalPeer.TryGetProviderOwner(out element))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] GetProviderForPeer: Canonical owner resolution failed for {canonicalPeer.GetType().Name}");
+			}
+			return null;
+		}
+
+		if (_providers.TryGetValue(element, out var existingByElement)
+			&& existingByElement.RepresentsPeer(canonicalPeer))
+		{
+			_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
+			return existingByElement;
+		}
+
+		if (_peerProviders.TryGetValue(canonicalPeer, out var existingByPeer))
+		{
+			_providers.AddOrUpdate(element, existingByPeer);
+			return existingByPeer;
+		}
+
+		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, canonicalPeer);
+		_providers.AddOrUpdate(element, provider);
+		_peerProviders.AddOrUpdate(canonicalPeer, provider);
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={canonicalPeer.GetType().Name})");
+		}
+
 		return provider;
 	}
 
-	// Callbacks from UIElementAccessibilityHelper
+	// ──────────────────────────────────────────────────────────────
+	//  Tree management — called from router via base.Route*
+	// ──────────────────────────────────────────────────────────────
 
-	private void OnChildAdded(UIElement parent, UIElement child, int? index)
+	protected override void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
-		if (!IsAccessibilityEnabled || !_accessibilityTreeInitialized)
-		{
-			return;
-		}
-
 		// Raise structure changed event on the nearest ancestor that has a provider.
 		// Child providers will be lazily created when UIA navigates to them.
 		var ancestorProvider = FindNearestAncestorProvider(parent);
@@ -249,13 +216,8 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	private void OnChildRemoved(UIElement parent, UIElement child)
+	protected override void OnChildRemoved(UIElement parent, UIElement child)
 	{
-		if (!IsAccessibilityEnabled || !_accessibilityTreeInitialized)
-		{
-			return;
-		}
-
 		// Clean up cached providers for the removed subtree
 		CleanupProviders(child);
 
@@ -267,107 +229,8 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	private void CleanupProviders(UIElement element)
+	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
-		if (_providers.TryGetValue(element, out var provider))
-		{
-			_providers.Remove(element);
-
-			// Disconnect the provider from UIA so stale COM references are released.
-			// This matches WinUI3's CUIAWrapper::Invalidate() which calls
-			// UiaDisconnectProvider(this) when the automation peer is destroyed.
-			try
-			{
-				_ = Win32UIAutomationInterop.UiaDisconnectProvider(provider);
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"UiaDisconnectProvider failed for {provider.DescribeElement()}: {ex.Message}");
-				}
-			}
-		}
-
-		foreach (var child in element.GetChildren())
-		{
-			CleanupProviders(child);
-		}
-	}
-
-	private Win32RawElementProvider? FindNearestAncestorProvider(UIElement element)
-	{
-		UIElement? current = element;
-		while (current is not null)
-		{
-			if (_providers.TryGetValue(current, out var provider))
-			{
-				return provider;
-			}
-			current = VisualTreeHelper.GetParent(current) as UIElement;
-		}
-		return _rootProvider;
-	}
-
-	private void RaiseStructureChanged(Win32RawElementProvider provider)
-	{
-		// Invalidate the children cache so the next navigation rebuilds the list
-		provider.InvalidateChildrenCache();
-
-		// Coalesce rapid StructureChanged events into a single deferred dispatch.
-		// Each affected provider is tracked so we fire per-subtree events rather
-		// than always invalidating the entire root, which reduces the scope of
-		// UIA re-validation during steady-state interaction. During startup the
-		// batch still avoids hundreds of synchronous round-trips.
-		if (_dispatcherQueue is not null)
-		{
-			var wasEmpty = _pendingStructureChanges.Count == 0;
-			_pendingStructureChanges.Add(provider);
-
-			if (wasEmpty)
-			{
-				_dispatcherQueue.TryEnqueue(() =>
-				{
-					foreach (var pending in _pendingStructureChanges)
-					{
-						RaiseStructureChangedCore(pending);
-					}
-					_pendingStructureChanges.Clear();
-				});
-			}
-			return;
-		}
-
-		RaiseStructureChangedCore(provider);
-	}
-
-	private void RaiseStructureChangedCore(Win32RawElementProvider provider)
-	{
-		try
-		{
-			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(
-				provider,
-				StructureChangeType.ChildrenInvalidated,
-				provider.GetRuntimeId());
-		}
-		catch (Exception ex)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"RaiseStructureChanged failed: {ex.Message}");
-			}
-		}
-	}
-
-	// Callback from VisualAccessibilityHelper
-
-	private void OnSizeOrOffsetChanged(Visual visual)
-	{
-		if (!IsAccessibilityEnabled || !_accessibilityTreeInitialized)
-		{
-			return;
-		}
-
 		// UIA pulls BoundingRectangle on demand, so we only need to notify
 		// clients that the property has changed so they re-query it.
 		if (visual is ContainerVisual containerVisual
@@ -392,40 +255,157 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	// Helpers
-
-	internal static bool TryGetPeerOwner(AutomationPeer peer, [NotNullWhen(true)] out UIElement? owner)
+	private void CleanupProviders(UIElement element)
 	{
-		if (peer is FrameworkElementAutomationPeer { Owner: { } element })
-		{
-			owner = element;
-			return true;
-		}
+		// Use an explicit stack instead of recursion to prevent StackOverflow
+		// on deep visual trees when subtrees are removed.
+		var stack = new Stack<UIElement>();
+		stack.Push(element);
 
-		if (peer is ItemAutomationPeer itemPeer)
+		while (stack.Count > 0)
 		{
-			var parent = itemPeer.GetParent();
-			if (parent is FrameworkElementAutomationPeer { Owner: { } parentElement })
+			var current = stack.Pop();
+
+			if (_providers.TryGetValue(current, out var provider))
 			{
-				owner = parentElement;
-				return true;
+				// Clear cached peer lists so a stale provider cannot keep the
+				// removed subtree alive.
+				provider.InvalidateChildrenCache();
+				_pendingStructureChanges.Remove(provider);
+
+				_providers.Remove(current);
+				if (provider.RepresentedPeer is { } representedPeer)
+				{
+					_peerProviders.Remove(representedPeer);
+				}
+
+				// Disconnect the provider from UIA so stale COM references are released.
+				try
+				{
+					_ = Win32UIAutomationInterop.UiaDisconnectProvider(provider);
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"UiaDisconnectProvider failed for {provider.DescribeElement()}: {ex.Message}");
+					}
+				}
+			}
+
+			foreach (var child in current.GetChildren())
+			{
+				stack.Push(child);
 			}
 		}
-
-		owner = null;
-		return false;
 	}
 
-	// IAutomationPeerListener
-
-	public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+	private Win32RawElementProvider? FindNearestAncestorProvider(UIElement element)
 	{
-		if (!IsAccessibilityEnabled || !TryGetPeerOwner(peer, out var owner))
+		UIElement? current = element;
+		while (current is not null)
+		{
+			if (_providers.TryGetValue(current, out var provider))
+			{
+				return provider;
+			}
+			current = VisualTreeHelper.GetParent(current) as UIElement;
+		}
+		return _rootProvider;
+	}
+
+	private void RaiseStructureChanged(Win32RawElementProvider provider)
+	{
+		// Invalidate the children cache so the next navigation rebuilds the list
+		provider.InvalidateChildrenCache();
+
+		// Coalesce rapid StructureChanged events into a single deferred dispatch.
+		_pendingStructureChanges.Add(provider);
+		if (_structureChangeFlushQueued)
 		{
 			return;
 		}
 
-		if (!_providers.TryGetValue(owner, out var provider))
+		_structureChangeFlushQueued = true;
+		_dispatcherQueue.TryEnqueue(() =>
+		{
+			_structureChangeFlushQueued = false;
+
+			// Short-circuit the flush if the window was closed while this callback
+			// was queued (edge case "Window close during dispatch").
+			if (IsDisposed)
+			{
+				_pendingStructureChanges.Clear();
+				return;
+			}
+
+			foreach (var pending in _pendingStructureChanges)
+			{
+				RaiseStructureChangedCore(pending);
+			}
+			_pendingStructureChanges.Clear();
+		});
+	}
+
+	private void RaiseStructureChangedCore(Win32RawElementProvider provider)
+	{
+		try
+		{
+			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(
+				provider,
+				StructureChangeType.ChildrenInvalidated,
+				provider.GetRuntimeId());
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"RaiseStructureChanged failed: {ex.Message}");
+			}
+		}
+	}
+
+	// ──────────────────────────────────────────────────────────────
+	//  Helpers
+	// ──────────────────────────────────────────────────────────────
+
+	/// <summary>
+	/// Looks up an existing provider for the given peer without creating one.
+	/// Used by event notification methods to avoid eagerly creating providers
+	/// for elements that UIA hasn't navigated to yet — creating providers in
+	/// event paths registers COM callable wrappers with UIA, which hold strong
+	/// references and prevent GC of the underlying UIElements.
+	/// </summary>
+	private Win32RawElementProvider? FindExistingProviderForPeer(AutomationPeer peer, bool resolveEventsSource = false)
+	{
+		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource);
+
+		if (_peerProviders.TryGetValue(resolvedPeer, out var providerByPeer))
+		{
+			return providerByPeer;
+		}
+
+		if (resolvedPeer.TryGetProviderOwner(out var element) && _providers.TryGetValue(element, out var providerByElement))
+		{
+			return providerByElement;
+		}
+
+		return null;
+	}
+
+	// ──────────────────────────────────────────────────────────────
+	//  Automation peer listener — UIA-style dispatch overrides
+	// ──────────────────────────────────────────────────────────────
+
+	public override void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+	{
+		if (!IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
+		if (provider is null)
 		{
 			return;
 		}
@@ -450,21 +430,23 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
-		if (!IsAccessibilityEnabled || !TryGetPeerOwner(peer, out var owner))
+		if (!IsAccessibilityEnabled)
 		{
 			return;
 		}
 
-		// For focus and live region changes, ensure a provider exists so Narrator
-		// can track focus or announce the live region content. Non-focusable
-		// elements like TextBlocks won't have a provider created until needed.
-		if (!_providers.TryGetValue(owner, out var provider))
+		// Only look up existing providers for most events — eagerly creating
+		// providers registers COM callable wrappers with UIA that prevent GC.
+		// For focus and live region changes, create a provider so Narrator
+		// can track focus or announce live region content.
+		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
+		if (provider is null)
 		{
 			if (eventId is AutomationEvents.AutomationFocusChanged or AutomationEvents.LiveRegionChanged)
 			{
-				provider = GetOrCreateProvider(owner);
+				provider = GetProviderForPeer(peer, resolveEventsSource: true);
 			}
 
 			if (provider is null)
@@ -480,6 +462,10 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 				case AutomationEvents.AutomationFocusChanged:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_AutomationFocusChangedEventId);
+					if (TryGetPeerOwner(peer, out var focusedElement))
+					{
+						TrackFocusedElement(focusedElement);
+					}
 					break;
 				case AutomationEvents.InvokePatternOnInvoked:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
@@ -536,7 +522,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 					var label = peer.GetName();
 					if (!string.IsNullOrEmpty(label))
 					{
-						var liveSetting = AutomationProperties.GetLiveSetting(owner);
+						var liveSetting = AutomationProperties.GetLiveSetting(provider.Owner);
 						if (liveSetting == AutomationLiveSetting.Assertive)
 						{
 							AnnounceAssertive(label);
@@ -558,7 +544,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+	public override void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
 		if (!IsAccessibilityEnabled || string.IsNullOrEmpty(displayString))
 		{
@@ -567,7 +553,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 
 		// Use specific provider if available, otherwise fall back to root
 		IRawElementProviderSimple? target = _rootProvider;
-		if (TryGetPeerOwner(peer, out var owner) && _providers.TryGetValue(owner, out var elementProvider))
+		if (FindExistingProviderForPeer(peer, resolveEventsSource: true) is { } elementProvider)
 		{
 			target = elementProvider;
 		}
@@ -596,23 +582,73 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+	// ──────────────────────────────────────────────────────────────
+	//  Abstract no-op overrides — Win32 dispatches at the UIA layer
+	//  via NotifyPropertyChangedEvent / NotifyAutomationEvent, not via
+	//  the per-handle UpdateXxx methods used by the macOS path.
+	// ──────────────────────────────────────────────────────────────
+
+	protected override void UpdateName(nint handle, AutomationPeer peer, string? label) { }
+	protected override void UpdateToggleState(nint handle, AutomationPeer peer, ToggleState newState) { }
+	protected override void UpdateRangeValue(nint handle, AutomationPeer peer, double value) { }
+	protected override void UpdateRangeBounds(nint handle, double min, double max) { }
+	protected override void UpdateTextValue(nint handle, string? value) { }
+	protected override void UpdateExpandCollapseState(nint handle, bool isExpanded) { }
+	protected override void UpdateEnabled(nint handle, bool enabled) { }
+	protected override void UpdateSelected(nint handle, bool selected) { }
+	protected override void UpdateHelpText(nint handle, string? helpText) { }
+	protected override void UpdateHeadingLevel(nint handle, int level) { }
+	protected override void UpdateLandmark(nint handle, string? landmarkRole) { }
+	protected override void UpdateIsReadOnly(nint handle, bool isReadOnly) { }
+	protected override void UpdateFocusable(nint handle, bool focusable) { }
+	protected override void UpdateIsOffscreen(nint handle, bool isOffscreen) { }
+	protected override void SetNativeFocus(nint handle) { }
+	protected override void OnNativeStructureChanged() { }
+
+	// Forwarded by Win32RawElementProvider.AdviseEventAdded/Removed — currently a no-op
+	// because UIA doesn't require explicit subscription management here.
+	internal void OnAdviseEventAdded(int eventId, int[]? propertyIds) { }
+	internal void OnAdviseEventRemoved(int eventId, int[]? propertyIds) { }
+
+	// ──────────────────────────────────────────────────────────────
+	//  Disposal — per-window provider cleanup
+	// ──────────────────────────────────────────────────────────────
+
+	protected override void DisposeCore()
 	{
-		NotifyAutomationEvent(peer, eventId);
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"[UIA] Win32Accessibility disposing for window 0x{_hwnd:X}");
+		}
+
+		// Disconnect every live cached provider scoped to this window so UIA
+		// clients see a well-formed disconnect rather than a dangling HWND.
+		// Uses the .NET 9+ ConditionalWeakTable IEnumerable<KeyValuePair<...>>
+		// support. UiaDisconnectAllProviders is intentionally NOT used — it is
+		// process-wide and would disconnect providers belonging to other windows.
+		foreach (var pair in _providers)
+		{
+			try
+			{
+				_ = Win32UIAutomationInterop.UiaDisconnectProvider(pair.Value);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[UIA] UiaDisconnectProvider failed during dispose: {ex.Message}");
+				}
+			}
+		}
+
+		_providers.Clear();
+		_peerProviders.Clear();
+		_pendingStructureChanges.Clear();
 	}
 
-	public bool ListenerExistsHelper(AutomationEvents eventId)
-		=> IsAccessibilityEnabled;
-
-	public void OnAdviseEventAdded(int eventId, int[]? propertyIds)
-	{
-	}
-
-	public void OnAdviseEventRemoved(int eventId, int[]? propertyIds)
-	{
-	}
-
-	// Property mapping
+	// ──────────────────────────────────────────────────────────────
+	//  Property mapping
+	// ──────────────────────────────────────────────────────────────
 
 	private static int? MapAutomationPropertyToUia(AutomationProperty property)
 	{
