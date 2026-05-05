@@ -151,9 +151,9 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 			while (_surfaceReady && !_disposed)
 			{
-				// Park until a Set() wakes us. OnPause does not wake the loop —
-				// it just flips _paused so a mid-render iteration skips back to Wait.
-				_renderEvent.Wait();
+				// Tick every 100ms; the loop re-checks _paused / _renderRequested
+				// each iteration and skips the render when nothing is pending.
+				_renderEvent.Wait(TimeSpan.FromMilliseconds(100));
 				_renderEvent.Reset();
 
 				if (!_surfaceReady || _disposed || _paused || !_renderRequested)
