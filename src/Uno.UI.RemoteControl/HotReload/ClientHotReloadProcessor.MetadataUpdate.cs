@@ -59,7 +59,7 @@ partial class ClientHotReloadProcessor
 
 	private static int _uiPauseDrainSubscribed;
 
-	#pragma warning disable IDE0051 // Kept for upcoming call path; local suppression to avoid broad rule changes.
+#pragma warning disable IDE0051 // Kept for upcoming call path; local suppression to avoid broad rule changes.
 	private static void EnsureUIPauseDrainSubscribed()
 	{
 		if (Interlocked.Exchange(ref _uiPauseDrainSubscribed, 1) != 0)
@@ -69,7 +69,7 @@ partial class ClientHotReloadProcessor
 
 		PendingUIUpdates.DrainRequested += ResumeUIUpdate;
 	}
-	#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
 	private static void ResumeUIUpdate(object? sender, PendingUIUpdates.DrainEventArgs args)
 	{
