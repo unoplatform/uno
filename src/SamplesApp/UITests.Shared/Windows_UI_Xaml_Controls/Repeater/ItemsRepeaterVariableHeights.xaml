@@ -1,0 +1,74 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.Repeater.ItemsRepeaterVariableHeights"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.Repeater"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            MaxWidth="600"
+            HorizontalAlignment="Left"
+            Style="{ThemeResource BodyTextBlockStyle}"
+            TextWrapping="Wrap">
+            200 items, every 10th is 1200px tall, others are 40px. Anchored to bottom (chat-style). Use the buttons to scroll to extreme offsets, walk through the list, or grow item 5 — visually verify no overlap, no drift, and that item 0 is flush at the top after walking back up.
+        </TextBlock>
+
+        <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal"
+            Spacing="6">
+            <Button Click="OnTopClick" Content="Top" />
+            <Button Click="OnJump5000Click" Content="5000" />
+            <Button Click="OnJump12000Click" Content="12000" />
+            <Button Click="OnBottomClick" Content="Bottom" />
+            <Button Click="OnWalkDownUpClick" Content="Walk down/up" />
+            <Button Click="OnGrowItem5Click" Content="Grow item 5" />
+            <Button Click="OnResetClick" Content="Reset" />
+        </StackPanel>
+
+        <Border
+            Grid.Row="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="1">
+            <ScrollViewer
+                x:Name="Scroller"
+                Width="300"
+                Height="600"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Visible">
+                <mux:ItemsRepeater x:Name="Repeater" VerticalAlignment="Bottom">
+                    <mux:ItemsRepeater.Layout>
+                        <mux:StackLayout Orientation="Vertical" />
+                    </mux:ItemsRepeater.Layout>
+                    <mux:ItemsRepeater.ItemTemplate>
+                        <DataTemplate>
+                            <Border Height="{Binding Height}" Background="{Binding Background}">
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="Black"
+                                    Text="{Binding Index}" />
+                            </Border>
+                        </DataTemplate>
+                    </mux:ItemsRepeater.ItemTemplate>
+                </mux:ItemsRepeater>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>
