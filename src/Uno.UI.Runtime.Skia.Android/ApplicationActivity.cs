@@ -361,15 +361,13 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnResume()
 		{
-			// Restart the GL/Vulkan render thread before the framework resume so the
-			// render view is live by the time BaseActivity raises Application.Resuming
-			// and CoreWindow activation callbacks. Otherwise any handler that
-			// invalidates visuals during those callbacks fires while the view is
-			// still paused and the first post-resume frame request is dropped,
-			// leaving the UI stale until a later invalidation.
-			_renderView?.OnResume();
-
 			base.OnResume();
+
+			// Trailing InvalidateRender catches frames requested during base.OnResume
+			// callbacks (Application.Resuming, CoreWindow activation) while the
+			// render view was still parked.
+			_renderView?.OnResume();
+			InvalidateRender();
 
 			RaiseConfigurationChanges();
 
@@ -378,12 +376,9 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnPause()
 		{
-			// Park the GL/Vulkan render thread before the framework pause so the
-			// render thread is not running while Android tears down the surface.
-			// This matches the BaseActivity pattern (pause work before base call).
-			_renderView?.OnPause();
-
 			base.OnPause();
+
+			_renderView?.OnPause();
 
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13827.
 			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)

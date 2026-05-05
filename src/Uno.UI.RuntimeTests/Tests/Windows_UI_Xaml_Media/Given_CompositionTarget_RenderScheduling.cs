@@ -208,13 +208,13 @@ public class Given_CompositionTarget_RenderScheduling
 	// Verifies the activity-side wiring: ApplicationActivity.OnPause/OnResume must
 	// (a) override the base lifecycle callbacks, (b) actually forward to
 	// IUnoSkiaRenderView.OnPause/OnResume on the active render view, and (c) do so
-	// BEFORE delegating to base.OnPause/OnResume. Reversing the order lets the framework
-	// tear down the surface or raise Application.Resuming before the render thread is
-	// parked/restarted, producing the freeze and dropped-first-frame regressions this PR
-	// fixed. We can't safely invoke Activity.OnPause/OnResume from a runtime test (it
-	// would disrupt the running activity), so we inspect the IL of the overrides instead.
+	// AFTER delegating to base.OnPause/OnResume — the conventional Android lifecycle
+	// order. Silently reordering or dropping the forward call regresses the freeze
+	// and dropped-first-frame fixes this PR addresses. We can't safely invoke
+	// Activity.OnPause/OnResume from a runtime test (it would disrupt the running
+	// activity), so we inspect the IL of the overrides instead.
 	[TestMethod]
-	public void When_ApplicationActivity_Lifecycle_Forwards_To_RenderView_Before_Base()
+	public void When_ApplicationActivity_Lifecycle_Forwards_To_RenderView_After_Base()
 	{
 		if (!OperatingSystem.IsAndroid())
 		{
@@ -231,11 +231,11 @@ public class Given_CompositionTarget_RenderScheduling
 			"Uno.UI.Runtime.Skia.Android.IUnoSkiaRenderView", throwOnError: false);
 		Assert.IsNotNull(renderViewIface, "IUnoSkiaRenderView must be present in the Android Skia assembly.");
 
-		AssertForwardsBeforeBase(activityType, renderViewIface!, "OnPause");
-		AssertForwardsBeforeBase(activityType, renderViewIface!, "OnResume");
+		AssertForwardsAfterBase(activityType, renderViewIface!, "OnPause");
+		AssertForwardsAfterBase(activityType, renderViewIface!, "OnResume");
 	}
 
-	private static void AssertForwardsBeforeBase(Type activityType, Type renderViewIface, string lifecycleMethodName)
+	private static void AssertForwardsAfterBase(Type activityType, Type renderViewIface, string lifecycleMethodName)
 	{
 		var lifecycleOverride = activityType.GetMethod(
 			lifecycleMethodName, BindingFlags.NonPublic | BindingFlags.Instance);
@@ -277,10 +277,10 @@ public class Given_CompositionTarget_RenderScheduling
 			$"ApplicationActivity.{lifecycleMethodName} must invoke IUnoSkiaRenderView.{lifecycleMethodName} on the active render view.");
 		Assert.IsTrue(baseOffset >= 0,
 			$"ApplicationActivity.{lifecycleMethodName} must invoke base.{lifecycleMethodName}.");
-		Assert.IsTrue(forwardOffset < baseOffset,
-			$"IUnoSkiaRenderView.{lifecycleMethodName} must be invoked BEFORE base.{lifecycleMethodName}: " +
-			$"reversed order causes surface-teardown races on pause and dropped first-frame on resume " +
-			$"(forwardOffset=0x{forwardOffset:X}, baseOffset=0x{baseOffset:X}).");
+		Assert.IsTrue(baseOffset < forwardOffset,
+			$"base.{lifecycleMethodName} must be invoked BEFORE IUnoSkiaRenderView.{lifecycleMethodName}: " +
+			$"forwarding the lifecycle to the render view first violates the standard Android override order " +
+			$"(baseOffset=0x{baseOffset:X}, forwardOffset=0x{forwardOffset:X}).");
 	}
 
 	// Scans an IL body for a `call` (0x28) or `callvirt` (0x6F) instruction whose
