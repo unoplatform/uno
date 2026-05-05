@@ -74,11 +74,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		// GLSurfaceView contract: must be forwarded from the hosting Activity's OnResume
 		// so the GL render thread restarts.
 		base.OnResume();
-
-		// Recover the render-scheduling state machine from any callback dropped across
-		// the pause/resume boundary, then ensure at least one frame is requested so the
-		// cycle re-establishes even if the GL thread does not redraw on its own.
-		CompositionTarget.NotifyRenderingResumed();
 		RequestRender();
 	}
 

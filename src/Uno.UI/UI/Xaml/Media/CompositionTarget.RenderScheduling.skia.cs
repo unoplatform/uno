@@ -175,49 +175,6 @@ public partial class CompositionTarget
 		return Draw(canvas, resizeFunc);
 	}
 
-	/// <summary>
-	/// Re-establishes the render-scheduling state machine across all live
-	/// <see cref="CompositionTarget"/>s after the platform has paused and resumed
-	/// (e.g. on Android the activity OnPause/OnResume cycle). Call from the UI thread.
-	///
-	/// During pause, beats of the
-	/// <see cref="ICompositionTarget.RequestNewFrame"/> →
-	/// <see cref="OnNativePlatformFrameRequested"/> →
-	/// <see cref="EnqueueRenderCallback"/> chain may have been dropped, leaving flags
-	/// in a configuration where future <see cref="ICompositionTarget.RequestNewFrame"/>
-	/// calls become silent no-ops. This method re-arms
-	/// <see cref="_shouldEnqueueRenderOnNextNativePlatformFrameRequested"/>, clears the
-	/// gate flags, and re-issues a frame request when the prior state was non-idle.
-	/// Idempotent in steady state.
-	/// </summary>
-	internal static void NotifyRenderingResumed()
-	{
-		foreach (var (target, _) in _targets)
-		{
-			target.NotifyRenderingResumedCore();
-		}
-	}
-
-	private void NotifyRenderingResumedCore()
-	{
-		Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, true);
-
-		bool hadStaleState;
-		lock (_renderingStateGate)
-		{
-			hadStaleState = _renderRequested || _renderedAheadOfTime || _renderRequestedAfterAheadOfTimePaint;
-			_renderRequestedAfterAheadOfTimePaint = false;
-			_renderedAheadOfTime = false;
-			RenderRequested = false;
-		}
-
-		if (hadStaleState)
-		{
-			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(NotifyRenderingResumed)} cleared stale render state; re-issuing {nameof(ICompositionTarget.RequestNewFrame)}.");
-			((ICompositionTarget)this).RequestNewFrame();
-		}
-	}
-
 	internal void OnRenderFrameOpportunity()
 	{
 		// If we get an opportunity to get call Render earlier than EnqueuePaintCallback, then we do that

@@ -76,9 +76,6 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	void IUnoSkiaRenderView.OnResume()
 	{
 		_paused = false;
-		// Recover the render-scheduling state machine from any callback dropped
-		// across the pause/resume boundary, then force one frame.
-		CompositionTarget.NotifyRenderingResumed();
 		InvalidateRender();
 	}
 
