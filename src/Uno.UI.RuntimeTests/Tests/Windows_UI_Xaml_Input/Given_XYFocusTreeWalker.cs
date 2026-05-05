@@ -15,6 +15,7 @@ using static Uno.UI.Xaml.Input.XYFocusTreeWalker;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Input;
 
 [TestClass]
+[RunsOnUIThread]
 public class Given_XYFocusTreeWalker
 {
 	private static void VerifyResult(
@@ -58,6 +59,7 @@ public class Given_XYFocusTreeWalker
 		Assert.AreEqual(candidate, candidateList[0].Element);
 	}
 
+	[Ignore("https://github.com/unoplatform/uno/issues/17399 — needs a focusable Panel subclass to mirror the unit-test mock's `_children` parent-child semantics; ContentControl.Content is not picked up by the focus walker without an applied template.")]
 	[TestMethod]
 	public void VerifyRecursiveSearchOfElements()
 	{
@@ -89,6 +91,7 @@ public class Given_XYFocusTreeWalker
 		VerifyResult(candidateList, targetList);
 	}
 
+	[Ignore("https://github.com/unoplatform/uno/issues/17399 — needs a focusable Panel subclass to mirror the unit-test mock's `_children` parent-child semantics; ContentControl.Content is not picked up by the focus walker without an applied template.")]
 	[TestMethod]
 	public void VerifyOnlyElementsWithinRootSelected()
 	{
