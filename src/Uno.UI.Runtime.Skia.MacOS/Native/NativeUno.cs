@@ -326,6 +326,9 @@ internal static partial class NativeUno
 	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt, string? identifier, int suggestedStartLocation,
 		string[] filters, int filterSize);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_free_string_array(IntPtr array);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt, string? identifier, string? suggestedFileName, int suggestedStartLocation,
 		string[] filters, int filtersSize);
