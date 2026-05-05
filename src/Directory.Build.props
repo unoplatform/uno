@@ -32,7 +32,11 @@
 
 		<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
 		<Version>255.255.255.255</Version>
-		<ReportAnalyzer>true</ReportAnalyzer>
+		<!--
+			ReportAnalyzer adds overhead by timing all analyzers on every compilation.
+			Disable it during optimized local Debug builds for faster iteration.
+		-->
+		<ReportAnalyzer Condition="'$(OptimizeImplicitlyTriggeredBuild)' != 'true' or '$(Configuration)' != 'Debug'">true</ReportAnalyzer>
 
 		<DefaultLanguage>en-US</DefaultLanguage>
 
@@ -245,7 +249,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<!--
+			EnforceCodeStyleInBuild runs Roslyn code-style analyzers during build.
+			Disable during optimized local builds; the IDE still catches style violations.
+		-->
+		<EnforceCodeStyleInBuild Condition="'$(OptimizeImplicitlyTriggeredBuild)' != 'true' or '$(Configuration)' != 'Debug'">true</EnforceCodeStyleInBuild>
 		<UnoDisableNetAnalyzers Condition="$(MSBuildProjectName.Contains('Test'))">true</UnoDisableNetAnalyzers>
 		<IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
 		<IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>

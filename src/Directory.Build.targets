@@ -15,7 +15,19 @@
 		<UnoDisableNetAnalyzers>true</UnoDisableNetAnalyzers>
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
 		<RunAnalyzersDuringAnalysis>false</RunAnalyzersDuringAnalysis>
+		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
 		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+	</PropertyGroup>
+
+	<!--
+	When OptimizeImplicitlyTriggeredBuild is set (via crosstargeting_override.props), disable most
+	analyzers and code-style enforcement for significantly faster local iteration builds.
+	This is intended for day-to-day development only; CI and Release builds are unaffected.
+	-->
+	<PropertyGroup Condition="'$(OptimizeImplicitlyTriggeredBuild)' == 'true' and '$(Configuration)' == 'Debug'">
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+		<EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 
 	<PropertyGroup>

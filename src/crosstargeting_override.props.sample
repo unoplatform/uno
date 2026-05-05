@@ -15,6 +15,7 @@
     <!--<UnoTargetFrameworkOverride>net10.0</UnoTargetFrameworkOverride>-->
     <!--<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>-->
     <!--<OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>-->
+    <!--<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>-->
     <!--<UnoNugetOverrideVersion>6.4.0-dev.354</UnoNugetOverrideVersion>-->
 
     <!-- 
@@ -62,15 +63,29 @@
 
       ### AccelerateBuildsInVisualStudio ###
 
-        Uncomment this line to increase build performance further by using reference 
-        assemblies builds.
+        Uncomment this line to try Visual Studio Build Acceleration via reference 
+        assemblies.
+        
+        Uno currently defaults this back to false unless you opt in locally, because
+        there are still known incompatibilities with runtime replacement in some repo
+        scenarios. Validate carefully in Visual Studio build output before relying on it.
         See for more details: https://github.com/dotnet/project-system/blob/main/docs/build-acceleration.md#build-acceleration
     
       ### OptimizeImplicitlyTriggeredBuild ###
     
         Uncomment this line if you're iterating quickly in your builds. This 
-        will disable most of the C# analyzers, and you'll need to comment that property
-        before making your pull request.
+        will disable most of the C# analyzers, code-style enforcement, and analyzer 
+        timing (ReportAnalyzer) during Debug builds for significantly faster iteration.
+        You'll need to comment this property before making your pull request.
+        If IDE background analysis is still the bottleneck, you can also disable
+        RunAnalyzersDuringLiveAnalysis locally (see below), at the cost of live
+        analyzer diagnostics while typing.
+
+        ### RunAnalyzersDuringLiveAnalysis ###
+
+        Optional extra knob for IDE responsiveness. Uncomment this only if live
+        Roslyn analysis itself is the bottleneck while typing or navigating.
+        This trades away live analyzer diagnostics until you re-enable it.
 
     -->
 
