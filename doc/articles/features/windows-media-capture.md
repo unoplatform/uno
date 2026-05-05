@@ -11,7 +11,7 @@ The `Windows.Media.Capture` namespace provides classes for capturing photos, aud
 
 ## `CameraCaptureUI`
 
-`CameraCaptureUI` is currently only supported on Android, iOS, and WinUI. On other platforms, `CaptureFileAsync` will return `null`.
+`CameraCaptureUI` is currently supported on Android, iOS, macOS (Skia Desktop), and WinUI. On other platforms, `CaptureFileAsync` will return `null`.
 
 > [!IMPORTANT]
 > `CaptureFileAsync` should only be called from the UI thread. Calling them from a background thread will throw an `InvalidOperationException`.
@@ -50,6 +50,35 @@ On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture med
 > [!IMPORTANT]
 > iOS simulators do not have access to a camera. To test the camera functionality, you need to run the app on a physical device. When using a simulator, your app will open the Photo Library instead of the camera, but the functionality will work as expected once the app is deployed to a physical device.
 
+#### macOS
+
+On macOS (Skia Desktop), `CameraCaptureUI` uses AVFoundation to capture photos and videos from the built-in FaceTime camera or external USB cameras. A modal dialog presents a live camera preview with capture controls.
+
+To request the necessary permissions, ensure that the `NSCameraUsageDescription` and (for video with audio) `NSMicrophoneUsageDescription` keys are added to the app's `Info.plist` file. Without these keys, access to the camera and microphone may be denied or the app may be terminated. Based on these keys, the system will automatically prompt the user for camera and microphone access the first time the app attempts to use them.
+
+> [!NOTE]
+> The `NSMicrophoneUsageDescription` key is required only if you are capturing videos with audio. If you are only capturing photos (no audio), you can omit this key.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCameraUsageDescription</key>
+    <string>We need access to the camera to capture photos and videos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need access to the microphone to record audio with videos.</string>
+</dict>
+</plist>
+```
+
+> [!NOTE]
+> Video capture on macOS records to MP4 format. The video capture dialog provides Record/Stop and Cancel controls.
+>
+> Only JPEG and PNG photo formats are supported on macOS. Other `CameraCaptureUIPhotoFormat` values will throw a `NotSupportedException`. Similarly, only MP4 is supported for video capture.
+>
+> `PhotoSettings.AllowCropping` is not supported on macOS. The captured photo is returned as-is without a cropping UI.
+
 #### WinUI
 
 On WinUI, `CameraCaptureUI` provides a unified interface for capturing photos and videos, fully leveraging the platform's APIs. WinUI support is coming with v1.7+.
@@ -57,13 +86,13 @@ On WinUI, `CameraCaptureUI` provides a unified interface for capturing photos an
 ### Example
 
 ```csharp
-#if __ANDROID__ || __IOS__ || __WINDOWS__
+#if __ANDROID__ || __IOS__ || __WINDOWS__ || __SKIA__
 using Windows.Media.Capture;
 #endif
 
 public async Task CapturePhotoAsync()
 {
-#if __ANDROID__ || __IOS__ || __WINDOWS__
+#if __ANDROID__ || __IOS__ || __WINDOWS__ || __SKIA__
     var captureUI = new CameraCaptureUI();
     captureUI.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
     
