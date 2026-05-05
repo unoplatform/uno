@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using SkiaSharp;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
@@ -12,37 +11,12 @@ public partial class CompositionContainerShape
 	{
 		if (_shapes is { Count: > 0 } shapes)
 		{
-			// Apply the container's transform once, then render children. CompositionShape.Render()
-			// already takes care of applying child Offset/transform on top of this.
-			var transform = CombinedTransformMatrix;
-			var hasTransform = !transform.IsIdentity;
-
-			if (hasTransform)
-			{
-				session.Canvas.Save();
-
-				SKMatrix m = new SKMatrix
-				{
-					ScaleX = transform.M11,
-					SkewY = transform.M12,
-					SkewX = transform.M21,
-					ScaleY = transform.M22,
-					TransX = transform.M31,
-					TransY = transform.M32,
-					Persp2 = 1f,
-				};
-
-				session.Canvas.Concat(in m);
-			}
-
+			// CompositionShape.Render() already applied this container's Offset and
+			// CombinedTransformMatrix to the canvas before delegating to Paint, so we just
+			// iterate children — they'll apply their own Offset/transform on top.
 			for (var i = 0; i < shapes.Count; i++)
 			{
 				shapes[i].Render(in session);
-			}
-
-			if (hasTransform)
-			{
-				session.Canvas.Restore();
 			}
 		}
 	}
