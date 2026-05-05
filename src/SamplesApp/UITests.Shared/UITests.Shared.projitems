@@ -1297,6 +1297,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Markup\XamlConditionTests\XamlConditionSamplePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Performance\Performance_Dopes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7978,6 +7982,10 @@
       <DependentUpon>MarkupExtension.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\Simple.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Markup\XamlConditionTests\FeatureFlagCondition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Markup\XamlConditionTests\XamlConditionSamplePage.xaml.cs">
+      <DependentUpon>XamlConditionSamplePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\xBind_Field.xaml.cs">
       <DependentUpon>xBind_Field.xaml</DependentUpon>
     </Compile>

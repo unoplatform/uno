@@ -1,0 +1,79 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Markup.XamlConditionTests.XamlConditionSamplePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontSize="20"
+                FontWeight="SemiBold"
+                Text="IXamlCondition (custom XAML conditions)" />
+            <TextBlock TextWrapping="Wrap">
+                <Run Text="Demonstrates" />
+                <Run FontFamily="Consolas" Text="IXamlCondition" />
+                <Run Text=", a custom XAML condition that lets you gate markup based on app state. The condition is evaluated by the runtime XAML reader when XamlReader.Load processes a conditional namespace. The defaults declared on" />
+                <Run FontFamily="Consolas" Text="FeatureFlagCondition.FeatureFlags" />
+                <Run Text=" are NewExperience=true and LegacyMode=false." />
+            </TextBlock>
+
+            <Border
+                Padding="12"
+                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <TextBlock FontWeight="SemiBold" Text="Conditional elements" />
+                    <TextBlock Text="The next two TextBlocks declare conditional namespaces. At runtime only the one whose condition evaluates to true will be displayed." />
+
+                    <Border
+                        x:Name="ConditionalElementsHost"
+                        MinHeight="80"
+                        Padding="8"
+                        Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" />
+                </StackPanel>
+            </Border>
+
+            <Border
+                Padding="12"
+                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <TextBlock FontWeight="SemiBold" Text="Conditional attributes" />
+                    <TextBlock Text="The same conditional namespaces gate property setters; the active flag selects which value wins." />
+                    <Border
+                        x:Name="ConditionalAttributesHost"
+                        MinHeight="80"
+                        Padding="8"
+                        Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" />
+                </StackPanel>
+            </Border>
+
+            <Border
+                Padding="12"
+                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <TextBlock FontWeight="SemiBold" Text="Conditional Setters in a Style" />
+                    <Border
+                        x:Name="ConditionalSettersHost"
+                        MinHeight="80"
+                        Padding="8"
+                        Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
