@@ -30,10 +30,8 @@ if (-not $WarningOnly) {
         Write-Host "Detected release branch ($detected) - running in warning-only mode." -ForegroundColor Yellow
         $WarningOnly = $true
     }
-    elseif (($branch -and $branch -like 'refs/heads/feature/*') -or
-            ($targetBranch -and $targetBranch -like 'refs/heads/feature/*')) {
-        $detected = if ($targetBranch -like 'refs/heads/feature/*') { $targetBranch } else { $branch }
-        Write-Host "Detected feature branch ($detected) - running in warning-only mode." -ForegroundColor Yellow
+    elseif ($targetBranch -and ($targetBranch -like 'feature/*' -or $targetBranch -like 'refs/heads/feature/*')) {
+        Write-Host "Detected feature target branch ($targetBranch) - running in warning-only mode." -ForegroundColor Yellow
         $WarningOnly = $true
     }
 }
