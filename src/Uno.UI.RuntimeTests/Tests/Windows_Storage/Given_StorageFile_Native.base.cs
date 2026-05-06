@@ -291,6 +291,127 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
+		[TestMethod]
+		public async Task When_OpenStreamForReadAsync_Stream_Is_ReadOnly()
+		{
+			StorageFile? createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+				createdFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+				await FileIO.WriteTextAsync(createdFile, "Some content");
+
+				using var stream = await createdFile.OpenStreamForReadAsync();
+				Assert.IsTrue(stream.CanRead, "Read stream should be readable");
+				Assert.IsFalse(stream.CanWrite, "Read stream should not be writable");
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_OpenStreamForWriteAsync_Stream_CanWrite()
+		{
+			StorageFile? createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+				createdFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+				using (var stream = await createdFile.OpenStreamForWriteAsync())
+				{
+					Assert.IsTrue(stream.CanWrite, "Write stream should be writable");
+
+					using var writer = new StreamWriter(stream);
+					await writer.WriteAsync("Test content");
+					await writer.FlushAsync();
+				}
+
+				var content = await FileIO.ReadTextAsync(createdFile);
+				Assert.AreEqual("Test content", content);
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+#if WINAPPSDK
+		[Ignore("Exercises Uno's StorageFile.OpenStreamAsync FileMode mapping; native WinUI's StorageFile isn't subject to this fix.")]
+#endif
+		public async Task When_OpenStreamForWriteAsync_FileDoesNotExist_Stream_CreatesFile()
+		{
+			StorageFile? createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+
+				// Hold a StorageFile reference, then delete the backing file to reproduce
+				// the regression: OpenStreamForWriteAsync used to hard-code FileMode.Open
+				// and threw FileNotFoundException when the file was missing. With the fix
+				// it maps ReadWrite → FileMode.OpenOrCreate and re-creates the file.
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				File.Delete(createdFile.Path);
+				Assert.IsFalse(File.Exists(createdFile.Path), "Pre-condition: backing file should be deleted");
+
+				using (var stream = await createdFile.OpenStreamForWriteAsync())
+				{
+					using var writer = new StreamWriter(stream);
+					await writer.WriteAsync("Recreated content");
+					await writer.FlushAsync();
+				}
+
+				Assert.IsTrue(File.Exists(createdFile.Path), "OpenStreamForWriteAsync should have recreated the file");
+				var content = await FileIO.ReadTextAsync(createdFile);
+				Assert.AreEqual("Recreated content", content);
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+#if WINAPPSDK
+		[Ignore("Exercises Uno's StorageFile.OpenStreamAsync FileMode mapping; native WinUI's StorageFile isn't subject to this fix.")]
+#endif
+		public async Task When_OpenStreamForReadAsync_FileDoesNotExist_Throws()
+		{
+			StorageFile? createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				File.Delete(createdFile.Path);
+				Assert.IsFalse(File.Exists(createdFile.Path), "Pre-condition: backing file should be deleted");
+
+				var fileRef = createdFile;
+				createdFile = null;
+
+				await Assert.ThrowsAsync<FileNotFoundException>(
+					async () =>
+					{
+						using var _ = await fileRef.OpenStreamForReadAsync();
+					});
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 
 		private string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";
