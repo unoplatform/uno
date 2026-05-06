@@ -104,7 +104,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_framePacer = CreateFramePacer();
 		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
 			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
 				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
@@ -113,6 +112,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
 				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
 				: new SoftwareRenderer(_hwnd);
+
+		InitializeRenderThread();
 
 		RegisterForBackgroundColor();
 
@@ -274,13 +275,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
-				// This call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
-				// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
-				// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
-				// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
-				// and our render timer.
-				SynchronousRenderAndDraw(false);
+				// When the window moves and part of it was off-screen, Windows discards that part of
+				// the framebuffer. Signal the render thread to re-blit the exposed area.
+				_renderThread?.SignalNewFrame();
 				return new LRESULT(0);
+			case PInvoke.WM_PAINT:
+				// Signal the render thread to re-blit the current frame. WM_PAINT is generated
+				// when the window is uncovered, restored, or otherwise needs repainting.
+				// DefWindowProc calls BeginPaint/EndPaint to validate the update region.
+				_renderThread?.SignalNewFrame();
+				break;
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
 				if (Window?.AppWindow?.Presenter is OverlappedPresenter overlappedPresenter)
@@ -300,16 +304,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
 					_forcePaintOnNextEraseBkgndOrNcPaint = false;
-					// This call is necessary to avoid an initial blank frame during window startup.
-					// This follows from the SynchronousRenderAndDraw call in ShowCore
-					// The render timer might already be running. This is fine. The CompositionTarget
-					// contract allows calling OnNativePlatformFrameRequested multiple times.
-					Render();
+					// Signal the render thread to re-blit. The first frame was already painted
+					// by ShowCore (which waited for present), so the framebuffer has content.
+					_renderThread?.SignalNewFrame();
 					return new LRESULT(1);
 				}
 				else
 				{
-					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
+					// Painting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
@@ -384,8 +386,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		}
-		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
-		Render();
+		// Force an early SKPicture record so the render thread has fresh content to present.
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+		// Signal the render thread and wait briefly for the present to land.
+		// Bounded so an unresponsive GPU does not stall WM_SIZE / WM_MOVE / ShowCore.
+		_renderThread?.SignalNewFrame();
+		var presentCompleted = _renderThread?.WaitForNextPresent(TimeSpan.FromMilliseconds(100));
+		if (presentCompleted == false)
+		{
+			this.LogWarn()?.Warn(
+				"Timed out waiting for the next present during synchronous render; " +
+				"the window may be shown before the first frame is displayed.");
+		}
 	}
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
@@ -466,7 +478,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		Win32Host.UnregisterWindow(_hwnd);
-		_framePacer.Dispose();
+		_renderThread?.Dispose();
+		_renderThread = null;
+		// Dispose the cached SKSurface before the renderer: on Vulkan it references
+		// GPU resources owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs)
+		// and the render thread has already been joined, so no background access remains.
+		_surface?.Dispose();
+		_surface = null;
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
