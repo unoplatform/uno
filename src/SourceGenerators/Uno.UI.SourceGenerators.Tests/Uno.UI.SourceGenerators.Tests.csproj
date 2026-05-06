@@ -38,9 +38,9 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.13.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.13.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.14.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.2" />
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
