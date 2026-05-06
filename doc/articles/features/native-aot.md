@@ -144,6 +144,13 @@ Expando Binding and DynamicObject Binding likely will not work under Native AOT,
 
 -->
 
+### `Microsoft.Web.WebView2.Core.CoreWebView2`
+
+The `CoreWebView2` type does not work on Linux or Windows when using Native AOT.  It does work on macOS.
+
+See [unoplatform/uno#23142](https://github.com/unoplatform/uno/issues/23142) and
+[unoplatform/uno#23159](https://github.com/unoplatform/uno/issues/23159) for more details.
+
 ### [Others](xref:Uno.Development.SupportedFeatures#others)
 
 AttachedProperty Binding and AttachedProperty Styling may require [reflection adaptations](#xaml-attached-properties).
