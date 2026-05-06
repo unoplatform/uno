@@ -113,11 +113,8 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+	<ItemGroup>
 		<PackageReference Include="Uno.Monaco.Editor" Version="2.0.0-dev.50" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<PackageReference Include="Uno.Monaco.Editor" Version="1.2.0-dev.25" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -45,7 +45,7 @@ jobs:
             echo "---- git status ----"
             git status
             echo "---- git diff (truncated to 400 lines) ----"
-            git -c color.ui=always diff --cached | head -n 400
+            git -c color.ui=always diff --cached | head -n 400 || true
           fi
 
       - name: Upload patch artifact

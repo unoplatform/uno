@@ -10,7 +10,7 @@
 		<RootNamespace>Uno.UI.WebView.Skia.X11</RootNamespace>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.WebView.Skia.X11</PackageId>
+		<PackageId>Uno.WinUI.WebView.Skia.X11</PackageId>
 		<Description>This package provides support for WebView for Uno Platform Skia+X11 apps</Description>
 
 		<!--

@@ -109,9 +109,9 @@ jobs:
       #  UITEST_TEST_MODE_NAME: Automated
 
       ${{ each testBucket in parameters.automatedTestsBuckets }}:
-        'Automated Tests ${{ testBucket }}':
+        'UI Tests ${{ testBucket }}':
           ANDROID_SIMULATOR_APILEVEL: 28
-          UITEST_TEST_MODE_DISPLAY_NAME: 'Automated Tests ${{ testBucket }}'
+          UITEST_TEST_MODE_DISPLAY_NAME: 'UI Tests ${{ testBucket }}'
           UITEST_TEST_MODE_NAME: Automated
           TEST_KIND: ui
           UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT

@@ -11,34 +11,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property HorizontalCacheLengthProperty
 		// Skipping already declared property ItemTemplateProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ItemTransitionProviderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemTransitionProvider), typeof(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsRepeater),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)));
-#endif
+		// Skipping already declared property ItemTransitionProviderProperty
 		// Skipping already declared property ItemsSourceProperty
 		// Skipping already declared property LayoutProperty
 		// Skipping already declared property VerticalCacheLengthProperty
 		// Skipping already declared property Background
 		// Skipping already declared property HorizontalCacheLength
 		// Skipping already declared property ItemTemplate
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider ItemTransitionProvider
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)this.GetValue(ItemTransitionProviderProperty);
-			}
-			set
-			{
-				this.SetValue(ItemTransitionProviderProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property ItemTransitionProvider
 		// Skipping already declared property ItemsSource
 		// Skipping already declared property ItemsSourceView
 		// Skipping already declared property Layout

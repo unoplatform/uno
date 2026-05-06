@@ -36,9 +36,6 @@
 
 		<DefaultLanguage>en-US</DefaultLanguage>
 
-		<!-- Resizetizer codegen is not supported in UWP -->
-		<UnoResizetizerDisableWindowIconExtensions Condition="'$(UNO_UWP_BUILD)'=='true'">true</UnoResizetizerDisableWindowIconExtensions>
-
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 
 		<UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
@@ -273,11 +270,6 @@
 		
 		<!-- Required for studio -->
 		<NoWarn>$(NoWarn);UNO0008</NoWarn>
-
-		<!-- On CI, UWP source is generated in a job running on Windows (CRLF EOLs). -->
-		<!-- When the artifacts are downloaded in a job running on Linux, IDE0055 will complain (expecting LF EOLs) -->
-		<!-- For now, we skip formatting in CI UWP builds not running on Windows -->
-		<NoWarn Condition="'$(OS)' != 'Windows_NT' AND '$(UNO_UWP_BUILD)' == 'true' AND ('$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true')">$(NoWarn);IDE0055</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -42,6 +42,7 @@
 	"Gamepad",
 	"gamepads",
 	"Geolocation",
+	"glanceable",
 	"globbing",
 	"Grial",
 	"Grayscale",
@@ -60,6 +61,7 @@
 	"keychain",
 	"laggy",
 	"layouter",
+	"leanback",
 	"layouting",
 	"Listview",
 	"listviewbase",
@@ -137,7 +139,8 @@
 	"subviews",
 	"Swipeable",
 	"backgrounded",
-	"Agentic"
+	"Agentic",
+	"Logcat"
   ],
   "ignoreWords": [
 	"ADAL",

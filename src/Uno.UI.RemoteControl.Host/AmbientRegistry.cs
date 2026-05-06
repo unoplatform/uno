@@ -137,7 +137,14 @@ public partial class AmbientRegistry(ILogger logger)
 				return activeServers;
 			}
 
-			var registryFiles = Directory.GetFiles(RegistryDirectory, "devserver-*.json");
+			// Primary registrations: written by the DevServer host process at startup.
+			// Sidecars (`devserver-{pid}.aux.json`) are written by the CLI when it spawns a host
+			// to backfill metadata that the host itself didn't record (notably ideChannelId on
+			// Uno.WinUI.DevServer versions older than the commit that introduced IdeChannelId
+			// in the registration record). The `.aux` suffix excludes them from the primary glob.
+			var registryFiles = Directory.GetFiles(RegistryDirectory, "devserver-*.json")
+				.Where(f => !f.EndsWith(".aux.json", StringComparison.OrdinalIgnoreCase))
+				.ToArray();
 
 			foreach (var filePath in registryFiles)
 			{
@@ -151,12 +158,14 @@ public partial class AmbientRegistry(ILogger logger)
 						// Check if the process is still running
 						if (IsProcessRunning(registration.ProcessId))
 						{
+							OverlayAuxiliaryRegistration(registration);
 							activeServers.Add(registration);
 						}
 						else
 						{
 							// Clean up stale registration file
 							File.Delete(filePath);
+							TryDeleteSidecar(registration.ProcessId);
 							_logger.LogDebug($"Cleaned up stale registration: {filePath}");
 						}
 					}
@@ -176,6 +185,11 @@ public partial class AmbientRegistry(ILogger logger)
 					}
 				}
 			}
+
+			// Also clean up orphan sidecars whose target process is gone — this handles the
+			// case where the CLI wrote a sidecar but the host crashed before registering, or
+			// the primary file was already cleaned up in a previous pass.
+			CleanupOrphanSidecars();
 		}
 		catch (Exception ex)
 		{
@@ -259,5 +273,126 @@ public partial class AmbientRegistry(ILogger logger)
 		public string MachineName { get; set; } = string.Empty;
 		public string UserName { get; set; } = string.Empty;
 		public string? IdeChannelId { get; set; }
+	}
+
+	/// <summary>
+	/// Sidecar payload written by the CLI to backfill metadata the host itself didn't record.
+	/// See <see cref="WriteAuxiliaryRegistration"/> for context. Kept minimal — only fields the
+	/// CLI knows that the host might not (currently just <see cref="IdeChannelId"/>).
+	/// </summary>
+	internal sealed class AuxiliaryRegistration
+	{
+		public int ProcessId { get; set; }
+		public string? IdeChannelId { get; set; }
+	}
+
+	/// <summary>
+	/// Writes a sidecar registration record at <c>devserver-{targetProcessId}.aux.json</c>
+	/// alongside the primary host registration. Used by the CLI when it spawns a host to
+	/// expose metadata that older host versions don't register themselves — primarily
+	/// <paramref name="ideChannelId"/>, which uno.studio's DevServerLauncher needs to
+	/// connect directly to a running host without re-spawning a duplicate.
+	/// </summary>
+	/// <remarks>
+	/// Calling with a null/empty <paramref name="ideChannelId"/> is a no-op. The sidecar is
+	/// removed by <see cref="GetActiveDevServers"/> when its target process is no longer alive.
+	/// </remarks>
+	public void WriteAuxiliaryRegistration(int targetProcessId, string? ideChannelId)
+	{
+		if (string.IsNullOrWhiteSpace(ideChannelId))
+		{
+			return;
+		}
+
+		try
+		{
+			Directory.CreateDirectory(RegistryDirectory);
+			var sidecarPath = GetSidecarPath(targetProcessId);
+			var payload = new AuxiliaryRegistration
+			{
+				ProcessId = targetProcessId,
+				IdeChannelId = ideChannelId,
+			};
+			File.WriteAllText(sidecarPath, JsonSerializer.Serialize(payload, JsonOptions));
+			_logger.LogDebug("Wrote auxiliary DevServer registration for PID {Pid}: {Path}", targetProcessId, sidecarPath);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to write auxiliary DevServer registration for PID {Pid}.", targetProcessId);
+		}
+	}
+
+	private static string GetSidecarPath(int processId)
+		=> Path.Combine(RegistryDirectory, $"devserver-{processId}.aux.json");
+
+	private void OverlayAuxiliaryRegistration(DevServerRegistration registration)
+	{
+		// The host's own values are authoritative — the sidecar is only a backfill for fields
+		// the host left null. Only IdeChannelId today; if other fields end up needing the same
+		// treatment, prefer adding them here over duplicating the file/path/parse plumbing.
+		if (!string.IsNullOrWhiteSpace(registration.IdeChannelId))
+		{
+			return;
+		}
+
+		var sidecarPath = GetSidecarPath(registration.ProcessId);
+		if (!File.Exists(sidecarPath))
+		{
+			return;
+		}
+
+		try
+		{
+			var json = File.ReadAllText(sidecarPath);
+			var aux = JsonSerializer.Deserialize<AuxiliaryRegistration>(json);
+			if (!string.IsNullOrWhiteSpace(aux?.IdeChannelId))
+			{
+				registration.IdeChannelId = aux!.IdeChannelId;
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogDebug("Failed to overlay auxiliary registration {Path}: {Message}", sidecarPath, ex.Message);
+		}
+	}
+
+	private void CleanupOrphanSidecars()
+	{
+		try
+		{
+			var sidecarFiles = Directory.GetFiles(RegistryDirectory, "devserver-*.aux.json");
+			foreach (var sidecarPath in sidecarFiles)
+			{
+				var fileName = Path.GetFileNameWithoutExtension(sidecarPath); // "devserver-{pid}.aux"
+				var pidPart = fileName.Length > "devserver-".Length + ".aux".Length
+					? fileName.Substring("devserver-".Length, fileName.Length - "devserver-".Length - ".aux".Length)
+					: null;
+
+				if (!int.TryParse(pidPart, out var pid) || !IsProcessRunning(pid))
+				{
+					try { File.Delete(sidecarPath); } catch { /* best effort */ }
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogDebug("Failed to enumerate auxiliary registrations: {Message}", ex.Message);
+		}
+	}
+
+	private void TryDeleteSidecar(int processId)
+	{
+		try
+		{
+			var sidecarPath = GetSidecarPath(processId);
+			if (File.Exists(sidecarPath))
+			{
+				File.Delete(sidecarPath);
+			}
+		}
+		catch
+		{
+			// Best effort
+		}
 	}
 }

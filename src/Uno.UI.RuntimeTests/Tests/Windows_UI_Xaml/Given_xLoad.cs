@@ -496,7 +496,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public async Task When_xLoad_False_StaticResource_Resolves()
 		{
-			// ForceHotReloadDisabled is altering the execute logics, forcing ResourceBinding to always be created
+			// ForceHotReloadDisabled=true prevents adding the HotReload update reason.
+			// HotReload will force the creation of ResourceBinding, voiding/failing this test.
 			var previousFlag = FeatureConfiguration.Xaml.ForceHotReloadDisabled;
 			FeatureConfiguration.Xaml.ForceHotReloadDisabled = true;
 			using var restoreFlag = Disposable.Create(() => FeatureConfiguration.Xaml.ForceHotReloadDisabled = previousFlag);
@@ -505,20 +506,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			TestServices.WindowHelper.WindowContent = setup;
 			await TestServices.WindowHelper.WaitForLoaded(setup, x => x.IsLoaded);
 
-			// Before materialisation the field is null (stub placeholder).
+			// Before materialization the field is null (stub placeholder).
 			Assert.IsNull(setup.LazyControl, "Expected LazyControl to be null initially");
 
-			// force materialize by calling .FindName
+			// Force materialization by calling .FindName
 			setup.FindName(nameof(setup.LazyControl));
 			Assert.IsNotNull(setup.LazyControl, "LazyControl should be resolved by FindName('LazyControl')");
+			// Note: We don't .WaitForIdle() because that will let ResourceBinding kick in, if present.
 
-			// note: we dont .WaitForIdle() because that will let ResourceBinding kicks in, if present.
 			var dos = (setup.LazyControl as IDependencyObjectStoreProvider)?.Store!;
+			// Note: Just to be clear, the real end goal wasn't testing presence of ResourceBinding.
 			var bindings = dos.GetResourceBindingsForProperty(ContentControl.ContentProperty).ToArray();
-			Assert.IsEmpty(bindings, "There is should be non ResourceBinding on the LazyControl.Content, if it resolved statically(still runtime).");
+			Assert.IsEmpty(bindings, "There should be no ResourceBinding on LazyControl.Content if it resolved statically at runtime.");
+			// But whether initial static lookup(without ResourceBinding/HotReload) succeeded or not.
 			Assert.IsNotNull(setup.LazyControl);
 			Assert.AreEqual("RESOLVED", setup.LazyControl.Content);
-
 		}
 #endif
 	}

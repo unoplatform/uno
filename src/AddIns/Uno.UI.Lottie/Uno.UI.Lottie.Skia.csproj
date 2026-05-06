@@ -21,12 +21,10 @@
 	<ItemGroup>
 
 		<PackageReference Include="SkiaSharp.Skottie" />
-		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" />
 
 		<!-- Explicitly included to remove all assets from Uno dependencies coming from SkiaSharp.Views.* -->
-		<PackageReference Include="Uno.UI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -40,8 +38,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_overridePackageId>uno.ui.lottie</_overridePackageId>
-			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'!='true'">uno.winui.lottie</_overridePackageId>
+			<_overridePackageId>uno.winui.lottie</_overridePackageId>
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
