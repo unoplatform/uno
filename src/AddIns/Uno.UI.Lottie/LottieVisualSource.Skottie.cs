@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #if HAS_SKOTTIE
 
@@ -50,9 +50,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 
 		private bool _wasPlaying;
-#if __SKIA__
-		private readonly SerialDisposable _renderingSubscription = new();
-#else
+#if !__SKIA__
 		private DispatcherQueueTimer? _timer;
 #endif
 		private object _gate = new();
@@ -344,6 +342,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 
 				_invalidationController.Reset();
+
+#if __SKIA__
+				if (_stopwatch.IsRunning)
+				{
+					_skCanvasElement?.Invalidate();
+				}
+#endif
 			}
 		}
 
@@ -401,7 +406,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_progress = null;
 
 #if __SKIA__
-				SubscribeToRendering();
+				// Kick the first paint. Subsequent paints schedule themselves from Render().
+				Invalidate();
 #else
 				_timer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 				_timer.Tick += (s, e) => Invalidate();
@@ -418,16 +424,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_playState = new(fromProgress, toProgress, looped);
 			}
 		}
-
-#if __SKIA__
-		private void SubscribeToRendering()
-		{
-			CompositionTarget.Rendering += OnCompositionTargetRendering;
-			_renderingSubscription.Disposable = Disposable.Create(() => CompositionTarget.Rendering -= OnCompositionTargetRendering);
-		}
-
-		private void OnCompositionTargetRendering(object? sender, object e) => Invalidate();
-#endif
 
 		private void Invalidate()
 		{
@@ -446,9 +442,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				_playState = null;
 				SetIsPlaying(false);
-#if __SKIA__
-				_renderingSubscription.Disposable = null;
-#else
+#if !__SKIA__
 				_timer?.Stop();
 #endif
 				_stopwatch.Stop();
@@ -467,9 +461,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Pause()
 		{
-#if __SKIA__
-			_renderingSubscription.Disposable = null;
-#else
+#if !__SKIA__
 			_timer?.Stop();
 #endif
 			_stopwatch.Stop();
@@ -479,12 +471,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Resume()
 		{
-			_stopwatch.Start();
 #if __SKIA__
-			SubscribeToRendering();
+			Invalidate();
 #else
 			_timer?.Start();
 #endif
+			_stopwatch.Start();
 
 			SetIsPlaying(true);
 		}
