@@ -9,7 +9,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.WebSockets;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
@@ -267,25 +266,10 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			}
 			else
 			{
-				// For WASM and desktop platforms, add loopback address for better reliability and airplane mode support
-				// Mobile platforms (iOS, Android) should not use loopback as they connect to a different machine
-				if ((OperatingSystem.IsBrowser()
-					|| OperatingSystem.IsWindows()
-					|| OperatingSystem.IsLinux()
-					|| OperatingSystem.IsMacOS()))
+				var serverPort = _serverAddresses.Select(addr => addr.port).Where(p => p > 0).FirstOrDefault();
+				if (serverPort > 0)
 				{
-					var serverPort = _serverAddresses.Select(addr => addr.port).Where(p => p > 0).FirstOrDefault();
-					if (serverPort > 0)
-					{
-						var loopbackAddress = IPAddress.Loopback.ToString().ToLowerInvariant();
-						var hasLoopback = _serverAddresses.Any(addr => addr.endpoint.Equals(loopbackAddress, StringComparison.OrdinalIgnoreCase) && addr.port == serverPort);
-
-						if (!hasLoopback)
-						{
-							// Prepend loopback address to give it priority
-							_serverAddresses = new[] { (loopbackAddress, serverPort) }.Concat(_serverAddresses).ToArray();
-						}
-					}
+					_serverAddresses = BuildAddressListWithLoopback(_serverAddresses, GetLoopbackCandidates(), serverPort);
 				}
 			}
 		}
@@ -395,7 +379,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					ApplicationData.Current.LocalSettings.Values.TryGetValue(lastEndpointKey, out var lastValue) &&
 					lastValue is string lastEp
 						? _serverAddresses
-							.FirstOrDefault(srv => srv.endpoint.Equals(lastEp, StringComparison.OrdinalIgnoreCase))
+							.FirstOrDefault(srv => srv.endpoint.Equals(lastEp, StringComparison.OrdinalIgnoreCase)
+								|| (IsLoopbackAddress(lastEp) && IsLoopbackAddress(srv.endpoint)))
 							.endpoint
 						: default;
 			}
@@ -411,8 +396,12 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					{
 						// Note: If we have a preferred endpoint (last known to be successful), we delay a bit the connection to other endpoints.
 						//		 This is to reduce the number of (task cancelled / socket) exceptions at startup by giving a chance to the preferred endpoint to succeed first.
+						//		 Loopback addresses (127.0.0.1, [::1]) are treated as equivalent for this purpose.
 						var cts = new CancellationTokenSource();
-						var delay = preferred is null || preferred.Equals(srv.endpoint, StringComparison.OrdinalIgnoreCase) ? 0 : 3000;
+						var delay = preferred is null
+							|| preferred.Equals(srv.endpoint, StringComparison.OrdinalIgnoreCase)
+							|| (IsLoopbackAddress(preferred) && IsLoopbackAddress(srv.endpoint))
+							? 0 : 3000;
 						var task = Connect(serverUri, delay, cts.Token);
 
 						return (task, srv.endpoint, cts);
@@ -983,5 +972,68 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		{
 			Instance = null;
 		}
+	}
+
+	/// <summary>Returns true if <paramref name="endpoint"/> is an IPv4 or IPv6 local loopback literal.</summary>
+	internal static bool IsLoopbackAddress(string endpoint)
+		=> endpoint.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase)
+			|| endpoint.Equals("[::1]", StringComparison.OrdinalIgnoreCase);
+
+	/// <summary>
+	/// Returns the ordered list of loopback IP candidates to prepend to the server address list for the current
+	/// platform and runtime environment. IP literals are used (rather than "localhost") to avoid DNS resolution on
+	/// the startup-critical path and to ensure both address families are tried independently via the existing
+	/// parallel-race connection strategy.
+	/// </summary>
+	private static IReadOnlyList<string> GetLoopbackCandidates()
+	{
+#if __WASM__
+		return ["127.0.0.1", "[::1]"];
+#elif __ANDROID__
+		// On AVD, 10.0.2.2 is the conventional host-machine alias. 127.0.0.1 covers adb-reverse setups.
+		var fingerprint = Android.OS.Build.Fingerprint;
+		var isEmulator = fingerprint is { Length: > 0 }
+			&& fingerprint.StartsWith("generic", StringComparison.OrdinalIgnoreCase);
+		if (isEmulator)
+		{
+			return ["10.0.2.2", "127.0.0.1"];
+		}
+		return [];
+#elif __IOS__ || __TVOS__
+#if __MACCATALYST__
+		// Mac Catalyst runs natively on macOS — loopback always reaches the host machine.
+		return ["127.0.0.1", "[::1]"];
+#else
+		if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.SIMULATOR)
+		{
+			return ["127.0.0.1", "[::1]"];
+		}
+		return [];
+#endif
+#else
+		// Skia desktop (Windows, Linux, macOS) and Reference build.
+		return ["127.0.0.1", "[::1]"];
+#endif
+	}
+
+	/// <summary>
+	/// Returns a new address list with <paramref name="loopbackCandidates"/> for <paramref name="port"/> prepended,
+	/// skipping any candidate already present in <paramref name="addresses"/>.
+	/// </summary>
+	internal static (string endpoint, int port)[] BuildAddressListWithLoopback(
+		(string endpoint, int port)[] addresses,
+		IReadOnlyList<string> loopbackCandidates,
+		int port)
+	{
+		if (loopbackCandidates.Count == 0)
+		{
+			return addresses;
+		}
+
+		var toAdd = loopbackCandidates
+			.Where(c => !addresses.Any(a => a.endpoint.Equals(c, StringComparison.OrdinalIgnoreCase) && a.port == port))
+			.Select(c => (c, port));
+
+		return [.. toAdd, .. addresses];
 	}
 }
