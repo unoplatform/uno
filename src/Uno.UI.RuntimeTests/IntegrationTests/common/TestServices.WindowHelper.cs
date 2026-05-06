@@ -155,9 +155,126 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
+#if (HAS_UNO && __SKIA__) || WINAPPSDK
+				// Mirrors WinUI's IdleSynchronizer.WaitInternal by running both load-bearing
+				// steps per iteration:
+				//
+				//   1. SynchronouslyTickUIThread(1) — subscribe to CompositionTarget.Rendering
+				//      inside a dispatcher work item, wait for the callback. On Uno Skia,
+				//      Rendering.add arms ScheduleFrameTick via RequestNewFrame, so a FrameTick
+				//      (UpdateLayout + Loaded events + Rendering callbacks + Draw) is guaranteed
+				//      to run end-to-end.
+				//
+				//   2. WaitForIdleDispatcher — a non-repeating DispatcherQueueTimer with zero
+				//      Interval fires once the normal queue has drained. Tick alone leaves
+				//      normal-priority work items (Loaded handlers, COM/clipboard continuations,
+				//      awaited async completions) pending when the Rendering callback returns.
+				//
+				// WinUI itself uses an infinite wait per tick. We keep a 30 s safety net in
+				// ForceFrameTickAsync that throws rather than silently proceeding — hangs in
+				// CI are worse than a visible failure, but silent "idle" skew on every
+				// subsequent assertion is worse still.
+				await ForceFrameTickAsync();
+				await WaitForIdleDispatcherAsync();
+#else
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+#endif
 			}
+
+#if (HAS_UNO && __SKIA__) || WINAPPSDK
+			private static async Task ForceFrameTickAsync()
+			{
+				// RunContinuationsAsynchronously: the Rendering handler runs on the UI thread,
+				// so completing the TCS inline would re-enter UI work from inside the rendering
+				// callback. Hop continuations off the rendering callback before they run.
+				var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+				EventHandler<object> handler = null;
+
+				// Subscription must run on the UI thread — Rendering.add asserts thread access
+				// and (on Uno) arms ScheduleFrameTick by calling RequestNewFrame on each
+				// known CompositionTarget. That guarantees a FrameTick will fire even if
+				// nothing else has requested one.
+				await RootElementDispatcher.RunAsync(() =>
+				{
+					handler = (_, _) =>
+					{
+						Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= handler;
+						tcs.TrySetResult(null);
+					};
+					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += handler;
+				});
+
+				// 30s bound — purely a safety net for a stalled composition/render pipeline.
+				// WinUI's SynchronouslyTickUIThread waits infinitely; we prefer a loud failure
+				// over a hang in CI, but silently proceeding on a missed tick would skew every
+				// subsequent assertion.
+				var timeout = Task.Delay(TimeSpan.FromSeconds(30));
+				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+				{
+					await RootElementDispatcher.RunAsync(() =>
+					{
+						Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= handler;
+					});
+					throw new TimeoutException(
+						"WaitForIdle: CompositionTarget.Rendering did not fire within 30s. " +
+						"No active CompositionTarget, or the composition/render pipeline is stalled.");
+				}
+			}
+
+			private static async Task WaitForIdleDispatcherAsync()
+			{
+				// Mirrors WinUI's IdleSynchronizer.WaitForIdleDispatcher: a non-repeating
+				// DispatcherQueueTimer with zero Interval ticks once the normal-priority
+				// queue has drained.
+				var dispatcherQueue = CurrentTestWindow?.DispatcherQueue
+					?? Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+				if (dispatcherQueue is null)
+				{
+					return;
+				}
+
+				var tcs = new TaskCompletionSource<object>();
+				Microsoft.UI.Dispatching.DispatcherQueueTimer timer = null;
+				global::Windows.Foundation.TypedEventHandler<Microsoft.UI.Dispatching.DispatcherQueueTimer, object> handler = null;
+
+				await RootElementDispatcher.RunAsync(() =>
+				{
+					timer = dispatcherQueue.CreateTimer();
+					timer.Interval = TimeSpan.Zero;
+					timer.IsRepeating = false;
+					handler = (t, _) =>
+					{
+						t.Tick -= handler;
+						tcs.TrySetResult(null);
+					};
+					timer.Tick += handler;
+					timer.Start();
+				});
+
+				// Safety net only — a zero-interval DispatcherQueueTimer should tick within
+				// one dispatcher cycle. 10s means the dispatcher is genuinely stalled; fail
+				// loudly rather than proceeding with work items still pending.
+				var timeout = Task.Delay(TimeSpan.FromSeconds(10));
+				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+				{
+					await RootElementDispatcher.RunAsync(() =>
+					{
+						if (timer is not null)
+						{
+							timer.Stop();
+							if (handler is not null)
+							{
+								timer.Tick -= handler;
+							}
+						}
+					});
+					throw new TimeoutException(
+						"WaitForIdle: DispatcherQueue did not reach idle within 10s. " +
+						"A zero-interval DispatcherQueueTimer did not tick — the UI thread is stalled.");
+				}
+			}
+#endif
 
 			/// <summary>
 			/// Waits for <paramref name="element"/> to be loaded and measured in the visual tree.
@@ -464,28 +581,45 @@ namespace Private.Infrastructure
 #endif
 			}
 
-			internal static Task WaitForOpened(BitmapImage source)
+			internal static async Task WaitForOpened(BitmapImage source, int timeoutMS = 10000)
 			{
-				var tcs = new TaskCompletionSource<bool>();
+				// RunContinuationsAsynchronously: ImageOpened/ImageFailed fire on the UI thread;
+				// without this an inline continuation would run UI work from the event raiser.
+				var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-				source.ImageOpened += (s, e) =>
+				RoutedEventHandler openedHandler = (_, _) => tcs.TrySetResult(true);
+				ExceptionRoutedEventHandler failedHandler = (_, e) => tcs.TrySetException(new Exception(e.ErrorMessage));
+				source.ImageOpened += openedHandler;
+				source.ImageFailed += failedHandler;
+
+				try
 				{
-					tcs.TrySetResult(true);
-				};
-
-				source.ImageFailed += (s, e) =>
-				{
-					tcs.TrySetException(new Exception(e.ErrorMessage));
-				};
-
 #if HAS_UNO
-				if (source.IsOpened)
-				{
-					tcs.TrySetResult(true);
-				}
+					if (source.IsOpened)
+					{
+						tcs.TrySetResult(true);
+					}
 #endif
 
-				return tcs.Task;
+					// Bound the wait so a stuck image-load (e.g. dispatcher starvation, thread-pool
+					// exhaustion, BitmapImage chain not reaching RaiseImageOpened/RaiseImageFailed)
+					// surfaces as an actionable test failure instead of hanging CI for the job timeout.
+					var timeout = Task.Delay(timeoutMS);
+					if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+					{
+						throw new TimeoutException(
+							$"WaitForOpened(BitmapImage) timed out after {timeoutMS}ms. " +
+							$"UriSource: {source.UriSource}. " +
+							"Neither ImageOpened nor ImageFailed fired and IsOpened stayed false.");
+					}
+
+					await tcs.Task; // surface any ImageFailed exception
+				}
+				finally
+				{
+					source.ImageOpened -= openedHandler;
+					source.ImageFailed -= failedHandler;
+				}
 			}
 
 #if HAS_UNO
@@ -521,21 +655,35 @@ namespace Private.Infrastructure
 				WindowHelper.XamlRoot.VisualTree.RootScale.SetTestOverride(0.0f);
 			}
 
-			internal static Task WaitForOpened(ImageBrush source)
+			internal static async Task WaitForOpened(ImageBrush source, int timeoutMS = 10000)
 			{
-				var tcs = new TaskCompletionSource<bool>();
+				// See BitmapImage overload for the RunContinuationsAsynchronously rationale.
+				var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-				source.ImageOpened += (s, e) =>
+				RoutedEventHandler openedHandler = (_, _) => tcs.TrySetResult(true);
+				ExceptionRoutedEventHandler failedHandler = (_, e) => tcs.TrySetException(new Exception(e.ErrorMessage));
+				source.ImageOpened += openedHandler;
+				source.ImageFailed += failedHandler;
+
+				try
 				{
-					tcs.TrySetResult(true);
-				};
+					// Bound the wait so a stuck image-load surfaces as an actionable test failure
+					// instead of hanging CI for the job timeout. See BitmapImage overload above.
+					var timeout = Task.Delay(timeoutMS);
+					if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+					{
+						throw new TimeoutException(
+							$"WaitForOpened(ImageBrush) timed out after {timeoutMS}ms. " +
+							"Neither ImageOpened nor ImageFailed fired.");
+					}
 
-				source.ImageFailed += (s, e) =>
+					await tcs.Task; // surface any ImageFailed exception
+				}
+				finally
 				{
-					tcs.TrySetException(new Exception(e.ErrorMessage));
-				};
-
-				return tcs.Task;
+					source.ImageOpened -= openedHandler;
+					source.ImageFailed -= failedHandler;
+				}
 			}
 #endif
 		}
