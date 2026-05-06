@@ -294,7 +294,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_OpenStreamForReadAsync_Stream_Is_ReadOnly()
 		{
-			StorageFile createdFile = null;
+			StorageFile? createdFile = null;
 			try
 			{
 				var rootFolder = await GetRootFolderAsync();
@@ -316,7 +316,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_OpenStreamForWriteAsync_Stream_CanWrite()
 		{
-			StorageFile createdFile = null;
+			StorageFile? createdFile = null;
 			try
 			{
 				var rootFolder = await GetRootFolderAsync();
