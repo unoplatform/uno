@@ -101,6 +101,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
 	{
+		Debug.Assert(Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess,
+			$"{nameof(OnRenderingNegativePathReevaluated)} must run on the UI thread.");
+
 		_lastClipPath = path;
 
 		_tempPath.Rewind();
