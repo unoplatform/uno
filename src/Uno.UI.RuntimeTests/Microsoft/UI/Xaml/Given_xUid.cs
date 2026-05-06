@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#if !WINAPPSDK
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -37,4 +36,3 @@ public class Given_xUid
 		Assert.AreEqual("en-US Value for When_xUid_Root.Title", SUT.Title);
 	}
 }
-#endif
