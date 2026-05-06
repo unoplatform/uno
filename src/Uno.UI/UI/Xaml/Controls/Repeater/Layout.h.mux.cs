@@ -9,6 +9,8 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Layout
 {
+	// Uno-specific: WinUI declares this as protected virtual; we widen to protected
+	// internal so ItemsRepeater (same assembly, not a derived type) can invoke it.
 	/// <summary>
 	/// When overridden in a derived class, returns an
 	/// <see cref="ItemCollectionTransitionProvider"/> to apply default item
@@ -18,7 +20,7 @@ partial class Layout
 	/// An <see cref="ItemCollectionTransitionProvider"/> for the default item
 	/// transitions, or <c>null</c>.
 	/// </returns>
-	protected virtual ItemCollectionTransitionProvider CreateDefaultItemTransitionProvider()
+	protected internal virtual ItemCollectionTransitionProvider CreateDefaultItemTransitionProvider()
 	{
 		return null;
 	}

@@ -191,8 +191,9 @@ public partial class Given_ItemCollectionTransitionProvider
 
 		Assert.IsNotNull(capturedTransition, "At least one transition should have been started");
 		Assert.IsTrue(completedArgs.Count > 0, "TransitionCompleted should have been raised");
-		Assert.AreSame(capturedTransition, completedArgs[0].Transition, "CompletedEventArgs.Transition should match");
-		Assert.IsNotNull(completedArgs[0].Element, "CompletedEventArgs.Element should not be null");
+		// Verify that completion is raised for the same transition and element instances.
+		Assert.AreSame(capturedTransition, completedArgs[0].Transition, "CompletedEventArgs.Transition should match the started transition");
+		Assert.AreSame(element, completedArgs[0].Element, "CompletedEventArgs.Element should match the transition element");
 	}
 
 	/// <summary>

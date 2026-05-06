@@ -60,14 +60,20 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		#region Animator (DP - With default callback)
-		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
-			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ElementAnimator), OnPropertyChanged));
+		#region ItemTransitionProvider (DP - With default callback)
+		/// <summary>
+		/// Identifies the ItemTransitionProvider dependency property.
+		/// </summary>
+		public static DependencyProperty ItemTransitionProviderProperty { get; } = DependencyProperty.Register(
+			nameof(ItemTransitionProvider), typeof(ItemCollectionTransitionProvider), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ItemCollectionTransitionProvider), OnPropertyChanged));
 
-		public ElementAnimator Animator
+		/// <summary>
+		/// Gets or sets an object that provides animated transition effects on ItemsRepeater child elements.
+		/// </summary>
+		public ItemCollectionTransitionProvider ItemTransitionProvider
 		{
-			get => (ElementAnimator)GetValue(AnimatorProperty);
-			set => SetValue(AnimatorProperty, value);
+			get => (ItemCollectionTransitionProvider)GetValue(ItemTransitionProviderProperty);
+			set => SetValue(ItemTransitionProviderProperty, value);
 		}
 		#endregion
 
