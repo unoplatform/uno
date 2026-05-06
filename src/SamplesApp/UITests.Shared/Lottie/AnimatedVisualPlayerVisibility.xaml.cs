@@ -27,6 +27,7 @@ namespace UITests.Shared.Lottie
 				{
 					ParentContainer.Child = _playerSlot;
 				}
+				UpdateEffectiveVisibilityText();
 			};
 			InTreeToggle.Unchecked += (_, _) =>
 			{
@@ -34,6 +35,7 @@ namespace UITests.Shared.Lottie
 				{
 					ParentContainer.Child = null;
 				}
+				UpdateEffectiveVisibilityText();
 			};
 
 			PlayButton.Click += (_, _) => _ = Player.PlayAsync(0.0, 1.0, looped: true);

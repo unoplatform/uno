@@ -22,10 +22,14 @@
             FontSize="13"
             TextWrapping="Wrap">
             <Run FontWeight="SemiBold">Repro for #23189</Run>
-            — On Skia, hiding an<Run FontFamily="Consolas">AnimatedVisualPlayer</Run>
-            (or its parent) or calling<Run FontFamily="Consolas">Stop()</Run>
-            should release the<Run FontFamily="Consolas">CompositionTarget.Rendering</Run>
-            subscription so the system render loop can idle.<LineBreak />
+            <Run xml:space="preserve"> — On Skia, hiding an </Run>
+            <Run FontFamily="Consolas">AnimatedVisualPlayer</Run>
+            <Run xml:space="preserve"> (or its parent) or calling </Run>
+            <Run FontFamily="Consolas">Stop()</Run>
+            <Run xml:space="preserve"> should release the </Run>
+            <Run FontFamily="Consolas">CompositionTarget.Rendering</Run>
+            <Run xml:space="preserve"> subscription so the system render loop can idle.</Run>
+            <LineBreak />
             Enable the FPS overlay (Skia diagnostics) and watch the framerate drop to idle when the player is hidden or stopped.</TextBlock>
 
         <StackPanel

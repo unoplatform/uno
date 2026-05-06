@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #if HAS_SKOTTIE
 
