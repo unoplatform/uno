@@ -25,6 +25,14 @@ public partial class CompositionTarget
 	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
 	private static bool _isRenderingActive;
 
+	/// <summary>
+	/// True when at least one handler is subscribed to <see cref="Rendering"/>. While true,
+	/// every <see cref="CompositionTarget"/> requests a new frame after each render and the
+	/// internal render throttle paces FrameTick at vsync. Useful for diagnosing apps where
+	/// a leaked Rendering subscriber prevents the dispatcher from going idle.
+	/// </summary>
+	internal static bool IsRenderingActive => _isRenderingActive;
+
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
@@ -146,7 +154,9 @@ public partial class CompositionTarget
 			ContentPresenter.OnNativeHostsRenderOrderChanged(nativeVisualsInZOrder);
 		}
 
-		FrameRendered?.Invoke();
+		// FrameRendered fires from OnFramePresented (post-present) for all hosts now —
+		// either the render thread (Win32) or OnNativePlatformFrameRequested (others)
+		// will trigger it at the right moment. Don't fire here.
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
@@ -163,6 +173,18 @@ public partial class CompositionTarget
 			_lastRenderedFrame = null;
 
 			_fpsHelper.OnFramePresentRequested();
+		}
+
+		// Clear the throttle as soon as the frame is borrowed — the slot is now free
+		// for the UI thread to record the next frame while this one is being presented.
+		// This enables pipelining on hosts with dedicated render threads (Win32): the
+		// UI thread prepares Frame N+1 while the render thread presents Frame N.
+		// On hosts without a render thread (WASM), Draw runs at vsync time on the UI
+		// thread, so pipelining doesn't apply — but clearing here is still correct
+		// (equivalent to clearing in the vsync callback).
+		if (lastRenderedFrameNullable.HasValue)
+		{
+			OnFrameConsumed();
 		}
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
@@ -208,8 +230,6 @@ public partial class CompositionTarget
 
 			ReturnFrame(lastRenderedFrame);
 
-			InvokeRendering();
-
 			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)
 			{
 				if (_lastNativeClipPath != lastRenderedFrame.nativeElementClipPath || _lastScaledNativeClipPath == null)
@@ -254,18 +274,17 @@ public partial class CompositionTarget
 		}
 	}
 
-	internal static void InvokeRendering()
+	/// <summary>
+	/// Fires the <see cref="Rendering"/> event.
+	/// </summary>
+	/// <param name="renderingTime">
+	/// Elapsed time since application start. When a VSync-aligned timestamp is available
+	/// (e.g. Android Choreographer), this reflects the VSync time rather than wall clock,
+	/// giving animations a stable time base even if the tick is delayed by GC or layout.
+	/// </param>
+	internal static void InvokeRendering(TimeSpan renderingTime)
 	{
-		if (NativeDispatcher.Main.HasThreadAccess)
-		{
-			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-		}
-		else
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-			}, NativeDispatcherPriority.High);
-		}
+		NativeDispatcher.CheckThreadAccess();
+		_rendering?.Invoke(null, new RenderingEventArgs(renderingTime));
 	}
 }

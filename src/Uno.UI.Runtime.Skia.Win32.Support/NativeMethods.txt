@@ -173,6 +173,7 @@ DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
 DwmSetWindowAttribute
 DwmDefWindowProc
+DwmFlush
 EmptyClipboard
 EnableMouseInPointer
 EndPaint
