@@ -108,8 +108,13 @@ namespace Uno.UI.Dispatching
 							if (@this._currentPriority == NativeDispatcherPriority.Normal ||
 								@this._currentPriority == NativeDispatcherPriority.Low)
 							{
-								foreach (var (compositionTarget, details) in @this._compositionTargets)
+								// Snapshot the keys so we can mutate values inside the loop. Setting an
+								// existing key on Dictionary<,> bumps the enumerator version and would
+								// throw InvalidOperationException on the next MoveNext once
+								// _compositionTargets has more than one entry (multi-window apps).
+								foreach (var compositionTarget in @this._compositionTargets.Keys.ToArray())
 								{
+									var details = @this._compositionTargets[compositionTarget];
 									if (details.priorityItemsToProcessBeforeNextRenderAction > 0)
 									{
 										@this._compositionTargets[compositionTarget] = details with { priorityItemsToProcessBeforeNextRenderAction = details.priorityItemsToProcessBeforeNextRenderAction - 1 };
