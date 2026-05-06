@@ -188,7 +188,12 @@ namespace Uno.Media
 		public override void PolyBezierTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
 		{
 #if __SKIA__
-			for (int i = 0; i + 2 < points.Count; i += 3)
+			if (points.Count % 3 != 0)
+			{
+				throw new InvalidOperationException("PolyBezierTo points must use triplet points.");
+			}
+
+			for (int i = 0; i < points.Count; i += 3)
 			{
 				BezierTo(points[i], points[i + 1], points[i + 2], isStroked, isSmoothJoin);
 			}
@@ -200,7 +205,12 @@ namespace Uno.Media
 		public override void PolyQuadraticBezierTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
 		{
 #if __SKIA__
-			for (int i = 0; i + 1 < points.Count; i += 2)
+			if (points.Count % 2 != 0)
+			{
+				throw new InvalidOperationException("PolyQuadraticBezierTo points must use pair points.");
+			}
+
+			for (int i = 0; i < points.Count; i += 2)
 			{
 				QuadraticBezierTo(points[i], points[i + 1], isStroked, isSmoothJoin);
 			}

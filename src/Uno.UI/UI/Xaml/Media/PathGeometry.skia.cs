@@ -1,6 +1,5 @@
 ﻿using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
-using Windows.Foundation;
 
 using Rect = Windows.Foundation.Rect;
 
@@ -10,11 +9,14 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		private protected override Rect ComputeBounds()
 		{
-			var path = GetTransformedSKPath();
-			var b = path.Bounds;
-			return b.IsEmpty
-				? default
-				: new Rect(b.Left, b.Top, b.Width, b.Height);
+			var b = GetSKPath().Bounds;
+			if (b.IsEmpty)
+			{
+				return default;
+			}
+
+			var rect = new Rect(b.Left, b.Top, b.Width, b.Height);
+			return Transform is { } transform ? transform.TransformBounds(rect) : rect;
 		}
 
 		internal override SKPath GetSKPath() => GetSKPath(false);

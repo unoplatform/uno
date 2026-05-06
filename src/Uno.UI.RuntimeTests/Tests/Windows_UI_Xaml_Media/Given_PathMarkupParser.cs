@@ -1,4 +1,3 @@
-using AwesomeAssertions.Execution;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
