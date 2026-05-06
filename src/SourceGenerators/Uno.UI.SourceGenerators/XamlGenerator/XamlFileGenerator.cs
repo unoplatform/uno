@@ -3866,24 +3866,73 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var objectUid = GetObjectUid(objectDefinition);
 
 			var ret = false;
-			if (objectUid != null)
+			if (objectUid != null && objectDefinitionType != null)
 			{
-				var candidateProperties = FindLocalizableProperties(objectDefinitionType)
-					.Except(objectDefinition.Members.Select(m => m.Member.Name));
-				foreach (var prop in candidateProperties)
+				var explicitMembers = new HashSet<string>(objectDefinition.Members.Select(m => m.Member.Name));
+
+				foreach (var resource in _resourceDetailsCollection.FindByUId(objectUid))
 				{
-					var localizedValue = BuildLocalizedResourceValue(null, prop, objectUid);
-					if (localizedValue != null)
+					// The resource key is in the form "<uid>.<member>", or
+					// "<uid>.[using:<ns>]<type>.<property>" for attached properties.
+					var firstDotIndex = resource.Key.IndexOf('.');
+					if (firstDotIndex == -1)
 					{
-						ret = true;
-						if (isInInitializer)
-						{
-							writer.AppendLineInvariantIndented("{0} = {1},", prop, localizedValue);
-						}
-						else
-						{
-							writer.AppendLineInvariantIndented("{0} = {1};", prop, localizedValue);
-						}
+						continue;
+					}
+
+					var propertyPath = resource.Key.Substring(firstDotIndex + 1);
+
+					// Attached properties are handled by BuildStatementLocalizedProperties.
+					if (propertyPath.StartsWith("[using:", StringComparison.Ordinal))
+					{
+						continue;
+					}
+
+					var propertyName = propertyPath;
+
+					// Skip properties already assigned explicitly in XAML.
+					if (explicitMembers.Contains(propertyName))
+					{
+						continue;
+					}
+
+					var property = objectDefinitionType.GetPropertyWithName(propertyName);
+					if (property == null
+						|| property.IsReadOnly
+						|| property.DeclaredAccessibility != Accessibility.Public
+						|| property.Type is not INamedTypeSymbol propertyType)
+					{
+						continue;
+					}
+
+					var localizedValue = BuildLocalizedResourceValue(null, propertyName, objectUid);
+					if (localizedValue == null)
+					{
+						continue;
+					}
+
+					ret = true;
+
+					string assignedValue;
+					if (IsLocalizablePropertyType(propertyType))
+					{
+						assignedValue = localizedValue;
+					}
+					else
+					{
+						// Non-string property types (e.g. Uri for NavigateUri) need conversion
+						// from the localized string value to the target type.
+						var typeName = propertyType.GetFullyQualifiedTypeIncludingGlobal();
+						assignedValue = $"({typeName})global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({typeName}), {localizedValue})";
+					}
+
+					if (isInInitializer)
+					{
+						writer.AppendLineInvariantIndented("{0} = {1},", propertyName, assignedValue);
+					}
+					else
+					{
+						writer.AppendLineInvariantIndented("{0} = {1};", propertyName, assignedValue);
 					}
 				}
 			}
@@ -4928,13 +4977,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			string Inner()
 			{
-				if (IsLocalizedString(propertyType, objectUid))
+				if (!objectUid.IsNullOrEmpty())
 				{
 					var resourceValue = BuildLocalizedResourceValue(FindType(owner.Member.DeclaringType), memberName, objectUid);
 
 					if (resourceValue != null)
 					{
-						return resourceValue;
+						// Match WinUI: an x:Uid resw entry overrides the XAML literal
+						// for the same property, regardless of property type.
+						// (ObjectWriter.cpp: InitiatePropertyReplacementIfNeeded)
+						if (IsLocalizablePropertyType(propertyType))
+						{
+							return resourceValue;
+						}
+
+						var typeName = propertyType.GetFullyQualifiedTypeIncludingGlobal();
+						return $"({typeName})global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({typeName}), {resourceValue})";
 					}
 				}
 
