@@ -19,6 +19,22 @@ public class Given_Storyboard
 	}
 
 	[TestMethod]
+	public async Task When_UsingCompletedCallback()
+	{
+		var completedCount = 0;
+		void OnCompleted(object sender, object e) => completedCount++;
+
+		var sut = new Storyboard();
+		sut.Completed += OnCompleted;
+
+		Assert.AreEqual(0, completedCount);
+		sut.Begin();
+
+		await TestServices.WindowHelper.WaitFor(() => completedCount == 1);
+		Assert.AreEqual(ClockState.Stopped, sut.GetCurrentState());
+	}
+
+	[TestMethod]
 	public async Task When_Empty_Storyboard_Completed_Attached_After()
 	{
 		var storyboard = new Storyboard();

@@ -168,13 +168,11 @@ namespace Windows.UI.Input
 			_manipulation?.Remove(value);
 		}
 
-#if IS_UNIT_TESTS
 		/// <summary>
 		/// For test purposes only!
 		/// </summary>
 		internal void RunInertiaSync()
 			=> _manipulation?.RunInertiaSync();
-#endif
 
 		public void CompleteGesture()
 		{
