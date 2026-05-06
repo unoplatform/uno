@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator;
 
@@ -18,6 +19,13 @@ internal class XamlGenerationException : Exception, IXamlLocation
 	{
 		_location = location;
 	}
+
+	/// <summary>
+	/// Optional diagnostic descriptor to use when this exception is reported, instead of the
+	/// default <see cref="XamlCodeGenerationDiagnostics.GenericXamlErrorRule"/> (UXAML0001).
+	/// Use this to surface specific WinUI-aligned diagnostic codes (e.g. XLS0501).
+	/// </summary>
+	public DiagnosticDescriptor? Descriptor { get; init; }
 
 	/// <inheritdoc />
 	public string FilePath => _location.FilePath;

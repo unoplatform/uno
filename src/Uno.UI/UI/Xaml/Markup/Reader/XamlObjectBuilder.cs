@@ -85,6 +85,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				var topLevelControl = _fileDefinition.Objects.First();
 
+				// Validate the entire XAML tree for duplicate-property assignments before
+				// materialization, so this WinUI-aligned parse-time error is reported even when
+				// the offending object isn't a FrameworkTemplate (the only path that historically
+				// triggered the broader ValidateContent eagerly).
+				ValidateNoDuplicatePropertiesRecursive(topLevelControl);
+
 				var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
 
 				if (_parseExceptions?.Count > 0)
@@ -1759,6 +1765,153 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				AddXamlParseException(e.Message, xamlObjectDefinition, e);
 			}
+		}
+
+		/// <summary>
+		/// Recursively validates that no property is set more than once on any object in the tree.
+		/// </summary>
+		private void ValidateNoDuplicatePropertiesRecursive(XamlObjectDefinition? obj)
+		{
+			if (obj is null)
+			{
+				return;
+			}
+
+			// Skip markup-extension references that have no real property semantics.
+			if (obj.Type.Name is not "StaticResource" and not "ThemeResource" and not "CustomResource")
+			{
+				var type = TypeResolver.FindType(obj.Type);
+				if (type is not null)
+				{
+					ValidateNoDuplicateProperties(obj, TypeResolver.FindContentProperty(type));
+				}
+			}
+
+			foreach (var child in obj.Objects)
+			{
+				ValidateNoDuplicatePropertiesRecursive(child);
+			}
+
+			foreach (var member in obj.Members)
+			{
+				foreach (var memberObject in member.Objects)
+				{
+					ValidateNoDuplicatePropertiesRecursive(memberObject);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Validates that no property is set more than once on the given object.
+		/// </summary>
+		/// <remarks>
+		/// Mirrors WinUI behavior (<c>AG_E_PARSER2_OW_DUPLICATE_MEMBER</c>): "The property 'X' is set
+		/// more than once" is raised whether the duplicate comes from attribute syntax,
+		/// property-element syntax, or implicit child content (because the [ContentProperty] is
+		/// resolved to the same property name as an explicit member).
+		/// </remarks>
+		private void ValidateNoDuplicateProperties(XamlObjectDefinition obj, PropertyInfo? contentProperty)
+		{
+			// Skip types where _UnknownContent is intentionally a list of items / a visual tree
+			// rather than a single property assignment.
+			if (obj.Type.Name is "ResourceDictionary" or "DataTemplate" or "ItemsPanelTemplate" or "ControlTemplate")
+			{
+				return;
+			}
+
+			var seenMembers = new Dictionary<string, XamlMemberDefinition>(StringComparer.Ordinal);
+
+			foreach (var member in obj.Members)
+			{
+				var memberName = member.Member.Name;
+
+				if (memberName is "_Initialization" or "_PositionalParameters")
+				{
+					continue;
+				}
+
+				// XAML directives (x:Key, x:Name, x:Uid, x:Class, etc.) live in the XAML language namespace.
+				// Synthetic members like "_UnknownContent" also report that namespace from the parser, so we
+				// must not skip them here — only true directives whose names are recognized as such.
+				if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+					&& memberName != XamlConstants.UnknownContent)
+				{
+					continue;
+				}
+
+				// Attached properties target a different declaring type and cannot collide
+				// with a property on the owning object.
+				if (TypeResolver.IsAttachedProperty(member))
+				{
+					continue;
+				}
+
+				var effectiveName = GetEffectivePropertyName(member, contentProperty);
+				if (effectiveName is null)
+				{
+					continue;
+				}
+
+				if (seenMembers.ContainsKey(effectiveName))
+				{
+					AddParseException(new XamlParseException($"The property '{effectiveName}' is set more than once.", null, member.LineNumber, member.LinePosition));
+				}
+				else
+				{
+					seenMembers[effectiveName] = member;
+				}
+			}
+		}
+
+		private static string? GetEffectivePropertyName(XamlMemberDefinition member, PropertyInfo? contentProperty)
+		{
+			if (member.Member.Name != XamlConstants.UnknownContent)
+			{
+				return member.Member.Name;
+			}
+
+			// Whitespace-only literal content is not a real property assignment — skip it.
+			if (IsEffectivelyEmptyImplicitContent(member))
+			{
+				return null;
+			}
+
+			// _UnknownContent maps to the type's [ContentProperty]. Every type that supports
+			// implicit content (TextBlock/Span/Run/Border/SolidColorBrush/RowDefinition/
+			// ColumnDefinition/ContentControl/Page/etc.) declares this attribute so a single
+			// generic mapping is sufficient.
+			return contentProperty?.Name;
+		}
+
+		private static bool IsEffectivelyEmptyImplicitContent(XamlMemberDefinition member)
+		{
+			// Direct-value case: empty/whitespace string and no child objects.
+			if (member.Objects.Count == 0)
+			{
+				return member.Value is null
+					|| (member.Value is string s && string.IsNullOrWhiteSpace(s));
+			}
+
+			// Wrapped-text case: for TextBlock/Span/Run/Bold/Italic/Underline/Hyperlink/Paragraph
+			// the parser converts literal text inside _UnknownContent into Run objects with the
+			// text in their Text member. If every wrapped Run holds only whitespace, treat the
+			// member as empty so that whitespace surrounding a property-element does not get
+			// interpreted as a duplicate Inlines/Text assignment.
+			foreach (var obj in member.Objects)
+			{
+				if (obj.Type.Name != "Run")
+				{
+					return false;
+				}
+
+				var textMember = obj.Members.FirstOrDefault(m => m.Member.Name == "Text");
+				if (textMember?.Value is not string runText || !string.IsNullOrWhiteSpace(runText))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		/// <summary>

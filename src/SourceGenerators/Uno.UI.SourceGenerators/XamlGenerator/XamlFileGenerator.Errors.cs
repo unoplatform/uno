@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator;
@@ -104,6 +105,15 @@ internal partial class XamlFileGenerator
 	private void AddError(string message, IXamlLocation location)
 	{
 		_errors.Add(new XamlGenerationException(message, location));
+	}
+
+	/// <summary>
+	/// Add an error to the generation error list using a specific diagnostic descriptor
+	/// (e.g. <see cref="XamlCodeGenerationDiagnostics.DuplicatePropertyRule"/> for XLS0501).
+	/// </summary>
+	private void AddError(string message, IXamlLocation location, DiagnosticDescriptor descriptor)
+	{
+		_errors.Add(new XamlGenerationException(message, location) { Descriptor = descriptor });
 	}
 
 	/// <summary>
