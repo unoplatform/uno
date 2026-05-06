@@ -1066,7 +1066,7 @@ namespace Microsoft.UI.Xaml
 				_traceLayoutCycle = false;
 			}
 
-			throw new InvalidOperationException("Layout cycle detected. For more information, see https://aka.platform.uno/layout-cycle");
+			throw new LayoutCycleException("Layout cycle detected. For more information, see https://aka.platform.uno/layout-cycle");
 #endif
 		}
 

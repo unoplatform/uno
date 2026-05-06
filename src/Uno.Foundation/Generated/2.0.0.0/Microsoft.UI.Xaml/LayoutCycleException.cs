@@ -3,34 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LayoutCycleException : global::System.Exception
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public LayoutCycleException() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.LayoutCycleException", "LayoutCycleException.LayoutCycleException()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.LayoutCycleException.LayoutCycleException()
 		// Forced skipping of method Microsoft.UI.Xaml.LayoutCycleException.LayoutCycleException()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public LayoutCycleException(string message) : base(message)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.LayoutCycleException", "LayoutCycleException.LayoutCycleException(string message)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.LayoutCycleException.LayoutCycleException(string)
 		// Forced skipping of method Microsoft.UI.Xaml.LayoutCycleException.LayoutCycleException(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public LayoutCycleException(string message, global::System.Exception innerException) : base(message, innerException)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.LayoutCycleException", "LayoutCycleException.LayoutCycleException(string message, Exception innerException)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.LayoutCycleException.LayoutCycleException(string, System.Exception)
 		// Forced skipping of method Microsoft.UI.Xaml.LayoutCycleException.LayoutCycleException(string, System.Exception)
 	}
 }
