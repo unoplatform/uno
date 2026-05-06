@@ -4977,13 +4977,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			string Inner()
 			{
-				if (IsLocalizedString(propertyType, objectUid))
+				if (!objectUid.IsNullOrEmpty())
 				{
 					var resourceValue = BuildLocalizedResourceValue(FindType(owner.Member.DeclaringType), memberName, objectUid);
 
 					if (resourceValue != null)
 					{
-						return resourceValue;
+						// Match WinUI: an x:Uid resw entry overrides the XAML literal
+						// for the same property, regardless of property type.
+						// (ObjectWriter.cpp: InitiatePropertyReplacementIfNeeded)
+						if (IsLocalizablePropertyType(propertyType))
+						{
+							return resourceValue;
+						}
+
+						var typeName = propertyType.GetFullyQualifiedTypeIncludingGlobal();
+						return $"({typeName})global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({typeName}), {resourceValue})";
 					}
 				}
 
