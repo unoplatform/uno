@@ -46,13 +46,13 @@ namespace TestRepro
 		private void InitializeComponent()
 		{
 			var __that = this;
-			// Source 0\MainWindow.xaml (Line 1:2)
+#line 1 "C:/Project/0/MainWindow.xaml"
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Page
 				{
 					IsParsing = true,
-					// Source 0\MainWindow.xaml (Line 10:3)
+#line 10 "C:/Project/0/MainWindow.xaml"
 				}
 				.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -69,9 +69,10 @@ namespace TestRepro
 			this
 			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-			// Source 0\MainWindow.xaml (Line 1:2)
+#line 1 "C:/Project/0/MainWindow.xaml"
 			
 			// [WARNING] C:/Project/0/MainWindow.xaml(1,2): Property 'base' does not exist on 'BaseWindow', this error was however considered irrelevant by the XamlFileGenerator.
+#line hidden
 			}
 			))
 			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
@@ -80,6 +81,7 @@ namespace TestRepro
 			}
 			))
 			;
+#line hidden
 			if (__that.Content != null)
 			{
 				NameScope.SetNameScope(__that.Content, __nameScope);

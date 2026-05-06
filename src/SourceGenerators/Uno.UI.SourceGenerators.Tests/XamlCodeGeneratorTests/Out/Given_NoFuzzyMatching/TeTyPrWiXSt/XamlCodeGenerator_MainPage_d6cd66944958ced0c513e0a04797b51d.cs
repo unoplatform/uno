@@ -48,14 +48,14 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0\MainPage.xaml (Line 1:2)
+#line 1 "C:/Project/0/MainPage.xaml"
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::TestRepro.MyButton
 				{
 					IsParsing = true,
 					MyProperty = typeof(string),
-					// Source 0\MainPage.xaml (Line 9:3)
+#line 9 "C:/Project/0/MainPage.xaml"
 				}
 				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -69,9 +69,10 @@ namespace TestRepro
 			this
 			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-			// Source 0\MainPage.xaml (Line 1:2)
+#line 1 "C:/Project/0/MainPage.xaml"
 			
 			// [WARNING] C:/Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+#line hidden
 			}
 			))
 			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
@@ -82,6 +83,7 @@ namespace TestRepro
 			}
 			))
 			;
+#line hidden
 			OnInitializeCompleted();
 
 		}

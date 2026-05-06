@@ -46,15 +46,16 @@ namespace TestRepro
 		private void InitializeComponent()
 		{
 			var __that = this;
-			// Source 0\MainWindow.xaml (Line 1:2)
+#line 1 "C:/Project/0/MainWindow.xaml"
 			;
 			
 			this
 			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-			// Source 0\MainWindow.xaml (Line 1:2)
+#line 1 "C:/Project/0/MainWindow.xaml"
 			
 			// [WARNING] C:/Project/0/MainWindow.xaml(1,2): Property 'base' does not exist on 'Window', this error was however considered irrelevant by the XamlFileGenerator.
+#line hidden
 			}
 			))
 			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
@@ -65,6 +66,7 @@ namespace TestRepro
 			}
 			))
 			;
+#line hidden
 			if (__that.Content != null)
 			{
 				NameScope.SetNameScope(__that.Content, __nameScope);

@@ -57,5 +57,29 @@ namespace Uno.Extensions
 		{
 			return builder.Block(CultureInfo.InvariantCulture, pattern);
 		}
+
+		/// <summary>
+		/// Appends a <c>#line N "filePath"</c> preprocessor directive at column 0, so the C# compiler
+		/// remaps diagnostics in subsequent generated code to the given source location.
+		/// </summary>
+		public static void AppendLineDirective(this IIndentedStringBuilder builder, int line, string filePath)
+		{
+			builder.Append("#line ");
+			builder.Append(line.ToString(CultureInfo.InvariantCulture));
+			builder.Append(" \"");
+			builder.Append(filePath.Replace("\\", "\\\\").Replace("\"", "\\\""));
+			builder.Append("\"");
+			builder.AppendLine();
+		}
+
+		/// <summary>
+		/// Appends a <c>#line hidden</c> preprocessor directive at column 0, ending any active
+		/// <c>#line</c> mapping so subsequent generated code is hidden from debuggers and diagnostics.
+		/// </summary>
+		public static void AppendLineHidden(this IIndentedStringBuilder builder)
+		{
+			builder.Append("#line hidden");
+			builder.AppendLine();
+		}
 	}
 }

@@ -52,17 +52,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter
 				{
-					// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 11:10)
+#line 11 "C:/Project/0/Binding_Xaml_Object_With_Common_Properties.xaml"
 				}
 			)
 			;
-			// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 1:2)
+#line 1 "C:/Project/0/Binding_Xaml_Object_With_Common_Properties.xaml"
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 13:6)
+#line 13 "C:/Project/0/Binding_Xaml_Object_With_Common_Properties.xaml"
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -71,7 +71,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 								IsParsing = true,
 								Name = "topLevel",
 								Tag = @"42",
-								// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 14:10)
+#line 14 "C:/Project/0/Binding_Xaml_Object_With_Common_Properties.xaml"
 							}
 							.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
@@ -117,9 +117,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			this
 			.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-			// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 1:2)
+#line 1 "C:/Project/0/Binding_Xaml_Object_With_Common_Properties.xaml"
 			
 			// [WARNING] C:/Project/0/Binding_Xaml_Object_With_Common_Properties.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+#line hidden
 			}
 			))
 			.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
@@ -130,6 +131,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			}
 			))
 			;
+#line hidden
 			OnInitializeCompleted();
 
 			Bindings = new Binding_Xaml_Object_With_Common_Properties_Bindings(this);

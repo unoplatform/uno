@@ -59,15 +59,16 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			}
 			)
 			;
-			// Source 0\RD_WNWSRAE.xaml (Line 1:2)
+#line 1 "C:/Project/0/RD_WNWSRAE.xaml"
 			;
 			
 			this
 			.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-			// Source 0\RD_WNWSRAE.xaml (Line 1:2)
+#line 1 "C:/Project/0/RD_WNWSRAE.xaml"
 			
 			// [WARNING] C:/Project/0/RD_WNWSRAE.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+#line hidden
 			}
 			))
 			.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
@@ -78,6 +79,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			}
 			))
 			;
+#line hidden
 			OnInitializeCompleted();
 
 		}
@@ -119,7 +121,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 							global::MyProject.GlobalStaticResources.__PreserveProperties(
 								new global::Microsoft.UI.Xaml.Controls.FontIconSource
 								{
-									// Source 0\RD_WNWSRAE.xaml (Line 14:22)
+#line 14 "C:/Project/0/RD_WNWSRAE.xaml"
 								}
 							)
 							,
@@ -130,7 +132,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 									global::MyProject.GlobalStaticResources.__PreserveProperties(
 										new global::Microsoft.UI.Xaml.Controls.SwipeItems
 										{
-											// Source 0\RD_WNWSRAE.xaml (Line 15:22)
+#line 15 "C:/Project/0/RD_WNWSRAE.xaml"
 										}
 										.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
@@ -138,7 +140,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Controls.SwipeItem
 												{
-													// Source 0\RD_WNWSRAE.xaml (Line 16:26)
+#line 16 "C:/Project/0/RD_WNWSRAE.xaml"
 												}
 												.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 												{
@@ -160,7 +162,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 							)
 							,
 							},
-							// Source 0\RD_WNWSRAE.xaml (Line 12:14)
+#line 12 "C:/Project/0/RD_WNWSRAE.xaml"
 						}
 						.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{

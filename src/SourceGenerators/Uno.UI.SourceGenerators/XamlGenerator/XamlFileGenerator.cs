@@ -535,6 +535,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 			Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
+			BuildSourceLineHidden(writer);
 
 			ApplyFontsOverride(writer);
 
@@ -557,13 +558,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (var blockWriter = CreateApplyBlock(writer, topLevelControl))
 				{
-					blockWriter.AppendLineInvariantIndented(
-						"// Source {0} (Line {1}:{2})",
-						_relativePath,
-						topLevelControl.LineNumber,
-						topLevelControl.LinePosition
-					);
+					BuildSourceLineInfo(blockWriter, topLevelControl);
 					BuildLiteralProperties(blockWriter, topLevelControl, blockWriter.AppliedParameterName);
+					BuildSourceLineHidden(blockWriter);
 				}
 
 				writer.AppendLineIndented(";");
@@ -783,20 +780,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (var blockWriter = CreateApplyBlock(writer, topLevelControl))
 				{
-					blockWriter.AppendLineInvariantIndented(
-						"// Source {0} (Line {1}:{2})",
-						_relativePath,
-						topLevelControl.LineNumber,
-						topLevelControl.LinePosition
-					);
+					BuildSourceLineInfo(blockWriter, topLevelControl);
 
 					BuildLiteralProperties(blockWriter, topLevelControl, blockWriter.AppliedParameterName);
+					BuildSourceLineHidden(blockWriter);
 				}
 
 				BuildExtendedProperties(writer, topLevelControl, useGenericApply: true);
 			}
 
 			writer.AppendLineIndented(";");
+			BuildSourceLineHidden(writer);
 
 			if (IsWindow(topLevelControlType)) // Window is not a DependencyObject
 			{
@@ -1836,12 +1830,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildSourceLineInfo(IIndentedStringBuilder writer, XamlObjectDefinition definition)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			writer.AppendLineInvariantIndented(
-				"// Source {0} (Line {1}:{2})",
-				_relativePath,
-				definition.LineNumber,
-				definition.LinePosition
-			);
+			if (_isHotReloadEnabled)
+			{
+				// Roslyn's EditAndContinue analyzer crashes when comparing two versions of generated
+				// code that contain #line directives whose target line numbers shift between versions.
+				// Fall back to a non-mapping comment under hot reload to keep EnC stable.
+				writer.AppendLineInvariantIndented(
+					"// Source {0} (Line {1}:{2})",
+					_relativePath,
+					definition.LineNumber,
+					definition.LinePosition);
+			}
+			else
+			{
+				writer.AppendLineDirective(definition.LineNumber, _fileDefinition.FilePath);
+			}
+		}
+
+		private void BuildSourceLineHidden(IIndentedStringBuilder writer)
+		{
+			if (!_isHotReloadEnabled)
+			{
+				writer.AppendLineHidden();
+			}
 		}
 
 		private void BuildNamedResources(
@@ -1861,6 +1872,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				BuildSourceLineInfo(writer, namedResource.Value);
 
 				writer.AppendLineInvariantIndented("Resources.TryGetValue(\"{0}\", out _);", namedResource.Key);
+			}
+
+			if (namedResources.Any())
+			{
+				BuildSourceLineHidden(writer);
 			}
 
 			bool IsGenerateUpdateResourceBindings(KeyValuePair<string, XamlObjectDefinition> nr)

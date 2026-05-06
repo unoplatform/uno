@@ -48,13 +48,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0\Binding_ElementName_In_Template.xaml (Line 1:2)
+#line 1 "C:/Project/0/Binding_ElementName_In_Template.xaml"
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source 0\Binding_ElementName_In_Template.xaml (Line 10:3)
+#line 10 "C:/Project/0/Binding_ElementName_In_Template.xaml"
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -67,7 +67,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
 								)
 								,
-								// Source 0\Binding_ElementName_In_Template.xaml (Line 11:4)
+#line 11 "C:/Project/0/Binding_ElementName_In_Template.xaml"
 							}
 							.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
@@ -94,9 +94,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			this
 			.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-			// Source 0\Binding_ElementName_In_Template.xaml (Line 1:2)
+#line 1 "C:/Project/0/Binding_ElementName_In_Template.xaml"
 			
 			// [WARNING] C:/Project/0/Binding_ElementName_In_Template.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+#line hidden
 			}
 			))
 			.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
@@ -107,6 +108,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			}
 			))
 			;
+#line hidden
 			OnInitializeCompleted();
 
 		}
@@ -150,7 +152,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						{
 							IsParsing = true,
 							Name = "innerTextBlock",
-							// Source 0\Binding_ElementName_In_Template.xaml (Line 14:7)
+#line 14 "C:/Project/0/Binding_ElementName_In_Template.xaml"
 						}
 						.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{

@@ -48,13 +48,13 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0\MainPage.xaml (Line 1:2)
+#line 1 "C:/Project/0/MainPage.xaml"
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source 0\MainPage.xaml (Line 11:3)
+#line 11 "C:/Project/0/MainPage.xaml"
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -64,7 +64,7 @@ namespace TestRepro
 								Text = "Hello, world!",
 								Margin = new global::Microsoft.UI.Xaml.Thickness(20),
 								FontSize = 30d,
-								// Source 0\MainPage.xaml (Line 12:4)
+#line 12 "C:/Project/0/MainPage.xaml"
 							}
 							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
@@ -77,7 +77,7 @@ namespace TestRepro
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::TestRepro.UserControl1
 							{
-								// Source 0\MainPage.xaml (Line 13:4)
+#line 13 "C:/Project/0/MainPage.xaml"
 							}
 							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 							{
@@ -106,9 +106,10 @@ namespace TestRepro
 			this
 			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
-			// Source 0\MainPage.xaml (Line 1:2)
+#line 1 "C:/Project/0/MainPage.xaml"
 			
 			// [WARNING] C:/Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+#line hidden
 			}
 			))
 			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
@@ -122,6 +123,7 @@ namespace TestRepro
 			}
 			))
 			;
+#line hidden
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);

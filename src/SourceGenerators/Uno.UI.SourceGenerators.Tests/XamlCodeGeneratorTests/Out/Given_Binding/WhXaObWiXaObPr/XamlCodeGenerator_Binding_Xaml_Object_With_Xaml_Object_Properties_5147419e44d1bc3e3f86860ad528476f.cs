@@ -48,13 +48,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
+#line 1 "C:/Project/0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml"
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 10:6)
+#line 10 "C:/Project/0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml"
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -63,7 +63,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 								IsParsing = true,
 								Name = "topLevel",
 								Tag = @"42",
-								// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 11:10)
+#line 11 "C:/Project/0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml"
 							}
 							.Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476fXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
@@ -109,9 +109,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			this
 			.Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476fXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-			// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
+#line 1 "C:/Project/0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml"
 			
 			// [WARNING] C:/Project/0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+#line hidden
 			}
 			))
 			.Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476fXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
@@ -122,6 +123,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			}
 			))
 			;
+#line hidden
 			OnInitializeCompleted();
 
 			Bindings = new Binding_Xaml_Object_With_Xaml_Object_Properties_Bindings(this);
