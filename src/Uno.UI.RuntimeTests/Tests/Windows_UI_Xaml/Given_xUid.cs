@@ -26,6 +26,8 @@ public class Given_xUid
 		Assert.AreEqual("en-US Value for When_xUid", SUT.defaultResolver.Text);
 		Assert.AreEqual("en-US Value for When_xUid_Explicit in TopLevelNamedRuntimeTests", SUT.namedResolver.Text);
 		Assert.AreEqual("en-US Value for SomePrefix/When_xUid_With_Prefix", SUT.defaultResolverWithPrefix.Text);
+		Assert.AreEqual(new Uri("https://platform.uno/"), SUT.hyperlinkWithNavigateUri.NavigateUri);
+		Assert.AreEqual("en-US Value for When_xUid_NavigateUri.Content", SUT.hyperlinkWithNavigateUri.Content);
 	}
 
 	[TestMethod]
