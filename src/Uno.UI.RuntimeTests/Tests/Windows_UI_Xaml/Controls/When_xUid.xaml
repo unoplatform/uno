@@ -21,5 +21,10 @@
 		<HyperlinkButton x:Uid="When_xUid_NavigateUri"
 						 x:FieldModifier="public"
 						 x:Name="hyperlinkWithNavigateUri" />
+		<HyperlinkButton x:Uid="When_xUid_NavigateUri_Override"
+						 x:FieldModifier="public"
+						 x:Name="hyperlinkWithNavigateUriOverride"
+						 NavigateUri="https://xaml-literal.invalid/"
+						 Content="XAML literal content" />
 	</StackPanel>
 </UserControl>

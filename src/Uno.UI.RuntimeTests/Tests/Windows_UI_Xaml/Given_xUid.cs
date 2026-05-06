@@ -27,6 +27,11 @@ public class Given_xUid
 		Assert.AreEqual("en-US Value for SomePrefix/When_xUid_With_Prefix", SUT.defaultResolverWithPrefix.Text);
 		Assert.AreEqual(new Uri("https://platform.uno/"), SUT.hyperlinkWithNavigateUri.NavigateUri);
 		Assert.AreEqual("en-US Value for When_xUid_NavigateUri.Content", SUT.hyperlinkWithNavigateUri.Content);
+
+		// resw entries override XAML literals for any property type, matching WinUI behavior
+		// (WinUI: ObjectWriter::InitiatePropertyReplacementIfNeeded replaces the XAML write).
+		Assert.AreEqual(new Uri("https://platform.uno/override/"), SUT.hyperlinkWithNavigateUriOverride.NavigateUri);
+		Assert.AreEqual("en-US Value for When_xUid_NavigateUri_Override.Content", SUT.hyperlinkWithNavigateUriOverride.Content);
 	}
 
 	[TestMethod]
