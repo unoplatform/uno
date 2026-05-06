@@ -473,9 +473,9 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 				}
 			}
 
-			if (role == null && this.Log().IsEnabled(LogLevel.Debug))
+			if (role == null && this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] No role resolved for {child.GetType().Name} handle={child.Visual.Handle} peer={peer.GetType().Name} — will default to group in native layer");
+				this.Log().Trace($"[A11y] No role resolved for {child.GetType().Name} handle={child.Visual.Handle} peer={peer.GetType().Name} — will default to group in native layer");
 			}
 
 			try

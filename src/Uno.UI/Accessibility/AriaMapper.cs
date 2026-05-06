@@ -160,6 +160,15 @@ public static class AriaMapper
 			Disabled = !peer.IsEnabled(),
 		};
 
+		// IsDialog peers (ContentDialog, custom dialogs) need role="dialog" + aria-modal
+		// even when the control type maps to a different ARIA role (e.g. Pane → region).
+		// Screen readers use these to scope their announcements while the dialog is open.
+		if (peer.IsDialog())
+		{
+			attributes.Role = "dialog";
+			attributes.Modal = true;
+		}
+
 		var fullDescription = peer.GetFullDescription();
 		// HelpText is used as a fallback because VoiceOver reads it as secondary context
 		var helpText = peer.GetHelpText();
@@ -209,6 +218,17 @@ public static class AriaMapper
 		if (headingLevel != AutomationHeadingLevel.None)
 		{
 			attributes.Level = (int)headingLevel;
+		}
+
+		// aria-keyshortcuts: WinUI3 surfaces both AcceleratorKey (e.g. "Ctrl+S") and AccessKey
+		// (mnemonic, e.g. "Alt+F"). NVDA, JAWS and VoiceOver announce key shortcuts when present.
+		var acceleratorKey = peer.GetAcceleratorKey();
+		var accessKey = peer.GetAccessKey();
+		if (!string.IsNullOrEmpty(acceleratorKey) || !string.IsNullOrEmpty(accessKey))
+		{
+			attributes.KeyShortcuts = string.IsNullOrEmpty(accessKey)
+				? acceleratorKey
+				: string.IsNullOrEmpty(acceleratorKey) ? accessKey : $"{acceleratorKey} {accessKey}";
 		}
 
 		// Pattern queries are wrapped in try-catch because some peers (e.g.,
@@ -556,6 +576,12 @@ public class AriaAttributes
 
 	/// <summary>aria-roledescription (custom role description for VoiceOver)</summary>
 	public string? RoleDescription { get; set; }
+
+	/// <summary>aria-keyshortcuts (formatted from AcceleratorKey / AccessKey)</summary>
+	public string? KeyShortcuts { get; set; }
+
+	/// <summary>aria-modal (true when the peer's IsDialog() is true)</summary>
+	public bool? Modal { get; set; }
 }
 
 /// <summary>
