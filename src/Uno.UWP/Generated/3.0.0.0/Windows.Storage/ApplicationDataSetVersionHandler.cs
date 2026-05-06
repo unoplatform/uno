@@ -3,7 +3,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	public delegate void ApplicationDataSetVersionHandler(global::Windows.Storage.SetVersionRequest setVersionRequest);
-#endif
+	// Skipping already declared delegate Windows.Storage.ApplicationDataSetVersionHandler
 }
