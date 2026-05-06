@@ -45,5 +45,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 			await UITestHelper.WaitForIdle();
 			CollectionAssert.AreEqual(new[] { 1, 3, 2 }, list);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Low_Priority_With_Active_Rendering_Subscriber_Does_Not_Starve()
+		{
+			// Regression test: subscribing to CompositionTarget.Rendering activates the
+			// self-perpetuating 60fps render cycle (RequestNewFrame + unconditional
+			// InvalidateRender at the end of every Render() in CompositionTarget.Rendering.skia.cs).
+			// The cycle queues a render in NativeDispatcher._compositionTargets at every
+			// vsync. Before the fix, the render gate (normalItemsToProcessBeforeNextRenderAction)
+			// only counted Normal queue items, so a Low-priority item enqueued under render
+			// saturation could starve indefinitely. The fix counts Normal+Low so Low items
+			// always get a chance to run before the next render.
+			var lowRan = new TaskCompletionSource<bool>();
+			EventHandler<object> renderingHandler = (_, _) => { /* keep _isRenderingActive true */ };
+
+			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += renderingHandler;
+			try
+			{
+				// Let the render cycle reach steady state.
+				await Task.Delay(100);
+
+				var enqueued = DispatcherQueue.GetForCurrentThread().TryEnqueue(
+					DispatcherQueuePriority.Low,
+					() => lowRan.TrySetResult(true));
+				Assert.IsTrue(enqueued, "TryEnqueue should accept the Low-priority item.");
+
+				// Allow up to 2s for the Low item to be dispatched. With the bug present, it
+				// never runs because every DispatchItems call dispatches a render first.
+				var completed = await Task.WhenAny(lowRan.Task, Task.Delay(2000));
+				Assert.AreSame(lowRan.Task, completed,
+					"Low-priority item starved while CompositionTarget.Rendering was active.");
+			}
+			finally
+			{
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= renderingHandler;
+			}
+		}
 	}
 }
