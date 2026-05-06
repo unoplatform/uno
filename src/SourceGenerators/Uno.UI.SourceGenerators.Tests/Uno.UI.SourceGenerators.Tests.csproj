@@ -38,7 +38,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)' != 'true'" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.13.0" />
@@ -50,7 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.HotReload\Uno.HotReload.csproj" Condition="'$(UNO_UWP_BUILD)'=='false'" />
+		<ProjectReference Include="..\..\Uno.HotReload\Uno.HotReload.csproj" Condition="'$(UNO_UWP_BUILD)' != 'true'" />
 		<ProjectReference Include="..\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" />
 		<ProjectReference Include="..\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj" />
 		<ProjectReference Include="..\Uno.UI.SourceGenerators.WinAppSDK\Uno.UI.SourceGenerators.WinAppSDK.csproj" />
