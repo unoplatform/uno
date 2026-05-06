@@ -247,7 +247,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_NCPAINT:
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
-					SynchronousRenderAndDraw(true);
+					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.SynchronousRender(forceLayout: true);
+					_renderThread?.SignalNewFrame();
 				}
 				break;
 			case PInvoke.WM_ACTIVATE:
@@ -270,6 +271,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				UpdateWindowState(wParam);
+				// Synchronous layout + record, then signal the render thread.
+				// The render thread presents at VSync independently of any modal loop.
+				(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.SynchronousRender(forceLayout: true);
+				_renderThread?.SignalNewFrame();
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
@@ -384,13 +389,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (sizeChanged)
 		{
 			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
-			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		}
-		// Force an early SKPicture record so the render thread has fresh content to present.
-		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-		// Signal the render thread and wait briefly for the present to land.
-		// Bounded so an unresponsive GPU does not stall WM_SIZE / WM_MOVE / ShowCore.
-		_renderThread?.SignalNewFrame();
+		// Run the full FrameTick (layout + Loaded + Rendering + render). This is reachable from
+		// ShowCore via the deferred TryActivate in BaseWindowImplementation.NotifyContentLoaded —
+		// the deferral guarantees we're outside any in-progress Loaded iteration when ShowCore
+		// runs, so FrameTick is safe here. Using FrameTick (instead of SynchronousRender, which
+		// skips Loaded) ensures the first painted frame reflects post-Loaded state.
+		// FrameTick's _inFrameTick guard still catches the unlikely case of re-entry (e.g. a
+		// Win32 modal pump from a Rendering handler). Render() invalidates the host at the end,
+		// which on Win32 signals the render thread; perform a bounded best-effort wait for that
+		// next present so startup usually shows painted content immediately, while still avoiding
+		// an unbounded stall if presentation is delayed.
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.FrameTick();
 		var presentCompleted = _renderThread?.WaitForNextPresent(TimeSpan.FromMilliseconds(100));
 		if (presentCompleted == false)
 		{
@@ -617,12 +627,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
 					break;
 				default:
-					// This SynchronousRenderAndDraw call avoids showing the window with a blank first frame.
-					// We call it here and not when handling WM_ERASEBKGND. The problem is that any minor delay
-					// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
-					// before the window is shown and then making a Render call on WM_ERASEBKGND.
-					// For other pending states, SynchronousRenderAndDraw will still be called but slightly later after
-					// the window has been resized (due to e.g. maximizing)
+					// Record the first frame synchronously, signal the render thread, and wait
+					// for presentation to complete before showing the window. This avoids a
+					// blank first-frame flash. For other pending states (maximized/minimized),
+					// the first frame is handled by WM_SIZE after the window is resized.
 					SynchronousRenderAndDraw(true);
 					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 					break;

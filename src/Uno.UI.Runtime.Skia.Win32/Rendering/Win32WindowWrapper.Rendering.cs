@@ -17,6 +17,8 @@ internal partial class Win32WindowWrapper
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
+	bool IXamlRootHost.SupportsRenderThrottle => true;
+
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
 		// Mark the window dirty for WM_PAINT. This handles external repaints (window
@@ -58,7 +60,16 @@ internal partial class Win32WindowWrapper
 					RenderingNegativePathReevaluated?.Invoke(this, clipPath),
 					NativeDispatcherPriority.Normal);
 			},
-			onFramePresented: () => { });
+			onFramePresented: () =>
+			{
+				// High priority: the present-ack is a tiny internal operation that clears
+				// the throttle so the next FrameTick can begin. Posting at Normal would let
+				// it queue behind unrelated UI work, delaying the next frame by however long
+				// the dispatcher takes to drain those Normal items.
+				NativeDispatcher.Main.Enqueue(
+					OnFramePresented,
+					NativeDispatcherPriority.High);
+			});
 	}
 
 	/// <summary>
@@ -66,8 +77,7 @@ internal partial class Win32WindowWrapper
 	/// the canvas and returns the clip path and client dimensions for CopyPixels.
 	/// Returns null when there is no frame to present yet — this avoids a wasted
 	/// CopyPixels (BitBlt + DwmFlush, or SwapBuffers presenting an uninitialised
-	/// back buffer) for WM_PAINT messages that arrive before the first synchronous
-	/// render.
+	/// back buffer) for WM_PAINT messages that arrive before the first SynchronousRender.
 	/// </summary>
 	private unsafe (SKPath clipPath, int width, int height)? DrawFrame()
 	{
@@ -99,5 +109,17 @@ internal partial class Win32WindowWrapper
 		}
 
 		return (clipPath, clientRect.Width, clientRect.Height);
+	}
+
+	/// <summary>
+	/// Posted to the UI thread by the render thread after a frame is presented
+	/// (SwapBuffers/BitBlt completed). Forwards to <see cref="CompositionTarget.OnFramePresented"/>
+	/// for the <c>FrameRendered</c> notification and FPS bookkeeping. The render throttle
+	/// is cleared earlier — at <c>Draw</c> entry — by <c>OnFrameConsumed</c>, not here.
+	/// </summary>
+	private void OnFramePresented()
+	{
+		var ct = ((IXamlRootHost)this).RootElement?.Visual.CompositionTarget as CompositionTarget;
+		ct?.OnFramePresented();
 	}
 }

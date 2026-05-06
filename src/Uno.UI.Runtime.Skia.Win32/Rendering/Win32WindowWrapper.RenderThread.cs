@@ -78,6 +78,10 @@ internal partial class Win32WindowWrapper
 						_onClipPathUpdated(clipPath);
 						_renderer.CopyPixels(width, height); // SwapBuffers/BitBlt — may block for VSync
 
+						// Only signal "presented" when an actual frame was drawn and copied.
+						// WM_PAINT delivered before the first SynchronousRender produces a null
+						// result; firing OnFramePresented in that case would surface a phantom
+						// CompositionTarget.FrameRendered with no actual present behind it.
 						_presentedEvent.Set();
 						_onFramePresented();
 					}
