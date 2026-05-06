@@ -363,6 +363,12 @@ namespace Microsoft.UI.Xaml
 		{
 			base.OnResume();
 
+			// Trailing InvalidateRender catches frames requested during base.OnResume
+			// callbacks (Application.Resuming, CoreWindow activation) while the
+			// render view was still parked.
+			_renderView?.OnResume();
+			InvalidateRender();
+
 			RaiseConfigurationChanges();
 
 			//WebAuthenticationBroker.OnResume();
@@ -371,6 +377,8 @@ namespace Microsoft.UI.Xaml
 		protected override void OnPause()
 		{
 			base.OnPause();
+
+			_renderView?.OnPause();
 
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13827.
 			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
