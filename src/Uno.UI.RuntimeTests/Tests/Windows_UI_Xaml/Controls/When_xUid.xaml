@@ -18,5 +18,8 @@
 		<TextBlock x:Uid="SomePrefix/When_xUid_With_Prefix"
 				   x:FieldModifier="public"
 				   x:Name="defaultResolverWithPrefix" />
+		<HyperlinkButton x:Uid="When_xUid_NavigateUri"
+						 x:FieldModifier="public"
+						 x:Name="hyperlinkWithNavigateUri" />
 	</StackPanel>
 </UserControl>
