@@ -12,8 +12,31 @@ public class Given_RemoteControlClient_LoopbackCandidates
 	[DataRow("localhost", false)]
 	[DataRow("192.168.1.1", false)]
 	[DataRow("10.0.2.2", false)]
-	public void IsLoopbackAddress_ShouldMatchOnlyLoopbackLiterals(string endpoint, bool expected)
+	public void IsLoopbackAddress_ReturnsTrueForLoopbackLiteralsOnly(string endpoint, bool expected)
 		=> RemoteControlClient.IsLoopbackAddress(endpoint).Should().Be(expected);
+
+	[TestMethod]
+	[DataRow("127.0.0.1", true)]
+	[DataRow("[::1]", true)]
+	[DataRow("10.0.2.2", true)]
+	[DataRow("localhost", false)]
+	[DataRow("192.168.1.1", false)]
+	public void IsPriorityCandidate_ReturnsTrueForLoopbackAndAndroidAlias(string endpoint, bool expected)
+		=> RemoteControlClient.IsPriorityCandidate(endpoint).Should().Be(expected);
+
+	[TestMethod]
+	[DataRow("127.0.0.1", "127.0.0.1", true)]   // exact match
+	[DataRow("127.0.0.1", "[::1]", true)]        // loopback equivalence
+	[DataRow("[::1]", "127.0.0.1", true)]        // loopback equivalence, reversed
+	[DataRow("[::1]", "[::1]", true)]            // exact match
+	[DataRow("127.0.0.1", "10.0.2.2", false)]   // 10.0.2.2 outside loopback equivalence group
+	[DataRow("10.0.2.2", "127.0.0.1", false)]   // 10.0.2.2 outside loopback equivalence group
+	[DataRow("10.0.2.2", "10.0.2.2", true)]     // exact match still works
+	[DataRow("192.168.1.1", "192.168.1.1", true)]  // non-loopback exact match
+	[DataRow("192.168.1.1", "192.168.1.2", false)] // non-loopback mismatch
+	[DataRow(null, "127.0.0.1", false)]          // no preferred → no match
+	public void IsPreferredEndpointMatch_MatchesExactOrLoopbackEquivalent(string? preferred, string candidate, bool expected)
+		=> RemoteControlClient.IsPreferredEndpointMatch(preferred, candidate).Should().Be(expected);
 
 	[TestMethod]
 	public void BuildAddressListWithLoopback_WhenNoCandidates_ReturnsSameArray()
@@ -21,6 +44,17 @@ public class Given_RemoteControlClient_LoopbackCandidates
 		(string, int)[] addresses = [("192.168.1.10", 5000)];
 
 		var result = RemoteControlClient.BuildAddressListWithLoopback(addresses, [], 5000);
+
+		result.Should().BeSameAs(addresses);
+	}
+
+	[TestMethod]
+	public void BuildAddressListWithLoopback_WhenAllCandidatesAlreadyPresent_ReturnsSameArray()
+	{
+		(string, int)[] addresses = [("127.0.0.1", 5000), ("[::1]", 5000), ("192.168.1.10", 5000)];
+		string[] candidates = ["127.0.0.1", "[::1]"];
+
+		var result = RemoteControlClient.BuildAddressListWithLoopback(addresses, candidates, 5000);
 
 		result.Should().BeSameAs(addresses);
 	}
@@ -54,7 +88,7 @@ public class Given_RemoteControlClient_LoopbackCandidates
 	}
 
 	[TestMethod]
-	public void BuildAddressListWithLoopback_SkipCandidateIsCaseInsensitive()
+	public void BuildAddressListWithLoopback_SkipsCandidateIsCaseInsensitive()
 	{
 		// Address already present with different casing — must still be skipped
 		(string, int)[] addresses = [("[::1]", 5000)];

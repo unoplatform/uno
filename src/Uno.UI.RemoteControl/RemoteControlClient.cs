@@ -269,7 +269,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				var serverPort = _serverAddresses.Select(addr => addr.port).Where(p => p > 0).FirstOrDefault();
 				if (serverPort > 0)
 				{
-					_serverAddresses = BuildAddressListWithLoopback(_serverAddresses, GetLoopbackCandidates(), serverPort);
+					_serverAddresses = BuildAddressListWithLoopback(_serverAddresses, GetDevServerHostCandidates(), serverPort);
 				}
 			}
 		}
@@ -379,8 +379,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					ApplicationData.Current.LocalSettings.Values.TryGetValue(lastEndpointKey, out var lastValue) &&
 					lastValue is string lastEp
 						? _serverAddresses
-							.FirstOrDefault(srv => srv.endpoint.Equals(lastEp, StringComparison.OrdinalIgnoreCase)
-								|| (IsLoopbackAddress(lastEp) && IsLoopbackAddress(srv.endpoint)))
+							.FirstOrDefault(srv => IsPreferredEndpointMatch(lastEp, srv.endpoint))
 							.endpoint
 						: default;
 			}
@@ -394,14 +393,14 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				{
 					if (TryParse(srv.endpoint, srv.port, isHttps, out var serverUri))
 					{
-						// Note: If we have a preferred endpoint (last known to be successful), we delay a bit the connection to other endpoints.
-						//		 This is to reduce the number of (task cancelled / socket) exceptions at startup by giving a chance to the preferred endpoint to succeed first.
-						//		 Loopback addresses (127.0.0.1, [::1]) are treated as equivalent for this purpose.
+						// Note: Priority candidates (loopback literals and Android AVD host alias) always get delay=0.
+						//		 When a preferred endpoint is known (last successful), others wait 3 s to give it a head start.
+						//		 When no preferred is known (first launch), non-priority addresses wait 500 ms so local
+						//		 loopback candidates win the race before LAN addresses are attempted.
 						var cts = new CancellationTokenSource();
-						var delay = preferred is null
-							|| preferred.Equals(srv.endpoint, StringComparison.OrdinalIgnoreCase)
-							|| (IsLoopbackAddress(preferred) && IsLoopbackAddress(srv.endpoint))
-							? 0 : 3000;
+						var delay = IsPriorityCandidate(srv.endpoint) || IsPreferredEndpointMatch(preferred, srv.endpoint)
+							? 0
+							: preferred is null ? 500 : 3000;
 						var task = Connect(serverUri, delay, cts.Token);
 
 						return (task, srv.endpoint, cts);
@@ -974,42 +973,74 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 	}
 
+	// The three helpers below are internal (rather than private) to allow unit testing via InternalsVisibleTo.
+
 	/// <summary>Returns true if <paramref name="endpoint"/> is an IPv4 or IPv6 local loopback literal.</summary>
 	internal static bool IsLoopbackAddress(string endpoint)
-		=> endpoint.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase)
-			|| endpoint.Equals("[::1]", StringComparison.OrdinalIgnoreCase);
+		=> endpoint.Equals("127.0.0.1", StringComparison.Ordinal)
+			|| endpoint.Equals("[::1]", StringComparison.Ordinal);
 
 	/// <summary>
-	/// Returns the ordered list of loopback IP candidates to prepend to the server address list for the current
-	/// platform and runtime environment. IP literals are used (rather than "localhost") to avoid DNS resolution on
-	/// the startup-critical path and to ensure both address families are tried independently via the existing
-	/// parallel-race connection strategy.
+	/// Returns true if <paramref name="endpoint"/> is a high-priority dev-server candidate that should be attempted
+	/// before LAN addresses: loopback literals (<c>127.0.0.1</c>, <c>[::1]</c>) and the Android AVD host alias
+	/// (<c>10.0.2.2</c>).
 	/// </summary>
-	private static IReadOnlyList<string> GetLoopbackCandidates()
+	internal static bool IsPriorityCandidate(string endpoint)
+		=> IsLoopbackAddress(endpoint)
+			|| endpoint.Equals("10.0.2.2", StringComparison.Ordinal); // Android AVD host-machine alias
+
+	/// <summary>
+	/// Returns true if <paramref name="candidate"/> should receive a zero-delay head-start because it matches
+	/// <paramref name="preferred"/>. Loopback literals are treated as equivalent to each other.
+	/// </summary>
+	internal static bool IsPreferredEndpointMatch(string? preferred, string candidate)
+		=> preferred is not null
+			&& (preferred.Equals(candidate, StringComparison.OrdinalIgnoreCase)
+				|| (IsLoopbackAddress(preferred) && IsLoopbackAddress(candidate)));
+
+	/// <summary>
+	/// Returns the ordered list of high-priority dev-server address candidates to prepend to the server address list
+	/// for the current platform and runtime environment. IP literals are used (rather than "localhost") to avoid DNS
+	/// resolution on the startup-critical path and to ensure both address families are tried independently via the
+	/// existing parallel-race connection strategy.
+	/// </summary>
+	private static IReadOnlyList<string> GetDevServerHostCandidates()
 	{
 #if __WASM__
 		return ["127.0.0.1", "[::1]"];
-#elif __ANDROID__
-		// On AVD, 10.0.2.2 is the conventional host-machine alias. 127.0.0.1 covers adb-reverse setups.
-		var fingerprint = Android.OS.Build.Fingerprint;
-		var isEmulator = fingerprint is { Length: > 0 }
-			&& fingerprint.StartsWith("generic", StringComparison.OrdinalIgnoreCase);
-		if (isEmulator)
-		{
-			return ["10.0.2.2", "127.0.0.1"];
-		}
-		return [];
-#elif __IOS__ || __TVOS__
-#if __MACCATALYST__
+#elif __MACCATALYST__
 		// Mac Catalyst runs natively on macOS — loopback always reaches the host machine.
 		return ["127.0.0.1", "[::1]"];
-#else
+#elif __IOS__ || __TVOS__
+		// Canonical source: Uno.DeviceHelper.IsSimulator in Uno.UWP (internal, not accessible from here).
 		if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.SIMULATOR)
 		{
 			return ["127.0.0.1", "[::1]"];
 		}
-		return [];
-#endif
+		return Array.Empty<string>();
+#elif __ANDROID__
+		// Multi-field heuristic sourced from flutter/plus_plugins device_info_plus (same logic in SamplesApp Main.Android.cs).
+		// Covers AVD (10.0.2.2 = host-machine alias), adb-reverse (127.0.0.1), and Genymotion.
+		var isEmulator =
+			(Android.OS.Build.Brand!.StartsWith("generic", StringComparison.OrdinalIgnoreCase)
+				&& Android.OS.Build.Device!.StartsWith("generic", StringComparison.OrdinalIgnoreCase))
+			|| Android.OS.Build.Fingerprint!.StartsWith("generic", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Fingerprint.StartsWith("unknown", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Hardware!.Contains("goldfish", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Hardware.Contains("ranchu", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Model!.Contains("google_sdk", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Model.Contains("Emulator", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Model.Contains("Android SDK built for x86", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Manufacturer!.Contains("Genymotion", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Product!.Contains("sdk_google", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Product.Contains("google_sdk", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Product.Contains("sdk", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Product.Contains("sdk_x86", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Product.Contains("vbox86p", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Product.Contains("emulator", StringComparison.OrdinalIgnoreCase)
+			|| Android.OS.Build.Product.Contains("simulator", StringComparison.OrdinalIgnoreCase);
+
+		return isEmulator ? ["10.0.2.2", "127.0.0.1"] : Array.Empty<string>();
 #else
 		// Skia desktop (Windows, Linux, macOS) and Reference build.
 		return ["127.0.0.1", "[::1]"];
@@ -1017,23 +1048,29 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	}
 
 	/// <summary>
-	/// Returns a new address list with <paramref name="loopbackCandidates"/> for <paramref name="port"/> prepended,
-	/// skipping any candidate already present in <paramref name="addresses"/>.
+	/// Returns a new address list with <paramref name="hostCandidates"/> for <paramref name="port"/> prepended,
+	/// skipping any candidate already present in <paramref name="addresses"/> at that port.
+	/// Returns the original <paramref name="addresses"/> instance unchanged when nothing is prepended.
 	/// </summary>
 	internal static (string endpoint, int port)[] BuildAddressListWithLoopback(
 		(string endpoint, int port)[] addresses,
-		IReadOnlyList<string> loopbackCandidates,
+		IReadOnlyList<string> hostCandidates,
 		int port)
 	{
-		if (loopbackCandidates.Count == 0)
+		if (hostCandidates.Count == 0)
 		{
 			return addresses;
 		}
 
-		var toAdd = loopbackCandidates
+		var toAdd = hostCandidates
 			.Where(c => !addresses.Any(a => a.endpoint.Equals(c, StringComparison.OrdinalIgnoreCase) && a.port == port))
-			.Select(c => (c, port));
+			.ToList();
 
-		return [.. toAdd, .. addresses];
+		if (toAdd.Count == 0)
+		{
+			return addresses;
+		}
+
+		return [.. toAdd.Select(c => (c, port)), .. addresses];
 	}
 }
