@@ -80,5 +80,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			isEnabledByDefault: true,
 			description: "The WPF-style 'clr-namespace:' xmlns form is not supported. Use the WinUI 'using:' form instead."
 		);
+
+		public static readonly DiagnosticDescriptor DuplicatePropertyRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+																							 "XLS0501",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+																							 "The property is set more than once",
+																							 MessageFormat,
+																							 XamlCategory,
+																							 DiagnosticSeverity.Error,
+																							 isEnabledByDefault: true,
+																							 description: "A property has been assigned more than once on the same element via attribute syntax, property element syntax, or implicit child content. Aligns with WinUI XAML compiler error XLS0501."
+																							);
 	}
 }
