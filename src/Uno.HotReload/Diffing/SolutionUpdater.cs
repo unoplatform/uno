@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,26 +7,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 
 namespace Uno.HotReload.Diffing;
 
 /// <summary>
-/// Default <see cref="IHotReloadChangeApplier"/> implementation. Updates the
-/// solution document set from the <see cref="ChangeSet"/> using the same
-/// behavior the legacy <c>ChangeSetExtensions.ApplyAsync</c> extension method
-/// has always exposed. Always returns
-/// <see cref="ApplyResult.IsCompleted"/> = <c>false</c>; the caller runs the
+/// Default <see cref="ISolutionUpdater"/> implementation. Updates the solution
+/// document set from the <see cref="ChangeSet"/> using the same behaviour the
+/// legacy <c>ChangeSetExtensions.ApplyAsync</c> extension method has always
+/// exposed. Reports project-level edits and any unprocessed inputs via
+/// <see cref="SolutionUpdateResult.IgnoredChanges"/>; the caller runs the
 /// standard hot-reload cycle on top of the resulting solution.
 /// </summary>
-public sealed class DefaultHotReloadChangeApplier : IHotReloadChangeApplier
+public sealed class SolutionUpdater : ISolutionUpdater
 {
 	/// <inheritdoc />
-	public async ValueTask<ApplyResult> ApplyChangesAsync(
+	public async ValueTask<SolutionUpdateResult> UpdateAsync(
 		Solution solution,
 		ChangeSet changeSet,
-		HotReloadOperation hotReload,
 		CancellationToken ct)
 	{
 		// Update existing documents
@@ -43,6 +42,7 @@ public sealed class DefaultHotReloadChangeApplier : IHotReloadChangeApplier
 		// Added documents has been detected using a temporary solution.
 		// We need to make sure to find the right project instance in the current solution, and update the document ID accordingly.
 		// Note: A project may appear multiple times in the solution (e.g. different TFM), so we need to add the document to **all** instances.
+		var ignoredAdds = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
 		foreach (var added in changeSet.AddedDocuments)
 		{
 			var found = false;
@@ -63,10 +63,11 @@ public sealed class DefaultHotReloadChangeApplier : IHotReloadChangeApplier
 			}
 			if (!found)
 			{
-				hotReload.NotifyIgnored(added.Document.FilePath!);
+				ignoredAdds.Add(added);
 			}
 		}
 
+		var ignoredAdditionalAdds = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
 		foreach (var added in changeSet.AddedAdditionalDocuments)
 		{
 			var found = false;
@@ -85,7 +86,7 @@ public sealed class DefaultHotReloadChangeApplier : IHotReloadChangeApplier
 			}
 			if (!found)
 			{
-				hotReload.NotifyIgnored(added.Document.FilePath!);
+				ignoredAdditionalAdds.Add(added);
 			}
 		}
 
@@ -108,9 +109,21 @@ public sealed class DefaultHotReloadChangeApplier : IHotReloadChangeApplier
 			}
 		}
 
-		hotReload.NotifyIgnored(changeSet.IgnoredFiles);
+		// `with` semantics: zero out only the fields this updater consumed. Anything
+		// else (project-level edits, the upstream-detected IgnoredFiles, and any new
+		// ChangeSet member added in the future) flows through to the caller as
+		// ignored automatically.
+		var ignored = changeSet with
+		{
+			EditedDocuments = [],
+			EditedAdditionalDocuments = [],
+			AddedDocuments = ignoredAdds.ToImmutable(),
+			AddedAdditionalDocuments = ignoredAdditionalAdds.ToImmutable(),
+			RemovedDocuments = [],
+			RemovedAdditionalDocuments = [],
+		};
 
-		return new ApplyResult(solution, IsCompleted: false);
+		return new SolutionUpdateResult(solution, ignored);
 	}
 
 	private static async ValueTask<SourceText> GetSourceTextAsync(string filePath, CancellationToken ct)
