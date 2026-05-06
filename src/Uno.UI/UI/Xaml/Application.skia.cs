@@ -204,6 +204,14 @@ namespace Microsoft.UI.Xaml
 				typeof(Application).LogError()?.Error($"Unexpected error during font preloading", e);
 			}
 		}
+		partial void InitializeTextScalingPlatform()
+		{
+			global::Windows.UI.ViewManagement.UISettings.ObserveTextScaleFactorChanges();
+			global::Windows.UI.ViewManagement.UISettings.TextScaleFactorChangedInternal += (_, _) =>
+			{
+				CoreServices.Instance.UpdateFontScale(global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue());
+			};
+		}
 	}
 
 	internal interface IApplicationEvents

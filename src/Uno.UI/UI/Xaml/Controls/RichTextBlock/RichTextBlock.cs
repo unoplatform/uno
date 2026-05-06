@@ -22,5 +22,22 @@ namespace Microsoft.UI.Xaml.Controls
 		internal override bool CanHaveChildren() => true;
 
 		public new bool Focus(FocusState value) => base.Focus(value);
+
+		public bool IsTextScaleFactorEnabled
+		{
+			get => (bool)GetValue(IsTextScaleFactorEnabledProperty);
+			set => SetValue(IsTextScaleFactorEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsTextScaleFactorEnabled),
+				typeof(bool),
+				typeof(RichTextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: true,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
+			);
 	}
 }

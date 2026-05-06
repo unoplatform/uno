@@ -34,6 +34,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSNativeElementHostingExtension.Register();
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
+		MacOSTextScaleFactorExtension.Register();
 		MacOSNativeOpenGLWrapper.Register();
 		MacOSNativeWebViewProvider.Register();
 		MacOSMediaPlayerExtension.Register();

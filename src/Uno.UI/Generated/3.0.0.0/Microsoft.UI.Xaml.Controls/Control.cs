@@ -57,14 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.Control),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextScaleFactorEnabled), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.Control),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property IsTextScaleFactorEnabledProperty
 		// Skipping already declared property PaddingProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -122,20 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsEnabled
 		// Skipping already declared property IsFocusEngaged
 		// Skipping already declared property IsFocusEngagementEnabled
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsTextScaleFactorEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextScaleFactorEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsTextScaleFactorEnabledProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property IsTextScaleFactorEnabled
 		// Skipping already declared property Padding
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

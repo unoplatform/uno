@@ -10,8 +10,11 @@ using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI;
 using Uno.UI.Dispatching;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Core
 {
@@ -20,6 +23,8 @@ namespace Uno.UI.Xaml.Core
 		private static Lazy<CoreServices> _instance = new Lazy<CoreServices>(() => new CoreServices());
 
 		private VisualTree? _mainVisualTree;
+		private double _fontScale = 1.0;
+		private double _lastEffectiveFontScale;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 
@@ -31,6 +36,7 @@ namespace Uno.UI.Xaml.Core
 		public CoreServices()
 		{
 			ContentRootCoordinator = new ContentRootCoordinator(this);
+			_lastEffectiveFontScale = FontScale;
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			EventManager = EventManager.Create();
 #endif
@@ -179,5 +185,80 @@ namespace Uno.UI.Xaml.Core
 			EventManager.RequestRaiseLoadedEventOnNextTick();
 		}
 #endif
+
+		/// <summary>
+		/// Gets the current text scale factor, with FeatureConfiguration overrides applied.
+		/// </summary>
+		// MUX Reference xcpcore.cpp, tag winui3/release/1.8.1
+		internal double FontScale => TextScaleHelper.GetEffectiveFontScale(_fontScale);
+
+		/// <summary>
+		/// Updates the global font scale factor from the OS setting.
+		/// If changed, fires UISettings.TextScaleFactorChanged and invalidates text elements.
+		/// </summary>
+		// MUX Reference xcpcore.cpp, tag winui3/release/1.8.1, line 11076
+		internal void UpdateFontScale(double newScale)
+		{
+			_fontScale = newScale;
+			var effectiveNew = FontScale;
+
+			if (_lastEffectiveFontScale != effectiveNew)
+			{
+				_lastEffectiveFontScale = effectiveNew;
+				UISettings.OnTextScaleFactorChanged();
+				RecursiveInvalidateTextScale();
+			}
+		}
+
+		/// <summary>
+		/// Walks all visual trees and invalidates measure on text-rendering elements.
+		/// </summary>
+		// MUX Reference uielement.cpp, tag winui3/release/1.8.1, line 3498
+		private void RecursiveInvalidateTextScale()
+		{
+			foreach (var window in ApplicationHelper.WindowsInternal)
+			{
+				if (window.RootElement is { } root)
+				{
+					InvalidateTextScaleRecursive(root);
+				}
+			}
+		}
+
+		private static void InvalidateTextScaleRecursive(UIElement element)
+		{
+			if (element is TextBlock or RichTextBlock or ContentPresenter)
+			{
+				element.InvalidateMeasure();
+			}
+
+#if __SKIA__
+			// Invalidate cached font info on Inlines
+			if (element is TextBlock textBlock)
+			{
+				foreach (var inline in textBlock.Inlines)
+				{
+					foreach (var descendant in InlineExtensions.Enumerate(inline))
+					{
+						descendant.InvalidateTextScaleFontInfo();
+					}
+				}
+			}
+#elif __WASM__
+			if (element is TextBlock wasmTextBlock)
+			{
+				wasmTextBlock.InvalidateForTextScaleChange();
+			}
+#endif
+
+			var count = VisualTreeHelper.GetChildrenCount(element);
+			for (var i = 0; i < count; i++)
+			{
+				if (VisualTreeHelper.GetChild(element, i) is UIElement child)
+				{
+					InvalidateTextScaleRecursive(child);
+				}
+			}
+		}
 	}
 }

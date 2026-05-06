@@ -289,6 +289,27 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#endregion
 
+	#region IsTextScaleFactorEnabled
+
+	public bool IsTextScaleFactorEnabled
+	{
+		get => (bool)GetValue(IsTextScaleFactorEnabledProperty);
+		set => SetValue(IsTextScaleFactorEnabledProperty, value);
+	}
+
+	public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
+		DependencyProperty.Register(
+			nameof(IsTextScaleFactorEnabled),
+			typeof(bool),
+			typeof(ContentPresenter),
+			new FrameworkPropertyMetadata(
+				true,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
+			)
+		);
+
+	#endregion
+
 	#region FontFamily
 
 	public FontFamily FontFamily

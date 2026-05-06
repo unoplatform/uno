@@ -337,6 +337,8 @@ namespace Microsoft.UI.Xaml
 
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
 
+			InitializeTextScaling();
+
 			_initializationComplete = true;
 
 
@@ -352,6 +354,17 @@ namespace Microsoft.UI.Xaml
 		private ApplicationTheme GetSystemTheme() =>
 			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
 				ApplicationTheme.Light : ApplicationTheme.Dark;
+
+		private void InitializeTextScaling()
+		{
+			InitializeTextScalingPlatform();
+
+			// Initialize platform subscriptions first, then read the initial value so
+			// asynchronously discovered scales cannot be missed during startup.
+			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(UISettings.GetTextScaleFactorValue());
+		}
+
+		partial void InitializeTextScalingPlatform();
 
 		private void OnSystemThemeChanged(object sender, EventArgs e)
 		{
