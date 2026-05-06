@@ -536,12 +536,23 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 
+		HashSet<Win32RawElementProvider>? ancestors = null;
 		for (var i = 0; i < children.Count; i++)
 		{
 			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
-			if (provider is not null && !ReferenceEquals(provider, this))
+			if (provider is not null)
 			{
-				return provider;
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					return provider;
+				}
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn(
+						$"[UIA] Cycle detected: skipping child {provider.DescribeElement()} " +
+						$"(runtimeId={provider._runtimeId}) of {DescribeElement()} — it is an ancestor");
+				}
 			}
 		}
 		return null;
@@ -555,12 +566,23 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 
+		HashSet<Win32RawElementProvider>? ancestors = null;
 		for (var i = children.Count - 1; i >= 0; i--)
 		{
 			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
-			if (provider is not null && !ReferenceEquals(provider, this))
+			if (provider is not null)
 			{
-				return provider;
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					return provider;
+				}
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn(
+						$"[UIA] Cycle detected: skipping child {provider.DescribeElement()} " +
+						$"(runtimeId={provider._runtimeId}) of {DescribeElement()} — it is an ancestor");
+				}
 			}
 		}
 		return null;
@@ -582,15 +604,20 @@ internal class Win32RawElementProvider :
 
 		var myPeer = GetAutomationPeer();
 		var foundSelf = false;
+		HashSet<Win32RawElementProvider>? ancestors = null;
 
 		for (var i = 0; i < siblings.Count; i++)
 		{
 			if (foundSelf)
 			{
 				var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
-				if (provider is not null && !ReferenceEquals(provider, this))
+				if (provider is not null)
 				{
-					return provider;
+					ancestors ??= BuildAncestorSet();
+					if (!ancestors.Contains(provider))
+					{
+						return provider;
+					}
 				}
 			}
 			else if (IsSamePeer(siblings[i], myPeer))
@@ -617,6 +644,7 @@ internal class Win32RawElementProvider :
 
 		var myPeer = GetAutomationPeer();
 		Win32RawElementProvider? previous = null;
+		HashSet<Win32RawElementProvider>? ancestors = null;
 
 		for (var i = 0; i < siblings.Count; i++)
 		{
@@ -625,12 +653,44 @@ internal class Win32RawElementProvider :
 				return previous;
 			}
 			var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
-			if (provider is not null && !ReferenceEquals(provider, this))
+			if (provider is not null)
 			{
-				previous = provider;
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					previous = provider;
+				}
 			}
 		}
 		return null;
+	}
+
+	/// <summary>
+	/// Builds a set containing this provider and all its ancestors in the UIA tree.
+	/// Used by child/sibling navigation to detect and break cycles where a descendant
+	/// peer resolves to an ancestor's provider (e.g. WCT DataGrid whose
+	/// DataGridRowsPresenterAutomationPeer returns the DataGrid's canonical peer
+	/// as a child via CreatePeerForElement).
+	/// </summary>
+	private HashSet<Win32RawElementProvider> BuildAncestorSet()
+	{
+		var ancestors = new HashSet<Win32RawElementProvider>(ReferenceEqualityComparer.Instance);
+		ancestors.Add(this);
+		var current = FindParentProvider();
+		var maxDepth = 200;
+		while (current is not null && maxDepth-- > 0)
+		{
+			if (!ancestors.Add(current))
+			{
+				break; // cycle in parent chain itself
+			}
+			if (current._isRoot)
+			{
+				break;
+			}
+			current = current.FindParentProvider();
+		}
+		return ancestors;
 	}
 
 	/// <summary>

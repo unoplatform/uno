@@ -1,0 +1,65 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Automation.UiaChildCycle_DataGrid"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Automation"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="600"
+    d:DesignWidth="600"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="20" Spacing="16">
+
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level1"
+                Style="{ThemeResource TitleTextBlockStyle}"
+                Text="UIA Child-Cycle Repro (DataGrid pattern)" />
+
+            <TextBlock TextWrapping="WrapWholeWords">
+                Repro for: Desktop Automation – DataGrid reports itself as a child recursively (#461).
+                The 'CycleContainer' below hosts a custom control whose AutomationPeer intentionally
+                returns the container's peer as one of its children — the same pattern as WCT's
+                DataGridRowsPresenterAutomationPeer calling CreatePeerForElement(DataGrid).
+                Expected: inspect.exe / Accessibility Insights show a finite tree with no repeated RuntimeIds.
+                Bug:      inspect.exe shows the same RuntimeId at every level, descending infinitely.
+            </TextBlock>
+
+            <TextBlock
+                Margin="0,8,0,0"
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="How to verify the fix" />
+
+            <TextBlock TextWrapping="WrapWholeWords">
+                1. Open inspect.exe and point it at 'CycleContainer' below.
+                2. Expand the children. You should see a finite tree. `CycleContainer` may show
+                both an extra text child and `CycleChild`, but neither branch should loop back to
+                `CycleContainer` or repeat indefinitely.
+                3. All RuntimeIds must be different — no node should appear as its own ancestor.
+                4. Accessibility Insights 'Control View' should also show a clean tree.
+            </TextBlock>
+
+            <!--  The repro: CycleContainer wraps a CycleChildControl whose peer loops back  -->
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="CycleContainer (inspect this in inspect.exe)" />
+                    <local:UiaCycleContainer
+                        x:Name="CycleContainer"
+                        AutomationProperties.AutomationId="UiaCycleContainer"
+                        AutomationProperties.Name="CycleContainer" />
+                </StackPanel>
+            </Border>
+
+            <!--  Additional plain controls so the UIA tree has something after CycleContainer  -->
+            <Button AutomationProperties.Name="ButtonAfterCycle" Content="Button after cycle (should be a sibling, not child of CycleContainer)" />
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
