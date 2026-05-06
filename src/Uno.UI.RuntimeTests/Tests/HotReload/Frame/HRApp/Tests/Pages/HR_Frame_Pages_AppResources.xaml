@@ -6,13 +6,8 @@
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d">
 	<StackPanel>
-		<ContentControl Content="{StaticResource HR_Frame_Pages_AppResources_Resource01}">
-			<TextBlock Text="{Binding}" />
-		</ContentControl>
-
-		<ContentControl Content="{StaticResource HR_Frame_Pages_AppResources_String_Resource02}">
-			<TextBlock Text="{Binding}" />
-		</ContentControl>
+		<TextBlock Text="{StaticResource HR_Frame_Pages_AppResources_Resource01}" />
+		<TextBlock Text="{StaticResource HR_Frame_Pages_AppResources_String_Resource02}" />
 	</StackPanel>
 </Page>
 
