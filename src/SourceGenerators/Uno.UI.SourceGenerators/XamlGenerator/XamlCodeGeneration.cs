@@ -784,8 +784,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var exception in Flatten(e))
 			{
+				var descriptor = (exception as XamlGenerationException)?.Descriptor
+					?? XamlCodeGenerationDiagnostics.GenericXamlErrorRule;
+
 				var diagnostic = Diagnostic.Create(
-					XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+					descriptor,
 					GetExceptionFileLocation(exception),
 					exception.Message);
 

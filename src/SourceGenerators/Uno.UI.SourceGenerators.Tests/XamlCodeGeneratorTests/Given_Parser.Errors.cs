@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 using Verify = Uno.UI.SourceGenerators.Tests.Verifiers.XamlSourceGeneratorVerifier;
 
@@ -756,7 +756,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 5, 4, 5, 4).WithArguments("The property 'Content' is set more than once"));
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 5, 4, 5, 4).WithArguments("The property 'Content' is set more than once"));
 
 		await test.RunAsync();
 	}
@@ -784,7 +784,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 5, 27, 5, 27).WithArguments("The property 'Content' is set more than once"));
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 5, 27, 5, 27).WithArguments("The property 'Content' is set more than once"));
 
 		await test.RunAsync();
 	}
@@ -815,7 +815,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 8, 27, 8, 27).WithArguments("The property 'Content' is set more than once"));
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 8, 27, 8, 27).WithArguments("The property 'Content' is set more than once"));
 
 		await test.RunAsync();
 	}
@@ -841,7 +841,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 5, 19, 5, 19).WithArguments("The property 'Text' is set more than once"));
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 5, 19, 5, 19).WithArguments("The property 'Text' is set more than once"));
 
 		await test.RunAsync();
 	}
@@ -919,7 +919,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 4, 28, 4, 28).WithArguments("The property 'Header' is set more than once"));
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 4, 28, 4, 28).WithArguments("The property 'Header' is set more than once"));
 
 		await test.RunAsync();
 	}
@@ -971,7 +971,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 19, 6, 19).WithArguments("The property 'Text' is set more than once"));
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 6, 19, 6, 19).WithArguments("The property 'Text' is set more than once"));
 
 		await test.RunAsync();
 	}
