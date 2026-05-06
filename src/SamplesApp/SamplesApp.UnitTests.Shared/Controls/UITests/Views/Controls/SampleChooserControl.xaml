@@ -548,10 +548,8 @@
                                 <SymbolIcon Symbol="Help" />
                             </Button.Content>
                             <Button.Flyout>
-                                    <Flyout Opening="InfoFlyout_Opening">
-                                        <u:SampleInfoControl
-                                            x:Name="SampleInfoFlyoutContent"
-                                            DataContext="{x:Null}" />
+                                <Flyout Opening="InfoFlyout_Opening">
+                                    <u:SampleInfoControl x:Name="SampleInfoFlyoutContent" DataContext="{x:Null}" />
                                 </Flyout>
                             </Button.Flyout>
                         </Button>
