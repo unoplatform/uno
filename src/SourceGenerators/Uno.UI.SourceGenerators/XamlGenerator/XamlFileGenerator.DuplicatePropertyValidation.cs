@@ -100,7 +100,10 @@ internal partial class XamlFileGenerator
 
 			if (seenMembers.ContainsKey(effectiveName))
 			{
-				AddError($"The property '{effectiveName}' is set more than once", member);
+				AddError(
+					$"The property '{effectiveName}' is set more than once",
+					member,
+					XamlCodeGenerationDiagnostics.DuplicatePropertyRule);
 				_duplicatePropertyMembers.Add(member);
 			}
 			else

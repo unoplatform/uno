@@ -1,4 +1,4 @@
-﻿using Uno.UI.SourceGenerators.Tests.Verifiers;
+using Uno.UI.SourceGenerators.Tests.Verifiers;
 using Microsoft.CodeAnalysis.Testing;
 
 namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Controls.GridTests;
@@ -15,8 +15,8 @@ public class Given_Grid
 		{
 			ExpectedDiagnostics =
 			{
-				DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/Grid_Uses_Both_Syntaxes.xaml", 17, 33, 17, 33).WithArguments("The property 'ColumnDefinitions' is set more than once"),
-				DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/Grid_Uses_Both_Syntaxes.xaml", 24, 30, 24, 30).WithArguments("The property 'RowDefinitions' is set more than once"),
+				DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/Grid_Uses_Both_Syntaxes.xaml", 17, 33, 17, 33).WithArguments("The property 'ColumnDefinitions' is set more than once"),
+				DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/Grid_Uses_Both_Syntaxes.xaml", 24, 30, 24, 30).WithArguments("The property 'RowDefinitions' is set more than once"),
 			},
 		};
 
