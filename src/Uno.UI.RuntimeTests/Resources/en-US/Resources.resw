@@ -135,4 +135,10 @@
   <data name="When_xUid_NavigateUri.Content" xml:space="preserve">
     <value>en-US Value for When_xUid_NavigateUri.Content</value>
   </data>
+  <data name="When_xUid_NavigateUri_Override.NavigateUri" xml:space="preserve">
+    <value>https://platform.uno/override/</value>
+  </data>
+  <data name="When_xUid_NavigateUri_Override.Content" xml:space="preserve">
+    <value>en-US Value for When_xUid_NavigateUri_Override.Content</value>
+  </data>
 </root>
