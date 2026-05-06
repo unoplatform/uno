@@ -195,6 +195,10 @@ internal static class SkiaRenderHelper
 		private int _consecutiveIdleTicks;
 		private bool _isIdle;
 		private bool _timerRunning;
+		// Set when TimerTick triggers the final "show Idle" redraw, consumed by the next
+		// BeginFrame so that one render doesn't restart the 1 Hz timer and re-enter the
+		// active state we just left.
+		private bool _idleRedrawPending;
 
 		public FpsHelper(int numberOfFramesToCalculateFrameTime = 10)
 		{
@@ -224,7 +228,14 @@ internal static class SkiaRenderHelper
 			_measureThisFrame = IsEnabled;
 			if (_measureThisFrame)
 			{
-				if (!_timerRunning)
+				if (_idleRedrawPending)
+				{
+					// This render is the final "show Idle" pass we asked for from TimerTick.
+					// Restarting the 1 Hz timer here would immediately observe the just-bumped
+					// frame generation and flip _isIdle back to false, defeating idle detection.
+					_idleRedrawPending = false;
+				}
+				else if (!_timerRunning)
 				{
 					_fpsTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1));
 					_timerRunning = true;
@@ -478,12 +489,12 @@ internal static class SkiaRenderHelper
 				if (_consecutiveIdleTicks >= 2)
 				{
 					_isIdle = true;
-					RequestRedraw?.Invoke();
+					_idleRedrawPending = true;
 					_fpsTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 					_timerRunning = false;
+					RequestRedraw?.Invoke();
 					return;
 				}
-				RequestRedraw?.Invoke();
 			}
 			else
 			{
@@ -510,6 +521,7 @@ internal static class SkiaRenderHelper
 			_lastTimerTickGeneration = Interlocked.Read(ref _currentFrameGeneration);
 			_consecutiveIdleTicks = 0;
 			_isIdle = false;
+			_idleRedrawPending = false;
 			Fps = 0;
 			FrameTime = 0;
 			DroppedFrames = 0;
