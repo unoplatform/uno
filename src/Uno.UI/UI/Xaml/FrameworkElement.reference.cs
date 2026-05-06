@@ -27,8 +27,6 @@ namespace Microsoft.UI.Xaml
 
 		internal MaterializableList<View> GetChildren() => throw new NotSupportedException("Reference assembly");
 
-		internal bool HasParent() => throw new NotSupportedException("Reference assembly");
-
 		private bool IsTopLevelXamlView() => throw new NotSupportedException("Reference assembly");
 
 		internal void SuspendRendering() => throw new NotSupportedException("Reference assembly");
