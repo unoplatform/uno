@@ -410,18 +410,16 @@ namespace Microsoft.UI.Xaml
 			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated || _lastScrollOffsets != ScrollOffsets))
 			{
 				_isEnumeratingChildrenInterestedInViewportUpdates = true;
-				var enumerator = _childrenInterestedInViewportUpdates.GetEnumerator();
 				try
 				{
-					while (enumerator.MoveNext())
+					foreach (var child in _childrenInterestedInViewportUpdates)
 					{
-						enumerator.Current!.OnParentViewportChanged(isInitial, isInternal, this, viewport);
+						child!.OnParentViewportChanged(isInitial, isInternal, this, viewport);
 					}
 				}
 				finally
 				{
 					_isEnumeratingChildrenInterestedInViewportUpdates = false;
-					enumerator.Dispose();
 				}
 			}
 

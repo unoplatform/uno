@@ -284,12 +284,9 @@ namespace Microsoft.UI.Xaml
 				// it will bypass the current element's MeasureOverride()
 				// since it shouldn't produce a different result and it's
 				// just a waste of precious CPU time to call it.
-				var children = GetChildren().GetEnumerator();
-
-				//foreach (var child in children)
-				while (children.MoveNext())
+				foreach (var child in GetChildren())
 				{
-					if (children.Current is { IsMeasureDirtyOrMeasureDirtyPath: true } child)
+					if (child is { IsMeasureDirtyOrMeasureDirtyPath: true })
 					{
 						// If the child is dirty (or is a path to a dirty descendant child),
 						// We're remeasuring it.
@@ -304,8 +301,6 @@ namespace Microsoft.UI.Xaml
 						}
 					}
 				}
-
-				children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
 
 				if (isDirty)
 				{
@@ -439,12 +434,8 @@ namespace Microsoft.UI.Xaml
 				{
 					ClearLayoutFlags(LayoutFlag.ArrangeDirtyPath);
 
-					var children = GetChildren().GetEnumerator();
-
-					while (children.MoveNext())
+					foreach (var child in GetChildren())
 					{
-						var child = children.Current;
-
 						if (child is { IsArrangeDirtyOrArrangeDirtyPath: true })
 						{
 							var previousRenderSize = child.RenderSize;
@@ -457,8 +448,6 @@ namespace Microsoft.UI.Xaml
 							}
 						}
 					}
-
-					children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
 
 					if (!isDirty)
 					{
