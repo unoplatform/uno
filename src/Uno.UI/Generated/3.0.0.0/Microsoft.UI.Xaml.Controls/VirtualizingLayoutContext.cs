@@ -14,16 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property RealizationRect
 		// Skipping already declared property RecommendedAnchorIndex
 		// Skipping already declared property RecommendedAnchorIndexCore
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect VisibleRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect VirtualizingLayoutContext.VisibleRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20VirtualizingLayoutContext.VisibleRect");
-			}
-		}
-#endif
+		// Skipping already declared property VisibleRect
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetItemAt(int)
@@ -35,13 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RealizationRectCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAtCore(int, Microsoft.UI.Xaml.Controls.ElementRealizationOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecycleElementCore(Microsoft.UI.Xaml.UIElement)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual global::Windows.Foundation.Rect VisibleRectCore()
-		{
-			throw new global::System.NotImplementedException("The member Rect VirtualizingLayoutContext.VisibleRectCore() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20VirtualizingLayoutContext.VisibleRectCore%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VisibleRectCore()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.ItemCount.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOrigin.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOrigin.set
