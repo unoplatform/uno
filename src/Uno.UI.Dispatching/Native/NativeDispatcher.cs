@@ -33,7 +33,7 @@ namespace Uno.UI.Dispatching
 
 		private readonly object _gate = new();
 
-		private readonly Dictionary<object, (Action? renderAction, int normalItemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
+		private readonly Dictionary<object, (Action? renderAction, int priorityItemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
 
 		private NativeDispatcherPriority _currentPriority;
 
@@ -102,13 +102,17 @@ namespace Uno.UI.Dispatching
 								@this.EnqueueNative(@this._currentPriority);
 							}
 
-							if (@this._currentPriority == NativeDispatcherPriority.Normal)
+							// The render gate counts Normal AND Low items. Decrement on either
+							// so Low items present at render-dispatch time get to run before the
+							// next render. See TryGetRenderAction for why this gate exists.
+							if (@this._currentPriority == NativeDispatcherPriority.Normal ||
+								@this._currentPriority == NativeDispatcherPriority.Low)
 							{
 								foreach (var (compositionTarget, details) in @this._compositionTargets)
 								{
-									if (details.normalItemsToProcessBeforeNextRenderAction > 0)
+									if (details.priorityItemsToProcessBeforeNextRenderAction > 0)
 									{
-										@this._compositionTargets[compositionTarget] = details with { normalItemsToProcessBeforeNextRenderAction = details.normalItemsToProcessBeforeNextRenderAction - 1 };
+										@this._compositionTargets[compositionTarget] = details with { priorityItemsToProcessBeforeNextRenderAction = details.priorityItemsToProcessBeforeNextRenderAction - 1 };
 									}
 								}
 							}
@@ -160,9 +164,17 @@ namespace Uno.UI.Dispatching
 				{
 					if (details.renderAction is not null)
 					{
-						if (details.normalItemsToProcessBeforeNextRenderAction == 0)
+						if (details.priorityItemsToProcessBeforeNextRenderAction == 0)
 						{
-							_compositionTargets[compositionTarget] = (renderAction: null, normalItemsToProcessBeforeNextRenderAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
+							// Gate the next render on draining ALL currently-queued Normal AND Low items,
+							// not just Normal. Counting only Normal causes Low items to starve under
+							// continuous render saturation (when _isRenderingActive is true the
+							// rendering loop self-perpetuates — see CompositionTarget.Rendering.skia.cs
+							// Render() — and counter==0 makes render dispatch before the priority loop
+							// ever runs). Idle remains starvable by design.
+							_compositionTargets[compositionTarget] = (renderAction: null, priorityItemsToProcessBeforeNextRenderAction:
+								_queues[(int)NativeDispatcherPriority.Normal].Count +
+								_queues[(int)NativeDispatcherPriority.Low].Count);
 
 							_currentPriority = NativeDispatcherPriority.High;
 
