@@ -399,7 +399,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				var fileRef = createdFile;
 				createdFile = null;
 
-				await Assert.ThrowsExceptionAsync<FileNotFoundException>(
+				await Assert.ThrowsAsync<FileNotFoundException>(
 					async () =>
 					{
 						using var _ = await fileRef.OpenStreamForReadAsync();
