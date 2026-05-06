@@ -87,6 +87,18 @@ namespace Uno.Media
 
 		public override void ArcTo(Point point, Size size, double rotationAngle, bool isLargeArc, SweepDirection sweepDirection, bool isStroked, bool isSmoothJoin)
 		{
+#if __SKIA__
+			bezierPath.ArcTo(
+				(float)size.Width, (float)size.Height,
+				(float)rotationAngle,
+				isLargeArc ? SkiaSharp.SKPathArcSize.Large : SkiaSharp.SKPathArcSize.Small,
+				sweepDirection == SweepDirection.Clockwise
+					? SkiaSharp.SKPathDirection.Clockwise
+					: SkiaSharp.SKPathDirection.CounterClockwise,
+				(float)point.X, (float)point.Y);
+
+			_points.Add(point);
+#else
 			if (size.Width != size.Height)
 			{
 				throw new NotImplementedException("The arc must be based on a circle, not an ellipse.");
@@ -131,34 +143,13 @@ namespace Uno.Media
 				(float)startAngle,
 				(float)sweepAngle
 			);
-#elif __SKIA__
-			var sweepAngle = endAngle - startAngle;
-
-			// Convert to degrees
-			startAngle = startAngle * (180 / PI);
-			sweepAngle = sweepAngle * (180 / PI);
-
-			// Invert y-axis
-			startAngle = (startAngle + 360) % 360;
-			sweepAngle = (sweepAngle + 360) % 360;
-
-			// Apply direction
-			if (sweepDirection == SweepDirection.Counterclockwise)
-			{
-				sweepAngle -= 360;
-			}
-
-			bezierPath.ArcTo(
-				new SkiaSharp.SKRect((float)circle.Left, (float)circle.Top, (float)circle.Right, (float)circle.Bottom),
-				(float)startAngle,
-				(float)sweepAngle,
-				false
-			);
 #endif
 
 			_points.Add(point);
+#endif
 		}
 
+#if !__SKIA__
 		private static Point CenterFromPointsAndRadius(Point point1, Point point2, double radius, bool sign)
 		{
 			// Find the center of a circle from 2 points and a radius
@@ -184,6 +175,7 @@ namespace Uno.Media
 
 			return new Point(x, y);
 		}
+#endif
 
 		public override void PolyLineTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
 		{
@@ -195,12 +187,36 @@ namespace Uno.Media
 
 		public override void PolyBezierTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
 		{
+#if __SKIA__
+			if (points.Count % 3 != 0)
+			{
+				throw new InvalidOperationException("PolyBezierTo points must use triplet points.");
+			}
+
+			for (int i = 0; i < points.Count; i += 3)
+			{
+				BezierTo(points[i], points[i + 1], points[i + 2], isStroked, isSmoothJoin);
+			}
+#else
 			throw new NotImplementedException();
+#endif
 		}
 
 		public override void PolyQuadraticBezierTo(IList<Point> points, bool isStroked, bool isSmoothJoin)
 		{
+#if __SKIA__
+			if (points.Count % 2 != 0)
+			{
+				throw new InvalidOperationException("PolyQuadraticBezierTo points must use pair points.");
+			}
+
+			for (int i = 0; i < points.Count; i += 2)
+			{
+				QuadraticBezierTo(points[i], points[i + 1], isStroked, isSmoothJoin);
+			}
+#else
 			throw new NotImplementedException();
+#endif
 		}
 
 		public override void SetClosedState(bool closed)

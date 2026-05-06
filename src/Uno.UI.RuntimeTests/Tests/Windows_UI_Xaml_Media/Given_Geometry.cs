@@ -133,11 +133,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void EmptyGeometry_CheckBounds()
 		{
-			// Catastrophic Failure on UWP
-			Assert.Throws<Exception>(() => _ = Geometry.Empty.Bounds);
+			// PathGeometry.ComputeBounds is implemented under __SKIA__ only, so this test is restricted to Skia heads.
+			// (Native WinUI also throws "Catastrophic Failure" on UWP/WinAppSDK for Geometry.Empty.Bounds.)
+			Geometry.Empty.Bounds.Should().Be(default(Rect));
+		}
+
+		[TestMethod]
+		public void Geometry_Empty_Is_Cached_Singleton()
+		{
+			Assert.AreSame(Geometry.Empty, Geometry.Empty);
+		}
+
+		[TestMethod]
+		public void Geometry_StandardFlatteningTolerance_Is_QuarterPixel()
+		{
+			Assert.AreEqual(0.25, Geometry.StandardFlatteningTolerance);
 		}
 
 #if __SKIA__
