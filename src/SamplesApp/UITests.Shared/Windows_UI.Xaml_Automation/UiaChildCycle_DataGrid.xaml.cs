@@ -46,7 +46,7 @@ public sealed partial class UiaChildCycle_DataGrid : UserControl
 /// Container control whose AutomationPeer uses the visual-tree walk, placing
 /// <see cref="UiaCycleChild"/> as a child in the UIA tree.
 /// </summary>
-public class UiaCycleContainer : UserControl
+public partial class UiaCycleContainer : UserControl
 {
 	public UiaCycleContainer()
 	{
@@ -91,7 +91,7 @@ public class UiaCycleContainerAutomationPeer : FrameworkElementAutomationPeer
 /// <c>DataGridRowsPresenterAutomationPeer.GetChildrenCore()</c> which calls
 /// <c>GridPeer.GetChildPeers()</c> where GridPeer = CreatePeerForElement(DataGrid).
 /// </summary>
-public class UiaCycleChild : UserControl
+public partial class UiaCycleChild : UserControl
 {
 	/// <summary>Back-reference to the container (set by <see cref="UiaCycleContainer"/>).</summary>
 	internal UiaCycleContainer? Container { get; set; }
