@@ -8,16 +8,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class PointAnimation : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 	{
-		// Skipping already declared property To
-		// Skipping already declared property From
-		// Skipping already declared property EnableDependentAnimation
-		// Skipping already declared property EasingFunction
-		// Skipping already declared property By
 		// Skipping already declared property ByProperty
 		// Skipping already declared property EasingFunctionProperty
 		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared property FromProperty
 		// Skipping already declared property ToProperty
+		// Skipping already declared property By
+		// Skipping already declared property EasingFunction
+		// Skipping already declared property EnableDependentAnimation
+		// Skipping already declared property From
+		// Skipping already declared property To
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointAnimation.PointAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.PointAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.ByProperty.get
