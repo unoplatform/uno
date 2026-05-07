@@ -1546,13 +1546,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.WheelUp();
 
+			// Wheel inertia ticks via CompositionTarget.Rendering, not a tracked CompositionAnimation,
+			// so Compositor.IsAnimating doesn't gate the wait — sleep until the coast settles.
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
 
 			sut.VerticalOffset.Should().BeGreaterThan(0);
 
 			mouse.WheelDown();
 
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
 
 			sut.VerticalOffset.Should().BeApproximately(0, 0.5);
 #endif
