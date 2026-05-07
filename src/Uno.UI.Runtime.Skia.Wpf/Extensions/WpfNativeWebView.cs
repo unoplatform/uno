@@ -748,7 +748,10 @@ internal static class WebResourceRequestHelpers
 		{
 			foreach (var header in content.Headers)
 			{
-				builder.Append(header.Key + ": " + string.Join(", ", header.Value) + "\r\n");
+				if (header.Key != "Host")
+				{
+					builder.Append(header.Key + ": " + string.Join(", ", header.Value) + "\r\n");
+				}
 			}
 		}
 
