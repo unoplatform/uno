@@ -226,10 +226,11 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 #if NET10_0_OR_GREATER
 		_nativeWebView.NavigateWithWebResourceRequest(httpRequestMessage);
 #else
+		using var requestContentStream = httpRequestMessage.Content?.ReadAsStream();
 		var request = _nativeWebView.CoreWebView2.Environment.CreateWebResourceRequest(
 			httpRequestMessage.RequestUri!.ToString(),
 			httpRequestMessage.Method.Method,
-			httpRequestMessage.Content!.ReadAsStream(),
+			requestContentStream,
 			WebResourceRequestHelpers.BuildHeaders(httpRequestMessage));
 		_nativeWebView.CoreWebView2.NavigateWithWebResourceRequest(request);
 #endif
@@ -735,23 +736,25 @@ internal static class WebResourceRequestHelpers
 {
 	public static string BuildHeaders(HttpRequestMessage httpRequestMessage)
 	{
+		static void AppendHeader(StringBuilder builder, string key, IEnumerable<string> values)
+		{
+			if (key != "Host")
+			{
+				builder.Append($"{key}: {string.Join(", ", values)}\r\n");
+			}
+		}
+
 		var builder = new StringBuilder();
 		foreach (var header in httpRequestMessage.Headers)
 		{
-			if (header.Key != "Host")
-			{
-				builder.Append(header.Key + ": " + string.Join(", ", header.Value) + "\r\n");
-			}
+			AppendHeader(builder, header.Key, header.Value);
 		}
 
 		if (httpRequestMessage.Content is { } content)
 		{
 			foreach (var header in content.Headers)
 			{
-				if (header.Key != "Host")
-				{
-					builder.Append(header.Key + ": " + string.Join(", ", header.Value) + "\r\n");
-				}
+				AppendHeader(builder, header.Key, header.Value);
 			}
 		}
 
