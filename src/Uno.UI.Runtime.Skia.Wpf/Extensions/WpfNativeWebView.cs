@@ -139,7 +139,18 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 		}
 
 		PWSTR title = default;
-		_nativeWebView.CoreWebView2.get_DocumentTitle(out title).ThrowOnError(false);
+		var getTitleResult = _nativeWebView.CoreWebView2.get_DocumentTitle(out title);
+		if (getTitleResult.IsError)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"Unable to obtain DocumentTitle: {getTitleResult}");
+			}
+
+			DocumentTitle = string.Empty;
+			return;
+		}
+
 		DocumentTitle = title.ToStringAndDispose() ?? string.Empty;
 #else
 		DocumentTitle = _nativeWebView.CoreWebView2?.DocumentTitle ?? string.Empty;
@@ -644,7 +655,11 @@ internal sealed class WpfWebView2 : HwndHost
 			var httpStatusCode = 0;
 			if (args is ICoreWebView2NavigationCompletedEventArgs2 args2)
 			{
-				args2.get_HttpStatusCode(ref httpStatusCode).ThrowOnError(false);
+				var getHttpStatusCodeResult = args2.get_HttpStatusCode(ref httpStatusCode);
+				if (getHttpStatusCodeResult.IsError && this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Unable to obtain HttpStatusCode: {getHttpStatusCodeResult}");
+				}
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -686,7 +701,11 @@ internal sealed class WpfWebView2 : HwndHost
 
 		var width = Math.Max((int)ActualWidth, 1);
 		var height = Math.Max((int)ActualHeight, 1);
-		_controller.put_Bounds(new RECT { left = 0, top = 0, right = width, bottom = height }).ThrowOnError(false);
+		var setBoundsResult = _controller.put_Bounds(new RECT { left = 0, top = 0, right = width, bottom = height });
+		if (setBoundsResult.IsError && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().LogWarning($"Unable to update WebView2 bounds: {setBoundsResult}");
+		}
 	}
 }
 
