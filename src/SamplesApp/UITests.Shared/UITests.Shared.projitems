@@ -5037,6 +5037,62 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\AdaptiveStateBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\AnimationGalleryShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\ColorAnimationShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\DoubleAnimationShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\EasingFunctionsShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\KeyFramesShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\ObjectAnimationShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\PointAnimationShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\StoryboardCompositionShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\StoryboardControlShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\ThemeAnimationsShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\TransformAnimationShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\VisualStateAnimationsShowcase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\VisualStateBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\CompositionTargetTests\CompositionTarget_Rendering.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -8877,6 +8933,48 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\SequentialAnimationsPage.xaml.cs">
       <DependentUpon>SequentialAnimationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\AdaptiveStateBox.xaml.cs">
+      <DependentUpon>AdaptiveStateBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\AnimationGalleryShowcase.xaml.cs">
+      <DependentUpon>AnimationGalleryShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\ColorAnimationShowcase.xaml.cs">
+      <DependentUpon>ColorAnimationShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\DoubleAnimationShowcase.xaml.cs">
+      <DependentUpon>DoubleAnimationShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\EasingFunctionsShowcase.xaml.cs">
+      <DependentUpon>EasingFunctionsShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\KeyFramesShowcase.xaml.cs">
+      <DependentUpon>KeyFramesShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\ObjectAnimationShowcase.xaml.cs">
+      <DependentUpon>ObjectAnimationShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\PointAnimationShowcase.xaml.cs">
+      <DependentUpon>PointAnimationShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\StoryboardCompositionShowcase.xaml.cs">
+      <DependentUpon>StoryboardCompositionShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\StoryboardControlShowcase.xaml.cs">
+      <DependentUpon>StoryboardControlShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\ThemeAnimationsShowcase.xaml.cs">
+      <DependentUpon>ThemeAnimationsShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\TransformAnimationShowcase.xaml.cs">
+      <DependentUpon>TransformAnimationShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\VisualStateAnimationsShowcase.xaml.cs">
+      <DependentUpon>VisualStateAnimationsShowcase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Showcase\VisualStateBox.xaml.cs">
+      <DependentUpon>VisualStateBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\CompositionTargetTests\CompositionTarget_Rendering.xaml.cs">
       <DependentUpon>CompositionTarget_Rendering.xaml</DependentUpon>

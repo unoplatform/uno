@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core
@@ -52,8 +53,21 @@ namespace Uno.UI.Xaml.Core
 			return null;
 		}
 
+		// When true, OnTick is currently executing. RequestAdditionalFrame is suppressed
+		// because layout will run within the same OnTick. This prevents animated property
+		// changes (which invalidate layout) from re-enqueuing OnTick to the Normal queue,
+		// which would starve the Idle queue and block WaitForIdle/RunIdleAsync.
+		// In WinUI, SetAnimatedValue is within the frame pipeline and never touches the dispatcher.
+		private static bool _isInTick;
+
 		internal static void RequestAdditionalFrame()
 		{
+			if (_isInTick)
+			{
+				// We're already inside OnTick — layout will run shortly. No need to enqueue.
+				return;
+			}
+
 			if (GetXamlRoot() is { Bounds: { Width: not 0, Height: not 0 } } &&
 				Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
 			{
@@ -65,52 +79,78 @@ namespace Uno.UI.Xaml.Core
 		private static void OnTick()
 		{
 			_isAdditionalFrameRequested = 0;
-
-			// NOTE: The below code should really be replaced with just this:
-			// ----------------------------
-			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
-			//{
-			//	root.UpdateLayout();
-			//
-			//	if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
-			//	{
-			//		CoreServices.Instance.EventManager.RaiseLoadedEvent();
-			//		root.UpdateLayout();
-			//	}
-			//}
-			// -----------------------------
-			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
-
-			// This happens for Islands.
-			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
+			_isInTick = true;
+			try
 			{
-				xamlIsland.UpdateLayout();
+#if __SKIA__
+				// MUX Reference: CCoreServices::Tick() (xcpcore.cpp line 4106)
+				// Tick all active animations BEFORE layout so animated property values
+				// are applied before Measure/Arrange. This matches WinUI's frame cycle:
+				// TimeManager.Tick() → Layout → Render.
+				TimeManager.Instance.Tick(newTimelinesOnly: false);
+#endif
 
-				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				// NOTE: The below code should really be replaced with just this:
+				// ----------------------------
+				//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
+				//{
+				//	root.UpdateLayout();
+				//
+				//	if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				//	{
+				//		CoreServices.Instance.EventManager.RaiseLoadedEvent();
+				//		root.UpdateLayout();
+				//	}
+				//}
+				// -----------------------------
+				// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
+
+				// This happens for Islands.
+				if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
 				{
-					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					xamlIsland.UpdateLayout();
-				}
-			}
 
-			foreach (var window in ApplicationHelper.WindowsInternal)
-			{
-				if (window.RootElement is not { } root)
-				{
-					continue;
+					if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+					{
+						CoreServices.Instance.EventManager.RaiseLoadedEvent();
+						xamlIsland.UpdateLayout();
+					}
 				}
 
-				root.UpdateLayout();
-
-				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				foreach (var window in ApplicationHelper.WindowsInternal)
 				{
-					CoreServices.Instance.EventManager.RaiseLoadedEvent();
+					if (window.RootElement is not { } root)
+					{
+						continue;
+					}
+
 					root.UpdateLayout();
+
+					if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+					{
+						CoreServices.Instance.EventManager.RaiseLoadedEvent();
+						root.UpdateLayout();
+					}
+
+#if __SKIA__
+					(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+#endif
 				}
 
 #if __SKIA__
-				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+				// MUX Reference: Second tick pass in CCoreServices::Tick()
+				// Tick only timelines added during layout (e.g., animations started by
+				// Loaded event handlers or layout-triggered VisualState transitions).
+				// These are at the head of the list, before the snapped previous-head marker.
+				if (TimeManager.Instance.HasActiveTimelines)
+				{
+					TimeManager.Instance.Tick(newTimelinesOnly: true);
+				}
 #endif
+			}
+			finally
+			{
+				_isInTick = false;
 			}
 		}
 #endif

@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
@@ -10,5 +11,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
 			=> new DispatcherColorAnimator(startingValue, targetValue);
+
+		private static IValueAnimator CreatePoint(Timeline timeline, Point startingValue, Point targetValue)
+			=> new DispatcherPointAnimator(startingValue, targetValue);
 	}
 }

@@ -121,8 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)]
-		public async Task When_RepeatForever_ShouldLoop() // Flaky - #9080
+		public async Task When_RepeatForever_ShouldLoop() // Previously flaky on Skia due to RepeatBehavior.Forever bug, now fixed
 		{
 			async Task Do()
 			{
@@ -380,6 +379,262 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Default_Duration_Is_One_Second()
+		{
+			// WinUI: DoubleAnimation without explicit Duration defaults to 1 second (NULL_DURATION_DEFAULT).
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			// DoubleAnimation with no Duration property set
+			var animation = new DoubleAnimation
+			{
+				From = 0,
+				To = 100,
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			var sw = System.Diagnostics.Stopwatch.StartNew();
+			await animation.ToStoryboard().RunAsync(timeout: TimeSpan.FromSeconds(3));
+			sw.Stop();
+
+			// Should have taken approximately 1 second (WinUI default)
+			Assert.IsTrue(sw.ElapsedMilliseconds >= 800,
+				$"Default 1s animation should take at least 800ms, took {sw.ElapsedMilliseconds}ms");
+			Assert.AreEqual(100.0, translate.Y, 1.0, "Fill value should be 100");
+		}
+
+		[TestMethod]
+		public async Task When_FillBehavior_Stop_ClearsValue()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			translate.Y = 20.0;
+
+			var animation = new DoubleAnimation
+			{
+				To = 100,
+				Duration = new Duration(TimeSpan.FromMilliseconds(200)),
+				FillBehavior = FillBehavior.Stop,
+			}.BindTo(translate, nameof(translate.Y));
+
+			await animation.ToStoryboard().RunAsync();
+
+			// After FillBehavior.Stop animation completes, the animated value is cleared
+			// and the property should return to its local value (20).
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(20.0, translate.Y, "After FillBehavior.Stop, property should return to local value");
+		}
+
+		[TestMethod]
+		public async Task When_AutoReverse_GoesForwardAndBack()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			var midpoints = new List<double>();
+
+			var animation = new DoubleAnimation
+			{
+				From = 0,
+				To = 100,
+				Duration = new Duration(TimeSpan.FromMilliseconds(500)),
+				AutoReverse = true,
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			var storyboard = animation.ToStoryboard();
+			storyboard.Begin();
+
+			// Sample mid-forward: ~200ms into a 500ms duration should be between 0 and 100
+			await Task.Delay(200);
+			midpoints.Add(translate.Y);
+
+			// Wait for full 1-second cycle (500ms forward + 500ms backward) to complete
+			await storyboard.RunAsync(timeout: TimeSpan.FromSeconds(3));
+
+			// After AutoReverse completes with HoldEnd, the fill value should be the FROM value (0)
+			// because the reversed animation ends at the starting point.
+			Assert.IsTrue(midpoints[0] > 5.0 && midpoints[0] < 95.0,
+				$"Mid-point value {midpoints[0]} should be between 5 and 95 (animation in progress)");
+			Assert.AreEqual(0.0, translate.Y, 1.0, $"After AutoReverse fill, value should be ~0 (from value), was {translate.Y}");
+		}
+
+		[TestMethod]
+		public async Task When_BeginTime_DelaysStart()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			var animation = new DoubleAnimation
+			{
+				From = 0,
+				To = 100,
+				Duration = new Duration(TimeSpan.FromMilliseconds(500)),
+				BeginTime = TimeSpan.FromMilliseconds(300),
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			var storyboard = animation.ToStoryboard();
+			storyboard.Begin();
+
+			// After 100ms, the animation hasn't started yet (BeginTime = 300ms)
+			await Task.Delay(100);
+			var beforeStart = translate.Y;
+
+			// Wait for animation to complete
+			await storyboard.RunAsync(timeout: TimeSpan.FromSeconds(3));
+			var afterComplete = translate.Y;
+
+			Assert.AreEqual(0.0, beforeStart, 1.0,
+				$"Before BeginTime, value should still be at base (0), was {beforeStart}");
+			Assert.AreEqual(100.0, afterComplete, 1.0,
+				$"After animation, fill value should be 100, was {afterComplete}");
+		}
+
+		[TestMethod]
+		public async Task When_By_AnimatesRelativeToCurrentValue()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			translate.Y = 30.0;
+			await WindowHelper.WaitForIdle();
+
+			// By = 70 means animate from current value (30) by 70 → to 100
+			var animation = new DoubleAnimation
+			{
+				By = 70,
+				Duration = new Duration(TimeSpan.FromMilliseconds(500)),
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			await animation.ToStoryboard().RunAsync();
+
+			Assert.AreEqual(100.0, translate.Y, 1.0,
+				$"By animation should animate to From+By = 30+70 = 100, was {translate.Y}");
+		}
+
+		[TestMethod]
+		public async Task When_Stop_While_Filling_ClearsValue()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			translate.Y = 20.0;
+
+			var animation = new DoubleAnimation
+			{
+				To = 100,
+				Duration = new Duration(TimeSpan.FromMilliseconds(200)),
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			var storyboard = animation.ToStoryboard();
+			await storyboard.RunAsync();
+
+			// Animation is now filling at 100
+			Assert.AreEqual(100.0, translate.Y, 1.0, $"Fill value should be 100, was {translate.Y}");
+
+			// Stop the storyboard - should clear the animated value and return to local
+			storyboard.Stop();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(20.0, translate.Y, 1.0,
+				$"After Stop, property should return to local value (20), was {translate.Y}");
+		}
+
+		[TestMethod]
+		public async Task When_RepeatBehavior_Count_CompletesAtExpectedTime()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			var animation = new DoubleAnimation
+			{
+				From = 0,
+				To = 100,
+				Duration = new Duration(TimeSpan.FromMilliseconds(200)),
+				RepeatBehavior = new RepeatBehavior(3),
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			// The total duration should be 3 * 200ms = 600ms
+			var sw = System.Diagnostics.Stopwatch.StartNew();
+			await animation.ToStoryboard().RunAsync(timeout: TimeSpan.FromSeconds(3));
+			sw.Stop();
+
+			// After 3 repetitions with HoldEnd, the value should be at To (100)
+			Assert.AreEqual(100.0, translate.Y, 1.0,
+				$"After 3 repetitions, fill value should be 100, was {translate.Y}");
+			Assert.IsTrue(sw.ElapsedMilliseconds >= 550,
+				$"3 iterations of 200ms each should take ~600ms, took {sw.ElapsedMilliseconds}ms");
+		}
 
 		private static double GetTranslateY(TranslateTransform translate, bool isStillAnimating = false) =>
 #if !__ANDROID__
