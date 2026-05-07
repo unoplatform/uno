@@ -1,4 +1,4 @@
-﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,14 +7,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 
 namespace Uno.HotReload.Diffing;
 
-public static class ChangeSetExtensions
+/// <summary>
+/// Default <see cref="ISolutionUpdater"/> implementation. Mutates the solution
+/// document set from the <see cref="ChangeSet"/> (edits, adds, removes plus an
+/// analyzer-config refresh on add/remove). Reports project-level edits and
+/// any unprocessed inputs via <see cref="SolutionUpdateResult.IgnoredChanges"/>;
+/// the caller runs the standard hot-reload cycle on top of the resulting
+/// solution.
+/// </summary>
+public sealed class SolutionUpdater : ISolutionUpdater
 {
-	public static async ValueTask<Solution> ApplyAsync(this Solution solution, ChangeSet changeSet, HotReloadOperation hotReload, CancellationToken ct)
+	/// <inheritdoc />
+	public async ValueTask<SolutionUpdateResult> UpdateAsync(
+		Solution solution,
+		ChangeSet changeSet,
+		CancellationToken ct)
 	{
 		// Update existing documents
 		foreach (var document in changeSet.EditedDocuments)
@@ -31,10 +42,11 @@ public static class ChangeSetExtensions
 		// Added documents has been detected using a temporary solution.
 		// We need to make sure to find the right project instance in the current solution, and update the document ID accordingly.
 		// Note: A project may appear multiple times in the solution (e.g. different TFM), so we need to add the document to **all** instances.
+		var ignoredAdds = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
 		foreach (var added in changeSet.AddedDocuments)
 		{
 			var found = false;
-			var projects = solution.Projects.Where(p => p.FilePath == added.Project.FilePath);
+			var projects = solution.Projects.Where(p => PathComparer.PathEquals(p.FilePath, added.Project.FilePath));
 			foreach (var project in projects)
 			{
 				found = true;
@@ -51,14 +63,15 @@ public static class ChangeSetExtensions
 			}
 			if (!found)
 			{
-				hotReload.NotifyIgnored(added.Document.FilePath!);
+				ignoredAdds.Add(added);
 			}
 		}
 
+		var ignoredAdditionalAdds = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
 		foreach (var added in changeSet.AddedAdditionalDocuments)
 		{
 			var found = false;
-			var projects = solution.Projects.Where(p => p.FilePath == added.Project.FilePath);
+			var projects = solution.Projects.Where(p => PathComparer.PathEquals(p.FilePath, added.Project.FilePath));
 			foreach (var project in projects)
 			{
 				found = true;
@@ -73,13 +86,13 @@ public static class ChangeSetExtensions
 			}
 			if (!found)
 			{
-				hotReload.NotifyIgnored(added.Document.FilePath!);
+				ignoredAdditionalAdds.Add(added);
 			}
 		}
 
 		solution = solution
-			.RemoveDocuments(changeSet.RemovedDocuments)
-			.RemoveAdditionalDocuments(changeSet.RemovedAdditionalDocuments);
+			.RemoveDocuments([.. changeSet.RemovedDocuments.Select(r => r.Id)])
+			.RemoveAdditionalDocuments([.. changeSet.RemovedAdditionalDocuments.Select(r => r.Id)]);
 
 		// If a document has been added, we make sure to refresh the configuration of the analyzers.
 		// This is especially required for new XAML files to have the 'build_metadata.AdditionalFiles.SourceItemGroup = Page' updated
@@ -96,9 +109,21 @@ public static class ChangeSetExtensions
 			}
 		}
 
-		hotReload.NotifyIgnored(changeSet.IgnoredFiles);
+		// `with` semantics: zero out only the fields this updater consumed. Anything
+		// else (project-level edits, the upstream-detected IgnoredFiles, and any new
+		// ChangeSet member added in the future) flows through to the caller as
+		// ignored automatically.
+		var ignored = changeSet with
+		{
+			EditedDocuments = [],
+			EditedAdditionalDocuments = [],
+			AddedDocuments = ignoredAdds.ToImmutable(),
+			AddedAdditionalDocuments = ignoredAdditionalAdds.ToImmutable(),
+			RemovedDocuments = [],
+			RemovedAdditionalDocuments = [],
+		};
 
-		return solution;
+		return new SolutionUpdateResult(solution, ignored);
 	}
 
 	private static async ValueTask<SourceText> GetSourceTextAsync(string filePath, CancellationToken ct)
@@ -117,6 +142,6 @@ public static class ChangeSetExtensions
 		}
 
 		Debug.Fail("This shouldn't happen.");
-		return null;
+		return null!;
 	}
 }

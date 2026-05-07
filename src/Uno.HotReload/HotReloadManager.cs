@@ -31,8 +31,30 @@ public sealed class HotReloadManager : IDisposable
 			await workspaceProvider(ct).ConfigureAwait(false),
 			metadataUpdateCapabilities,
 			sendUpdates,
-			tracker,
 			new ChangesDetector(new TemporaryWorkspaceAddDetector(workspaceProvider, tracker), tracker),
+			tracker,
+			ct,
+			forceEmitCompilationOutput);
+
+	/// <summary>
+	/// Creates a manager with the default <see cref="SolutionUpdater"/>. Use the
+	/// other overload to plug in a custom <see cref="ISolutionUpdater"/>.
+	/// </summary>
+	public static ValueTask<HotReloadManager> CreateAsync(
+		Workspace workspace,
+		string[] metadataUpdateCapabilities,
+		SendUpdatesAsync sendUpdates,
+		IChangesDetector changesDetector,
+		IHotReloadTracker tracker,
+		CancellationToken ct,
+		bool forceEmitCompilationOutput = false)
+		=> CreateAsync(
+			workspace,
+			metadataUpdateCapabilities,
+			sendUpdates,
+			changesDetector,
+			new SolutionUpdater(),
+			tracker,
 			ct,
 			forceEmitCompilationOutput);
 
@@ -40,8 +62,9 @@ public sealed class HotReloadManager : IDisposable
 		Workspace workspace,
 		string[] metadataUpdateCapabilities,
 		SendUpdatesAsync sendUpdates,
-		IHotReloadTracker tracker,
 		IChangesDetector changesDetector,
+		ISolutionUpdater solutionUpdater,
+		IHotReloadTracker tracker,
 		CancellationToken ct,
 		bool forceEmitCompilationOutput = false)
 	{
@@ -54,7 +77,7 @@ public sealed class HotReloadManager : IDisposable
 
 		var watch = await WatchHotReloadService.CreateAsync(workspace, metadataUpdateCapabilities, ct).ConfigureAwait(false);
 
-		return new HotReloadManager(workspace, watch, sendUpdates, changesDetector, tracker);
+		return new HotReloadManager(workspace, watch, sendUpdates, changesDetector, solutionUpdater, tracker);
 	}
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
@@ -63,12 +86,14 @@ public sealed class HotReloadManager : IDisposable
 	private readonly SendUpdatesAsync _sendUpdates;
 	private readonly IHotReloadTracker _tracker;
 	private readonly IChangesDetector _changesDetector;
+	private readonly ISolutionUpdater _solutionUpdater;
 
 	private HotReloadManager(
 		Workspace innerWorkspace,
 		WatchHotReloadService watchService,
 		SendUpdatesAsync sendUpdates,
 		IChangesDetector changesDetector,
+		ISolutionUpdater solutionUpdater,
 		IHotReloadTracker tracker)
 	{
 		_innerWorkspace = innerWorkspace;
@@ -76,6 +101,7 @@ public sealed class HotReloadManager : IDisposable
 		_sendUpdates = sendUpdates;
 		_tracker = tracker;
 		_changesDetector = changesDetector;
+		_solutionUpdater = solutionUpdater;
 
 		CurrentSolution = innerWorkspace.CurrentSolution;
 	}
@@ -115,9 +141,23 @@ public sealed class HotReloadManager : IDisposable
 		// Detects the changes and try to update the solution
 		var originalSolution = workspace.CurrentSolution;
 		var changeSet = await _changesDetector.DiscoverChangesAsync(originalSolution, files, ct).ConfigureAwait(false);
-		var solution = await originalSolution.ApplyAsync(changeSet, hotReload, ct).ConfigureAwait(false);
+		var result = await _solutionUpdater.UpdateAsync(originalSolution, changeSet, ct).ConfigureAwait(false);
 
-		if (solution == originalSolution)
+		// Updaters report what they did not consume; surface that to the operation
+		// before any short-circuit so the report reflects skipped inputs.
+		hotReload.NotifyIgnored(result.IgnoredChanges.GetAllPaths());
+
+		// Updater encountered a fatal condition (typically a csproj re-evaluation
+		// error). The manager — not the updater — owns the operation lifecycle, so
+		// we complete the operation here with the diagnostics and skip the rest of
+		// the cycle.
+		if (result.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error))
+		{
+			await hotReload.Complete(HotReloadOperationResult.Failed, diagnostics: result.Diagnostics).ConfigureAwait(false);
+			return;
+		}
+
+		if (result.Solution == originalSolution)
 		{
 			_tracker.Output($"No changes found in {string.Join(",", files.Select(Path.GetFileName))}");
 
@@ -127,10 +167,10 @@ public sealed class HotReloadManager : IDisposable
 
 		// No matter if the build will succeed or not, we update the _currentSolution.
 		// Files needs to be updated again to fix the compilation errors.
-		workspace.CurrentSolution = solution;
+		workspace.CurrentSolution = result.Solution;
 
 		// Compile the solution and get deltas
-		var (updates, hotReloadDiagnostics) = await _watchService.EmitSolutionUpdateAsync(solution, ct).ConfigureAwait(false);
+		var (updates, hotReloadDiagnostics) = await _watchService.EmitSolutionUpdateAsync(result.Solution, ct).ConfigureAwait(false);
 		// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 		// of unrecoverable errors that a user cannot fix and requires an app rebuild.
 		var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
@@ -140,7 +180,7 @@ public sealed class HotReloadManager : IDisposable
 
 		if (rudeEdits.IsEmpty && updates.IsEmpty)
 		{
-			var compilationErrors = GetCompilationErrors(solution, ct);
+			var compilationErrors = GetCompilationErrors(result.Solution, ct);
 			if (compilationErrors.IsEmpty)
 			{
 				_tracker.Output("No hot reload changes to apply.");
