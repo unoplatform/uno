@@ -315,9 +315,10 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
-							disableAnimation: false);
+						// Velocity-based wheel inertia: each notch adds a velocity impulse to a per-VSync
+						// integration loop with exponential decay. Rapid spinning coalesces into higher
+						// peak velocity (longer scroll), instead of restarting a 1 s eased animation per notch.
+						success = TryStartWheelInertia(GetHorizontalScrollWheelDelta(DesiredSize, delta), 0);
 					}
 #endif
 				}
@@ -339,9 +340,8 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-							disableAnimation: false);
+						// Velocity-based wheel inertia (see horizontal branch).
+						success = TryStartWheelInertia(0, GetVerticalScrollWheelDelta(DesiredSize, -delta));
 					}
 #endif
 				}

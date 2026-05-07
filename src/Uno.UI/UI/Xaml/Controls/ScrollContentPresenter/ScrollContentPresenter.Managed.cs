@@ -36,6 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 			: null;
 
 		private GestureRecognizer.Manipulation? _touchInertia;
+		private WheelInertia? _wheelInertia;
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
 
 		// Batching: during active touch scrolling, we set AnchorPoint immediately (cheap) but
@@ -153,6 +154,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_touchInertia?.Complete();
 			_touchInertia = null;
+
+			_wheelInertia?.Dispose();
+			_wheelInertia = null;
 		}
 
 		/// <inheritdoc />
@@ -268,6 +272,12 @@ namespace Microsoft.UI.Xaml.Controls
 				// we stop the pending inertia processor.
 				_touchInertia?.Complete();
 			}
+			if (!options.IsWheelInertia)
+			{
+				// Programmatic/keyboard/touch updates cancel any in-flight wheel coast,
+				// so the new request wins (mirrors the touch-inertia cancel above).
+				_wheelInertia?.Stop();
+			}
 
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
@@ -359,9 +369,9 @@ namespace Microsoft.UI.Xaml.Controls
 					// Updated() call to once per frame. This batches N pointer moves into 1 Updated().
 					ScheduleDeferredTouchUpdate(horizontalOffset, verticalOffset, options.IsIntermediate);
 				}
-				else if (options.IsTouch && options.IsIntermediate && _touchInertia is not null)
+				else if (options.IsIntermediate && (options.IsWheelInertia || (options.IsTouch && _touchInertia is not null)))
 				{
-					// Inertia: update immediately but throttle viewport propagation.
+					// Inertia (touch fling OR wheel coast): update immediately but throttle viewport propagation.
 					// PropagateEffectiveViewportChange() can trigger heavy layout (ItemsRepeater
 					// measure, item recycling). If layout doesn't fully resolve in one pass,
 					// CanRecordPicture returns false → frame skipped → visible ghosting.
@@ -414,6 +424,53 @@ namespace Microsoft.UI.Xaml.Controls
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
 			}
+		}
+
+		/// <summary>
+		/// Routes a desktop mouse-wheel notch with intended displacement (dxPx, dyPx) into the
+		/// velocity-based wheel inertia. When IsScrollInertiaEnabled is false on the Scroller,
+		/// falls back to the legacy 1 s eased animation. Returns true iff the full displacement
+		/// fit within scrollable bounds (matches the success semantic of the legacy Set() path).
+		/// </summary>
+		/// <remarks>
+		/// Bounds checking is done against the **projected** post-coast offset, not the current
+		/// instantaneous offset. This is what makes nested-ScrollViewer chaining work with rapid
+		/// wheel events: when the inner SV's accumulated trajectory is already at its bound, new
+		/// wheel events are reported as not-handled and bubble to the parent SV.
+		/// </remarks>
+		private bool TryStartWheelInertia(double dxPx, double dyPx)
+		{
+			if (Scroller is not { IsScrollInertiaEnabled: true })
+			{
+				// Legacy fallback: 1 s power-10 easing toward the new target offset.
+				return Set(
+					horizontalOffset: dxPx != 0 ? TargetHorizontalOffset + dxPx : null,
+					verticalOffset: dyPx != 0 ? TargetVerticalOffset + dyPx : null,
+					disableAnimation: false);
+			}
+
+			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
+			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
+
+			// Where ongoing inertia (if any) would coast to, otherwise the current offset.
+			var prevProjH = _wheelInertia is { IsRunning: true } projH ? projH.ProjectedFinalH : HorizontalOffset;
+			var prevProjV = _wheelInertia is { IsRunning: true } projV ? projV.ProjectedFinalV : VerticalOffset;
+			var newProjH = Math.Clamp(prevProjH + dxPx, 0, maxH);
+			var newProjV = Math.Clamp(prevProjV + dyPx, 0, maxV);
+
+			// If the impulse can move the projected target on at least one requested axis, absorb it.
+			// Otherwise the trajectory is already at the bound — let the event bubble to a parent SV.
+			var canAbsorb = (dxPx != 0 && newProjH != prevProjH) || (dyPx != 0 && newProjV != prevProjV);
+			if (!canAbsorb)
+			{
+				return false;
+			}
+
+			_wheelInertia ??= new WheelInertia(this);
+			_wheelInertia.AddImpulse(dxPx, dyPx);
+
+			// Match legacy semantic: success=true iff the full requested displacement fit.
+			return (dxPx == 0 || newProjH == prevProjH + dxPx) && (dyPx == 0 || newProjV == prevProjV + dyPx);
 		}
 
 		private void ScheduleDeferredTouchUpdate(double hOffset, double vOffset, bool isIntermediate)
@@ -749,6 +806,155 @@ namespace Microsoft.UI.Xaml.Controls
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
 #endif
 
+		/// <summary>
+		/// Velocity-based mouse-wheel inertia. Each wheel notch injects a velocity impulse;
+		/// a per-VSync tick integrates position with exponential decay (v(t)=v0·e^(-k·t)),
+		/// matching the model used by WinUI's DirectManipulation/InteractionTracker for
+		/// wheel input. New notches arriving mid-flight ADD velocity (coalesce), so spinning
+		/// faster scrolls farther — instead of restarting a fixed-duration animation per notch.
+		/// </summary>
+		private sealed class WheelInertia : IDisposable
+		{
+			// k = 0.003/ms ⇔ 0.95 decay per 16.67 ms frame, matching WinUI's InteractionTracker default.
+			private const double DecayPerMs = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
+			// Stop the loop when both axes have less than ~0.6 px/frame remaining velocity.
+			private const double VelocityThreshold = GestureRecognizer.Manipulation.InertiaProcessor.VelocityThreshold;
+
+			private readonly ScrollContentPresenter _owner;
+			private double _vx, _vy; // px/ms
+			private double _hOffset, _vOffset;
+			private TimeSpan? _t0;
+			private TimeSpan _lastTick;
+			private Stopwatch? _fallbackTime;
+			private EventHandler<object>? _frameHandler;
+			private bool _running;
+
+			public WheelInertia(ScrollContentPresenter owner)
+			{
+				_owner = owner;
+			}
+
+			public bool IsRunning => _running;
+
+			/// <summary>
+			/// Where the current trajectory would settle if no further impulse is added
+			/// (∫₀^∞ v·e^(-k·t) dt = v/k). Used by <see cref="TryStartWheelInertia"/> to
+			/// chain wheel events to a parent ScrollViewer once the projected target is at
+			/// the bound, instead of stacking them onto a saturated trajectory.
+			/// </summary>
+			public double ProjectedFinalH => _hOffset + _vx / DecayPerMs;
+
+			/// <inheritdoc cref="ProjectedFinalH"/>
+			public double ProjectedFinalV => _vOffset + _vy / DecayPerMs;
+
+			/// <summary>
+			/// Adds a velocity impulse equivalent to scrolling by the given displacement
+			/// in isolation. Total displacement of v0/k means v0 = displacement·k.
+			/// Multiple impulses arriving in quick succession sum into a higher peak velocity.
+			/// </summary>
+			public void AddImpulse(double dxPx, double dyPx)
+			{
+				if (!_running)
+				{
+					_hOffset = _owner.HorizontalOffset;
+					_vOffset = _owner.VerticalOffset;
+					_vx = 0;
+					_vy = 0;
+					_t0 = null;
+					_lastTick = TimeSpan.Zero;
+					_fallbackTime = null;
+					_frameHandler = OnFrame;
+					CompositionTarget.Rendering += _frameHandler;
+					_running = true;
+					_owner._inertiaFrameCount = 0;
+				}
+
+				_vx += dxPx * DecayPerMs;
+				_vy += dyPx * DecayPerMs;
+			}
+
+			private void OnFrame(object? sender, object e)
+			{
+				TimeSpan elapsed;
+				if (e is RenderingEventArgs rea)
+				{
+					if (_t0 is null)
+					{
+						_t0 = rea.RenderingTime;
+						_lastTick = TimeSpan.Zero;
+						return; // First frame just records t0; integration starts on the next frame.
+					}
+					elapsed = rea.RenderingTime - _t0.Value;
+				}
+				else
+				{
+					if (_fallbackTime is null)
+					{
+						_fallbackTime = Stopwatch.StartNew();
+						_lastTick = TimeSpan.Zero;
+						return;
+					}
+					elapsed = _fallbackTime.Elapsed;
+				}
+
+				var dt = (elapsed - _lastTick).TotalMilliseconds;
+				_lastTick = elapsed;
+
+				if (dt <= 0)
+				{
+					return;
+				}
+
+				// Closed-form exact integration: pos += v·(1-e^(-k·dt))/k; v *= e^(-k·dt).
+				var decay = Math.Exp(-DecayPerMs * dt);
+				var posStep = (1 - decay) / DecayPerMs;
+
+				var maxH = _owner.Scroller?.ScrollableWidth ?? Math.Max(0, _owner.ExtentWidth - _owner.ViewportWidth);
+				var maxV = _owner.Scroller?.ScrollableHeight ?? Math.Max(0, _owner.ExtentHeight - _owner.ViewportHeight);
+
+				_hOffset = Math.Clamp(_hOffset + _vx * posStep, 0, maxH);
+				_vOffset = Math.Clamp(_vOffset + _vy * posStep, 0, maxV);
+				_vx *= decay;
+				_vy *= decay;
+
+				// Pinning at a bound kills velocity on that axis so the loop can complete.
+				if ((_hOffset <= 0 && _vx < 0) || (_hOffset >= maxH && _vx > 0))
+				{
+					_vx = 0;
+				}
+				if ((_vOffset <= 0 && _vy < 0) || (_vOffset >= maxV && _vy > 0))
+				{
+					_vy = 0;
+				}
+
+				var stillMoving = Math.Abs(_vx) > VelocityThreshold || Math.Abs(_vy) > VelocityThreshold;
+
+				_owner.Set(
+					horizontalOffset: _hOffset,
+					verticalOffset: _vOffset,
+					options: new(DisableAnimation: true, IsIntermediate: stillMoving, IsWheelInertia: true));
+
+				if (!stillMoving)
+				{
+					Stop();
+				}
+			}
+
+			public void Stop()
+			{
+				if (_frameHandler is not null)
+				{
+					CompositionTarget.Rendering -= _frameHandler;
+					_frameHandler = null;
+				}
+				_running = false;
+				_vx = 0;
+				_vy = 0;
+			}
+
+			public void Dispose() => Stop();
+		}
+
 		/// <param name="Up">Offset that can be scrolled up. THIS IS ALWAYS NEGATIVE.</param>
 		/// <param name="Down">Offset that can be scrolled down. This is always positive.</param>
 		/// <param name="Left">Offset that can be scrolled left. THIS IS ALWAYS NEGATIVE.</param>
@@ -805,6 +1011,11 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Indicates that the scroll is an intermediate value, not the final one
 	/// (i.e. active touch scrolling, touch scroll inertia or scroll animation).
 	/// </param>
-	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
+	/// <param name="IsWheelInertia">
+	/// Indicates that the scroll is a per-frame tick from the mouse-wheel inertia controller.
+	/// Routes through the same EVP-throttling branch as touch inertia and prevents the call
+	/// from cancelling itself.
+	/// </param>
+	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false, bool IsWheelInertia = false);
 }
 #endif
