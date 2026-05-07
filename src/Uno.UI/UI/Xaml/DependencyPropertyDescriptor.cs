@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml
 {
@@ -106,7 +107,10 @@ namespace Microsoft.UI.Xaml
 
 			if (type == null)
 			{
-				foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+				// Use the contextual ALC's assemblies when one is set so per-app
+				// types resolve against the right ALC and stale per-app ALCs
+				// (visible to AppDomain.GetAssemblies but unloaded) are skipped.
+				foreach (var asm in ContextualAssemblyResolver.GetRelevantAssemblies())
 				{
 					type = asm.GetType(qualifiedTypeName);
 					if (type != null)

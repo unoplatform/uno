@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using Uno.Core.Comparison;
 using Uno.Foundation.Runtime.WebAssembly.Interop;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml;
 
@@ -30,7 +31,7 @@ internal static class HtmlElementHelper
 		const string UnoUIRuntimeWebAssemblyName = "Uno.UI.Runtime.WebAssembly";
 
 		// .NET Core fails to load assemblies property because of ALC issues: https://github.com/dotnet/runtime/issues/44269
-		return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
+		return ContextualAssemblyResolver.GetRelevantAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
 			?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
 	}
 

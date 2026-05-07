@@ -10,6 +10,7 @@ using System.Text;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.Xaml;
 using Windows.UI;
 using Windows.Foundation;
@@ -492,16 +493,28 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						return t;
 					}),
 
-					// Look for the type in all loaded assemblies
-					("AppDomain.GetAssemblies", () =>
+					// Look for the type in all relevant loaded assemblies. When EnterContextualReflection
+					// is active for a non-default ALC, this enumerates only that ALC's assemblies +
+					// the default ALC's — avoiding stale per-app ALCs that AppDomain.GetAssemblies
+					// would otherwise still expose. Falls back to AppDomain.GetAssemblies otherwise.
+					("ContextualAssemblies+Default(or AppDomain)", () =>
 					{
-						var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+						var contextual = AssemblyLoadContext.CurrentContextualReflectionContext;
+						var source = (contextual is not null && contextual != AssemblyLoadContext.Default)
+							? $"contextual+default(contextual={contextual.Name})"
+							: "AppDomain";
+						var assemblies = ContextualAssemblyResolver.GetRelevantAssemblies();
+
 						if (this.Log().IsEnabled(LogLevel.Trace))
 						{
-							this.Log().Trace($"[XamlTypeResolver]     AppDomain scan: {assemblies.Length} assemblies, looking for name='{name}' or originalName='{originalName}'");
+							this.Log().Trace($"[XamlTypeResolver]     scan source={source}, looking for name='{name}' or originalName='{originalName}'");
 						}
+
+						var scannedCount = 0;
 						foreach (var a in assemblies)
 						{
+							scannedCount++;
+
 							[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
 							[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operation")]
 							static Type? Probe(global::System.Reflection.Assembly a, string? name, string originalName)
@@ -513,14 +526,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 								if (this.Log().IsEnabled(LogLevel.Trace))
 								{
 									var aAlc = AssemblyLoadContext.GetLoadContext(a);
-									this.Log().Trace($"[XamlTypeResolver]       AppDomain scan HIT in assembly={a.GetName().Name} (ALC={aAlc?.Name ?? "(default)"}) -> {t.FullName}");
+									this.Log().Trace($"[XamlTypeResolver]       scan HIT in assembly={a.GetName().Name} (ALC={aAlc?.Name ?? "(default)"}) -> {t.FullName}");
 								}
 								return t;
 							}
 						}
 						if (this.Log().IsEnabled(LogLevel.Trace))
 						{
-							this.Log().Trace($"[XamlTypeResolver]     AppDomain scan: no hit across {assemblies.Length} assemblies");
+							this.Log().Trace($"[XamlTypeResolver]     scan ({source}): no hit across {scannedCount} assemblies");
 						}
 						return null;
 					}),
