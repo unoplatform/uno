@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
@@ -98,6 +99,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		_presenter = presenter;
 		_coreWebView = owner;
 
+		ForwardBackgroundToPresenter();
+
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
 		_webViewForNextCreateWindow = new WeakReference<Win32NativeWebView>(this);
@@ -107,12 +110,12 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 				0,
 				lpClassName,
 				new PCWSTR(),
-				0,
+				WINDOW_STYLE.WS_CHILDWINDOW | WINDOW_STYLE.WS_VISIBLE,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
-				HWND.Null,
+				ParentHwnd,
 				HMENU.Null,
 				Win32Helper.GetHInstance(),
 				null);
@@ -150,6 +153,19 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(userDataFolder: userDataFolder);
 			var controller = await env.CreateCoreWebView2ControllerAsync(_hwnd);
 
+			// Hide until NavigationCompleted to suppress the initial black frame.
+			controller.IsVisible = false;
+
+			// Avoid setting DefaultBackgroundColor unless it exactly matches the background behind the
+			// WebView — a mismatch worsens the flash rather than hiding it.
+			// In the general case, it is actual beneficial to leave it out, since it won't be seen.
+			if (_presenter.Background is SolidColorBrush { Color: { } color })
+			{
+				// note: DefaultBackgroundColor do not accept color with non-255 alpha.
+				// > System.ArgumentException: Value does not fall within the expected range.
+				controller.DefaultBackgroundColor = Color.FromArgb(Byte.MaxValue, color.R, color.G, color.B);
+			}
+
 			tcs.SetResult(controller);
 		});
 
@@ -159,14 +175,6 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		}
 
 		_controller = tcs.Task.Result;
-
-		_controller.IsVisible = true;
-
-		// Do not set _controller.DefaultBackgroundColor here;
-		// The initial flash is now gone most of time or minimal in some case,
-		// setting the default background now actually worsen the initial load.
-		// note: DefaultBackgroundColor do not accept color with non-255 alpha.
-		// > System.ArgumentException: Value does not fall within the expected range.
 
 		_nativeWebView = _controller.CoreWebView2;
 		_nativeWebView.Settings.IsScriptEnabled = true;
@@ -190,6 +198,19 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		UpdateDocumentTitle();
 
 		presenter.Content = new Win32NativeWindow(_hwnd);
+	}
+
+	private void ForwardBackgroundToPresenter()
+	{
+		if (_coreWebView.Owner is WebView2 view && _presenter is { } cp)
+		{
+			cp.SetBinding(FrameworkElement.BackgroundProperty, new Binding()
+			{
+				Path = new(nameof(view.Background)),
+				Source = view,
+				Mode = BindingMode.OneWay
+			});
+		}
 	}
 
 	public event EventHandler<CoreWebView2WebResourceRequestedEventArgs>? WebResourceRequested;
@@ -306,6 +327,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_SourceChanged(object? sender, NativeWebView.CoreWebView2SourceChangedEventArgs e)
 	{
+		//_controller.IsVisible = true;
+
 		_coreWebView.Source = _nativeWebView.Source;
 	}
 
@@ -337,6 +360,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_NavigationCompleted(object? sender, NativeWebView.CoreWebView2NavigationCompletedEventArgs e)
 	{
+		_controller.IsVisible = true;
+
 		if (!_navigationIdToUriMap.TryGetValue(e.NavigationId, out var uriString))
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
