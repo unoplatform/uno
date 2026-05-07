@@ -173,14 +173,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 	}
 
-	private void SetPosOnly(HWND childHwnd, int x, int y, int width, int height)
-	{
-		if (!PInvoke.SetWindowPos(childHwnd, default, x, y, width, height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE))
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} (pos) failed: {Win32Helper.GetErrorMessage()}");
-		}
-	}
-
 	private void ApplyZOrder(HWND childHwnd)
 	{
 		// SetWindowPos's hWndInsertAfter is "the window to precede the positioned window in the

@@ -122,16 +122,16 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		}
 		_webViewForNextCreateWindow = null;
 
+		if (_hwnd == HWND.Null)
+		{
+			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+
 		unsafe
 		{
 			// disable window maximize/minimize/restore animations to avoid visual glitches during initial window setup
 			BOOL fDisable = true;
 			PInvoke.DwmSetWindowAttribute(_hwnd, Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE.DWMWA_TRANSITIONS_FORCEDISABLED, &fDisable, (uint)Marshal.SizeOf(fDisable));
-		}
-
-		if (_hwnd == HWND.Null)
-		{
-			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Trace))

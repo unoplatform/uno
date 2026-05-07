@@ -163,7 +163,6 @@ partial class ContentPresenter
 		}
 		new Span<(int, ContentPresenter)>(rentedArray, 0, _nativeHosts.Count).Sort((one, two) => one.Item1 - two.Item1);
 
-		Console.WriteLine($"Ramez {string.Join(", ", new Span<(int, ContentPresenter)>(rentedArray, 0, _nativeHosts.Count).ToArray().Select(nh => nh.Item2.FindFirstAncestor<WebView2>().Name))}"); // For debug purposes, to verify the order is correct
 		for (var index = 0; index < _nativeHosts.Count; index++)
 		{
 			var host = rentedArray[index].Item2;
