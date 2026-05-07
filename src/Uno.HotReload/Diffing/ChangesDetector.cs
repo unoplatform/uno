@@ -36,10 +36,9 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 		var editedAdditionalDocuments = new List<TextDocument>();
 		var removedDocuments = new List<DocumentId>();
 		var removedAdditionalDocuments = new List<DocumentId>();
+		var editedProjects = new List<Project>();
 		var potentiallyAdded = new List<string>();
 		var notFound = new List<string>();
-		var editedProjectIds = new HashSet<ProjectId>();
-		var editedProjects = new List<Project>();
 
 		foreach (var file in files)
 		{
@@ -85,8 +84,7 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 			// applier owns the re-read.
 			foreach (var project in solution.Projects)
 			{
-				if (project.FilePath is not { Length: > 0 } projectPath
-					|| editedProjectIds.Contains(project.Id))
+				if (project.FilePath is not { Length: > 0 } projectPath)
 				{
 					continue;
 				}
@@ -94,7 +92,6 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 				if (PathComparer.PathEquals(projectPath, file)
 					|| IsCsprojInfluencingFile(file, projectPath))
 				{
-					editedProjectIds.Add(project.Id);
 					editedProjects.Add(project);
 					found = true;
 				}
