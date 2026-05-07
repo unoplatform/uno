@@ -226,7 +226,7 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 #if NET10_0_OR_GREATER
 		_nativeWebView.NavigateWithWebResourceRequest(httpRequestMessage);
 #else
-		using var requestContentStream = httpRequestMessage.Content?.ReadAsStream();
+		var requestContentStream = httpRequestMessage.Content?.ReadAsStream();
 		var request = _nativeWebView.CoreWebView2.Environment.CreateWebResourceRequest(
 			httpRequestMessage.RequestUri!.ToString(),
 			httpRequestMessage.Method.Method,
