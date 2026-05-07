@@ -481,108 +481,29 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						return t;
 					}),
 
-					// As a partial name using the non-qualified name
-					("Type.GetType(unqualified)", () =>
-					{
-						var unqualified = originalName.Split(':').ElementAtOrDefault(1) ?? "";
-						var t = Type.GetType(unqualified);
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"[XamlTypeResolver]     Type.GetType(unqualified='{unqualified}') -> {(t != null ? "HIT " + t.FullName : "miss")}");
-						}
-						return t;
-					}),
+				// As a partial name using the non-qualified name
+				() => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? ""),
+					
+				// Look for the type in all relevant loaded assemblies. When EnterContextualReflection
+				// is active for a non-default ALC, this enumerates only that ALC's assemblies +
+				// the default ALC's — avoiding stale per-app ALCs that AppDomain.GetAssemblies
+				// would otherwise still expose. Falls back to AppDomain.GetAssemblies otherwise.
+				() => ContextualAssemblyResolver.GetRelevantAssemblies()
+					.Select(
 
-					// Look for the type in all relevant loaded assemblies. When EnterContextualReflection
-					// is active for a non-default ALC, this enumerates only that ALC's assemblies +
-					// the default ALC's — avoiding stale per-app ALCs that AppDomain.GetAssemblies
-					// would otherwise still expose. Falls back to AppDomain.GetAssemblies otherwise.
-					("ContextualAssemblies+Default(or AppDomain)", () =>
-					{
-						var contextual = AssemblyLoadContext.CurrentContextualReflectionContext;
-						var source = (contextual is not null && contextual != AssemblyLoadContext.Default)
-							? $"contextual+default(contextual={contextual.Name})"
-							: "AppDomain";
-						var assemblies = ContextualAssemblyResolver.GetRelevantAssemblies();
+						[UnconditionalSuppressMessage("Trimming","IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+						(a) =>
+							(name != null ? a.GetType(name) : null) ??
+							a.GetType(originalName)
+					)
+					.Trim()
+					.FirstOrDefault(),
+			};
 
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"[XamlTypeResolver]     scan source={source}, looking for name='{name}' or originalName='{originalName}'");
-						}
-
-						var scannedCount = 0;
-						foreach (var a in assemblies)
-						{
-							scannedCount++;
-
-							[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
-							[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operation")]
-							static Type? Probe(global::System.Reflection.Assembly a, string? name, string originalName)
-								=> (name != null ? a.GetType(name) : null) ?? a.GetType(originalName);
-
-							var t = Probe(a, name, originalName);
-							if (t != null)
-							{
-								if (this.Log().IsEnabled(LogLevel.Trace))
-								{
-									var aAlc = AssemblyLoadContext.GetLoadContext(a);
-									this.Log().Trace($"[XamlTypeResolver]       scan HIT in assembly={a.GetName().Name} (ALC={aAlc?.Name ?? "(default)"}) -> {t.FullName}");
-								}
-								return t;
-							}
-						}
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"[XamlTypeResolver]     scan ({source}): no hit across {scannedCount} assemblies");
-						}
-						return null;
-					}),
-				};
-
-				foreach (var (via, fn) in resolvers)
-				{
-					var t = fn();
-
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						if (t != null)
-						{
-							var tAsm = t.Assembly;
-							var tAlc = AssemblyLoadContext.GetLoadContext(tAsm);
-							this.Log().LogDebug($"[XamlTypeResolver]   resolver '{via}' for '{originalName}' (qualified='{name}') -> HIT {t.FullName} (assembly={tAsm.GetName().Name}, ALC={tAlc?.Name ?? "(default)"})");
-						}
-						else
-						{
-							this.Log().LogDebug($"[XamlTypeResolver]   resolver '{via}' for '{originalName}' (qualified='{name}') -> miss");
-						}
-					}
-
-					if (t != null)
-					{
-						result = t;
-						resolvedVia = via;
-						break;
-					}
-				}
-			}
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				if (result != null)
-				{
-					var asm = result.Assembly;
-					var alc = AssemblyLoadContext.GetLoadContext(asm);
-					this.Log().LogDebug(
-						$"[XamlTypeResolver] Resolved '{originalName}' -> {result.FullName} (assembly={asm.GetName().Name}, ALC={alc?.Name ?? "(default)"}, via={resolvedVia})");
-				}
-				else
-				{
-					this.Log().LogDebug(
-						$"[XamlTypeResolver] Failed to resolve '{originalName}' (qualified='{name}')");
-				}
-			}
-
-			return result;
+			return resolvers
+				.Select(m => m())
+				.Trim()
+				.FirstOrDefault();
 		}
 		private static bool SourceIsAttachedProperty(
 			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)]
