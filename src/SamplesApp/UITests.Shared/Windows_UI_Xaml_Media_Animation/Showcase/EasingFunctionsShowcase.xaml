@@ -1,0 +1,288 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media_Animation.Showcase.EasingFunctionsShowcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="LegendStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="120" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="12">
+            <TextBlock
+                FontSize="28"
+                FontWeight="Bold"
+                Text="Easing Functions Showcase" />
+            <TextBlock
+                MaxWidth="700"
+                HorizontalAlignment="Left"
+                FontSize="13"
+                Opacity="0.75"
+                Text="All 11 built-in easing functions — Back, Bounce, Circle, Cubic, Elastic, Exponential, Linear, Power (Power=3), Quadratic, Quartic, Quintic, Sine — applied with EasingMode=EaseOut over the same 1.5s duration."
+                TextWrapping="Wrap" />
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="RunEaseIn" Content="EaseIn" />
+                <Button Click="RunEaseOut" Content="EaseOut" />
+                <Button Click="RunEaseInOut" Content="EaseInOut" />
+            </StackPanel>
+
+            <Grid x:Name="LaneGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="BackEase" />
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#EF4444"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="BackTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="BounceEase" />
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#F97316"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="BounceTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="CircleEase" />
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#F59E0B"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="CircleTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="CubicEase" />
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#84CC16"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="CubicTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="ElasticEase" />
+                <Border
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#22C55E"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="ElasticTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="ExponentialEase" />
+                <Border
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#10B981"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="ExponentialTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="Linear (no easing)" />
+                <Border
+                    Grid.Row="6"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#14B8A6"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="LinearTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="PowerEase (3)" />
+                <Border
+                    Grid.Row="7"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#06B6D4"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="PowerTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="8"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="QuadraticEase" />
+                <Border
+                    Grid.Row="8"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#0EA5E9"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="QuadraticTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="9"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="QuarticEase" />
+                <Border
+                    Grid.Row="9"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#3B82F6"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="QuarticTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="10"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="QuinticEase" />
+                <Border
+                    Grid.Row="10"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#6366F1"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="QuinticTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="11"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="SineEase" />
+                <Border
+                    Grid.Row="11"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="#A855F7"
+                    CornerRadius="3">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="SineTransform" />
+                    </Border.RenderTransform>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
