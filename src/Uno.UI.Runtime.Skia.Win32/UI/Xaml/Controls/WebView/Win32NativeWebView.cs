@@ -1,6 +1,4 @@
 extern alias mswebview2;
-using NativeWebView = mswebview2::Microsoft.Web.WebView2.Core;
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,16 +11,20 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.UI.WindowsAndMessaging;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
+using Windows.Storage;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
+using NativeWebView = mswebview2::Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -117,7 +119,12 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		}
 		_webViewForNextCreateWindow = null;
 
-		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
+		unsafe
+		{
+			// disable window maximize/minimize/restore animations to avoid visual glitches during initial window setup
+			BOOL fDisable = true;
+			PInvoke.DwmSetWindowAttribute(_hwnd, Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE.DWMWA_TRANSITIONS_FORCEDISABLED, &fDisable, (uint)Marshal.SizeOf(fDisable));
+		}
 
 		if (_hwnd == HWND.Null)
 		{
@@ -141,7 +148,9 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		{
 			var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
 			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(userDataFolder: userDataFolder);
-			tcs.SetResult(await env.CreateCoreWebView2ControllerAsync(_hwnd));
+			var controller = await env.CreateCoreWebView2ControllerAsync(_hwnd);
+
+			tcs.SetResult(controller);
 		});
 
 		while (!tcs.Task.IsCompleted)
@@ -150,6 +159,15 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		}
 
 		_controller = tcs.Task.Result;
+
+		_controller.IsVisible = true;
+
+		// Do not set _controller.DefaultBackgroundColor here;
+		// The initial flash is now gone most of time or minimal in some case,
+		// setting the default background now actually worsen the initial load.
+		// note: DefaultBackgroundColor do not accept color with non-255 alpha.
+		// > System.ArgumentException: Value does not fall within the expected range.
+
 		_nativeWebView = _controller.CoreWebView2;
 		_nativeWebView.Settings.IsScriptEnabled = true;
 		_nativeWebView.Settings.IsWebMessageEnabled = true;
