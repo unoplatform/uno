@@ -226,16 +226,11 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 #if NET10_0_OR_GREATER
 		_nativeWebView.NavigateWithWebResourceRequest(httpRequestMessage);
 #else
-		var builder = new StringBuilder();
-		foreach (var header in httpRequestMessage.Headers)
-		{
-			if (header.Key != "Host")
-			{
-				builder.Append(header.Key + ": " + string.Join(", ", header.Value) + "\r\n");
-			}
-		}
-
-		var request = _nativeWebView.CoreWebView2.Environment.CreateWebResourceRequest(httpRequestMessage.RequestUri!.ToString(), httpRequestMessage.Method.Method, httpRequestMessage.Content!.ReadAsStream(), builder.ToString());
+		var request = _nativeWebView.CoreWebView2.Environment.CreateWebResourceRequest(
+			httpRequestMessage.RequestUri!.ToString(),
+			httpRequestMessage.Method.Method,
+			httpRequestMessage.Content!.ReadAsStream(),
+			WebResourceRequestHelpers.BuildHeaders(httpRequestMessage));
 		_nativeWebView.CoreWebView2.NavigateWithWebResourceRequest(request);
 #endif
 	}
@@ -451,18 +446,9 @@ internal sealed class WpfWebView2 : HwndHost
 			return;
 		}
 
-		var builder = new StringBuilder();
-		foreach (var header in httpRequestMessage.Headers)
-		{
-			if (header.Key != "Host")
-			{
-				builder.Append(header.Key + ": " + string.Join(", ", header.Value) + "\r\n");
-			}
-		}
-
 		var uriValue = PWSTR.From(httpRequestMessage.RequestUri?.ToString() ?? string.Empty);
 		var methodValue = PWSTR.From(httpRequestMessage.Method.Method);
-		var headersValue = PWSTR.From(builder.ToString());
+		var headersValue = PWSTR.From(WebResourceRequestHelpers.BuildHeaders(httpRequestMessage));
 		DirectN.IStream? postData = null;
 		var postDataPtr = IntPtr.Zero;
 		try
@@ -742,4 +728,30 @@ internal sealed class WpfCoreWebView2WebMessageReceivedEventArgs(string webMessa
 {
 	public string WebMessageAsJson { get; } = webMessageAsJson;
 }
+
 #endif
+
+internal static class WebResourceRequestHelpers
+{
+	public static string BuildHeaders(HttpRequestMessage httpRequestMessage)
+	{
+		var builder = new StringBuilder();
+		foreach (var header in httpRequestMessage.Headers)
+		{
+			if (header.Key != "Host")
+			{
+				builder.Append(header.Key + ": " + string.Join(", ", header.Value) + "\r\n");
+			}
+		}
+
+		if (httpRequestMessage.Content is { } content)
+		{
+			foreach (var header in content.Headers)
+			{
+				builder.Append(header.Key + ": " + string.Join(", ", header.Value) + "\r\n");
+			}
+		}
+
+		return builder.ToString();
+	}
+}
