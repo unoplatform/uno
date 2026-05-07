@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class PointKeyFrame : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Value
-		// Skipping already declared property KeyTime
 		// Skipping already declared property KeyTimeProperty
 		// Skipping already declared property ValueProperty
+		// Skipping already declared property KeyTime
+		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.ValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTime.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.set
 	}
 }

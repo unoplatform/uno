@@ -6,29 +6,80 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PointKeyFrameCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
+	public partial class PointKeyFrameCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PointKeyFrame PointKeyFrameCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointKeyFrame%20PointKeyFrameCollection.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "PointKeyFrame PointKeyFrameCollection.this[int index]");
+			}
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.PointKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.PointKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.SetAt(uint, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.InsertAt(uint, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Append(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.GetMany(uint, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.ReplaceAll(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
+		{
+			throw new global::System.NotImplementedException("The member int PointKeyFrameCollection.IndexOf(PointKeyFrame item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PointKeyFrameCollection.IndexOf%28PointKeyFrame%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "void PointKeyFrameCollection.Insert(int index, PointKeyFrame item)");
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.RemoveAt(int)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "void PointKeyFrameCollection.Add(PointKeyFrame item)");
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Clear()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
+		{
+			throw new global::System.NotImplementedException("The member bool PointKeyFrameCollection.Contains(PointKeyFrame item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointKeyFrameCollection.Contains%28PointKeyFrame%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection", "void PointKeyFrameCollection.CopyTo(PointKeyFrame[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame item)
+		{
+			throw new global::System.NotImplementedException("The member bool PointKeyFrameCollection.Remove(PointKeyFrame item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointKeyFrameCollection.Remove%28PointKeyFrame%20item%29");
+		}
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>
 		// Processing: System.Collections.IEnumerable
 	}

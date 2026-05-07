@@ -8,14 +8,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class PointAnimationUsingKeyFrames : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 	{
+		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared property EnableDependentAnimation
 		// Skipping already declared property KeyFrames
-		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.PointAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.PointAnimationUsingKeyFrames()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.KeyFrames.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.EnableDependentAnimation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.KeyFrames.get
 	}
 }
