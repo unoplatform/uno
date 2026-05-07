@@ -1,0 +1,269 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media_Animation.Showcase.KeyFramesShowcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="ShowcaseSectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,16,0,4" />
+        </Style>
+        <Style x:Key="ShowcaseDescription" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Opacity" Value="0.75" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+        <Style x:Key="LegendStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="80" />
+        </Style>
+
+        <!--  Comparison storyboard for the four DoubleKeyFrame variants  -->
+        <Storyboard x:Name="DoubleKeyFrameStoryboard">
+            <!--  Discrete  -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="DiscreteTransform" Storyboard.TargetProperty="X">
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.5" Value="80" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:1.0" Value="160" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:1.5" Value="240" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:2.0" Value="320" />
+            </DoubleAnimationUsingKeyFrames>
+            <!--  Linear  -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="LinearTransform" Storyboard.TargetProperty="X">
+                <LinearDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                <LinearDoubleKeyFrame KeyTime="0:0:2.0" Value="320" />
+            </DoubleAnimationUsingKeyFrames>
+            <!--  Spline (snappy ease)  -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="SplineTransform" Storyboard.TargetProperty="X">
+                <LinearDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                <SplineDoubleKeyFrame
+                    KeySpline="0.8,0,0.2,1"
+                    KeyTime="0:0:2.0"
+                    Value="320" />
+            </DoubleAnimationUsingKeyFrames>
+            <!--  Easing (BackEase EaseOut)  -->
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="EasingTransform" Storyboard.TargetProperty="X">
+                <LinearDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:2.0" Value="320">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <BackEase Amplitude="0.6" EasingMode="EaseOut" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <!--  ColorKeyFrame comparison  -->
+        <Storyboard x:Name="ColorKeyFrameStoryboard">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="DiscreteColorBrush" Storyboard.TargetProperty="Color">
+                <DiscreteColorKeyFrame KeyTime="0:0:0" Value="#1E88E5" />
+                <DiscreteColorKeyFrame KeyTime="0:0:0.6" Value="#43A047" />
+                <DiscreteColorKeyFrame KeyTime="0:0:1.2" Value="#FB8C00" />
+                <DiscreteColorKeyFrame KeyTime="0:0:1.8" Value="#E53935" />
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="LinearColorBrush" Storyboard.TargetProperty="Color">
+                <LinearColorKeyFrame KeyTime="0:0:0" Value="#1E88E5" />
+                <LinearColorKeyFrame KeyTime="0:0:0.6" Value="#43A047" />
+                <LinearColorKeyFrame KeyTime="0:0:1.2" Value="#FB8C00" />
+                <LinearColorKeyFrame KeyTime="0:0:1.8" Value="#E53935" />
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="SplineColorBrush" Storyboard.TargetProperty="Color">
+                <LinearColorKeyFrame KeyTime="0:0:0" Value="#1E88E5" />
+                <SplineColorKeyFrame
+                    KeySpline="0.8,0,0.2,1"
+                    KeyTime="0:0:1.8"
+                    Value="#E53935" />
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="EasingColorBrush" Storyboard.TargetProperty="Color">
+                <LinearColorKeyFrame KeyTime="0:0:0" Value="#1E88E5" />
+                <EasingColorKeyFrame KeyTime="0:0:1.8" Value="#E53935">
+                    <EasingColorKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut" />
+                    </EasingColorKeyFrame.EasingFunction>
+                </EasingColorKeyFrame>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="12">
+            <TextBlock
+                FontSize="28"
+                FontWeight="Bold"
+                Text="KeyFrames Showcase" />
+            <TextBlock
+                MaxWidth="700"
+                HorizontalAlignment="Left"
+                Style="{StaticResource ShowcaseDescription}"
+                Text="Side-by-side comparison of the four keyframe variants — Discrete, Linear, Spline (KeySpline=0.8,0,0.2,1), and Easing (BackEase EaseOut) — applied identically to four bars and four colors." />
+
+            <!--  DoubleKeyFrames  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="Double keyframes" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Each row applies a different keyframe variant to TranslateTransform.X. All use the same start, end and duration." />
+            <Grid Height="200">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="Discrete" />
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Width="40"
+                    Height="32"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="DodgerBlue"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="DiscreteTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="Linear" />
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="40"
+                    Height="32"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="MediumSeaGreen"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="LinearTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="Spline" />
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Width="40"
+                    Height="32"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="MediumPurple"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="SplineTransform" />
+                    </Border.RenderTransform>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Style="{StaticResource LegendStyle}"
+                    Text="Easing" />
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Width="40"
+                    Height="32"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="OrangeRed"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="EasingTransform" />
+                    </Border.RenderTransform>
+                </Border>
+            </Grid>
+            <Button Click="RunDoubleKeyFrames" Content="Run double keyframes" />
+
+            <!--  ColorKeyFrames  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="Color keyframes" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Same four variants applied to SolidColorBrush.Color — observe the snap (Discrete), even fade (Linear), curved spline, and CubicEase EaseInOut." />
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Grid.Column="0"
+                    Height="80"
+                    CornerRadius="6">
+                    <Border.Background>
+                        <SolidColorBrush x:Name="DiscreteColorBrush" Color="#1E88E5" />
+                    </Border.Background>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="Discrete" />
+                </Border>
+                <Border
+                    Grid.Column="1"
+                    Height="80"
+                    CornerRadius="6">
+                    <Border.Background>
+                        <SolidColorBrush x:Name="LinearColorBrush" Color="#1E88E5" />
+                    </Border.Background>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="Linear" />
+                </Border>
+                <Border
+                    Grid.Column="2"
+                    Height="80"
+                    CornerRadius="6">
+                    <Border.Background>
+                        <SolidColorBrush x:Name="SplineColorBrush" Color="#1E88E5" />
+                    </Border.Background>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="Spline" />
+                </Border>
+                <Border
+                    Grid.Column="3"
+                    Height="80"
+                    CornerRadius="6">
+                    <Border.Background>
+                        <SolidColorBrush x:Name="EasingColorBrush" Color="#1E88E5" />
+                    </Border.Background>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="Easing" />
+                </Border>
+            </Grid>
+            <Button Click="RunColorKeyFrames" Content="Run color keyframes" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
