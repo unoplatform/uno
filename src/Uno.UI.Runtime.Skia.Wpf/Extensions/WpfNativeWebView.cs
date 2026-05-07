@@ -1,8 +1,6 @@
 #nullable enable
 
-#if !NET10_0_OR_GREATER
 extern alias WpfWebView;
-#endif
 
 using System;
 using System.Collections.Generic;
@@ -15,14 +13,6 @@ using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 
-#if NET10_0_OR_GREATER
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Interop;
-using DirectN;
-using WebView2;
-using WebView2.Utilities;
-#else
 using WpfCoreWebView2HostResourceAccessKind = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind;
 using WpfCoreWebView2InitializationCompletedEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs;
 using WpfCoreWebView2NavigationCompletedEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs;
@@ -30,6 +20,13 @@ using WpfCoreWebView2NavigationStartingEventArgs = WpfWebView.Microsoft.Web.WebV
 using WpfCoreWebView2SourceChangedEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs;
 using WpfCoreWebView2WebMessageReceivedEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs;
 using WpfWebView2 = WpfWebView.Microsoft.Web.WebView2.Wpf.WebView2;
+#if NET10_0_OR_GREATER
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
+using DirectN;
+using WebView2;
+using WebView2.Utilities;
 #endif
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
@@ -109,13 +106,8 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 	{
 		if (_nativeWebView.CoreWebView2 is not null)
 		{
-#if NET10_0_OR_GREATER
-			_nativeWebView.HistoryChanged += CoreWebView2_HistoryChanged;
-			_nativeWebView.DocumentTitleChanged += OnNativeTitleChanged;
-#else
 			_nativeWebView.CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
 			_nativeWebView.CoreWebView2.DocumentTitleChanged += OnNativeTitleChanged;
-#endif
 			UpdateDocumentTitle();
 		}
 
@@ -131,30 +123,7 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 
 	private void UpdateDocumentTitle()
 	{
-#if NET10_0_OR_GREATER
-		if (_nativeWebView.CoreWebView2 is null)
-		{
-			DocumentTitle = string.Empty;
-			return;
-		}
-
-		PWSTR title = default;
-		var getTitleResult = _nativeWebView.CoreWebView2.get_DocumentTitle(out title);
-		if (getTitleResult.IsError)
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().LogError($"Unable to obtain DocumentTitle: {getTitleResult}");
-			}
-
-			DocumentTitle = string.Empty;
-			return;
-		}
-
-		DocumentTitle = title.ToStringAndDispose() ?? string.Empty;
-#else
 		DocumentTitle = _nativeWebView.CoreWebView2?.DocumentTitle ?? string.Empty;
-#endif
 	}
 
 	private void CoreWebView2_HistoryChanged(object? sender, object e)
@@ -201,21 +170,13 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 	public void ProcessNavigation(Uri uri)
 		=> ExecuteEnsuringCoreWebView2(() =>
 		{
-#if NET10_0_OR_GREATER
-			_nativeWebView.Navigate(uri.ToString());
-#else
 			_nativeWebView.CoreWebView2.Navigate(uri.ToString());
-#endif
 		});
 
 	public void ProcessNavigation(string html)
 		=> ExecuteEnsuringCoreWebView2(() =>
 		{
-#if NET10_0_OR_GREATER
-			_nativeWebView.NavigateToString(html);
-#else
 			_nativeWebView.CoreWebView2.NavigateToString(html);
-#endif
 		});
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
@@ -223,9 +184,6 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 
 	private void ProcessNavigationCore(HttpRequestMessage httpRequestMessage)
 	{
-#if NET10_0_OR_GREATER
-		_nativeWebView.NavigateWithWebResourceRequest(httpRequestMessage);
-#else
 		var requestContentStream = httpRequestMessage.Content?.ReadAsStream();
 		var request = _nativeWebView.CoreWebView2.Environment.CreateWebResourceRequest(
 			httpRequestMessage.RequestUri!.ToString(),
@@ -233,7 +191,6 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 			requestContentStream,
 			WebResourceRequestHelpers.BuildHeaders(httpRequestMessage));
 		_nativeWebView.CoreWebView2.NavigateWithWebResourceRequest(request);
-#endif
 	}
 
 	public void Reload()
@@ -280,26 +237,210 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 	public void ClearVirtualHostNameToFolderMapping(string hostName)
 		=> ExecuteEnsuringCoreWebView2(() =>
 		{
-#if NET10_0_OR_GREATER
-			_nativeWebView.ClearVirtualHostNameToFolderMapping(hostName);
-#else
 			_nativeWebView.CoreWebView2.ClearVirtualHostNameToFolderMapping(hostName);
-#endif
 		});
 
 	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
 		=> ExecuteEnsuringCoreWebView2(() =>
 		{
-#if NET10_0_OR_GREATER
-			_nativeWebView.SetVirtualHostNameToFolderMapping(hostName, folderPath, (COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND)accessKind);
-#else
 			_nativeWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(hostName, folderPath, (WpfCoreWebView2HostResourceAccessKind)accessKind);
-#endif
 		});
 }
 
 #if NET10_0_OR_GREATER
-internal sealed class WpfWebView2 : HwndHost
+internal sealed class NativeAotWebView : INativeWebView, ISupportsVirtualHostMapping
+{
+	private readonly NativeAotWebViewHost _nativeWebView;
+	private readonly CoreWebView2 _coreWebView2;
+	private readonly List<Func<Task>> _actions = new();
+	private readonly Dictionary<ulong, string> _navigationIdToUriMap = new();
+	private string _documentTitle = string.Empty;
+
+	public NativeAotWebView(NativeAotWebViewHost nativeWebView, CoreWebView2 coreWebView2)
+	{
+		_coreWebView2 = coreWebView2;
+		_nativeWebView = nativeWebView;
+		nativeWebView.NavigationCompleted += NativeWebView_NavigationCompleted;
+		nativeWebView.SourceChanged += NativeWebView_SourceChanged;
+		nativeWebView.WebMessageReceived += NativeWebView_WebMessageReceived;
+		nativeWebView.NavigationStarting += NativeWebView_NavigationStarting;
+		nativeWebView.CoreWebView2InitializationCompleted += NativeWebView_CoreWebView2InitializationCompleted;
+		_ = nativeWebView.EnsureCoreWebView2Async().ContinueWith(task =>
+		{
+			if (task.Exception is not null && this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError("Failed to initialize native AOT WebView2.", task.Exception);
+			}
+		}, TaskContinuationOptions.OnlyOnFaulted);
+	}
+
+	public string DocumentTitle
+	{
+		get => _documentTitle;
+		private set
+		{
+			if (_documentTitle != value)
+			{
+				_documentTitle = value;
+				_coreWebView2.OnDocumentTitleChanged();
+			}
+		}
+	}
+
+	private void NativeWebView_SourceChanged(object? sender, NativeAotWebView2SourceChangedEventArgs e) => _coreWebView2.Source = _nativeWebView.Source?.ToString() ?? string.Empty;
+
+	private void NativeWebView_WebMessageReceived(object? sender, NativeAotWebView2WebMessageReceivedEventArgs e) => _coreWebView2.RaiseWebMessageReceived(e.WebMessageAsJson);
+
+	private void NativeWebView_NavigationStarting(object? sender, NativeAotWebView2NavigationStartingEventArgs e)
+	{
+		_coreWebView2.RaiseNavigationStarting(e.Uri, out var cancel);
+		_coreWebView2.SetHistoryProperties(_nativeWebView.CanGoBack, _nativeWebView.CanGoForward);
+		e.Cancel = cancel;
+		_navigationIdToUriMap[e.NavigationId] = e.Uri;
+	}
+
+	private void NativeWebView_NavigationCompleted(object? sender, NativeAotWebView2NavigationCompletedEventArgs e)
+	{
+		if (!_navigationIdToUriMap.TryGetValue(e.NavigationId, out var uri))
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError("Got NavigationCompleted for unknown navigation id");
+			}
+		}
+
+		_navigationIdToUriMap.Remove(e.NavigationId);
+		_coreWebView2.RaiseNavigationCompleted(uri is null ? null : new Uri(uri), e.IsSuccess, e.HttpStatusCode, (CoreWebView2WebErrorStatus)e.WebErrorStatus, shouldSetSource: false);
+	}
+
+	private async void NativeWebView_CoreWebView2InitializationCompleted(object? sender, NativeAotWebView2InitializationCompletedEventArgs e)
+	{
+		if (_nativeWebView.CoreWebView2 is not null)
+		{
+			_nativeWebView.HistoryChanged += CoreWebView2_HistoryChanged;
+			_nativeWebView.DocumentTitleChanged += OnNativeTitleChanged;
+			UpdateDocumentTitle();
+		}
+
+		foreach (var action in _actions)
+		{
+			await action();
+		}
+
+		_actions.Clear();
+	}
+
+	private void OnNativeTitleChanged(object? sender, object e) => UpdateDocumentTitle();
+
+	private void UpdateDocumentTitle()
+	{
+		if (_nativeWebView.CoreWebView2 is null)
+		{
+			DocumentTitle = string.Empty;
+			return;
+		}
+
+		PWSTR title = default;
+		var getTitleResult = _nativeWebView.CoreWebView2.get_DocumentTitle(out title);
+		if (getTitleResult.IsError)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"Unable to obtain DocumentTitle: {getTitleResult}");
+			}
+
+			DocumentTitle = string.Empty;
+			return;
+		}
+
+		DocumentTitle = title.ToStringAndDispose() ?? string.Empty;
+	}
+
+	private void CoreWebView2_HistoryChanged(object? sender, object e)
+	{
+		_coreWebView2.SetHistoryProperties(_nativeWebView.CanGoBack, _nativeWebView.CanGoForward);
+		_coreWebView2.RaiseHistoryChanged();
+	}
+
+	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
+		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.ExecuteScriptAsync(script));
+
+	public void GoBack() => ExecuteEnsuringCoreWebView2(_nativeWebView.GoBack);
+
+	public void GoForward() => ExecuteEnsuringCoreWebView2(_nativeWebView.GoForward);
+
+	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token)
+	{
+		if (arguments is null || arguments.Length == 0)
+		{
+			return ExecuteScriptAsync($"{script}()", token);
+		}
+
+		var adjustedScript = new StringBuilder(script);
+		adjustedScript.Append('(');
+		for (int i = 0; i < arguments.Length; i++)
+		{
+			adjustedScript.Append('"');
+			adjustedScript.Append(arguments[i]);
+			adjustedScript.Append('"');
+			if (i < arguments.Length - 1)
+			{
+				adjustedScript.Append(',');
+			}
+		}
+		adjustedScript.Append(')');
+		return ExecuteScriptAsync(adjustedScript.ToString(), token);
+	}
+
+	public void ProcessNavigation(Uri uri) => ExecuteEnsuringCoreWebView2(() => _nativeWebView.Navigate(uri.ToString()));
+
+	public void ProcessNavigation(string html) => ExecuteEnsuringCoreWebView2(() => _nativeWebView.NavigateToString(html));
+
+	public void ProcessNavigation(HttpRequestMessage httpRequestMessage) => ExecuteEnsuringCoreWebView2(() => _nativeWebView.NavigateWithWebResourceRequest(httpRequestMessage));
+
+	public void Reload() => ExecuteEnsuringCoreWebView2(_nativeWebView.Reload);
+
+	public void SetScrollingEnabled(bool isScrollingEnabled)
+	{
+	}
+
+	public void Stop() => ExecuteEnsuringCoreWebView2(_nativeWebView.Stop);
+
+	private void ExecuteEnsuringCoreWebView2(Action action)
+	{
+		if (_nativeWebView.CoreWebView2 is not null)
+		{
+			action();
+			return;
+		}
+
+		_actions.Add(() =>
+		{
+			action();
+			return Task.CompletedTask;
+		});
+	}
+
+	private Task<T> ExecuteEnsuringCoreWebView2<T>(Func<Task<T>> task)
+	{
+		if (_nativeWebView.CoreWebView2 is not null)
+		{
+			return task();
+		}
+
+		var tcs = new TaskCompletionSource<T>();
+		_actions.Add(async () => tcs.SetResult(await task()));
+		return tcs.Task;
+	}
+
+	public void ClearVirtualHostNameToFolderMapping(string hostName)
+		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.ClearVirtualHostNameToFolderMapping(hostName));
+
+	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
+		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.SetVirtualHostNameToFolderMapping(hostName, folderPath, (COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND)accessKind));
+}
+
+internal sealed class NativeAotWebViewHost : HwndHost
 {
 	private HwndSource? _hwndSource;
 	private ICoreWebView2Environment? _environment;
@@ -353,11 +494,11 @@ internal sealed class WpfWebView2 : HwndHost
 
 	public Uri? Source { get; private set; }
 
-	public event EventHandler<WpfCoreWebView2InitializationCompletedEventArgs>? CoreWebView2InitializationCompleted;
-	public event EventHandler<WpfCoreWebView2NavigationCompletedEventArgs>? NavigationCompleted;
-	public event EventHandler<WpfCoreWebView2NavigationStartingEventArgs>? NavigationStarting;
-	public event EventHandler<WpfCoreWebView2SourceChangedEventArgs>? SourceChanged;
-	public event EventHandler<WpfCoreWebView2WebMessageReceivedEventArgs>? WebMessageReceived;
+	public event EventHandler<NativeAotWebView2InitializationCompletedEventArgs>? CoreWebView2InitializationCompleted;
+	public event EventHandler<NativeAotWebView2NavigationCompletedEventArgs>? NavigationCompleted;
+	public event EventHandler<NativeAotWebView2NavigationStartingEventArgs>? NavigationStarting;
+	public event EventHandler<NativeAotWebView2SourceChangedEventArgs>? SourceChanged;
+	public event EventHandler<NativeAotWebView2WebMessageReceivedEventArgs>? WebMessageReceived;
 	public event EventHandler<object>? HistoryChanged;
 	public event EventHandler<object>? DocumentTitleChanged;
 
@@ -537,7 +678,7 @@ internal sealed class WpfWebView2 : HwndHost
 
 	protected override HandleRef BuildWindowCore(HandleRef hwndParent)
 	{
-		var parameters = new HwndSourceParameters(nameof(WpfWebView2))
+		var parameters = new HwndSourceParameters(nameof(NativeAotWebViewHost))
 		{
 			ParentWindow = hwndParent.Handle,
 			WindowStyle = unchecked((int)0x50000000), // WS_CHILD | WS_VISIBLE
@@ -591,7 +732,7 @@ internal sealed class WpfWebView2 : HwndHost
 			if (environmentResult.IsError)
 			{
 				var exception = environmentResult.GetException() ?? new InvalidOperationException("Unable to create WebView2 environment.");
-				CoreWebView2InitializationCompleted?.Invoke(this, new WpfCoreWebView2InitializationCompletedEventArgs(false, exception));
+				CoreWebView2InitializationCompleted?.Invoke(this, new NativeAotWebView2InitializationCompletedEventArgs(false, exception));
 				_initializationTcs.TrySetException(exception);
 				return;
 			}
@@ -602,7 +743,7 @@ internal sealed class WpfWebView2 : HwndHost
 				if (controllerResult.IsError)
 				{
 					var exception = controllerResult.GetException() ?? new InvalidOperationException("Unable to create WebView2 controller.");
-					CoreWebView2InitializationCompleted?.Invoke(this, new WpfCoreWebView2InitializationCompletedEventArgs(false, exception));
+					CoreWebView2InitializationCompleted?.Invoke(this, new NativeAotWebView2InitializationCompletedEventArgs(false, exception));
 					_initializationTcs.TrySetException(exception);
 					return;
 				}
@@ -612,7 +753,7 @@ internal sealed class WpfWebView2 : HwndHost
 				controller.get_CoreWebView2(out var coreWebView2).ThrowOnError();
 				CoreWebView2 = coreWebView2;
 				RegisterEventHandlers(coreWebView2);
-				CoreWebView2InitializationCompleted?.Invoke(this, new WpfCoreWebView2InitializationCompletedEventArgs(true, null));
+				CoreWebView2InitializationCompleted?.Invoke(this, new NativeAotWebView2InitializationCompletedEventArgs(true, null));
 				_initializationTcs.TrySetResult(true);
 			})).ThrowOnError();
 		})).ThrowOnError();
@@ -625,7 +766,7 @@ internal sealed class WpfWebView2 : HwndHost
 			args.get_Uri(out var uriValue).ThrowOnError();
 			ulong navigationId = default;
 			args.get_NavigationId(ref navigationId).ThrowOnError();
-			var eventArgs = new WpfCoreWebView2NavigationStartingEventArgs(uriValue.ToStringAndDispose() ?? string.Empty, navigationId);
+			var eventArgs = new NativeAotWebView2NavigationStartingEventArgs(uriValue.ToStringAndDispose() ?? string.Empty, navigationId);
 			NavigationStarting?.Invoke(this, eventArgs);
 			args.put_Cancel(eventArgs.Cancel).ThrowOnError();
 		});
@@ -652,7 +793,7 @@ internal sealed class WpfWebView2 : HwndHost
 			{
 				this.Log().LogDebug("ICoreWebView2NavigationCompletedEventArgs2 is unavailable; HttpStatusCode defaulting to 0.");
 			}
-			NavigationCompleted?.Invoke(this, new WpfCoreWebView2NavigationCompletedEventArgs(navigationId, isSuccess, httpStatusCode, webErrorStatus));
+			NavigationCompleted?.Invoke(this, new NativeAotWebView2NavigationCompletedEventArgs(navigationId, isSuccess, httpStatusCode, webErrorStatus));
 		});
 		coreWebView2.add_NavigationCompleted(_navigationCompletedHandler, ref _navigationCompletedToken).ThrowOnError();
 
@@ -661,14 +802,14 @@ internal sealed class WpfWebView2 : HwndHost
 			sender.get_Source(out var sourceValue).ThrowOnError();
 			var source = sourceValue.ToStringAndDispose();
 			Source = Uri.TryCreate(source, UriKind.Absolute, out var uri) ? uri : null;
-			SourceChanged?.Invoke(this, new WpfCoreWebView2SourceChangedEventArgs());
+			SourceChanged?.Invoke(this, new NativeAotWebView2SourceChangedEventArgs());
 		});
 		coreWebView2.add_SourceChanged(_sourceChangedHandler, ref _sourceChangedToken).ThrowOnError();
 
 		_webMessageReceivedHandler = new CoreWebView2WebMessageReceivedEventHandler((sender, args) =>
 		{
 			args.get_WebMessageAsJson(out var webMessageValue).ThrowOnError();
-			WebMessageReceived?.Invoke(this, new WpfCoreWebView2WebMessageReceivedEventArgs(webMessageValue.ToStringAndDispose() ?? string.Empty));
+			WebMessageReceived?.Invoke(this, new NativeAotWebView2WebMessageReceivedEventArgs(webMessageValue.ToStringAndDispose() ?? string.Empty));
 		});
 		coreWebView2.add_WebMessageReceived(_webMessageReceivedHandler, ref _webMessageReceivedToken).ThrowOnError();
 
@@ -696,14 +837,14 @@ internal sealed class WpfWebView2 : HwndHost
 	}
 }
 
-internal sealed class WpfCoreWebView2InitializationCompletedEventArgs(bool isSuccess, Exception? initializationException) : EventArgs
+internal sealed class NativeAotWebView2InitializationCompletedEventArgs(bool isSuccess, Exception? initializationException) : EventArgs
 {
 	public bool IsSuccess { get; } = isSuccess;
 
 	public Exception? InitializationException { get; } = initializationException;
 }
 
-internal sealed class WpfCoreWebView2NavigationStartingEventArgs(string uri, ulong navigationId) : EventArgs
+internal sealed class NativeAotWebView2NavigationStartingEventArgs(string uri, ulong navigationId) : EventArgs
 {
 	public string Uri { get; } = uri;
 
@@ -712,7 +853,7 @@ internal sealed class WpfCoreWebView2NavigationStartingEventArgs(string uri, ulo
 	public bool Cancel { get; set; }
 }
 
-internal sealed class WpfCoreWebView2NavigationCompletedEventArgs(ulong navigationId, bool isSuccess, int httpStatusCode, COREWEBVIEW2_WEB_ERROR_STATUS webErrorStatus) : EventArgs
+internal sealed class NativeAotWebView2NavigationCompletedEventArgs(ulong navigationId, bool isSuccess, int httpStatusCode, COREWEBVIEW2_WEB_ERROR_STATUS webErrorStatus) : EventArgs
 {
 	public ulong NavigationId { get; } = navigationId;
 
@@ -723,9 +864,9 @@ internal sealed class WpfCoreWebView2NavigationCompletedEventArgs(ulong navigati
 	public COREWEBVIEW2_WEB_ERROR_STATUS WebErrorStatus { get; } = webErrorStatus;
 }
 
-internal sealed class WpfCoreWebView2SourceChangedEventArgs : EventArgs;
+internal sealed class NativeAotWebView2SourceChangedEventArgs : EventArgs;
 
-internal sealed class WpfCoreWebView2WebMessageReceivedEventArgs(string webMessageAsJson) : EventArgs
+internal sealed class NativeAotWebView2WebMessageReceivedEventArgs(string webMessageAsJson) : EventArgs
 {
 	public string WebMessageAsJson { get; } = webMessageAsJson;
 }
