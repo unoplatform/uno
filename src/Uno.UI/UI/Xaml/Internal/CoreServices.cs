@@ -227,10 +227,20 @@ namespace Uno.UI.Xaml.Core
 
 		private static void InvalidateTextScaleRecursive(UIElement element)
 		{
-			if (element is TextBlock or RichTextBlock or ContentPresenter)
+			if (element is TextBlock or RichTextBlock)
 			{
 				element.InvalidateMeasure();
 			}
+#if __SKIA__ || __WASM__
+			// ContentPresenter only needs Uno-level measure invalidation on Skia/WASM where
+			// GetScaledFontSize() is called during the Uno measure pass. On iOS/Android, native
+			// font APIs already handle text scaling, and invalidating ContentPresenter there
+			// causes spurious layout passes that can break the TextBox auto-grow mechanism.
+			else if (element is ContentPresenter)
+			{
+				element.InvalidateMeasure();
+			}
+#endif
 
 #if __SKIA__
 			// Invalidate cached font info on Inlines

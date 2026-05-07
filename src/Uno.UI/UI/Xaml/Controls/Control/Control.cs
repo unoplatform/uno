@@ -691,7 +691,12 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					true,
+#if __SKIA__ || __WASM__
+					// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
+#else
+					FrameworkPropertyMetadataOptions.Inherits
+#endif
 				)
 			);
 
