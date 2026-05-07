@@ -79,7 +79,14 @@ namespace Microsoft.UI.Xaml.Controls
 			ConditionalUpdate(ref _fontWeightChanged, () => this.SetFontWeight(FontWeight));
 			ConditionalUpdate(ref _fontStretchChanged, () => this.SetFontStretch(FontStretch));
 			ConditionalUpdate(ref _fontFamilyChanged, () => this.SetFontFamily(FontFamily));
-			ConditionalUpdate(ref _fontSizeChanged, () => this.SetFontSize(FontSize));
+			ConditionalUpdate(ref _fontSizeChanged, () =>
+			{
+				var effectiveSize = Uno.UI.Xaml.Core.TextScaleHelper.GetScaledFontSize(
+					FontSize,
+					Uno.UI.Xaml.Core.CoreServices.Instance.FontScale,
+					IsTextScaleFactorEnabled && !Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor);
+				this.SetFontSize(effectiveSize);
+			});
 			ConditionalUpdate(ref _maxLinesChanged, () => this.SetMaxLines(MaxLines));
 			ConditionalUpdate(ref _textAlignmentChanged, () => this.SetTextAlignment(TextAlignment));
 			ConditionalUpdate(ref _lineHeightChanged, () => this.SetLineHeight(LineHeight));
@@ -238,6 +245,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial() => _textWrappingChanged = true;
 
 		partial void OnPaddingChangedPartial() => _paddingChangedChanged = true;
+
+		internal void InvalidateForTextScaleChange() => _fontSizeChanged = true;
 
 		partial void UpdateIsTextTrimmed()
 		{

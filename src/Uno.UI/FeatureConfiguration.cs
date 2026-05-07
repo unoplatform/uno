@@ -224,15 +224,12 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __APPLE_UIKIT__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
 			public static float? MaximumTextScaleFactor { get; set; }
-#endif
 
 			/// <summary>
-			/// (Skia only)
 			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
 			/// that the requested font family cannot render. When <c>null</c> (the default),
 			/// the platform-registered service is used.
@@ -244,6 +241,13 @@ namespace Uno.UI
 			/// constructed with their own coverage table and stream provider.
 			/// </remarks>
 			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
+
+			/// <summary>
+			/// Overrides the OS-reported text scale factor with a manual value.
+			/// When set, this value takes precedence over the OS-reported scale factor.
+			/// Useful for platforms without OS text scaling support (macOS, WASM, Linux FrameBuffer) or for testing.
+			/// </summary>
+			public static double? TextScaleFactor { get; set; }
 		}
 
 		public static class FrameworkElement
