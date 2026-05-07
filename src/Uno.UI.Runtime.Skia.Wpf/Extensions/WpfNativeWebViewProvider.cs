@@ -1,4 +1,6 @@
-﻿extern alias WpfWebView;
+#if !NET10_0_OR_GREATER
+extern alias WpfWebView;
+#endif
 
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
@@ -17,12 +19,21 @@ internal sealed class WpfNativeWebViewProvider : INativeWebViewProvider
 
 	public INativeWebView CreateNativeWebView(ContentPresenter contentPresenter)
 	{
+#if NET10_0_OR_GREATER
+		var content = contentPresenter.Content as WpfWebView2;
+		if (content is null)
+		{
+			content = new WpfWebView2();
+			contentPresenter.Content = content;
+		}
+#else
 		var content = contentPresenter.Content as WpfWebView.Microsoft.Web.WebView2.Wpf.WebView2;
 		if (content is null)
 		{
 			content = new WpfWebView.Microsoft.Web.WebView2.Wpf.WebView2();
 			contentPresenter.Content = content;
 		}
+#endif
 
 		return new WpfNativeWebView(content, _owner);
 	}
