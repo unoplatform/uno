@@ -108,8 +108,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public Application()
 		{
-			global::System.Console.WriteLine("[NUGET-OVERRIDE-MARKER] Uno.UI Application ctor invoked from local override build.");
-
 			var isDefaultALC = AssemblyLoadContext.GetLoadContext(GetType().Assembly) == AssemblyLoadContext.Default;
 
 			if (isDefaultALC)
