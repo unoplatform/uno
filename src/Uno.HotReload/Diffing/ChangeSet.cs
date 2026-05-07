@@ -8,9 +8,10 @@ namespace Uno.HotReload.Diffing;
 /// Describes the set of changes detected in a batch of modified files, including edits, adds, removes, and ignored files.
 /// </summary>
 /// <remarks>
-/// Removed-* members carry the file path alongside the id so consumers (e.g.
-/// <see cref="ChangeSetExtensions.NotifyIgnored"/>) can report them without
-/// needing the originating <see cref="Solution"/> snapshot to look the path up.
+/// Removed-* members carry the file path alongside the id so consumers can
+/// report them (e.g. via <see cref="HotReload.Tracking.HotReloadOperation.NotifyIgnored(System.Collections.Generic.IEnumerable{string})"/>)
+/// without needing the originating <see cref="Solution"/> snapshot to look the
+/// path up.
 /// </remarks>
 public record ChangeSet(
 	ImmutableArray<Document> EditedDocuments,
@@ -39,11 +40,11 @@ public record ChangeSet(
 	/// </summary>
 	/// <remarks>
 	/// Single source of truth for "what files does this change set touch", used
-	/// by <see cref="ChangeSetExtensions.NotifyIgnored"/> to translate an
-	/// ignored set into per-path notifications without needing the originating
-	/// <see cref="Solution"/> snapshot. Adding a new ChangeSet member without
-	/// extending this enumeration would silently drop those entries from
-	/// downstream reporting — keep it in sync.
+	/// by the hot-reload manager to translate an ignored set into per-path
+	/// notifications via <see cref="HotReload.Tracking.HotReloadOperation.NotifyIgnored(System.Collections.Generic.IEnumerable{string})"/>
+	/// — without needing the originating <see cref="Solution"/> snapshot.
+	/// Adding a new ChangeSet member without extending this enumeration would
+	/// silently drop those entries from downstream reporting — keep it in sync.
 	/// </remarks>
 	public IEnumerable<string> GetAllPaths()
 	{

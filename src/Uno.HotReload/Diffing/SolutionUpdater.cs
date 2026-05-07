@@ -12,12 +12,12 @@ using Uno.HotReload.Utils;
 namespace Uno.HotReload.Diffing;
 
 /// <summary>
-/// Default <see cref="ISolutionUpdater"/> implementation. Updates the solution
-/// document set from the <see cref="ChangeSet"/> using the same behaviour the
-/// legacy <c>ChangeSetExtensions.ApplyAsync</c> extension method has always
-/// exposed. Reports project-level edits and any unprocessed inputs via
-/// <see cref="SolutionUpdateResult.IgnoredChanges"/>; the caller runs the
-/// standard hot-reload cycle on top of the resulting solution.
+/// Default <see cref="ISolutionUpdater"/> implementation. Mutates the solution
+/// document set from the <see cref="ChangeSet"/> (edits, adds, removes plus an
+/// analyzer-config refresh on add/remove). Reports project-level edits and
+/// any unprocessed inputs via <see cref="SolutionUpdateResult.IgnoredChanges"/>;
+/// the caller runs the standard hot-reload cycle on top of the resulting
+/// solution.
 /// </summary>
 public sealed class SolutionUpdater : ISolutionUpdater
 {
