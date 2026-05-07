@@ -113,6 +113,18 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_TablePatternId
 					when peer.GetPattern(PatternInterface.Table) is ITableProvider table
 					=> new UiaTableProviderWrapper(table, _accessibility),
+				Win32UIAutomationInterop.UIA_WindowPatternId
+					when peer.GetPattern(PatternInterface.Window) is IWindowProvider window
+					=> new UiaWindowProviderWrapper(window),
+				Win32UIAutomationInterop.UIA_TransformPatternId
+					when peer.GetPattern(PatternInterface.Transform) is ITransformProvider transform
+					=> new UiaTransformProviderWrapper(transform),
+				Win32UIAutomationInterop.UIA_DockPatternId
+					when peer.GetPattern(PatternInterface.Dock) is IDockProvider dock
+					=> new UiaDockProviderWrapper(dock),
+				Win32UIAutomationInterop.UIA_MultipleViewPatternId
+					when peer.GetPattern(PatternInterface.MultipleView) is IMultipleViewProvider multiView
+					=> new UiaMultipleViewProviderWrapper(multiView),
 				_ => null,
 			};
 
@@ -1142,6 +1154,10 @@ internal class Win32RawElementProvider :
 		Win32UIAutomationInterop.UIA_GridPatternId => "Grid",
 		Win32UIAutomationInterop.UIA_GridItemPatternId => "GridItem",
 		Win32UIAutomationInterop.UIA_TablePatternId => "Table",
+		Win32UIAutomationInterop.UIA_WindowPatternId => "Window",
+		Win32UIAutomationInterop.UIA_TransformPatternId => "Transform",
+		Win32UIAutomationInterop.UIA_DockPatternId => "Dock",
+		Win32UIAutomationInterop.UIA_MultipleViewPatternId => "MultipleView",
 		_ => $"Unknown({patternId})",
 	};
 
