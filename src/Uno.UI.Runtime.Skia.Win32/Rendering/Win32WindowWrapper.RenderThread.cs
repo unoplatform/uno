@@ -21,19 +21,16 @@ internal partial class Win32WindowWrapper
 		private readonly IRenderer _renderer;
 		private readonly Func<(SKPath clipPath, int width, int height)?> _drawFrame;
 		private readonly Action<SKPath> _onClipPathUpdated;
-		private readonly Action _onFramePresented;
 		private volatile bool _disposed;
 
 		internal RenderThread(
 			IRenderer renderer,
 			Func<(SKPath, int, int)?> drawFrame,
-			Action<SKPath> onClipPathUpdated,
-			Action onFramePresented)
+			Action<SKPath> onClipPathUpdated)
 		{
 			_renderer = renderer;
 			_drawFrame = drawFrame;
 			_onClipPathUpdated = onClipPathUpdated;
-			_onFramePresented = onFramePresented;
 			_thread = new Thread(RenderLoop) { Name = "Uno Render Thread", IsBackground = true };
 			_thread.Start();
 		}
@@ -68,9 +65,12 @@ internal partial class Win32WindowWrapper
 					break;
 				}
 
-				_renderer.StartPaint();
+				var startPaintSucceeded = false;
 				try
 				{
+					_renderer.StartPaint();
+					startPaintSucceeded = true;
+
 					var result = _drawFrame();
 					if (result is { } frame)
 					{
@@ -79,7 +79,6 @@ internal partial class Win32WindowWrapper
 						_renderer.CopyPixels(width, height); // SwapBuffers/BitBlt — may block for VSync
 
 						_presentedEvent.Set();
-						_onFramePresented();
 					}
 				}
 				catch (Exception ex)
@@ -88,7 +87,10 @@ internal partial class Win32WindowWrapper
 				}
 				finally
 				{
-					_renderer.EndPaint();
+					if (startPaintSucceeded)
+					{
+						_renderer.EndPaint();
+					}
 				}
 			}
 		}
