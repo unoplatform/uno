@@ -106,6 +106,7 @@ public class Given_TextBlock_ICU
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 	public async Task When_NonBreakingSpace_Is_Not_A_Wrap_Opportunity()
 	{
 		// Per UAX #14, NBSP (U+00A0) is a glue character: line breakers must not

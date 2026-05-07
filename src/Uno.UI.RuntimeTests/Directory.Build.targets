@@ -23,17 +23,4 @@
 		<None Include="Tests\HotReload\Frame\HRApp\**\*.xaml" Exclude="Tests\HotReload\Frame\HRApp\bin\**;Tests\HotReload\Frame\HRApp\obj\**" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UNO_UWP_BUILD)">
-		<Compile Remove="MUX\Microsoft_UI_Xaml_Controls\ScrollPresenter\**\*.cs" />
-		<Page Remove="MUX\Microsoft_UI_Xaml_Controls\ScrollPresenter\**\*.xaml" />
-		<None Include="MUX\Microsoft_UI_Xaml_Controls\ScrollPresenter\**\*.cs" />
-
-		<Compile Remove="MUX\Microsoft_UI_Xaml_Controls\SelectorBar\**\*.cs" />
-		<Page Remove="MUX\Microsoft_UI_Xaml_Controls\SelectorBar\**\*.xaml" />
-		<None Include="MUX\Microsoft_UI_Xaml_Controls\SelectorBar\**\*.cs" />
-
-		<Compile Remove="Tests\BindingTests\XBindInWindow.xaml.cs" />
-		<Page Remove="Tests\BindingTests\XBindInWindow.xaml" />
-		<None Include="Tests\BindingTests\XBindInWindow.xaml.cs" />
-	</ItemGroup>
 </Project>

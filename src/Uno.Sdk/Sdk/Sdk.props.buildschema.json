@@ -282,6 +282,22 @@
 			"description": "Provides an explicit override for the version of AndroidX.Collection to use.",
 			"type": "nuget-version"
 		},
+		"AndroidXLeanbackVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Leanback to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXCarAppVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Car.App to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXWearVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Wear to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXWearTilesVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Wear.Tiles to use.",
+			"type": "nuget-version"
+		},
 		"MicrosoftIdentityClientVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Identity.Client to use.",
 			"type": "nuget-version"
@@ -590,7 +606,7 @@
 					"helpUrl": "https://aka.platform.uno/feature-android-tv"
 				},
 				"AndroidAuto": {
-					"description": "Configures the Android head for Android Auto / Automotive OS (adds Xamarin.AndroidX.Car.App).",
+					"description": "Configures the Android head for Android Auto / Automotive OS (adds Xamarin.AndroidX.Car.App.App).",
 					"helpUrl": "https://aka.platform.uno/feature-android-auto"
 				},
 				"AndroidWear": {

@@ -13,7 +13,7 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>This package provides macOS platform support for Skia in Uno Platform projects.</Description>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.MacOS</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Skia.MacOS</PackageId>
 
 		<RootNamespace>Uno.UI.Runtime.Skia.MacOS</RootNamespace>
 

@@ -17,7 +17,7 @@
 		<Description>This package provides the platform support for Skia Android in Uno Platform projects.</Description>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Android</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Skia.Android</PackageId>
 
 		<RootNamespace>Uno.WinUI.Runtime.Skia.Android</RootNamespace>
 

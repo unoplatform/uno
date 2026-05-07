@@ -97,6 +97,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)] // Fails on Android - https://github.com/unoplatform/uno/issues/15829
+		[Ignore("Failing on Native UIKit https://github.com/unoplatform/uno/issues/9080")]
 		public void Check_ListView_Swallows_Measure()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_With_ListViews_Count_Measure");

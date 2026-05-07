@@ -20,6 +20,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => LayoutOriginCore = value;
 		}
 
+		public Rect VisibleRect => VisibleRectCore();
+
 		public Rect RealizationRect => RealizationRectCore();
 
 		public int RecommendedAnchorIndex => RecommendedAnchorIndexCore;
@@ -55,6 +57,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void RecycleElementCore(UIElement element)
 			=> throw new NotImplementedException();
+
+		protected virtual Rect VisibleRectCore() => throw new NotImplementedException();
 
 		protected virtual Rect RealizationRectCore() => throw new NotImplementedException();
 
