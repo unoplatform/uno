@@ -5,11 +5,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Text;
 using Uno;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.Xaml;
 using Windows.UI;
@@ -380,8 +378,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 
 			var originalName = name;
-			Type? result = null;
-			string? resolvedVia = null;
 
 			if (name.Contains(':'))
 			{
@@ -402,11 +398,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"[XamlTypeResolver] Default-namespace search for '{originalName}' in defaultXmlNs='{defaultXmlNamespace}', candidate clrNamespaces=[{string.Join(", ", clrNamespaces)}], lookupAssemblies=[{string.Join(", ", _lookupAssemblies.Select(a => a.GetName().Name))}]");
-				}
-
 				// Search first using the default namespace
 				foreach (var clrNamespace in clrNamespaces)
 				{
@@ -415,71 +406,26 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					// behavior (because of Wasm missing stack walking feature)
 					foreach (var assembly in _lookupAssemblies)
 					{
-						var fqn = clrNamespace + "." + name;
-						var type = assembly.GetType(fqn);
-
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().LogDebug($"[XamlTypeResolver]   try assembly.GetType('{fqn}') in assembly={assembly.GetName().Name} -> {(type != null ? "HIT " + type.FullName : "miss")}");
-						}
+						var type = assembly.GetType(clrNamespace + "." + name);
 
 						if (type != null)
 						{
-							result = type;
-							resolvedVia = $"default-namespace+_lookupAssemblies({assembly.GetName().Name}@{clrNamespace})";
-							break;
+							return type;
 						}
-					}
-
-					if (result != null)
-					{
-						break;
 					}
 				}
 
 				// The default namespace for the XAML snippet may be non-standard (starting with using: or clr-namespace:)
-				if (result == null)
-				{
-					name = GetFullyQualifiedName(defaultXmlNamespaceDeclaration, name);
-				}
+				name = GetFullyQualifiedName(defaultXmlNamespaceDeclaration, name);
 			}
 
-			if (result == null)
-			{
-				// Each resolver lambda is expanded so it can emit Trace logs describing exactly
-				// what it tried and what came back. The outer foreach below logs the final
-				// hit/miss summary per resolver.
-				var resolvers = new (string Via, Func<Type?> Fn)[] {
+			var resolvers = new Func<Type?>[] {
 
-					// As a full name
-					("Type.GetType(name)", () =>
-					{
-						if (name == null)
-						{
-							if (this.Log().IsEnabled(LogLevel.Trace))
-							{
-								this.Log().Trace($"[XamlTypeResolver]     Type.GetType(name): name==null, skipping");
-							}
-							return null;
-						}
-						var t = Type.GetType(name);
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"[XamlTypeResolver]     Type.GetType('{name}') -> {(t != null ? "HIT " + t.FullName : "miss")}");
-						}
-						return t;
-					}),
+				// As a full name
+				() => name != null ? Type.GetType(name) : null,
 
-					// As a partial name using the original type
-					("Type.GetType(originalName)", () =>
-					{
-						var t = Type.GetType(originalName);
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().Trace($"[XamlTypeResolver]     Type.GetType('{originalName}') -> {(t != null ? "HIT " + t.FullName : "miss")}");
-						}
-						return t;
-					}),
+				// As a partial name using the original type
+				() => Type.GetType(originalName),
 
 				// As a partial name using the non-qualified name
 				() => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? ""),
