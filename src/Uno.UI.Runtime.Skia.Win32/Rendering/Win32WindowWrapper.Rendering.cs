@@ -1,7 +1,6 @@
 using System;
 using Windows.Win32;
 using Windows.Win32.Foundation;
-using Windows.Win32.Graphics.OpenGL;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
@@ -40,15 +39,6 @@ internal partial class Win32WindowWrapper
 
 	private void InitializeRenderThread()
 	{
-		// TryCreateGlRenderer leaves the GL context current on the UI thread
-		// (WglCurrentContextDisposable doesn't restore to "no context" when there
-		// was none before). Detach it so the render thread can make it current.
-		// No-op for the software renderer (no GL context to detach).
-		if (!PInvoke.wglMakeCurrent(default, HGLRC.Null))
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} (detach) failed: {Win32Helper.GetErrorMessage()}");
-		}
-
 		_renderThread = new RenderThread(
 			_renderer,
 			drawFrame: DrawFrame,
@@ -57,8 +47,7 @@ internal partial class Win32WindowWrapper
 				NativeDispatcher.Main.Enqueue(() =>
 					RenderingNegativePathReevaluated?.Invoke(this, clipPath),
 					NativeDispatcherPriority.Normal);
-			},
-			onFramePresented: () => { });
+			});
 	}
 
 	/// <summary>
