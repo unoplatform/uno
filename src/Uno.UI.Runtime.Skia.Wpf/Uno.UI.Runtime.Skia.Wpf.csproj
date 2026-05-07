@@ -29,7 +29,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" PrivateAssets="all" Condition="'$(TargetFramework)' == 'net9.0'" />
-		<PackageReference Include="WebView2Aot" PrivateAssets="all" Condition="'$(TargetFramework)' == 'net10.0'" />
+		<PackageReference Include="WebView2Aot" PrivateAssets="all" Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))" />
 		<PackageReference Include="Uno.icu-win" />
 
 		<!-- 
