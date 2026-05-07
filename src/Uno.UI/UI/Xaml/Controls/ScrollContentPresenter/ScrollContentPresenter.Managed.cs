@@ -815,8 +815,21 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private sealed class WheelInertia : IDisposable
 		{
-			// k = 0.003/ms ⇔ 0.95 decay per 16.67 ms frame, matching WinUI's InteractionTracker default.
-			private const double DecayPerMs = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
+			// Wheel-specific decay rate, tuned to match the legacy WinUI ScrollViewer feel
+			// (which is driven by DirectManipulation, not InteractionTracker). Empirically DManip's
+			// wheel coast settles in ~300–400 ms for a typical notch — much snappier than the
+			// 0.95-per-frame InteractionTracker default that ScrollPresenter uses for fling.
+			//
+			// k = 0.010/ms ⇔ 0.846 per 16.67 ms frame ⇒ 90-px notch settles in ~330 ms.
+			// Increase to scroll faster / less far; decrease to feel slower / coast longer.
+			private const double DecayPerMs = 0.010;
+
+			// Velocity boost relative to the per-notch displacement formula. WinUI legacy ScrollViewer
+			// feels like it scrolls slightly farther per notch than the bare GetVerticalScrollWheelDelta
+			// formula suggests — DManip seems to overshoot the discrete-notch math by ~15-20%. Keeping
+			// this as an explicit, named multiplier so it can be tuned independently of the base decay.
+			private const double VelocityBoost = 1.15;
+
 			// Stop the loop when both axes have less than ~0.6 px/frame remaining velocity.
 			private const double VelocityThreshold = GestureRecognizer.Manipulation.InertiaProcessor.VelocityThreshold;
 
@@ -869,8 +882,10 @@ namespace Microsoft.UI.Xaml.Controls
 					_owner._inertiaFrameCount = 0;
 				}
 
-				_vx += dxPx * DecayPerMs;
-				_vy += dyPx * DecayPerMs;
+				// v₀ = displacement · k yields ∫₀^∞ v·e^(-k·t) dt = displacement;
+				// the boost factor inflates the final coast distance to match WinUI's per-notch feel.
+				_vx += dxPx * DecayPerMs * VelocityBoost;
+				_vy += dyPx * DecayPerMs * VelocityBoost;
 			}
 
 			private void OnFrame(object? sender, object e)
