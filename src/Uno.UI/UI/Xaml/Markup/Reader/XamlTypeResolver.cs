@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.Xaml;
 using Windows.UI;
 using Windows.Foundation;
@@ -377,6 +379,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 
 			var originalName = name;
+			Type? result = null;
+			string? resolvedVia = null;
 
 			if (name.Contains(':'))
 			{
@@ -409,44 +413,88 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 						if (type != null)
 						{
-							return type;
+							result = type;
+							resolvedVia = "default-namespace+_lookupAssemblies";
+							break;
 						}
+					}
+
+					if (result != null)
+					{
+						break;
 					}
 				}
 
 				// The default namespace for the XAML snippet may be non-standard (starting with using: or clr-namespace:)
-				name = GetFullyQualifiedName(defaultXmlNamespaceDeclaration, name);
+				if (result == null)
+				{
+					name = GetFullyQualifiedName(defaultXmlNamespaceDeclaration, name);
+				}
 			}
 
-			var resolvers = new Func<Type?>[] {
+			if (result == null)
+			{
+				var resolvers = new (string Via, Func<Type?> Fn)[] {
 
-				// As a full name
-				() => name != null ? Type.GetType(name) : null,
+					// As a full name
+					("Type.GetType(name)", () => name != null ? Type.GetType(name) : null),
 
-				// As a partial name using the original type
-				() => Type.GetType(originalName),
+					// As a partial name using the original type
+					("Type.GetType(originalName)", () => Type.GetType(originalName)),
 
-				// As a partial name using the non-qualified name
-				() => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? ""),
-					
-				// Look for the type in all loaded assemblies
-				() => AppDomain.CurrentDomain
-					.GetAssemblies()
-					.Select(
+					// As a partial name using the non-qualified name
+					("Type.GetType(unqualified)", () => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? "")),
 
-						[UnconditionalSuppressMessage("Trimming","IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
-						(a) =>
-							(name != null ? a.GetType(name) : null) ??
-							a.GetType(originalName)
-					)
-					.Trim()
-					.FirstOrDefault(),
-			};
+					// Look for the type in all loaded assemblies
+					("AppDomain.GetAssemblies", () => AppDomain.CurrentDomain
+						.GetAssemblies()
+						.Select(
 
-			return resolvers
-				.Select(m => m())
-				.Trim()
-				.FirstOrDefault();
+							[UnconditionalSuppressMessage("Trimming","IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+							(a) =>
+								(name != null ? a.GetType(name) : null) ??
+								a.GetType(originalName)
+						)
+						.Trim()
+						.FirstOrDefault()),
+				};
+
+				foreach (var (via, fn) in resolvers)
+				{
+					var t = fn();
+					if (t != null)
+					{
+						result = t;
+						resolvedVia = via;
+						break;
+					}
+				}
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				if (result != null)
+				{
+					var asm = result.Assembly;
+					var alc = AssemblyLoadContext.GetLoadContext(asm);
+					this.Log().LogDebug(
+						"[XamlTypeResolver] Resolved '{OriginalName}' -> {ResolvedType} (assembly={Assembly}, ALC={ALC}, via={Via})",
+						originalName,
+						result.FullName,
+						asm.GetName().Name,
+						alc?.Name ?? "(default)",
+						resolvedVia);
+				}
+				else
+				{
+					this.Log().LogDebug(
+						"[XamlTypeResolver] Failed to resolve '{OriginalName}' (qualified='{QualifiedName}')",
+						originalName,
+						name);
+				}
+			}
+
+			return result;
 		}
 		private static bool SourceIsAttachedProperty(
 			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)]
