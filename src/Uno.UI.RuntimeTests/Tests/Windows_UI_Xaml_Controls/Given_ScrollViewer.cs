@@ -736,6 +736,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// poll for the converged state instead of relying on a single idle/animation check.
 			await WindowHelper.WaitFor(() => inner.VerticalOffset > 0, message: "Inner Vertical Offset is not greater than 0");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, outer.VerticalOffset);
 			Assert.IsGreaterThan(0d, inner.VerticalOffset, "Inner Vertical Offset is not greater than 0");
@@ -749,6 +751,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var expectedOffset = outer.ScrollableHeight / 2;
 			await WindowHelper.WaitFor(() => outer.VerticalOffset > expectedOffset, message: $"Outer Vertical Offset ({outer.VerticalOffset}) did not exceed outer.ScrollableHeight/2 ({expectedOffset})");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
 
 			Assert.IsGreaterThan(expectedOffset, outer.VerticalOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
 			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
@@ -822,54 +826,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-		// Both iOS and macOS animation were disabled and will be fixed under uno-private#1788
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
-		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
+		// iOS/macOS use the immediate per-event trackpad path, not the velocity-based wheel inertia.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)]
+		public async Task When_Wheel_Then_VelocityAccumulatesAndReverses()
 		{
-			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
-			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
+			// Velocity-based wheel inertia: each wheel notch adds a velocity impulse to a per-VSync
+			// integration loop with exponential decay. Rapid same-direction notches accumulate into
+			// higher peak velocity (longer scroll); opposite-direction notches reverse the motion.
+			// This test validates the user-visible end state after each phase rather than the
+			// internal animation primitive (which is composition-driven and frame-by-frame).
 
-			FrameworkElement content;
 			var sut = new ScrollViewer
 			{
 				Height = 100,
 				Width = 100,
-				Content = content = new Border
+				Content = new Border
 				{
-					Height = 200,
+					Height = 1000,
 					Background = new SolidColorBrush(Colors.Chartreuse)
 				},
 			};
 
 			var bounds = await UITestHelper.Load(sut);
 
-			var visual = ElementCompositionPreview.GetElementVisual(content);
-
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			var initialAnimation = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			initialAnimation.Should().BeNull(because: "we have not scrolled yet");
+			Assert.AreEqual(0d, sut.VerticalOffset, "Initial offset should be 0.");
 
 			mouse.MoveTo(bounds.GetCenter());
-			mouse.Wheel(-400, steps: 1);
+			mouse.Wheel(-120, steps: 1);
+			await WaitForInertiaToSettle();
+			var offsetAfterOneNotch = sut.VerticalOffset;
+			Assert.IsGreaterThan(0d, offsetAfterOneNotch, "One wheel notch should produce visible scroll.");
 
-			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
-			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
+			// Reset and wheel two notches in quick succession — velocity coalesces.
+			sut.ChangeView(null, 0, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
 
-			// Scroll again in the same direction
-			mouse.Wheel(-200, steps: 1);
+			mouse.Wheel(-120, steps: 1);
+			mouse.Wheel(-120, steps: 1);
+			await WaitForInertiaToSettle();
+			var offsetAfterTwoNotches = sut.VerticalOffset;
+			Assert.IsGreaterThan(offsetAfterOneNotch, offsetAfterTwoNotches,
+				"Two same-direction wheel notches should scroll farther than one (velocity accumulation).");
 
-			var scrollAnimation2 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation2.Should().Be(scrollAnimation1, because: "the wheel event has no effect");
+			// Wheel the opposite direction — motion reverses.
+			mouse.Wheel(+120, steps: 1);
+			await WaitForInertiaToSettle();
+			Assert.IsLessThan(offsetAfterTwoNotches, sut.VerticalOffset,
+				"Opposite-direction wheel should reverse the scroll position.");
 
-			// But if we scroll in the opposite direction, the animation should be stopped and replaced
-			// (this basically confirm that the test is working -i.e the animation is not being re-used)
-			mouse.Wheel(+200, steps: 1);
-
-			var scrollAnimation3 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation3.Should().NotBe(scrollAnimation1, because: "the wheel event should scroll in the opposite direction");
+			// Local helper: wait for wheel inertia to finish coasting.
+			static async Task WaitForInertiaToSettle()
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1500);
+				await WindowHelper.WaitForIdle();
+			}
 		}
 #endif
 
