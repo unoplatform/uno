@@ -1,0 +1,70 @@
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Media_Animation.Showcase.AdaptiveStateBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Height="60">
+        <Border
+            x:Name="AdaptiveIndicator"
+            Width="200"
+            Height="40"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="MediumPurple"
+            CornerRadius="20">
+            <TextBlock
+                x:Name="AdaptiveLabel"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontWeight="SemiBold"
+                Foreground="White"
+                Text="Wide" />
+        </Border>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveGroup">
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600" />
+                    </VisualState.StateTriggers>
+                    <Storyboard>
+                        <DoubleAnimation
+                            Storyboard.TargetName="AdaptiveIndicator"
+                            Storyboard.TargetProperty="(FrameworkElement.Width)"
+                            To="200"
+                            Duration="0:0:0.4">
+                            <DoubleAnimation.EasingFunction>
+                                <CubicEase EasingMode="EaseInOut" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AdaptiveLabel" Storyboard.TargetProperty="Text">
+                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Wide" />
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <Storyboard>
+                        <DoubleAnimation
+                            Storyboard.TargetName="AdaptiveIndicator"
+                            Storyboard.TargetProperty="(FrameworkElement.Width)"
+                            To="80"
+                            Duration="0:0:0.4">
+                            <DoubleAnimation.EasingFunction>
+                                <CubicEase EasingMode="EaseInOut" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AdaptiveLabel" Storyboard.TargetProperty="Text">
+                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Narrow" />
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>
