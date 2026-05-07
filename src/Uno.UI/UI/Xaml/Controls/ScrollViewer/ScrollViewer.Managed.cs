@@ -159,19 +159,30 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		partial void TrimOverscroll(Orientation orientation)
 		{
-			if (_presenter is not null)
+			if (_presenter is not ScrollContentPresenter scp)
 			{
-				var (contentExtent, presenterViewportSize, offset) = orientation switch
-				{
-					Orientation.Vertical => (ExtentHeight, ViewportHeight, VerticalOffset),
-					_ => (ExtentWidth, ViewportWidth, HorizontalOffset),
-				};
-				var viewportEnd = offset + presenterViewportSize;
-				var overscroll = contentExtent - viewportEnd;
-				if (offset > 0 && overscroll < -0.5)
-				{
-					ChangeViewForOrientation(orientation, overscroll);
-				}
+				return;
+			}
+
+			// Skip while a wheel-driven scroll animation is in flight: clamping the offset back here
+			// fights the user when ItemsRepeater realization shrinks its estimated extent during the
+			// scroll. After the animation settles, this method runs again on the next arrange and
+			// performs the legitimate cleanup if the content really shrank below offset+viewport.
+			if (scp.IsScrollAnimationInProgress)
+			{
+				return;
+			}
+
+			var (contentExtent, presenterViewportSize, offset) = orientation switch
+			{
+				Orientation.Vertical => (ExtentHeight, ViewportHeight, VerticalOffset),
+				_ => (ExtentWidth, ViewportWidth, HorizontalOffset),
+			};
+			var viewportEnd = offset + presenterViewportSize;
+			var overscroll = contentExtent - viewportEnd;
+			if (offset > 0 && overscroll < -0.5)
+			{
+				ChangeViewForOrientation(orientation, overscroll);
 			}
 		}
 

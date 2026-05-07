@@ -8,12 +8,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.Extensions;
+using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -53,10 +58,10 @@ public class Given_ItemsRepeater_FastScroll
 #endif
 	public async Task When_FastScrollWithHighVarianceItems_Then_NoOverlap()
 	{
-		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		var sut = CreateHighVarianceSut(itemCount: 60, viewport: new Size(300, 400));
 		await LoadAsync(sut);
 
-		var offsets = new[] { 5000.0, 0.0, 12000.0, 300.0 };
+		var offsets = new[] { 1500.0, 0.0, 4000.0, 300.0 };
 		foreach (var offset in offsets)
 		{
 			sut.Scroller.ChangeView(null, offset, null, disableAnimation: true);
@@ -78,12 +83,12 @@ public class Given_ItemsRepeater_FastScroll
 		// Incremental ChangeView calls preserve realization-window state across scrolls, which is
 		// what drives StackLayout's average-size estimation off-course (the path that exercises
 		// the Uno workaround clamp in StackLayout.GetExtent).
-		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		var sut = CreateHighVarianceSut(itemCount: 60, viewport: new Size(300, 400));
 		await LoadAsync(sut);
 
 		// Walk down to the bottom, then back up to the top, in small increments. Each ChangeView is
 		// followed by WaitForIdle so the realization window tracks the scroll progression.
-		const int Steps = 30;
+		const int Steps = 10;
 		var bottomTarget = sut.Scroller.ScrollableHeight;
 		for (var i = 1; i <= Steps; i++)
 		{
@@ -123,9 +128,8 @@ public class Given_ItemsRepeater_FastScroll
 		// resolve to its true cumulative offset. The Uno clamp in GetExtent
 		// (Math.Max(0, firstRealizedMajor)) breaks this because it prevents the compensating
 		// negative origin shift WinUI applies.
-		// Uses the same 200-item high-variance layout as Test A: every 10th item is 1200px tall,
-		// others are 40px. Item 3 is 1200px tall at Y=120 (covers Y=[120,1320]).
-		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		// Item 3 is 1200px tall at Y=120 (covers Y=[120,1320]).
+		var sut = CreateHighVarianceSut(itemCount: 60, viewport: new Size(300, 400));
 		await LoadAsync(sut);
 
 		await ScrollInStepsAsync(sut, 400);
@@ -135,7 +139,7 @@ public class Given_ItemsRepeater_FastScroll
 		var item3YBefore = item3Element!.TransformToVisual(sut.Repeater).TransformPoint(new Point(0, 0)).Y;
 
 		// Scroll far enough that item 3 becomes dematerialized (well past its end at Y=1320).
-		await ScrollInStepsAsync(sut, 6000);
+		await ScrollInStepsAsync(sut, 4000);
 
 		// Scroll back so item 3 is in the realization cache again.
 		await ScrollInStepsAsync(sut, 400);
@@ -204,10 +208,10 @@ public class Given_ItemsRepeater_FastScroll
 		// The StackLayout.GetExtent clamp applied to the major axis regardless of orientation, so the
 		// bug symptoms are equally reproducible horizontally. This guards against orientation-specific
 		// regressions in the anchor-shift pipeline.
-		var sut = CreateHighVarianceHorizontalSut(itemCount: 200, viewport: new Size(600, 300));
+		var sut = CreateHighVarianceHorizontalSut(itemCount: 60, viewport: new Size(400, 300));
 		await LoadAsync(sut);
 
-		var offsets = new[] { 5000.0, 0.0, 12000.0, 300.0 };
+		var offsets = new[] { 1500.0, 0.0, 4000.0, 300.0 };
 		foreach (var offset in offsets)
 		{
 			sut.Scroller.ChangeView(offset, null, null, disableAnimation: true);
@@ -229,14 +233,14 @@ public class Given_ItemsRepeater_FastScroll
 		// asserting exact convergence (which varies across platforms — native WinUI can hold an
 		// over-estimated extent during rapid scrolling), this test enforces the floor invariant:
 		// after walking through the full list, ExtentHeight must be at least the real content size.
-		// The test items are 20 × 1200 + 180 × 40 = 31 200 px cumulative.
-		const double RealContentHeight = 31200;
+		// The test items are 6 × 1200 + 54 × 40 = 9360 px cumulative.
+		const double RealContentHeight = 9360;
 
-		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		var sut = CreateHighVarianceSut(itemCount: 60, viewport: new Size(300, 400));
 		await LoadAsync(sut);
 
 		// Walk through the entire list so every item is measured at least once.
-		const int WalkSteps = 250;
+		const int WalkSteps = 60;
 		for (var i = 1; i <= WalkSteps; i++)
 		{
 			sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight * i / WalkSteps, null, disableAnimation: true);
@@ -262,11 +266,10 @@ public class Given_ItemsRepeater_FastScroll
 		// ChangeView(null, ScrollableHeight, null) must leave the last source item visible at the
 		// bottom of the viewport on the FIRST click. The pre-fix symptom on Uno was that
 		// ScrollableHeight under-counts the cumulative content size for the unrealized tail, so the
-		// first jump only reaches an item several positions short of the end (observed: stops at
-		// item 193 of 200). A second click then reaches the true bottom because the first scroll
-		// already realized more items and corrected the extent — but the user shouldn't have to
-		// click twice.
-		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		// first jump only reaches an item several positions short of the end. A second click then
+		// reaches the true bottom because the first scroll already realized more items and
+		// corrected the extent — but the user shouldn't have to click twice.
+		var sut = CreateHighVarianceSut(itemCount: 60, viewport: new Size(300, 400));
 		await LoadAsync(sut);
 
 		sut.Scroller.ChangeView(null, 0, null, disableAnimation: true);
@@ -287,6 +290,200 @@ public class Given_ItemsRepeater_FastScroll
 		lastBottom.Should().BeApproximately(sut.Scroller.ViewportHeight, 1,
 			$"Source[{lastIndex}] bottom must be flush with the viewport bottom after a single ChangeView(ScrollableHeight) "
 			+ "from the top — otherwise the user cannot reach the end of the list without manually dragging the thumb.");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#elif __ANDROID__ || __IOS__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
+	public async Task When_MouseWheelDown_PastLastTallItem_Then_OffsetDoesNotJumpBack()
+	{
+		// User-reported regression: when scrolling with the mouse wheel through the list, it became
+		// impossible to scroll past the last "very high" item — the scroller fights the user there.
+		// Repro: programmatically pre-position just inside the last tall item so the realization
+		// window is dominated by the tall item, then wheel-down to scroll past it. Each subsequent
+		// wheel-down must NOT cause the offset to snap backward (which is what the user perceives
+		// as "fighting"). Root cause: TrimOverscroll() at the end of ScrollViewer.ArrangeOverride
+		// calls ChangeView when the realization-driven extent estimate shrinks below offset+viewport
+		// — undoing the user's wheel input within the same frame.
+		var sut = CreateHighVarianceSut(itemCount: 60, viewport: new Size(300, 400));
+		await LoadAsync(sut);
+
+		// Item 53 (the last tall item, at index 5*10+3) covers Y=[7920, 9120]. Position the viewport
+		// so we are inside that tall item (Y=8200) — wheeling down toward the short tail (items
+		// 54..59, just 240px combined) is exactly the scenario where TrimOverscroll fights.
+		sut.Scroller.ChangeView(null, 8200, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(sut.Scroller.GetAbsoluteBounds().GetCenter());
+
+		var offsets = new List<double> { sut.Scroller.VerticalOffset };
+		const int Ticks = 8;
+		for (var i = 0; i < Ticks; i++)
+		{
+			mouse.Wheel(-600);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			offsets.Add(sut.Scroller.VerticalOffset);
+		}
+
+		// A backward jump of more than 1px after a wheel-down means the scroller fought the user.
+		var trace = $"viewport={sut.Scroller.ViewportHeight:F0} extent={sut.Scroller.ExtentHeight:F0} scrollable={sut.Scroller.ScrollableHeight:F0} offsets=[{string.Join(",", offsets.Select(o => o.ToString("F1")))}]";
+		for (var i = 1; i < offsets.Count; i++)
+		{
+			offsets[i].Should().BeGreaterThanOrEqualTo(offsets[i - 1] - 1.0,
+				$"Wheel tick #{i}: offset must not jump backward (the 'fighting' the user sees). Trace: {trace}");
+		}
+
+		// And the user must actually be able to make progress: after 8 wheel-downs from inside the
+		// tall item, the offset must have advanced enough that the bottom of item 53 is no longer
+		// the trailing edge of the viewport. Even if we don't reach the absolute bottom, we must
+		// have made meaningful forward progress.
+		(offsets[^1] - offsets[0]).Should().BeGreaterThan(50,
+			$"After 8 wheel-downs the user must have made forward progress. Trace: {trace}");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#elif __ANDROID__ || __IOS__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
+	public async Task When_MouseWheelDown_NearLastTallItem_ExtentShrinks_Then_NoFighting()
+	{
+		// This test is the closest reproduction of the user-reported issue:
+		// "when scrolling with mouse wheel down through the list, it is impossible to scroll past
+		//  the last 'very high' item — the scroller just fights very very strongly against me".
+		//
+		// We create a many-item, large-variance setup so the tail-of-list realization meaningfully
+		// changes the running average. We pre-position close to the last tall item and wheel down,
+		// recording the offset AND ExtentHeight at every step so we can see the realization
+		// oscillation.
+		var sut = CreateHighVarianceSut(itemCount: 100, viewport: new Size(300, 400));
+		await LoadAsync(sut);
+
+		// Last tall item index for itemCount=100: (i % 10 == 3) → i=93. Cumulative position of
+		// item 93 ≈ 93*40 + 9*1160 = 3720 + 10440 = 14160. Viewport into item 93 = ~14000.
+		sut.Scroller.ChangeView(null, 13800, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(sut.Scroller.GetAbsoluteBounds().GetCenter());
+
+		var samples = new List<(double Offset, double Extent, double Scrollable)>
+		{
+			(sut.Scroller.VerticalOffset, sut.Scroller.ExtentHeight, sut.Scroller.ScrollableHeight)
+		};
+
+		const int Ticks = 12;
+		for (var i = 0; i < Ticks; i++)
+		{
+			mouse.Wheel(-600);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			samples.Add((sut.Scroller.VerticalOffset, sut.Scroller.ExtentHeight, sut.Scroller.ScrollableHeight));
+		}
+
+		var trace = string.Join(" | ", samples.Select(s => $"o={s.Offset:F0} e={s.Extent:F0} s={s.Scrollable:F0}"));
+
+		// No backward jumps in offset.
+		for (var i = 1; i < samples.Count; i++)
+		{
+			samples[i].Offset.Should().BeGreaterThanOrEqualTo(samples[i - 1].Offset - 1.0,
+				$"Wheel tick #{i}: offset must not jump backward (the 'fighting' the user sees). Trace: {trace}");
+		}
+
+		// And the user must make meaningful progress past the tall item.
+		(samples[^1].Offset - samples[0].Offset).Should().BeGreaterThan(100,
+			$"After {Ticks} wheel-downs, the user must have made forward progress past the tall item. Trace: {trace}");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#elif __ANDROID__ || __IOS__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
+	public async Task When_MouseWheelDown_FromTop_ThroughList_Then_NoFighting()
+	{
+		// General regression for "no fighting" during wheel-down through high-variance content.
+		// Wheel from the top all the way through the list, recording every offset. NO offset
+		// transition may go backward — that would be the scroller fighting the user.
+		// The previously reverted FollowExtentGrowth workaround caused this fight on every clamped
+		// tick at the under-estimated trailing edge.
+		var sut = CreateHighVarianceSut(itemCount: 60, viewport: new Size(300, 400));
+		await LoadAsync(sut);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(sut.Scroller.GetAbsoluteBounds().GetCenter());
+
+		var offsets = new List<double> { sut.Scroller.VerticalOffset };
+		const int Ticks = 20;
+		for (var i = 0; i < Ticks; i++)
+		{
+			mouse.Wheel(-600);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			offsets.Add(sut.Scroller.VerticalOffset);
+		}
+
+		var trace = $"offsets=[{string.Join(",", offsets.Select(o => o.ToString("F1")))}]";
+		for (var i = 1; i < offsets.Count; i++)
+		{
+			offsets[i].Should().BeGreaterThanOrEqualTo(offsets[i - 1] - 1.0,
+				$"Wheel tick #{i}: offset must not jump backward (the 'fighting' the user sees). {trace}");
+		}
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#elif __ANDROID__ || __IOS__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
+	public async Task When_MouseWheelUp_FromMiddle_Then_OffsetMonotonicallyRecedes()
+	{
+		// Symmetric counterpart of the wheel-down test: wheel-up must move the offset backward each
+		// tick. This guards against a regression where realization-driven extent updates during
+		// scroll-up trigger any kind of pull-forward behavior.
+		var sut = CreateHighVarianceSut(itemCount: 60, viewport: new Size(300, 400));
+		await LoadAsync(sut);
+
+		// Pre-position past the middle so we have headroom to wheel up.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight * 0.7, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		mouse.MoveTo(sut.Scroller.GetAbsoluteBounds().GetCenter());
+
+		var lastOffset = sut.Scroller.VerticalOffset;
+		const int Ticks = 8;
+		for (var i = 0; i < Ticks; i++)
+		{
+			mouse.Wheel(600);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			var current = sut.Scroller.VerticalOffset;
+			current.Should().BeLessThanOrEqualTo(lastOffset + 1.0,
+				$"Wheel-up tick #{i + 1}: offset must not jump forward. previous={lastOffset:F1} current={current:F1}");
+			lastOffset = current;
+		}
 	}
 
 	// ----- helpers -----

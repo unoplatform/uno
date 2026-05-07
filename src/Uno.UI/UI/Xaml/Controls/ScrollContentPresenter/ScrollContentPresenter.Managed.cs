@@ -101,6 +101,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Size? CustomContentExtent => null;
 
+		// True while a wheel-driven scroll animation is in flight on the content's AnchorPoint.
+		// Used by ScrollViewer.TrimOverscroll to avoid clamping the offset backward in response
+		// to ItemsRepeater realization-driven extent shrinkage during the user's mouse-wheel input —
+		// that clamp would otherwise produce a visible "fight" at high-variance items.
+		internal bool IsScrollAnimationInProgress
+		{
+			get
+			{
+				if (Content is UIElement contentElt && contentElt.Visual is { } visual)
+				{
+					return visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is not null;
+				}
+				return false;
+			}
+		}
+
 		private object RealContent => Content;
 
 		private readonly SerialDisposable _eventSubscriptions = new();
@@ -216,6 +232,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 				success &= targetHorizontalOffset == hOffset;
 
+				// No-fight guard: if the request points forward but max-clamping would move the
+				// offset backward (the request fell beyond the current scrollable region — typical
+				// when ItemsRepeater realization shrinks its estimated extent during a scroll),
+				// hold position rather than reverse direction. The user's intent was forward; making
+				// no progress is better than appearing to be pushed back. The symmetric backward case
+				// is impossible here because the min clamp is 0 and HorizontalOffset is always ≥ 0.
+				if (hOffset > HorizontalOffset && targetHorizontalOffset < HorizontalOffset)
+				{
+					targetHorizontalOffset = HorizontalOffset;
+					success = false;
+				}
+
 				if (!NumericExtensions.AreClose(HorizontalOffset, targetHorizontalOffset))
 				{
 					HorizontalOffset = targetHorizontalOffset;
@@ -229,6 +257,15 @@ namespace Microsoft.UI.Xaml.Controls
 				var targetVerticalOffset = ValidateInputOffset(vOffset, 0, maxOffset);
 
 				success &= targetVerticalOffset == vOffset;
+
+				// See comment for horizontal: refuse to reverse direction when the input was forward
+				// but max-clamping would push us back. The user perceives such a reversal as the
+				// scroller "fighting" against the wheel input.
+				if (vOffset > VerticalOffset && targetVerticalOffset < VerticalOffset)
+				{
+					targetVerticalOffset = VerticalOffset;
+					success = false;
+				}
 
 				if (!NumericExtensions.AreClose(VerticalOffset, targetVerticalOffset))
 				{
