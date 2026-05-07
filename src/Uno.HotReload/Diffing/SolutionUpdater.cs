@@ -46,7 +46,7 @@ public sealed class SolutionUpdater : ISolutionUpdater
 		foreach (var added in changeSet.AddedDocuments)
 		{
 			var found = false;
-			var projects = solution.Projects.Where(p => p.FilePath == added.Project.FilePath);
+			var projects = solution.Projects.Where(p => PathComparer.PathEquals(p.FilePath, added.Project.FilePath));
 			foreach (var project in projects)
 			{
 				found = true;
@@ -71,7 +71,7 @@ public sealed class SolutionUpdater : ISolutionUpdater
 		foreach (var added in changeSet.AddedAdditionalDocuments)
 		{
 			var found = false;
-			var projects = solution.Projects.Where(p => p.FilePath == added.Project.FilePath);
+			var projects = solution.Projects.Where(p => PathComparer.PathEquals(p.FilePath, added.Project.FilePath));
 			foreach (var project in projects)
 			{
 				found = true;
@@ -91,8 +91,8 @@ public sealed class SolutionUpdater : ISolutionUpdater
 		}
 
 		solution = solution
-			.RemoveDocuments(changeSet.RemovedDocuments)
-			.RemoveAdditionalDocuments(changeSet.RemovedAdditionalDocuments);
+			.RemoveDocuments([.. changeSet.RemovedDocuments.Select(r => r.Id)])
+			.RemoveAdditionalDocuments([.. changeSet.RemovedAdditionalDocuments.Select(r => r.Id)]);
 
 		// If a document has been added, we make sure to refresh the configuration of the analyzers.
 		// This is especially required for new XAML files to have the 'build_metadata.AdditionalFiles.SourceItemGroup = Page' updated

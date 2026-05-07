@@ -26,6 +26,19 @@ public interface ISolutionUpdater
 	/// member added to the contract is automatically reported as ignored
 	/// until an updater opts in.
 	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Reference-equality contract: when the updater performs no observable
+	/// mutation it <strong>must</strong> return the same <see cref="Solution"/>
+	/// instance it received in <paramref name="solution"/>. The hot-reload
+	/// manager keys its <c>NoChanges</c> fast path off
+	/// <c>result.Solution == originalSolution</c>; an updater that touches a
+	/// document and reverts (or returns an equivalent-but-distinct snapshot)
+	/// must produce a fresh instance only when at least one project / document
+	/// state changed, otherwise an unnecessary
+	/// <c>EmitSolutionUpdateAsync</c> roundtrip is incurred per cycle.
+	/// </para>
+	/// </remarks>
 	ValueTask<SolutionUpdateResult> UpdateAsync(
 		Solution solution,
 		ChangeSet changeSet,

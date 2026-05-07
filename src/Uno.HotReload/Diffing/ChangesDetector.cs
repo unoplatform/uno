@@ -34,8 +34,8 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 	{
 		var editedDocuments = new List<Document>();
 		var editedAdditionalDocuments = new List<TextDocument>();
-		var removedDocuments = new List<DocumentId>();
-		var removedAdditionalDocuments = new List<DocumentId>();
+		var removedDocuments = new List<(string FilePath, DocumentId Id)>();
+		var removedAdditionalDocuments = new List<(string FilePath, DocumentId Id)>();
 		var editedProjects = new List<Project>();
 		var potentiallyAdded = new List<string>();
 		var notFound = new List<string>();
@@ -57,7 +57,7 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 				}
 				else
 				{
-					removedDocuments.Add(document.Id);
+					removedDocuments.Add((document.FilePath ?? file, document.Id));
 				}
 			}
 
@@ -74,7 +74,7 @@ public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : ICh
 				}
 				else
 				{
-					removedAdditionalDocuments.Add(additionalDocument.Id);
+					removedAdditionalDocuments.Add((additionalDocument.FilePath ?? file, additionalDocument.Id));
 				}
 			}
 

@@ -145,7 +145,7 @@ public sealed class HotReloadManager : IDisposable
 
 		// Updaters report what they did not consume; surface that to the operation
 		// before any short-circuit so the report reflects skipped inputs.
-		hotReload.NotifyIgnored(result.IgnoredChanges);
+		hotReload.NotifyIgnored(result.IgnoredChanges.GetAllPaths());
 
 		// Updater encountered a fatal condition (typically a csproj re-evaluation
 		// error). The manager — not the updater — owns the operation lifecycle, so
