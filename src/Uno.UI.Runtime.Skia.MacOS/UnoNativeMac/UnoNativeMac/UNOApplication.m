@@ -6,6 +6,7 @@
 
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
+static accent_color_change_fn_ptr accent_color_change;
 static id<MTLDevice> device;
 
 inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
@@ -16,6 +17,40 @@ inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
 void uno_set_system_theme_change_callback(system_theme_change_fn_ptr p)
 {
     system_theme_change = p;
+}
+
+void uno_set_accent_color_change_callback(accent_color_change_fn_ptr p)
+{
+    accent_color_change = p;
+    // observe NSColor.controlAccentColor changes via the official AppKit notification.
+    // NSSystemColorsDidChangeNotification is posted AFTER AppKit has updated its
+    // color values, so controlAccentColor returns the new value when the callback fires.
+    [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSSystemColorsDidChangeNotification
+                    object:nil
+                     queue:[NSOperationQueue mainQueue]
+                usingBlock:^(NSNotification * _Nonnull note) {
+        if (accent_color_change) {
+            // Defer to next run loop iteration so NSColor.controlAccentColor
+            // returns the updated value (same pattern as theme change callback).
+            dispatch_async(dispatch_get_main_queue(), ^{
+                accent_color_change();
+            });
+        }
+    }];
+}
+
+void uno_get_accent_color(uint8_t *r, uint8_t *g, uint8_t *b)
+{
+    NSColor *accent = [[NSColor controlAccentColor] colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (accent) {
+        *r = (uint8_t)(accent.redComponent * 255.0);
+        *g = (uint8_t)(accent.greenComponent * 255.0);
+        *b = (uint8_t)(accent.blueComponent * 255.0);
+    } else {
+        // fallback to default blue
+        *r = 0; *g = 0x78; *b = 0xD7;
+    }
 }
 
 uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)

@@ -57,15 +57,13 @@ namespace Windows.UI.ViewManagement
 					systemTheme == SystemTheme.Light ? Colors.White : Colors.Black,
 				UIColorType.Foreground =>
 					systemTheme == SystemTheme.Light ? Colors.Black : Colors.White,
-				// The accent color values match SystemResources.xaml in Uno.UI
-				// as we can't access Application resources from here directly.
-				UIColorType.Accent => Color.FromArgb(255, 51, 153, 255),
-				UIColorType.AccentDark1 => Color.FromArgb(255, 0, 90, 158),
-				UIColorType.AccentDark2 => Color.FromArgb(255, 0, 66, 117),
-				UIColorType.AccentDark3 => Color.FromArgb(255, 0, 38, 66),
-				UIColorType.AccentLight1 => Color.FromArgb(255, 66, 156, 227),
-				UIColorType.AccentLight2 => Color.FromArgb(255, 118, 185, 237),
-				UIColorType.AccentLight3 => Color.FromArgb(255, 166, 216, 255),
+				UIColorType.Accent => AccentColorHelper.CurrentPalette.Accent,
+				UIColorType.AccentDark1 => AccentColorHelper.CurrentPalette.Dark1,
+				UIColorType.AccentDark2 => AccentColorHelper.CurrentPalette.Dark2,
+				UIColorType.AccentDark3 => AccentColorHelper.CurrentPalette.Dark3,
+				UIColorType.AccentLight1 => AccentColorHelper.CurrentPalette.Light1,
+				UIColorType.AccentLight2 => AccentColorHelper.CurrentPalette.Light2,
+				UIColorType.AccentLight3 => AccentColorHelper.CurrentPalette.Light3,
 				_ => Colors.Transparent
 			};
 		}
