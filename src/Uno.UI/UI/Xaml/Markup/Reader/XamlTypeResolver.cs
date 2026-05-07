@@ -478,19 +478,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					var asm = result.Assembly;
 					var alc = AssemblyLoadContext.GetLoadContext(asm);
 					this.Log().LogDebug(
-						"[XamlTypeResolver] Resolved '{OriginalName}' -> {ResolvedType} (assembly={Assembly}, ALC={ALC}, via={Via})",
-						originalName,
-						result.FullName,
-						asm.GetName().Name,
-						alc?.Name ?? "(default)",
-						resolvedVia);
+						$"[XamlTypeResolver] Resolved '{originalName}' -> {result.FullName} (assembly={asm.GetName().Name}, ALC={alc?.Name ?? "(default)"}, via={resolvedVia})");
 				}
 				else
 				{
 					this.Log().LogDebug(
-						"[XamlTypeResolver] Failed to resolve '{OriginalName}' (qualified='{QualifiedName}')",
-						originalName,
-						name);
+						$"[XamlTypeResolver] Failed to resolve '{originalName}' (qualified='{name}')");
 				}
 			}
 
