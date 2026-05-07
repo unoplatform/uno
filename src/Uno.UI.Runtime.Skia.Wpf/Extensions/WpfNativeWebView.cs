@@ -446,13 +446,29 @@ internal sealed class WpfWebView2 : HwndHost
 		var uriValue = PWSTR.From(httpRequestMessage.RequestUri?.ToString() ?? string.Empty);
 		var methodValue = PWSTR.From(httpRequestMessage.Method.Method);
 		var headersValue = PWSTR.From(builder.ToString());
+		DirectN.IStream? postData = null;
+		var postDataPtr = IntPtr.Zero;
 		try
 		{
-			environment2.CreateWebResourceRequest(uriValue, methodValue, null!, headersValue, out var request).ThrowOnError();
+			var bodyBytes = httpRequestMessage.Content is null
+				? Array.Empty<byte>()
+				: httpRequestMessage.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
+			if (bodyBytes.Length > 0)
+			{
+				postDataPtr = Marshal.AllocHGlobal(bodyBytes.Length);
+				Marshal.Copy(bodyBytes, 0, postDataPtr, bodyBytes.Length);
+			}
+
+			postData = DirectN.Functions.SHCreateMemStream(postDataPtr, (uint)bodyBytes.Length);
+			environment2.CreateWebResourceRequest(uriValue, methodValue, postData, headersValue, out var request).ThrowOnError();
 			coreWebView22.NavigateWithWebResourceRequest(request).ThrowOnError();
 		}
 		finally
 		{
+			if (postDataPtr != IntPtr.Zero)
+			{
+				Marshal.FreeHGlobal(postDataPtr);
+			}
 			PWSTR.Dispose(ref uriValue);
 			PWSTR.Dispose(ref methodValue);
 			PWSTR.Dispose(ref headersValue);
@@ -525,7 +541,11 @@ internal sealed class WpfWebView2 : HwndHost
 	{
 		if (_controller is not null)
 		{
-			_controller.Close().ThrowOnError(false);
+			var result = _controller.Close();
+			if (result.IsError && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"WebView2 controller close failed: {result}");
+			}
 			_controller = null;
 		}
 
