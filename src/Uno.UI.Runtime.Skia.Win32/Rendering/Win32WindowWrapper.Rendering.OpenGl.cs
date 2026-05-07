@@ -139,6 +139,14 @@ internal partial class Win32WindowWrapper
 				return null;
 			}
 
+			// Detach the GL context from the calling thread before returning, so a downstream
+			// render thread can make it current. WglCurrentContextDisposable above doesn't
+			// restore to "no context" when there was none before, so we detach explicitly.
+			if (!PInvoke.wglMakeCurrent(default, HGLRC.Null))
+			{
+				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} (detach) failed: {Win32Helper.GetErrorMessage()}");
+			}
+
 			return new GlRenderer(hwnd, hdc, glContext, grGlInterface, grContext);
 		}
 
@@ -208,5 +216,9 @@ internal partial class Win32WindowWrapper
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 			_grContext = GRContext.CreateGl(_grGlInterface);
 		}
+
+		// VSync via wglSwapInterval(1) already paces SwapBuffers at the screen
+		// refresh rate, so no retargeting is needed here.
+		void IRenderer.UpdateRefreshRate(double fps) { }
 	}
 }
