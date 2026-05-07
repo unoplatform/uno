@@ -18,7 +18,7 @@
 	-->
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
-	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.BindableTypeLinkerGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDescriptorGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 
 	<!--
@@ -464,30 +464,37 @@
 	</Target>
 
 	<!--
-	  Generate linker descriptor for [Bindable] types to preserve public properties in Native AOT
+	  Generate ILLink descriptor files for Native AOT:
+	    - Uno.Bindable.Descriptor.xml        preserves public properties on types referenced by [Bindable] types
+	    - Uno.AttachedProperties.Descriptor.xml  preserves Get/Set accessors for attached DependencyProperty members
+	  Assemblies are loaded only once, shared across both generators.
 	  -->
-	<Target Name="_UnoGenerateBindableTypeLinkerDescriptor"
+	<Target Name="_UnoGenerateLinkerDescriptors"
 			Condition="'$(IsUnoHead)'=='true' and '$(PublishAot)'=='true'"
 			AfterTargets="CoreCompile"
 			BeforeTargets="PrepareForILLink">
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
-			<_BindableTypeLinkerReferencePaths Include="@(ReferencePath)" Condition="'%(Extension)' == '.dll'" />
+			<_LinkerDescriptorReferencePaths Include="@(ReferencePath)" Condition="'%(Extension)' == '.dll'" />
 		</ItemGroup>
 
 		<PropertyGroup>
 			<_BindableTypeLinkerDescriptorFile>$(IntermediateOutputPath)Uno.Bindable.Descriptor.xml</_BindableTypeLinkerDescriptorFile>
+			<_AttachedPropertiesLinkerDescriptorFile>$(IntermediateOutputPath)Uno.AttachedProperties.Descriptor.xml</_AttachedPropertiesLinkerDescriptorFile>
 		</PropertyGroup>
 
-		<BindableTypeLinkerGeneratorTask_v0
+		<LinkerDescriptorGeneratorTask_v0
 			AssemblyPath="@(IntermediateAssembly)"
-			OutputDescriptorPath="$(_BindableTypeLinkerDescriptorFile)"
-			ReferencePath="@(_BindableTypeLinkerReferencePaths)" />
+			BindableDescriptorOutputPath="$(_BindableTypeLinkerDescriptorFile)"
+			AttachedPropertiesDescriptorOutputPath="$(_AttachedPropertiesLinkerDescriptorFile)"
+			ReferencePath="@(_LinkerDescriptorReferencePaths)" />
 
 		<ItemGroup>
 			<TrimmerRootDescriptor Include="$(_BindableTypeLinkerDescriptorFile)" Condition="Exists('$(_BindableTypeLinkerDescriptorFile)')" />
+			<TrimmerRootDescriptor Include="$(_AttachedPropertiesLinkerDescriptorFile)" Condition="Exists('$(_AttachedPropertiesLinkerDescriptorFile)')" />
 			<FileWrites Include="$(_BindableTypeLinkerDescriptorFile)" Condition="Exists('$(_BindableTypeLinkerDescriptorFile)')" />
+			<FileWrites Include="$(_AttachedPropertiesLinkerDescriptorFile)" Condition="Exists('$(_AttachedPropertiesLinkerDescriptorFile)')" />
 		</ItemGroup>
 
 	</Target>
