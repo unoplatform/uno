@@ -10,6 +10,7 @@ using Uno.UI;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -162,26 +163,27 @@ partial class ContentPresenter
 		}
 		new Span<(int, ContentPresenter)>(rentedArray, 0, _nativeHosts.Count).Sort((one, two) => one.Item1 - two.Item1);
 
+		Console.WriteLine($"Ramez {string.Join(", ", new Span<(int, ContentPresenter)>(rentedArray, 0, _nativeHosts.Count).ToArray().Select(nh => nh.Item2.FindFirstAncestor<WebView2>().Name))}"); // For debug purposes, to verify the order is correct
 		for (var index = 0; index < _nativeHosts.Count; index++)
 		{
 			var host = rentedArray[index].Item2;
 			var order = rentedArray[index].Item1;
 
-			if (host._nativeElementHostingExtension.Value.SupportsZIndex())
+			if (host._nativeElementAttached)
 			{
-				host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
-			}
-			else
-			{
-				if (host._nativeElementAttached)
+				if (order == -1)
 				{
-					if (order == -1)
+					// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
+					Debug.Assert(host.IsNativeHost);
+					host._nativeElementAttached = false;
+					host._lastArrangeRect = null;
+					host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+				}
+				else
+				{
+					if (host._nativeElementHostingExtension.Value.SupportsZIndex())
 					{
-						// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
-						Debug.Assert(host.IsNativeHost);
-						host._nativeElementAttached = false;
-						host._lastArrangeRect = null;
-						host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+						host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
 					}
 					else
 					{
@@ -190,10 +192,14 @@ partial class ContentPresenter
 						host.ArrangeNativeElement();
 					}
 				}
-				else if (order != -1)
+			}
+			else if (order != -1)
+			{
+				host.AttachNativeElement();
+				host.ArrangeNativeElement();
+				if (host._nativeElementHostingExtension.Value.SupportsZIndex())
 				{
-					host.AttachNativeElement();
-					host.ArrangeNativeElement();
+					host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
 				}
 			}
 		}
