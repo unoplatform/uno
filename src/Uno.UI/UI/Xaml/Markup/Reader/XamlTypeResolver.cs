@@ -401,6 +401,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"[XamlTypeResolver] Default-namespace search for '{originalName}' in defaultXmlNs='{defaultXmlNamespace}', candidate clrNamespaces=[{string.Join(", ", clrNamespaces)}], lookupAssemblies=[{string.Join(", ", _lookupAssemblies.Select(a => a.GetName().Name))}]");
+				}
+
 				// Search first using the default namespace
 				foreach (var clrNamespace in clrNamespaces)
 				{
@@ -409,12 +414,18 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					// behavior (because of Wasm missing stack walking feature)
 					foreach (var assembly in _lookupAssemblies)
 					{
-						var type = assembly.GetType(clrNamespace + "." + name);
+						var fqn = clrNamespace + "." + name;
+						var type = assembly.GetType(fqn);
+
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().LogDebug($"[XamlTypeResolver]   try assembly.GetType('{fqn}') in assembly={assembly.GetName().Name} -> {(type != null ? "HIT " + type.FullName : "miss")}");
+						}
 
 						if (type != null)
 						{
 							result = type;
-							resolvedVia = "default-namespace+_lookupAssemblies";
+							resolvedVia = $"default-namespace+_lookupAssemblies({assembly.GetName().Name}@{clrNamespace})";
 							break;
 						}
 					}
@@ -434,34 +445,105 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			if (result == null)
 			{
+				// Each resolver lambda is expanded so it can emit Trace logs describing exactly
+				// what it tried and what came back. The outer foreach below logs the final
+				// hit/miss summary per resolver.
 				var resolvers = new (string Via, Func<Type?> Fn)[] {
 
 					// As a full name
-					("Type.GetType(name)", () => name != null ? Type.GetType(name) : null),
+					("Type.GetType(name)", () =>
+					{
+						if (name == null)
+						{
+							if (this.Log().IsEnabled(LogLevel.Trace))
+							{
+								this.Log().Trace($"[XamlTypeResolver]     Type.GetType(name): name==null, skipping");
+							}
+							return null;
+						}
+						var t = Type.GetType(name);
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"[XamlTypeResolver]     Type.GetType('{name}') -> {(t != null ? "HIT " + t.FullName : "miss")}");
+						}
+						return t;
+					}),
 
 					// As a partial name using the original type
-					("Type.GetType(originalName)", () => Type.GetType(originalName)),
+					("Type.GetType(originalName)", () =>
+					{
+						var t = Type.GetType(originalName);
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"[XamlTypeResolver]     Type.GetType('{originalName}') -> {(t != null ? "HIT " + t.FullName : "miss")}");
+						}
+						return t;
+					}),
 
 					// As a partial name using the non-qualified name
-					("Type.GetType(unqualified)", () => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? "")),
+					("Type.GetType(unqualified)", () =>
+					{
+						var unqualified = originalName.Split(':').ElementAtOrDefault(1) ?? "";
+						var t = Type.GetType(unqualified);
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"[XamlTypeResolver]     Type.GetType(unqualified='{unqualified}') -> {(t != null ? "HIT " + t.FullName : "miss")}");
+						}
+						return t;
+					}),
 
 					// Look for the type in all loaded assemblies
-					("AppDomain.GetAssemblies", () => AppDomain.CurrentDomain
-						.GetAssemblies()
-						.Select(
+					("AppDomain.GetAssemblies", () =>
+					{
+						var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"[XamlTypeResolver]     AppDomain scan: {assemblies.Length} assemblies, looking for name='{name}' or originalName='{originalName}'");
+						}
+						foreach (var a in assemblies)
+						{
+							[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+							[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operation")]
+							static Type? Probe(global::System.Reflection.Assembly a, string? name, string originalName)
+								=> (name != null ? a.GetType(name) : null) ?? a.GetType(originalName);
 
-							[UnconditionalSuppressMessage("Trimming","IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
-							(a) =>
-								(name != null ? a.GetType(name) : null) ??
-								a.GetType(originalName)
-						)
-						.Trim()
-						.FirstOrDefault()),
+							var t = Probe(a, name, originalName);
+							if (t != null)
+							{
+								if (this.Log().IsEnabled(LogLevel.Trace))
+								{
+									var aAlc = AssemblyLoadContext.GetLoadContext(a);
+									this.Log().Trace($"[XamlTypeResolver]       AppDomain scan HIT in assembly={a.GetName().Name} (ALC={aAlc?.Name ?? "(default)"}) -> {t.FullName}");
+								}
+								return t;
+							}
+						}
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"[XamlTypeResolver]     AppDomain scan: no hit across {assemblies.Length} assemblies");
+						}
+						return null;
+					}),
 				};
 
 				foreach (var (via, fn) in resolvers)
 				{
 					var t = fn();
+
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						if (t != null)
+						{
+							var tAsm = t.Assembly;
+							var tAlc = AssemblyLoadContext.GetLoadContext(tAsm);
+							this.Log().LogDebug($"[XamlTypeResolver]   resolver '{via}' for '{originalName}' (qualified='{name}') -> HIT {t.FullName} (assembly={tAsm.GetName().Name}, ALC={tAlc?.Name ?? "(default)"})");
+						}
+						else
+						{
+							this.Log().LogDebug($"[XamlTypeResolver]   resolver '{via}' for '{originalName}' (qualified='{name}') -> miss");
+						}
+					}
+
 					if (t != null)
 					{
 						result = t;
