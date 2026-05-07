@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class SplinePointKeyFrame : global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame
 	{
-		// Skipping already declared property KeySpline
 		// Skipping already declared property KeySplineProperty
+		// Skipping already declared property KeySpline
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.SplinePointKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.SplinePointKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySplineProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySpline.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySpline.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySplineProperty.get
 	}
 }
