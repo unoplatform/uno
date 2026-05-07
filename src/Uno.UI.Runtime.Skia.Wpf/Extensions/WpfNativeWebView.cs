@@ -51,7 +51,13 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 		nativeWebView.WebMessageReceived += NativeWebView_WebMessageReceived;
 		nativeWebView.NavigationStarting += NativeWebView_NavigationStarting;
 		nativeWebView.CoreWebView2InitializationCompleted += NativeWebView_CoreWebView2InitializationCompleted;
-		_ = nativeWebView.EnsureCoreWebView2Async();
+		_ = nativeWebView.EnsureCoreWebView2Async().ContinueWith(task =>
+		{
+			if (task.Exception is not null && this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError("Failed to initialize native WPF WebView2.", task.Exception);
+			}
+		}, TaskContinuationOptions.OnlyOnFaulted);
 	}
 
 	public string DocumentTitle
@@ -364,7 +370,7 @@ internal sealed class WpfWebView2 : HwndHost
 	{
 		if (CoreWebView2 is null)
 		{
-			return Task.FromResult<string?>(null);
+			return Task.FromException<string?>(new InvalidOperationException("CoreWebView2 is not initialized."));
 		}
 
 		var scriptValue = PWSTR.From(script);
@@ -450,9 +456,19 @@ internal sealed class WpfWebView2 : HwndHost
 		var postDataPtr = IntPtr.Zero;
 		try
 		{
-			var bodyBytes = httpRequestMessage.Content is null
-				? Array.Empty<byte>()
-				: httpRequestMessage.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
+			byte[] bodyBytes;
+			if (httpRequestMessage.Content is null)
+			{
+				bodyBytes = Array.Empty<byte>();
+			}
+			else
+			{
+				using var requestStream = httpRequestMessage.Content.ReadAsStream();
+				using var memoryStream = new System.IO.MemoryStream();
+				requestStream.CopyTo(memoryStream);
+				bodyBytes = memoryStream.ToArray();
+			}
+
 			if (bodyBytes.Length > 0)
 			{
 				postDataPtr = Marshal.AllocHGlobal(bodyBytes.Length);
@@ -626,7 +642,14 @@ internal sealed class WpfWebView2 : HwndHost
 			COREWEBVIEW2_WEB_ERROR_STATUS webErrorStatus = default;
 			args.get_WebErrorStatus(ref webErrorStatus).ThrowOnError();
 			var httpStatusCode = 0;
-			(args as ICoreWebView2NavigationCompletedEventArgs2)?.get_HttpStatusCode(ref httpStatusCode).ThrowOnError(false);
+			if (args is ICoreWebView2NavigationCompletedEventArgs2 args2)
+			{
+				args2.get_HttpStatusCode(ref httpStatusCode).ThrowOnError(false);
+			}
+			else if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug("ICoreWebView2NavigationCompletedEventArgs2 is unavailable; HttpStatusCode defaulting to 0.");
+			}
 			NavigationCompleted?.Invoke(this, new WpfCoreWebView2NavigationCompletedEventArgs(navigationId, isSuccess, httpStatusCode, webErrorStatus));
 		});
 		coreWebView2.add_NavigationCompleted(_navigationCompletedHandler, ref _navigationCompletedToken).ThrowOnError();
