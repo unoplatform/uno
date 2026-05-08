@@ -433,7 +433,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				}
 				.Apply(b => b.SetBinding(FrameworkElement.HeightProperty, new Binding { Path = nameof(MyItem.Height) }))
 				.Apply(b => b.SetBinding(FrameworkElement.BackgroundProperty, new Binding { Path = nameof(MyItem.Color) }))),
-				new Size(120, 500)
+				new Size(120, 500),
+				// Keep realization strict: don't pre-realize item #3 during Load(). The test asserts
+				// that scrolling first materializes item #3 and that the extent grows once item #3's
+				// actual size is known — that requires item #3 to be unmeasured at Load() time.
+				repeater =>
+				{
+					repeater.HorizontalCacheLength = 0.0;
+					repeater.VerticalCacheLength = 0.0;
+				}
 			);
 
 			await sut.Load();
@@ -567,7 +575,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 #nullable enable
 		private static class SUT
 		{
-			public static SUT<T> Create<T>(ObservableCollection<T> source, DataTemplate? itemTemplate = null, Size? viewport = default)
+			public static SUT<T> Create<T>(ObservableCollection<T> source, DataTemplate? itemTemplate = null, Size? viewport = default, Action<ItemsRepeater>? configureRepeater = null)
 			{
 				itemTemplate ??= new DataTemplate(() => new Border
 				{
@@ -594,6 +602,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 						})
 					})
 				};
+
+				configureRepeater?.Invoke(repeater);
 
 				if (viewport is not null)
 				{

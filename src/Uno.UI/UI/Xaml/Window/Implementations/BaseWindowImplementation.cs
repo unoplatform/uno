@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
 using Uno.UI.Core;
+using Uno.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Uno.Disposables;
 
@@ -364,7 +365,12 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 	{
 		_contentLoaded = true;
 
-		TryActivate();
+		// Defer activation to the next dispatcher cycle. NotifyContentLoaded is called
+		// from FrameworkElement.Loaded (which fires inside the frame tick during loaded
+		// event processing). Synchronous activation would trigger SynchronousRenderAndDraw
+		// and re-enter the frame tick — WinUI treats tick re-entry as fatal (XAML_FAIL_FAST).
+		// Window activation is async in WinUI; deferring matches that behavior.
+		NativeDispatcher.Main.Enqueue(TryActivate);
 	}
 
 	private void TryActivate()

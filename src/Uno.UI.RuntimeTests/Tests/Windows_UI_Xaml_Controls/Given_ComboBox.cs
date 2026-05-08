@@ -1381,6 +1381,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Popup.Closed async timing vs. new IdleSynchronizer-based WaitForIdle
 		public async Task When_ComboBox_Popup_Dismissed()
 		{
 			// test case built against https://github.com/unoplatform/uno/issues/20014
