@@ -18,24 +18,17 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# Auto-detect: on release/* or feature/* branches, switch to warning-only mode
-# (stable builds test with versions not yet public on NuGet.org;
-#  feature branches may reference packages from other feature builds)
+# Auto-detect: only fail on master or PRs targeting master.
+# All other branches (release, feature, dev) use warning-only mode since they
+# may reference packages not yet published to NuGet.org.
 if (-not $WarningOnly) {
     $branch = $env:BUILD_SOURCEBRANCH
     $targetBranch = $env:SYSTEM_PULLREQUEST_TARGETBRANCH
-    if (($branch -and $branch -like 'refs/heads/release/*') -or
-        ($targetBranch -and $targetBranch -like 'refs/heads/release/*')) {
-        $detected = if ($targetBranch -like 'refs/heads/release/*') { $targetBranch } else { $branch }
-        Write-Host "Detected release branch ($detected) - running in warning-only mode." -ForegroundColor Yellow
-        $WarningOnly = $true
-    }
-    elseif ($targetBranch -and ($targetBranch -like 'feature/*' -or $targetBranch -like 'refs/heads/feature/*')) {
-        Write-Host "Detected feature target branch ($targetBranch) - running in warning-only mode." -ForegroundColor Yellow
-        $WarningOnly = $true
-    }
-    elseif ($branch -and ($branch -like 'refs/heads/dev/*' -or $branch -like 'refs/heads/feature/*') -and -not $targetBranch) {
-        Write-Host "Detected feature/dev branch CI build ($branch) - running in warning-only mode." -ForegroundColor Yellow
+    $isMaster = $branch -eq 'refs/heads/master'
+    $isPRToMaster = $targetBranch -eq 'refs/heads/master'
+
+    if (-not $isMaster -and -not $isPRToMaster) {
+        Write-Host "Non-master branch (source: $branch, target: $targetBranch) - running in warning-only mode." -ForegroundColor Yellow
         $WarningOnly = $true
     }
 }
