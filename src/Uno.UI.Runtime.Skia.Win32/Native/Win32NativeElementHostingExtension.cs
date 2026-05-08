@@ -182,6 +182,10 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		Win32NativeElementHostingExtension? higher = null;
 		foreach (var ext in _attached)
 		{
+			if (ext._presenter.XamlRoot != _presenter.XamlRoot)
+			{
+				continue;
+			}
 			if (ext._zIndex > _zIndex && (higher is null || ext._zIndex < higher._zIndex))
 			{
 				higher = ext;

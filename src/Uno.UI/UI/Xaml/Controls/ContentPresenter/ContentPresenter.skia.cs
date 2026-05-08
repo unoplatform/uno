@@ -20,7 +20,7 @@ partial class ContentPresenter
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
 	private bool _nativeElementAttached;
-	private IDisposable _frameRenderedDisposable;
+	private SerialDisposable _frameRenderedDisposable = new();
 	private Rect? _lastArrangeRect;
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
@@ -90,7 +90,7 @@ partial class ContentPresenter
 		_nativeHosts.Add(this);
 		var ct = ((CompositionTarget)Visual.CompositionTarget)!;
 		ct.FrameRendered += OnFrameRendered;
-		_frameRenderedDisposable = Disposable.Create(() => ct.FrameRendered -= OnFrameRendered);
+		_frameRenderedDisposable.Disposable = Disposable.Create(() => ct.FrameRendered -= OnFrameRendered);
 	}
 
 	private void OnFrameRendered()
@@ -108,10 +108,9 @@ partial class ContentPresenter
 #endif
 		_nativeHosts.Remove(this);
 		_lastArrangeRect = null;
+		_frameRenderedDisposable.Disposable = null;
 		if (_nativeElementAttached)
 		{
-			_frameRenderedDisposable.Dispose();
-			_frameRenderedDisposable = null;
 			_nativeElementAttached = false;
 			_nativeElementHostingExtension.Value!.DetachNativeElement(content);
 		}
@@ -176,6 +175,7 @@ partial class ContentPresenter
 					Debug.Assert(host.IsNativeHost);
 					host._nativeElementAttached = false;
 					host._lastArrangeRect = null;
+					host._frameRenderedDisposable.Disposable = null;
 					host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
 				}
 				else
