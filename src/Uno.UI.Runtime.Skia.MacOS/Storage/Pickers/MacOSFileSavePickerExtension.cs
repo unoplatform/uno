@@ -61,33 +61,28 @@ internal class MacOSFileSavePickerExtension : IFileSavePickerExtension
 
 	public async Task<StorageFile?> PickSaveFileAsync(CancellationToken token)
 	{
-		string? file;
-		if (NativeDispatcher.Main.HasThreadAccess)
+		// Always Enqueue — running NSSavePanel.runModal reentrantly from an in-flight
+		// pointer handler crashes InputManager and corrupts return state. See
+		// MacOSFileOpenPickerExtension.PickMultipleFilesAsync for full context.
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
+		NativeDispatcher.Main.Enqueue(() =>
 		{
-			file = NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length);
-		}
-		else
-		{
-			var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
-			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
-			NativeDispatcher.Main.Enqueue(() =>
+			if (token.IsCancellationRequested)
 			{
-				if (token.IsCancellationRequested)
-				{
-					tcs.TrySetCanceled(token);
-					return;
-				}
-				try
-				{
-					tcs.TrySetResult(NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length));
-				}
-				catch (Exception ex)
-				{
-					tcs.TrySetException(ex);
-				}
-			});
-			file = await tcs.Task;
-		}
+				tcs.TrySetCanceled(token);
+				return;
+			}
+			try
+			{
+				tcs.TrySetResult(NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length));
+			}
+			catch (Exception ex)
+			{
+				tcs.TrySetException(ex);
+			}
+		});
+		var file = await tcs.Task;
 
 		return file is null ? null : await StorageFile.GetFileFromPathAsync(file);
 	}

@@ -98,9 +98,9 @@ internal static class AccessibilityRouter
 	{
 		if (!SkiaAccessibilityBase.TryGetPeerOwner(peer, out var element))
 		{
-			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Debug))
+			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Trace))
 			{
-				typeof(AccessibilityRouter).Log().Debug(
+				typeof(AccessibilityRouter).Log().Trace(
 					$"[A11y] AccessibilityRouter.Resolve: could not resolve owner UIElement for peer {peer?.GetType().Name ?? "null"}");
 			}
 			return null;
@@ -114,9 +114,9 @@ internal static class AccessibilityRouter
 	{
 		if (element.XamlRoot is not { } xamlRoot)
 		{
-			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Debug))
+			if (typeof(AccessibilityRouter).Log().IsEnabled(LogLevel.Trace))
 			{
-				typeof(AccessibilityRouter).Log().Debug(
+				typeof(AccessibilityRouter).Log().Trace(
 					$"[A11y] AccessibilityRouter.Resolve: element {element.GetType().Name} has no XamlRoot; dropping callback");
 			}
 			return null;

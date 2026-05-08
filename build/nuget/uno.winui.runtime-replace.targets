@@ -102,4 +102,19 @@
 	</ItemGroup>
 
 
+	<Target Name="RemovePdbFilesFromOutput"
+			AfterTargets="ReplaceUnoRuntime;ResolveLockFileCopyLocalFiles"
+			Condition="'$(DebugType)' == 'none' or '$(DebugSymbols)' == 'false'">
+		<ItemGroup>
+			<_ReferenceCopyLocalPathsPdbToRemove
+				Include="@(ReferenceCopyLocalPaths)"
+				Condition="'%(Extension)' == '.pdb'" />
+			<_RuntimeTargetsCopyLocalItemsPdbToRemove
+				Include="@(RuntimeTargetsCopyLocalItems)"
+				Condition="'%(Extension)' == '.pdb'" />
+
+			<ReferenceCopyLocalPaths Remove="@(_ReferenceCopyLocalPathsPdbToRemove)" />
+			<RuntimeTargetsCopyLocalItems Remove="@(_RuntimeTargetsCopyLocalItemsPdbToRemove)" />
+		</ItemGroup>
+	</Target>
 </Project>

@@ -14,6 +14,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Lottie\AnimatedVisualPlayerVisibility.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Lottie\LottieEmbeddedJson.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -861,6 +865,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\UiaChildCycle_DataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\CompositionPathTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1078,6 +1086,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\UISettingsTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\TextScalingSample.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5858,6 +5870,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\LoggingContentControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\Recipe.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Lottie\AnimatedVisualPlayerVisibility.xaml.cs">
+      <DependentUpon>AnimatedVisualPlayerVisibility.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Lottie\LottieEmbeddedJson.xaml.cs">
       <DependentUpon>LottieEmbeddedJson.xaml</DependentUpon>
     </Compile>
@@ -6486,6 +6501,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationPropertiesExtensions_Role.xaml.cs">
       <DependentUpon>AutomationPropertiesExtensions_Role.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\UiaChildCycle_DataGrid.xaml.cs">
+      <DependentUpon>UiaChildCycle_DataGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RotatingCubeGlCanvasElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SimpleTriangleGlCanvasElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\CompositionPathTests.xaml.cs">
@@ -6617,6 +6635,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\UISettingsTests.xaml.cs">
       <DependentUpon>UISettingsTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\TextScalingSample.xaml.cs">
+      <DependentUpon>TextScalingSample.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ApplicationTests\Given_Application.xaml.cs">
       <DependentUpon>Given_Application.xaml</DependentUpon>

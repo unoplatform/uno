@@ -49,9 +49,8 @@ internal static class SkiaRenderHelper
 		return (picture, path, nativeVisualsInZOrder);
 	}
 
-	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, Action<SKCanvas>? postRenderAction)
 	{
-		using var fpsHelperDisposable = fpsHelper.BeginFrame();
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(background);
@@ -64,7 +63,7 @@ internal static class SkiaRenderHelper
 				}
 			}
 
-			fpsHelper.DrawFps(canvas);
+			postRenderAction?.Invoke(canvas);
 		}
 
 		// update the control
@@ -195,6 +194,10 @@ internal static class SkiaRenderHelper
 		private int _consecutiveIdleTicks;
 		private bool _isIdle;
 		private bool _timerRunning;
+		// Set when TimerTick triggers the final "show Idle" redraw, consumed by the next
+		// BeginFrame so that one render doesn't restart the 1 Hz timer and re-enter the
+		// active state we just left.
+		private bool _idleRedrawPending;
 
 		public FpsHelper(int numberOfFramesToCalculateFrameTime = 10)
 		{
@@ -203,15 +206,13 @@ internal static class SkiaRenderHelper
 			_fpsTimer = new Timer(static state => (state as FpsHelper)?.TimerTick(), this, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 		}
 
-		public double Fps { get; private set; }
-		public double FrameTime { get; private set; }
-		public int DroppedFrames { get; private set; }
-		public int UnpresentedFrames { get; private set; }
-		public double DrawToPresentDelayMs { get; private set; }
+		private double _fps;
+		private double _frameTime;
+		private int _droppedFrames;
+		private int _unpresentedFrames;
+		private double _drawToPresentDelayMs;
 
-		public float? Scale { private get; set; }
-
-		internal Action? RequestRedraw;
+		public Action? RequestRedraw { private get; set; }
 
 		// All hooks early-return when the counter is disabled so the rendering pipeline
 		// pays only a single property read per call site. Null-safe against headless/
@@ -224,7 +225,14 @@ internal static class SkiaRenderHelper
 			_measureThisFrame = IsEnabled;
 			if (_measureThisFrame)
 			{
-				if (!_timerRunning)
+				if (_idleRedrawPending)
+				{
+					// This render is the final "show Idle" pass we asked for from TimerTick.
+					// Restarting the 1 Hz timer here would immediately observe the just-bumped
+					// frame generation and flip _isIdle back to false, defeating idle detection.
+					_idleRedrawPending = false;
+				}
+				else if (!_timerRunning)
 				{
 					_fpsTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1));
 					_timerRunning = true;
@@ -252,7 +260,7 @@ internal static class SkiaRenderHelper
 			{
 				acc += t;
 			}
-			FrameTime = acc.TotalMilliseconds / _frameTimes.Length;
+			_frameTime = acc.TotalMilliseconds / _frameTimes.Length;
 
 			Interlocked.Increment(ref _framesRenderedInLastSecond);
 		}
@@ -329,25 +337,18 @@ internal static class SkiaRenderHelper
 			}
 
 			var culture = CultureInfo.InvariantCulture;
-			var fpsText = Fps.ToString("F1", culture);
-			var droppedText = DroppedFrames.ToString(culture);
-			var unpresentedText = UnpresentedFrames.ToString(culture);
-			var frameTimeText = FormattableString.Invariant($"{FrameTime:F1} ms");
+			var fpsText = _fps.ToString("F1", culture);
+			var droppedText = _droppedFrames.ToString(culture);
+			var unpresentedText = _unpresentedFrames.ToString(culture);
+			var frameTimeText = FormattableString.Invariant($"{_frameTime:F1} ms");
 			var isIdle = _isIdle;
-			var delayText = isIdle ? "Idle" : FormattableString.Invariant($"{DrawToPresentDelayMs:F1} ms");
+			var delayText = isIdle ? "Idle" : FormattableString.Invariant($"{_drawToPresentDelayMs:F1} ms");
 
 			var col1Width = Math.Max(_minColumn1Width, MaxTextWidth(fpsText, droppedText, unpresentedText));
 			var col2Width = Math.Max(_minColumn2Width, MaxTextWidth(frameTimeText, delayText));
 
 			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
 			var panelHeight = Padding + 3 * RowHeight + Padding;
-
-			var scale = Scale;
-			if (scale is { } scaleValue)
-			{
-				canvas.Save();
-				canvas.Scale(scaleValue, scaleValue);
-			}
 
 			canvas.DrawRoundRect(new SKRect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius, BackgroundCornerRadius, isIdle ? _idleBackgroundPaint : _backgroundPaint);
 
@@ -362,11 +363,6 @@ internal static class SkiaRenderHelper
 
 			DrawCell(canvas, col2IconX, col2TextX, 0, frameTimeText, DrawFrameTimeIcon);
 			DrawCell(canvas, col2IconX, col2TextX, 1, delayText, DrawClockIcon);
-
-			if (scale is not null)
-			{
-				canvas.Restore();
-			}
 		}
 
 		private static float MaxTextWidth(params string[] texts)
@@ -456,17 +452,17 @@ internal static class SkiaRenderHelper
 				return;
 			}
 
-			Fps = Interlocked.Exchange(ref _framesRenderedInLastSecond, 0);
+			_fps = Interlocked.Exchange(ref _framesRenderedInLastSecond, 0);
 
-			DroppedFrames = Interlocked.Exchange(ref _droppedThisSecond, 0);
-			UnpresentedFrames = Interlocked.Exchange(ref _unpresentedThisSecond, 0);
+			_droppedFrames = Interlocked.Exchange(ref _droppedThisSecond, 0);
+			_unpresentedFrames = Interlocked.Exchange(ref _unpresentedThisSecond, 0);
 
 			long accTicks = 0;
 			for (var i = 0; i < _drawToPresentTimeTicks.Length; i++)
 			{
 				accTicks += Interlocked.Read(ref _drawToPresentTimeTicks[i]);
 			}
-			DrawToPresentDelayMs = TimeSpan.FromTicks(accTicks).TotalMilliseconds / _drawToPresentTimeTicks.Length;
+			_drawToPresentDelayMs = TimeSpan.FromTicks(accTicks).TotalMilliseconds / _drawToPresentTimeTicks.Length;
 
 			var currentGen = Interlocked.Read(ref _currentFrameGeneration);
 			var noNewFrames = currentGen == _lastTimerTickGeneration;
@@ -478,12 +474,12 @@ internal static class SkiaRenderHelper
 				if (_consecutiveIdleTicks >= 2)
 				{
 					_isIdle = true;
-					RequestRedraw?.Invoke();
+					_idleRedrawPending = true;
 					_fpsTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 					_timerRunning = false;
+					RequestRedraw?.Invoke();
 					return;
 				}
-				RequestRedraw?.Invoke();
 			}
 			else
 			{
@@ -510,11 +506,12 @@ internal static class SkiaRenderHelper
 			_lastTimerTickGeneration = Interlocked.Read(ref _currentFrameGeneration);
 			_consecutiveIdleTicks = 0;
 			_isIdle = false;
-			Fps = 0;
-			FrameTime = 0;
-			DroppedFrames = 0;
-			UnpresentedFrames = 0;
-			DrawToPresentDelayMs = 0;
+			_idleRedrawPending = false;
+			_fps = 0;
+			_frameTime = 0;
+			_droppedFrames = 0;
+			_unpresentedFrames = 0;
+			_drawToPresentDelayMs = 0;
 		}
 
 		public void Dispose() => _fpsTimer.Dispose();

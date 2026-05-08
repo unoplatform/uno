@@ -200,6 +200,12 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial uint uno_get_system_theme();
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_text_scale_factor_change_callback(delegate* unmanaged[Cdecl]<void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial double uno_get_text_scale_factor();
+
 	// IME (Input Method Editor) callbacks
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_ime_callbacks(
@@ -325,6 +331,9 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt, string? identifier, int suggestedStartLocation,
 		string[] filters, int filterSize);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_free_string_array(IntPtr array);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt, string? identifier, string? suggestedFileName, int suggestedStartLocation,

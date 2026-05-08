@@ -914,6 +914,23 @@ namespace Microsoft.UI.Xaml
 		internal static void PopRequestedThemeForSubTree()
 			=> Themes.PopRequestedThemeForSubTree();
 
+		/// <summary>
+		/// Pushes a theme onto the stack for the current element's subtree resource resolution.
+		/// This is an Uno Platform-specific API intended for framework use only.
+		/// </summary>
+		/// <param name="theme">The theme name (e.g. "Light", "Dark", "Default").</param>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void PushRequestedThemeForSubTreeByName(string theme)
+			=> Themes.PushRequestedThemeForSubTree(theme);
+
+		/// <summary>
+		/// Pops the theme from the stack after processing an element's subtree.
+		/// This is an Uno Platform-specific API intended for framework use only.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void PopRequestedThemeForSubTreeByName()
+			=> Themes.PopRequestedThemeForSubTree();
+
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
 
