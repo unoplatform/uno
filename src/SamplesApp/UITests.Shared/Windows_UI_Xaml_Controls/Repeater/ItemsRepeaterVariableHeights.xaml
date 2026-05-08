@@ -41,13 +41,12 @@
         <Border
             Grid.Row="2"
             HorizontalAlignment="Left"
-            VerticalAlignment="Top"
+            VerticalAlignment="Stretch"
             BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
             BorderThickness="1">
             <ScrollViewer
                 x:Name="Scroller"
                 Width="300"
-                Height="600"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Visible">
                 <mux:ItemsRepeater x:Name="Repeater" VerticalAlignment="Bottom">
