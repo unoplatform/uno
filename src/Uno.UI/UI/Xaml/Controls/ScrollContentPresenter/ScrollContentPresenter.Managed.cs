@@ -101,17 +101,26 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Size? CustomContentExtent => null;
 
-		// True while a wheel-driven scroll animation is in flight on the content's AnchorPoint.
-		// Used by ScrollViewer.TrimOverscroll to avoid clamping the offset backward in response
-		// to ItemsRepeater realization-driven extent shrinkage during the user's mouse-wheel input —
-		// that clamp would otherwise produce a visible "fight" at high-variance items.
+		// True while a wheel-driven scroll animation has meaningful remaining time on the content's
+		// AnchorPoint. Used by ScrollViewer.TrimOverscroll to avoid clamping the offset backward in
+		// response to ItemsRepeater realization-driven extent shrinkage during the user's mouse-wheel
+		// input — that clamp would otherwise produce a visible "fight" at high-variance items.
+		// Once the animation has nearly completed, the cleanup is allowed so the offset settles to a
+		// valid value (matching the new ScrollableHeight) rather than leaving the user over-scrolled.
 		internal bool IsScrollAnimationInProgress
 		{
 			get
 			{
 				if (Content is UIElement contentElt && contentElt.Visual is { } visual)
 				{
-					return visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is not null;
+					var controller = visual.TryGetAnimationController(nameof(Visual.AnchorPoint));
+					if (controller is null)
+					{
+						return false;
+					}
+					// Treat the very tail of the animation as "settled" so the post-arrange clamp can
+					// run before the next user input. 50 ms matches the threshold used in Update().
+					return controller.Remaining > TimeSpan.FromMilliseconds(50);
 				}
 				return false;
 			}
