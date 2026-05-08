@@ -499,14 +499,36 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
 			REPEATER_TRACE_INFO("%ls: \tEffectiveViewportChanged event callback \n", GetLayoutId());
-			UpdateViewport(args.EffectiveViewport);
 
-			m_pendingViewportShift = default;
-			m_unshiftableShift = default;
-			if (m_visibleWindow == new Rect())
+			// Mirror WinUI's ViewportManagerWithPlatformFeatures::OnEffectiveViewportChanged
+			// (cpp:914-936): invalidate measure when we consume any of the in-flight shift state, so
+			// the layout re-runs with the new viewport instead of the (now stale) realization
+			// decisions based on the previous shift assumptions.
+			UpdateViewport(args.EffectiveViewport);
+			var invalidateMeasure = false;
+
+			if (m_pendingViewportShift.X != 0 || m_pendingViewportShift.Y != 0)
+			{
+				m_pendingViewportShift = default;
+				invalidateMeasure = true;
+			}
+
+			if (m_unshiftableShift.X != 0 || m_unshiftableShift.Y != 0)
+			{
+				m_unshiftableShift = default;
+				invalidateMeasure = true;
+			}
+
+			if (m_visibleWindow == new Rect() && m_layoutExtent != new Rect())
 			{
 				// We got cleared.
 				m_layoutExtent = default;
+				invalidateMeasure = true;
+			}
+
+			if (invalidateMeasure)
+			{
+				TryInvalidateMeasure();
 			}
 
 			// We got a new viewport, we dont need to wait for layout updated anymore to
