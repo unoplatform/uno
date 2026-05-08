@@ -121,6 +121,26 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
+		// True while a wheel-driven scroll animation is in flight on the managed presenter's
+		// AnchorPoint visual. Used by ScrollViewer.TrimOverscroll and RecoerceOffsetsFromRequest
+		// to avoid clamping the offset backward mid-animation, which would visibly snap and
+		// fight the user's scrolling input. Returns false on platforms without a managed scroll
+		// presenter (native UIKit / native Android use platform-native scroll which doesn't go
+		// through this code path).
+		internal bool IsScrollAnimationInProgress
+		{
+			get
+			{
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+				if (Content is UIElement contentElt && contentElt.Visual is { } visual)
+				{
+					return visual.TryGetAnimationController(nameof(Microsoft.UI.Composition.Visual.AnchorPoint)) is not null;
+				}
+#endif
+				return false;
+			}
+		}
+
 		private void InitializeScrollContentPresenter()
 		{
 			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
@@ -263,6 +283,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (Content is UIElement)
 			{
+				// User has taken over scrolling — discard any pending ChangeView request so
+				// RecoerceOffsetsFromRequest doesn't fight wheel input by re-coercing toward a
+				// stale target the user is no longer pursuing.
+				Scroller?.OnUserDirectScroll();
 				var canScrollHorizontally = CanHorizontallyScroll;
 				var canScrollVertically = CanVerticallyScroll;
 				var delta = IsPointerWheelReversed

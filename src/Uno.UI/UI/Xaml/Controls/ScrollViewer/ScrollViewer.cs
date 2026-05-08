@@ -101,6 +101,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static bool IsAnimationEnabled => Uno.UI.Helpers.WinUI.SharedHelpers.IsAnimationsEnabled();
 
+		// Most-recent ChangeView target offsets, preserved across arrange passes so a transient
+		// extent shrinkage during ItemsRepeater realization does not strand the user mid-list.
+		// Mirrors the m_Offset / m_ComputedOffset separation in WinUI's classic ScrollViewer
+		// (microsoft-ui-xaml2/src/dxaml/xcp/dxaml/lib/ScrollData.h:32-37, 60). VerticalOffset /
+		// HorizontalOffset are the COERCED (effective) values; these fields hold the original
+		// REQUESTED values so RecoerceOffsetsFromRequest can re-align the effective offset toward
+		// the request once the new ScrollableHeight allows more progress. Cleared by
+		// OnUserDirectScroll when the user takes over via wheel/touch input.
+		private double _requestedVerticalOffset = double.NaN;
+		private double _requestedHorizontalOffset = double.NaN;
+
+		// Suppresses request-field updates inside re-entrant ChangeView calls invoked from
+		// TrimOverscroll's clamp path or RecoerceOffsetsFromRequest's forward-coerce path. Without
+		// this, those internal calls would overwrite the user's original target with a coerced value.
+		private bool _isInternalChangeView;
+
 		/// <summary>
 		/// Occurs when manipulations such as scrolling and zooming have caused the view to change.
 		/// </summary>
@@ -828,12 +844,111 @@ namespace Microsoft.UI.Xaml.Controls
 			TrimOverscroll(Orientation.Vertical);
 			TrimOverscroll(Orientation.Horizontal);
 
+			// After extent settles and the (now legitimate) overscroll trim runs, advance the
+			// effective offset back toward the user's requested target if the new extent allows
+			// more progress. This recovers from transient over-trim during ItemsRepeater
+			// realization-driven extent fluctuation.
+			RecoerceOffsetsFromRequest();
+
 			var newSize = new Size(ExtentWidth, ExtentWidth);
 			if (oldSize != newSize)
 			{
 				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
 			}
 		}
+
+		// Re-aligns VerticalOffset / HorizontalOffset toward the most recently requested target
+		// once the new ScrollableHeight / ScrollableWidth allow more progress. Mirrors WinUI's
+		// CoerceOffsets in ScrollContentPresenter::VerifyScrollData
+		// (microsoft-ui-xaml2/src/dxaml/xcp/dxaml/lib/ScrollContentPresenter_Partial.cpp:3170).
+		// Forward-only: only advances toward the request, never moves backward (TrimOverscroll
+		// owns the backward case for legitimate extent shrinkage).
+		private void RecoerceOffsetsFromRequest()
+		{
+			if (_isInternalChangeView)
+			{
+				return;
+			}
+
+			// Skip while a wheel-driven scroll animation is in flight: re-coercing forward in the
+			// middle of an animation would re-trigger the same fight-the-user dynamic that
+			// TrimOverscroll already guards against during the animation window.
+			if (_presenter is ScrollContentPresenter scp && scp.IsScrollAnimationInProgress)
+			{
+				return;
+			}
+
+			double? targetH = null;
+			double? targetV = null;
+
+			if (!double.IsNaN(_requestedVerticalOffset))
+			{
+				var coerced = Math.Max(0, Math.Min(_requestedVerticalOffset, ScrollableHeight));
+				if (coerced > VerticalOffset + 0.5)
+				{
+					targetV = coerced;
+				}
+			}
+
+			if (!double.IsNaN(_requestedHorizontalOffset))
+			{
+				var coerced = Math.Max(0, Math.Min(_requestedHorizontalOffset, ScrollableWidth));
+				if (coerced > HorizontalOffset + 0.5)
+				{
+					targetH = coerced;
+				}
+			}
+
+			if (targetH is null && targetV is null)
+			{
+				return;
+			}
+
+			try
+			{
+				_isInternalChangeView = true;
+				ChangeView(targetH, targetV, null, disableAnimation: true);
+			}
+			finally
+			{
+				_isInternalChangeView = false;
+			}
+		}
+
+		// Called when the user initiates direct scroll input (mouse wheel, touch drag, scrollbar
+		// drag). Clears the most-recent ChangeView request so subsequent extent fluctuations
+		// don't re-coerce the offset toward a stale target the user is no longer pursuing —
+		// otherwise wheel-up at the trailing edge would be fought back to the prior end target.
+		internal void OnUserDirectScroll()
+		{
+			_requestedVerticalOffset = double.NaN;
+			_requestedHorizontalOffset = double.NaN;
+		}
+
+		// Called by ItemsRepeater's ViewportManager when its layout origin shifts as a result of
+		// StackLayout's anchor-based extent estimation (e.g. when the anchor index recomputes and
+		// the extent's MajorStart moves between 0 and a negative value). FlowLayoutAlgorithm.Arrange
+		// translates child bounds by `-m_lastExtent.Y` (FlowLayoutAlgorithm.cs:707-708), so when
+		// the origin shifts, items get arranged at different y-coordinates in the IR's local space.
+		// Without this compensating shift on the SV side, the items visually jump in the user's
+		// viewport — the flicker symptom of issue #23041.
+		//
+		// Mirrors the WinUI IR's expectation that the SV applies `m_expectedViewportShift` to its
+		// viewport offset (ViewportManagerWithPlatformFeatures.cpp:235-256). Uno's SV anchoring
+		// pipeline only fires that shift when VerticalAnchorRatio / HorizontalAnchorRatio is
+		// explicitly set; this entry point honors the IR's shift unconditionally so the
+		// realization-driven origin shift is never user-visible.
+		internal void OnRepeaterLayoutOriginShifted(double dx, double dy)
+		{
+			if (dx == 0 && dy == 0)
+			{
+				return;
+			}
+
+			ApplyOffsetShift(dx, dy);
+		}
+
+		partial void ApplyOffsetShift(double dx, double dy);
 
 		private void UpdateComputedVerticalScrollability(bool invalidate)
 		{
@@ -1503,6 +1618,24 @@ namespace Microsoft.UI.Xaml.Controls
 			if (horizontalOffset == null && verticalOffset == null && zoomFactor == null)
 			{
 				return true; // nothing to do
+			}
+
+			// Capture the user's target so RecoerceOffsetsFromRequest can honor it on later
+			// arranges if extent grows back. Skipped when re-entered from TrimOverscroll or the
+			// recoerce path itself — those carry a clamped value, not the user's intent.
+			//
+			// Important: clamp the captured request to the CURRENT ScrollableHeight /
+			// ScrollableWidth at call time. If we stored a past-end value verbatim, it would act
+			// as a magnet on RecoerceOffsetsFromRequest — every subsequent extent growth (including
+			// data-virtualization loads from sources like ListView's InfiniteSource) would be
+			// mistaken for "the user can finally reach where they wanted" and pull the offset
+			// further forward, triggering more loads. Clamping at capture time lets us preserve
+			// intent against transient extent SHRINKAGE (Bug 2) without inviting a loading
+			// feedback loop on legitimate extent growth.
+			if (!_isInternalChangeView)
+			{
+				if (verticalOffset is { } v) { _requestedVerticalOffset = Math.Max(0, Math.Min(v, ScrollableHeight)); }
+				if (horizontalOffset is { } h) { _requestedHorizontalOffset = Math.Max(0, Math.Min(h, ScrollableWidth)); }
 			}
 
 			var verticalOffsetChanged = verticalOffset != null && verticalOffset != VerticalOffset;

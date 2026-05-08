@@ -216,6 +216,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 				success &= targetHorizontalOffset == hOffset;
 
+				// Forward-intent guard: when the request points forward (hOffset > current) but
+				// max-clamping would push it BELOW the current offset (because ScrollableWidth
+				// just contracted under realization-driven extent estimation), HOLD POSITION.
+				// The user's intent was forward; making no progress is acceptable, but reversing
+				// direction in response to forward input feels like the scroller is fighting the
+				// user. The symmetric backward case is impossible — min clamp is 0 and
+				// HorizontalOffset is always >= 0.
+				if (hOffset > HorizontalOffset && targetHorizontalOffset < HorizontalOffset)
+				{
+					targetHorizontalOffset = HorizontalOffset;
+					success = false;
+				}
+
 				if (!NumericExtensions.AreClose(HorizontalOffset, targetHorizontalOffset))
 				{
 					HorizontalOffset = targetHorizontalOffset;
@@ -229,6 +242,14 @@ namespace Microsoft.UI.Xaml.Controls
 				var targetVerticalOffset = ValidateInputOffset(vOffset, 0, maxOffset);
 
 				success &= targetVerticalOffset == vOffset;
+
+				// See comment for horizontal: refuse to reverse direction when a forward request
+				// would max-clamp below the current offset.
+				if (vOffset > VerticalOffset && targetVerticalOffset < VerticalOffset)
+				{
+					targetVerticalOffset = VerticalOffset;
+					success = false;
+				}
 
 				if (!NumericExtensions.AreClose(VerticalOffset, targetVerticalOffset))
 				{
@@ -297,6 +318,36 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// Adjust the offsets and the visual's AnchorPoint in lockstep with an ItemsRepeater
+		// layout-origin shift. Called via ScrollViewer.OnRepeaterLayoutOriginShifted when the IR's
+		// FlowLayoutAlgorithm reports a non-zero `m_layoutExtent` shift caused by StackLayout's
+		// anchor-based extent estimation. Visual.AnchorPoint is set instantly (no animation) to
+		// the shifted target — this snapshot moves with the IR's content so the user sees no
+		// visual jump on the same frame.
+		internal void ApplyOffsetShift(double dx, double dy)
+		{
+			HorizontalOffset += dx;
+			VerticalOffset += dy;
+
+			if (Content is UIElement contentElt && contentElt.Visual is { } visual)
+			{
+				// If a wheel-driven AnchorPoint animation is in flight, terminating it via
+				// StopAnimation followed by an instantaneous AnchorPoint update keeps the visual
+				// position consistent with the new offsets at the same frame as the IR's content
+				// shift. The user's perceived scroll motion stays smooth because the next wheel
+				// event (typically within 16ms) will re-arm the animation toward an updated
+				// target. Without resetting the animation, it would continue toward a stale
+				// AnchorPoint target and visibly fight the shift.
+				visual.StopAnimation(nameof(global::Microsoft.UI.Composition.Visual.AnchorPoint));
+				visual.AnchorPoint = new global::System.Numerics.Vector2((float)-HorizontalOffset, (float)-VerticalOffset);
+			}
+		}
+
+		internal void RaiseScrolledForLayoutShift()
+		{
+			Updated(HorizontalOffset, VerticalOffset, isIntermediate: true);
+		}
+
 		private void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
 		{
 			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
@@ -363,6 +414,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// If a previous inertia is still tracked, clear it immediately so old inertial deltas
 			// cannot fight with the new manipulation's direction.
 			_touchInertia = null;
+
+			// User has taken over scrolling — discard any pending ChangeView request so
+			// RecoerceOffsetsFromRequest doesn't re-coerce toward a stale target.
+			Scroller?.OnUserDirectScroll();
 
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();

@@ -244,6 +244,49 @@ public class Given_ItemsRepeater_FastScroll
 			+ "the pre-fix clamp caused an under-estimated extent that left late items unreachable.");
 	}
 
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_FirstClickBottom_Then_OffsetMatchesScrollableHeight()
+	{
+		// Repro for studio.live #1333 / #816 (single Bottom-click leaves chat list blank).
+		// EXACT manual sample 'Bottom' button code path: ChangeView to current ScrollableHeight,
+		// disableAnimation:true. With only the first viewport realized at load, the StackLayout
+		// extent estimate is unstable; ScrollableHeight changes between the click and final
+		// settlement. WinUI preserves the user's "scroll to end" intent (m_Offset vs
+		// m_ComputedOffset; see ScrollData.h:32-37, 60) so the final offset re-coerces toward the
+		// new ScrollableHeight as the extent grows back. Uno without the equivalent fix lets
+		// TrimOverscroll iterations strand VerticalOffset BELOW the new ScrollableHeight.
+		//
+		// Asserts the user-visible invariant only: after a single Bottom click, the LOGICAL
+		// VerticalOffset must equal the final ScrollableHeight — i.e. the user is at the
+		// trailing edge. (Item materialization timing varies between platforms; checking offset
+		// vs. ScrollableHeight cleanly captures the bug regardless of realization timing.)
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		// Single click — exactly what the manual sample's OnBottomClick does.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		// Give layout/realization multiple cycles to converge. ItemsRepeater realization for
+		// chat-style anchored content often requires several arrange passes for the cache buffer
+		// to extend to the requested viewport position and for StackLayout's anchor-based extent
+		// estimate to settle.
+		for (var i = 0; i < 8; i++)
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			sut.Repeater.UpdateLayout();
+		}
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.Scroller.VerticalOffset.Should().BeApproximately(sut.Scroller.ScrollableHeight, 1,
+			"After a single 'scroll to end' click, VerticalOffset must equal ScrollableHeight — "
+			+ "the user must land at the trailing edge. "
+			+ $"Got VerticalOffset={sut.Scroller.VerticalOffset:F1}, "
+			+ $"ScrollableHeight={sut.Scroller.ScrollableHeight:F1}, "
+			+ $"ExtentHeight={sut.Scroller.ExtentHeight:F1}.");
+	}
+
 	// ----- helpers -----
 
 	private static SutHandle CreateHighVarianceSut(int itemCount, Size viewport)

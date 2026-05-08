@@ -159,34 +159,85 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		partial void TrimOverscroll(Orientation orientation)
 		{
-			if (_presenter is not null)
+			if (_presenter is not ScrollContentPresenter scp)
 			{
-				var (contentExtent, presenterViewportSize, offset) = orientation switch
-				{
-					Orientation.Vertical => (ExtentHeight, ViewportHeight, VerticalOffset),
-					_ => (ExtentWidth, ViewportWidth, HorizontalOffset),
-				};
-				var viewportEnd = offset + presenterViewportSize;
-				var overscroll = contentExtent - viewportEnd;
-				if (offset > 0 && overscroll < -0.5)
-				{
-					ChangeViewForOrientation(orientation, overscroll);
-				}
+				return;
+			}
+
+			// Skip while a wheel-driven AnchorPoint animation is in flight. This trim path issues
+			// a disableAnimation:true ChangeView, which would terminate the in-flight animation
+			// and snap the offset back — visibly fighting the user's wheel input as ItemsRepeater
+			// realization shrinks the estimated extent during the scroll. After the animation
+			// settles, this method runs again on the next arrange and applies the legitimate
+			// trim if the content really shrank below offset+viewport.
+			if (scp.IsScrollAnimationInProgress)
+			{
+				return;
+			}
+
+			var (contentExtent, presenterViewportSize, offset) = orientation switch
+			{
+				Orientation.Vertical => (ExtentHeight, ViewportHeight, VerticalOffset),
+				_ => (ExtentWidth, ViewportWidth, HorizontalOffset),
+			};
+			var viewportEnd = offset + presenterViewportSize;
+			var overscroll = contentExtent - viewportEnd;
+			if (offset > 0 && overscroll < -0.5)
+			{
+				ChangeViewForOrientation(orientation, overscroll);
 			}
 		}
 
 		private void ChangeViewForOrientation(Orientation orientation, double scrollAdjustment)
 		{
-			if (orientation == Orientation.Vertical)
+			// TrimOverscroll's clamp is INTERNAL — it must not overwrite the user's pending
+			// ChangeView target with the trimmed value. Mark the call so the public ChangeView
+			// preserves _requestedVerticalOffset / _requestedHorizontalOffset for the next
+			// RecoerceOffsetsFromRequest pass.
+			try
 			{
-				ChangeView(null, VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				_isInternalChangeView = true;
+				if (orientation == Orientation.Vertical)
+				{
+					ChangeView(null, VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				}
+				else
+				{
+					ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				}
 			}
-			else
+			finally
 			{
-				ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				_isInternalChangeView = false;
 			}
 		}
 		#endregion
+
+		// Compensates for an ItemsRepeater layout-origin shift by adjusting both the SCP's
+		// VerticalOffset / HorizontalOffset DPs AND the visual.AnchorPoint composition value in
+		// the same frame. The IR shifts items by `-m_lastExtent.Y` during arrange
+		// (FlowLayoutAlgorithm.cs:707-708); without this compensating viewport shift the user sees
+		// items physically jump in the viewport (issue #23041's flicker symptom).
+		partial void ApplyOffsetShift(double dx, double dy)
+		{
+			if (_presenter is not ScrollContentPresenter scp)
+			{
+				return;
+			}
+
+			// Update offsets atomically with the shift, both on the SCP (the IScrollInfo source
+			// of truth) and on the visual.AnchorPoint (the composition rendering offset). Setting
+			// AnchorPoint synchronously to match the new offset means no animation interruption is
+			// visible: at the same render frame, the IR's content moves by `-shift` in IR-local
+			// coords (because m_layoutExtent shifted) and the visual's view into that content
+			// moves by `+shift` — net zero on screen.
+			scp.ApplyOffsetShift(dx, dy);
+
+			// Mirror the SCP's new offsets into the SV DP layer so external consumers see a
+			// consistent value. Use the intermediate flag because this is a layout-driven
+			// adjustment, not a user/programmatic scroll request.
+			scp.RaiseScrolledForLayoutShift();
+		}
 	}
 }
 #endif

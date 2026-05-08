@@ -220,8 +220,29 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			m_expectedViewportShift.X += m_layoutExtent.X - extent.X;
-			m_expectedViewportShift.Y += m_layoutExtent.Y - extent.Y;
+			// FlowLayoutAlgorithm.Arrange translates child bounds by `-m_lastExtent.X/Y`
+			// (FlowLayoutAlgorithm.cs:707-708). When StackLayout's anchor-based extent estimation
+			// returns a different MajorStart between layout passes (which happens during scroll
+			// as the anchor index recomputes), m_lastExtent.X/Y shifts and items get arranged at
+			// different y-coordinates in the IR's local space. The IR computes the expected
+			// viewport shift here and the SV must apply it; otherwise the user sees items jump
+			// in the viewport (issue #23041's flicker symptom).
+			//
+			// In WinUI's pipeline this shift propagates through SV.AnchoringArrangeOverride only
+			// when VerticalAnchorRatio / HorizontalAnchorRatio is set (otherwise IsAnchoring
+			// returns false and the shift is dropped on the floor). Uno's classic SV with chat-
+			// style ItemsRepeater commonly leaves the ratio unset, so we instead push the shift
+			// directly to the SV via OnRepeaterLayoutOriginShifted — the same compensation, just
+			// not gated on the user explicitly opting into anchor-ratio scrolling.
+			var _shiftDx = m_layoutExtent.X - extent.X;
+			var _shiftDy = m_layoutExtent.Y - extent.Y;
+			if ((_shiftDx != 0 || _shiftDy != 0) && m_scroller is ScrollViewer _shiftSv)
+			{
+				_shiftSv.OnRepeaterLayoutOriginShifted(_shiftDx, _shiftDy);
+			}
+
+			m_expectedViewportShift.X += _shiftDx;
+			m_expectedViewportShift.Y += _shiftDy;
 
 			// We tolerate viewport imprecisions up to 1 pixel to avoid invaliding layout too much.
 			if (Math.Abs(m_expectedViewportShift.X) > 1 || Math.Abs(m_expectedViewportShift.Y) > 1)
