@@ -46,15 +46,11 @@ internal class MacOSWindowNative
 
 		MacOSWindowHost.Register(Handle, xamlRoot, Host);
 
-		// Initialize accessibility only for the main/initial window.
-		// MacOSAccessibility is a singleton that manages one accessibility tree.
-		// Calling Initialize for every secondary window resets the singleton's
-		// window handle and native element dictionary, which causes stale pointer
-		// dereferences and segfaults when rapidly creating/closing secondary windows.
-		if (MacSkiaHost.Current.InitialWindow == this)
-		{
-			MacOSAccessibility.Instance.Initialize(Handle);
-		}
+		// Per-window accessibility is initialized inside MacOSWindowHost via
+		// UNOAccessibilityContext attached to this NSWindow. Each window owns
+		// its own context and element dictionary, so rapid create/close of
+		// secondary windows no longer collides with the primary window's tree.
+		Host.InitializeAccessibility();
 
 		// call resize as late as possible (after the host creation)
 		NativeUno.uno_window_resize(Handle, initialWidth, initialHeight);
@@ -74,6 +70,11 @@ internal class MacOSWindowNative
 
 	internal void Destroyed()
 	{
+		// Dispose the per-window accessibility instance BEFORE clearing the
+		// handle so the native UNOAccessibilityContext can be torn down with
+		// a still-valid NSWindow pointer. AccessibilityRouter.NotifyDisposed
+		// then picks a new active owner if this window was the active one.
+		Host.DisposeAccessibility();
 		Handle = nint.Zero;
 	}
 

@@ -1,8 +1,8 @@
 steps:
-  - task: NodeTool@0
-    displayName: "Install Node 14.7.1"
+  - task: UseNode@1
+    displayName: "Install Node 14.17.1"
     inputs:
-      versionSpec: "14.17.1"
+      version: "14.17.1"
 
   - bash: |
       cd "$(Build.SourcesDirectory)/doc/"

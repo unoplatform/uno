@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common;
 using MUXControlsTestApp.Utilities;
-using MUXControlsTestApp.Utils;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using Windows.Foundation.Collections;
@@ -172,7 +171,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater = new ItemsRepeater()
 				{
 					ItemsSource = data,
-					Animator = new DefaultElementAnimator()
 				};
 
 				Content = new Microsoft.UI.Xaml.Controls.ScrollViewer()

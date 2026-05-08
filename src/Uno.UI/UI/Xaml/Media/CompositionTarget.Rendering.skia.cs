@@ -97,6 +97,8 @@ public partial class CompositionTarget
 			_lastRenderedFrame = renderedFrame;
 		}
 
+		_fpsHelper.OnFrameRecorded();
+
 		// Delete previous SKPicture now since we are swapping it
 		if (previousFrame != null)
 		{
@@ -147,6 +149,8 @@ public partial class CompositionTarget
 
 			// Borrow frame temporarily
 			_lastRenderedFrame = null;
+
+			_fpsHelper.OnFramePresentRequested();
 		}
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
@@ -183,11 +187,12 @@ public partial class CompositionTarget
 			{
 				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
+			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			SkiaRenderHelper.RenderPicture(
 				canvas,
 				lastRenderedFrame.frame,
 				SKColors.Transparent,
-				_fpsHelper);
+				_fpsHelper.DrawFps);
 			canvas.Restore();
 
 			ReturnFrame(lastRenderedFrame);

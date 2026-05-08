@@ -35,22 +35,30 @@ internal class Win32RawElementProvider :
 	private readonly int _runtimeId;
 	private readonly bool _isRoot;
 	private readonly Win32Accessibility _accessibility;
+	private readonly WeakReference<AutomationPeer>? _representedPeer;
 	private IList<AutomationPeer>? _cachedAutomationChildren;
+	private const int MaxHitTestDepth = 1024;
 
 	internal UIElement Owner => _owner;
+	internal AutomationPeer? RepresentedPeer => _representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null;
 
 	internal Win32RawElementProvider(
 		UIElement owner,
 		nint hwnd,
 		bool isRoot,
-		Win32Accessibility accessibility)
+		Win32Accessibility accessibility,
+		AutomationPeer? representedPeer = null)
 	{
 		_owner = owner;
 		_hwnd = hwnd;
 		_isRoot = isRoot;
 		_accessibility = accessibility;
+		_representedPeer = representedPeer is not null ? new WeakReference<AutomationPeer>(representedPeer) : null;
 		_runtimeId = _nextRuntimeId++;
 	}
+
+	internal bool RepresentsPeer(AutomationPeer peer)
+		=> ReferenceEquals(GetAutomationPeer(), peer);
 
 	// IRawElementProviderSimple
 
@@ -61,7 +69,7 @@ internal class Win32RawElementProvider :
 	{
 		try
 		{
-			var peer = _owner.GetOrCreateAutomationPeer();
+			var peer = GetAutomationPeer();
 			if (peer is null)
 			{
 				return null;
@@ -105,6 +113,18 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_TablePatternId
 					when peer.GetPattern(PatternInterface.Table) is ITableProvider table
 					=> new UiaTableProviderWrapper(table, _accessibility),
+				Win32UIAutomationInterop.UIA_WindowPatternId
+					when peer.GetPattern(PatternInterface.Window) is IWindowProvider window
+					=> new UiaWindowProviderWrapper(window),
+				Win32UIAutomationInterop.UIA_TransformPatternId
+					when peer.GetPattern(PatternInterface.Transform) is ITransformProvider transform
+					=> new UiaTransformProviderWrapper(transform),
+				Win32UIAutomationInterop.UIA_DockPatternId
+					when peer.GetPattern(PatternInterface.Dock) is IDockProvider dock
+					=> new UiaDockProviderWrapper(dock),
+				Win32UIAutomationInterop.UIA_MultipleViewPatternId
+					when peer.GetPattern(PatternInterface.MultipleView) is IMultipleViewProvider multiView
+					=> new UiaMultipleViewProviderWrapper(multiView),
 				_ => null,
 			};
 
@@ -130,7 +150,7 @@ internal class Win32RawElementProvider :
 	{
 		try
 		{
-			var peer = _owner.GetOrCreateAutomationPeer();
+			var peer = GetAutomationPeer();
 
 			object? result = propertyId switch
 			{
@@ -345,7 +365,7 @@ internal class Win32RawElementProvider :
 		else
 		{
 			// For non-Control elements, try to set focus via the automation peer
-			_owner.GetOrCreateAutomationPeer()?.SetFocus();
+			GetAutomationPeer()?.SetFocus();
 		}
 	}
 
@@ -395,10 +415,14 @@ internal class Win32RawElementProvider :
 			var focusedElement = FocusManager.GetFocusedElement(xamlRoot);
 			if (focusedElement is UIElement uiElement)
 			{
-				// Return the provider for the focused element, or its nearest ancestor
-				// that has an automation peer
-				var result = _accessibility.GetOrCreateProvider(uiElement)
-					?? FindNearestProviderAncestor(uiElement);
+				var focusedPeer = uiElement.GetOrCreateAutomationPeer();
+
+				// Return the provider for the focused element's effective automation peer,
+				// or its nearest ancestor that has an automation peer.
+				var result = focusedPeer is not null
+					? _accessibility.GetProviderForPeer(focusedPeer, resolveEventsSource: true)
+						?? FindNearestProviderAncestor(uiElement)
+					: FindNearestProviderAncestor(uiElement);
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -443,7 +467,7 @@ internal class Win32RawElementProvider :
 			return _cachedAutomationChildren;
 		}
 
-		var peer = _owner.GetOrCreateAutomationPeer();
+		var peer = GetAutomationPeer();
 		IList<AutomationPeer>? result;
 
 		if (peer is not null)
@@ -486,6 +510,16 @@ internal class Win32RawElementProvider :
 
 	private static void CollectAutomationPeers(UIElement element, List<AutomationPeer> result)
 	{
+		CollectAutomationPeers(element, result, 0);
+	}
+
+	private static void CollectAutomationPeers(UIElement element, List<AutomationPeer> result, int depth)
+	{
+		if (depth > MaxHitTestDepth)
+		{
+			return;
+		}
+
 		foreach (var child in element.GetChildren())
 		{
 			if (child.Visibility == Visibility.Collapsed)
@@ -501,7 +535,7 @@ internal class Win32RawElementProvider :
 			else
 			{
 				// No peer on this element - flatten by recursing into its children
-				CollectAutomationPeers(child, result);
+				CollectAutomationPeers(child, result, depth + 1);
 			}
 		}
 	}
@@ -514,12 +548,23 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 
+		HashSet<Win32RawElementProvider>? ancestors = null;
 		for (var i = 0; i < children.Count; i++)
 		{
 			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
 			if (provider is not null)
 			{
-				return provider;
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					return provider;
+				}
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn(
+						$"[UIA] Cycle detected: skipping child {provider.DescribeElement()} " +
+						$"(runtimeId={provider._runtimeId}) of {DescribeElement()} — it is an ancestor");
+				}
 			}
 		}
 		return null;
@@ -533,12 +578,23 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 
+		HashSet<Win32RawElementProvider>? ancestors = null;
 		for (var i = children.Count - 1; i >= 0; i--)
 		{
 			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
 			if (provider is not null)
 			{
-				return provider;
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					return provider;
+				}
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn(
+						$"[UIA] Cycle detected: skipping child {provider.DescribeElement()} " +
+						$"(runtimeId={provider._runtimeId}) of {DescribeElement()} — it is an ancestor");
+				}
 			}
 		}
 		return null;
@@ -558,8 +614,9 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 
-		var myPeer = _owner.GetOrCreateAutomationPeer();
+		var myPeer = GetAutomationPeer();
 		var foundSelf = false;
+		HashSet<Win32RawElementProvider>? ancestors = null;
 
 		for (var i = 0; i < siblings.Count; i++)
 		{
@@ -568,7 +625,11 @@ internal class Win32RawElementProvider :
 				var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
 				if (provider is not null)
 				{
-					return provider;
+					ancestors ??= BuildAncestorSet();
+					if (!ancestors.Contains(provider))
+					{
+						return provider;
+					}
 				}
 			}
 			else if (IsSamePeer(siblings[i], myPeer))
@@ -593,8 +654,9 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 
-		var myPeer = _owner.GetOrCreateAutomationPeer();
+		var myPeer = GetAutomationPeer();
 		Win32RawElementProvider? previous = null;
+		HashSet<Win32RawElementProvider>? ancestors = null;
 
 		for (var i = 0; i < siblings.Count; i++)
 		{
@@ -605,10 +667,42 @@ internal class Win32RawElementProvider :
 			var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
 			if (provider is not null)
 			{
-				previous = provider;
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					previous = provider;
+				}
 			}
 		}
 		return null;
+	}
+
+	/// <summary>
+	/// Builds a set containing this provider and all its ancestors in the UIA tree.
+	/// Used by child/sibling navigation to detect and break cycles where a descendant
+	/// peer resolves to an ancestor's provider (e.g. WCT DataGrid whose
+	/// DataGridRowsPresenterAutomationPeer returns the DataGrid's canonical peer
+	/// as a child via CreatePeerForElement).
+	/// </summary>
+	private HashSet<Win32RawElementProvider> BuildAncestorSet()
+	{
+		var ancestors = new HashSet<Win32RawElementProvider>(ReferenceEqualityComparer.Instance);
+		ancestors.Add(this);
+		var current = FindParentProvider();
+		var maxDepth = 200;
+		while (current is not null && maxDepth-- > 0)
+		{
+			if (!ancestors.Add(current))
+			{
+				break; // cycle in parent chain itself
+			}
+			if (current._isRoot)
+			{
+				break;
+			}
+			current = current.FindParentProvider();
+		}
+		return ancestors;
 	}
 
 	/// <summary>
@@ -629,7 +723,7 @@ internal class Win32RawElementProvider :
 		// First, try the automation peer tree. This is the correct path for
 		// ItemAutomationPeer and other peers whose logical parent differs
 		// from the visual parent.
-		var myPeer = _owner.GetOrCreateAutomationPeer();
+		var myPeer = GetAutomationPeer();
 		if (myPeer?.GetParent() is { } parentPeer)
 		{
 			var parentProvider = _accessibility.GetProviderForPeer(parentPeer);
@@ -714,7 +808,28 @@ internal class Win32RawElementProvider :
 	// Hit testing helper
 
 	private Win32RawElementProvider? FindDeepestProviderAtPoint(double screenX, double screenY)
+		=> FindDeepestProviderAtPoint(screenX, screenY, new HashSet<Win32RawElementProvider>(), 0);
+
+	private Win32RawElementProvider? FindDeepestProviderAtPoint(double screenX, double screenY, HashSet<Win32RawElementProvider> visited, int depth)
 	{
+		if (!visited.Add(this))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] Hit-test cycle detected at {DescribeElement()}");
+			}
+			return null;
+		}
+
+		if (depth > MaxHitTestDepth)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] Hit-test depth limit exceeded at {DescribeElement()}");
+			}
+			return null;
+		}
+
 		// Use the automation children (filtered tree) for hit testing
 		var children = GetAutomationChildren();
 		if (children is not null)
@@ -723,9 +838,9 @@ internal class Win32RawElementProvider :
 			for (var i = children.Count - 1; i >= 0; i--)
 			{
 				var childProvider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
-				if (childProvider is not null)
+				if (childProvider is not null && !ReferenceEquals(childProvider, this))
 				{
-					var found = childProvider.FindDeepestProviderAtPoint(screenX, screenY);
+					var found = childProvider.FindDeepestProviderAtPoint(screenX, screenY, visited, depth + 1);
 					if (found is not null)
 					{
 						return found;
@@ -735,9 +850,7 @@ internal class Win32RawElementProvider :
 		}
 
 		// Check if point is within this element's bounds
-		var bounds = BoundingRectangle;
-		if (screenX >= bounds.Left && screenX < bounds.Left + bounds.Width &&
-			screenY >= bounds.Top && screenY < bounds.Top + bounds.Height)
+		if (ContainsPoint(screenX, screenY))
 		{
 			return this;
 		}
@@ -964,7 +1077,10 @@ internal class Win32RawElementProvider :
 
 	internal string DescribeElement()
 	{
-		var typeName = _owner.GetType().Name;
+		var resolvedPeer = _representedPeer is not null && _representedPeer.TryGetTarget(out var rp) ? rp : null;
+		var typeName = resolvedPeer is not null && resolvedPeer is not FrameworkElementAutomationPeer
+			? $"{resolvedPeer.GetType().Name}->{_owner.GetType().Name}"
+			: _owner.GetType().Name;
 		var automationId = AutomationProperties.GetAutomationId(_owner);
 		var name = AutomationProperties.GetName(_owner);
 		var details = !string.IsNullOrEmpty(automationId) ? automationId
@@ -1038,6 +1154,10 @@ internal class Win32RawElementProvider :
 		Win32UIAutomationInterop.UIA_GridPatternId => "Grid",
 		Win32UIAutomationInterop.UIA_GridItemPatternId => "GridItem",
 		Win32UIAutomationInterop.UIA_TablePatternId => "Table",
+		Win32UIAutomationInterop.UIA_WindowPatternId => "Window",
+		Win32UIAutomationInterop.UIA_TransformPatternId => "Transform",
+		Win32UIAutomationInterop.UIA_DockPatternId => "Dock",
+		Win32UIAutomationInterop.UIA_MultipleViewPatternId => "MultipleView",
 		_ => $"Unknown({patternId})",
 	};
 
@@ -1075,5 +1195,18 @@ internal class Win32RawElementProvider :
 			ancestor = ancestor.GetParent() as UIElement;
 		}
 		return rect;
+	}
+
+	private AutomationPeer? GetAutomationPeer()
+		=> (_representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null)
+			?? _owner.GetOrCreateAutomationPeer();
+
+	private bool ContainsPoint(double screenX, double screenY)
+	{
+		var bounds = BoundingRectangle;
+		return screenX >= bounds.Left
+			&& screenX < bounds.Left + bounds.Width
+			&& screenY >= bounds.Top
+			&& screenY < bounds.Top + bounds.Height;
 	}
 }

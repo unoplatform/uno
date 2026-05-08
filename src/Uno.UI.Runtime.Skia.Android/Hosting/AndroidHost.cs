@@ -46,6 +46,7 @@ public class AndroidHost : ISkiaApplicationHost
 			ApiExtensibility.Register(typeof(IInputPaneExtension), _ => new InputPaneExtension());
 			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new AndroidSkiaMediaPlayerPresenterExtension(o));
 			ApiExtensibility.Register(typeof(IFontFallbackService), _ => AndroidSkiaFontFallbackService.Instance);
+			ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => new AndroidImeTextBoxExtension());
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{

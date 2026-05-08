@@ -492,7 +492,9 @@ namespace Uno.UI.Runtime.Skia {
 			value: string,
 			multiline: boolean,
 			password: boolean,
-			isReadOnly: boolean
+			isReadOnly: boolean,
+			selectionStart: number,
+			selectionEnd: number
 		): void {
 			let element: HTMLInputElement | HTMLTextAreaElement;
 
@@ -510,12 +512,26 @@ namespace Uno.UI.Runtime.Skia {
 			element.style.pointerEvents = 'none';
 
 			element.value = value;
+			const maxLen = value.length;
+			const initialSelectionStart = Math.max(0, Math.min(selectionStart, maxLen));
+			const initialSelectionEnd = Math.max(initialSelectionStart, Math.min(selectionEnd, maxLen));
+			try {
+				element.setSelectionRange(initialSelectionStart, initialSelectionEnd);
+			} catch {
+				// Some browsers/input types may reject selection updates before focus.
+			}
 
 			if (isReadOnly) {
 				element.readOnly = true;
 			}
 
 			const callbacks = this.getCallbacks();
+
+			// Block native character insertion so the managed TextBox KeyDown path is the single
+			// source of text edits. Without this, the key is inserted both by the browser (into
+			// this <input>) and by managed OnKeyDownSkia, producing duplicated input once a11y
+			// moves focus to the semantic element instead of the invisible TextBox <input>.
+			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(element, multiline);
 
 			// Input event handler for text changes (T050)
 			element.addEventListener('input', () => {
@@ -710,15 +726,23 @@ namespace Uno.UI.Runtime.Skia {
 		): void {
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
 			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
-				element.value = value;
-				// Validate selection range to prevent exceptions
-				const maxLen = value.length;
-				const start = Math.max(0, Math.min(selectionStart, maxLen));
-				const end = Math.max(start, Math.min(selectionEnd, maxLen));
-				try {
-					element.setSelectionRange(start, end);
-				} catch {
-					// Some input types (e.g., password in some browsers) don't support setSelectionRange
+				// Skip no-op writes to avoid caret and IME churn when the DOM value already matches.
+				if (element.value !== value) {
+					element.value = value;
+				}
+
+				// Negative sentinel from C# means "do not touch selection".
+				// This preserves the browser-managed caret for browser-originated a11y text input.
+				if (selectionStart >= 0 && selectionEnd >= 0) {
+					// Validate selection range to prevent exceptions
+					const maxLen = value.length;
+					const start = Math.max(0, Math.min(selectionStart, maxLen));
+					const end = Math.max(start, Math.min(selectionEnd, maxLen));
+					try {
+						element.setSelectionRange(start, end);
+					} catch {
+						// Some input types (e.g., password in some browsers) don't support setSelectionRange
+					}
 				}
 			}
 		}
@@ -1443,8 +1467,8 @@ namespace Uno.UI.Runtime.Skia {
 			if (!container) {
 				return;
 			}
-			const items = container.querySelectorAll('[aria-posinset]');
-			items.forEach((el: HTMLElement) => {
+			const items = container.querySelectorAll<HTMLElement>('[aria-posinset]');
+			items.forEach((el) => {
 				el.setAttribute('aria-setsize', String(totalCount));
 			});
 		}

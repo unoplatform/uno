@@ -38,7 +38,21 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			this.Log().Trace($"Initializing {nameof(WebAssemblyAccessibility)}");
 		}
 
-		RegisterCallbacks();
+		// WebAssembly is a single-window runtime (one browser tab); the Skia-Desktop
+		// AccessibilityRouter is not used here. Wire the framework's single-slot
+		// accessibility registrations directly to this singleton.
+		AccessibilityAnnouncer.AccessibilityImpl = this;
+		UIElementAccessibilityHelper.ExternalOnChildAdded = (parent, child, index) => RouteChildAdded(parent, child, index);
+		UIElementAccessibilityHelper.ExternalOnChildRemoved = (parent, child) => RouteChildRemoved(parent, child);
+		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = visual => RouteVisualOffsetOrSizeChanged(visual);
+		AutomationPeer.AutomationPeerListener = this;
+	}
+
+	protected override void DisposeCore()
+	{
+		// WebAssembly runs in a single browser tab; disposal is not part of the
+		// per-window lifecycle exercised by the Skia-Desktop router. No-op so the
+		// base-class lifecycle contract holds.
 	}
 
 	private bool _isAccessibilityEnabled;
@@ -51,6 +65,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private FocusSynchronizer? _focusSynchronizer;
 	internal ModalFocusScope? ActiveModalScope { get; set; }
 	private readonly List<VirtualizedSemanticRegion> _virtualizedRegions = new();
+	private const int PreserveTextSelectionSentinel = -1;
 
 	/// <summary>
 	/// Resolves a UIElement to the nearest handle that exists in the semantic DOM tree.
@@ -280,6 +295,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		try
 		{
+			TrySubscribeScrollSource(child);
+
 			var isChildSemantic = IsSemanticElement(child);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -358,6 +375,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				this.Log().Debug($"[A11y] OnChildRemoved: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle}");
 			}
 
+			TryUnsubscribeScrollSource(child);
 			TryUnregisterVirtualizedContainer(child);
 
 			// Remove any children of this element first (they may be semantic even if parent isn't)
@@ -634,7 +652,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (@this.Log().IsEnabled(LogLevel.Warning))
 			{
 				@this.Log().Warn("[A11y] EnableAccessibility() called for the second time. Returning early.");
-				@this.Log().LogWarning("EnableA11y is called for the second time. This shouldn't happen.");
 			}
 
 			return;
@@ -645,26 +662,26 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (rootElement is null)
 		{
-			if (@this.Log().IsEnabled(LogLevel.Error))
+			// Window not yet attached is normal during early boot; retried below.
+			if (@this.Log().IsEnabled(LogLevel.Debug))
 			{
-				@this.Log().Error($"[A11y] EnableAccessibility() ERROR: Window={window?.GetType().Name ?? "null"}, RootElement={rootElement?.GetType().Name ?? "null"}");
+				@this.Log().Debug($"[A11y] EnableAccessibility deferred: Window={window?.GetType().Name ?? "null"}, RootElement=null");
 			}
 
-			// Retry with delay if we haven't exceeded max retries
 			if (_enableAccessibilityRetryCount < MaxEnableAccessibilityRetries)
 			{
 				_enableAccessibilityRetryCount++;
-				if (@this.Log().IsEnabled(LogLevel.Debug))
+				if (@this.Log().IsEnabled(LogLevel.Trace))
 				{
-					@this.Log().Debug($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
+					@this.Log().Trace($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
 				}
 
 				var timer = new Timer(
 					_ =>
 					{
-						if (@this.Log().IsEnabled(LogLevel.Debug))
+						if (@this.Log().IsEnabled(LogLevel.Trace))
 						{
-							@this.Log().Debug($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
+							@this.Log().Trace($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
 						}
 						EnableAccessibility();
 					},
@@ -678,7 +695,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				if (@this.Log().IsEnabled(LogLevel.Error))
 				{
-					@this.Log().Error($"[A11y] EnableAccessibility() ERROR: Max retries ({MaxEnableAccessibilityRetries}) exceeded. Window still not ready.");
+					@this.Log().Error($"[A11y] EnableAccessibility: max retries ({MaxEnableAccessibilityRetries}) exceeded; Window still not ready.");
 				}
 
 				return;
@@ -813,11 +830,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var @this = Instance;
 		if (@this.Log().IsEnabled(LogLevel.Trace))
 		{
-			@this.Log().Trace($"OnTextInput called for handle: {handle}, value length: {value?.Length ?? 0}");
+			@this.Log().Trace($"OnTextInput called for handle: {handle}, value length: {value?.Length ?? 0}, selection: {selectionStart}-{selectionEnd}");
 		}
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
+			if (owner is TextBox textBox)
+			{
+				var maxLength = value?.Length ?? 0;
+				selectionStart = Math.Max(0, Math.Min(selectionStart, maxLength));
+				selectionEnd = Math.Max(selectionStart, Math.Min(selectionEnd, maxLength));
+				textBox.SetPendingSelection(selectionStart, selectionEnd - selectionStart);
+			}
+
 			var peer = owner.GetOrCreateAutomationPeer();
 			if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 			{
@@ -896,6 +921,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Route through FocusSynchronizer if available (handles IsSyncing guard)
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
+			if (owner is TextBox)
+			{
+				BrowserInvisibleTextBoxViewExtension.DetachNativeInputPreservingFocus();
+			}
+
 			if (instance._focusSynchronizer is { } synchronizer)
 			{
 				synchronizer.OnBrowserFocus(handle, owner);
@@ -944,6 +974,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			this.Log().Debug($"[A11y] CreateAOM: rootElement={rootElement.GetType().Name}, handle={rootElement.Visual.Handle}, size={rootElement.Visual.Size.X}x{rootElement.Visual.Size.Y}");
 		}
+
+		TrySubscribeScrollSource(rootElement);
 
 		// We build an AOM (Accessibility Object Model):
 		// https://wicg.github.io/aom/explainer.html
@@ -1109,6 +1141,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, int depth = 0)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
+
+		TrySubscribeScrollSource(child);
 
 		var handle = child.Visual.Handle;
 		var isSemantic = IsSemanticElement(child);
@@ -1314,6 +1348,36 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				var ariaLive = childLiveSetting == AutomationLiveSetting.Assertive ? "assertive" : "polite";
 				NativeMethods.UpdateAriaLive(handle, ariaLive);
+			}
+
+			// Generic elements that still expose ExpandCollapse / shortcut keys (e.g. Expander
+			// hosted inside a fallback role, custom controls) need aria-expanded / aria-keyshortcuts
+			// applied post-hoc. Factory paths handle their own creation-time wiring.
+			if (automationPeer is not null)
+			{
+				try
+				{
+					if (automationPeer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+					{
+						var expanded = expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Expanded ||
+									   expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
+						NativeMethods.UpdateExpandCollapseState(handle, expanded);
+					}
+				}
+				catch
+				{
+					// Some peers throw if queried before fully initialized. Update will arrive via property change.
+				}
+
+				var acceleratorKey = automationPeer.GetAcceleratorKey();
+				var accessKey = automationPeer.GetAccessKey();
+				if (!string.IsNullOrEmpty(acceleratorKey) || !string.IsNullOrEmpty(accessKey))
+				{
+					var keyShortcuts = string.IsNullOrEmpty(accessKey)
+						? acceleratorKey
+						: string.IsNullOrEmpty(acceleratorKey) ? accessKey : $"{acceleratorKey} {accessKey}";
+					NativeMethods.UpdateAriaKeyShortcuts(handle, keyShortcuts);
+				}
 			}
 		}
 
@@ -1530,7 +1594,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					this.Log().Debug($"[A11y] PROP CHANGE: Value handle={element.Visual.Handle} element={element.GetType().Name} valueLen={valueProvider.Value?.Length ?? 0}");
 				}
-				NativeMethods.UpdateTextBoxValue(element.Visual.Handle, valueProvider.Value ?? "", 0, 0);
+				UpdateTextBoxValueKeepingSelection(element.Visual.Handle, valueProvider.Value, element as TextBox);
 			}
 		}
 		else if (automationProperty == ValuePatternIdentifiers.IsReadOnlyProperty &&
@@ -1667,7 +1731,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					{
 						this.Log().Debug($"[A11y] AUTOMATION EVENT: {eventId} handle={textElement.Visual.Handle} valueLen={textValueProvider.Value?.Length ?? 0}");
 					}
-					NativeMethods.UpdateTextBoxValue(textElement.Visual.Handle, textValueProvider.Value ?? "", 0, 0);
+					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, textElement as TextBox);
 				}
 				break;
 
@@ -1742,7 +1806,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	protected override void UpdateRangeBounds(nint handle, double min, double max)
 		=> NativeMethods.UpdateSliderValue(handle, double.NaN, min, max, null);
 	protected override void UpdateTextValue(nint handle, string? value)
-		=> NativeMethods.UpdateTextBoxValue(handle, value ?? "", 0, 0);
+		=> UpdateTextBoxValueKeepingSelection(handle, value);
 	protected override void UpdateExpandCollapseState(nint handle, bool isExpanded)
 		=> NativeMethods.UpdateExpandCollapseState(handle, isExpanded);
 	protected override void UpdateEnabled(nint handle, bool enabled)
@@ -1776,6 +1840,66 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	protected override void SetNativeFocus(nint handle)
 		=> NativeMethods.FocusSemanticElement(handle);
 	protected override void OnNativeStructureChanged() { }
+
+	internal void SyncTextBoxValueAndSelection(TextBox textBox)
+	{
+		if (!_isAccessibilityEnabled || !HasSemanticElement(textBox.Visual.Handle))
+		{
+			return;
+		}
+
+		UpdateTextBoxValueKeepingSelection(textBox.Visual.Handle, textBox.Text, textBox);
+	}
+
+	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBox? textBox = null)
+	{
+		textBox ??= TryGetTextBoxForHandle(handle, out var resolvedTextBox) ? resolvedTextBox : null;
+		var normalizedValue = value ?? textBox?.Text ?? string.Empty;
+
+		if (TryGetTextSelection(textBox, normalizedValue.Length, out var selectionStart, out var selectionEnd))
+		{
+			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd);
+			return;
+		}
+
+		UpdateTextBoxValuePreservingSelection(handle, normalizedValue);
+	}
+
+	private static void UpdateTextBoxValuePreservingSelection(IntPtr handle, string value)
+		=> NativeMethods.UpdateTextBoxValue(handle, value ?? string.Empty, PreserveTextSelectionSentinel, PreserveTextSelectionSentinel);
+
+	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBox? textBox)
+	{
+		textBox = null;
+
+		if (handle == IntPtr.Zero)
+		{
+			return false;
+		}
+
+		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: TextBox owner })
+		{
+			textBox = owner;
+			return true;
+		}
+
+		return false;
+	}
+
+	private static bool TryGetTextSelection(TextBox? textBox, int maxLength, out int selectionStart, out int selectionEnd)
+	{
+		selectionStart = PreserveTextSelectionSentinel;
+		selectionEnd = PreserveTextSelectionSentinel;
+
+		if (textBox is null)
+		{
+			return false;
+		}
+
+		selectionStart = Math.Max(0, Math.Min(textBox.SelectionStart, maxLength));
+		selectionEnd = Math.Max(selectionStart, Math.Min(textBox.SelectionStart + textBox.SelectionLength, maxLength));
+		return true;
+	}
 
 	private static partial class NativeMethods
 	{
@@ -1823,7 +1947,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		internal static partial void CreateSliderElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, double value, double min, double max, double step, string orientation, string? valueText);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createTextBoxElement")]
-		internal static partial void CreateTextBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string value, bool multiline, bool password, bool readOnly);
+		internal static partial void CreateTextBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string value, bool multiline, bool password, bool readOnly, int selectionStart, int selectionEnd);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createCheckboxElement")]
 		internal static partial void CreateCheckboxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? checkedState, string? label);
@@ -1901,6 +2025,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaPressed")]
 		internal static partial void UpdateAriaPressed(IntPtr handle, string pressed);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaKeyShortcuts")]
+		internal static partial void UpdateAriaKeyShortcuts(IntPtr handle, string keyShortcuts);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);

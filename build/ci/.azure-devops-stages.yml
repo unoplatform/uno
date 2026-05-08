@@ -19,9 +19,11 @@ stages:
         README.md
         README/**
         build/**
+        src/Uno.Sdk/packages.json
 
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
+    - template: setup/.azure-devops-setup-validate-packages.yml
     - template: setup/.azure-devops-setup-doc-validations.yml
 
   - job: DetermineScope
@@ -60,7 +62,6 @@ stages:
   jobs:
   - template: build/.azure-devops-build-native.yml
     parameters:
-      UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
       macOSImageName: '$(macOSVMImage)'
  
@@ -74,7 +75,6 @@ stages:
   - template: build/.azure-devops-build-managed.yml
     parameters:
       poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
 - stage: packages_tests
@@ -126,7 +126,6 @@ stages:
     poolName: '$(windowsScaledPool)'
     xCodeRootBuild: '$(xCodeRoot)'
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-    UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
 - stage: android_tests

@@ -71,9 +71,9 @@ public class Given_ServerDefinitionResolver
 		Transport: "stdio",
 		Variants: new Dictionary<string, JsonObject>
 		{
-			["stable"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
-			["prerelease"] = JsonNode.Parse("""{"command":"dnx","args":["-y","--prerelease","uno.devserver","--mcp-app"]}""")!.AsObject(),
-			["pinned"] = JsonNode.Parse("""{"command":"dnx","args":["-y","--version","{version}","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			["stable"] = JsonNode.Parse("""{"command":"dotnet","args":["dnx","-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			["prerelease"] = JsonNode.Parse("""{"command":"dotnet","args":["dnx","-y","--prerelease","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			["pinned"] = JsonNode.Parse("""{"command":"dotnet","args":["dnx","-y","--version","{version}","uno.devserver","--mcp-app"]}""")!.AsObject(),
 		},
 		Detection: new(["^UnoApp$"], null, null));
 
@@ -82,7 +82,7 @@ public class Given_ServerDefinitionResolver
 	{
 		var result = ServerDefinitionResolver.ResolveDefinition(TestUnoApp, "stable");
 		var args = result["args"]!.AsArray();
-		args.Select(a => a!.GetValue<string>()).Should().BeEquivalentTo(["-y", "uno.devserver", "--mcp-app"]);
+		args.Select(a => a!.GetValue<string>()).Should().BeEquivalentTo(["dnx", "-y", "uno.devserver", "--mcp-app"]);
 	}
 
 	[TestMethod]
@@ -119,14 +119,14 @@ public class Given_ServerDefinitionResolver
 			Transport: "stdio",
 			Variants: new Dictionary<string, JsonObject>
 			{
-				["stable"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+				["stable"] = JsonNode.Parse("""{"command":"dotnet","args":["dnx","-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
 			},
 			Detection: new(["^UnoApp$"], null, null));
 
 		var result = ServerDefinitionResolver.ResolveDefinition(defWithoutPinned, "pinned:5.6.0");
 		var args = result["args"]!.AsArray();
 
-		args.Select(a => a!.GetValue<string>()).Should().BeEquivalentTo(["-y", "uno.devserver", "--mcp-app"]);
+		args.Select(a => a!.GetValue<string>()).Should().BeEquivalentTo(["dnx", "-y", "uno.devserver", "--mcp-app"]);
 	}
 
 	[TestMethod]
@@ -136,7 +136,7 @@ public class Given_ServerDefinitionResolver
 			Transport: "stdio",
 			Variants: new Dictionary<string, JsonObject>
 			{
-				["prerelease"] = JsonNode.Parse("""{"command":"dnx","args":["-y","--prerelease","uno.devserver","--mcp-app"]}""")!.AsObject(),
+				["prerelease"] = JsonNode.Parse("""{"command":"dotnet","args":["dnx","-y","--prerelease","uno.devserver","--mcp-app"]}""")!.AsObject(),
 			},
 			Detection: new(["^UnoApp$"], null, null));
 

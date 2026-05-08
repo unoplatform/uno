@@ -216,6 +216,9 @@ namespace Uno.UI.Runtime.Skia
 		[DllImport(libdrm)]
 		public static extern int drmHandleEvent(int fd, DrmEventContext* context);
 
+		[DllImport(libdrm)]
+		public static extern int drmIsMaster(int fd);
+
 		[DllImport(libgbm)]
 		public static extern IntPtr gbm_create_device(int fd);
 

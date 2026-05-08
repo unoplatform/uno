@@ -120,7 +120,7 @@ public class Given_StartCommandHandler
 	{
 		var rebindCalled = false;
 		var handler = CreateHandler(
-			existingServerBySolution: new FakeServerInfo(ProcessId: 100, Port: 9000, SolutionPath: "/app/app.sln"),
+			existingServerBySolution: new FakeServerInfo(ProcessId: 100, Port: 9000, SolutionPath: "/app/app.sln", ParentProcessId: Environment.ProcessId),
 			onRebindIdeChannel: (port, channel) =>
 			{
 				rebindCalled = true;
@@ -233,7 +233,7 @@ public class Given_StartCommandHandler
 	{
 		var rebindCalled = false;
 		var handler = CreateHandler(
-			existingServerBySolution: new FakeServerInfo(ProcessId: 100, Port: 9000, SolutionPath: "/app/auto-discovered.sln"),
+			existingServerBySolution: new FakeServerInfo(ProcessId: 100, Port: 9000, SolutionPath: "/app/auto-discovered.sln", ParentProcessId: Environment.ProcessId),
 			onRebindIdeChannel: (port, channel) =>
 			{
 				rebindCalled = true;
@@ -267,16 +267,16 @@ public class Given_StartCommandHandler
 			onSpawnProcess ?? (_ => Task.FromResult(0)));
 	}
 
-	internal record FakeServerInfo(int ProcessId, int Port, string? SolutionPath);
+	internal record FakeServerInfo(int ProcessId, int Port, string? SolutionPath, int ParentProcessId = 0);
 
 	private sealed class FakeAmbientLookup(
 		FakeServerInfo? bySolution,
 		FakeServerInfo? byPort) : IDevServerLookup
 	{
-		public (int ProcessId, int Port, string? SolutionPath)? FindBySolution(string solution)
-			=> bySolution is not null ? (bySolution.ProcessId, bySolution.Port, bySolution.SolutionPath) : null;
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindBySolution(string solution)
+			=> bySolution is not null ? (bySolution.ProcessId, bySolution.Port, bySolution.SolutionPath, bySolution.ParentProcessId) : null;
 
-		public (int ProcessId, int Port, string? SolutionPath)? FindByPort(int port)
-			=> byPort is not null ? (byPort.ProcessId, byPort.Port, byPort.SolutionPath) : null;
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindByPort(int port)
+			=> byPort is not null ? (byPort.ProcessId, byPort.Port, byPort.SolutionPath, byPort.ParentProcessId) : null;
 	}
 }

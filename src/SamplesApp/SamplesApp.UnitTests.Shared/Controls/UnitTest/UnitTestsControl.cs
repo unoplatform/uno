@@ -1116,6 +1116,15 @@ namespace Uno.UI.Samples.Tests
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					ResetLastInputDeviceType();
+
+					// KeyboardStateTracker is process-wide static state. Tests that raise
+					// synthetic KeyDown events without matching KeyUp (crashes, unbalanced
+					// sequences, or deliberate-but-incomplete modifier exercises) leave
+					// modifier keys stuck in the Down state, causing subsequent tests that
+					// rely on Input_GetKeyboardModifiers (notably keyboard-accelerator
+					// matching) to see phantom modifiers and fail intermittently.
+					// Reset before each test for a clean slate.
+					Uno.UI.Core.KeyboardStateTracker.Reset();
 				});
 #else
 				await Task.CompletedTask;

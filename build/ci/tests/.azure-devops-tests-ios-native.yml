@@ -108,7 +108,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       targetPath: $(build.artifactstagingdirectory)/bin
-      ArtifactName: ios-uitest-build
+      ArtifactName: samplesapp-ios-native
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish iOS build logs'
@@ -116,7 +116,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
-      ArtifactName: ios-uitest-build-logs
+      ArtifactName: samplesapp-ios-native-logs
       ArtifactType: Container
 
 ##
@@ -127,16 +127,18 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
-      JobDisplayName: 'Automated Tests ${{ AutomatedTestGroup.key }}'
-      TestRunName: 'iOS Native Automated Tests ${{ AutomatedTestGroup.key }}'
+      JobDisplayName: 'UI Tests ${{ AutomatedTestGroup.key }}'
+      TestRunName: 'iOS Native UI Tests ${{ AutomatedTestGroup.key }}'
       JobTimeoutInMinutes: 90
-      SamplesAppArtifactName: 'ios-uitest-build'
+      SamplesAppArtifactName: 'samplesapp-ios-native'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_AUTOMATED_GROUP: ${{ AutomatedTestGroup.key }}
       UITEST_TEST_TIMEOUT: '20m'
       UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+      UITEST_VARIANT: 'native'
+      TEST_KIND: ui
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - iOS_Build
@@ -152,7 +154,7 @@ jobs:
       JobDisplayName: 'Runtime Tests ${{ RuntimeTestGroup.key }}'
       TestRunName: 'iOS Native Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
-      SamplesAppArtifactName: 'ios-uitest-build'
+      SamplesAppArtifactName: 'samplesapp-ios-native'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_TEST_TIMEOUT: '90m'
@@ -161,6 +163,8 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+      UITEST_VARIANT: 'native'
+      TEST_KIND: runtime
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - iOS_Build
@@ -176,6 +180,8 @@ jobs:
 #     UITEST_SNAPSHOTS_ONLY: false
 #     UITEST_AUTOMATED_GROUP: Benchmarks
 #     SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+#     UITEST_VARIANT: 'native'
+#     TEST_KIND: benchmark
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
 
 - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
@@ -187,13 +193,15 @@ jobs:
         JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
         TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
         JobTimeoutInMinutes: 90
-        SamplesAppArtifactName: 'ios-uitest-build'
+        SamplesAppArtifactName: 'samplesapp-ios-native'
         vmImage: ${{ parameters.vmImageTest }}
         UITEST_SNAPSHOTS_ONLY: true
         UITEST_SNAPSHOTS_GROUP: '0${{ snapshotGroup.key }}' # Example: 01, 02, 03, 04, 05
         UITEST_TEST_TIMEOUT: '10m'
         UITEST_ALLOW_RERUN: 'false'
         SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+        UITEST_VARIANT: 'native'
+        TEST_KIND: screenshot
         xCodeRoot: ${{ parameters.xCodeRootTest }}
         dependsOn:
           - iOS_Build

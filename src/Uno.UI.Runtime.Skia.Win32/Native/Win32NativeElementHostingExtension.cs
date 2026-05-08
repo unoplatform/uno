@@ -23,11 +23,11 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
+	private SKPath? _lastClipPath;
 	private Rect _lastArrangeRect;
 	private string? _lastFinalSvgClipPath;
 	private HRGN _lastClipHrgn;
@@ -101,6 +101,8 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
 	{
+		_lastClipPath = path;
+
 		_tempPath.Rewind();
 		_tempPath.AddRect(_lastArrangeRect.ToSKRect());
 		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
@@ -315,8 +317,11 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
-		OnRenderingNegativePathReevaluated(this, _lastClipPath);
+		if (_lastClipPath is not null)
+		{
+			_lastFinalSvgClipPath = null; // force reapply clip path after arranging
+			OnRenderingNegativePathReevaluated(this, _lastClipPath);
+		}
 
 		if (_showWindowOnNextArrange)
 		{

@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Uno.UI.RemoteControl.Host;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
@@ -37,7 +40,8 @@ internal static class DevServerProcessHelper
 		IEnumerable<string> arguments,
 		string workingDirectory,
 		bool redirectOutput,
-		bool redirectInput = false)
+		bool redirectInput = false,
+		bool enableMajorRollForward = false)
 	{
 		var useDotnet = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || hostPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
 
@@ -72,6 +76,17 @@ internal static class DevServerProcessHelper
 
 		PropagateDotnetRootVariables(psi);
 		PropagateXdgVariables(psi);
+
+		if (enableMajorRollForward)
+		{
+			// Override the host's runtimeconfig.json rollForward policy so a host compiled for
+			// an older major (e.g. net9.0 because that's the most recent TFM shipped by an
+			// older Uno.Sdk) can still start on a machine whose only installed runtime is a
+			// newer major (e.g. net10.0). Safe for dev tools; a no-op when the exact TFM
+			// runtime is installed. Used by the host spawn path alongside UnoToolsLocator's
+			// TFM fallback resolver.
+			psi.Environment["DOTNET_ROLL_FORWARD"] = "Major";
+		}
 
 		return psi;
 	}
@@ -326,6 +341,19 @@ internal static class DevServerProcessHelper
 			// Streams may not be available
 		}
 
+		// Backfill the ambient registry with the ideChannelId we passed via --ideChannel.
+		// Older host versions (Uno.WinUI.DevServer < ~6.6) don't include IdeChannelId in
+		// their own registration, leaving disco's `activeServers[].ideChannelId` null and
+		// preventing uno.studio's DevServerLauncher from adopting the host without
+		// re-spawning a duplicate. The sidecar is removed automatically when the host
+		// process is no longer alive.
+		var ideChannelId = ExtractIdeChannel(startInfo.Arguments);
+		if (!string.IsNullOrWhiteSpace(ideChannelId))
+		{
+			var ambient = new AmbientRegistry(NullLogger.Instance);
+			ambient.WriteAuxiliaryRegistration(targetProcessId: process.Id, ideChannelId: ideChannelId);
+		}
+
 		// Extract the port from the args to probe for readiness
 		var port = ExtractPort(startInfo.Arguments);
 		if (port <= 0)
@@ -362,7 +390,44 @@ internal static class DevServerProcessHelper
 		}
 
 		logger.LogInformation("DevServer is ready on port {Port}.", port);
+
+		// If we injected our own PID as --ppid (because no explicit ppid was provided
+		// but an ideChannel was), we must stay alive so the host's ParentProcessObserver
+		// can detect our death (which happens when the IDE kills its child processes on
+		// exit). Without this, the CLI exits immediately and the host sees its parent
+		// gone → shuts down within ~7.5s.
+		if (ShouldAwaitHostExit(startInfo.Arguments))
+		{
+			logger.LogDebug(
+				"CLI will remain alive as ppid guardian for host PID {HostPid}. " +
+				"The host will self-terminate when this process dies.",
+				process.Id);
+			await process.WaitForExitAsync();
+			logger.LogDebug("Host process exited with code {ExitCode}.", process.ExitCode);
+			return process.ExitCode;
+		}
+
 		return 0;
+	}
+
+	/// <summary>
+	/// Returns <c>true</c> when the CLI injected its own PID as <c>--ppid</c>
+	/// and must therefore remain alive as a guardian process.
+	/// </summary>
+	private static bool ShouldAwaitHostExit(string arguments)
+	{
+		var currentPid = Environment.ProcessId.ToString(CultureInfo.InvariantCulture);
+		var parts = arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		for (var i = 0; i < parts.Length - 1; i++)
+		{
+			if (string.Equals(parts[i], "--ppid", StringComparison.OrdinalIgnoreCase)
+				&& parts[i + 1] == currentPid)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static int ExtractPort(string arguments)
@@ -378,6 +443,21 @@ internal static class DevServerProcessHelper
 		}
 
 		return 0;
+	}
+
+	private static string? ExtractIdeChannel(string arguments)
+	{
+		var parts = arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		for (var i = 0; i < parts.Length - 1; i++)
+		{
+			if (string.Equals(parts[i], "--ideChannel", StringComparison.OrdinalIgnoreCase))
+			{
+				// Strip surrounding quotes that the args builder may have added.
+				return parts[i + 1].Trim('"');
+			}
+		}
+
+		return null;
 	}
 
 	private static async Task<bool> WaitForTcpReadyAsync(int port, int timeoutMs)

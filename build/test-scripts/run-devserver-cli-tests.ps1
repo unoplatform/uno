@@ -848,15 +848,15 @@ function Test-DevserverStartStop {
     }
     finally {
         if ($devserverStarted) {
-            Stop-DevserverInDirectory -Directory $SlnDir
+            Stop-DevserverInDirectory -Directory $SlnDir | Out-Null
         }
 
-        Stop-DevserverProcessCapture -Context $startProcessContext
+        Stop-DevserverProcessCapture -Context $startProcessContext | Out-Null
 
         if ($startProcessContext) {
             foreach ($logPath in @($startProcessContext.StdoutLogPath, $startProcessContext.StderrLogPath)) {
                 if ($logPath -and (Test-Path $logPath)) {
-                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                    Remove-Item $logPath -ErrorAction SilentlyContinue | Out-Null
                 }
             }
         }
@@ -900,20 +900,20 @@ function Test-DevserverSolutionDirSupport {
     }
     finally {
         if ($solutionDirStarted) {
-            Stop-DevserverInDirectory -Directory $SlnDir
+            Stop-DevserverInDirectory -Directory $SlnDir | Out-Null
         }
 
-        Stop-DevserverProcessCapture -Context $solutionDirProcessContext
+        Stop-DevserverProcessCapture -Context $solutionDirProcessContext | Out-Null
 
         if ($solutionDirProcessContext) {
             foreach ($logPath in @($solutionDirProcessContext.StdoutLogPath, $solutionDirProcessContext.StderrLogPath)) {
                 if ($logPath -and (Test-Path $logPath)) {
-                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                    Remove-Item $logPath -ErrorAction SilentlyContinue | Out-Null
                 }
             }
         }
 
-        Pop-Location
+        Pop-Location | Out-Null
         Set-Location $SlnDir
     }
 
@@ -1335,10 +1335,10 @@ function Test-McpModeWithRootsFallback {
             try { $stderrStream.Dispose() } catch {}
         }
 
-        Stop-DevserverInDirectory -Directory $SlnDir
+        Stop-DevserverInDirectory -Directory $SlnDir | Out-Null
 
-        if (Test-Path $stdoutLogPath) { Remove-Item $stdoutLogPath -ErrorAction SilentlyContinue }
-        if (Test-Path $stderrLogPath) { Remove-Item $stderrLogPath -ErrorAction SilentlyContinue }
+        if (Test-Path $stdoutLogPath) { Remove-Item $stdoutLogPath -ErrorAction SilentlyContinue | Out-Null }
+        if (Test-Path $stderrLogPath) { Remove-Item $stderrLogPath -ErrorAction SilentlyContinue | Out-Null }
     }
 
     return $mcpTestPort
@@ -1354,13 +1354,13 @@ function Stop-DevserverInDirectory {
     Push-Location $Directory
     try {
         Write-Log "Ensuring no lingering devserver instances remain in $Directory"
-        Invoke-DevserverCli -Arguments @('stop', '-l', 'trace')
+        Invoke-DevserverCli -Arguments @('stop', '-l', 'trace') | Out-Null
     }
     catch {
         Write-Log "Cleanup devserver stop failed: $($_.Exception.Message)"
     }
     finally {
-        Pop-Location
+        Pop-Location | Out-Null
     }
 }
 

@@ -127,7 +127,7 @@ The PowerShell script `build/test-scripts/run-devserver-cli-tests.ps1` provides 
 | `--json` | JSON output for disco command |
 | `--addins-only` | Output only resolved add-in paths |
 | `--mcp-wait-tools-list` | Wait for upstream tools before responding to `list_tools` |
-| `--force-roots-fallback` | Force roots fallback mode (auto-detected from client capabilities; rarely needed explicitly) |
+| `--force-roots-fallback` | Legacy explicit override for roots fallback mode (auto-detected from client capabilities; rarely needed) |
 | `--solution-dir <path>` | Explicit solution root |
 
 ---

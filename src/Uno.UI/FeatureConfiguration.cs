@@ -224,12 +224,30 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __APPLE_UIKIT__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
 			public static float? MaximumTextScaleFactor { get; set; }
-#endif
+
+			/// <summary>
+			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
+			/// that the requested font family cannot render. When <c>null</c> (the default),
+			/// the platform-registered service is used.
+			/// </summary>
+			/// <remarks>
+			/// Customers wanting to keep the built-in coverage but change how font bytes are obtained
+			/// (e.g. to avoid CORS restrictions on WebAssembly) typically supply a
+			/// <see cref="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService"/>
+			/// constructed with their own coverage table and stream provider.
+			/// </remarks>
+			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
+
+			/// <summary>
+			/// Overrides the OS-reported text scale factor with a manual value.
+			/// When set, this value takes precedence over the OS-reported scale factor.
+			/// Useful for platforms without OS text scaling support (macOS, WASM, Linux FrameBuffer) or for testing.
+			/// </summary>
+			public static double? TextScaleFactor { get; set; }
 		}
 
 		public static class FrameworkElement
@@ -592,6 +610,18 @@ namespace Uno.UI
 			/// This is currently a skia-only feature.
 			/// </summary>
 			public static List<(Stream dictionary, Stream affixes)> CustomSpellCheckDictionaries { get; set; }
+
+			/// <summary>
+			/// When set to <see langword="true"/>, disables the floating number pad popover that iOS 26
+			/// introduced for <c>UITextField</c> when a numeric keyboard is used on iPad (by setting
+			/// <c>UITextField.allowsNumberPadPopover</c> to <see langword="false"/>).
+			/// Defaults to <see langword="false"/> (native iOS 26 behavior is preserved).
+			/// </summary>
+			/// <remarks>
+			/// This is currently an iOS Skia-only feature and has no effect on other platforms or
+			/// on iOS versions prior to 26.
+			/// </remarks>
+			public static bool DisableNumberPadPopover { get; set; }
 
 #if __ANDROID__
 			/// <summary>

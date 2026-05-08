@@ -35,7 +35,9 @@ internal static class FontDetailsCache
 
 	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
-	private static readonly IFontFallbackService? _fontFallbackService = ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null;
+	private static readonly IFontFallbackService? _fontFallbackService =
+		FeatureConfiguration.Font.FallbackService
+		?? (ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null);
 
 	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
@@ -95,15 +97,25 @@ internal static class FontDetailsCache
 		{
 			return await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}
-		else
+
+		SKTypeface? fallbackTypeface = null;
+		if (_fontFallbackService is { } fallbackService)
 		{
-			if (_fontFallbackService is not null && await _fontFallbackService.GetTypefaceForFontName(name, weight, stretch, style) is { } typeface)
+			try
 			{
-				return typeface;
+				if (await fallbackService.GetFontStreamForFontFamily(name, weight, stretch, style) is { } fallbackStream)
+				{
+					fallbackTypeface = SKTypeface.FromStream(fallbackStream);
+				}
 			}
-			// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-			return SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
+			catch (Exception e)
+			{
+				typeof(FontDetailsCache).LogError()?.Error($"Font fallback service threw resolving {name}", e);
+			}
 		}
+
+		// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
+		return fallbackTypeface ?? SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
 	}
 
 	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
@@ -201,13 +213,12 @@ internal static class FontDetailsCache
 		FontStretch stretch,
 		FontStyle style)
 	{
-		if (_fontFallbackService is not null)
+		if (_fontFallbackService is { } fallbackService)
 		{
-			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodepoint(codepoint);
 			string? fallbackServiceResult = null;
 			try
 			{
-				fallbackServiceResult = await fallbackServiceTask;
+				fallbackServiceResult = await fallbackService.GetFontFamilyForCodepoint(codepoint);
 			}
 			catch (Exception e)
 			{

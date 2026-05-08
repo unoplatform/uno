@@ -64,6 +64,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		var view = View!;
 
 		_textInputLayer = new UIView();
+		_textInputLayer.UserInteractionEnabled = false;
 		view.AddSubview(_textInputLayer);
 
 		_skCanvasView = new SkiaCanvas();
