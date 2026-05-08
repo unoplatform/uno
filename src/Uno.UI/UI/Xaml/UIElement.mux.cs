@@ -1348,10 +1348,10 @@ namespace Microsoft.UI.Xaml
 				//bool propViewport = GetIsViewportDirtyOrOnViewportDirtyPath();
 				//bool propContributesToViewport = GetWantsViewportOrContributesToViewport();
 
-				//if (CanBeScrollAnchor)
-				//{
-				//	UpdateAnchorCandidateOnParentScrollProvider(true /* add */);
-				//}
+				if (CanBeScrollAnchor)
+				{
+					UpdateAnchorCandidateOnParentScrollProvider(add: true);
+				}
 
 				//if (EventEnabledElementAddedInfo())
 				//{
@@ -1997,10 +1997,10 @@ namespace Microsoft.UI.Xaml
 				//// Discard the potential rejection viewports within this leaving element's subtree
 				//DiscardRejectionViewportsInSubTree();
 
-				//if (CanBeScrollAnchor)
-				//{
-				//	UpdateAnchorCandidateOnParentScrollProvider(false /* add */);
-				//}
+				if (CanBeScrollAnchor)
+				{
+					UpdateAnchorCandidateOnParentScrollProvider(add: false);
+				}
 			}
 
 		}
@@ -2010,5 +2010,83 @@ namespace Microsoft.UI.Xaml
 			=> true;
 
 		internal bool IsNonClippingSubtree { get; set; }
+
+		// Identifies the CanBeScrollAnchor dependency property. Moved out of the generated
+		// UIElement.cs (which had a [Uno.NotImplemented] stub) so we can attach a PropertyChangedCallback
+		// that mirrors WinUI's CUIElement::OnPropertyChanged dispatch for UIElement_CanBeScrollAnchor
+		// (uielement.cpp:861) and auto-registers the element with the nearest IScrollAnchorProvider.
+		public static DependencyProperty CanBeScrollAnchorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(CanBeScrollAnchor),
+				typeof(bool),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: false,
+					propertyChangedCallback: OnCanBeScrollAnchorChangedStatic));
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the UIElement can be a candidate for scroll
+		/// anchoring. The framework auto-registers / unregisters this element with the nearest
+		/// ancestor IScrollAnchorProvider when this value changes.
+		/// </summary>
+		public bool CanBeScrollAnchor
+		{
+			get => (bool)GetValue(CanBeScrollAnchorProperty);
+			set => SetValue(CanBeScrollAnchorProperty, value);
+		}
+
+		// Tracks the last IScrollAnchorProvider this element registered with, so we can unregister
+		// from the same provider on Leave even if the visual tree has been reshuffled in the meantime.
+		private global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider? _registeredScrollAnchorProvider;
+
+		private static void OnCanBeScrollAnchorChangedStatic(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			((UIElement)d).UpdateAnchorCandidateOnParentScrollProvider(add: (bool)e.NewValue);
+		}
+
+		// Walks up the parent chain to the nearest IScrollAnchorProvider and registers/unregisters
+		// this element as an anchor candidate. Mirrors CUIElement::UpdateAnchorCandidateOnParentScrollProvider
+		// (uielement.cpp:934). Called on enter/leave (when CanBeScrollAnchor is already true) and
+		// from the property-changed callback when CanBeScrollAnchor flips.
+		private void UpdateAnchorCandidateOnParentScrollProvider(bool add)
+		{
+			if (add)
+			{
+				var provider = FindNearestScrollAnchorProvider();
+				if (provider is null)
+				{
+					return;
+				}
+				provider.RegisterAnchorCandidate(this);
+				_registeredScrollAnchorProvider = provider;
+			}
+			else
+			{
+				// Unregister from the provider we registered with, even if the tree has changed.
+				// Falls back to walking up if we never tracked one (e.g. registered before this
+				// hook was wired and only now leaving).
+				var provider = _registeredScrollAnchorProvider ?? FindNearestScrollAnchorProvider();
+				if (provider is null)
+				{
+					return;
+				}
+				provider.UnregisterAnchorCandidate(this);
+				_registeredScrollAnchorProvider = null;
+			}
+		}
+
+		private global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider? FindNearestScrollAnchorProvider()
+		{
+			DependencyObject? current = global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this);
+			while (current is not null)
+			{
+				if (current is global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider provider)
+				{
+					return provider;
+				}
+				current = global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current);
+			}
+			return null;
+		}
 	}
 }
