@@ -10,6 +10,13 @@ namespace Windows.UI.ViewManagement
 {
 	public partial class UISettings
 	{
+		public double TextScaleFactor
+		{
+			get => GetTextScaleFactorValue();
+		}
+
+		internal static double GetTextScaleFactorValue() => global::Android.App.Application.Context.Resources?.Configuration?.FontScale ?? 1.0;
+
 		public bool AnimationsEnabled
 		{
 			get

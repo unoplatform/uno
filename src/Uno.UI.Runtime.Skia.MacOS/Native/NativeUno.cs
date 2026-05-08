@@ -200,6 +200,12 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial uint uno_get_system_theme();
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_text_scale_factor_change_callback(delegate* unmanaged[Cdecl]<void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial double uno_get_text_scale_factor();
+
 	// IME (Input Method Editor) callbacks
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_ime_callbacks(
