@@ -1,5 +1,5 @@
 #nullable enable
-#program warning disable CS0618 // obsolete members
+#pragma warning disable CS0618 // obsolete members
 
 using System;
 using System.Collections.Generic;
