@@ -101,6 +101,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Size? CustomContentExtent => null;
 
+		// True while a scroll animation is in flight on the content's AnchorPoint. Used by
+		// ScrollViewer.RecomputeOffsetsFromIntent to avoid interrupting an ongoing animation
+		// (e.g. the wheel-driven or programmatic-with-animation scroll) with an instant Set.
+		// The recompute will run again on the next layout pass after the animation completes.
+		internal bool IsScrollAnimationInProgress
+		{
+			get
+			{
+				if (Content is UIElement contentElt && contentElt.Visual is { } visual)
+				{
+					return visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is not null;
+				}
+				return false;
+			}
+		}
+
 		private object RealContent => Content;
 
 		private readonly SerialDisposable _eventSubscriptions = new();
@@ -351,6 +367,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+
+			// Touch/pen press invalidates any armed offset intent so subsequent layout cascades from
+			// realization don't push the offset back toward the intent during the user's manipulation.
+			Scroller?.ClearOffsetIntents();
 
 			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.RegisterDirectManipulationHandler(args.Pointer.UniqueId, this);
 		}

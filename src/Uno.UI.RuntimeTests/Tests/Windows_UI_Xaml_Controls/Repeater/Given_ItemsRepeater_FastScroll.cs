@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
@@ -15,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 
 #if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -242,6 +244,139 @@ public class Given_ItemsRepeater_FastScroll
 		sut.Scroller.ExtentHeight.Should().BeGreaterThanOrEqualTo(RealContentHeight - 1,
 			"ExtentHeight must accommodate the real cumulative content size after every item is measured; "
 			+ "the pre-fix clamp caused an under-estimated extent that left late items unreachable.");
+	}
+
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_BottomClickedFromInitialState_Then_LastItemFlushAtViewportBottom()
+	{
+		// Reproduces issue #23041 / studio.live#1333: clicking "Bottom" once on a freshly-loaded
+		// chat-style ItemsRepeater (200 items, every 10th 1200px tall, others 40px, IR
+		// VerticalAlignment=Bottom) must leave Source[199] flush against the bottom of the viewport.
+		// The observed Uno bug: the first ChangeView(ScrollableHeight) lands the offset in blank
+		// territory (UI appears empty) because StackLayout's average-size estimate is biased toward
+		// the few short items realized at the trailing edge after the jump, which shrinks
+		// ExtentHeight below the offset that was just requested. WinUI keeps the extent monotonic
+		// enough through this transition to land Source[199] at the viewport bottom on the first
+		// click.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		var initialExtent = sut.Scroller.ExtentHeight;
+		var initialScrollableHeight = sut.Scroller.ScrollableHeight;
+
+		// First (and only) "Bottom" click — explicitly NOT preceded by ChangeView(0) so the SUT is
+		// in the same starting state as the manual repro: never scrolled, only the leading items
+		// have ever been measured.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		// Wait for the offset to actually take effect — on WinUI ChangeView is async and a single
+		// WaitForIdle may return before the SCV has settled. Poll for VO != 0 (or extent change)
+		// up to ~3s, then run a final WaitForIdle so any post-change layout cascade settles.
+		for (var attempt = 0; attempt < 30; attempt++)
+		{
+			if (sut.Scroller.VerticalOffset > 0)
+			{
+				break;
+			}
+			await Task.Delay(100);
+		}
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var diagnostics = $"Initial: ExtentHeight={initialExtent:F2}, ScrollableHeight={initialScrollableHeight:F2}; "
+			+ $"After Bottom click: VerticalOffset={sut.Scroller.VerticalOffset:F2}, ExtentHeight={sut.Scroller.ExtentHeight:F2}, "
+			+ $"ScrollableHeight={sut.Scroller.ScrollableHeight:F2}, ViewportHeight={sut.Scroller.ViewportHeight:F2}";
+
+		var lastIndex = sut.Source.Count - 1;
+		var lastItem = FindMaterializedElementForIndex(sut, lastIndex);
+		lastItem.Should().NotBeNull(
+			$"Source[{lastIndex}] must be materialized after a single ChangeView(ScrollableHeight) from the initial state — "
+			+ "if it isn't, the user sees blank UI because the offset jumped past the actual content. " + diagnostics);
+
+		var lastTop = lastItem!.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, 0)).Y;
+		var lastBottom = lastTop + lastItem.ActualHeight;
+
+		lastBottom.Should().BeApproximately(sut.Scroller.ViewportHeight, 1,
+			$"Source[{lastIndex}] bottom must be flush with the viewport bottom on the FIRST 'Bottom' click — "
+			+ "users should not need to click twice or scroll manually to recover from a blank viewport. "
+			+ $"lastTop={lastTop:F2}, lastBottom={lastBottom:F2}. " + diagnostics);
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#elif __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_WheelScrollDownThroughVarianceList_Then_OffsetMonotonicallyAdvances()
+	{
+		// Reproduces issue #23041 / studio.live#816: mouse-wheel scrolling down through a
+		// high-variance ItemsRepeater visibly snaps the offset backward (the user has to "fight"
+		// the scroller) when realization-driven extent shrinkage triggers TrimOverscroll mid-input.
+		// Records EVERY ViewChanged offset (intermediate and final) so we catch the visible
+		// "snap-back" frames the user perceives even when the final settled position eventually
+		// moves forward. On WinUI, the composition-thread scroll position is decoupled from the
+		// layout-thread extent estimation, so the user's wheel input is never reversed by mid-scroll
+		// layout adjustments.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		var bounds = sut.Scroller.GetAbsoluteBounds();
+		mouse.MoveTo(new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2));
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+		// Record EVERY scroll position the SV passes through, including animation intermediates.
+		// We tolerate small backward fluctuations from animation easing/quantization but a real
+		// "snap back" caused by extent shrinkage shows up as a many-pixel drop within the same
+		// wheel-down sequence.
+		var offsets = new List<double>();
+		void OnViewChanged(object? s, ScrollViewerViewChangedEventArgs e) => offsets.Add(sut.Scroller.VerticalOffset);
+		sut.Scroller.ViewChanged += OnViewChanged;
+		try
+		{
+			offsets.Add(sut.Scroller.VerticalOffset);
+
+			// Multiple wheel-down ticks in rapid succession — typical user behavior. Each tick should
+			// nudge the offset forward; the realization rect chases the new visible region.
+			const int Ticks = 12;
+			for (var i = 0; i < Ticks; i++)
+			{
+				mouse.WheelDown();
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			}
+		}
+		finally
+		{
+			sut.Scroller.ViewChanged -= OnViewChanged;
+		}
+
+		// Forward-progress invariant: in any monotonically-advancing forward-scroll, no recorded
+		// offset should be more than this tolerance below the cumulative max so far. A "fight"
+		// shows up as a sample 100s of pixels below the running max.
+		const double BackwardJumpTolerance = 5.0;
+		var runningMax = offsets[0];
+		for (var i = 1; i < offsets.Count; i++)
+		{
+			(offsets[i] - runningMax).Should().BeGreaterThan(-BackwardJumpTolerance,
+				$"Sample #{i} (offset {offsets[i]:F2}) jumped backward from the running max ({runningMax:F2}) "
+				+ $"during a forward wheel-down sequence — the user perceives this as the scroller fighting input. "
+				+ $"All recorded offsets: [{string.Join(", ", offsets.Select(o => o.ToString("F2")))}].");
+			if (offsets[i] > runningMax)
+			{
+				runningMax = offsets[i];
+			}
+		}
+
+		// Sanity: the wheel sequence must have advanced *somewhere* — if every tick stayed at 0,
+		// the monotonic check has nothing to validate. With 200-item variance content and 12
+		// wheel ticks, expect at least 200px of forward progress.
+		(offsets[^1] - offsets[0]).Should().BeGreaterThan(200,
+			$"The wheel sequence must produce non-trivial forward movement (got {offsets[^1] - offsets[0]:F2}px after {offsets.Count} samples); "
+			+ "otherwise the monotonic-advance check has nothing to validate.");
 	}
 
 	// ----- helpers -----
