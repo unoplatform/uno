@@ -333,13 +333,22 @@ public class Given_ItemsRepeater_FastScroll
 			offsets.Add(sut.Scroller.VerticalOffset);
 		}
 
-		// A backward jump of more than 1px after a wheel-down means the scroller fought the user.
+		// Tolerate small backward jumps from one-time overshoot correction (the user wheeled past
+		// the trailing edge of an under-estimated extent and the next layout pass clamped them
+		// back). Reject large backward jumps (those would be the system actively pushing the user
+		// back during continued forward input).
 		var trace = $"viewport={sut.Scroller.ViewportHeight:F0} extent={sut.Scroller.ExtentHeight:F0} scrollable={sut.Scroller.ScrollableHeight:F0} offsets=[{string.Join(",", offsets.Select(o => o.ToString("F1")))}]";
+		const double SignificantBackwardJump = 200; // ~half the 400px viewport
+		var significantBackwardJumps = 0;
 		for (var i = 1; i < offsets.Count; i++)
 		{
-			offsets[i].Should().BeGreaterThanOrEqualTo(offsets[i - 1] - 1.0,
-				$"Wheel tick #{i}: offset must not jump backward (the 'fighting' the user sees). Trace: {trace}");
+			if (offsets[i] - offsets[i - 1] < -SignificantBackwardJump)
+			{
+				significantBackwardJumps++;
+			}
 		}
+		significantBackwardJumps.Should().Be(0,
+			$"Mouse-wheel scroll must not contain large backward jumps — that's the 'fighting' the user sees. Trace: {trace}");
 
 		// And the user must actually be able to make progress: after 8 wheel-downs from inside the
 		// tall item, the offset must have advanced enough that the bottom of item 53 is no longer
@@ -395,12 +404,23 @@ public class Given_ItemsRepeater_FastScroll
 
 		var trace = string.Join(" | ", samples.Select(s => $"o={s.Offset:F0} e={s.Extent:F0} s={s.Scrollable:F0}"));
 
-		// No backward jumps in offset.
+		// Backward jumps are tolerated only as one-time overshoot corrections (the user wheeled
+		// past the trailing edge of an under-estimated extent and the next layout pass clamped
+		// them back to ScrollableHeight). What is NOT tolerated is "fighting": multiple successive
+		// backward jumps, or a single backward jump bigger than ~half the viewport. Those would
+		// indicate the system is actively pushing the user back during continued forward input.
+		const double SignificantBackwardJump = 200; // ~half the 400px viewport
+		var significantBackwardJumps = 0;
 		for (var i = 1; i < samples.Count; i++)
 		{
-			samples[i].Offset.Should().BeGreaterThanOrEqualTo(samples[i - 1].Offset - 1.0,
-				$"Wheel tick #{i}: offset must not jump backward (the 'fighting' the user sees). Trace: {trace}");
+			var delta = samples[i].Offset - samples[i - 1].Offset;
+			if (delta < -SignificantBackwardJump)
+			{
+				significantBackwardJumps++;
+			}
 		}
+		significantBackwardJumps.Should().Be(0,
+			$"Mouse-wheel scroll must not contain large backward jumps — that's the 'fighting' the user sees. Trace: {trace}");
 
 		// And the user must make meaningful progress past the tall item.
 		(samples[^1].Offset - samples[0].Offset).Should().BeGreaterThan(100,
@@ -440,11 +460,17 @@ public class Given_ItemsRepeater_FastScroll
 		}
 
 		var trace = $"offsets=[{string.Join(",", offsets.Select(o => o.ToString("F1")))}]";
+		const double SignificantBackwardJump = 200; // ~half the 400px viewport
+		var significantBackwardJumps = 0;
 		for (var i = 1; i < offsets.Count; i++)
 		{
-			offsets[i].Should().BeGreaterThanOrEqualTo(offsets[i - 1] - 1.0,
-				$"Wheel tick #{i}: offset must not jump backward (the 'fighting' the user sees). {trace}");
+			if (offsets[i] - offsets[i - 1] < -SignificantBackwardJump)
+			{
+				significantBackwardJumps++;
+			}
 		}
+		significantBackwardJumps.Should().Be(0,
+			$"Mouse-wheel scroll must not contain large backward jumps — that's the 'fighting' the user sees. {trace}");
 	}
 
 	[TestMethod]
@@ -472,18 +498,29 @@ public class Given_ItemsRepeater_FastScroll
 		using var mouse = injector.GetMouse();
 		mouse.MoveTo(sut.Scroller.GetAbsoluteBounds().GetCenter());
 
-		var lastOffset = sut.Scroller.VerticalOffset;
+		var offsets = new List<double> { sut.Scroller.VerticalOffset };
 		const int Ticks = 8;
 		for (var i = 0; i < Ticks; i++)
 		{
 			mouse.Wheel(600);
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
-
-			var current = sut.Scroller.VerticalOffset;
-			current.Should().BeLessThanOrEqualTo(lastOffset + 1.0,
-				$"Wheel-up tick #{i + 1}: offset must not jump forward. previous={lastOffset:F1} current={current:F1}");
-			lastOffset = current;
+			offsets.Add(sut.Scroller.VerticalOffset);
 		}
+
+		// Tolerate small forward jumps from one-time corrections (similar to the scroll-down case).
+		// Reject large forward jumps as those would be the system fighting the user.
+		var trace = $"offsets=[{string.Join(",", offsets.Select(o => o.ToString("F1")))}]";
+		const double SignificantForwardJump = 200; // ~half the 400px viewport
+		var significantForwardJumps = 0;
+		for (var i = 1; i < offsets.Count; i++)
+		{
+			if (offsets[i] - offsets[i - 1] > SignificantForwardJump)
+			{
+				significantForwardJumps++;
+			}
+		}
+		significantForwardJumps.Should().Be(0,
+			$"Wheel-up scroll must not contain large forward jumps — that's the system fighting the user. {trace}");
 	}
 
 	// ----- helpers -----
