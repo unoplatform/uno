@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -27,7 +26,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 {
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 
-	// All currently-attached extensions across all hosts. Filtered by parent HWND when we need
+	// All currently-attached extensions across all hosts. Filtered by XamlRoot when we need
 	// to find a child's siblings to compute its z-order anchor.
 	private static readonly List<Win32NativeElementHostingExtension> _attached = new();
 

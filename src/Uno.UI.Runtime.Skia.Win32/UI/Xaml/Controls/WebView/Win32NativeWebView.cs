@@ -11,7 +11,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -131,7 +130,11 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		{
 			// disable window maximize/minimize/restore animations to avoid visual glitches during initial window setup
 			BOOL fDisable = true;
-			PInvoke.DwmSetWindowAttribute(_hwnd, Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE.DWMWA_TRANSITIONS_FORCEDISABLED, &fDisable, (uint)Marshal.SizeOf(fDisable));
+			var hr = PInvoke.DwmSetWindowAttribute(_hwnd, Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE.DWMWA_TRANSITIONS_FORCEDISABLED, &fDisable, (uint)Marshal.SizeOf(fDisable));
+			if (hr.Failed && this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(PInvoke.DwmSetWindowAttribute)} failed for {Windows.Win32.Graphics.Dwm.DWMWINDOWATTRIBUTE.DWMWA_TRANSITIONS_FORCEDISABLED}: 0x{hr.Value:X8}");
+			}
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -158,10 +161,10 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 			// Avoid setting DefaultBackgroundColor unless it exactly matches the background behind the
 			// WebView — a mismatch worsens the flash rather than hiding it.
-			// In the general case, it is actual beneficial to leave it out, since it won't be seen.
+			// In the general case, it is actually beneficial to leave it out, since it won't be seen.
 			if (_presenter.Background is SolidColorBrush { Color: { } color })
 			{
-				// note: DefaultBackgroundColor do not accept color with non-255 alpha.
+				// note: DefaultBackgroundColor does not accept color with non-255 alpha.
 				// > System.ArgumentException: Value does not fall within the expected range.
 				controller.DefaultBackgroundColor = Color.FromArgb(Byte.MaxValue, color.R, color.G, color.B);
 			}
@@ -327,8 +330,6 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_SourceChanged(object? sender, NativeWebView.CoreWebView2SourceChangedEventArgs e)
 	{
-		//_controller.IsVisible = true;
-
 		_coreWebView.Source = _nativeWebView.Source;
 	}
 

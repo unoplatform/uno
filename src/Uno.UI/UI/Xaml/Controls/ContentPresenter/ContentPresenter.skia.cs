@@ -10,7 +10,6 @@ using Uno.UI;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;
 
