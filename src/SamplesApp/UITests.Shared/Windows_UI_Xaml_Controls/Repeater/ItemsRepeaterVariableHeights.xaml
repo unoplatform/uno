@@ -22,7 +22,7 @@
             HorizontalAlignment="Left"
             Style="{ThemeResource BodyTextBlockStyle}"
             TextWrapping="Wrap">
-            200 items, every 10th is 1200px tall, others are 40px. Anchored to bottom (chat-style). Use the buttons to scroll to extreme offsets, walk through the list, or grow item 5 — visually verify no overlap, no drift, and that item 0 is flush at the top after walking back up.
+            200 items, every 10th is 1200px tall, others are 40px. Anchored to bottom (chat-style). Use the buttons to scroll to extreme offsets, walk through the list, or grow item 5 — visually verify no overlap, no drift, and that the last item (199) is reachable at the bottom of the viewport.
         </TextBlock>
 
         <StackPanel
