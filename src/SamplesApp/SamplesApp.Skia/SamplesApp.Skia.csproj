@@ -73,6 +73,8 @@
 			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
 			<Version>5.56.0</Version>
 		</PackageReference>
+		<!-- Override vulnerable transitive Microsoft.Kiota.Abstractions 1.9.1 (GHSA-7j59-v9qr-6fq9, fixed in 1.22.0) pulled in by Microsoft.Graph 5.56.0 -->
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" Condition="'$(Configuration)'!='Debug'" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
