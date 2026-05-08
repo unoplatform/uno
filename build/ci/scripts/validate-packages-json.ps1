@@ -34,6 +34,10 @@ if (-not $WarningOnly) {
         Write-Host "Detected feature target branch ($targetBranch) - running in warning-only mode." -ForegroundColor Yellow
         $WarningOnly = $true
     }
+    elseif ($branch -and ($branch -like 'refs/heads/dev/*' -or $branch -like 'refs/heads/feature/*') -and -not $targetBranch) {
+        Write-Host "Detected feature/dev branch CI build ($branch) - running in warning-only mode." -ForegroundColor Yellow
+        $WarningOnly = $true
+    }
 }
 
 # Resolve path
