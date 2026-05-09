@@ -1469,6 +1469,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
 									{
 										var implicitContentMember = FindImplicitContentMember(topLevelControl);
+										var mergedDictionariesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
+										var themeDictionariesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
 										var resourceCount = implicitContentMember?.Objects?.Count ?? 0;
 										var dictVarId = $"_{_fileUniqueId}_ResourceDictionary";
 										var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
@@ -1486,8 +1488,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											{
 												writer.AppendLineInvariantIndented("{0}.IsSystemDictionary = true;", dictVarId);
 											}
-											BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: false, dictIdentifier: dictVarId);
-											BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: false, dictIdentifier: dictVarId);
+											BuildMergedDictionaries(writer, mergedDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
+											BuildThemeDictionaries(writer, themeDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
 											BuildResourceDictionary(writer, implicitContentMember, isInInitializer: false, dictIdentifier: dictVarId, initializers: initializers);
 										}
 										else
