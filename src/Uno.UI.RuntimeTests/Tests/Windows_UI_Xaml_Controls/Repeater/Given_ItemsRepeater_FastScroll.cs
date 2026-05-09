@@ -244,6 +244,57 @@ public class Given_ItemsRepeater_FastScroll
 			+ "the pre-fix clamp caused an under-estimated extent that left late items unreachable.");
 	}
 
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_BottomClickFromInitialState_Then_LastItemBottomAlignsViewportBottom()
+	{
+		// Repro for the Studio.Live "Bottom" button bug: a single ChangeView(null, ScrollableHeight, ...)
+		// from the just-loaded state — where only the leading items are realized — must put the last
+		// item flush at the bottom of the viewport. The user-reported failure mode is that the first
+		// click leaves the viewport blank because ScrollableHeight is computed from an under-estimated
+		// extent (only leading items measured); the offset jumps to a stale "max" that turns out to
+		// be past the post-settle ExtentHeight, leaving nothing visible. A second click then works
+		// because the average has been corrected by the first click's realization pass.
+		const int ItemCount = 200;
+		var sut = CreateHighVarianceSut(itemCount: ItemCount, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		// Single click on Bottom — exactly what the manual sample's "Bottom" button does.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// The settled offset must equal ScrollableHeight: i.e. clicking Bottom truly puts us at the bottom.
+		sut.Scroller.VerticalOffset.Should().BeApproximately(sut.Scroller.ScrollableHeight, OffsetTolerance,
+			"Bottom click must scroll the view to the actual bottom in a single click — no second click required.");
+
+		// The last item must be materialized — if the viewport is "blank", it isn't.
+		var lastItem = FindMaterializedElementForIndex(sut, ItemCount - 1);
+		lastItem.Should().NotBeNull(
+			"Source[Last] must be materialized after a Bottom click — a blank viewport indicates the "
+			+ "extent estimation lagged behind the requested offset.");
+
+		// And its bottom edge must align with the viewport bottom (within tolerance).
+		var lastItemTopY = lastItem!.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, 0)).Y;
+		var lastItemBottomY = lastItemTopY + lastItem.ActualHeight;
+		lastItemBottomY.Should().BeApproximately(sut.Scroller.ViewportHeight, OffsetTolerance,
+			$"Last item's bottom edge ({lastItemBottomY:F1}) must align with the viewport bottom "
+			+ $"({sut.Scroller.ViewportHeight:F1}) after a Bottom click.");
+	}
+
+	// NOTE: A previously-drafted test `When_IncrementalScrollDownward_Then_NoBackwardJump` was
+	// removed in iteration 6. The asserted invariant ("incremental ChangeView calls produce
+	// monotonically non-decreasing VerticalOffset") was confirmed to FAIL on WinUI as well —
+	// WinUI itself produces backward offset jumps when ExtentHeight shrinks across layout cycles
+	// during incremental ChangeView. The user's bug 2 ("scroll flicker/jump while wheel-scrolling")
+	// is therefore not reproducible via stepwise `ChangeView(disableAnimation: true)` calls; it
+	// likely requires an animated wheel-driven `Visual.AnchorPoint` keyframe in flight while a
+	// layout-time TrimOverscroll fires. That repro path remains TODO; for now bug 1 is the
+	// gating issue.
+
 	// ----- helpers -----
 
 	private static SutHandle CreateHighVarianceSut(int itemCount, Size viewport)

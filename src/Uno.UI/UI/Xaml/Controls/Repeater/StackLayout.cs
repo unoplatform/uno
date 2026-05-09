@@ -4,11 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Collections;
 using Uno.Extensions;
+using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -362,7 +362,14 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				MUX_ASSERT(stackLayoutState.TotalElementsMeasured > 0);
-				averageElementSize = Math.Round(stackLayoutState.TotalElementSize / stackLayoutState.TotalElementsMeasured);
+				// Match WinUI parity (`StackLayout.cpp::GetAverageElementSize`) — no rounding to
+				// integer. The previous `Math.Round(...)` here amplified sub-pixel running-average
+				// changes into 1.0-px jumps, which then propagated through the GetExtent extent-
+				// origin formula (`firstBounds.start - firstIndex * avg`) into much larger
+				// oscillations (e.g. ~128 px observed on a 200-item high-variance list during
+				// wheel scroll). With the raw average, small estimation drift stays small and the
+				// item positions in extent space shift smoothly across consecutive layout passes.
+				averageElementSize = stackLayoutState.TotalElementSize / stackLayoutState.TotalElementsMeasured;
 			}
 
 			stackLayoutState.Uno_LastKnownAverageElementSize = averageElementSize;

@@ -1,19 +1,19 @@
 ﻿#nullable enable
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
-using Windows.Foundation;
-using Windows.UI;
 using Uno;
 using Uno.UI;
+using Windows.Foundation;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -177,13 +177,26 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ChangeViewForOrientation(Orientation orientation, double scrollAdjustment)
 		{
-			if (orientation == Orientation.Vertical)
+			// `TrimOverscroll`-driven offset clamps are an internal response to extent shrinkage,
+			// not a user request. Mark this re-application so `ChangeView` does not overwrite
+			// `_requestedVerticalOffset` / `_requestedHorizontalOffset` — preserving the user's
+			// original target so `ReapplyRequestedOffsetForExtent` can advance the offset back
+			// up if the extent grows on a subsequent layout pass.
+			_isReapplyingRequestedOffset = true;
+			try
 			{
-				ChangeView(null, VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				if (orientation == Orientation.Vertical)
+				{
+					ChangeView(null, VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				}
+				else
+				{
+					ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				}
 			}
-			else
+			finally
 			{
-				ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				_isReapplyingRequestedOffset = false;
 			}
 		}
 		#endregion

@@ -189,6 +189,25 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnMaxZoomFactorChanged(float newValue) { }
 
+		// Indicates whether the content visual currently has an in-flight `Visual.AnchorPoint`
+		// keyframe animation — which is the case during wheel/touch-driven scrolls (1-second
+		// keyframe started in `Update` for `disableAnimation:false` paths). The ScrollViewer
+		// uses this to bail out of `ReapplyRequestedOffsetForExtent` while an animation is
+		// running, so layout passes during the animation do NOT call
+		// `ChangeView(disableAnimation:true)` and thereby stop the user's wheel animation.
+		internal bool IsScrollAnimationInProgress
+		{
+			get
+			{
+				if (Content is UIElement contentElt)
+				{
+					var visual = contentElt.Visual;
+					return visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is not null;
+				}
+				return false;
+			}
+		}
+
 		internal bool Set(
 			double? horizontalOffset = null,
 			double? verticalOffset = null,
@@ -301,6 +320,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
 			var visual = view.Visual;
+
+			// Track the user's *target* at the moment the scroll is initiated — for animated
+			// scrolls (wheel, touch, programmatic with disableAnimation:false) the target is set
+			// here, before the keyframe animation runs. Intermediate animation frames must NOT
+			// update the tracked request (they would treat each frame as a new "target", which
+			// then causes `ScrollViewer.ReapplyRequestedOffsetForExtent` to snap the scroll back
+			// to a stale intermediate value on the next layout pass — visibly stomping the
+			// in-flight wheel animation). The final, authoritative target is passed in via
+			// `horizontalOffset`/`verticalOffset` here, so this is the right place to capture it.
+			Scroller?.TrackRequestedScrollOffsets(horizontalOffset, verticalOffset);
 
 			// No matter the `options.DisableAnimation`, if we have an animation running
 			if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
