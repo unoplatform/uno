@@ -825,8 +825,6 @@ namespace Uno.UI
 			public static bool EnableDevTools { get; set; }
 #if DEBUG
 				= true;
-#else
-				= false;
 #endif
 
 #if __IOS__ || UNO_REFERENCE_API
