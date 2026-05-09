@@ -79,7 +79,7 @@ The Pro license App MCP app tools are:
 
 ## Registering and diagnosing Uno MCPs
 
-The `uno-devserver mcp install` command automatically picks the best registration strategy for each agent:
+The `uno-devserver` CLI (see the full [Dev Server reference](xref:Uno.DevServer)) is the recommended way to register Uno MCPs. The `uno-devserver mcp install` command automatically picks the best registration strategy for each agent:
 
 - **CLI-first**: For agents that provide their own MCP CLI (`claude`, `codex`, `gemini`), the tool delegates registration to the agent's own command. This ensures the config format is always correct and forward-compatible.
 - **File-based fallback**: For agents without a CLI (or when the CLI is not installed), the tool writes directly to the agent's config file.
@@ -109,6 +109,8 @@ The `uno-devserver mcp` commands are useful when you want to:
 - Inspect the current registration state across all supported clients
 - Remove Uno MCP entries that were previously written
 
+For the full list of Dev Server commands and flags, see the [Dev Server reference](xref:Uno.DevServer). To diagnose environment issues, see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco).
+
 The `Uno.DevServer` tool exposes the following MCP setup commands:
 
 | Command | Purpose |
@@ -119,7 +121,7 @@ The `Uno.DevServer` tool exposes the following MCP setup commands:
 
 When running `mcp status`, the tool reports the detected clients, the config file path, transport, and the currently detected variant for each Uno MCP entry.
 
-If you do not have `uno-devserver` installed globally, you can run the same commands transiently with `dnx -y uno.devserver`.
+If you do not have `uno-devserver` installed globally, you can run the same commands transiently with `dotnet dnx -y uno.devserver`.
 
 > [!NOTE]
 > `uno-devserver mcp install <client>` is an alternative to manual JSON editing for supported file-backed clients. Native client-specific flows documented elsewhere in the docs remain fully valid.
@@ -151,8 +153,8 @@ uno-devserver mcp status --json
 Equivalent transient usage (when `uno-devserver` is not installed globally):
 
 ```bash
-dnx -y uno.devserver mcp status
-dnx -y uno.devserver mcp install copilot-vscode
+dotnet dnx -y uno.devserver mcp status
+dotnet dnx -y uno.devserver mcp install copilot-vscode
 ```
 
 You can also control which Uno Dev Server package variant is expected when comparing or writing definitions:
@@ -223,8 +225,16 @@ The App MCP uses [MCP roots](https://modelcontextprotocol.io/docs/concepts/roots
 | JetBrains Air | No |
 | OpenCode | Unknown |
 
-For agents without roots support, the DevServer CLI auto-detects the missing capability and exposes the `uno_app_initialize` tool, allowing the agent to specify the workspace directory manually. The `--force-roots-fallback` flag is still available for explicit override.
+For agents without roots support, the DevServer CLI auto-detects the missing capability and exposes the `uno_app_initialize` tool, allowing the agent to specify the workspace directory manually. No additional configuration is required. The legacy `--force-roots-fallback` flag is still accepted as an explicit override, but is rarely needed.
 
 ## Troubleshooting MCP Servers
 
-You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.
+You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs. For environment diagnostics, run `uno-devserver disco` — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco).
+
+## See also
+
+- [Dev Server](xref:Uno.DevServer) — the Dev Server CLI reference covering `disco`, `mcp`, and runtime flags.
+- [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) — inspect your local environment and Uno tool resolution.
+- [Supported agents and features](xref:Uno.GetStarted#supported-agents-features) — per-agent capability summary.
+- Per-agent setup guides: [Claude Code](xref:Uno.GetStarted.AI.Claude), [Codex CLI](xref:Uno.GetStarted.AI.Codex), [Cursor](xref:Uno.GetStarted.AI.Cursor), [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI), [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity).
+- [Troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents).

@@ -1,6 +1,5 @@
 parameters:
   vmImage: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:
@@ -19,7 +18,6 @@ jobs:
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
 
@@ -40,7 +38,7 @@ jobs:
   - task: DownloadPipelineArtifact@2
     displayName: Restoring macOS native assets
     inputs:
-      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      artifact: native-assets-macos
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
   - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net9.0 /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
@@ -64,9 +62,19 @@ jobs:
       artifactName: samplesapp-wpf-islands-skia
 
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish Desktop Skia build logs'
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)\logs
-      ArtifactName: skia-samples-app-binlog
+      ArtifactName: samplesapp-desktop-skia-logs
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish WPF Islands Skia build logs'
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)\build-wpf-islands.binlog
+      ArtifactName: samplesapp-wpf-islands-skia-logs
       ArtifactType: Container

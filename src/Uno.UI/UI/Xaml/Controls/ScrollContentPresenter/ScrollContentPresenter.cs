@@ -214,6 +214,11 @@ namespace Microsoft.UI.Xaml.Controls
 				// Give opportunity to the the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
 
+				// Mirror of ScrollViewer_Partial.cpp:9440 OnScrollContentPresenterMeasured.
+				// When the SCP is (re-)measured and the owning ScrollViewer has anchoring active,
+				// force ArrangeOverride to re-run so the anchoring offset correction fires.
+				Scroller?.OnScrollContentPresenterMeasured();
+
 				return new Size(
 					Math.Min(availableSize.Width, desired.Width),
 					Math.Min(availableSize.Height, desired.Height)

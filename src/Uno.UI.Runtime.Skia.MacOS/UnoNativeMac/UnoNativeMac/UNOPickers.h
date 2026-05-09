@@ -26,5 +26,6 @@ char* _Nullable uno_pick_single_folder(const char* _Nullable prompt, const char*
 char* _Nullable uno_pick_single_file(const char* _Nullable prompt, const char* _Nullable identifier, PickerLocationId suggestedStartLocation, char* _Nonnull filters[_Nullable], int filterSize);
 char* _Nullable uno_pick_save_file(const char* _Nullable prompt, const char* _Nullable identifier, const char* _Nullable suggestedFileName, PickerLocationId suggestedStartLocation, char* _Nonnull filters[_Nullable], int filterSize);
 char* _Nullable * _Nullable uno_pick_multiple_files(const char* _Nullable prompt, const char* _Nullable identifier, PickerLocationId suggestedStartLocation, char* _Nonnull filters[_Nullable], int filterSize);
+void uno_free_string_array(char* _Nullable * _Nullable array);
 
 NS_ASSUME_NONNULL_END

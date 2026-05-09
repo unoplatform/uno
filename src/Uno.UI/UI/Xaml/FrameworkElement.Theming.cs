@@ -227,19 +227,30 @@ public partial class FrameworkElement
 	/// </summary>
 	private protected virtual void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
-		// 1. Determine if ActualTheme is changing
+		// 1. Determine if theme is changing
 		var oldTheme = GetTheme();
-		var appBaseTheme = Theming.FromElementTheme(
-			Application.Current?.ActualElementTheme ?? ElementTheme.Light);
-		var oldBase = oldTheme == Theme.None ? appBaseTheme : Theming.GetBaseValue(oldTheme);
 		var newBase = Theming.GetBaseValue(theme);
 
-		// Check for HC state transitions
+		// MUX Reference: Theming.cpp GetBaseValue(Theme::None) returns Theme::None (0x00),
+		// which never equals Light or Dark, ensuring themeChanged is always true for
+		// elements that haven't been through a theme walk yet. This guarantees
+		// UpdateThemeBindings is called on their first walk (fixes #23177).
+		var oldBase = Theming.GetBaseValue(oldTheme);
+
+		// Check for HC state transitions as well, because a high-contrast change can
+		// require rebinding even when the base Light/Dark theme is unchanged.
 		bool isHighContrast = (theme & Theme.HighContrastMask) != Theme.HighContrastNone;
 		bool wasHighContrast = (oldTheme & Theme.HighContrastMask) != Theme.HighContrastNone;
 		bool hcChanged = isHighContrast != wasHighContrast;
 
 		bool themeChanged = oldBase != newBase || hcChanged || forceRefresh;
+
+		// MUX Reference: framework.cpp RaiseActiveThemeChangedEventIfChanging uses
+		// oldTheme == Theme::None ? GetBaseTheme() : GetBaseValue(oldTheme) to prevent
+		// spurious ActualThemeChanged events and foreground inheritance on first walk.
+		var appBaseTheme = Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+		var oldBaseForEvent = oldTheme == Theme.None ? appBaseTheme : oldBase;
+		bool effectiveThemeChanged = oldBaseForEvent != newBase || forceRefresh;
 
 		// 2. PUSH this element's theme to global context
 		// The push/pop is still needed because ResourceDictionary.GetActiveThemeDictionary()
@@ -271,12 +282,12 @@ public partial class FrameworkElement
 
 		try
 		{
-			// 3. FREEZE inherited properties first (WinUI: framework.cpp line 3301-3307)
+			// 3. FREEZE inherited properties first (MUX Reference: framework.cpp line 3301-3307)
 			if (RequestedTheme != ElementTheme.Default)
 			{
 				NotifyThemeChangedForInheritedProperties(theme, freeze: true);
 			}
-			else if (themeChanged)
+			else if (effectiveThemeChanged)
 			{
 				var parent = this.GetParent() as FrameworkElement;
 				var parentFg = parent?._themeForeground;
@@ -305,17 +316,24 @@ public partial class FrameworkElement
 				UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
 			}
 
-			// 5. Propagate to children (they may push their own context)
+			// 5. Persist theme (MUX Reference: Theming.cpp line 155)
+			//    Done BEFORE propagating to children and raising the event so
+			//    that ActualTheme returns the new value both in this element's
+			//    and in descendants' ActualThemeChanged handlers. oldTheme was
+			//    already captured at the top of this method, UpdateThemeBindings
+			//    resolves resources from the pushed subtree context (not from
+			//    _theme), and PropagateThemeToChildren forwards the passed
+			//    `theme` parameter, so moving this earlier is safe.
+			SetTheme(theme);
+
+			// 6. Propagate to children (they may push their own context)
 			PropagateThemeToChildren(theme, forceRefresh);
 
-			// 6. Raise event LAST (WinUI: framework.cpp line 3317)
-			if (themeChanged)
+			// 7. Raise event LAST (MUX Reference: framework.cpp line 3317)
+			if (effectiveThemeChanged)
 			{
 				RaiseActualThemeChanged();
 			}
-
-			// 7. Persist theme AFTER core walk (MUX Reference: Theming.cpp line 155)
-			SetTheme(theme);
 		}
 		finally
 		{

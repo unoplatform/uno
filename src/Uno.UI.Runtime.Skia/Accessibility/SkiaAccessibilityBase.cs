@@ -41,19 +41,21 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	// Focus tracking
 	private UIElement? _trackedFocusedElement;
 
+	// Disposal state — guards pending dispatcher callbacks after the window closes.
+	private bool _isDisposed;
+
+	// Tracks scroll-source elements (ScrollViewer / ScrollPresenter) we are subscribed to,
+	// so descendant accessibility positions can be re-emitted when the scroll offset changes.
+	// Keyed by Visual handle so removal can find the entry without holding a strong reference.
+	private readonly System.Collections.Generic.Dictionary<nint, EventHandler<ScrollViewerViewChangedEventArgs>> _scrollViewerSubscriptions = new();
+	private readonly System.Collections.Generic.Dictionary<nint, Windows.Foundation.TypedEventHandler<ScrollPresenter, object>> _scrollPresenterSubscriptions = new();
+
 	/// <summary>
-	/// Registers this instance as the accessibility implementation for the Uno framework.
-	/// Wires up UIElement child-add/remove callbacks, visual change callbacks, and
-	/// automation peer listener. Call from subclass constructor or initialization.
+	/// Whether this instance has been disposed. Pending dispatcher callbacks
+	/// (e.g., structure-change coalescing, announcement flushers) must check
+	/// this before running.
 	/// </summary>
-	protected void RegisterCallbacks()
-	{
-		AccessibilityAnnouncer.AccessibilityImpl = this;
-		UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAddedCore;
-		UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemovedCore;
-		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = OnSizeOrOffsetChangedCore;
-		AutomationPeer.AutomationPeerListener = this;
-	}
+	protected bool IsDisposed => _isDisposed;
 
 	// ──────────────────────────────────────────────────────────────
 	//  Abstract: Platform state
@@ -108,40 +110,137 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	protected abstract void AnnounceOnPlatform(string text, bool assertive);
 
 	// ──────────────────────────────────────────────────────────────
-	//  Shared: Callback wrappers with guard
+	//  Router entry points — called by AccessibilityRouter after it
+	//  resolves a callback to this per-window instance.
 	// ──────────────────────────────────────────────────────────────
 
-	private void OnChildAddedCore(UIElement parent, UIElement child, int? index)
+	internal void RouteChildAdded(UIElement parent, UIElement child, int? index)
 	{
-		if (IsAccessibilityEnabled)
+		if (_isDisposed || !IsAccessibilityEnabled)
 		{
-			OnChildAdded(parent, child, index);
+			return;
 		}
+
+		OnChildAdded(parent, child, index);
 	}
 
-	private void OnChildRemovedCore(UIElement parent, UIElement child)
+	internal void RouteChildRemoved(UIElement parent, UIElement child)
 	{
-		if (IsAccessibilityEnabled)
+		if (_isDisposed || !IsAccessibilityEnabled)
 		{
-			OnChildRemoved(parent, child);
+			return;
 		}
+
+		OnChildRemoved(parent, child);
 	}
 
-	private void OnSizeOrOffsetChangedCore(Microsoft.UI.Composition.Visual visual)
+	// Hooks ScrollViewer / ScrollPresenter scroll events. Without this, scrolling a
+	// container does not invalidate the cached bounding rectangles of its descendants
+	// in the native accessibility tree, leaving screen-reader highlight rectangles at
+	// pre-scroll positions on macOS and WASM. Platform OnChildAdded implementations
+	// must call this for every element they add (including those pruned via
+	// AccessibilityView=Raw, since their descendants still need the subscription).
+	protected void TrySubscribeScrollSource(UIElement element)
 	{
-		if (IsAccessibilityEnabled)
+		if (element is ScrollViewer scrollViewer)
 		{
-			OnSizeOrOffsetChanged(visual);
-
-			// Raise automatic property changes (IsOffscreen, IsEnabled, Name, ItemStatus)
-			// so accessibility clients get notified when elements move on/off screen.
-			// Use CachedAutomationPeer to avoid creating peers eagerly on every layout pass,
-			// which would prevent elements from being garbage collected.
-			if (visual is ContainerVisual containerVisual
-				&& containerVisual.Owner?.Target is UIElement owner)
+			var handle = scrollViewer.Visual.Handle;
+			if (_scrollViewerSubscriptions.ContainsKey(handle))
 			{
-				owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+				return;
 			}
+
+			void Handler(object? sender, ScrollViewerViewChangedEventArgs e) => OnScrollSourceChanged(scrollViewer);
+			scrollViewer.ViewChanged += Handler;
+			_scrollViewerSubscriptions[handle] = Handler;
+		}
+		else if (element is ScrollPresenter scrollPresenter)
+		{
+			var handle = scrollPresenter.Visual.Handle;
+			if (_scrollPresenterSubscriptions.ContainsKey(handle))
+			{
+				return;
+			}
+
+			void Handler(ScrollPresenter sender, object e) => OnScrollSourceChanged(scrollPresenter);
+			scrollPresenter.ViewChanged += Handler;
+			_scrollPresenterSubscriptions[handle] = Handler;
+		}
+	}
+
+	protected void TryUnsubscribeScrollSource(UIElement element)
+	{
+		if (element is ScrollViewer scrollViewer)
+		{
+			var handle = scrollViewer.Visual.Handle;
+			if (_scrollViewerSubscriptions.Remove(handle, out var handler))
+			{
+				scrollViewer.ViewChanged -= handler;
+			}
+		}
+		else if (element is ScrollPresenter scrollPresenter)
+		{
+			var handle = scrollPresenter.Visual.Handle;
+			if (_scrollPresenterSubscriptions.Remove(handle, out var handler))
+			{
+				scrollPresenter.ViewChanged -= handler;
+			}
+		}
+	}
+
+	// Walks descendants of the scrolled element and re-emits OnSizeOrOffsetChanged
+	// for each ContainerVisual. The platform overrides recompute positions via
+	// UIElement.GetTransform, which composes ancestor scroll offsets and transforms.
+	private void OnScrollSourceChanged(UIElement scrollSource)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		ReemitDescendantPositions(scrollSource);
+	}
+
+	private void ReemitDescendantPositions(UIElement element)
+	{
+		foreach (var child in element.GetChildren())
+		{
+			if (child.Visual is ContainerVisual childVisual)
+			{
+				try
+				{
+					OnSizeOrOffsetChanged(childVisual);
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"[A11y] ReemitDescendantPositions failed for {child.GetType().Name}: {ex.Message}");
+					}
+				}
+			}
+
+			ReemitDescendantPositions(child);
+		}
+	}
+
+	internal void RouteVisualOffsetOrSizeChanged(Microsoft.UI.Composition.Visual visual)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		OnSizeOrOffsetChanged(visual);
+
+		// Raise automatic property changes (IsOffscreen, IsEnabled, Name, ItemStatus)
+		// so accessibility clients get notified when elements move on/off screen.
+		// Use CachedAutomationPeer to avoid creating peers eagerly on every layout pass,
+		// which would prevent elements from being garbage collected.
+		if (visual is ContainerVisual containerVisual
+			&& containerVisual.Owner?.Target is UIElement owner)
+		{
+			owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
 		}
 	}
 
@@ -149,9 +248,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	//  Shared: IAutomationPeerListener — Property change routing
 	// ──────────────────────────────────────────────────────────────
 
-	public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+	public virtual void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
 	{
-		if (!IsAccessibilityEnabled)
+		if (_isDisposed || !IsAccessibilityEnabled)
 		{
 			return;
 		}
@@ -272,7 +371,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	public virtual void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
-		if (!IsAccessibilityEnabled)
+		if (_isDisposed || !IsAccessibilityEnabled)
 		{
 			return;
 		}
@@ -301,7 +400,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	public virtual void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
-		if (!IsAccessibilityEnabled || string.IsNullOrEmpty(displayString))
+		if (_isDisposed || !IsAccessibilityEnabled || string.IsNullOrEmpty(displayString))
 		{
 			return;
 		}
@@ -319,8 +418,8 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
-	public bool ListenerExistsHelper(AutomationEvents eventId)
-		=> IsAccessibilityEnabled;
+	public virtual bool ListenerExistsHelper(AutomationEvents eventId)
+		=> !_isDisposed && IsAccessibilityEnabled;
 
 	public virtual void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 		=> NotifyAutomationEvent(peer, eventId);
@@ -333,7 +432,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// Extracts the owner UIElement from an AutomationPeer.
 	/// Works for both FrameworkElementAutomationPeer and ItemAutomationPeer.
 	/// </summary>
-	protected static bool TryGetPeerOwner(AutomationPeer peer, [NotNullWhen(true)] out UIElement? owner)
+	internal static bool TryGetPeerOwner(AutomationPeer peer, [NotNullWhen(true)] out UIElement? owner)
 	{
 		if (peer is FrameworkElementAutomationPeer { Owner: { } element })
 		{
@@ -670,6 +769,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	private void FlushPoliteAnnouncement()
 	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
 		var content = _pendingPoliteContent;
 		_pendingPoliteContent = null;
 		_politeDebounceTimer?.Dispose();
@@ -703,6 +807,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	private void FlushAssertiveAnnouncement()
 	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
 		var content = _pendingAssertiveContent;
 		_pendingAssertiveContent = null;
 		_assertiveDebounceTimer?.Dispose();
@@ -741,4 +850,57 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		_lastAnnouncedPoliteContent = null;
 		_lastAnnouncedAssertiveContent = null;
 	}
+
+	// ──────────────────────────────────────────────────────────────
+	//  Disposal — per-window lifecycle
+	// ──────────────────────────────────────────────────────────────
+
+	/// <summary>
+	/// Ordered teardown for this per-window accessibility instance:
+	///   1. Mark as disposed so coalesced dispatcher callbacks no-op.
+	///   2. Invoke subclass platform-specific teardown (provider cleanup, native context destroy).
+	///   3. Dispose debouncer timers.
+	///   4. Untrack any focused element.
+	/// Idempotent — calling more than once is a no-op.
+	/// </summary>
+	public virtual void Dispose()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_isDisposed = true;
+
+		try
+		{
+			DisposeCore();
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"[A11y] DisposeCore failed on {GetType().Name}: {ex.Message}", ex);
+			}
+		}
+
+		_politeDebounceTimer?.Dispose();
+		_politeDebounceTimer = null;
+		_assertiveDebounceTimer?.Dispose();
+		_assertiveDebounceTimer = null;
+		_pendingPoliteContent = null;
+		_pendingAssertiveContent = null;
+
+		_scrollViewerSubscriptions.Clear();
+		_scrollPresenterSubscriptions.Clear();
+
+		UntrackFocusedElement();
+	}
+
+	/// <summary>
+	/// Subclass hook for platform-specific disposal (Win32: provider cleanup;
+	/// macOS: native context destroy). Called once after <see cref="IsDisposed"/>
+	/// has been set to true. Implementations must be idempotent.
+	/// </summary>
+	protected abstract void DisposeCore();
 }

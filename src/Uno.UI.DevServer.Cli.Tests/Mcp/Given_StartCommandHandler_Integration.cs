@@ -180,7 +180,7 @@ public class Given_StartCommandHandler_Integration
 
 	private sealed class EmptyLookup : IDevServerLookup
 	{
-		public (int ProcessId, int Port, string? SolutionPath)? FindBySolution(string solution) => null;
-		public (int ProcessId, int Port, string? SolutionPath)? FindByPort(int port) => null;
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindBySolution(string solution) => null;
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindByPort(int port) => null;
 	}
 }

@@ -16,7 +16,7 @@ uid: Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity
 1. Open a terminal in the project folder and run the following command, which will launch the Uno Studio app that will allow you to [sign in or create an account](xref:Uno.GetStarted.Licensing) and get access to the [Uno App MCP](xref:Uno.Features.Uno.MCPs).
 
     ```bash
-    dnx -y uno.devserver login
+    dotnet dnx -y uno.devserver login
     ```
 
 1. Launch Google Antigravity from the same folder (or reload the window).

@@ -7,7 +7,6 @@ parameters:
   xCodeRootTest: ''
   xCodeRootBuild: ''
   poolName: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 stages:
@@ -20,7 +19,6 @@ stages:
   - template: .azure-devops-tests-skia-build.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_browser
@@ -32,13 +30,11 @@ stages:
   - template: .azure-devops-tests-webassembly-skia-build.yml
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
   - template: .azure-devops-tests-webassembly-skia.yml
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_android
@@ -50,17 +46,14 @@ stages:
   - template: .azure-devops-tests-android-skia-build.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
   - template: .azure-devops-tests-android-skia.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_android_coreclr
   displayName: Tests - Android+CoreCLR Skia
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
@@ -68,17 +61,14 @@ stages:
   - template: .azure-devops-tests-android-coreclr-skia-build.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
   - template: .azure-devops-tests-android-coreclr-skia.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_android_nativeaot
   displayName: Tests - Android+NativeAOT Skia
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
@@ -86,12 +76,10 @@ stages:
   - template: .azure-devops-tests-android-nativeaot-skia-build.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
   - template: .azure-devops-tests-android-nativeaot-skia.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_ios
@@ -110,7 +98,6 @@ stages:
       xCodeRootTest: '${{ parameters.xCodeRootTest }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
   - template: .azure-devops-tests-ios-skia.yml
     parameters:
@@ -122,7 +109,6 @@ stages:
       xCodeRootTest: '${{ parameters.xCodeRootTest }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_linux
@@ -142,7 +128,6 @@ stages:
       xCodeRootTest: '${{ parameters.xCodeRootTest }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_linux_framebuffer
@@ -162,7 +147,6 @@ stages:
       xCodeRootTest: '${{ parameters.xCodeRootTest }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
       useXvfb: 'false'
       runSnapshotTests: false
@@ -187,7 +171,6 @@ stages:
       xCodeRootTest: '${{ parameters.xCodeRootTest }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_windows
@@ -207,7 +190,6 @@ stages:
       xCodeRootTest: '${{ parameters.xCodeRootTest }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 

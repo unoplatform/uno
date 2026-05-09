@@ -135,13 +135,27 @@ public class Given_DefinitionsLoader
 	}
 
 	[TestMethod]
-	public void Load_EmbeddedResources_JunieRiderUsesIdeaConfigFile()
+	public void Load_EmbeddedResources_JunieRiderUsesJunieConfigFile()
 	{
 		var defs = DefinitionsLoader.Load();
 		var profile = defs.Ides["junie-rider"];
 
-		profile.ConfigPaths.Should().Contain("{workspace}/.idea/mcpServers.json");
-		profile.WriteTarget.Should().Be("{workspace}/.idea/mcpServers.json");
+		profile.ConfigPaths.Should().Contain("{workspace}/.junie/mcp/mcp.json");
+		profile.ConfigPaths.Should().Contain("{home}/.junie/mcp/mcp.json");
+		profile.WriteTarget.Should().Be("{workspace}/.junie/mcp/mcp.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_NoProfileEncodesLegacyForceRootsFallbackExtraArg()
+	{
+		var defs = DefinitionsLoader.Load();
+
+		foreach (var (name, profile) in defs.Ides)
+		{
+			(profile.ExtraArgs ?? []).Should().NotContain(
+				"--force-roots-fallback",
+				$"profile '{name}' should not hardcode --force-roots-fallback; the DevServer auto-detects roots capability at runtime and the flag is a legacy explicit override");
+		}
 	}
 
 	[TestMethod]

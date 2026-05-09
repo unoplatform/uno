@@ -12,7 +12,7 @@ namespace Uno.WinUI.Runtime.Skia.Android.UI.Xaml.Controls.TextBox;
 
 internal class AndroidSkiaFontFallbackService : IFontFallbackService
 {
-	private readonly Task<List<(string fontName, SKTypeface typeface)>> _fonts;
+	private readonly Task<List<(string fontName, string filePath, SKTypeface typeface)>> _fonts;
 
 	public static AndroidSkiaFontFallbackService Instance { get; } = new AndroidSkiaFontFallbackService();
 	private AndroidSkiaFontFallbackService()
@@ -20,14 +20,14 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 		_fonts = Task.Factory.StartNew(() =>
 		{
 			return Directory.EnumerateFiles("/system/fonts")
-				.Select(f => (Path.GetFileName(f), SKTypeface.FromFile(f)))
+				.Select(f => (Path.GetFileName(f), f, SKTypeface.FromFile(f)))
 				.ToList();
 		}, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
 	}
 
-	public async Task<string?> GetFontNameForCodepoint(int codepoint)
+	public async Task<string?> GetFontFamilyForCodepoint(int codepoint)
 	{
-		foreach (var (fontName, typeface) in await _fonts)
+		foreach (var (fontName, _, typeface) in await _fonts)
 		{
 			if (typeface.ContainsGlyph(codepoint))
 			{
@@ -37,6 +37,9 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 		return null;
 	}
 
-	public async Task<SKTypeface?> GetTypefaceForFontName(string fontName, FontWeight weight, FontStretch stretch, FontStyle style)
-		=> (await _fonts).FirstOrDefault(f => f.fontName.Equals(fontName)).typeface;
+	public async Task<Stream?> GetFontStreamForFontFamily(string fontFamily, FontWeight weight, FontStretch stretch, FontStyle style)
+	{
+		var match = (await _fonts).FirstOrDefault(f => f.fontName.Equals(fontFamily));
+		return match.filePath is null ? null : File.OpenRead(match.filePath);
+	}
 }

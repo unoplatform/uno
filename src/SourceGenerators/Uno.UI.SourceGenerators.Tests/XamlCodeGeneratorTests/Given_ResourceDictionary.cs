@@ -175,6 +175,41 @@ public class Given_ResourceDictionary
 	}
 
 	[TestMethod]
+	public async Task When_Typed_XamlControlsResources_ResourceDictionary()
+	{
+		var xamlFile = new XamlFile("MyResourceDictionary.xaml", """
+			<ResourceDictionary
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:Microsoft.UI.Xaml.Controls">
+				<ResourceDictionary.MergedDictionaries>
+					<local:XamlControlsResources />
+				</ResourceDictionary.MergedDictionaries>
+			</ResourceDictionary>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					namespace Microsoft.UI.Xaml.Controls
+					{
+						public partial class XamlControlsResources : Microsoft.UI.Xaml.ResourceDictionary
+						{
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_Nested_With_Sibling_Ref_And_Event()
 	{
 		var test = new TestSetup(

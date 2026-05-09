@@ -106,6 +106,7 @@ public class Given_Window
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+	[RequiresFullWindow]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
 		AssertSupportsMultipleWindows();
@@ -134,6 +135,7 @@ public class Given_Window
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+	[RequiresFullWindow]
 	public async Task When_Secondary_Window_No_Background_Switch_Theme()
 	{
 		AssertSupportsMultipleWindows();

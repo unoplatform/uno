@@ -571,4 +571,58 @@ public class Given_HealthService
 		report.Issues[0].Severity.Should().Be(ValidationSeverity.Fatal);
 		report.Issues[0].Remediation.Should().NotBeNullOrEmpty();
 	}
+
+	[TestMethod]
+	[Description("HealthReport includes HostMcpEndpointNotAvailable as Fatal when host responds but /mcp is 404")]
+	public void HealthReport_WhenHostRespondedNoMcp_ReportsHostMcpEndpointNotAvailable()
+	{
+		var report = HealthReportFactory.Create(
+			discovery: null,
+			devServerStarted: true,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: ConnectionState.Connecting,
+			discoveredSolutions: null,
+			hostRespondedNoMcp: true);
+
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostMcpEndpointNotAvailable);
+		var mcpIssue = report.Issues.First(issue => issue.Code == IssueCode.HostMcpEndpointNotAvailable);
+		mcpIssue.Severity.Should().Be(ValidationSeverity.Fatal);
+		mcpIssue.Message.Should().Contain("6.6", "should mention the minimum version that supports MCP");
+		mcpIssue.Remediation.Should().NotBeNullOrEmpty();
+	}
+
+	[TestMethod]
+	[Description("HostNotStarted is suppressed when hostRespondedNoMcp is true to avoid contradictory issues")]
+	public void HealthReport_WhenNotStartedButHostRespondedNoMcp_OnlyReportsNoMcp()
+	{
+		var report = HealthReportFactory.Create(
+			discovery: null,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null,
+			hostRespondedNoMcp: true);
+
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostMcpEndpointNotAvailable);
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostNotStarted,
+			"HostNotStarted would be confusing when the real issue is a too-old host version");
+	}
+
+	[TestMethod]
+	[Description("HealthReport does NOT include HostMcpEndpointNotAvailable when /mcp is available")]
+	public void HealthReport_WhenHostMcpAvailable_NoMcpIssue()
+	{
+		var report = HealthReportFactory.Create(
+			discovery: null,
+			devServerStarted: true,
+			upstreamConnected: true,
+			toolCount: 5,
+			connectionState: ConnectionState.Connected,
+			discoveredSolutions: null,
+			hostRespondedNoMcp: false);
+
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostMcpEndpointNotAvailable);
+	}
 }

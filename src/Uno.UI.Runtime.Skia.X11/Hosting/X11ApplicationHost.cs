@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Media.Playback;
+using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -40,15 +41,15 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		_ = X11Helper.XInitThreads();
 
 		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
-		// This disables IME, cf. https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/
+		// Use "" to enable the system's default input method (from XMODIFIERS env var)
 		setlocale(/* LC_ALL */ 6, "");
-		if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+		if (XLib.XSetLocaleModifiers("") == IntPtr.Zero)
 		{
 			setlocale(/* LC_ALL */ 6, "en_US.UTF-8");
-			if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+			if (XLib.XSetLocaleModifiers("") == IntPtr.Zero)
 			{
 				setlocale(/* LC_ALL */ 6, "C.UTF-8");
-				XLib.XSetLocaleModifiers("@im=none");
+				XLib.XSetLocaleModifiers("");
 			}
 		}
 
@@ -65,6 +66,9 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);
 
+		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.IImeTextBoxExtension), _ => X11ImeTextBoxExtension.Instance);
+		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.ITextBoxNotificationsProviderSingleton), _ => X11TextBoxNotificationsProviderSingleton.Instance);
+
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
@@ -76,6 +80,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
+		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => X11TextScaleFactorExtension.Instance);
 
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaPresenterExtensionType
 			&& Type.GetType("Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaExtensionType)

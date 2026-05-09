@@ -1,6 +1,11 @@
 //
 //  UNOAccessibility.h
 //
+//  Per-window macOS accessibility C surface. Each open NSWindow that hosts
+//  an Uno content tree has its own UNOAccessibilityContext attached via
+//  objc_setAssociatedObject, replacing the previous process-global
+//  g_elements / g_rootElement / g_focusedElement statics.
+//
 
 #pragma once
 
@@ -10,11 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @import AppKit;
 
+@class UNOAccessibilityContext;
+
 // An accessibility element that represents a single XAML UIElement in the accessibility tree.
 // VoiceOver queries these objects for role, label, frame, children, etc.
 @interface UNOAccessibilityElement : NSAccessibilityElement <NSAccessibilityButton, NSAccessibilityCheckBox, NSAccessibilityStaticText, NSAccessibilityGroup>
 
 @property (nonatomic) intptr_t unoHandle;
+@property (nonatomic, weak, nullable) UNOAccessibilityContext *unoContext;
 @property (nonatomic, strong, nullable) NSString *unoRole;
 @property (nonatomic, strong, nullable) NSString *unoLabel;
 @property (nonatomic, strong, nullable) NSString *unoValue;
@@ -44,9 +52,26 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak, nullable) id unoParent;
 @property (nonatomic, strong) NSMutableArray<UNOAccessibilityElement *> *unoChildren;
 
-- (instancetype)initWithHandle:(intptr_t)handle parent:(nullable id)parent;
+- (instancetype)initWithHandle:(intptr_t)handle parent:(nullable id)parent context:(nullable UNOAccessibilityContext *)context;
 
 @end
+
+// Per-window accessibility state. One context exists per open NSWindow that
+// hosts an Uno content tree; attached to the NSWindow via
+// objc_setAssociatedObject so the context's lifetime follows the NSWindow.
+@interface UNOAccessibilityContext : NSObject
+@property (nonatomic, weak, nullable) NSWindow *window;
+@property (nonatomic, strong) NSMutableDictionary<NSNumber*, UNOAccessibilityElement*> *elements;
+@property (nonatomic, strong, nullable) UNOAccessibilityElement *rootElement;
+@property (nonatomic, strong, nullable) UNOAccessibilityElement *focusedElement;
+
+- (instancetype)initWithWindow:(NSWindow *)window;
+@end
+
+// Resolves the context associated with the given window, or nil if none has
+// been initialized yet. Callers must tolerate nil (e.g., native events that
+// fire during teardown).
+UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window);
 
 // Callback types for managed code
 typedef void (*accessibility_invoke_fn_ptr)(intptr_t handle);
@@ -56,21 +81,25 @@ typedef void (*accessibility_decrement_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_expand_collapse_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_set_value_fn_ptr)(intptr_t handle, const char* _Nonnull value);
 
-// Setup
-void uno_accessibility_init(NSWindow* _Nonnull window);
+// Setup — window-scoped context lifecycle
+void uno_accessibility_init_context(NSWindow* _Nonnull window);
+void uno_accessibility_destroy_context(NSWindow* _Nonnull window);
 void uno_accessibility_set_callbacks(accessibility_invoke_fn_ptr invoke, accessibility_focus_fn_ptr focus);
 void uno_accessibility_set_range_callbacks(accessibility_increment_fn_ptr increment, accessibility_decrement_fn_ptr decrement);
 void uno_accessibility_set_expand_collapse_callback(accessibility_expand_collapse_fn_ptr expandCollapse);
 void uno_accessibility_set_value_callback(accessibility_set_value_fn_ptr setValue);
 
-// Element management
-void uno_accessibility_add_element(intptr_t parentHandle, intptr_t handle, int32_t index,
+// Element management — take the owning NSWindow
+void uno_accessibility_add_element(NSWindow* _Nonnull window,
+	intptr_t parentHandle, intptr_t handle, int32_t index,
 	float width, float height, float x, float y,
 	const char* _Nullable role, const char* _Nullable label,
 	bool focusable, bool visible);
-void uno_accessibility_remove_element(intptr_t parentHandle, intptr_t handle);
+void uno_accessibility_remove_element(NSWindow* _Nonnull window, intptr_t parentHandle, intptr_t handle);
 
-// Property updates
+// Property updates — signatures unchanged; internally resolve context from
+// the element's back-pointer. Callers must tolerate a missing element (drops
+// silently when the owning context has been torn down).
 void uno_accessibility_update_label(intptr_t handle, const char* _Nullable label);
 void uno_accessibility_update_frame(intptr_t handle, float width, float height, float x, float y);
 void uno_accessibility_update_visibility(intptr_t handle, bool visible);
@@ -94,18 +123,18 @@ void uno_accessibility_update_read_only(intptr_t handle, bool readOnly);
 void uno_accessibility_update_selection(intptr_t handle, int32_t selectionStart, int32_t selectionLength);
 void uno_accessibility_update_modal(intptr_t handle, bool isModal);
 
-// Focus
+// Focus — resolve context via element back-pointer
 void uno_accessibility_set_focused(intptr_t handle);
 
-// Announcements and notifications
-void uno_accessibility_announce(const char* _Nonnull text, bool assertive);
-void uno_accessibility_post_layout_changed(void);
-void uno_accessibility_post_children_changed(void);
+// Announcements and notifications — window-scoped entry points
+void uno_accessibility_announce(NSWindow* _Nullable window, const char* _Nonnull text, bool assertive);
+void uno_accessibility_post_layout_changed(NSWindow* _Nonnull window);
+void uno_accessibility_post_children_changed(NSWindow* _Nonnull window);
 void uno_accessibility_post_live_region_created(intptr_t handle);
 void uno_accessibility_post_live_region_changed(intptr_t handle);
 
-// Query (called from UNOWindow to return a11y children to VoiceOver)
-NSArray* _Nullable uno_accessibility_get_root_children(void);
-id _Nullable uno_accessibility_get_focused_element(void);
+// Query (called from UNOWindow to return a11y children to VoiceOver) — per-window
+NSArray* _Nullable uno_accessibility_get_root_children(NSWindow* _Nonnull window);
+id _Nullable uno_accessibility_get_focused_element(NSWindow* _Nonnull window);
 
 NS_ASSUME_NONNULL_END

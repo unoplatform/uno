@@ -7,7 +7,6 @@ parameters:
   xCodeRootTest: ''
   xCodeRootBuild: ''
   poolName: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:
@@ -23,13 +22,10 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
-
   variables:
     SamplesAppArtifactName: samplesapp-desktop-skia
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
@@ -56,7 +52,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
+      ArtifactName: screenshot-tests-results
       ArtifactType: Container
 
 - job: Skia_Windows_Runtime_Tests_Build
@@ -72,7 +68,6 @@ jobs:
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UnoEnableHRuntimeTests: true
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
@@ -83,13 +78,13 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     condition: gt(variables['System.JobAttempt'], 1)
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: runtime-tests-desktop-skia-windows-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
 
@@ -122,14 +117,13 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      ArtifactName: runtime-tests-desktop-skia-windows-failures
       ArtifactType: Container
 
 # - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
 #   displayName: 'WPF Islands Runtime Tests'
 #   timeoutInMinutes: 45
 #   cancelTimeoutInMinutes: 0
-#   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 #   pool:
 #     vmImage: ${{ parameters.vmImage }}
 
@@ -137,7 +131,6 @@ jobs:
 #     SamplesAppArtifactName: samplesapp-wpf-islands-skia
 #     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-#     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
 #     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
 #   steps:
@@ -148,13 +141,13 @@ jobs:
 #       artifact: $(SamplesAppArtifactName)
 #       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-#   - task: DownloadBuildArtifacts@0
+#   - task: DownloadPipelineArtifact@2
 #     condition: gt(variables['System.JobAttempt'], 1)
 #     continueOnError: true
 #     displayName: Download previous test runs failed tests
 #     inputs:
-#         artifactName: uitests-failure-results
-#         downloadPath: '$(build.sourcesdirectory)/build'
+#       artifact: runtime-tests-wpf-islands-skia-failures
+#       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
 #   - template: ../templates/dotnet-install.yml
 
@@ -176,5 +169,5 @@ jobs:
 #     retryCountOnTaskFailure: 3
 #     inputs:
 #       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-#       ArtifactName: uitests-failure-results
+#       ArtifactName: runtime-tests-wpf-islands-skia-failures
 #       ArtifactType: Container

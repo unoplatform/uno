@@ -86,6 +86,8 @@ public partial class TextBox
 	static TextBox()
 	{
 		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
+		InitializeIme();
 	}
 
 	internal CaretDisplayMode CaretMode
@@ -485,6 +487,7 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				_textBoxNotificationsSingleton?.OnFocused(this);
+				StartImeSession();
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
@@ -507,6 +510,7 @@ public partial class TextBox
 
 			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 			{
+				EndImeSession();
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 				if (SelectionFlyout?.IsOpen == true)
@@ -1104,6 +1108,14 @@ public partial class TextBox
 				}
 				break;
 			default:
+				// During IME composition, skip normal character insertion.
+				// The IME extension handles text updates via OnImeCompositionUpdated → ProcessTextInput.
+				// On platforms where the platform applies text directly (e.g., Android),
+				// key events are independent of composition events and should not be swallowed.
+				if (ShouldSwallowKeyDuringComposition)
+				{
+					return;
+				}
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
 				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 				{
@@ -1621,15 +1633,12 @@ public partial class TextBox
 		return index == -1 ? Text.Length - 1 : index;
 	}
 
-	partial void InitializePartial()
-	{
-		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
-	}
-
 	partial void OnTextChangedPartial()
 	{
 		if (_isSkiaTextBox)
 		{
+			CancelCompositionOnExternalChange();
+
 			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
 			// Close the selection flyout when text changes.
 			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);

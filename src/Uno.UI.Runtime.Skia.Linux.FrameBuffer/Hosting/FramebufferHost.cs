@@ -29,6 +29,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		private Thread? _consoleInterceptionThread;
 		private ManualResetEvent _terminationGate = new(false);
 		private readonly FramebufferHostBuilder _hostBuilder;
+		private int _ttyRestored;
 
 		/// <summary>
 		/// Creates a host for a Uno Skia FrameBuffer application.
@@ -59,6 +60,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		protected override void Initialize()
 		{
 			StartConsoleInterception();
+			RegisterExitHandlers();
 
 			_eventLoop.Schedule(InnerInitialize);
 		}
@@ -72,7 +74,46 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				this.Log().Debug($"Application is exiting");
 			}
 
+			RestoreTty();
+
 			return Task.CompletedTask;
+		}
+
+		private void RegisterExitHandlers()
+		{
+			// Normal process exit (including after RunLoop returns).
+			AppDomain.CurrentDomain.ProcessExit += (_, _) => RestoreTty();
+
+			// Ctrl+C / SIGINT: let the default behavior terminate the process,
+			// but restore the tty first so the CLI prompt reappears.
+			Console.CancelKeyPress += (_, _) => RestoreTty();
+		}
+
+		private void RestoreTty()
+		{
+			// Guard against concurrent invocations (RunLoop + ProcessExit + CancelKeyPress).
+			if (Interlocked.Exchange(ref _ttyRestored, 1) != 0)
+			{
+				return;
+			}
+
+			try
+			{
+				_renderer?.Dispose();
+			}
+			catch (Exception e)
+			{
+				this.LogDebug()?.Debug($"Failed to dispose renderer on exit: {e.Message}");
+			}
+
+			try
+			{
+				// Show the caret again (we hid it in StartConsoleInterception).
+				Console.Write("\u001b[?25h");
+			}
+			catch
+			{
+			}
 		}
 
 		private void StartConsoleInterception()
@@ -159,31 +200,34 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				catch (Exception e)
 				{
 					this.LogError()?.Error("Failed to create an OpenGLES context, falling back to software rendering", e);
-					try
-					{
-						_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
-					}
-					catch (Exception e2)
-					{
-						this.LogError()?.Error("Failed to create software renderer, falling back to headless rendering", e2);
-						_renderer = new HeadlessRenderer(this, 1920, 1080, mouseIndicatorOptions);
-					}
+					_renderer = CreateSoftwareRenderer(mouseIndicatorOptions);
 				}
 			}
 			else
 			{
-				try
-				{
-					_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
-				}
-				catch (Exception e)
-				{
-					this.LogError()?.Error("Failed to create software renderer, falling back to headless rendering", e);
-					_renderer = new HeadlessRenderer(this, 1920, 1080, mouseIndicatorOptions);
-				}
+				_renderer = CreateSoftwareRenderer(mouseIndicatorOptions);
 			}
 
 			WUX.Application.Start(CreateApp);
+		}
+
+		private SoftwareRenderer CreateSoftwareRenderer(FrameBufferRenderer.MouseIndicatorOptions mouseIndicatorOptions)
+		{
+			try
+			{
+				return new SoftwareRenderer(this, mouseIndicatorOptions);
+			}
+			catch (Exception e)
+			{
+				var fbPath = Environment.GetEnvironmentVariable("FRAMEBUFFER") ?? "/dev/fb0";
+				var message =
+					$"The Linux framebuffer host failed to initialize the software renderer. " +
+					$"Ensure the framebuffer device '{fbPath}' exists and that the current user has read/write access to it " +
+					$"(e.g. is a member of the 'video' group). " +
+					$"Set the FRAMEBUFFER environment variable to point at a different device if needed.";
+				this.LogError()?.Error(message, e);
+				throw new InvalidOperationException(message, e);
+			}
 		}
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();

@@ -54,6 +54,57 @@ internal sealed partial class FocusSynchronizer
 		}
 		FocusManager.GotFocus += OnXamlGotFocus;
 		FocusManager.LostFocus += OnXamlLostFocus;
+
+		// GotFocus won't fire for an element that is already focused when accessibility is
+		// enabled. Perform an initial sync so the semantic element receives DOM focus and
+		// any active native overlay (e.g. the hidden <input> used by TextBox) is detached.
+		SyncInitialFocus();
+	}
+
+	/// <summary>
+	/// Syncs the currently-focused XAML element to the semantic DOM on first initialization.
+	/// This handles the case where a control (e.g. TextBox) was focused before accessibility
+	/// was enabled, so the GotFocus subscription above won't fire retroactively.
+	/// </summary>
+	private void SyncInitialFocus()
+	{
+		try
+		{
+			var xamlRoot = WebAssemblyWindowWrapper.Instance?.XamlRoot;
+			if (xamlRoot is null)
+			{
+				return;
+			}
+
+			if (FocusManager.GetFocusedElement(xamlRoot) is not UIElement focusedElement)
+			{
+				return;
+			}
+
+			var semanticHandle = _accessibility.ResolveToSemanticHandle(focusedElement);
+			if (semanticHandle == IntPtr.Zero)
+			{
+				return;
+			}
+
+			// If a TextBox was focused before accessibility was enabled the hidden native
+			// <input> overlay is still active. Detach it so the semantic <input> owns input.
+			if (focusedElement is TextBox)
+			{
+				BrowserInvisibleTextBoxViewExtension.DetachNativeInputPreservingFocus();
+			}
+
+			NativeMethods.FocusSemanticElement(semanticHandle);
+			_currentFocusedHandle = semanticHandle;
+			TrackFocusedElement(focusedElement);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] FocusSynchronizer.SyncInitialFocus failed: {ex.Message}");
+			}
+		}
 	}
 
 	/// <summary>

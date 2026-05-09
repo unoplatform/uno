@@ -7,7 +7,12 @@
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
 static high_contrast_change_fn_ptr high_contrast_change;
+static text_scale_factor_change_fn_ptr text_scale_factor_change;
 static id<MTLDevice> device;
+
+// KVO context pointers (values are not read — only compared for identity).
+static void *kThemeChangeContext = &kThemeChangeContext;
+static void *kTextScaleFactorContext = &kTextScaleFactorContext;
 
 inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
 {
@@ -62,7 +67,7 @@ static uint32 nscolor_to_argb(NSColor *color)
 void uno_get_high_contrast_colors(UnoHighContrastColors *colors)
 {
     if (!colors) return;
-    
+
     // Map macOS system colors to Windows HC color concepts.
     // macOS "Increase Contrast" mode adjusts system colors
     // to have higher contrast automatically.
@@ -82,6 +87,42 @@ void uno_get_high_contrast_colors(UnoHighContrastColors *colors)
     colors->disabledTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
 }
 
+inline text_scale_factor_change_fn_ptr uno_get_text_scale_factor_change_callback(void)
+{
+    return text_scale_factor_change;
+}
+
+void uno_set_text_scale_factor_change_callback(text_scale_factor_change_fn_ptr p)
+{
+    text_scale_factor_change = p;
+}
+
+// macOS Sonoma+ stores the global text size preference (System Settings →
+// Accessibility → Display → Text Size) in the standard NSUserDefaults under
+// "UIPreferredContentSizeCategoryName", using the same UIContentSizeCategory
+// strings as iOS. Map body point-size / 17 (default L = 17pt).
+double uno_get_text_scale_factor(void)
+{
+    NSString *category = [[NSUserDefaults standardUserDefaults] stringForKey:@"UIPreferredContentSizeCategoryName"];
+    if (category == nil) {
+        return 1.0;
+    }
+
+    if ([category isEqualToString:@"UICTContentSizeCategoryXS"]) { return 14.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryS"]) { return 15.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryM"]) { return 16.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryL"]) { return 1.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryXL"]) { return 19.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryXXL"]) { return 21.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryXXXL"]) { return 23.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryAccessibilityM"]) { return 28.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryAccessibilityL"]) { return 33.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryAccessibilityXL"]) { return 40.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryAccessibilityXXL"]) { return 47.0 / 17.0; }
+    if ([category isEqualToString:@"UICTContentSizeCategoryAccessibilityXXXL"]) { return 53.0 / 17.0; }
+    return 1.0;
+}
+
 bool uno_app_initialize(bool *metal)
 {
     NSApplication *app = [NSApplication sharedApplication];
@@ -90,21 +131,34 @@ bool uno_app_initialize(bool *metal)
         [app setActivationPolicy:NSApplicationActivationPolicyRegular];
 
         // KVO observation for dark/light theme
-        [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:nil];
+        [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:kThemeChangeContext];
 
         // Observe accessibility display options changes (includes "Increase Contrast")
         [[NSNotificationCenter defaultCenter] addObserver:ad
                                                  selector:@selector(accessibilityDisplayOptionsChanged:)
                                                      name:NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification
                                                    object:[NSWorkspace sharedWorkspace]];
-        
+
+        // Text size preference: observe via NSDistributedNotificationCenter (primary, undocumented name
+        // used by macOS Sonoma when the Accessibility Text Size slider moves) and via KVO on the
+        // standard NSUserDefaults key as a fallback. Both firing is harmless — the managed layer
+        // deduplicates by effective value before propagating.
+        [[NSDistributedNotificationCenter defaultCenter] addObserver:ad
+                                                            selector:@selector(textScalePreferenceChanged:)
+                                                                name:@"com.apple.PreferredContentSizeCategoryChanged"
+                                                              object:nil];
+        [[NSUserDefaults standardUserDefaults] addObserver:ad
+                                                forKeyPath:@"UIPreferredContentSizeCategoryName"
+                                                   options:NSKeyValueObservingOptionNew
+                                                   context:kTextScaleFactorContext];
+
         if (app.mainMenu == nil) {
             NSMenu *mainMenu = [[NSMenu alloc] init];
-            
+
             // App menu
             NSMenuItem *appMenuItem = [[NSMenuItem alloc] init];
             NSMenu *appMenu = [[NSMenu alloc] init];
-            
+
             // Quit menu item with Command+Q
             NSMenuItem *quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit"
                                                                   action:@selector(terminate:)
@@ -112,11 +166,11 @@ bool uno_app_initialize(bool *metal)
             [appMenu addItem:quitMenuItem];
             [appMenuItem setSubmenu:appMenu];
             [mainMenu addItem:appMenuItem];
-            
+
             // File menu
             NSMenuItem *fileMenuItem = [[NSMenuItem alloc] initWithTitle:@"File" action:nil keyEquivalent:@""];
             NSMenu *fileMenu = [[NSMenu alloc] initWithTitle:@"File"];
-            
+
             // Close window menu item with Command+W
             NSMenuItem *closeMenuItem = [[NSMenuItem alloc] initWithTitle:@"Close Window"
                                                                    action:@selector(performClose:)
@@ -124,7 +178,7 @@ bool uno_app_initialize(bool *metal)
             [fileMenu addItem:closeMenuItem];
             [fileMenuItem setSubmenu:fileMenu];
             [mainMenu addItem:fileMenuItem];
-            
+
             [app setMainMenu:mainMenu];
 #if DEBUG
             NSLog(@"uno_app_initialize: Created default menu with Command+Q and Command+W shortcuts");
@@ -249,6 +303,16 @@ void uno_application_quit(void)
 #if DEBUG
     NSLog(@"UNOApplicationDelegate.observeValueForKeyPath keyPath:%@", keyPath);
 #endif
+    if (context == kTextScaleFactorContext) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            text_scale_factor_change_fn_ptr cb = uno_get_text_scale_factor_change_callback();
+            if (cb != NULL) {
+                cb();
+            }
+        });
+        return;
+    }
+
     if ([keyPath isEqualToString:NSStringFromSelector(@selector(effectiveAppearance))]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             uno_get_system_theme_change_callback()();
@@ -266,6 +330,19 @@ void uno_application_quit(void)
             uno_get_high_contrast_change_callback()();
         });
     }
+}
+
+- (void)textScalePreferenceChanged:(NSNotification *)notification
+{
+#if DEBUG
+    NSLog(@"UNOApplicationDelegate.textScalePreferenceChanged %@", notification.name);
+#endif
+    dispatch_async(dispatch_get_main_queue(), ^{
+        text_scale_factor_change_fn_ptr cb = uno_get_text_scale_factor_change_callback();
+        if (cb != NULL) {
+            cb();
+        }
+    });
 }
 
 @end

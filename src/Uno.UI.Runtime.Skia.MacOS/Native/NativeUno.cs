@@ -230,6 +230,23 @@ internal static partial class NativeUno
 	internal static partial void uno_get_high_contrast_colors(out UnoHighContrastColors colors);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_text_scale_factor_change_callback(delegate* unmanaged[Cdecl]<void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial double uno_get_text_scale_factor();
+
+	// IME (Input Method Editor) callbacks
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_ime_callbacks(
+		delegate* unmanaged[Cdecl]<nint, ushort*, int, void> insertTextCallback,
+		delegate* unmanaged[Cdecl]<nint, ushort*, int, int, int, void> setMarkedTextCallback,
+		delegate* unmanaged[Cdecl]<nint, void> unmarkTextCallback,
+		delegate* unmanaged[Cdecl]<nint, double*, double*, double*, double*, void> getCaretRectCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_set_ime_active(nint windowHandle, [MarshalAs(UnmanagedType.U1)] bool active);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_application_start_callback(delegate* unmanaged[Cdecl]<void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -343,6 +360,9 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt, string? identifier, int suggestedStartLocation,
 		string[] filters, int filterSize);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_free_string_array(IntPtr array);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt, string? identifier, string? suggestedFileName, int suggestedStartLocation,
@@ -543,10 +563,13 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
 
-	// Accessibility
+	// Accessibility — per-window context lifecycle
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_init(nint window);
+	internal static partial void uno_accessibility_init_context(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_destroy_context(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_accessibility_set_callbacks(
@@ -568,6 +591,7 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_add_element(
+		nint window,
 		nint parentHandle, nint handle, int index,
 		float width, float height, float x, float y,
 		string? role, string? label,
@@ -575,7 +599,7 @@ internal static partial class NativeUno
 		[MarshalAs(UnmanagedType.I1)] bool visible);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_remove_element(nint parentHandle, nint handle);
+	internal static partial void uno_accessibility_remove_element(nint window, nint parentHandle, nint handle);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_update_label(nint handle, string? label);
@@ -647,13 +671,13 @@ internal static partial class NativeUno
 	internal static partial void uno_accessibility_set_focused(nint handle);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial void uno_accessibility_announce(string text, [MarshalAs(UnmanagedType.I1)] bool assertive);
+	internal static partial void uno_accessibility_announce(nint window, string text, [MarshalAs(UnmanagedType.I1)] bool assertive);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_post_layout_changed();
+	internal static partial void uno_accessibility_post_layout_changed(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_post_children_changed();
+	internal static partial void uno_accessibility_post_children_changed(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_accessibility_post_live_region_created(nint handle);
