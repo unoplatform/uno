@@ -142,9 +142,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		public void Geometry_Empty_Is_Cached_Singleton()
+		public void Geometry_Empty_Returns_Empty_PathGeometry()
 		{
-			Assert.AreSame(Geometry.Empty, Geometry.Empty);
+			var empty = Geometry.Empty;
+
+			Assert.IsInstanceOfType(empty, typeof(PathGeometry));
+			Assert.AreEqual(0, ((PathGeometry)empty).Figures.Count);
+		}
+
+		[TestMethod]
+		public void Geometry_Empty_Returns_Distinct_Instances()
+		{
+			Assert.AreNotSame(Geometry.Empty, Geometry.Empty);
 		}
 
 		[TestMethod]

@@ -41,9 +41,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		public Rect Bounds => ComputeBounds();
 
-		private static Geometry _empty;
-
-		public static Geometry Empty => _empty ??= new PathGeometry();
+		public static Geometry Empty => new PathGeometry();
 
 		public static double StandardFlatteningTolerance => 0.25;
 
