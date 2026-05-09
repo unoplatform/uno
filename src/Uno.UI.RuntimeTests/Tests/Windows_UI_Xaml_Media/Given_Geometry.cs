@@ -142,8 +142,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void Geometry_Empty_Returns_Empty_PathGeometry()
 		{
+			// Native WinUI's GeometryFactory::get_EmptyImpl creates the instance as a raw
+			// ctl::ComObject<PathGeometry>, bypassing BetterCoreObjectActivationFactory and
+			// the DXamlCore peer setup. Property accessors (get_Figures, get_Bounds, ...)
+			// route through GetValueByKnownIndex, which needs the core peer and fails with
+			// E_UNEXPECTED ("Catastrophic failure") on this naked instance. The reference
+			// type is observable, but the empty-figures invariant can only be verified on
+			// Uno's Skia implementation. Same root cause as EmptyGeometry_CheckBounds above.
 			var empty = Geometry.Empty;
 
 			Assert.IsInstanceOfType(empty, typeof(PathGeometry));
