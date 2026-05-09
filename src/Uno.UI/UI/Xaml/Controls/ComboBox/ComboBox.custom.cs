@@ -118,6 +118,12 @@ public partial class ComboBox : Selector
 
 			popup.IsLightDismissEnabled = true;
 
+			// Intercept the popup's auto light-dismiss so the close animation runs first. WinUI achieves
+			// this with m_tpElementOutsidePopup which captures outside-pointer events before the popup's
+			// own dismiss machinery (see ComboBox_Partial.cpp lines 590-619 / OnElementOutsidePopupPointerPressed).
+			popup.Closing -= OnPopupClosing;
+			popup.Closing += OnPopupClosing;
+
 			popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 		}
 
@@ -153,11 +159,40 @@ public partial class ComboBox : Selector
 		}
 
 
+		// Lookup the animations to use for the window overlay.
+		var layoutRoot = GetTemplateChild("LayoutRoot") as FrameworkElement;
+		if (layoutRoot is not null)
+		{
+			var resources = layoutRoot.Resources;
+
+			if (resources.TryGetValue("OverlayOpeningAnimation", out var openingResource) &&
+				openingResource is Microsoft.UI.Xaml.Media.Animation.Storyboard overlayOpeningStoryboard)
+			{
+				m_overlayOpeningStoryboard = overlayOpeningStoryboard;
+			}
+
+			if (resources.TryGetValue("OverlayClosingAnimation", out var closingResource) &&
+				closingResource is Microsoft.UI.Xaml.Media.Animation.Storyboard overlayClosingStoryboard)
+			{
+				m_overlayClosingStoryboard = overlayClosingStoryboard;
+			}
+		}
+
 		//Initialize header visibility
 		UpdateHeaderPresenterVisibility();
 
 		m_tpElementPopupChild = m_tpPopupPart?.Child as FrameworkElement;
 		SetupElementPopupChild();
+
+		// Reconfigure the popup's overlay if it is enabled.
+		if (m_tpPopupPart is not null)
+		{
+			ReevaluateIsOverlayVisible();
+		}
+
+		// Wire up the Closed visual state's storyboard so we can finish closing the drop-down
+		// after the closing animation completes.
+		SetupVisualStateEventHandlerForDropDownClosedState();
 
 		if (IsEditable)
 		{
@@ -209,6 +244,22 @@ public partial class ComboBox : Selector
 
 	private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e)
 	{
+		IsDropDownOpen = false;
+	}
+
+	// Mirrors WinUI's OnElementOutsidePopupPointerPressed: when the popup is dismissed by an outside click,
+	// cancel the popup's own auto-close so the close animation can play. Setting IsDropDownOpen=false routes
+	// through OnClose and FinishClosingDropDown actually closes the popup once the animation completes.
+	private void OnPopupClosing(object? sender, global::System.ComponentModel.CancelEventArgs e)
+	{
+		if (m_isDropDownClosing)
+		{
+			// Already in our own close path - allow the popup to close (FinishClosingDropDown is closing it).
+			return;
+		}
+
+		e.Cancel = true;
+		m_isClosingDueToCancel = true;
 		IsDropDownOpen = false;
 	}
 
@@ -801,6 +852,23 @@ public partial class ComboBox : Selector
 				frame.Y -= offset.Y;
 			}
 #endif
+
+			// Port of the TemplateSettings update from WinUI's ComboBox::ArrangePopup
+			// (src\dxaml\xcp\dxaml\lib\ComboBox_Partial.cpp lines 5491-5505). These values drive the
+			// SplitOpen/SplitCloseThemeAnimation parameters bound from the template.
+			var templateSettings = combo.TemplateSettings;
+			if (templateSettings is not null && frame.Height > 0 && comboRect.Height > 0)
+			{
+				var topToCenter = (comboRect.Y + comboRect.Height / 2) - frame.Y;
+				var differenceFromCenter = topToCenter - (frame.Height / 2);
+
+				templateSettings.DropDownOpenedHeight = frame.Height;
+				templateSettings.DropDownClosedHeight = comboRect.Height;
+				templateSettings.DropDownOffset = differenceFromCenter;
+				templateSettings.SelectedItemDirection = differenceFromCenter > 0
+					? Microsoft.UI.Xaml.Controls.Primitives.AnimationDirection.Bottom
+					: Microsoft.UI.Xaml.Controls.Primitives.AnimationDirection.Top;
+			}
 
 			child.Arrange(frame);
 

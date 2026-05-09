@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
@@ -64,11 +65,11 @@ partial class ComboBox
 		//	IFC(DetachHandler(m_epItemsPresenterSizeChangedHandler, m_tpItemsPresenterPart));
 		//	// Cleared by ComboBoxGenerated::OnApplyTemplate
 		//}
-		//if (m_tpClosedStoryboard)
-		//{
-		//	IFC(m_tpClosedStoryboard.Cast<Storyboard>()->remove_Completed(m_closedStateStoryboardCompletedToken));
-		//	m_tpClosedStoryboard = null;
-		//}
+		if (m_tpClosedStoryboard is not null)
+		{
+			m_closedStateStoryboardCompletedToken.Disposable = null;
+			m_tpClosedStoryboard = null;
+		}
 		//if (m_tpPopupPart && m_epPopupClosedHandler)
 		//{
 		//	IFC(m_epPopupClosedHandler.DetachEventHandler(m_tpPopupPart.Get()));
@@ -629,6 +630,13 @@ partial class ComboBox
 		else if (args.Property == HeaderProperty || args.Property == HeaderTemplateProperty)
 		{
 			UpdateHeaderPresenterVisibility();
+		}
+		else if (args.Property == LightDismissOverlayModeProperty)
+		{
+			if (m_tpPopupPart is not null)
+			{
+				ReevaluateIsOverlayVisible();
+			}
 		}
 		else if (args.Property == VisibilityProperty)
 		{
@@ -3193,14 +3201,292 @@ partial class ComboBox
 
 	private void SetIsPopupPannable() { }
 
-	private void SetClosingAnimationDirection() { }
-
 	private void ResetCarouselPanelState() { }
-
-	private void PlayOverlayClosingAnimation() { }
-
-	private void PlayOverlayOpeningAnimation() { }
 
 	private void ClearStateFlagsOnItems() { }
 #endif
+
+	private void SetClosingAnimationDirection()
+	{
+		int selectedItemIndex = -1;
+		Point cbLayoutPosition = default;
+		Point selectedItemLayoutPosition = default;
+
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "SetClosingAnimationDirection is not used in small form factor mode");
+
+		if (m_tpContentPresenterPart is null)
+		{
+			return;
+		}
+
+		if (!GetLayoutPosition(m_tpContentPresenterPart, out cbLayoutPosition))
+		{
+			return;
+		}
+
+		selectedItemIndex = SelectedIndex;
+		if (selectedItemIndex == -1)
+		{
+			return;
+		}
+
+		var spContainerAsDO = ContainerFromIndex(selectedItemIndex);
+		var spSelectedItem = spContainerAsDO as UIElement;
+		if (spSelectedItem is not null)
+		{
+			if (!GetLayoutPosition(spSelectedItem, out selectedItemLayoutPosition))
+			{
+				return;
+			}
+
+			var pTemplateSettingsConcrete = TemplateSettings;
+			if (pTemplateSettingsConcrete is not null)
+			{
+				pTemplateSettingsConcrete.SelectedItemDirection = cbLayoutPosition.Y < selectedItemLayoutPosition.Y ? AnimationDirection.Top : AnimationDirection.Bottom;
+			}
+		}
+	}
+
+	private bool GetLayoutPosition(
+		UIElement? pUIElement,
+		out Point layoutPosition)
+	{
+		layoutPosition = default;
+
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "GetLayoutPosition is not used in small form factor mode");
+
+		if (pUIElement is null)
+		{
+			return false;
+		}
+
+		if (!pUIElement.IsLoaded)
+		{
+			return false;
+		}
+
+		var spGt = pUIElement.TransformToVisual(null);
+		if (spGt is null)
+		{
+			return false;
+		}
+
+		layoutPosition = spGt.TransformPoint(new Point(0, 0));
+		return true;
+	}
+
+	private void ReevaluateIsOverlayVisible()
+	{
+		global::System.Diagnostics.Debug.Assert(m_tpPopupPart is not null);
+
+		if (m_tpPopupPart is null)
+		{
+			return;
+		}
+
+		bool isOverlayVisible = false;
+		var overlayMode = LightDismissOverlayMode;
+
+		if (overlayMode == LightDismissOverlayMode.Auto)
+		{
+			isOverlayVisible = Uno.UI.Helpers.WinUI.SharedHelpers.IsOnXbox();
+		}
+		else
+		{
+			isOverlayVisible = overlayMode == LightDismissOverlayMode.On;
+		}
+
+		if (isOverlayVisible != m_isOverlayVisible)
+		{
+			m_isOverlayVisible = isOverlayVisible;
+
+			if (m_isOverlayVisible)
+			{
+				// Normally, the overlay is only shown for light-dismiss popups, but for controls that roll their own
+				// light-dismiss logic (and therefore configure their popup's to not be light-dismiss) we still want
+				// to re-use the popup's overlay code.
+#if !HAS_UNO
+				m_tpPopupPart.DisableOverlayIsLightDismissCheck = true;
+				m_tpPopupPart.LightDismissOverlayMode = LightDismissOverlayMode.On;
+#else
+				// TODO Uno specific: Popup.DisableOverlayIsLightDismissCheck is not implemented in Uno.
+				// We rely on Popup.IsLightDismissEnabled (set in OnApplyTemplate) to drive the overlay.
+				m_tpPopupPart.LightDismissOverlayMode = LightDismissOverlayMode.On;
+#endif
+
+				// Set the appropriate brush resource to use for the overlay.
+#if !HAS_UNO
+				IFC_RETURN(static_cast<CPopup*>(m_tpPopupPart.Cast<Popup>()->GetHandle())->SetOverlayThemeBrush(L"ComboBoxLightDismissOverlayBackground"));
+#else
+				// TODO Uno specific: SetOverlayThemeBrush is not exposed on Popup.
+				// LightDismissOverlayBackground is already wired in the ComboBox constructor via ResourceResolver.
+#endif
+
+				UpdateTargetForOverlayAnimations();
+			}
+			else
+			{
+				m_tpPopupPart.LightDismissOverlayMode = LightDismissOverlayMode.Off;
+
+				// Make sure we've stopped our animations.
+				if (m_overlayOpeningStoryboard is not null)
+				{
+					m_overlayOpeningStoryboard.Stop();
+				}
+
+				if (m_overlayClosingStoryboard is not null)
+				{
+					m_overlayClosingStoryboard.Stop();
+				}
+			}
+		}
+	}
+
+	private void UpdateTargetForOverlayAnimations()
+	{
+#if !HAS_UNO
+		IFrameworkElement overlayElement;
+		m_tpPopupPart.Cast<Popup>().get_OverlayElement(&overlayElement);
+		ASSERT(overlayElement);
+#else
+		// TODO Uno specific: Popup.OverlayElement is not exposed in Uno; use the PopupPanel as the overlay backdrop target.
+		// Note: Uno's PopupPanel hosts both the overlay backdrop and the popup child, so animating its Opacity will also
+		// affect the dropdown content. The overlay animations only run when LightDismissOverlayMode resolves to On
+		// (typically Xbox), so this limitation is rarely visible.
+		FrameworkElement? overlayElement = m_tpPopupPart?.PopupPanel;
+		if (overlayElement is null)
+		{
+			return;
+		}
+#endif
+
+		if (m_overlayOpeningStoryboard is not null)
+		{
+			m_overlayOpeningStoryboard.Stop();
+
+#if !HAS_UNO
+			IFC_RETURN(CoreImports::Storyboard_SetTarget(
+				static_cast<CTimeline*>(m_overlayOpeningStoryboard.Cast<Storyboard>()->GetHandle()),
+				overlayElement.Cast<FrameworkElement>()->GetHandle())
+				);
+#else
+			// TODO Uno specific: CoreImports.Storyboard_SetTarget is internal in WinUI; we use Storyboard.SetTarget on each child timeline instead.
+			foreach (var child in m_overlayOpeningStoryboard.Children)
+			{
+				Storyboard.SetTarget(child, overlayElement);
+			}
+#endif
+		}
+
+		if (m_overlayClosingStoryboard is not null)
+		{
+			m_overlayClosingStoryboard.Stop();
+
+#if !HAS_UNO
+			IFC_RETURN(CoreImports::Storyboard_SetTarget(
+				static_cast<CTimeline*>(m_overlayClosingStoryboard.Cast<Storyboard>()->GetHandle()),
+				overlayElement.Cast<FrameworkElement>()->GetHandle())
+				);
+#else
+			foreach (var child in m_overlayClosingStoryboard.Children)
+			{
+				Storyboard.SetTarget(child, overlayElement);
+			}
+#endif
+		}
+	}
+
+	private void PlayOverlayOpeningAnimation()
+	{
+		global::System.Diagnostics.Debug.Assert(m_isOverlayVisible);
+
+		if (m_overlayClosingStoryboard is not null)
+		{
+			m_overlayClosingStoryboard.Stop();
+		}
+
+		if (m_overlayOpeningStoryboard is not null)
+		{
+			m_overlayOpeningStoryboard.Begin();
+		}
+	}
+
+	private void PlayOverlayClosingAnimation()
+	{
+		global::System.Diagnostics.Debug.Assert(m_isOverlayVisible);
+		global::System.Diagnostics.Debug.Assert(m_isDropDownClosing);
+
+		if (m_overlayOpeningStoryboard is not null)
+		{
+			m_overlayOpeningStoryboard.Stop();
+		}
+
+		if (m_overlayClosingStoryboard is not null)
+		{
+			m_overlayClosingStoryboard.Begin();
+		}
+	}
+
+	private void SetupVisualStateEventHandlerForDropDownClosedState()
+	{
+		if (m_tpClosedStoryboard is not null)
+		{
+			return;
+		}
+
+		// Find the "Closed" visual state and hook its storyboard's Completed event so we can finish
+		// the close-down logic once the closing animation finishes.
+		var templateRoot = this.GetTemplateRoot();
+		if (templateRoot is null)
+		{
+			return;
+		}
+
+		var groups = VisualStateManager.GetVisualStateGroups(templateRoot);
+		if (groups is null)
+		{
+			return;
+		}
+
+		VisualState? spState = null;
+		foreach (var group in groups)
+		{
+			foreach (var state in group.States)
+			{
+				if (state.Name == "Closed")
+				{
+					spState = state;
+					break;
+				}
+			}
+
+			if (spState is not null)
+			{
+				break;
+			}
+		}
+
+		if (spState is not null)
+		{
+			var spStoryboardAsI = spState.Storyboard;
+			if (spStoryboardAsI is not null)
+			{
+				m_tpClosedStoryboard = spStoryboardAsI;    // gets ownership
+				spStoryboardAsI.Completed += OnClosedStateStoryboardCompleted;
+				m_closedStateStoryboardCompletedToken.Disposable = Disposable.Create(() => spStoryboardAsI.Completed -= OnClosedStateStoryboardCompleted);
+			}
+		}
+	}
+
+	private void OnClosedStateStoryboardCompleted(
+		object? pSender,
+		object? pArgs)
+	{
+		if (m_isDropDownClosing)
+		{
+			// Only finish closing the drop down if it hasn't already been done
+			// before the animation completed.
+			FinishClosingDropDown();
+		}
+	}
 }

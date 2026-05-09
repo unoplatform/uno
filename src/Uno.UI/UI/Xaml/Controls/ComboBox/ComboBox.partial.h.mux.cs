@@ -101,6 +101,8 @@ partial class ComboBox
 	private Canvas m_tpElementPopupChildCanvas;
 
 	private Storyboard m_tpClosedStoryboard;
+	private Storyboard m_overlayOpeningStoryboard;
+	private Storyboard m_overlayClosingStoryboard;
 	private DependencyObject m_tpGeneratedContainerForContentPresenter;
 	private int m_iLastGeneratedItemIndexforFaceplate;
 	private object m_customValueRef;
