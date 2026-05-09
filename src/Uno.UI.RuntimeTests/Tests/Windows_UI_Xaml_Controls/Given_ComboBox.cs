@@ -93,6 +93,169 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_OnApplyTemplate_OverlayAnimations_Are_Resolved()
+		{
+			// After OnApplyTemplate, the OverlayOpeningAnimation/OverlayClosingAnimation storyboards
+			// declared in the LayoutRoot.Resources of the ComboBox template must be cached so they can
+			// be played by PlayOverlayOpeningAnimation/PlayOverlayClosingAnimation.
+			var sut = new ComboBox
+			{
+				ItemsSource = new[] { "First", "Second", "Third" },
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var openingField = typeof(ComboBox).GetField("m_overlayOpeningStoryboard", BindingFlags.Instance | BindingFlags.NonPublic);
+			var closingField = typeof(ComboBox).GetField("m_overlayClosingStoryboard", BindingFlags.Instance | BindingFlags.NonPublic);
+
+			Assert.IsNotNull(openingField, "Expected private field m_overlayOpeningStoryboard to exist on ComboBox");
+			Assert.IsNotNull(closingField, "Expected private field m_overlayClosingStoryboard to exist on ComboBox");
+
+			var openingStoryboard = openingField.GetValue(sut) as Microsoft.UI.Xaml.Media.Animation.Storyboard;
+			var closingStoryboard = closingField.GetValue(sut) as Microsoft.UI.Xaml.Media.Animation.Storyboard;
+
+			Assert.IsNotNull(openingStoryboard, "OverlayOpeningAnimation storyboard was not resolved from template resources");
+			Assert.IsNotNull(closingStoryboard, "OverlayClosingAnimation storyboard was not resolved from template resources");
+		}
+
+		[TestMethod]
+		public async Task When_OnApplyTemplate_ClosedStoryboard_Hookup()
+		{
+			// After OnApplyTemplate, SetupVisualStateEventHandlerForDropDownClosedState should locate the "Closed"
+			// visual state's storyboard and cache it so its Completed event can drive FinishClosingDropDown.
+			var sut = new ComboBox
+			{
+				ItemsSource = new[] { "First", "Second", "Third" },
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var closedStoryboardField = typeof(ComboBox).GetField("m_tpClosedStoryboard", BindingFlags.Instance | BindingFlags.NonPublic);
+			Assert.IsNotNull(closedStoryboardField, "Expected private field m_tpClosedStoryboard to exist on ComboBox");
+
+			var closedStoryboard = closedStoryboardField.GetValue(sut) as Microsoft.UI.Xaml.Media.Animation.Storyboard;
+			Assert.IsNotNull(closedStoryboard, "Closed visual state's storyboard should be hooked up after OnApplyTemplate");
+		}
+
+		[TestMethod]
+		public async Task When_DropDown_Closes_With_OverlayVisible()
+		{
+			// Drives the SetClosingAnimationDirection / PlayOverlayClosingAnimation paths and verifies the
+			// dropdown still closes successfully when LightDismissOverlayMode resolves m_isOverlayVisible to true.
+			var sut = new ComboBox
+			{
+				ItemsSource = new[] { "First", "Second", "Third" },
+				LightDismissOverlayMode = LightDismissOverlayMode.On,
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "popup did not open");
+
+			sut.IsDropDownOpen = false;
+			await UITestHelper.WaitFor(() => !popup.IsOpen, timeoutMS: 4000, "popup did not close");
+
+			Assert.IsFalse(sut.IsDropDownOpen);
+		}
+
+		[TestMethod]
+		public async Task When_DropDown_Closes_Faceplate_Opacity_Animates()
+		{
+			// SplitCloseThemeAnimation animates the faceplate (ContentPresenter) opacity 0 → 0 → 1 over 167ms.
+			// During the first ~84ms it should be held at 0 (invisible), making the close animation visible.
+			var sut = new ComboBox
+			{
+				ItemsSource = new[] { "First", "Second", "Third" },
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+			var contentPresenter = sut.FindFirstDescendantOrThrow<ContentPresenter>("ContentPresenter");
+
+			// Open
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "popup did not open");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Close
+			sut.IsDropDownOpen = false;
+
+			// Right after close starts, the faceplate (ContentPresenter) should be hidden.
+			await Task.Delay(40);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(
+				contentPresenter.Opacity < 0.5,
+				$"Expected ContentPresenter to be near 0 opacity during the close animation's leading hold, but was {contentPresenter.Opacity:F2}");
+		}
+
+		[TestMethod]
+		public async Task When_DropDown_Closes_PopupBorder_Opacity_Animates()
+		{
+			// The SplitCloseThemeAnimation should animate the PopupBorder's opacity from 1.0 down to 0.0 in
+			// the last ~84ms of the 167ms animation. After the animation finishes the popup is gone.
+			var sut = new ComboBox
+			{
+				ItemsSource = new[] { "First", "Second", "Third" },
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "popup did not open");
+
+			// Give layout a chance to populate TemplateSettings via DropDownLayouter.Arrange.
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popupBorder = popup.Child as Border ?? throw new InvalidOperationException("PopupBorder not found");
+
+			// Sanity check - opacity should be 1.0 while open.
+			Assert.AreEqual(1.0, popupBorder.Opacity, 0.05, "PopupBorder should be fully visible while the popup is open.");
+
+			sut.IsDropDownOpen = false;
+
+			// Wait until well into the close animation's opacity ramp (begins at t=84ms, ends at t=167ms).
+			await Task.Delay(140);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(
+				popupBorder.Opacity < 0.9,
+				$"PopupBorder.Opacity should be animating down during the close animation, but was {popupBorder.Opacity:F2}");
+		}
+
+		[TestMethod]
+		public async Task When_DropDown_Closes_Popup_Stays_Open_During_Animation()
+		{
+			// SplitCloseThemeAnimation runs ~167ms while the popup is still visible. The popup's IsOpen
+			// must not be cleared until FinishClosingDropDown runs at the end of the close animation.
+			var sut = new ComboBox
+			{
+				ItemsSource = new[] { "First", "Second", "Third" },
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "popup did not open");
+
+			// Trigger close - the close animation should keep the popup open for ~167ms while it animates.
+			sut.IsDropDownOpen = false;
+
+			// Sample the popup state shortly after - it should still be open while the close animation is running.
+			await Task.Delay(40);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(popup.IsOpen, "Popup should still be open during the close animation (it closes only after SplitCloseThemeAnimation completes).");
+
+			// And it should eventually close once the animation finishes.
+			await UITestHelper.WaitFor(() => !popup.IsOpen, timeoutMS: 2000, "popup did not close after the animation");
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_IsEditable_False()
 		{
