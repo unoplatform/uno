@@ -1737,7 +1737,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.ResourceDictionary"))
+				var implicitContentMember = FindImplicitContentMember(topLevelControl);
+				var resourceCount = implicitContentMember?.Objects?.Count ?? 0;
+				var ctorArg = resourceCount > 0 ? $"({resourceCount})" : string.Empty;
+				using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.ResourceDictionary{0}", ctorArg))
 				{
 					if (setIsParsing)
 					{
@@ -1749,7 +1752,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
-					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true, initializers: initializers);
+					BuildResourceDictionary(writer, implicitContentMember, isInInitializer: true, initializers: initializers);
 				}
 			}
 		}

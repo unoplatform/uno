@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse, IDictionary<object, object>
 	{
-		private readonly SpecializedResourceDictionary _values = new SpecializedResourceDictionary();
+		private readonly SpecializedResourceDictionary _values;
 		private readonly ObservableCollection<ResourceDictionary> _mergedDictionaries = new();
 		private ResourceDictionary _themeDictionaries;
 		private ResourceDictionary _parent;
@@ -38,8 +38,17 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private bool _hasUnmaterializedItems;
 
-		public ResourceDictionary()
+		public ResourceDictionary() : this(0)
 		{
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="ResourceDictionary"/> with the specified initial capacity, to reduce internal resize operations.
+		/// </summary>
+		/// <param name="initialCapacity">The initial number of elements the dictionary can contain before resizing.</param>
+		internal ResourceDictionary(int initialCapacity)
+		{
+			_values = new SpecializedResourceDictionary(initialCapacity);
 			_mergedDictionaries.CollectionChanged += (s, e) =>
 			{
 				if (e.OldItems != null)

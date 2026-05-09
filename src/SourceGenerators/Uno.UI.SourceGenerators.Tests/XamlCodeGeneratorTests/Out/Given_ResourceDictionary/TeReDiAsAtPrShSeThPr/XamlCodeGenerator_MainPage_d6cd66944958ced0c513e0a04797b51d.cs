@@ -68,7 +68,7 @@ namespace TestRepro
 							{
 							global::TestRepro.MyClass.SetX(__p1, 
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									new global::Microsoft.UI.Xaml.ResourceDictionary
+									new global::Microsoft.UI.Xaml.ResourceDictionary(2)
 									{
 										IsParsing = true,
 										["PrimaryColor"] = 

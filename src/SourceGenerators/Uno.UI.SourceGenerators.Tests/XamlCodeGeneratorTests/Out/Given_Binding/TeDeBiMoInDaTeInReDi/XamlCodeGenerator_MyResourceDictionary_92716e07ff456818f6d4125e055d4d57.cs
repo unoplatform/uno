@@ -213,7 +213,7 @@ namespace MyProject
 					if (_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary == null)
 					{
 						_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary = 
-						new global::Microsoft.UI.Xaml.ResourceDictionary
+						new global::Microsoft.UI.Xaml.ResourceDictionary(1)
 						{
 							IsParsing = true,
 							["myTemplate"] = 
