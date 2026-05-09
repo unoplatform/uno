@@ -171,9 +171,10 @@ The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
 | **Android** | Chrome DevTools remote debugging | Open `chrome://inspect` in desktop Chrome with the device connected. |
 | **WebAssembly** | N/A — use the host browser's developer tools (<kbd>F12</kbd>). |
 
+
 > [!IMPORTANT]
 > On Apple platforms the OS gates inspection to apps signed with the get-task-allow entitlement (DEBUG / development builds). Setting the flag in a RELEASE build has no visible effect.
-
+>
 > [!NOTE]
 > The legacy iOS-only `Uno.UI.FeatureConfiguration.WebView2.IsInspectable` property is now an obsolete alias for `EnableDevTools`.
 
