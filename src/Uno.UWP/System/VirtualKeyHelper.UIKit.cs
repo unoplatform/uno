@@ -62,7 +62,7 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardCloseBracket => Oem6,
 				UIKeyboardHidUsage.KeyboardBackslash => Oem5,
 				UIKeyboardHidUsage.KeyboardGraveAccentAndTilde => Oem3,
-				UIKeyboardHidUsage.KeyboardNonUSBackslash => (VirtualKey)0xE2, // VK_OEM_102
+				UIKeyboardHidUsage.KeyboardNonUSBackslash => Oem102,
 
 				// [Key|Number] Pad
 				UIKeyboardHidUsage.Keypad0 => VirtualKey.NumberPad0,

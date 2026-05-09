@@ -170,6 +170,7 @@ internal static partial class VirtualKeyHelper
 	public const VirtualKey Oem6 = (VirtualKey)0xDD; // OEM 6 key
 	public const VirtualKey Oem7 = (VirtualKey)0xDE; // OEM 7 key
 	public const VirtualKey Oem8 = (VirtualKey)0xDF; // OEM 8 key
+	public const VirtualKey Oem102 = (VirtualKey)0xE2; // OEM 102 key (non-US backslash/angle bracket)
 	public const VirtualKey ProcessKey = (VirtualKey)0xE5; // Process key
 	public const VirtualKey Packet = (VirtualKey)0xE7; // Packet key
 	public const VirtualKey Attn = (VirtualKey)0xF6; // Attn key

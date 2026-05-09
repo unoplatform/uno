@@ -305,7 +305,7 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 			KEY_KPDOT => VirtualKey.Decimal,
 
 			KEY_ZENKAKUHANKAKU => VirtualKey.None,
-			KEY_102ND => (VirtualKey)0xE2, // VK_OEM_102
+			KEY_102ND => VirtualKeyHelper.Oem102,
 			KEY_F11 => VirtualKey.F11,
 			KEY_F12 => VirtualKey.F12,
 			KEY_RO => VirtualKey.None,

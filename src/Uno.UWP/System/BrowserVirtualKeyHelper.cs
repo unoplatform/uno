@@ -360,7 +360,7 @@ namespace Windows.System
 				case "Quote":
 					return VirtualKeyHelper.Oem7;
 				case "IntlBackslash":
-					return (VirtualKey)0xE2; // VK_OEM_102
+					return VirtualKeyHelper.Oem102;
 			}
 
 			// A lot of keys and codes are similar.
