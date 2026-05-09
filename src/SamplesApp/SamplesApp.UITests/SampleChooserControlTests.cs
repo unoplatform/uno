@@ -13,7 +13,8 @@ namespace SamplesApp.UITests
 		[ActivePlatforms(Platform.Browser)]
 		public void When_Sample_Description_Is_Long_It_Is_Scrollable()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.WebView.WebView_AnchorNavigation", skipInitialScreenshot: true);
+			// WebView2_InfiniteBounds has a built-in long description and is accessible through the chooser query string.
+			Run("UITests.Shared.Windows_UI_Xaml.WebView2_InfiniteBounds", skipInitialScreenshot: true);
 
 			_app.WaitForElement("DescriptionScrollViewer");
 			_app.WaitForElement("CurrentSampleDescription");

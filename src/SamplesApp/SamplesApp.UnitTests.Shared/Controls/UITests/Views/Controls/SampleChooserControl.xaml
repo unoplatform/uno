@@ -720,8 +720,7 @@
                             <TextBlock
                                 x:Name="CurrentSampleDescription"
                                 Style="{StaticResource Typo05}"
-                                Text="{Binding CurrentSelectedSample.Description}"
-                                TextWrapping="Wrap" />
+                                Text="{Binding CurrentSelectedSample.Description}" />
                         </ScrollViewer>
                     </StackPanel>
                 </Grid>
