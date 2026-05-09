@@ -243,6 +243,220 @@ public class Given_ElementTheme
 		Assert.IsGreaterThanOrEqualTo(1, themeChangedCount, "ActualThemeChanged should fire when RequestedTheme changes");
 	}
 
+	[TestMethod]
+	public async Task When_ActualThemeChanged_Fires_ActualTheme_Returns_New_Value()
+	{
+		// Validates that ActualTheme already reflects the new theme when
+		// ActualThemeChanged fires, matching WinUI behavior (framework.cpp:
+		// CUIElement::NotifyThemeChangedCore sets theme before
+		// RaiseActiveThemeChangedEventIfChanging raises the event).
+		var parent = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+		var child = new Border { Width = 50, Height = 50 };
+		parent.Child = child;
+
+		WindowHelper.WindowContent = parent;
+		await WindowHelper.WaitForLoaded(parent);
+
+		Assert.AreEqual(ElementTheme.Light, parent.ActualTheme, "Parent should start as Light");
+		Assert.AreEqual(ElementTheme.Light, child.ActualTheme, "Child should start as Light");
+
+		ElementTheme? parentThemeDuringEvent = null;
+		ElementTheme? childThemeDuringEvent = null;
+		ElementTheme? parentThemeSeenByChild = null;
+
+		parent.ActualThemeChanged += (s, e) =>
+		{
+			parentThemeDuringEvent = ((FrameworkElement)s).ActualTheme;
+		};
+
+		child.ActualThemeChanged += (s, e) =>
+		{
+			childThemeDuringEvent = ((FrameworkElement)s).ActualTheme;
+			// The child's handler should also see the parent's
+			// updated ActualTheme (not a stale value).
+			parentThemeSeenByChild = parent.ActualTheme;
+		};
+
+		parent.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ElementTheme.Dark, parentThemeDuringEvent,
+			"Parent's ActualTheme should be Dark inside ActualThemeChanged handler");
+		Assert.AreEqual(ElementTheme.Dark, childThemeDuringEvent,
+			"Child's ActualTheme should be Dark inside ActualThemeChanged handler");
+		Assert.AreEqual(ElementTheme.Dark, parentThemeSeenByChild,
+			"Parent's ActualTheme should be Dark when observed from child's ActualThemeChanged handler");
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_ActualTheme_Returns_New_Value_In_Handler()
+	{
+		// Same as above but via application-level theme change (ThemeHelper),
+		// which exercises the root→child propagation path that caused
+		// ActualTheme to return stale values before the fix.
+
+		// Ensure we start in Light. Keep the scope alive until after the
+		// Dark switch so the transition is always Light→Dark regardless
+		// of the runner's initial theme.
+		using var lightScope = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var element = new Border { Width = 100, Height = 100 };
+
+		WindowHelper.WindowContent = element;
+		await WindowHelper.WaitForLoaded(element);
+
+		Assert.AreEqual(ElementTheme.Light, element.ActualTheme, "Element should start as Light");
+
+		ElementTheme? themeDuringEvent = null;
+
+		element.ActualThemeChanged += (s, e) =>
+		{
+			themeDuringEvent = ((FrameworkElement)s).ActualTheme;
+		};
+
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, themeDuringEvent,
+				"ActualTheme should be Dark inside ActualThemeChanged handler during app theme change");
+			Assert.AreEqual(ElementTheme.Dark, element.ActualTheme,
+				"ActualTheme should remain Dark after event");
+		}
+	}
+#endif
+
+	[TestMethod]
+	public async Task When_ThemeResource_Resolved_During_ActualThemeChanged_Returns_New_Value()
+	{
+		// Mirrors the csharpmarkup ThemeBindingProvider pattern: use
+		// ActualTheme inside the ActualThemeChanged handler to pick the
+		// correct theme dictionary and resolve a resource from it.
+		// Before the fix, ActualTheme was stale during the event, so the
+		// handler would select the wrong dictionary and return the old
+		// theme's value.
+		var border = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+
+		// Local theme dictionaries with distinct sentinel colors per theme
+		var lightDict = new ResourceDictionary();
+		lightDict["TestColor"] = Colors.White;
+		var darkDict = new ResourceDictionary();
+		darkDict["TestColor"] = Colors.Black;
+		border.Resources.ThemeDictionaries["Light"] = lightDict;
+		border.Resources.ThemeDictionaries["Dark"] = darkDict;
+
+		WindowHelper.WindowContent = border;
+		await WindowHelper.WaitForLoaded(border);
+
+		Assert.AreEqual(ElementTheme.Light, border.ActualTheme, "Border should start as Light");
+
+		Windows.UI.Color? colorDuringEvent = null;
+		ElementTheme? themeDuringEvent = null;
+
+		border.ActualThemeChanged += (s, e) =>
+		{
+			var fe = (FrameworkElement)s;
+			themeDuringEvent = fe.ActualTheme;
+
+			// Use ActualTheme to pick the theme dictionary — this is the
+			// exact pattern ThemeBindingProvider uses. If ActualTheme is
+			// stale, we read from the wrong dictionary.
+			var themeKey = fe.ActualTheme == ElementTheme.Dark ? "Dark" : "Light";
+			if (fe.Resources.ThemeDictionaries.TryGetValue(themeKey, out var dict)
+				&& dict is ResourceDictionary rd
+				&& rd.TryGetValue("TestColor", out var val))
+			{
+				colorDuringEvent = (Windows.UI.Color)val;
+			}
+		};
+
+		border.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ElementTheme.Dark, themeDuringEvent,
+			"ActualTheme should be Dark inside handler");
+
+		Assert.IsNotNull(colorDuringEvent);
+		Assert.AreEqual(Colors.Black, (Windows.UI.Color)colorDuringEvent,
+			$"Handler should have resolved the Dark dictionary (Black), " +
+			$"but got {colorDuringEvent}. " +
+			$"If White, ActualTheme was stale and the wrong dictionary was used.");
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_ThemeResource_Resolved_During_Event_Returns_New_Value()
+	{
+		// Exact CSharpMarkup ThemeBindingProvider scenario:
+		// 1. App-level theme changes (not local RequestedTheme)
+		// 2. ActualThemeChanged fires on element
+		// 3. Handler reads element.ActualTheme to pick theme dictionary
+		// 4. Resolves resource from the chosen dictionary
+		//
+		// Before the fix (SetTheme after RaiseActualThemeChanged), step 3
+		// returned the OLD theme, causing step 4 to select the wrong
+		// dictionary and produce stale colors.
+		//
+		// MUX Reference: framework.cpp CUIElement::NotifyThemeChangedCore
+		// sets theme BEFORE raising the event.
+
+		using var lightScope = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var element = new Border { Width = 100, Height = 100 };
+
+		// Set up theme dictionaries with distinct sentinel values
+		var lightDict = new ResourceDictionary();
+		lightDict["SentinelColor"] = Colors.White;
+		var darkDict = new ResourceDictionary();
+		darkDict["SentinelColor"] = Colors.Black;
+		element.Resources.ThemeDictionaries["Light"] = lightDict;
+		element.Resources.ThemeDictionaries["Dark"] = darkDict;
+
+		WindowHelper.WindowContent = element;
+		await WindowHelper.WaitForLoaded(element);
+
+		Assert.AreEqual(ElementTheme.Light, element.ActualTheme, "Should start Light");
+
+		ElementTheme? themeDuringEvent = null;
+		Windows.UI.Color? colorDuringAppThemeEvent = null;
+
+		element.ActualThemeChanged += (s, e) =>
+		{
+			var fe = (FrameworkElement)s;
+			themeDuringEvent = fe.ActualTheme;
+
+			// This is what CSharpMarkup's ThemeBindingProvider does:
+			// read ActualTheme, pick the matching dictionary, resolve resource.
+			var themeKey = fe.ActualTheme == ElementTheme.Dark ? "Dark" : "Light";
+			if (fe.Resources.ThemeDictionaries.TryGetValue(themeKey, out var dict)
+				&& dict is ResourceDictionary rd
+				&& rd.TryGetValue("SentinelColor", out var val))
+			{
+				colorDuringAppThemeEvent = (Windows.UI.Color)val;
+			}
+		};
+
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, themeDuringEvent,
+				"ActualTheme should be Dark inside handler during app-level theme change");
+			Assert.IsNotNull(colorDuringAppThemeEvent,
+				"Resource should have been resolved during the event");
+			Assert.AreEqual(Colors.Black, (Windows.UI.Color)colorDuringAppThemeEvent,
+				$"Handler should resolve from Dark dictionary (Black), " +
+				$"but got {colorDuringAppThemeEvent}. " +
+				$"If White, ActualTheme was stale (CSharpMarkup canary scenario).");
+		}
+	}
+#endif
+
 	#endregion
 
 	#region Theme Resources
@@ -3230,6 +3444,7 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_App_Theme_Changes_Explicit_Element_Keeps_Own_Resources()
 	{
 		// Element with RequestedTheme=Light should keep Light resources
@@ -3295,6 +3510,7 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_UseApplicationDarkTheme_Disposed_IsThemeSetExplicitly_Restored()
 	{
 		// Verify IsThemeSetExplicitly is restored to false after dispose
@@ -3885,6 +4101,7 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Style_With_Template_Applied_CodeBehind_In_Light_Subtree_Under_Dark_App()
 	{
 		// Regression test: app is in Dark theme, but the root
@@ -3980,6 +4197,145 @@ public class Given_ElementTheme
 			Assert.AreEqual(refFg.Color, fg.Color,
 				$"Code-behind styled TextBox Foreground ({fg.Color}) should match " +
 				$"default-styled TextBox Foreground ({refFg.Color}) in same Light subtree.");
+		}
+	}
+#endif
+
+	#endregion
+
+	#region Application Theme Change - ThemeResource Resolution
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_ThemeResource_Values_Update()
+	{
+		// Regression test for https://github.com/unoplatform/uno/issues/23177
+		// When switching app theme from Light to Dark, elements that haven't
+		// been through a prior theme walk (stored theme == Theme.None) should
+		// still get their ThemeResource bindings updated.
+
+		// Ensure we start in Light theme regardless of CI environment
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Grid.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="TestBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="TestBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Grid.Resources>
+				<Border x:Name="border" Width="50" Height="50" Background="{ThemeResource TestBrush}" />
+			</Grid>
+			""");
+
+		var border = (Border)root.FindName("border");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		// Verify initial Light theme value
+		var initialBrush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(initialBrush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, initialBrush.Color,
+			$"Initial color should be Green (Light theme). Got {initialBrush.Color}");
+
+		// Switch to Dark theme at application level
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var darkBrush = border.Background as SolidColorBrush;
+			Assert.IsNotNull(darkBrush, "Background should be a SolidColorBrush after theme switch");
+			Assert.AreEqual(Colors.Red, darkBrush.Color,
+				$"After switching to Dark, ThemeResource should resolve to Red. Got {darkBrush.Color}");
+		}
+
+		// Verify switching back to Light works
+		await WindowHelper.WaitForIdle();
+		var restoredBrush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(restoredBrush, "Background should be a SolidColorBrush after restoring theme");
+		Assert.AreEqual(Colors.Green, restoredBrush.Color,
+			$"After restoring Light, ThemeResource should resolve to Green. Got {restoredBrush.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_Nested_Elements_ThemeResources_Update()
+	{
+		// Verify that nested elements (children, grandchildren) all get their
+		// ThemeResource bindings updated when the app theme changes.
+
+		// Ensure we start in Light theme regardless of CI environment
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="NestedBrush" Color="Blue" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="NestedBrush" Color="Orange" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</StackPanel.Resources>
+				<Border x:Name="child" Width="50" Height="50" Background="{ThemeResource NestedBrush}" />
+				<StackPanel>
+					<Border x:Name="grandchild" Width="50" Height="50" Background="{ThemeResource NestedBrush}" />
+				</StackPanel>
+			</StackPanel>
+			""");
+
+		var child = (Border)root.FindName("child");
+		var grandchild = (Border)root.FindName("grandchild");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		// Sanity-check: initial Light theme values should be Blue
+		var initialChildBrush = child.Background as SolidColorBrush;
+		var initialGrandchildBrush = grandchild.Background as SolidColorBrush;
+		Assert.IsNotNull(initialChildBrush);
+		Assert.IsNotNull(initialGrandchildBrush);
+		Assert.AreEqual(Colors.Blue, initialChildBrush.Color,
+			$"Child should start with Light resource (Blue). Got {initialChildBrush.Color}");
+		Assert.AreEqual(Colors.Blue, initialGrandchildBrush.Color,
+			$"Grandchild should start with Light resource (Blue). Got {initialGrandchildBrush.Color}");
+
+		// Switch to Dark
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var childBrush = child.Background as SolidColorBrush;
+			var grandchildBrush = grandchild.Background as SolidColorBrush;
+
+			Assert.IsNotNull(childBrush);
+			Assert.IsNotNull(grandchildBrush);
+
+			Assert.AreEqual(Colors.Orange, childBrush.Color,
+				$"Child should use Dark resource (Orange). Got {childBrush.Color}");
+			Assert.AreEqual(Colors.Orange, grandchildBrush.Color,
+				$"Grandchild should use Dark resource (Orange). Got {grandchildBrush.Color}");
 		}
 	}
 #endif

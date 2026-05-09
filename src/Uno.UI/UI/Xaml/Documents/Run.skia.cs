@@ -182,7 +182,6 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			// TODO: Implement Bidi algorithm here to split segments by direction prior to doing the below processing on each directional piece.
 			// TODO: Implement fallback font for international char segments
-
 			List<Segment> segments = new();
 			using HarfBuzzSharp.Buffer buffer = new();
 			var fontInfo = FontInfo;
@@ -333,6 +332,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 				return glyphs;
 			}
+		}
+
+		internal override void InvalidateTextScaleFontInfo()
+		{
+			base.InvalidateTextScaleFontInfo();
+			_segments = null;
 		}
 
 		private static bool ProcessLineBreak(ReadOnlySpan<char> text, ref int i, ref int lineBreakLength)

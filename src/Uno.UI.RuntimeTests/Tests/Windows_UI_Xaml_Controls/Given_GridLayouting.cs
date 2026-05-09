@@ -3077,4 +3077,48 @@ public partial class Given_GridLayouting
 
 		Assert.HasCount(1, SUT.Children);
 	}
+
+	/// <summary>
+	/// Regression test for https://github.com/unoplatform/uno/issues/17772
+	/// A Grid inside a fixed-size parent should have its ActualSize constrained to that parent,
+	/// even when a child element has a very large margin (e.g. Margin="0,0,0,9999").
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Grid_Child_Has_Large_Bottom_Margin_Grid_ActualSize_Constrained()
+	{
+		const double containerSize = 400;
+
+		var container = new Border
+		{
+			Width = containerSize,
+			Height = containerSize,
+		};
+
+		var SUT = new Grid
+		{
+			MaxWidth = 9999,
+			MaxHeight = 9999,
+		};
+
+		// A transparent stretchable child with a huge bottom margin — replicates the "PushRect" pattern
+		// used in ContentDialog to make a Grid fill available space. The large margin must not cause
+		// the Grid to report an ActualSize beyond the parent container's bounds.
+		var pushRect = new Border
+		{
+			HorizontalAlignment = HorizontalAlignment.Stretch,
+			VerticalAlignment = VerticalAlignment.Stretch,
+			Margin = new Thickness(0, 0, 0, 9999),
+			Opacity = 0,
+		};
+
+		SUT.Children.Add(pushRect);
+		container.Child = SUT;
+
+		TestServices.WindowHelper.WindowContent = container;
+		await TestServices.WindowHelper.WaitFor(() => SUT.IsLoaded);
+
+		Assert.AreEqual(containerSize, SUT.ActualHeight, 1, "Grid ActualHeight must be constrained to the parent container height, not 9999");
+		Assert.AreEqual(containerSize, SUT.ActualWidth, 1, "Grid ActualWidth must be constrained to the parent container width");
+	}
 }

@@ -16,11 +16,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Window = Microsoft.UI.Xaml.Window;
 
-#if !UNO_UWP_BUILD
 using Microsoft.UI.Dispatching;
-#else
-using Windows.System;
-#endif
 
 #if WINAPPSDK
 using System.Runtime.InteropServices.WindowsRuntime;

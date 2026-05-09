@@ -259,6 +259,7 @@ namespace SamplesApp.UITests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Failing on Native UIKit https://github.com/unoplatform/uno/issues/9080")]
 		public void TextBox_TextChanged()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanged");

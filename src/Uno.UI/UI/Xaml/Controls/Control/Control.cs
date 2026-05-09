@@ -676,6 +676,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region IsTextScaleFactorEnabled
+
+		public bool IsTextScaleFactorEnabled
+		{
+			get => (bool)GetValue(IsTextScaleFactorEnabledProperty);
+			set => SetValue(IsTextScaleFactorEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsTextScaleFactorEnabled),
+				typeof(bool),
+				typeof(Control),
+				new FrameworkPropertyMetadata(
+					true,
+#if __SKIA__ || __WASM__
+					// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
+#else
+					FrameworkPropertyMetadataOptions.Inherits
+#endif
+				)
+			);
+
+		#endregion
+
 		#region FontFamily
 
 		public FontFamily FontFamily

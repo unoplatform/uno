@@ -697,7 +697,8 @@ Both layers are self-discovering — no hardcoded package names. A new add-in pa
 - Resolves host executable via `UnoToolsLocator.ResolveHostExecutableAsync()`
 - Allocates TCP port via `EnsureTcpPort()`
 - Launches host in direct mode (no `--command`) via `StartProcess()`, passing all args including `--ideChannel`
-- Polls `WaitForServerReadyAsync()` up to 30 attempts
+- Polls `WaitForServerReadyAsync()` up to 30 attempts, returning a `ReadinessProbeResult` (Ready, ProcessExited, ServerRespondedNoMcp, TimedOut)
+- On `ProcessExited`, attempts AmbientRegistry fallback to adopt an existing server on a different port
 
 ### Upstream MCP Client
 

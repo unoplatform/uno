@@ -108,7 +108,8 @@ internal sealed class StartCommandHandler
 		string hostPath,
 		StartCommandArgs parsed,
 		string? addins,
-		string workingDirectory)
+		string workingDirectory,
+		bool enableMajorRollForward = false)
 	{
 		var args = new List<string>();
 
@@ -119,6 +120,19 @@ internal sealed class StartCommandHandler
 		{
 			args.Add("--ppid");
 			args.Add(parsed.ParentPid.ToString(CultureInfo.InvariantCulture));
+		}
+		else if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
+		{
+			// No explicit ppid was provided, but we have an IDE channel. Pass our own
+			// PID so the host's ParentProcessObserver can detect when this CLI process
+			// dies (which happens when the IDE kills its child processes on exit).
+			// The caller (RunAsync) must keep this process alive for this to work —
+			// see DevServerProcessHelper.RunDirectProcessAsync's await-host-exit path.
+			args.Add("--ppid");
+			args.Add(Environment.ProcessId.ToString(CultureInfo.InvariantCulture));
+			_logger.LogDebug(
+				"No --ppid provided; passing CLI PID {Pid} as ppid so host can self-terminate when IDE exits.",
+				Environment.ProcessId);
 		}
 
 		if (!string.IsNullOrWhiteSpace(parsed.Solution))
@@ -143,7 +157,7 @@ internal sealed class StartCommandHandler
 		args.AddRange(parsed.PassthroughArgs);
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			hostPath, args, workingDirectory, redirectOutput: true);
+			hostPath, args, workingDirectory, redirectOutput: true, enableMajorRollForward: enableMajorRollForward);
 	}
 
 	/// <summary>
@@ -154,7 +168,8 @@ internal sealed class StartCommandHandler
 		string hostPath,
 		string[] originalArgs,
 		string workingDirectory,
-		string? addins)
+		string? addins,
+		bool enableMajorRollForward = false)
 	{
 		var command = originalArgs.Length > 0 ? originalArgs[0] : "start";
 		var args = new List<string> { $"--command={command}" };
@@ -170,7 +185,7 @@ internal sealed class StartCommandHandler
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			hostPath, args, workingDirectory, redirectOutput: true);
+			hostPath, args, workingDirectory, redirectOutput: true, enableMajorRollForward: enableMajorRollForward);
 	}
 
 	/// <summary>
@@ -186,7 +201,8 @@ internal sealed class StartCommandHandler
 		string[] originalArgs,
 		string workingDirectory,
 		string? addins,
-		string? resolvedSolutionPath = null)
+		string? resolvedSolutionPath = null,
+		bool enableMajorRollForward = false)
 	{
 		var parsed = ParseStartArgs(originalArgs);
 
@@ -202,25 +218,35 @@ internal sealed class StartCommandHandler
 			var existing = _lookup.FindBySolution(parsed.Solution);
 			if (existing is not null)
 			{
-				if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
+				if (IsOrphanedServer(existing.Value.ParentProcessId))
 				{
 					_logger.LogInformation(
-						"DevServer already running for solution (PID {Pid}, Port {Port}). Rebinding IDE channel.",
-						existing.Value.ProcessId, existing.Value.Port);
-
-					var rebound = await _rebindIdeChannel(existing.Value.Port, parsed.IdeChannel);
-					if (rebound)
+						"Found existing DevServer (PID {Pid}, Port {Port}) but it is orphaned (ppid={Ppid}). Killing it to respawn.",
+						existing.Value.ProcessId, existing.Value.Port, existing.Value.ParentProcessId);
+					TryKillProcess(existing.Value.ProcessId);
+				}
+				else
+				{
+					if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
 					{
-						await TryUpdateCsprojUserAsync(parsed.Solution, existing.Value.Port);
+						_logger.LogInformation(
+							"DevServer already running for solution (PID {Pid}, Port {Port}). Rebinding IDE channel.",
+							existing.Value.ProcessId, existing.Value.Port);
+
+						var rebound = await _rebindIdeChannel(existing.Value.Port, parsed.IdeChannel);
+						if (rebound)
+						{
+							await TryUpdateCsprojUserAsync(parsed.Solution, existing.Value.Port);
+						}
+
+						return rebound ? 0 : 1;
 					}
 
-					return rebound ? 0 : 1;
+					_logger.LogInformation(
+						"DevServer already running for solution (PID {Pid}, Port {Port}). Reusing.",
+						existing.Value.ProcessId, existing.Value.Port);
+					return 0;
 				}
-
-				_logger.LogInformation(
-					"DevServer already running for solution (PID {Pid}, Port {Port}). Reusing.",
-					existing.Value.ProcessId, existing.Value.Port);
-				return 0;
 			}
 		}
 
@@ -230,25 +256,35 @@ internal sealed class StartCommandHandler
 			var existing = _lookup.FindByPort(parsed.HttpPort);
 			if (existing is not null)
 			{
-				if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
+				if (IsOrphanedServer(existing.Value.ParentProcessId))
 				{
 					_logger.LogInformation(
-						"DevServer already running on port {Port} (PID {Pid}). Rebinding IDE channel.",
-						parsed.HttpPort, existing.Value.ProcessId);
-
-					var rebound = await _rebindIdeChannel(parsed.HttpPort, parsed.IdeChannel);
-					if (rebound && !string.IsNullOrWhiteSpace(existing.Value.SolutionPath))
+						"Found existing DevServer on port {Port} (PID {Pid}) but it is orphaned (ppid={Ppid}). Killing it to respawn.",
+						parsed.HttpPort, existing.Value.ProcessId, existing.Value.ParentProcessId);
+					TryKillProcess(existing.Value.ProcessId);
+				}
+				else
+				{
+					if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
 					{
-						await TryUpdateCsprojUserAsync(existing.Value.SolutionPath, parsed.HttpPort);
+						_logger.LogInformation(
+							"DevServer already running on port {Port} (PID {Pid}). Rebinding IDE channel.",
+							parsed.HttpPort, existing.Value.ProcessId);
+
+						var rebound = await _rebindIdeChannel(parsed.HttpPort, parsed.IdeChannel);
+						if (rebound && !string.IsNullOrWhiteSpace(existing.Value.SolutionPath))
+						{
+							await TryUpdateCsprojUserAsync(existing.Value.SolutionPath, parsed.HttpPort);
+						}
+
+						return rebound ? 0 : 1;
 					}
 
-					return rebound ? 0 : 1;
+					_logger.LogInformation(
+						"DevServer already running on port {Port} (PID {Pid}). Reusing.",
+						parsed.HttpPort, existing.Value.ProcessId);
+					return 0;
 				}
-
-				_logger.LogInformation(
-					"DevServer already running on port {Port} (PID {Pid}). Reusing.",
-					parsed.HttpPort, existing.Value.ProcessId);
-				return 0;
 			}
 		}
 
@@ -269,7 +305,7 @@ internal sealed class StartCommandHandler
 		}
 
 		// Build direct-mode args and spawn
-		var startInfo = BuildDirectLaunchArgs(hostPath, effectiveParsed, addins, workingDirectory);
+		var startInfo = BuildDirectLaunchArgs(hostPath, effectiveParsed, addins, workingDirectory, enableMajorRollForward: enableMajorRollForward);
 
 		_logger.LogInformation("Starting DevServer in direct mode: {Command} {Args}",
 			startInfo.FileName, startInfo.Arguments);
@@ -301,5 +337,49 @@ internal sealed class StartCommandHandler
 		var port = ((IPEndPoint)tcp.LocalEndpoint).Port;
 		tcp.Stop();
 		return port;
+	}
+
+	/// <summary>
+	/// Determines whether a server is orphaned: its parent process is no longer alive.
+	/// A server with <c>ppid=0</c> has no parent monitoring at all, which means it will
+	/// never self-terminate — we treat that as orphaned so it gets killed and respawned
+	/// with proper parent tracking.
+	/// </summary>
+	private bool IsOrphanedServer(int parentProcessId)
+	{
+		if (parentProcessId <= 0)
+		{
+			// No parent tracking → always considered orphaned.
+			return true;
+		}
+
+		try
+		{
+			var parent = Process.GetProcessById(parentProcessId);
+			// Process exists and hasn't exited.
+			return parent.HasExited;
+		}
+		catch (ArgumentException)
+		{
+			// Process not found → parent is dead → orphaned.
+			return true;
+		}
+	}
+
+	private void TryKillProcess(int processId)
+	{
+		try
+		{
+			var process = Process.GetProcessById(processId);
+			if (!process.HasExited)
+			{
+				process.Kill();
+				_logger.LogDebug("Killed orphaned DevServer process {Pid}.", processId);
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to kill orphaned DevServer process {Pid}: {Message}", processId, ex.Message);
+		}
 	}
 }

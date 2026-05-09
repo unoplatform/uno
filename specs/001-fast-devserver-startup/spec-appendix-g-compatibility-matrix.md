@@ -118,24 +118,81 @@ How different SDK versions affect add-in discovery.
 | .NET SDK | TFM | Host Binary Location | `dotnet tool` R2R Support | Notes |
 |----------|-----|---------------------|:-------------------------:|-------|
 | 9.0 | `net9.0` | `tools/rc/host/net9.0/` | No | Current |
-| 10.0 | `net10.0` | `tools/rc/host/net10.0/` | **Yes** (RID-specific tools) | Target for Phase 2 |
-| Preview | `net{x}.0` | May not match installed SDKs | Varies | Edge case |
+| 10.0 | `net10.0` | `tools/rc/host/net10.0/` | **Yes** (RID-specific tools) | Current |
+| 11.0+ | `net{N}.0` | `tools/rc/host/net{N}.0/` when shipped, otherwise fall back to highest `net{M}.0` with `M <= N` | Yes | Automatic via `UnoToolsLocator.TryResolveHostTfm` — no code change when a new major lands |
+| Preview | `net{x}.0` | May not match installed SDKs | Varies | Preview suffix stripped by `GetDotNetVersion`; same fallback path as above |
 | Multiple installed | Depends on `global.json` | Must match pinned SDK | N/A | See section 13 |
+
+### TFM fallback resolver
+
+`UnoToolsLocator.TryResolveHostLaunchPlan` is the single host-discovery code path
+shared by `ResolveHostExecutableAsync` (direct launch) and `DiscoverAsync` (MCP /
+doctor surfaces). Resolution is three-stage:
+
+1. **Exact match first**. `tools/rc/host/{requestedTfm}/Uno.UI.RemoteControl.Host.{exe,dll}`.
+2. **Compatible fallback capped at one major**. When the exact TFM directory is
+   absent, `TryResolveHostTfm` enumerates `tools/rc/host/net{X}.{Y}/` entries,
+   keeps the ones with `requestedMajor - 1 <= major <= requestedMajor` and
+   `(major, minor) <= (requestedMajor, requestedMinor)`, and returns the highest.
+   The one-major cap matches what `DOTNET_ROLL_FORWARD=Major` can actually cover
+   at runtime; picking further back would hand out a host the runtime cannot
+   load even with roll-forward enabled.
+3. **Refuse to roll up**. A TFM newer than the requested runtime is never
+   selected — .NET cannot load an assembly compiled against a future major.
+
+OS-suffixed monikers (`net10.0-windows…`) and pre-net5 monikers (`netstandard2.0`,
+`netcoreapp3.1`, `net472`) are filtered out — only the short `net{major}.{minor}` form
+is a candidate. The enumeration returns TFMs sorted numerically by `(major, minor)`,
+so the user-facing "present" list in error messages reads naturally.
+
+The resolver returns a `HostLaunchPlan { HostPath, RequiresMajorRollForward }`,
+with `RequiresMajorRollForward` set **only** when fallback was taken (exact match
+leaves it false). Every host-spawn site (`CliManager.BuildHostArgs`,
+`StartCommandHandler.BuildDirectLaunchArgs`/`BuildControllerModeArgs`,
+`DevServerMonitor.StartProcess`) threads the flag through to
+`DevServerProcessHelper.CreateDotnetProcessStartInfo(enableMajorRollForward: …)`,
+which sets `DOTNET_ROLL_FORWARD=Major` on the child process environment. This
+coupling means:
+
+- Exact match: no roll-forward override — pinned-major setups (global.json,
+  ambient `DOTNET_ROLL_FORWARD`) are respected.
+- Fallback: `DOTNET_ROLL_FORWARD=Major` is the guarantee that the selected host
+  (one major below the runtime) actually starts.
+
+### `disco --json` public contract
+
+`DiscoveryInfo.HostRequiresMajorRollForward` is surfaced in the `disco --json`
+payload as the `hostRequiresMajorRollForward` boolean. This is an **additive
+committed field**: `true` indicates that the resolver had to fall back to an
+older-major host and that the spawn path will set `DOTNET_ROLL_FORWARD=Major`;
+`false` indicates an exact-TFM match with no roll-forward override. External
+tools (IDE extensions, doctor-style diagnostics, CI scripts) may rely on it
+to distinguish "host is native to the current runtime" from "host is selected
+via fallback and may behave differently under upgrades". Renaming or removing
+this field is a breaking schema change for those consumers.
 
 ### Risks
 
 | Risk | Scenario | Impact | Mitigation |
 |------|----------|--------|------------|
-| TFM mismatch | `dotnet --version` reports 10.0 but Host only has `net9.0` binary | Host not found | Scan available TFMs, pick best match (section 13 Phase 3) |
+| TFM mismatch (one-major gap) | `dotnet --version` reports 10.0 but Host only has `net9.0` binary | Host not found | `TryResolveHostTfm` falls back to the highest `net{X}.{Y}` ≤ requested (within one major); `HostLaunchPlan.RequiresMajorRollForward` propagates to the spawn; `DOTNET_ROLL_FORWARD=Major` lets the older-TFM host start on the newer runtime |
+| TFM mismatch (multi-major gap) | Host ships only `net5.0`, runtime is `net10.0` | Runtime cannot load the host even with roll-forward | Resolver refuses (one-major cap) and returns null → clear "no compatible TFM" error instead of a silent crash at launch |
 | `global.json` pins older SDK | Project uses 9.0 but system default is 10.0 | Wrong TFM selected | Respect `global.json` SDK version, not `dotnet --version` |
-| Preview SDK version string | `10.0.100-preview.1` | Parser fails | Robust version parsing, ignore preview suffix for TFM |
+| Preview SDK version string | `10.0.100-preview.1` | Parser fails | `GetDotNetVersion` strips preview suffix before TFM computation |
+| New major lands (net11, net12, …) | Package has not shipped the new TFM yet | Resolver returns an older host | Expected behaviour — automatic via the fallback resolver, no code change |
 
 ### Validation
 
-- [ ] .NET 9.0 installed → `net9.0` TFM, Host found
-- [ ] .NET 10.0 installed → `net10.0` TFM, Host found
+- [x] .NET 9.0 installed → `net9.0` TFM, Host found
+- [x] .NET 10.0 installed → `net10.0` TFM, Host found
 - [ ] `global.json` pins 9.0 with 10.0 installed → `net9.0` TFM used
-- [ ] Host package only has `net9.0` but SDK is 10.0 → fallback to `net9.0` with warning
+- [x] Host package only has `net9.0` but SDK is 10.0 → fallback to `net9.0` and `DOTNET_ROLL_FORWARD=Major` on spawn (covered by `Given_UnoToolsLocator`)
+- [x] Host package has only `net11.0` but SDK is 10.0 → resolver returns null rather than pick a higher TFM
+- [x] Host package has only `net5.0`/`net6.0` but SDK is 10.0 → resolver returns null (multi-major gap refused, paired with `DOTNET_ROLL_FORWARD=Major` semantics)
+- [x] Exact TFM match → `HostLaunchPlan.RequiresMajorRollForward` is false, helper does not force `DOTNET_ROLL_FORWARD=Major` (pinned-major setups preserved)
+- [x] Non-`net{X}.{Y}` directories under `tools/rc/host/` are ignored
+- [x] `EnumerateHostTfms` result is sorted numerically by `(major, minor)` (not string-ordinal)
+- [x] `DiscoverAsync` and `ResolveHostExecutableAsync` share the same resolver (MCP `discover`, `doctor`, and direct launch agree)
 - [ ] Cache invalidated when `global.json` changes
 
 ---

@@ -62,6 +62,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
+		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => Win32TextScaleFactorExtension.Instance);
 
 		ApiExtensibility.Register<DisplayInformation>(typeof(IDisplayInformationExtension), displayInformation =>
 		{

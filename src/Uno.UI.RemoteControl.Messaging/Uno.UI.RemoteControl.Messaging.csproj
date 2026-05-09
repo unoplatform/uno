@@ -3,8 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 
-		<PackageId>Uno.UI.DevServer.Messaging</PackageId>
-		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer.Messaging</PackageId>
+		<PackageId>Uno.WinUI.DevServer.Messaging</PackageId>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>Development Server Support library for Uno Platform projects, such as XAML Hot Reload.</Description>
 		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>

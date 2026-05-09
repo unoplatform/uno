@@ -442,7 +442,7 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateIsFocusable(handle: number, isFocusable: boolean): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				console.log(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
+				console.debug(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
 				Accessibility.updateElementFocusability(element, isFocusable);
 			}
 			// Silently skip if element doesn't exist in the semantic DOM.
@@ -451,7 +451,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static updateAriaLabel(handle: number, automationId: string): void {
-			console.log(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
+			console.debug(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.setAttribute("aria-label", automationId);
@@ -546,6 +546,36 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		/**
+		 * Updates aria-keyshortcuts on a semantic element.
+		 * Screen readers announce the formatted shortcut (e.g. "Ctrl+S") alongside the name.
+		 */
+		public static updateAriaKeyShortcuts(handle: number, keyShortcuts: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (keyShortcuts) {
+					element.setAttribute("aria-keyshortcuts", keyShortcuts);
+				} else {
+					element.removeAttribute("aria-keyshortcuts");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-modal on a semantic element.
+		 * Used for dialogs that should scope screen reader announcements.
+		 */
+		public static updateAriaModal(handle: number, modal: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (modal) {
+					element.setAttribute("aria-modal", "true");
+				} else {
+					element.removeAttribute("aria-modal");
+				}
+			}
+		}
+
+		/**
 		 * Updates aria-live on a semantic element for live region announcements.
 		 * Screen readers monitor elements with aria-live for content changes.
 		 */
@@ -618,7 +648,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static updateAriaChecked(handle: number, ariaChecked: string): void {
-			console.log(`[A11y] TS updateAriaChecked: handle=${handle} checked=${ariaChecked}`);
+			console.debug(`[A11y] TS updateAriaChecked: handle=${handle} checked=${ariaChecked}`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.setAttribute("aria-checked", ariaChecked);
@@ -648,7 +678,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static hideSemanticElement(handle: number) {
-			console.log(`[A11y] TS hideSemanticElement: handle=${handle}`);
+			console.debug(`[A11y] TS hideSemanticElement: handle=${handle}`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.hidden = true;
