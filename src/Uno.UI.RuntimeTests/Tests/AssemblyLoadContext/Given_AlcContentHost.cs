@@ -236,6 +236,62 @@ public class Given_AlcContentHost
 			"A transparent (#00000000) value indicates the secondary-ALC fallback did not run.");
 	}
 
+	/// <summary>
+	/// Regression test for the secondary-ALC color bleed into the host: when both the host
+	/// (Application.Current) and a secondary-ALC app define the same resource key, a lookup
+	/// originating from a host / default-ALC parse context MUST return the host's value.
+	/// The earlier "Prioritize secondary-ALC apps over host" behavior iterated all secondary
+	/// apps before the host even for default-ALC contexts, which recolored Studio Live's
+	/// chrome with whichever imported preview app happened to define the same theme key.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_TopLevelLookupFromHostContext_HasHostValue_Then_HostWinsOverSecondaryAlcApp()
+	{
+		await StartSecondaryAlcAppAsync();
+
+		// AlcAppOnlyColor is defined in the secondary ALC's AlcAppResources.xaml as #FF112233.
+		// Register a *different* value for the same key in the host so we can distinguish
+		// whether the lookup returned the host's value or bled in the secondary's.
+		var hostColor = Windows.UI.Color.FromArgb(0xFF, 0xAA, 0xBB, 0xCC);
+		const string sharedKey = "AlcAppOnlyColor";
+
+		var hadPrior = Application.Current.Resources.TryGetValue(sharedKey, out var priorValue);
+		Application.Current.Resources[sharedKey] = hostColor;
+		try
+		{
+			// Default-ALC parse context — what host XAML emits when its own {ThemeResource} /
+			// {StaticResource} bindings fire.
+			var parseContext = new XamlParseContext
+			{
+				AssemblyName = typeof(Given_AlcContentHost).Assembly.GetName().Name
+			};
+
+			var key = new SpecializedResourceDictionary.ResourceKey(sharedKey);
+			var found = ResourceResolver.TryTopLevelRetrieval(key, parseContext, out var value);
+
+			Assert.IsTrue(found, "Lookup should succeed (host has the key).");
+			Assert.IsInstanceOfType<Windows.UI.Color>(value);
+			Assert.AreEqual(
+				hostColor,
+				(Windows.UI.Color)value,
+				"Host UI lookups must NOT pick up a same-key value from a secondary-ALC app. " +
+				"Returning the secondary's #FF112233 here means secondary-app theme colors are " +
+				"bleeding into the host's chrome.");
+		}
+		finally
+		{
+			if (hadPrior)
+			{
+				Application.Current.Resources[sharedKey] = priorValue;
+			}
+			else
+			{
+				Application.Current.Resources.Remove(sharedKey);
+			}
+		}
+	}
+
 	[TestMethod]
 	public void When_ContentChanges_Then_ContentChangedEventFires()
 	{
