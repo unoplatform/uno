@@ -93,13 +93,13 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.IsTrial.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.AcquiredDate.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.CampaignId.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.DeveloperOfferId.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.AcquiredDate.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.StartDate.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.EndDate.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.TrialTimeRemaining.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.ExtendedJsonData.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.IsTrial.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.StartDate.get
+		// Forced skipping of method Windows.Services.Store.StoreCollectionData.TrialTimeRemaining.get
 	}
 }

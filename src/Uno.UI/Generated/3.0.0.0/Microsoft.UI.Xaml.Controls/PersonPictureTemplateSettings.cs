@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property ActualImageBrush
 		// Skipping already declared property ActualInitials
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ActualInitials.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ActualImageBrush.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings.ActualInitials.get
 	}
 }

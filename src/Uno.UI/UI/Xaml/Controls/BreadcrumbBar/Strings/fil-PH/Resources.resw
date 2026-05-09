@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AutomationNameEllipsisBreadcrumbBarItem" xml:space="preserve">
-    <value>Marami pa</value>
+    <value>Higit pa</value>
     <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
   </data>
   <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">
-    <value>item ng breadcrumb bar</value>
+    <value>item ng adres bar</value>
     <comment>A simple description of the control for UIA</comment>
   </data>
 </root>

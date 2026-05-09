@@ -737,6 +737,12 @@ partial class ComboBox
 		}
 
 		ElementSoundPlayerService.RequestInteractionSoundForElementStatic(isDropDownOpen ? ElementSoundKind.Show : ElementSoundKind.Hide, this);
+
+		// Notify accessibility clients of expand/collapse state change (WinUI parity)
+		if (GetOrCreateAutomationPeer() is Automation.Peers.ComboBoxAutomationPeer peer)
+		{
+			peer.RaiseExpandCollapseAutomationEvent(isDropDownOpen);
+		}
 	}
 
 	private protected override void OnSelectionChanged(

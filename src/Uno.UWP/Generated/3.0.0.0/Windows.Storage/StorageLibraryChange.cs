@@ -43,9 +43,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibraryChange.ChangeType.get
-		// Forced skipping of method Windows.Storage.StorageLibraryChange.Path.get
-		// Forced skipping of method Windows.Storage.StorageLibraryChange.PreviousPath.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsOfType(global::Windows.Storage.StorageItemTypes type)
@@ -60,5 +57,8 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IStorageItem> StorageLibraryChange.GetStorageItemAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIStorageItem%3E%20StorageLibraryChange.GetStorageItemAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.StorageLibraryChange.ChangeType.get
+		// Forced skipping of method Windows.Storage.StorageLibraryChange.Path.get
+		// Forced skipping of method Windows.Storage.StorageLibraryChange.PreviousPath.get
 	}
 }

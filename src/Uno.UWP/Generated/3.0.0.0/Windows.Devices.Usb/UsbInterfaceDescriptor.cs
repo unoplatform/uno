@@ -63,11 +63,6 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.ClassCode.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.SubclassCode.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.ProtocolCode.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.AlternateSettingNumber.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.InterfaceNumber.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbInterfaceDescriptor parsed)
@@ -82,5 +77,10 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member UsbInterfaceDescriptor UsbInterfaceDescriptor.Parse(UsbDescriptor descriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbInterfaceDescriptor%20UsbInterfaceDescriptor.Parse%28UsbDescriptor%20descriptor%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.AlternateSettingNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.ClassCode.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.InterfaceNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.ProtocolCode.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.SubclassCode.get
 	}
 }

@@ -10,11 +10,35 @@ namespace Windows.Security.Authentication.Web.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IDictionary<string, string> AppProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebTokenRequest.AppProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20WebTokenRequest.AppProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ClientId
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string WebTokenRequest.ClientId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebTokenRequest.ClientId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string CorrelationId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebTokenRequest.CorrelationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebTokenRequest.CorrelationId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "string WebTokenRequest.CorrelationId");
 			}
 		}
 #endif
@@ -60,30 +84,6 @@ namespace Windows.Security.Authentication.Web.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IDictionary<string, string> AppProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebTokenRequest.AppProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20WebTokenRequest.AppProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CorrelationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebTokenRequest.CorrelationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebTokenRequest.CorrelationId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "string WebTokenRequest.CorrelationId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope, string clientId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider, string scope, string clientId)");
@@ -114,13 +114,13 @@ namespace Windows.Security.Authentication.Web.Core
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebAccountProvider.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.Scope.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.ClientId.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.PromptType.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.Properties.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.AppProperties.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.ClientId.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.CorrelationId.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.CorrelationId.set
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.PromptType.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.Properties.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.Scope.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebAccountProvider.get
 	}
 }

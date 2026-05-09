@@ -13,8 +13,6 @@ namespace Windows.Devices.Input
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.MouseMoved.add
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.MouseMoved.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.MouseDevice GetForCurrentView()
@@ -22,6 +20,8 @@ namespace Windows.Devices.Input
 			throw new global::System.NotImplementedException("The member MouseDevice MouseDevice.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MouseDevice%20MouseDevice.GetForCurrentView%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.MouseDevice.MouseMoved.add
+		// Forced skipping of method Windows.Devices.Input.MouseDevice.MouseMoved.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.MouseDevice, global::Windows.Devices.Input.MouseEventArgs> MouseMoved

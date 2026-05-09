@@ -33,7 +33,7 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.Text.get
 		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.SourceTextSegment.get
+		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.Text.get
 	}
 }

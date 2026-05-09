@@ -242,7 +242,10 @@ namespace Microsoft.UI.Xaml.Controls
 				"ItemsSource",
 				typeof(object),
 				typeof(ItemsControl),
-				new FrameworkPropertyMetadata(null, (s, e) => ((ItemsControl)s).OnItemsSourceChanged(e))
+				new FrameworkPropertyMetadata(
+					null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					(s, e) => ((ItemsControl)s).OnItemsSourceChanged(e))
 		);
 		#endregion
 

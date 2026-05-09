@@ -13,14 +13,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ZIndexProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.Canvas()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.Canvas()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.LeftProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.GetLeft(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.SetLeft(Microsoft.UI.Xaml.UIElement, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.TopProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.GetTop(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.SetTop(Microsoft.UI.Xaml.UIElement, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.ZIndexProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.GetZIndex(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.SetZIndex(Microsoft.UI.Xaml.UIElement, int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.LeftProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.TopProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.ZIndexProperty.get
 	}
 }

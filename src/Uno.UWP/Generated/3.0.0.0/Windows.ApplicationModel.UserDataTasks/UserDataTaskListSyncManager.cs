@@ -15,15 +15,15 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncStatus Status
+		public global::System.DateTimeOffset LastAttemptedSyncTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListSyncStatus UserDataTaskListSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListSyncStatus%20UserDataTaskListSyncManager.Status");
+				throw new global::System.NotImplementedException("The member DateTimeOffset UserDataTaskListSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20UserDataTaskListSyncManager.LastAttemptedSyncTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager", "UserDataTaskListSyncStatus UserDataTaskListSyncManager.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager", "DateTimeOffset UserDataTaskListSyncManager.LastAttemptedSyncTime");
 			}
 		}
 #endif
@@ -43,24 +43,18 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset LastAttemptedSyncTime
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset UserDataTaskListSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20UserDataTaskListSyncManager.LastAttemptedSyncTime");
+				throw new global::System.NotImplementedException("The member UserDataTaskListSyncStatus UserDataTaskListSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListSyncStatus%20UserDataTaskListSyncManager.Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager", "DateTimeOffset UserDataTaskListSyncManager.LastAttemptedSyncTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager", "UserDataTaskListSyncStatus UserDataTaskListSyncManager.Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastAttemptedSyncTime.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastAttemptedSyncTime.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastSuccessfulSyncTime.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastSuccessfulSyncTime.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Status.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Status.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
@@ -70,6 +64,12 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.SyncStatusChanged.add
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.SyncStatusChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastAttemptedSyncTime.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastAttemptedSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastSuccessfulSyncTime.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.LastSuccessfulSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Status.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Status.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager, object> SyncStatusChanged

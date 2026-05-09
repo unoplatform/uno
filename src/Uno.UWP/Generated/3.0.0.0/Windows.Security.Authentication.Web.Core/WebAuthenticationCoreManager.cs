@@ -10,55 +10,6 @@ namespace Windows.Security.Authentication.Web.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.FindAllAccountsResult> FindAllAccountsAsync(global::Windows.Security.Credentials.WebAccountProvider provider)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<FindAllAccountsResult> WebAuthenticationCoreManager.FindAllAccountsAsync(WebAccountProvider provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CFindAllAccountsResult%3E%20WebAuthenticationCoreManager.FindAllAccountsAsync%28WebAccountProvider%20provider%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.FindAllAccountsResult> FindAllAccountsAsync(global::Windows.Security.Credentials.WebAccountProvider provider, string clientId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<FindAllAccountsResult> WebAuthenticationCoreManager.FindAllAccountsAsync(WebAccountProvider provider, string clientId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CFindAllAccountsResult%3E%20WebAuthenticationCoreManager.FindAllAccountsAsync%28WebAccountProvider%20provider%2C%20string%20clientId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindSystemAccountProviderAsync(string webAccountProviderId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindSystemAccountProviderAsync(string webAccountProviderId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindSystemAccountProviderAsync%28string%20webAccountProviderId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindSystemAccountProviderAsync(string webAccountProviderId, string authority)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindSystemAccountProviderAsync(string webAccountProviderId, string authority) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindSystemAccountProviderAsync%28string%20webAccountProviderId%2C%20string%20authority%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindSystemAccountProviderAsync(string webAccountProviderId, string authority, global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindSystemAccountProviderAsync(string webAccountProviderId, string authority, User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindSystemAccountProviderAsync%28string%20webAccountProviderId%2C%20string%20authority%2C%20User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.Authentication.Web.Core.WebAccountMonitor CreateWebAccountMonitor(global::System.Collections.Generic.IEnumerable<global::Windows.Security.Credentials.WebAccount> webAccounts)
-		{
-			throw new global::System.NotImplementedException("The member WebAccountMonitor WebAuthenticationCoreManager.CreateWebAccountMonitor(IEnumerable<WebAccount> webAccounts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountMonitor%20WebAuthenticationCoreManager.CreateWebAccountMonitor%28IEnumerable%3CWebAccount%3E%20webAccounts%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindAccountProviderAsync(string webAccountProviderId, string authority, global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindAccountProviderAsync(string webAccountProviderId, string authority, User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindAccountProviderAsync%28string%20webAccountProviderId%2C%20string%20authority%2C%20User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.WebTokenRequestResult> GetTokenSilentlyAsync(global::Windows.Security.Authentication.Web.Core.WebTokenRequest request)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WebTokenRequestResult> WebAuthenticationCoreManager.GetTokenSilentlyAsync(WebTokenRequest request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebTokenRequestResult%3E%20WebAuthenticationCoreManager.GetTokenSilentlyAsync%28WebTokenRequest%20request%29");
@@ -104,6 +55,55 @@ namespace Windows.Security.Authentication.Web.Core
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindAccountProviderAsync(string webAccountProviderId, string authority)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindAccountProviderAsync(string webAccountProviderId, string authority) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindAccountProviderAsync%28string%20webAccountProviderId%2C%20string%20authority%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindAccountProviderAsync(string webAccountProviderId, string authority, global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindAccountProviderAsync(string webAccountProviderId, string authority, User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindAccountProviderAsync%28string%20webAccountProviderId%2C%20string%20authority%2C%20User%20user%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.Authentication.Web.Core.WebAccountMonitor CreateWebAccountMonitor(global::System.Collections.Generic.IEnumerable<global::Windows.Security.Credentials.WebAccount> webAccounts)
+		{
+			throw new global::System.NotImplementedException("The member WebAccountMonitor WebAuthenticationCoreManager.CreateWebAccountMonitor(IEnumerable<WebAccount> webAccounts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountMonitor%20WebAuthenticationCoreManager.CreateWebAccountMonitor%28IEnumerable%3CWebAccount%3E%20webAccounts%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.FindAllAccountsResult> FindAllAccountsAsync(global::Windows.Security.Credentials.WebAccountProvider provider)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<FindAllAccountsResult> WebAuthenticationCoreManager.FindAllAccountsAsync(WebAccountProvider provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CFindAllAccountsResult%3E%20WebAuthenticationCoreManager.FindAllAccountsAsync%28WebAccountProvider%20provider%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.FindAllAccountsResult> FindAllAccountsAsync(global::Windows.Security.Credentials.WebAccountProvider provider, string clientId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<FindAllAccountsResult> WebAuthenticationCoreManager.FindAllAccountsAsync(WebAccountProvider provider, string clientId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CFindAllAccountsResult%3E%20WebAuthenticationCoreManager.FindAllAccountsAsync%28WebAccountProvider%20provider%2C%20string%20clientId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindSystemAccountProviderAsync(string webAccountProviderId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindSystemAccountProviderAsync(string webAccountProviderId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindSystemAccountProviderAsync%28string%20webAccountProviderId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindSystemAccountProviderAsync(string webAccountProviderId, string authority)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindSystemAccountProviderAsync(string webAccountProviderId, string authority) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindSystemAccountProviderAsync%28string%20webAccountProviderId%2C%20string%20authority%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.WebAccountProvider> FindSystemAccountProviderAsync(string webAccountProviderId, string authority, global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAccountProvider> WebAuthenticationCoreManager.FindSystemAccountProviderAsync(string webAccountProviderId, string authority, User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAccountProvider%3E%20WebAuthenticationCoreManager.FindSystemAccountProviderAsync%28string%20webAccountProviderId%2C%20string%20authority%2C%20User%20user%29");
 		}
 #endif
 	}

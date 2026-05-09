@@ -15,6 +15,13 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.LockScreen.LockApplicationHost GetForCurrentView()
+		{
+			throw new global::System.NotImplementedException("The member LockApplicationHost LockApplicationHost.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LockApplicationHost%20LockApplicationHost.GetForCurrentView%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RequestUnlock()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.LockScreen.LockApplicationHost", "void LockApplicationHost.RequestUnlock()");
@@ -22,13 +29,6 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.Unlocking.add
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.Unlocking.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.LockScreen.LockApplicationHost GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member LockApplicationHost LockApplicationHost.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LockApplicationHost%20LockApplicationHost.GetForCurrentView%28%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockApplicationHost, global::Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs> Unlocking

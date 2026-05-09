@@ -43,8 +43,8 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs.HasDeviceInformationChanged.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs.HasNetworkChanged.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId.get
 	}
 }

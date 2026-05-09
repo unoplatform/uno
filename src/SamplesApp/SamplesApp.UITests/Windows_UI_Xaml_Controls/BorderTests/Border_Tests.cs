@@ -39,7 +39,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 		[AutoRetry]
 		//For other platform the test have been moved to runtime
 		//It will be moves to when an equivalent of TakesScreenshot exist for that target
-		[ActivePlatforms(Platform.Browser)]
+		[Ignore("Flaky https://github.com/unoplatform/uno/issues/9080")]
 		public void Check_CornerRadius_Border_Basic()
 		{
 			const string white = "#F3F3F3";

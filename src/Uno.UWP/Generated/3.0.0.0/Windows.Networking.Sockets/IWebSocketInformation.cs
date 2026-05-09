@@ -26,8 +26,8 @@ namespace Windows.Networking.Sockets
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.IWebSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocketInformation.BandwidthStatistics.get
+		// Forced skipping of method Windows.Networking.Sockets.IWebSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocketInformation.Protocol.get
 	}
 }

@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Identity.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult.Sessions.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult.ServiceResponse.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult.Sessions.get
 	}
 }

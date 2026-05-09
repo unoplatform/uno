@@ -30,12 +30,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.PivotPanel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.PivotPanel()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.AreHorizontalSnapPointsRegular.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.AreVerticalSnapPointsRegular.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.HorizontalSnapPointsChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.HorizontalSnapPointsChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.VerticalSnapPointsChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.VerticalSnapPointsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
@@ -50,6 +44,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			throw new global::System.NotImplementedException("The member float PivotPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PivotPanel.GetRegularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%2C%20out%20float%20offset%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.HorizontalSnapPointsChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.HorizontalSnapPointsChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.VerticalSnapPointsChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.VerticalSnapPointsChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.AreHorizontalSnapPointsRegular.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.AreVerticalSnapPointsRegular.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.EventHandler<object> HorizontalSnapPointsChanged

@@ -15,6 +15,13 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Composition.CompositionCapabilities GetForCurrentView()
+		{
+			throw new global::System.NotImplementedException("The member CompositionCapabilities CompositionCapabilities.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionCapabilities%20CompositionCapabilities.GetForCurrentView%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AreEffectsSupported()
 		{
 			throw new global::System.NotImplementedException("The member bool CompositionCapabilities.AreEffectsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionCapabilities.AreEffectsSupported%28%29");
@@ -29,13 +36,6 @@ namespace Windows.UI.Composition
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionCapabilities.Changed.add
 		// Forced skipping of method Windows.UI.Composition.CompositionCapabilities.Changed.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Composition.CompositionCapabilities GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member CompositionCapabilities CompositionCapabilities.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionCapabilities%20CompositionCapabilities.GetForCurrentView%28%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Composition.CompositionCapabilities, object> Changed

@@ -8,9 +8,9 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class ManipulationCompletedRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Container
 		// Skipping already declared property Cumulative
+		// Skipping already declared property Handled
 		// Skipping already declared property IsInertial
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
@@ -18,12 +18,12 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.ManipulationCompletedRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.ManipulationCompletedRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Container.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Position.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.IsInertial.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Cumulative.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Velocities.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.IsInertial.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Position.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Velocities.get
 	}
 }

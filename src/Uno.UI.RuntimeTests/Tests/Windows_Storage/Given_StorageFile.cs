@@ -406,6 +406,42 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 #endif
 
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_GetFileFromPath_With_Spaces_OpenAsync_Returns_Content()
+		{
+			var folder = ApplicationData.Current.LocalFolder;
+			var fileName = "test file with spaces.txt";
+			var expectedContent = "hello world";
+
+			var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+			await FileIO.WriteTextAsync(file, expectedContent);
+
+			try
+			{
+				// Simulate the portal URI → path conversion that X11 pickers perform.
+				// The xdg-desktop-portal returns file:// URIs where spaces are %20-encoded.
+				var fileUri = new Uri(file.Path);
+				Assert.IsTrue(fileUri.AbsoluteUri.Contains("%20"), "URI should contain percent-encoded spaces");
+
+				// Uri.LocalPath decodes %20 → space; Uri.AbsolutePath does not.
+				var decodedPath = fileUri.LocalPath;
+				Assert.IsFalse(decodedPath.Contains("%20"), "LocalPath should decode percent-encoded characters");
+
+				var storageFile = await StorageFile.GetFileFromPathAsync(decodedPath);
+				using var stream = await storageFile.OpenStreamForReadAsync();
+				Assert.IsTrue(stream.Length > 0, "Stream from file with spaces in path should not be empty");
+
+				using var reader = new StreamReader(stream);
+				var content = await reader.ReadToEndAsync();
+				Assert.AreEqual(expectedContent, content);
+			}
+			finally
+			{
+				await file.DeleteAsync();
+			}
+		}
+
 		private string GetRandomFilePath()
 			=> Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{Guid.NewGuid()}.txt");
 

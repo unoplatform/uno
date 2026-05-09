@@ -43,8 +43,8 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.BytesSent.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.BytesReceived.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.BytesSent.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.ProviderId.get
 	}
 }

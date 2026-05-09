@@ -24,18 +24,12 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
+		public AppUriHandlerHost()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppUriHandlerHost.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppUriHandlerHost.IsEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "bool AppUriHandlerHost.IsEnabled");
-			}
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "AppUriHandlerHost.AppUriHandlerHost()");
 		}
 #endif
+		// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AppUriHandlerHost(string name)
@@ -44,17 +38,7 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public AppUriHandlerHost()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "AppUriHandlerHost.AppUriHandlerHost()");
-		}
-#endif
-		// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost()
 		// Forced skipping of method Windows.System.AppUriHandlerHost.Name.get
 		// Forced skipping of method Windows.System.AppUriHandlerHost.Name.set
-		// Forced skipping of method Windows.System.AppUriHandlerHost.IsEnabled.get
-		// Forced skipping of method Windows.System.AppUriHandlerHost.IsEnabled.set
 	}
 }

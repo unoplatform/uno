@@ -9,21 +9,16 @@ namespace Windows.UI.Composition
 	public partial class CompositionGeometry : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionGeometry()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float TrimStart
+		public float TrimEnd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGeometry.TrimStart");
+				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGeometry.TrimEnd");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimStart");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimEnd");
 			}
 		}
 #endif
@@ -43,15 +38,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float TrimEnd
+		public float TrimStart
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGeometry.TrimEnd");
+				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGeometry.TrimStart");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimEnd");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimStart");
 			}
 		}
 #endif

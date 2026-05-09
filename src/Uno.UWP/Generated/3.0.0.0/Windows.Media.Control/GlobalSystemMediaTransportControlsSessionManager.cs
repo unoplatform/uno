@@ -15,6 +15,13 @@ namespace Windows.Media.Control
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager> RequestAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GlobalSystemMediaTransportControlsSessionManager> GlobalSystemMediaTransportControlsSessionManager.RequestAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGlobalSystemMediaTransportControlsSessionManager%3E%20GlobalSystemMediaTransportControlsSessionManager.RequestAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession GetCurrentSession()
 		{
 			throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSession GlobalSystemMediaTransportControlsSessionManager.GetCurrentSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalSystemMediaTransportControlsSession%20GlobalSystemMediaTransportControlsSessionManager.GetCurrentSession%28%29");
@@ -31,13 +38,6 @@ namespace Windows.Media.Control
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.CurrentSessionChanged.remove
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.SessionsChanged.add
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.SessionsChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager> RequestAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GlobalSystemMediaTransportControlsSessionManager> GlobalSystemMediaTransportControlsSessionManager.RequestAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGlobalSystemMediaTransportControlsSessionManager%3E%20GlobalSystemMediaTransportControlsSessionManager.RequestAsync%28%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager, global::Windows.Media.Control.CurrentSessionChangedEventArgs> CurrentSessionChanged

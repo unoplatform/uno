@@ -63,10 +63,10 @@ namespace Windows.Data.Pdf
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.MediaBox.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.CropBox.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.BleedBox.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.TrimBox.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.ArtBox.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.BleedBox.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.CropBox.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.MediaBox.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.TrimBox.get
 	}
 }

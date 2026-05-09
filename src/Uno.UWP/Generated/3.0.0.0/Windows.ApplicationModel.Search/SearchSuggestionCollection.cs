@@ -23,7 +23,6 @@ namespace Windows.ApplicationModel.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Size.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AppendQuerySuggestion(string text)
@@ -52,5 +51,6 @@ namespace Windows.ApplicationModel.Search
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchSuggestionCollection", "void SearchSuggestionCollection.AppendSearchSeparator(string label)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Size.get
 	}
 }

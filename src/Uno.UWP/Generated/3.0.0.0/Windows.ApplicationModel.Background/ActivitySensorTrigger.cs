@@ -56,10 +56,10 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.ActivitySensorTrigger(uint)
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.SubscribedActivities.get
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.ReportInterval.get
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.SupportedActivities.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.MinimumReportInterval.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.ReportInterval.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.SubscribedActivities.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.SupportedActivities.get
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

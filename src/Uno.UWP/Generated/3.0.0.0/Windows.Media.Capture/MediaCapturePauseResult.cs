@@ -33,8 +33,7 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.LastFrame.get
-		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.RecordDuration.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.~MediaCapturePauseResult()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -42,6 +41,8 @@ namespace Windows.Media.Capture
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCapturePauseResult", "void MediaCapturePauseResult.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.LastFrame.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.RecordDuration.get
 		// Processing: System.IDisposable
 	}
 }

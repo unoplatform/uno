@@ -53,8 +53,13 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.DeviceId.get
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.IsSpatialAudioSupported.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.Audio.SpatialAudioDeviceConfiguration GetForDeviceId(string deviceId)
+		{
+			throw new global::System.NotImplementedException("The member SpatialAudioDeviceConfiguration SpatialAudioDeviceConfiguration.GetForDeviceId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialAudioDeviceConfiguration%20SpatialAudioDeviceConfiguration.GetForDeviceId%28string%20deviceId%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSpatialAudioFormatSupported(string subtype)
@@ -62,8 +67,6 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member bool SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported%28string%20subtype%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat.get
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.SetDefaultSpatialAudioFormatResult> SetDefaultSpatialAudioFormatAsync(string subtype)
@@ -73,13 +76,10 @@ namespace Windows.Media.Audio
 #endif
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.ConfigurationChanged.add
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.ConfigurationChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.Audio.SpatialAudioDeviceConfiguration GetForDeviceId(string deviceId)
-		{
-			throw new global::System.NotImplementedException("The member SpatialAudioDeviceConfiguration SpatialAudioDeviceConfiguration.GetForDeviceId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialAudioDeviceConfiguration%20SpatialAudioDeviceConfiguration.GetForDeviceId%28string%20deviceId%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat.get
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat.get
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.DeviceId.get
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.IsSpatialAudioSupported.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.SpatialAudioDeviceConfiguration, object> ConfigurationChanged

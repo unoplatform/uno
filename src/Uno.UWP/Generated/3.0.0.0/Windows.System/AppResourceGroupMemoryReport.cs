@@ -53,8 +53,8 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.CommitUsageLimit.get
 		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.CommitUsageLevel.get
+		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.CommitUsageLimit.get
 		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.PrivateCommitUsage.get
 		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.TotalCommitUsage.get
 	}

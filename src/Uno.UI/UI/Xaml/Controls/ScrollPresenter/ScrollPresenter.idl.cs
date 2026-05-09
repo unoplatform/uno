@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 
 	[Flags]
-	public enum ScrollingInputKinds
+	public enum ScrollingInputKinds : uint
 	{
 		None = 0,
 		Touch = 1,

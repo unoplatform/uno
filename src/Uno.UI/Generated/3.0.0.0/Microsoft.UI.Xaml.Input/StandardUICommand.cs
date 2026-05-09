@@ -8,14 +8,14 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class StandardUICommand : global::Microsoft.UI.Xaml.Input.XamlUICommand
 	{
-		// Skipping already declared property Kind
 		// Skipping already declared property KindProperty
+		// Skipping already declared property Kind
 		// Skipping already declared method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand()
 		// Skipping already declared method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand(Microsoft.UI.Xaml.Input.StandardUICommandKind)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand(Microsoft.UI.Xaml.Input.StandardUICommandKind)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.KindProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.Kind.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.Kind.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.KindProperty.get
 	}
 }

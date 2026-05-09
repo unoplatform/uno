@@ -13,8 +13,8 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiTuneRequestMessage.MidiTuneRequestMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.MidiTuneRequestMessage()
-		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.Type.get
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}

@@ -10,9 +10,9 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		// Skipping already declared property Deadline
 		// Skipping already declared property FormatId
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataProviderRequest.FormatId.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataProviderRequest.Deadline.get
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataProviderRequest.GetDeferral()
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataProviderRequest.SetData(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataProviderRequest.Deadline.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataProviderRequest.FormatId.get
 	}
 }

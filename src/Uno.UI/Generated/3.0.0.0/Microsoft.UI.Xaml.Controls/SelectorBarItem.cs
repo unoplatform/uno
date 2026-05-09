@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SelectorBarItem : global::Microsoft.UI.Xaml.Controls.ItemContainer
 	{
-		// Skipping already declared property Text
-		// Skipping already declared property Icon
 		// Skipping already declared property IconProperty
 		// Skipping already declared property TextProperty
+		// Skipping already declared property Icon
+		// Skipping already declared property Text
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.IconProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.TextProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Icon.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Icon.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.IconProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.set
 	}
 }

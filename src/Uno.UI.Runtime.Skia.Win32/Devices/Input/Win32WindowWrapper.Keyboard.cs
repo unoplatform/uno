@@ -28,7 +28,12 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 			if (msg.message == PInvoke.WM_CHAR)
 			{
 				PInvoke.PeekMessage(out _, _hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE);
-				if (key != VirtualKey.Tab)
+
+				// During IME composition, WM_CHAR messages are generated for intermediate
+				// characters. Discard the character — the committed text is handled via
+				// GCS_RESULTSTR in the WM_IME_COMPOSITION handler. The key event itself
+				// is still dispatched so that arrow keys move the TextBox cursor.
+				if (!Win32ImeTextBoxExtension.Instance.IsComposing && key != VirtualKey.Tab)
 				{
 					// We don't treat Tab as a character key. For example, tabbing in a TextBox doesn't insert a '\t'
 					var c = (char)msg.wParam;

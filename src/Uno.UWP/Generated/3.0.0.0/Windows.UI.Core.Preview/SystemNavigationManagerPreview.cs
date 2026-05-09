@@ -8,9 +8,9 @@ namespace Windows.UI.Core.Preview
 #endif
 	public partial class SystemNavigationManagerPreview
 	{
+		// Skipping already declared method Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetForCurrentView()
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.add
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.remove
-		// Skipping already declared method Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetForCurrentView()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.EventHandler<global::Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs> CloseRequested

@@ -16,13 +16,13 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.RangeBaseAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.RangeBase)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.RangeBaseAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.RangeBase)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.SetValue(double)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.LargeChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.Maximum.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.Minimum.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.SmallChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.Value.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.SetValue(double)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider
 	}
 }

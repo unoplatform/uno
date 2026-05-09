@@ -14,8 +14,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property StartPosition
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.Animation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.Animation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.StartPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.EndPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.EndPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.StartPosition.get
 	}
 }

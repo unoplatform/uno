@@ -8,11 +8,11 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionLineGeometry : global::Microsoft.UI.Composition.CompositionGeometry
 	{
-		// Skipping already declared property Start
 		// Skipping already declared property End
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.set
+		// Skipping already declared property Start
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.set
 	}
 }

@@ -33,15 +33,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAppRegistration.User.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAppRegistration.Attributes.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> SaveAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemAppRegistration.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20RemoteSystemAppRegistration.SaveAsync%28%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemAppRegistration GetDefault()
@@ -56,5 +47,14 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member RemoteSystemAppRegistration RemoteSystemAppRegistration.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemAppRegistration%20RemoteSystemAppRegistration.GetForUser%28User%20user%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<bool> SaveAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemAppRegistration.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20RemoteSystemAppRegistration.SaveAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAppRegistration.Attributes.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAppRegistration.User.get
 	}
 }

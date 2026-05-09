@@ -10,8 +10,6 @@ namespace Windows.Storage
 	{
 		// Skipping already declared property ContentType
 		// Skipping already declared property FileType
-		// Forced skipping of method Windows.Storage.IStorageFile.FileType.get
-		// Forced skipping of method Windows.Storage.IStorageFile.ContentType.get
 		// Skipping already declared method Windows.Storage.IStorageFile.OpenAsync(Windows.Storage.FileAccessMode)
 		// Skipping already declared method Windows.Storage.IStorageFile.OpenTransactedWriteAsync()
 		// Skipping already declared method Windows.Storage.IStorageFile.CopyAsync(Windows.Storage.IStorageFolder)
@@ -22,5 +20,7 @@ namespace Windows.Storage
 		// Skipping already declared method Windows.Storage.IStorageFile.MoveAsync(Windows.Storage.IStorageFolder, string)
 		// Skipping already declared method Windows.Storage.IStorageFile.MoveAsync(Windows.Storage.IStorageFolder, string, Windows.Storage.NameCollisionOption)
 		// Skipping already declared method Windows.Storage.IStorageFile.MoveAndReplaceAsync(Windows.Storage.IStorageFile)
+		// Forced skipping of method Windows.Storage.IStorageFile.ContentType.get
+		// Forced skipping of method Windows.Storage.IStorageFile.FileType.get
 	}
 }

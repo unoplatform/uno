@@ -15,26 +15,6 @@ namespace Windows.UI.Input.Inking.Analysis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndentLevel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int InkAnalysisLine.IndentLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InkAnalysisLine.IndentLevel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RecognizedText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string InkAnalysisLine.RecognizedText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InkAnalysisLine.RecognizedText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect BoundingRect
 		{
 			get
@@ -65,6 +45,16 @@ namespace Windows.UI.Input.Inking.Analysis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndentLevel
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int InkAnalysisLine.IndentLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InkAnalysisLine.IndentLevel");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Inking.Analysis.InkAnalysisNodeKind Kind
 		{
 			get
@@ -85,6 +75,16 @@ namespace Windows.UI.Input.Inking.Analysis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string RecognizedText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string InkAnalysisLine.RecognizedText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InkAnalysisLine.RecognizedText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Foundation.Point> RotatedBoundingRect
 		{
 			get
@@ -93,14 +93,6 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.RecognizedText.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.IndentLevel.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.Id.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.Kind.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.BoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.RotatedBoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.Children.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.Parent.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
@@ -108,6 +100,14 @@ namespace Windows.UI.Input.Inking.Analysis
 			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> InkAnalysisLine.GetStrokeIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20InkAnalysisLine.GetStrokeIds%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.BoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.Children.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.Id.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.IndentLevel.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.Kind.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.Parent.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.RecognizedText.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.RotatedBoundingRect.get
 		// Processing: Windows.UI.Input.Inking.Analysis.IInkAnalysisNode
 	}
 }

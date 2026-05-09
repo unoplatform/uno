@@ -99,7 +99,7 @@ namespace Windows.UI.WindowManagement
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidSizeChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidTitleBarChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidVisibilityChange.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidWindowingEnvironmentChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidWindowPresentationChange.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidWindowingEnvironmentChange.get
 	}
 }

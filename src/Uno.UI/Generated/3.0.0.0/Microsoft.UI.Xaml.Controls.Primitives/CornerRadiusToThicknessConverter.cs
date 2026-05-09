@@ -8,20 +8,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class CornerRadiusToThicknessConverter : global::Microsoft.UI.Xaml.DependencyObject, global::Microsoft.UI.Xaml.Data.IValueConverter
 	{
-		// Skipping already declared property Multiplier
-		// Skipping already declared property ConversionKind
 		// Skipping already declared property ConversionKindProperty
 		// Skipping already declared property MultiplierProperty
+		// Skipping already declared property ConversionKind
+		// Skipping already declared property Multiplier
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.CornerRadiusToThicknessConverter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.CornerRadiusToThicknessConverter()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.ConversionKindProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.MultiplierProperty.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.Convert(object, System.Type, object, string)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.ConvertBack(object, System.Type, object, string)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.ConversionKind.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.ConversionKind.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.Multiplier.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.Multiplier.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.Convert(object, System.Type, object, string)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.ConvertBack(object, System.Type, object, string)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.ConversionKindProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusToThicknessConverter.MultiplierProperty.get
 		// Processing: Microsoft.UI.Xaml.Data.IValueConverter
 	}
 }

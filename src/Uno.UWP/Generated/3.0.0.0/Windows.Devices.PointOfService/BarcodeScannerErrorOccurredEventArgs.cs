@@ -43,8 +43,8 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.PartialInputData.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.IsRetriable.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.ErrorData.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.IsRetriable.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs.PartialInputData.get
 	}
 }

@@ -33,8 +33,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.IsBrightnessControlSupported.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.IsBrightnessNitsControlSupported.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Display.NitRange> GetSupportedNitRanges()
@@ -42,5 +40,7 @@ namespace Windows.Graphics.Display
 			throw new global::System.NotImplementedException("The member IReadOnlyList<NitRange> DisplayEnhancementOverrideCapabilities.GetSupportedNitRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CNitRange%3E%20DisplayEnhancementOverrideCapabilities.GetSupportedNitRanges%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.IsBrightnessControlSupported.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.IsBrightnessNitsControlSupported.get
 	}
 }

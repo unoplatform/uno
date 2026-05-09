@@ -47,9 +47,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionStart.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionStart.get
 	}
 }

@@ -62,6 +62,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
+		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => Win32TextScaleFactorExtension.Instance);
 
 		ApiExtensibility.Register<DisplayInformation>(typeof(IDisplayInformationExtension), displayInformation =>
 		{
@@ -98,7 +99,10 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
 		}
 		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => Win32TextBoxNotificationsProviderSingleton.Instance);
+		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => Win32ImeTextBoxExtension.Instance);
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
+
+		AccessibilityRouter.EnsureInitialized();
 	}
 
 	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)

@@ -43,8 +43,8 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.TypeFace.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.IsScalableToAnySize.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.CharacterSizes.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.IsScalableToAnySize.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.TypeFace.get
 	}
 }

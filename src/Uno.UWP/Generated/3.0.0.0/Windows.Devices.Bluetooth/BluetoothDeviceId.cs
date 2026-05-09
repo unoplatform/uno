@@ -43,9 +43,6 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.Id.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.IsClassicDevice.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.IsLowEnergyDevice.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Bluetooth.BluetoothDeviceId FromId(string deviceId)
@@ -53,5 +50,8 @@ namespace Windows.Devices.Bluetooth
 			throw new global::System.NotImplementedException("The member BluetoothDeviceId BluetoothDeviceId.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothDeviceId%20BluetoothDeviceId.FromId%28string%20deviceId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.Id.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.IsClassicDevice.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.IsLowEnergyDevice.get
 	}
 }

@@ -17,8 +17,8 @@ namespace Windows.Devices.Midi
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.MidiChannelPressureMessage(byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.Pressure.get
-		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.Type.get
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}

@@ -107,6 +107,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
 
+		partial void OnMonochromeColorChanged()
+		{
+			OnSourceChanged(Source, forceReload: true);
+		}
+
 		private void OnSourceChanged(ImageSource newValue, bool forceReload = false)
 		{
 			if (Source is null)

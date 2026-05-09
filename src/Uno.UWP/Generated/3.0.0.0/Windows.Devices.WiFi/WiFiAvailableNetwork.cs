@@ -123,16 +123,16 @@ namespace Windows.Devices.WiFi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.Uptime.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.Ssid.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.BeaconInterval.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.Bssid.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.ChannelCenterFrequencyInKilohertz.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.NetworkRssiInDecibelMilliwatts.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.SignalBars.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.IsWiFiDirect.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.NetworkKind.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.NetworkRssiInDecibelMilliwatts.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.PhyKind.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.SecuritySettings.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.BeaconInterval.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.IsWiFiDirect.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.SignalBars.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.Ssid.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.Uptime.get
 	}
 }

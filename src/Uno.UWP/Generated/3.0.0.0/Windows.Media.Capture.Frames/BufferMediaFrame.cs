@@ -33,7 +33,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.FrameReference.get
 		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.Buffer.get
+		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.FrameReference.get
 	}
 }

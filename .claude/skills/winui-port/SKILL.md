@@ -104,6 +104,7 @@ Apply ALL of the following porting rules when converting C++ to C#.
 #### 2.1. General Rules
 
 - **Never remove or simplify code.** Anything you cannot convert must be preserved as a comment with a clear `TODO Uno:` explanation.
+- **Preserve all `//` code comments exactly.** Every comment in the C++ source — explanatory notes, rationale, section dividers, `#pragma region` labels (converted to `// #pragma region`), TODOs, and inline remarks — must appear in the C# output at the same relative position. Do not paraphrase, summarize, or omit comments. The only acceptable changes are adapting C++ syntax references inside a comment to their C# equivalents (e.g., `winrt::hstring` → `string`).
 - **Maintain method order and structure** exactly as in the original C++ files.
 - **Preserve all behavior and intent**, even if the resulting C# does not compile yet.
 - Any Uno-specific code must be wrapped in `#if HAS_UNO` / `#endif`.

@@ -15,29 +15,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double MinWidth
+		public int ItemsRangeRequestedLength
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double MaxWidth
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth");
+				throw new global::System.NotImplementedException("The member int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength");
 			}
 		}
 #endif
@@ -57,21 +39,32 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ItemsRangeRequestedLength
+		public double MaxWidth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength");
+				throw new global::System.NotImplementedException("The member double LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double MinWidth
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDesiredAspectRatios(double[] values)
@@ -93,5 +86,12 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "void LinedFlowLayoutItemsInfoRequestedEventArgs.SetMaxWidths(double[] values)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth.set
 	}
 }

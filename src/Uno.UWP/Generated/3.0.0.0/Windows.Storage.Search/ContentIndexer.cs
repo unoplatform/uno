@@ -25,6 +25,20 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.Search.ContentIndexer GetIndexer(string indexName)
+		{
+			throw new global::System.NotImplementedException("The member ContentIndexer ContentIndexer.GetIndexer(string indexName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIndexer%20ContentIndexer.GetIndexer%28string%20indexName%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.Search.ContentIndexer GetIndexer()
+		{
+			throw new global::System.NotImplementedException("The member ContentIndexer ContentIndexer.GetIndexer() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIndexer%20ContentIndexer.GetIndexer%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction AddAsync(global::Windows.Storage.Search.IIndexableContent indexableContent)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ContentIndexer.AddAsync(IIndexableContent indexableContent) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContentIndexer.AddAsync%28IIndexableContent%20indexableContent%29");
@@ -65,7 +79,6 @@ namespace Windows.Storage.Search
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyDictionary<string, object>> ContentIndexer.RetrievePropertiesAsync(string contentId, IEnumerable<string> propertiesToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyDictionary%3Cstring%2C%20object%3E%3E%20ContentIndexer.RetrievePropertiesAsync%28string%20contentId%2C%20IEnumerable%3Cstring%3E%20propertiesToRetrieve%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.ContentIndexer.Revision.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.ContentIndexerQuery CreateQuery(string searchFilter, global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Search.SortEntry> sortOrder, string searchFilterLanguage)
@@ -87,19 +100,6 @@ namespace Windows.Storage.Search
 			throw new global::System.NotImplementedException("The member ContentIndexerQuery ContentIndexer.CreateQuery(string searchFilter, IEnumerable<string> propertiesToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIndexerQuery%20ContentIndexer.CreateQuery%28string%20searchFilter%2C%20IEnumerable%3Cstring%3E%20propertiesToRetrieve%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.Search.ContentIndexer GetIndexer(string indexName)
-		{
-			throw new global::System.NotImplementedException("The member ContentIndexer ContentIndexer.GetIndexer(string indexName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIndexer%20ContentIndexer.GetIndexer%28string%20indexName%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.Search.ContentIndexer GetIndexer()
-		{
-			throw new global::System.NotImplementedException("The member ContentIndexer ContentIndexer.GetIndexer() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIndexer%20ContentIndexer.GetIndexer%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Storage.Search.ContentIndexer.Revision.get
 	}
 }

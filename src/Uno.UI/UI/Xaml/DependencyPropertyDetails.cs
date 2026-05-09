@@ -3,13 +3,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.UI.Xaml.Data;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml
 {
@@ -35,6 +36,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void CloneToForHotReload(DependencyPropertyDetails other)
 		{
+			if (IsPropMethodCall)
+			{
+				return; // Value lives on the object, not in DependencyPropertyDetails.
+			}
+
 			// If the old instance has a local value **and** the new instance doesn't, then copy the local value.
 			// We shouldn't be copying local value if the new instance already has it set. The new value in the new instance
 			// should not be overwritten as it's more likely to be more correct.
@@ -61,6 +67,7 @@ namespace Microsoft.UI.Xaml
 			_flags |= property.HasWeakStorage ? Flags.WeakStorage : Flags.None;
 			_flags |= hasValueInherits ? Flags.ValueInherits : Flags.None;
 			_flags |= hasValueDoesNotInherits ? Flags.ValueDoesNotInherit : Flags.None;
+			_flags |= property.IsPropMethodCall ? Flags.IsPropMethodCall : Flags.None;
 		}
 
 		private void GetPropertyInheritanceConfiguration(
@@ -107,7 +114,8 @@ namespace Microsoft.UI.Xaml
 		{
 			// Always set inherited value.
 			// This is needed for now to always be able to restore inherited value efficiently when higher precedences are cleared.
-			if (precedence == DependencyPropertyValuePrecedences.Inheritance)
+			// PropMethodCall DPs never use inheritance — their value is always computed from the backing field.
+			if (!IsPropMethodCall && precedence == DependencyPropertyValuePrecedences.Inheritance)
 			{
 				_inheritedValue = value;
 			}
@@ -133,9 +141,12 @@ namespace Microsoft.UI.Xaml
 				if (_baseValueSource == precedence)
 				{
 					// Caller will re-evaluate base value.
-					_baseValueSource = _inheritedValue == DependencyProperty.UnsetValue
+					// PropMethodCall DPs never participate in inheritance — always fall back to DefaultValue.
+					_baseValueSource = IsPropMethodCall
 						? DependencyPropertyValuePrecedences.DefaultValue
-						: DependencyPropertyValuePrecedences.Inheritance;
+						: (_inheritedValue == DependencyProperty.UnsetValue
+							? DependencyPropertyValuePrecedences.DefaultValue
+							: DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
 
@@ -144,16 +155,17 @@ namespace Microsoft.UI.Xaml
 				// If our value is ModifiedValue, then the BaseValue is stored there.
 				modifiedValue.SetBaseValue(value, precedence);
 
-				if (_baseValueSource == DependencyPropertyValuePrecedences.Inheritance)
+				if (!IsPropMethodCall && _baseValueSource == DependencyPropertyValuePrecedences.Inheritance)
 				{
 					modifiedValue.SetBaseValue(_inheritedValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
-			else
+			else if (!IsPropMethodCall)
 			{
 				// Otherwise, the BaseValue is stored directly in the _value field.
 				_value = _baseValueSource == DependencyPropertyValuePrecedences.Inheritance ? _inheritedValue : value;
 			}
+			// For PropMethodCall without ModifiedValue: skip _value write — value lives on backing field
 		}
 
 		/// <summary>
@@ -165,7 +177,14 @@ namespace Microsoft.UI.Xaml
 		{
 			Property.ValidateValue(value);
 
-			if (HasWeakStorage)
+			// PropMethodCall base values live on the backing field, not in _value,
+			// so skip weak-storage wrapping. Coercion/Animation values still land in ModifiedValue
+			// and therefore still need the normal wrapping path.
+			bool storedInValue = !IsPropMethodCall
+				|| precedence == DependencyPropertyValuePrecedences.Coercion
+				|| precedence == DependencyPropertyValuePrecedences.Animations;
+
+			if (storedInValue && HasWeakStorage)
 			{
 				value = Validate(value);
 			}
@@ -224,6 +243,20 @@ namespace Microsoft.UI.Xaml
 
 		internal ModifiedValue? GetModifiedValue()
 			=> _value as ModifiedValue;
+
+		/// <summary>
+		/// Pre-seeds a <see cref="ModifiedValue"/> with the real base value from the backing field.
+		/// Called by <see cref="DependencyObjectStore"/> before setting Coercion/Animation on a
+		/// PropMethodCall DP, so that <see cref="EnsureModifiedValue"/> doesn't capture stale <c>_value</c>.
+		/// </summary>
+		internal void InitializeModifiedValue(object? baseValue)
+		{
+			Debug.Assert(IsPropMethodCall);
+			Debug.Assert(_value is not ModifiedValue);
+			var modifiedValue = new ModifiedValue();
+			modifiedValue.SetBaseValue(baseValue, _baseValueSource);
+			_value = modifiedValue;
+		}
 
 		/// <summary>
 		/// Gets the current highest value precedence level
@@ -297,6 +330,9 @@ namespace Microsoft.UI.Xaml
 		internal bool HasValueDoesNotInherit
 			=> (_flags & Flags.ValueDoesNotInherit) != 0;
 
+		internal bool IsPropMethodCall
+			=> (_flags & Flags.IsPropMethodCall) != 0;
+
 		public override string ToString()
 		{
 			return $"DependencyPropertyDetails({Property.Name})";
@@ -332,6 +368,11 @@ namespace Microsoft.UI.Xaml
 			/// Determines if the property must not inherit DataContext from its parent
 			/// </summary>
 			ValueDoesNotInherit = 1 << 2,
+
+			/// <summary>
+			/// The property uses PropMethodCall — value is stored on the object via a backing field, not in DependencyPropertyDetails.
+			/// </summary>
+			IsPropMethodCall = 1 << 3,
 		}
 	}
 }

@@ -143,19 +143,6 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.Session.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.HasSucceeded.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.ImportedItems.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.PhotosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.PhotosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.VideosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.VideosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.SidecarsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.SidecarsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.SiblingsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.SiblingsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.TotalCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.TotalSizeInBytes.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult, double> DeleteImportedItemsFromSourceAsync()
@@ -163,5 +150,18 @@ namespace Windows.Media.Import
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PhotoImportDeleteImportedItemsFromSourceResult, double> PhotoImportImportItemsResult.DeleteImportedItemsFromSourceAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CPhotoImportDeleteImportedItemsFromSourceResult%2C%20double%3E%20PhotoImportImportItemsResult.DeleteImportedItemsFromSourceAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.HasSucceeded.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.ImportedItems.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.PhotosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.PhotosSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.Session.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.SiblingsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.SiblingsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.SidecarsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.SidecarsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.TotalCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.TotalSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.VideosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.VideosSizeInBytes.get
 	}
 }

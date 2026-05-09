@@ -113,15 +113,15 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.PowerReportingType.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.IsStatisticsReportingSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.IsStatisticsUpdatingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.CanMapCharacterSet.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.DefaultCharacterSet.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.HasCoverSensor.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.CanMapCharacterSet.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.IsStatisticsReportingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.IsStatisticsUpdatingSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.IsTransactionSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.Journal.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.PowerReportingType.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.Receipt.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.Slip.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.Journal.get
 	}
 }

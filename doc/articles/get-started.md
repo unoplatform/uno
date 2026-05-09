@@ -77,18 +77,20 @@ To help you choose the appropriate IDE or Agent, the following table shows the c
 |                                    | [**Visual Studio**](xref:Uno.GetStarted.vs2022) | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces**](xref:Uno.GetStarted.vscode) | [**Rider**](xref:Uno.GetStarted.Rider) | [**Claude Code**](xref:Uno.GetStarted.AI.Claude) | [**Codex**](xref:Uno.GetStarted.AI.Codex) | [**GitHub Copilot CLI**](xref:Uno.GetStarted.AI.CopilotCLI) | [**Cursor**](xref:Uno.GetStarted.AI.Cursor) | [**Google Antigravity**](xref:Uno.GetStarted.AI.GoogleAntigravity) |
 |------------------------------------|-------------------------------------------------|--------------------------------------------|-------------------------------------------------------|--------------------------------------------------|--------------------------------------------------|-------------------------------------------|-------------------------------------------------------------|---------------------------------------------|--------------------------------------------------------------|
 | Desktop (Skia)¹                    | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          | ✔️                                                       |
-| Android                            | ✔️                                              | ✔️⁵                                         | ❌                                                   | ✔️                                              | ⏳⁵                                              | ⏳⁵                                       | ⏳⁵                                                        | ⏳⁵                                         | ⏳⁵                                                    |
-| iOS                                | ✔️²                                             | ✔️³                                        | ❌                                                   | ❌                                              | ❌                                               | ❌                                        | ❌                                                         | ❌                                          | ❌                                                       |
-| Web (WebAssembly)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️⁴                                             | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          | ✔️                                                       |
-| WinAppSDK                          | ✔️                                              | ⏳⁵                                         | ❌                                                   | ✔️                                              | ⏳⁵                                              | ⏳⁵                                       | ⏳⁵                                                        | ⏳⁵                                         | ⏳⁵                                                    |
+| Android                            | ✔️                                              | ✔️⁴                                         | ❌                                                   | ✔️                                              | ⏳⁴                                              | ⏳⁴                                       | ⏳⁴                                                        | ⏳⁴                                         | ⏳⁴                                                    |
+| iOS                                | ✔️²                                             | ✔️²                                        | ❌                                                   | ✔️²                                            | ❌                                               | ❌                                        | ❌                                                         | ❌                                          | ❌                                                       |
+| Web (WebAssembly)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️³                                             | ✔️                                               | ✔️                                        | ✔️                                                         | ✔️                                          | ✔️                                                       |
+| WinAppSDK                          | ✔️                                              | ⏳⁴                                         | ❌                                                   | ✔️                                              | ⏳⁴                                              | ⏳⁴                                       | ⏳⁴                                                        | ⏳⁴                                         | ⏳⁴                                                    |
 
 **Notes:**
 
-1. Desktop binaries do run on Windows, Linux, and macOS
-2. You will need to be connected to a Mac to run and debug iOS apps from Windows
-3. You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
-4. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
-5. Agent support is coming soon
+1. Desktop binaries do run on Windows, Linux, and macOS.
+2. Requires a Mac with [Remote Login](https://support.apple.com/guide/mac-help/allow-a-remote-computer-to-access-your-mac-mchlp1066/mac) (SSH) enabled.
+    - **Visual Studio** uses [Pair to Mac](https://learn.microsoft.com/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+    - **VS Code** uses [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh).
+    - **Rider 2026.1+** uses a remote Mac build host.
+3. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) from the IDE is not yet supported. You can use the [Chromium in-browser debugger](xref:UnoWasmBootstrap.Features.Debugger#how-to-use-the-browser-debugger) instead.
+4. Agent support is coming soon.
 
 # [**macOS**](#tab/macos)
 
@@ -164,14 +166,17 @@ Choosing the right agent for your development depends on your needs and environm
 | VS Code Copilot      | 1.105.1      | ✅    | ✅     | ✅         | ✅       | iOS, Android, Desktop, Web ||
 | GitHub Copilot CLI   | 0.0.349      | ✅    | ❌     | ✅         | ❌         | Desktop, Web | |
 | Cursor               | 2.0.34       | ✅    | ✅     | ✅         | ✅        | Desktop, Web ||
-| Google Antigravity   | Preview      | ✅    | ❌    | ✅         | ❌        | Desktop, Web | Requires `--force-roots-fallback` |
-| Rider                | 2025.2       | ❌    | ❌     | ❌         | ❌         | ❌ |[Support coming soon](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support)|
+| Google Antigravity   | Preview      | ✅    | ❌    | ✅         | ❌        | Desktop, Web | Roots fallback auto-detected |
+| Rider                | 2025.2       | ✅²   | ❌      | ❌         | ✅²            | Desktop, Web | Uno App MCP (stdio) only — Uno Docs (HTTP) tracked in [JUNIE-461](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support) |
 | Codex CLI            | 0.50.0       | ✅    | ❌     | ✅         | ❌      | Desktop, Web | [mcp.json](https://github.com/openai/codex/issues/2628)|
 | Claude Code          | 2.0.25       | ✅    | ✅     | ✅         | ✅        | Desktop, Web | |
 
 **Notes:**
 
 1. VS Hot Reload support in agents is coming soon
+2. Rider (via Junie) supports stdio MCP servers only; HTTP/remote MCP servers (used by Uno Docs) are not yet supported — see [JUNIE-461](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support).
+
+For registration, inspection, and diagnostics of Uno MCPs across these agents, see [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) and the [Dev Server reference](xref:Uno.DevServer).
 
 ## Questions
 

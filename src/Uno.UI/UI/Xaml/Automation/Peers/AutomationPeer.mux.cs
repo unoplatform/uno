@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 
@@ -18,6 +19,10 @@ partial class AutomationPeer
 {
 	// Cached events source for ListItem/TabItem/TreeItem control types
 	private AutomationPeer? _eventsSource;
+
+	// Re-entrancy guard for GetAPEventsSource. Prevents StackOverflow when
+	// Navigate(Parent) triggers peer creation that calls GetAPEventsSource again.
+	private bool _isResolvingEventsSource;
 
 	//------------------------------------------------------------------------
 	//
@@ -32,6 +37,13 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	internal AutomationPeer? GetAPEventsSource()
 	{
+		// Guard against re-entrancy: Navigate(Parent) may trigger peer creation
+		// that calls GetAPEventsSource again on the same peer.
+		if (_isResolvingEventsSource)
+		{
+			return _eventsSource ?? EventsSource;
+		}
+
 		var controlType = GetAutomationControlType();
 
 		// Only generate EventsSource for ListItem, TabItem, and TreeItem control types
@@ -39,29 +51,37 @@ partial class AutomationPeer
 			controlType == AutomationControlType.TabItem ||
 			controlType == AutomationControlType.TreeItem)
 		{
-			// Navigate to parent to generate EventsSource
-			var parent = Navigate(AutomationNavigationDirection.Parent) as AutomationPeer;
-
-			if (parent is not null && this is FrameworkElementAutomationPeer)
+			_isResolvingEventsSource = true;
+			try
 			{
-				// Generate the events source using the parent
-				GenerateAutomationPeerEventsSource(parent);
+				// Navigate to parent to generate EventsSource
+				var parent = Navigate(AutomationNavigationDirection.Parent) as AutomationPeer;
 
-				if (_eventsSource is not null)
+				if (parent is not null && this is FrameworkElementAutomationPeer)
 				{
-					// This code path exists for one reason: for ListViewItems we need to make sure that
-					// their DataAutomationPeers, which are the EventsSource for the actual FrameworkElement
-					// derived AutomationPeers, return the correct parent. In List/ListItem peer implementations
-					// we hide all the controls between the ListViewItem and the ListView control.
-					//
-					// We make sure here that if m_pAPParent is already set, we leave it alone and don't override it.
-					// That indicates external code is trying to set the parent on a data automation peer.
-					// If not we perform this call, which does the same thing, but for internal automation peers.
-					if (!_eventsSource.HasParent())
+					// Generate the events source using the parent
+					GenerateAutomationPeerEventsSource(parent);
+
+					if (_eventsSource is not null)
 					{
-						_eventsSource.SetParent(parent);
+						// This code path exists for one reason: for ListViewItems we need to make sure that
+						// their DataAutomationPeers, which are the EventsSource for the actual FrameworkElement
+						// derived AutomationPeers, return the correct parent. In List/ListItem peer implementations
+						// we hide all the controls between the ListViewItem and the ListView control.
+						//
+						// We make sure here that if m_pAPParent is already set, we leave it alone and don't override it.
+						// That indicates external code is trying to set the parent on a data automation peer.
+						// If not we perform this call, which does the same thing, but for internal automation peers.
+						if (!_eventsSource.HasParent())
+						{
+							_eventsSource.SetParent(parent);
+						}
 					}
 				}
+			}
+			finally
+			{
+				_isResolvingEventsSource = false;
 			}
 		}
 
@@ -253,27 +273,11 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	private bool IsKeyboardFocusableImpl()
 	{
-		// Get the owner element if this is a FrameworkElementAutomationPeer
+		// Delegate to UIElement.IsFocusable which matches WinUI's logic:
+		// IsVisible && (IsEnabled || AllowFocusWhenDisabled) && (IsTabStop || IsFocusableForFocusEngagement) && AreAllAncestorsVisible
 		if (this is FrameworkElementAutomationPeer feap && feap.Owner is UIElement owner)
 		{
-			// Check if the element is visible
-			if (owner.Visibility != Visibility.Visible)
-			{
-				return false;
-			}
-
-			// For Controls, check IsTabStop and IsEnabled
-			if (owner is Control control)
-			{
-				return control.IsTabStop && control.IsEnabled;
-			}
-
-			// For other focusable elements, check if they can receive focus
-			// AllowFocusOnInteraction is on FrameworkElement, not UIElement
-			if (owner is FrameworkElement fe && fe.AllowFocusOnInteraction)
-			{
-				return true;
-			}
+			return owner.IsFocusable;
 		}
 
 		return false;
@@ -290,12 +294,11 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	private bool IsOffscreenImpl(bool ignoreClippingOnScrollContentPresenters)
 	{
-		//TODO (DOTI): ActualWidth/Heigh doesn't seem to be supported on some platforms
 #if __SKIA__
 		// Get the owner element if this is a FrameworkElementAutomationPeer
 		if (this is FrameworkElementAutomationPeer feap && feap.Owner is UIElement owner)
 		{
-			// Check visibility
+			// Check visibility (WinUI: IsVisible on the element itself)
 			if (owner.Visibility != Visibility.Visible)
 			{
 				return true;
@@ -316,8 +319,19 @@ partial class AutomationPeer
 				}
 			}
 
-			// Check if element is clipped out of view
-			// Get the bounding rectangle - if it's empty, the element is offscreen
+			// Check if element is in the live visual tree (WinUI: IsActive on each ancestor)
+			if (!owner.IsInLiveTree)
+			{
+				return true;
+			}
+
+			// Check all ancestors are visible (WinUI: walks parent chain checking IsVisible)
+			if (!owner.AreAllAncestorsVisible())
+			{
+				return true;
+			}
+
+			// Check if element is clipped out of view via global bounds
 			var bounds = owner.GetGlobalBoundsWithOptions(
 				ignoreClipping: false,
 				ignoreClippingOnScrollContentPresenters: ignoreClippingOnScrollContentPresenters,
@@ -331,8 +345,34 @@ partial class AutomationPeer
 			return false;
 		}
 #endif
-
 		return false;
+	}
+
+	/// <summary>
+	/// Removes the leading and trailing spaces in the provided string and returns the trimmed version
+	/// or an empty string when no characters are left.
+	/// Because it is recommended to set an AppBarButton, AppBarToggleButton, MenuFlyoutItem or ToggleMenuFlyoutItem's
+	/// KeyboardAcceleratorTextOverride to a single space to hide their keyboard accelerator UI, this trimming method
+	/// prevents automation tools like Narrator from emitting a space when navigating to such an element.
+	/// </summary>
+	private protected static string GetTrimmedKeyboardAcceleratorTextOverride(string keyboardAcceleratorTextOverride)
+	{
+		// Return an empty string when the provided keyboardAcceleratorTextOverride is already empty.
+		if (!string.IsNullOrEmpty(keyboardAcceleratorTextOverride))
+		{
+			var trimmedKeyboardAcceleratorTextOverride = keyboardAcceleratorTextOverride.TrimStart(' ');
+
+			// Return an empty string when the remaining string is empty.
+			if (!string.IsNullOrEmpty(trimmedKeyboardAcceleratorTextOverride))
+			{
+				// Trim the trailing spaces as well.
+				trimmedKeyboardAcceleratorTextOverride = trimmedKeyboardAcceleratorTextOverride.TrimEnd(' ');
+				return trimmedKeyboardAcceleratorTextOverride;
+			}
+		}
+
+		// Return an empty string
+		return "";
 	}
 
 	//------------------------------------------------------------------------
@@ -441,16 +481,6 @@ partial class AutomationPeer
 		=> true;
 #endif
 
-	/// <summary>
-	/// Removes the leading and trailing spaces in the provided string and returns the trimmed version
-	/// or an empty string when no characters are left.
-	/// Because it is recommended to set an AppBarButton, AppBarToggleButton, MenuFlyoutItem or ToggleMenuFlyoutItem's
-	/// KeyboardAcceleratorTextOverride to a single space to hide their keyboard accelerator UI, this trimming method
-	/// prevents automation tools like Narrator from emitting a space when navigating to such an element.
-	/// </summary>
-	internal static string GetTrimmedKeyboardAcceleratorTextOverride(string? keyboardAcceleratorTextOverride)
-		=> keyboardAcceleratorTextOverride?.Trim() ?? string.Empty;
-
 	private FocusManager? GetFocusManagerNoRef()
 	{
 		// TODO Uno: In WinUI this uses GetContext() and GetRootNoRef() pattern.
@@ -487,55 +517,82 @@ partial class AutomationPeer
 	internal void RaiseAutomaticPropertyChanges(bool firePropertyChangedEvents)
 	{
 #if HAS_UNO
-		var isEnabled = IsEnabledCore();
-		var isOffscreen = IsOffscreenCore();
-		var name = GetNameCore();
-		var itemStatus = GetItemStatusCore();
-
-		if (firePropertyChangedEvents)
+		// WinUI uses HRESULT hr = S_OK with WARNING_IGNORES_FAILURES and IFC/goto Cleanup
+		// pattern, which silently swallows any errors from the peer override calls.
+		// The try-catch here is the C# equivalent of that error-swallowing pattern.
+		try
 		{
-			if (_currentIsEnabled != isEnabled)
+			var isEnabled = IsEnabledCore();
+			var isOffscreen = IsOffscreenCore();
+			var name = GetNameCore();
+			var itemStatus = GetItemStatusCore();
+
+			if (firePropertyChangedEvents)
 			{
-				RaisePropertyChangedEvent(
-					AutomationElementIdentifiers.IsEnabledProperty,
-					_currentIsEnabled,
-					isEnabled);
+				if (_currentIsEnabled != isEnabled)
+				{
+					RaisePropertyChangedEvent(
+						AutomationElementIdentifiers.IsEnabledProperty,
+						_currentIsEnabled,
+						isEnabled);
+					_currentIsEnabled = isEnabled;
+				}
+
+				if (_currentIsOffscreen != isOffscreen)
+				{
+					RaisePropertyChangedEvent(
+						AutomationElementIdentifiers.IsOffscreenProperty,
+						_currentIsOffscreen,
+						isOffscreen);
+					_currentIsOffscreen = isOffscreen;
+				}
+
+				if (_currentName != name && (name is not null || _currentName is not null))
+				{
+					RaisePropertyChangedEvent(
+						AutomationElementIdentifiers.NameProperty,
+						_currentName ?? string.Empty,
+						name ?? string.Empty);
+					if (name is not null)
+					{
+						_currentName = name;
+					}
+				}
+
+				if (_currentItemStatus != itemStatus && (itemStatus is not null || _currentItemStatus is not null))
+				{
+					RaisePropertyChangedEvent(
+						AutomationElementIdentifiers.ItemStatusProperty,
+						_currentItemStatus ?? string.Empty,
+						itemStatus ?? string.Empty);
+					if (itemStatus is not null)
+					{
+						_currentItemStatus = itemStatus;
+					}
+				}
+			}
+			else
+			{
 				_currentIsEnabled = isEnabled;
-			}
-
-			if (_currentIsOffscreen != isOffscreen)
-			{
-				RaisePropertyChangedEvent(
-					AutomationElementIdentifiers.IsOffscreenProperty,
-					_currentIsOffscreen,
-					isOffscreen);
 				_currentIsOffscreen = isOffscreen;
-			}
 
-			if (_currentName != name && (name is not null || _currentName is not null))
-			{
-				RaisePropertyChangedEvent(
-					AutomationElementIdentifiers.NameProperty,
-					_currentName ?? string.Empty,
-					name ?? string.Empty);
-				_currentName = name;
-			}
+				if (name is not null)
+				{
+					_currentName = name;
+				}
 
-			if (_currentItemStatus != itemStatus && (itemStatus is not null || _currentItemStatus is not null))
-			{
-				RaisePropertyChangedEvent(
-					AutomationElementIdentifiers.ItemStatusProperty,
-					_currentItemStatus ?? string.Empty,
-					itemStatus ?? string.Empty);
-				_currentItemStatus = itemStatus;
+				if (itemStatus is not null)
+				{
+					_currentItemStatus = itemStatus;
+				}
 			}
 		}
-		else
+		catch (global::System.Exception ex)
 		{
-			_currentIsEnabled = isEnabled;
-			_currentIsOffscreen = isOffscreen;
-			_currentName = name;
-			_currentItemStatus = itemStatus;
+			if (typeof(AutomationPeer).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(AutomationPeer).Log().Debug($"RaiseAutomaticPropertyChanges failed for {GetType().Name}: {ex.Message}");
+			}
 		}
 #endif
 	}

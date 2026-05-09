@@ -10,6 +10,14 @@ namespace Windows.Graphics.Imaging
 	{
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.BitmapSize()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public BitmapSize(uint _Width, uint _Height)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapSize", "BitmapSize.BitmapSize(uint _Width, uint _Height)");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.BitmapSize(uint, uint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Width;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

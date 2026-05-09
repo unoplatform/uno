@@ -16,6 +16,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Helpers;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -25,14 +26,47 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true)]
-		public static DependencyProperty IsHitTestVisibleProperty { get; } = CreateIsHitTestVisibleProperty();
+		// TODO: Add more PropMethodCall and combine them in BitVector32
+		private bool _isHitTestVisible = true;
 
 		public bool IsHitTestVisible
 		{
-			get => GetIsHitTestVisibleValue();
-			set => SetIsHitTestVisibleValue(value);
+			get => (bool)GetValue(IsHitTestVisibleProperty);
+			set => SetValue(IsHitTestVisibleProperty, value);
 		}
+
+		public static DependencyProperty IsHitTestVisibleProperty { get; } = DependencyProperty.Register(
+			nameof(IsHitTestVisible),
+			typeof(bool),
+			typeof(UIElement),
+			new FrameworkPropertyMetadata(defaultValue: true, propertyChangedCallback: (s, e) => ((UIElement)s).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
+			{
+				PropMethodCall = HitTestVisible,
+			}
+		);
+
+#nullable enable
+		private static object? HitTestVisible(DependencyObject instance, bool isGet, object? valueToSet)
+		{
+			var element = (UIElement)instance;
+			if (isGet)
+			{
+				return Boxes.Box(element._isHitTestVisible);
+			}
+
+			var newValue = (bool)valueToSet!;
+			if (newValue != element._isHitTestVisible)
+			{
+				element._isHitTestVisible = newValue;
+				// The value has changed.
+				return true;
+			}
+
+			// The value didn't change.
+			return false;
+		}
+#nullable restore
+
 
 		[GeneratedDependencyProperty(DefaultValue = 1.0, ChangedCallback = true)]
 		public static DependencyProperty OpacityProperty { get; } = CreateOpacityProperty();
@@ -86,13 +120,28 @@ namespace Microsoft.UI.Xaml
 			set => SetContextFlyoutValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = null)]
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
 		internal static DependencyProperty KeyboardAcceleratorsProperty { get; } = CreateKeyboardAcceleratorsProperty();
 
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{
 			get => GetKeyboardAcceleratorsValue();
 			private set => SetKeyboardAcceleratorsValue(value);
+		}
+
+		private void OnKeyboardAcceleratorsChanged(IList<KeyboardAccelerator> oldValue, IList<KeyboardAccelerator> newValue)
+		{
+#if HAS_UNO // TODO: Uno specific - WinUI does analogous action in Enter/LeaveEffectiveValue
+			var visualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+			if (oldValue is KeyboardAcceleratorCollection oldCollection)
+			{
+				oldCollection.Leave(this, new LeaveParams(false) { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+			}
+			if (newValue is KeyboardAcceleratorCollection newCollection)
+			{
+				newCollection.Enter(this, new EnterParams(false) { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+			}
+#endif
 		}
 
 		/// <summary>

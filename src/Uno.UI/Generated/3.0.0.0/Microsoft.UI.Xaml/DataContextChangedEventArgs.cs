@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property NewValue
-		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.NewValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.NewValue.get
 	}
 }

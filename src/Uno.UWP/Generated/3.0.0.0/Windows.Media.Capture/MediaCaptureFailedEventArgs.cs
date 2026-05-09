@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureFailedEventArgs.Message.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureFailedEventArgs.Code.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureFailedEventArgs.Message.get
 	}
 }

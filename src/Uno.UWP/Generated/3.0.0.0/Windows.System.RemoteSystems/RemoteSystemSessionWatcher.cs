@@ -37,13 +37,13 @@ namespace Windows.System.RemoteSystems
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionWatcher", "void RemoteSystemSessionWatcher.Stop()");
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Status.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Added.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Added.remove
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Updated.add
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Updated.remove
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Removed.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Removed.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Updated.add
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Updated.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionWatcher, global::Windows.System.RemoteSystems.RemoteSystemSessionAddedEventArgs> Added

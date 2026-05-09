@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared property NewValue
 		// Skipping already declared property OldValue
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.OldValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.NewValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.OldValue.get
 	}
 }

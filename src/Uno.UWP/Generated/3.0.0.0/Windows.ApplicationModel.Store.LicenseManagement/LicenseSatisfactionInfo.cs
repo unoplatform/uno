@@ -83,12 +83,12 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByDevice.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByOpenLicense.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByTrial.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByPass.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByInstallMedia.get
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedBySignedInUser.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.IsSatisfied.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByDevice.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByInstallMedia.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByOpenLicense.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByPass.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedBySignedInUser.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.SatisfiedByTrial.get
 	}
 }

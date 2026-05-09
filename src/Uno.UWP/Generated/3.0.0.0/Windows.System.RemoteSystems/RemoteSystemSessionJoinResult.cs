@@ -33,7 +33,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.Status.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.Session.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.Status.get
 	}
 }

@@ -45,6 +45,16 @@ namespace Windows.Graphics.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDolbyVisionLowLatencySupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsDolbyVisionLowLatencySupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.IsDolbyVisionLowLatencySupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSdrLuminanceSupported
 		{
 			get
@@ -115,31 +125,21 @@ namespace Windows.Graphics.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDolbyVisionLowLatencySupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsDolbyVisionLowLatencySupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.IsDolbyVisionLowLatencySupported");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ResolutionWidthInRawPixels.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ResolutionHeightInRawPixels.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.RefreshRate.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.StereoEnabled.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.BitsPerPixel.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
 		{
 			throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsEqual(HdmiDisplayMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.IsEqual%28HdmiDisplayMode%20mode%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.BitsPerPixel.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ColorSpace.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.PixelEncoding.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.IsSdrLuminanceSupported.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.IsSmpte2084Supported.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.Is2086MetadataSupported.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.IsDolbyVisionLowLatencySupported.get
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.IsSdrLuminanceSupported.get
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.IsSmpte2084Supported.get
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.PixelEncoding.get
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.RefreshRate.get
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ResolutionHeightInRawPixels.get
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ResolutionWidthInRawPixels.get
+		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.StereoEnabled.get
 	}
 }

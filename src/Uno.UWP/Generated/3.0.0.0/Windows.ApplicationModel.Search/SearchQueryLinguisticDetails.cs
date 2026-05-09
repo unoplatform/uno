@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Search
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchQueryLinguisticDetails.SearchQueryLinguisticDetails(System.Collections.Generic.IEnumerable<string>, uint, uint)
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchQueryLinguisticDetails.QueryTextAlternatives.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchQueryLinguisticDetails.QueryTextCompositionStart.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchQueryLinguisticDetails.QueryTextCompositionLength.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchQueryLinguisticDetails.QueryTextCompositionStart.get
 	}
 }

@@ -15,15 +15,15 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactListSyncStatus Status
+		public global::System.DateTimeOffset LastAttemptedSyncTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactListSyncStatus ContactListSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactListSyncStatus%20ContactListSyncManager.Status");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ContactListSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ContactListSyncManager.LastAttemptedSyncTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactListSyncManager", "ContactListSyncStatus ContactListSyncManager.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactListSyncManager", "DateTimeOffset ContactListSyncManager.LastAttemptedSyncTime");
 			}
 		}
 #endif
@@ -43,21 +43,18 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset LastAttemptedSyncTime
+		public global::Windows.ApplicationModel.Contacts.ContactListSyncStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ContactListSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ContactListSyncManager.LastAttemptedSyncTime");
+				throw new global::System.NotImplementedException("The member ContactListSyncStatus ContactListSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactListSyncStatus%20ContactListSyncManager.Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactListSyncManager", "DateTimeOffset ContactListSyncManager.LastAttemptedSyncTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactListSyncManager", "ContactListSyncStatus ContactListSyncManager.Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.Status.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.LastSuccessfulSyncTime.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.LastAttemptedSyncTime.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
@@ -67,9 +64,12 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.SyncStatusChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.SyncStatusChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.Status.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.LastSuccessfulSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.LastAttemptedSyncTime.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.LastAttemptedSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.LastSuccessfulSyncTime.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.LastSuccessfulSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncManager.Status.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.ContactListSyncManager, object> SyncStatusChanged

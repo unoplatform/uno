@@ -354,6 +354,25 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnTextChangedPartial();
 
+			// Notify automation peers of the text value change.
+			// WinUI CTextBox::UpdateTextProperty fires both ValueProperty changed
+			// and TextPatternOnTextChanged events inline when text changes.
+			var peer = GetOrCreateAutomationPeer();
+			if (peer is TextBoxAutomationPeer textPeer)
+			{
+				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+				{
+					textPeer.RaiseValuePropertyChangedEvent(
+						(string)e.OldValue ?? string.Empty,
+						(string)e.NewValue ?? string.Empty);
+				}
+
+				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextChanged))
+				{
+					textPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextChanged);
+				}
+			}
+
 			// Update states after the text has changed, since we're
 			// using selection values to compute SV scrolling.
 			UpdateButtonStates();
@@ -1530,6 +1549,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void CopySelectionToClipboard()
 		{
+			if (this is PasswordBox)
+			{
+				return;
+			}
+
 			if (SelectionLength > 0)
 			{
 				var text = SelectedText;
@@ -1544,7 +1568,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void CutSelectionToClipboard()
 		{
-			if (IsReadOnly)
+			if (IsReadOnly || this is PasswordBox)
 			{
 				return;
 			}

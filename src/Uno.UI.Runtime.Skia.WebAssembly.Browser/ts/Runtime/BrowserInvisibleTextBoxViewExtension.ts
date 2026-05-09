@@ -1,11 +1,14 @@
 ﻿namespace Uno.UI.Runtime.Skia {
 	export class BrowserInvisibleTextBoxViewExtension {
 		private static _exports: any;
+		private static _imeExports: any;
 		private static readonly inputElementId = "uno-input";
 		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
-		private static inputElement: HTMLInputElement | HTMLTextAreaElement;
+		private static inputElement: HTMLInputElement | HTMLTextAreaElement | null;
 		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
+		private static isComposing: boolean;
+		private static suppressNextInput: boolean;
 
 		private static waitingAsyncOnSelectionChange: boolean;
 		private static nextSelectionStart: number;
@@ -21,6 +24,7 @@
 				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 				BrowserInvisibleTextBoxViewExtension._exports = browserExports.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension;
+				BrowserInvisibleTextBoxViewExtension._imeExports = browserExports.Uno.UI.Runtime.Skia.WasmImeTextBoxExtension;
 
 				document.onselectionchange = () => {
 					let input = document.activeElement;
@@ -77,6 +81,13 @@
 			input.setAttribute("enterkeyhint", enterKeyHint);
 
 			input.oninput = ev => {
+				// During IME composition, text state is managed by the composition event path.
+				// The oninput event still fires but we must skip the normal text sync.
+				// Also suppress the final input event after compositionend (browser fires input after compositionend).
+				if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
+					BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
+					return;
+				}
 				let input = ev.target as HTMLInputElement;
 				if (input.selectionDirection == "backward") {
 					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
@@ -100,7 +111,52 @@
 				}
 			});
 
-			input.onkeydown = ev => {
+			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
+
+			input.addEventListener("compositionstart", () => {
+				BrowserInvisibleTextBoxViewExtension.isComposing = true;
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
+			});
+
+			input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
+				// Use input.selectionStart for cursor position when available,
+				// as the IME may place the caret within the preedit string.
+				const selectionStart = input.selectionStart;
+				const cursorPosition = selectionStart === null
+					? ev.data.length
+					: Math.max(0, Math.min(selectionStart, ev.data.length));
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
+			});
+
+			input.addEventListener("compositionend", (ev: CompositionEvent) => {
+				BrowserInvisibleTextBoxViewExtension.isComposing = false;
+				// The browser fires an input event after compositionend with the committed text.
+				// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
+				BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
+				if (ev.data.length > 0) {
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
+				} else {
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+				}
+			});
+
+			document.body.appendChild(input);
+			BrowserInvisibleTextBoxViewExtension.inputElement = input;
+		}
+
+		// Applies the same keydown/keyup guards used on the invisible <input> to any text input
+		// that must delegate character insertion to managed TextBox KeyDown handling.
+		// Without these guards, focused text inputs (e.g. the a11y semantic <input>) would insert
+		// the character natively AND via the managed path, producing duplicated input.
+		public static attachTextInputKeyHandlers(input: HTMLInputElement | HTMLTextAreaElement, acceptsReturn: boolean) {
+			input.addEventListener("keydown", (ev: KeyboardEvent) => {
+				// During IME composition, let the browser/IME handle all keys.
+				// stopPropagation prevents BrowserKeyboardInputSource from calling preventDefault.
+				if (ev.isComposing) {
+					ev.stopPropagation();
+					return;
+				}
+
 				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
 					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
 					// So, we do stopPropagation instead of preventDefault
@@ -112,7 +168,7 @@
 
 				// Allow Enter key to propagate when the TextBox doesn't accept returns
 				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
-				if ((ev.key === "Enter" || ev.keyCode === 13) && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+				if ((ev.key === "Enter" || ev.keyCode === 13) && !acceptsReturn) {
 					// Don't call preventDefault() to allow the key event to propagate to document listeners
 					return;
 				}
@@ -128,16 +184,13 @@
 				}
 
 				ev.preventDefault();
-			};
+			});
 
-			input.onkeyup = ev => {
-				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+			input.addEventListener("keyup", (ev: KeyboardEvent) => {
+				if (BrowserInvisibleTextBoxViewExtension.isComposing || ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
 					ev.stopPropagation();
 				}
-			};
-
-			document.body.appendChild(input);
-			BrowserInvisibleTextBoxViewExtension.inputElement = input;
+			});
 		}
 
 		public static setEnterKeyHint(enterKeyHint: string) {
@@ -154,7 +207,13 @@
 			}
 		}
 
-		public static focus(isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
+			const semanticElement = document.getElementById(`uno-semantics-${handle}`);
+			if (semanticElement && document.activeElement === semanticElement) {
+				BrowserInvisibleTextBoxViewExtension.detach();
+				return false;
+			}
+
 			// NOTE: We can get focused as true while we have inputElement.
 			// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
 			// For such case, we do call StartEntry twice without any EndEntry in between.
@@ -166,17 +225,33 @@
 			// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
 			// events and properly recognize password inputs to not read it.
 			BrowserInvisibleTextBoxViewExtension.inputElement.focus();
+			return true;
 		}
 
 		public static blur() {
 			// reset focus
 			(document.activeElement as HTMLElement)?.blur();
+			BrowserInvisibleTextBoxViewExtension.detach();
+		}
+
+		public static detach() {
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
+			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+		}
+
+		public static hasInput(): boolean {
+			return BrowserInvisibleTextBoxViewExtension.inputElement != null;
 		}
 
 		public static setText(text: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
+				// During IME composition the browser manages the hidden input's value.
+				// Overwriting it would destroy the native composition state and cursor.
+				if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+					return;
+				}
+
 				// input could be null beccause we could call setText without focusing first
 
 				if (input.value != text) {
@@ -213,6 +288,10 @@
 		}
 
 		public static updateSelection(start: number, length: number, direction: "forward" | "backward") {
+			// During IME composition the browser manages the hidden input's selection.
+			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+				return;
+			}
 			if (!BrowserInvisibleTextBoxViewExtension.isInSelectionChange) {
 				const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 

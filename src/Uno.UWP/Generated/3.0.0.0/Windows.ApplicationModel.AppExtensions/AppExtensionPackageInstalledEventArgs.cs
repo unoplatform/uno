@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs.AppExtensionName.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs.Extensions.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs.Package.get
 	}
 }

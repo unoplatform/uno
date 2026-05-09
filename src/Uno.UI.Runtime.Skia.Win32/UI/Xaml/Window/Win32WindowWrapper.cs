@@ -18,6 +18,7 @@ using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Input;
@@ -36,7 +37,7 @@ using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost
+internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost, IAccessibilityOwner
 {
 	private const string WindowClassName = "UnoPlatformRegularWindow";
 
@@ -53,6 +54,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private readonly HWND _hwnd;
 	private readonly IRenderer _renderer;
 
+	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
@@ -102,10 +104,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_renderTimer = CreateRenderTimer();
-		_renderer = FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-			? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-			: new SoftwareRenderer(_hwnd);
+		_framePacer = CreateFramePacer();
+		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
+			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
+				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+					? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+					: new SoftwareRenderer(_hwnd))
+			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+				: new SoftwareRenderer(_hwnd);
 
 		RegisterForBackgroundColor();
 
@@ -122,6 +129,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		window.AppWindow.TitleBar.Changed += OnAppWindowTitleBarChanged;
 		UpdateClientAreaExtension();
+
+		InitializeAccessibility();
 	}
 
 	private void OnAppWindowTitleBarChanged(object? sender, EventArgs e)
@@ -220,6 +229,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
 
+		if (msg == Win32UIAutomationInterop.WM_GETOBJECT
+			&& (int)lParam.Value == Win32UIAutomationInterop.UiaRootObjectId)
+		{
+			return Win32UIAutomationInterop.HandleGetObject(
+				hwnd, wParam, lParam, _accessibility?.RootProvider);
+		}
+
 		if (TryHandleCustomCaptionMessage(hwnd, msg, wParam, lParam, out var customCaptionResult))
 		{
 			return customCaptionResult;
@@ -297,6 +313,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
+			case PInvoke.WM_IME_STARTCOMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeStartComposition();
+				return new LRESULT(0);
+			case PInvoke.WM_IME_COMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeComposition(lParam);
+				return new LRESULT(0);
+			case PInvoke.WM_IME_ENDCOMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeEndComposition();
+				return new LRESULT(0);
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
@@ -427,7 +452,21 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+
+		// Dispose the accessibility instance BEFORE unregistering from XamlRootMap
+		// and before releasing the HWND. UIA clients must see a well-formed
+		// disconnect rather than a dangling HWND. After disposal notify the router
+		// so source-less announcement fallback picks a new active owner if this
+		// window was the active one.
+		if (_accessibility is { } accessibility)
+		{
+			accessibility.Dispose();
+			AccessibilityRouter.NotifyDisposed(this);
+			_accessibility = null;
+		}
+
 		Win32Host.UnregisterWindow(_hwnd);
+		_framePacer.Dispose();
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
@@ -469,10 +508,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WA_ACTIVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_ACTIVE)}");
 				ActivationState = CoreWindowActivationState.CodeActivated;
+				AccessibilityRouter.SetActive(this);
 				break;
 			case PInvoke.WA_CLICKACTIVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_CLICKACTIVE)}");
 				ActivationState = CoreWindowActivationState.PointerActivated;
+				AccessibilityRouter.SetActive(this);
 				break;
 			case PInvoke.WA_INACTIVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
@@ -741,6 +782,49 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		return hIcon;
 	}
+
+	private void InitializeAccessibility()
+	{
+		// Router owns the framework's single-slot registrations; per-window
+		// Win32Accessibility instances fan out via the router.
+		AccessibilityRouter.EnsureInitialized();
+
+		// Defer instance creation until the root element is available.
+		// The root element may not be set yet at construction time.
+		if (Window?.RootElement is { } rootElement)
+		{
+			CreateAccessibilityInstance(rootElement);
+		}
+		else if (Window is not null)
+		{
+			// Wait for the content to be set, then initialize
+			Window.Activated += OnWindowActivatedForAccessibility;
+		}
+	}
+
+	private void OnWindowActivatedForAccessibility(object sender, Microsoft.UI.Xaml.WindowActivatedEventArgs args)
+	{
+		if (Window is not null)
+		{
+			Window.Activated -= OnWindowActivatedForAccessibility;
+			if (_accessibility is null && Window.RootElement is { } rootElement)
+			{
+				CreateAccessibilityInstance(rootElement);
+			}
+		}
+	}
+
+	private void CreateAccessibilityInstance(UIElement rootElement)
+	{
+		if (_accessibility is not null)
+		{
+			return;
+		}
+
+		_accessibility = new Win32Accessibility(_hwnd.Value, rootElement, rootElement.DispatcherQueue);
+	}
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 

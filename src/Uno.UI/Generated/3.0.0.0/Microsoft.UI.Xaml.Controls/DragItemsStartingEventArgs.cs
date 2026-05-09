@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.DragItemsStartingEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Data.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DragItemsStartingEventArgs.Items.get
 	}
 }

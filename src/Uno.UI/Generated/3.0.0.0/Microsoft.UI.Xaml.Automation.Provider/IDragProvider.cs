@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 		// Skipping already declared property DropEffect
 		// Skipping already declared property DropEffects
 		// Skipping already declared property IsGrabbed
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IDragProvider.IsGrabbed.get
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IDragProvider.GetGrabbedItems()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IDragProvider.DropEffect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IDragProvider.DropEffects.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IDragProvider.GetGrabbedItems()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IDragProvider.IsGrabbed.get
 	}
 }

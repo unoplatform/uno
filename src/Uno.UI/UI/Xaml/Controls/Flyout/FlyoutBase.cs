@@ -17,13 +17,12 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
-
 using Microsoft.UI.Dispatching;
-using Uno.UI.DataBinding;
-
+using Windows.System;
 #if __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __ANDROID__
@@ -62,7 +61,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal bool IsTargetPositionSet => m_isTargetPositionSet;
 
-		private bool m_isPositionedForDateTimePicker;
+		private protected bool m_isPositionedForDateTimePicker;
 
 		private bool m_openingCanceled;
 
@@ -76,7 +75,25 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 		}
 
+		/// <summary>
+		/// Propagates Enter to the flyout's content for keyboard accelerator registration.
+		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
+		/// </summary>
+		internal virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
+		{
+		}
+
+		/// <summary>
+		/// Propagates Leave to the flyout's content for keyboard accelerator unregistration.
+		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
+		/// </summary>
+		internal virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
+		{
+		}
+
 		internal static IReadOnlyList<FlyoutBase> OpenFlyouts => _openFlyouts.AsReadOnly();
+
+		internal void EnsurePopupAndPresenter() => EnsurePopupCreated(); // TODO Uno: Approximation of WinUI EnsurePopupAndPresenter
 
 		private void EnsurePopupCreated()
 		{
@@ -456,14 +473,36 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void ShowAt(FrameworkElement placementTarget)
 		{
-			ShowAtCore(placementTarget, null);
+			ShowAt(placementTarget, null);
 		}
 
 		public void ShowAt(DependencyObject placementTarget, FlyoutShowOptions showOptions)
 		{
-			if (placementTarget is FrameworkElement fe)
+			FrameworkElement visualRoot;
+			// Show at the target element, if target is null use the frame as target
+			if (placementTarget is not null)
 			{
-				ShowAtCore(fe, showOptions);
+				visualRoot = placementTarget as FrameworkElement;
+			}
+			else
+			{
+				UIElement rootElement = XamlRoot?.Content;
+				visualRoot = rootElement as FrameworkElement;
+			}
+			EnsureAssociatedXamlRoot(placementTarget);
+			ShowAtCore(visualRoot, showOptions);
+		}
+
+		private void EnsureAssociatedXamlRoot(DependencyObject placementTarget)
+		{
+			VisualTree visualTree = VisualTree.GetUniqueVisualTreeNoRef(
+				this,
+				placementTarget,
+				null);
+
+			if (visualTree is not null)
+			{
+				visualTree.AttachElement(this);
 			}
 		}
 
@@ -663,7 +702,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			Opening?.Invoke(this, EventArgs.Empty);
 		}
 
-		private void OnClosing(ref bool cancel)
+		private protected virtual void OnClosing(ref bool cancel)
 		{
 			var closing = new FlyoutBaseClosingEventArgs();
 			Closing?.Invoke(this, closing);
@@ -907,10 +946,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal static Rect CalculateAvailableWindowRect(bool isMenuFlyout, Popup popup, object placementTarget, bool hasTargetPosition, Point positionPoint, bool isFull)
 		{
+#if HAS_UNO // This is a significantly simplified version of the WinUI logic.
 			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
 			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot
-			var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
+			var xamlRoot = XamlRoot.GetImplementationForElement(popup);
 			return xamlRoot.VisualTree.VisibleBounds;
+#endif
 		}
 
 		internal void SetPresenterStyle(

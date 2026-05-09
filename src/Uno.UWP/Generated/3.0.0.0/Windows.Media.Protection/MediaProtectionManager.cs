@@ -26,12 +26,12 @@ namespace Windows.Media.Protection
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.MediaProtectionManager()
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.ServiceRequested.add
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.ServiceRequested.remove
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.RebootNeeded.add
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.RebootNeeded.remove
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.ComponentLoadFailed.add
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.ComponentLoadFailed.remove
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.RebootNeeded.add
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.RebootNeeded.remove
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.ServiceRequested.add
+		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.ServiceRequested.remove
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionManager.Properties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

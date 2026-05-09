@@ -16,7 +16,7 @@ To get started with Codex CLI for Uno Platform development:
 1. Run the following command, which will launch the Uno Studio app that will allow you to [sign in or create an account](xref:Uno.GetStarted.Licensing) and get access to the [Uno App MCP](xref:Uno.Features.Uno.MCPs).
 
     ```bash
-    dnx -y uno.devserver login
+    dotnet dnx -y uno.devserver login
     ```
 
 1. If running on linux or macos, run the following:

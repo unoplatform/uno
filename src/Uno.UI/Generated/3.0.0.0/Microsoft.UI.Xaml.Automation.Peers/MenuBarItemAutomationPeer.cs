@@ -11,10 +11,10 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.MenuBarItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.MenuBarItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Expand()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Invoke()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.ExpandCollapseState.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}

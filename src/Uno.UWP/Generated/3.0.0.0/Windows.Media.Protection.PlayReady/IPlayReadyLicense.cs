@@ -44,14 +44,14 @@ namespace Windows.Media.Protection.PlayReady
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.FullyEvaluated.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.UsableForPlay.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.ExpirationDate.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.ExpireAfterFirstPlay.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.DomainAccountID.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.ChainDepth.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::System.Guid GetKIDAtChainDepth(uint chainDepth);
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.ChainDepth.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.DomainAccountID.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.ExpirationDate.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.ExpireAfterFirstPlay.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.FullyEvaluated.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyLicense.UsableForPlay.get
 	}
 }

@@ -29,7 +29,6 @@ using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
 using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using FlowLayout = Microsoft.UI.Xaml.Controls.FlowLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
 using System.Collections.Generic;
 using Uno.UI.RuntimeTests;
 using Private.Infrastructure;

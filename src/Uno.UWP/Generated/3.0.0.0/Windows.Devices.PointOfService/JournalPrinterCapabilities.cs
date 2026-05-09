@@ -125,26 +125,6 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsUnderlineSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool JournalPrinterCapabilities.IsUnderlineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JournalPrinterCapabilities.IsUnderlineSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<uint> SupportedCharactersPerLine
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> JournalPrinterCapabilities.SupportedCharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20JournalPrinterCapabilities.SupportedCharactersPerLine");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsReversePaperFeedByLineSupported
 		{
 			get
@@ -203,24 +183,44 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReverseVideoSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsStrikethroughSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsSuperscriptSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsSubscriptSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReversePaperFeedByLineSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsPrinterPresent.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsDualColorSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.ColorCartridgeCapabilities.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsUnderlineSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool JournalPrinterCapabilities.IsUnderlineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JournalPrinterCapabilities.IsUnderlineSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<uint> SupportedCharactersPerLine
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> JournalPrinterCapabilities.SupportedCharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20JournalPrinterCapabilities.SupportedCharactersPerLine");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.CartridgeSensors.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.ColorCartridgeCapabilities.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsBoldSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsItalicSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsUnderlineSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsDoubleHighPrintSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsDoubleWidePrintSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsDualColorSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsItalicSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsPaperEmptySensorSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsPaperNearEndSensorSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsPrinterPresent.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReversePaperFeedByLineSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReverseVideoSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsStrikethroughSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsSubscriptSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsSuperscriptSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsUnderlineSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.SupportedCharactersPerLine.get
 		// Processing: Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities
 	}

@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.ExtendedError.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.Package.get
 	}
 }

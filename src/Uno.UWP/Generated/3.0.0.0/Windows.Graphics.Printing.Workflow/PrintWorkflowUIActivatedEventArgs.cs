@@ -35,6 +35,16 @@ namespace Windows.Graphics.Printing.Workflow
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession PrintWorkflowSession
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PrintWorkflowForegroundSession PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintWorkflowForegroundSession%20PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
 		{
 			get
@@ -53,19 +63,9 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession PrintWorkflowSession
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowForegroundSession PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintWorkflowForegroundSession%20PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.PreviousExecutionState.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.User.get
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser

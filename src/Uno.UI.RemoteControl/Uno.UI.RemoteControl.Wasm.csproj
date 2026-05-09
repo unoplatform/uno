@@ -20,7 +20,7 @@
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>..\Uno.UI.RemoteControl\</PlatformItemsBasePath>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</PackageId>
+		<PackageId>Uno.WinUI.DevServer</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -56,21 +56,6 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-	
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<Page Remove="Themes\Generic.xaml" />
-
-		<Page Remove="RemoteControlStatusView.xaml" />
-		<Compile Remove="RemoteControlStatusView.cs" />
-		<None Include="RemoteControlStatusView.cs" />
-
-		<Page Remove="HotReload\HotReloadStatusView.xaml" />
-		<Compile Remove="HotReload\HotReloadStatusView.cs" />
-		<None Include="HotReload\HotReloadStatusView.cs" />
-	</ItemGroup>
-	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<PageExclusions>$(MSBuildThisFileDirectory)**\*.xaml</PageExclusions>
-	</PropertyGroup>
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 

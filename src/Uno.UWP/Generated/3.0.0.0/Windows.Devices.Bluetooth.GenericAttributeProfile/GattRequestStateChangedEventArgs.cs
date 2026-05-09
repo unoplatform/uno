@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs.State.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs.Error.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs.State.get
 	}
 }

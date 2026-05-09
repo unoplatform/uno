@@ -9,6 +9,8 @@ namespace Windows.UI.Text
 	public partial struct FontWeight
 	{
 		// Forced skipping of method Windows.UI.Text.FontWeight.FontWeight()
+		// Skipping already declared method Windows.UI.Text.FontWeight.FontWeight(ushort)
+		// Forced skipping of method Windows.UI.Text.FontWeight.FontWeight(ushort)
 		// Skipping already declared field Windows.UI.Text.FontWeight.Weight
 	}
 }

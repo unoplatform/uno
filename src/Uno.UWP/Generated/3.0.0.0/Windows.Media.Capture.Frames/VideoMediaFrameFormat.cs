@@ -53,9 +53,9 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.MediaFrameFormat.get
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.DepthFormat.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Width.get
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Height.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.MediaFrameFormat.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Width.get
 	}
 }

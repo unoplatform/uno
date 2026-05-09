@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class UnhandledExceptionEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Exception
+		// Skipping already declared property Handled
 		// Skipping already declared property Message
 		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Exception.get
-		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Message.get
 		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Message.get
 	}
 }

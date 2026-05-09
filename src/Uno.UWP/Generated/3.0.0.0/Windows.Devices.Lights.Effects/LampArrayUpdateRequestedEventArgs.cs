@@ -23,7 +23,6 @@ namespace Windows.Devices.Lights.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.SinceStarted.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetColor(global::Windows.UI.Color desiredColor)
@@ -52,5 +51,6 @@ namespace Windows.Devices.Lights.Effects
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "void LampArrayUpdateRequestedEventArgs.SetColorsForIndices(Color[] desiredColors, int[] lampIndexes)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.SinceStarted.get
 	}
 }

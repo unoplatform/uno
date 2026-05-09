@@ -53,9 +53,9 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreConsumableResult.Status.get
-		// Forced skipping of method Windows.Services.Store.StoreConsumableResult.TrackingId.get
 		// Forced skipping of method Windows.Services.Store.StoreConsumableResult.BalanceRemaining.get
 		// Forced skipping of method Windows.Services.Store.StoreConsumableResult.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StoreConsumableResult.Status.get
+		// Forced skipping of method Windows.Services.Store.StoreConsumableResult.TrackingId.get
 	}
 }

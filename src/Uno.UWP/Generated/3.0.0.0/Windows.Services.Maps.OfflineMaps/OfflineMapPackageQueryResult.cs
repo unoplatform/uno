@@ -33,7 +33,7 @@ namespace Windows.Services.Maps.OfflineMaps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Status.get
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Packages.get
+		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Status.get
 	}
 }

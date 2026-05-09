@@ -58,10 +58,10 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.Mpeg2ProfileIds.Simple.get
+		// Forced skipping of method Windows.Media.MediaProperties.Mpeg2ProfileIds.High.get
 		// Forced skipping of method Windows.Media.MediaProperties.Mpeg2ProfileIds.Main.get
 		// Forced skipping of method Windows.Media.MediaProperties.Mpeg2ProfileIds.SignalNoiseRatioScalable.get
+		// Forced skipping of method Windows.Media.MediaProperties.Mpeg2ProfileIds.Simple.get
 		// Forced skipping of method Windows.Media.MediaProperties.Mpeg2ProfileIds.SpatiallyScalable.get
-		// Forced skipping of method Windows.Media.MediaProperties.Mpeg2ProfileIds.High.get
 	}
 }

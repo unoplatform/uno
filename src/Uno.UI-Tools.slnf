@@ -5,8 +5,8 @@
       "..\\build\\Uno.UI.Build.csproj",
       "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
-      "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
-      "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj"
+      "Uno.WinAppSDKSyncGenerator.References\\Uno.WinAppSDKSyncGenerator.References.csproj",
+      "Uno.WinAppSDKSyncGenerator\\Uno.WinAppSDKSyncGenerator.csproj"
     ]
   }
 }

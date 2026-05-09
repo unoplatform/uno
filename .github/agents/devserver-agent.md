@@ -11,11 +11,12 @@ You are an assistant that helps maintain and extend the Uno DevServer infrastruc
 
 ## 1. Architecture Overview
 
-The DevServer uses a **3-process chain**:
+The DevServer uses a **2-process chain**:
 
-1. **CLI** (`Uno.UI.DevServer.Cli`) – Entry point, user-facing commands, MCP STDIO proxy
-2. **Controller** (optional, launched by CLI `start` command) – Manages the Host lifecycle
-3. **Host** (`Uno.UI.RemoteControl.Host`) – ASP.NET Core server for Hot Reload, IDE channel, processors
+1. **CLI** (`Uno.UI.DevServer.Cli`) – Entry point, user-facing commands, MCP STDIO proxy, start lifecycle management
+2. **Host** (`Uno.UI.RemoteControl.Host`) – ASP.NET Core server for Hot Reload, IDE channel, processors
+
+The CLI `start` command handles existing server detection (AmbientRegistry), IDE channel rebinding, port allocation, and launches the Host in **direct mode** (no `--command`). This ensures all arguments (including `--ideChannel`) reach the Host via `IConfiguration` regardless of the Host binary version. Non-start commands (`stop`, `list`, `cleanup`) still use the Host's controller mode (`--command=<verb>`).
 
 The CLI can also run in **MCP mode** (`--mcp-app`), acting as a Model Context Protocol proxy between AI agents and the running DevServer Host.
 
@@ -126,7 +127,7 @@ The PowerShell script `build/test-scripts/run-devserver-cli-tests.ps1` provides 
 | `--json` | JSON output for disco command |
 | `--addins-only` | Output only resolved add-in paths |
 | `--mcp-wait-tools-list` | Wait for upstream tools before responding to `list_tools` |
-| `--force-roots-fallback` | Force roots fallback mode (auto-detected from client capabilities; rarely needed explicitly) |
+| `--force-roots-fallback` | Legacy explicit override for roots fallback mode (auto-detected from client capabilities; rarely needed) |
 | `--solution-dir <path>` | Explicit solution root |
 
 ---
@@ -250,7 +251,8 @@ Two separate retry counters: DevServerMonitor (3 startup attempts) and ProxyLife
 
 ## 10. IDE Compatibility Constraints
 
-**All three IDE extensions launch the Host directly** — none use `--command start` (the controller path). The controller is only used by CLI `start`. This means:
+**All launchers now use direct Host launch** — the controller path (`--command start`) is only used for non-start commands (`stop`, `list`, `cleanup`). The CLI `start` command manages the start lifecycle itself (`StartCommandHandler`) and launches the Host directly, just like the IDE extensions. This means:
+- AmbientRegistry duplicate protection exists for CLI-launched instances (CLI checks before spawning)
 - AmbientRegistry duplicate protection **does not exist** for IDE-launched instances
 - Each IDE manages its own DevServer lifecycle independently
 - **Multiple instances for the same solution** are possible today (IDE + CLI, or IDE + MCP)
@@ -276,7 +278,7 @@ Fast path: inspect project references, find `uno.winui.devserver` NuGet package,
 
 ### VS Code (`uno.vscode`)
 
-Always uses MSBuild: `dotnet build /t:GetRemoteControlHostPath`. Launches Host directly with `--httpPort {port}`. Supports external-host debug mode via `.uno.vscode.remote-control` marker file.
+After [uno.vscode#1322](https://github.com/unoplatform/uno.vscode/pull/1322), delegates to the CLI tool: `dotnet dnx uno.devserver start --httpPort {port} --ideChannel {guid} --solution {sln}`. The CLI resolves the host binary from `global.json` and launches it in direct mode. Supports external-host debug mode via `.uno.vscode.remote-control` marker file.
 
 ### Host Command-Line Contract
 

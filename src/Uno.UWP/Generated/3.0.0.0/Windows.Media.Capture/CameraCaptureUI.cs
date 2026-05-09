@@ -12,8 +12,8 @@ namespace Windows.Media.Capture
 		// Skipping already declared property VideoSettings
 		// Skipping already declared method Windows.Media.Capture.CameraCaptureUI.CameraCaptureUI()
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.CameraCaptureUI()
+		// Skipping already declared method Windows.Media.Capture.CameraCaptureUI.CaptureFileAsync(Windows.Media.Capture.CameraCaptureUIMode)
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.PhotoSettings.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.VideoSettings.get
-		// Skipping already declared method Windows.Media.Capture.CameraCaptureUI.CaptureFileAsync(Windows.Media.Capture.CameraCaptureUIMode)
 	}
 }

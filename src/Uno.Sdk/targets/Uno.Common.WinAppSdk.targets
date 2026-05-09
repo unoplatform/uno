@@ -15,6 +15,9 @@
 		<RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)'==''">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 
 		<IsMSALSupported>true</IsMSALSupported>
+
+		<!-- Opt out of legacy VCLibs/UniversalCRT.Debug SDK framework package references added by Microsoft.WinUI.AppX.targets. -->
+		<WinUISDKReferences Condition=" '$(WinUISDKReferences)' == '' ">false</WinUISDKReferences>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">

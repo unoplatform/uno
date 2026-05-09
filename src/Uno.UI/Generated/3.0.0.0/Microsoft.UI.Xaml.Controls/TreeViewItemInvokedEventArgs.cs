@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property InvokedItem
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs.InvokedItem.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs.Handled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs.InvokedItem.get
 	}
 }

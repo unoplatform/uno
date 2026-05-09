@@ -8,18 +8,13 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class DataWriter : global::Windows.Storage.Streams.IDataWriter, global::System.IDisposable
 	{
-		// Skipping already declared property UnicodeEncoding
 		// Skipping already declared property ByteOrder
+		// Skipping already declared property UnicodeEncoding
 		// Skipping already declared property UnstoredBufferLength
-		// Skipping already declared method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.DataWriter()
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter()
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnstoredBufferLength.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnicodeEncoding.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnicodeEncoding.set
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.ByteOrder.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.ByteOrder.set
+		// Skipping already declared method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
+		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.WriteByte(byte)
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.WriteBytes(byte[])
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.WriteBuffer(Windows.Storage.Streams.IBuffer)
@@ -49,6 +44,11 @@ namespace Windows.Storage.Streams
 		}
 #endif
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.Dispose()
+		// Forced skipping of method Windows.Storage.Streams.DataWriter.ByteOrder.get
+		// Forced skipping of method Windows.Storage.Streams.DataWriter.ByteOrder.set
+		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnicodeEncoding.get
+		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnicodeEncoding.set
+		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnstoredBufferLength.get
 		// Processing: Windows.Storage.Streams.IDataWriter
 		// Processing: System.IDisposable
 	}

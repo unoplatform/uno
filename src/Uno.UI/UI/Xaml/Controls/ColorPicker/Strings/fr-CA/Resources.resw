@@ -153,6 +153,10 @@
     <value>Modèle de couleur</value>
     <comment>The automation name for the color model selection combo box.</comment>
   </data>
+  <data name="AutomationNameColorSpectrum" xml:space="preserve">
+    <value>Sélecteur de couleurs</value>
+    <comment>The automation name for the ColorSpectrum control.</comment>
+  </data>
   <data name="TextGreenLabel" xml:space="preserve">
     <value>Vert</value>
     <comment>The label for the text box to edit the green component of the current RGB color.</comment>
@@ -161,12 +165,16 @@
     <value>Vert</value>
     <comment>The automation name for the text box to edit the green component of the current RGB color.</comment>
   </data>
-  <data name="AutomationNameHexTextBox" xml:space="preserve">
+  <data name="HelpTextColorSpectrum" xml:space="preserve">
+    <value>Navigation en 2D avec les touches de direction</value>
+    <comment>The help text associated with ColorSpectrum.</comment>
+  </data>
+  <data name="AutomationNameRGBHexTextBox" xml:space="preserve">
     <value>Valeur RVB hexadécimale</value>
     <comment>The automation name for the text box to edit the current RGB color as a hex value.</comment>
   </data>
   <data name="ContentHSVComboBoxItem" xml:space="preserve">
-    <value>TSV</value>
+    <value>HSV (teinte, saturation, valeur)</value>
     <comment>The combo box item content for selecting HSV as the color model to use.</comment>
   </data>
   <data name="TextHueLabel" xml:space="preserve">
@@ -176,6 +184,10 @@
   <data name="AutomationNameHueTextBox" xml:space="preserve">
     <value>Teinte</value>
     <comment>The automation name for the text box to edit the hue component of the current HSV color.</comment>
+  </data>
+  <data name="LocalizedControlTypeColorSpectrum" xml:space="preserve">
+    <value>Curseur 2D</value>
+    <comment>The string to provide as the localized control type of the ColorSpectrum.</comment>
   </data>
   <data name="TextRedLabel" xml:space="preserve">
     <value>Rouge</value>
@@ -200,6 +212,14 @@
   <data name="TextValueLabel" xml:space="preserve">
     <value>Valeur</value>
     <comment>The label for the text box to edit the value component of the current HSV color.</comment>
+  </data>
+  <data name="ValueStringColorSpectrumWithColorName" xml:space="preserve">
+    <value>%1!s!, Teinte %2!u!, Saturation %3!u!, Valeur %4!u!</value>
+    <comment>The string to provide as the UIA value of the ColorSpectrum when we're including the friendly color name. %1 is the friendly name of the color; %2, %3, and %4 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
+  </data>
+  <data name="ValueStringColorSpectrumWithoutColorName" xml:space="preserve">
+    <value>Teinte %1!u!, Saturation %2!u!, Valeur %3!u!</value>
+    <comment>The string to provide as the UIA value of the ColorSpectrum when we aren't including the friendly color name. %1, %2, and %3 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringHueSliderWithColorName" xml:space="preserve">
     <value>%1!u!, %2!s!</value>
@@ -230,23 +250,23 @@
     <comment>The automation name for the text box to edit the value component of the current HSV color.</comment>
   </data>
   <data name="ToolTipStringAlphaSlider" xml:space="preserve">
-    <value>Opacité : %1!u!%%</value>
+    <value>Opacité : %1!u!%%</value>
     <comment>The string to display in the tool tip for the alpha slider. %1 is the alpha value between 0 and 100.</comment>
   </data>
   <data name="ToolTipStringHueSliderWithColorName" xml:space="preserve">
-    <value>Teinte : %1!u! (%2!s!)</value>
+    <value>Teinte : %1!u! (%2!s!)</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling hue and we're including the friendly color name. %1 is the hue value between 0 and 359; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringHueSliderWithoutColorName" xml:space="preserve">
-    <value>Teinte : %1!u!</value>
+    <value>Teinte : %1!u!</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling hue and we're not including the friendly color name. %1 is the hue value between 0 and 359.</comment>
   </data>
   <data name="ToolTipStringSaturationSliderWithColorName" xml:space="preserve">
-    <value>Saturation : %1!u! (%2!s!)</value>
+    <value>Saturation : %1!u! (%2!s!)</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling saturation and we're including the friendly color name. %1 is the saturation value between 0 and 100; %2 is the friendly color name.</comment>
   </data>
   <data name="ToolTipStringSaturationSliderWithoutColorName" xml:space="preserve">
-    <value>Saturation : %1!u!</value>
+    <value>Saturation : %1!u!</value>
     <comment>The string to display in the tool tip for the third-dimension slider when it's controlling saturation and we're not including the friendly color name. %1 is the saturation value between 0 and 100.</comment>
   </data>
   <data name="ToolTipStringValueSliderWithColorName" xml:space="preserve">
@@ -276,5 +296,9 @@
   <data name="TextMoreButtonLabelExpanded" xml:space="preserve">
     <value>Moins</value>
     <comment>The string to display in the "more" button when it's expanded.</comment>
+  </data>
+  <data name="AutomationNameHSVHexTextBox" xml:space="preserve">
+    <value>hexadécimaux HSV</value>
+    <comment>The automation name for the text box to edit the current HSV color as a hex value.</comment>
   </data>
 </root>

@@ -9,7 +9,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionPathGeometry : global::Microsoft.UI.Composition.CompositionGeometry
 	{
 		// Skipping already declared property Path
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPathGeometry.Path.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPathGeometry.Path.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionPathGeometry.Path.set
 	}
 }

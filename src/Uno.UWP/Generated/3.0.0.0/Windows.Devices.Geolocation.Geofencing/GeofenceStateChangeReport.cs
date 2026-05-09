@@ -53,9 +53,9 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.NewState.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.Geofence.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.Geoposition.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.NewState.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.RemovalReason.get
 	}
 }

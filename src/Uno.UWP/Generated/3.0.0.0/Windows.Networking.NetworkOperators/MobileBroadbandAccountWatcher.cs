@@ -26,17 +26,6 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.MobileBroadbandAccountWatcher()
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountAdded.add
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountAdded.remove
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountUpdated.add
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountUpdated.remove
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountRemoved.add
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountRemoved.remove
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.Stopped.add
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.Stopped.remove
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -51,6 +40,17 @@ namespace Windows.Networking.NetworkOperators
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher", "void MobileBroadbandAccountWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountAdded.add
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountAdded.remove
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountRemoved.add
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountRemoved.remove
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountUpdated.add
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.AccountUpdated.remove
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.Stopped.add
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.Stopped.remove
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher, global::Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs> AccountAdded

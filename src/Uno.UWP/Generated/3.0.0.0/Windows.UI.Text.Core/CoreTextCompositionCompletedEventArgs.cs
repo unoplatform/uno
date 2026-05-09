@@ -33,8 +33,6 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.IsCanceled.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.CompositionSegments.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -42,5 +40,7 @@ namespace Windows.UI.Text.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreTextCompositionCompletedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextCompositionCompletedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.CompositionSegments.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.IsCanceled.get
 	}
 }

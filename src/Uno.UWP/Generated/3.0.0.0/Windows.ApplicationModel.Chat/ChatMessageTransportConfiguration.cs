@@ -63,10 +63,10 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.ExtendedProperties.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.MaxAttachmentCount.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.MaxMessageSizeInKilobytes.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.MaxRecipientCount.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.SupportedVideoFormat.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.ExtendedProperties.get
 	}
 }

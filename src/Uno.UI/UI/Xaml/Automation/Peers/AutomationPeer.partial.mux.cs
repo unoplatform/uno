@@ -646,7 +646,7 @@ partial class AutomationPeer
 	/// </summary>
 	/// <param name="structureChangeType">The type of structure change.</param>
 	/// <param name="child">The child peer involved in the change (required for ChildRemoved).</param>
-	public void RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer? child = null)
+	public void RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer child)
 	{
 #if HAS_UNO
 		// TODO Uno: Implement RaiseStructureChangedEvent when UIA infrastructure is available.

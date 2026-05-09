@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -14,8 +13,6 @@ namespace Windows.Devices.Perception
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.ControlLost.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.ControlLost.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult> TrySetPropertyAsync(string name, object value)
@@ -23,6 +20,8 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionFrameSourcePropertyChangeResult> PerceptionControlSession.TrySetPropertyAsync(string name, object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionFrameSourcePropertyChangeResult%3E%20PerceptionControlSession.TrySetPropertyAsync%28string%20name%2C%20object%20value%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.ControlLost.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.ControlLost.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()

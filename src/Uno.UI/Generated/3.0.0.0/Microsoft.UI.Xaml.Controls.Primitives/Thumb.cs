@@ -8,19 +8,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class Thumb : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property IsDragging
 		// Skipping already declared property IsDraggingProperty
+		// Skipping already declared property IsDragging
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.Thumb.Thumb()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.Thumb()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.IsDragging.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragStarted.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragStarted.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragDelta.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragDelta.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.IsDraggingProperty.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.Thumb.CancelDrag()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragCompleted.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragCompleted.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.Thumb.CancelDrag()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.IsDraggingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragDelta.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragDelta.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragStarted.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragStarted.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.IsDragging.get
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragCompleted
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragDelta
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragStarted

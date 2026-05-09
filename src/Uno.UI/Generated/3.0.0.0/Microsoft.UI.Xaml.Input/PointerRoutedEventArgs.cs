@@ -12,12 +12,12 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property IsGenerated
 		// Skipping already declared property KeyModifiers
 		// Skipping already declared property Pointer
-		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.Pointer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.KeyModifiers.get
+		// Skipping already declared method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.GetCurrentPoint(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.GetIntermediatePoints(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.IsGenerated.get
-		// Skipping already declared method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.GetCurrentPoint(Microsoft.UI.Xaml.UIElement)
-		// Skipping already declared method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.GetIntermediatePoints(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.KeyModifiers.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.PointerRoutedEventArgs.Pointer.get
 	}
 }

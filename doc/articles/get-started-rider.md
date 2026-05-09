@@ -19,16 +19,14 @@ uid: Uno.GetStarted.Rider
 |-----------------------|-----------------------|--------------------|---------------------|
 | Windows (WinUI)       | ✔️                   | ❌                 | ❌                 |
 | Android               | ✔️                   | ✔️                 | ✔️                |
-| iOS                   | ❌                   | ✔️                 | ❌                 |
-| Wasm                  | ✔️†                  | ✔️†                | ✔️†                |
+| iOS                   | ✔️¹                  | ✔️                 | ❌                 |
+| Wasm                  | ✔️²                  | ✔️²                | ✔️²                |
 | Skia Desktop          | ✔️                   | ✔️                 | ✔️                |
 
-<details>
-    <summary>† Notes (Click to expand)</summary>
+**Notes:**
 
-- **WebAssembly**: debugging from the IDE is not available yet on Rider. You can use the [Chromium in-browser debugger](xref:UnoWasmBootstrap.Features.Debugger#how-to-use-the-browser-debugger) instead.
-
-</details>
+1. Requires Rider 2026.1+ with a remote Mac build host.
+2. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) from the IDE is not yet supported. You can use the [Chromium in-browser debugger](xref:UnoWasmBootstrap.Features.Debugger#how-to-use-the-browser-debugger) instead.
 
 ## Install the Uno Platform plugin
 

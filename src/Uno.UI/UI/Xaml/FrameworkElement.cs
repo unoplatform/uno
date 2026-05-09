@@ -707,12 +707,52 @@ namespace Microsoft.UI.Xaml
 		{
 			if (oldStyle == newStyle)
 			{
-				// Nothing to do
 				return;
 			}
 
-			oldStyle?.ClearInvalidProperties(this, newStyle, precedence);
+			ApplyStyleWithThemeContext(oldStyle, newStyle, precedence);
+		}
 
+		private void ApplyStyleWithThemeContext(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
+		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX Reference: CFrameworkElement::OnStyleChanged -> InvalidateProperty chain
+			// ThemeResource setters in the style must resolve using the element's effective
+			// theme, not the app-level Themes.Active. During initial loading (OnLoadingPartial),
+			// the theme is already pushed by the caller. When Style is changed from code-behind
+			// after loading, no theme context is present and ThemeResources resolve against
+			// Themes.Active, which can differ from the element's theme when an ancestor has
+			// RequestedTheme set (e.g., RequestedTheme="Light" on root with OS in Dark mode).
+			var effectiveTheme = GetTheme();
+			var baseTheme = Theming.GetBaseValue(effectiveTheme);
+			// HighContrast-only themes have a base of None; skip the push in that case
+			// (mirrors the short-circuit in NotifyThemeChangedCore).
+			var needsThemePush = baseTheme is Theme.Light or Theme.Dark;
+			if (needsThemePush)
+			{
+				var themeKey = baseTheme == Theme.Light ? "Light" : "Dark";
+				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+			}
+
+			try
+			{
+				ApplyStyleCore(oldStyle, newStyle, precedence);
+			}
+			finally
+			{
+				if (needsThemePush)
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
+				}
+			}
+#else
+			ApplyStyleCore(oldStyle, newStyle, precedence);
+#endif
+		}
+
+		private void ApplyStyleCore(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
+		{
+			oldStyle?.ClearInvalidProperties(this, newStyle, precedence);
 			newStyle?.ApplyTo(this, precedence);
 		}
 
@@ -970,7 +1010,6 @@ namespace Microsoft.UI.Xaml
 
 		#region AutomationPeer
 #if !__APPLE_UIKIT__ && !__ANDROID__ // This code is generated in FrameworkElementMixins
-		private AutomationPeer _automationPeer;
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
@@ -987,15 +1026,8 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		public AutomationPeer GetAutomationPeer()
-		{
-			if (_automationPeer == null)
-			{
-				_automationPeer = OnCreateAutomationPeer();
-			}
-
-			return _automationPeer;
-		}
+		// Delegates to UIElement.GetOrCreateAutomationPeer() which caches in _uiElementAutomationPeer.
+		public AutomationPeer GetAutomationPeer() => GetOrCreateAutomationPeer();
 #endif
 
 		#endregion

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -21,15 +21,4 @@ public partial class TextElement
 		get => XamlRoot.GetForElement(this);
 		set => XamlRoot.SetForElement(this, XamlRoot, value);
 	}
-
-#if !__WASM__
-	private ManagedWeakReference? _visualTreeCacheWeakReference;
-
-	internal VisualTree? VisualTreeCache
-	{
-		get => _visualTreeCacheWeakReference?.IsDisposed == false ?
-			_visualTreeCacheWeakReference.Target as VisualTree : null;
-		set => _visualTreeCacheWeakReference = WeakReferencePool.RentWeakReference(this, value);
-	}
-#endif
 }

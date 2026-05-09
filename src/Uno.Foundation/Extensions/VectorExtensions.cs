@@ -9,7 +9,7 @@ using Windows.Foundation;
 
 namespace System.Numerics;
 
-public static class VectorExtensions
+public static partial class VectorExtensions
 {
 	/// <summary>
 	/// Converts a <see cref="Vector2"/> to <see cref="Point"/>

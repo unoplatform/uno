@@ -15,20 +15,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double MasterGain
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ForceFeedbackMotor.MasterGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ForceFeedbackMotor.MasterGain");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor", "double ForceFeedbackMotor.MasterGain");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AreEffectsPaused
 		{
 			get
@@ -49,6 +35,20 @@ namespace Windows.Gaming.Input.ForceFeedback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double MasterGain
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double ForceFeedbackMotor.MasterGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ForceFeedbackMotor.MasterGain");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor", "double ForceFeedbackMotor.MasterGain");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectAxes SupportedAxes
 		{
 			get
@@ -57,11 +57,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.AreEffectsPaused.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.MasterGain.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.MasterGain.set
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.IsEnabled.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.SupportedAxes.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackLoadEffectResult> LoadEffectAsync(global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect effect)
@@ -118,5 +113,10 @@ namespace Windows.Gaming.Input.ForceFeedback
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryUnloadEffectAsync(IForceFeedbackEffect effect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ForceFeedbackMotor.TryUnloadEffectAsync%28IForceFeedbackEffect%20effect%29");
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.AreEffectsPaused.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.IsEnabled.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.MasterGain.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.MasterGain.set
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.SupportedAxes.get
 	}
 }

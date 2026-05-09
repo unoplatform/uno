@@ -43,9 +43,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.Headers.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.StatusCode.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.ReasonPhrase.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetContentAsync()
@@ -53,5 +50,8 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> CoreWebView2WebResourceResponseView.GetContentAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20CoreWebView2WebResourceResponseView.GetContentAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.Headers.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.ReasonPhrase.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.StatusCode.get
 	}
 }

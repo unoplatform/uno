@@ -43,8 +43,8 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlNavigationCompletedEventArgs.Uri.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNavigationCompletedEventArgs.IsSuccess.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlNavigationCompletedEventArgs.Uri.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNavigationCompletedEventArgs.WebErrorStatus.get
 	}
 }

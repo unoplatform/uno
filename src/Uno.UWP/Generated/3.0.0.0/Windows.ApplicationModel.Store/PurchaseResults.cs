@@ -53,9 +53,9 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.OfferId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.ReceiptXml.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.TransactionId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.ReceiptXml.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.OfferId.get
 	}
 }

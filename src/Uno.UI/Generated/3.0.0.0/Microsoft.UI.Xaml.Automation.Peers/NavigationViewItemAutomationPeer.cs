@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.NavigationViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.NavigationViewItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.NavigationViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.NavigationViewItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.Expand()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer.ExpandCollapseState.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

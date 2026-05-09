@@ -8,8 +8,6 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 	public partial class FindAppointmentsOptions
 	{
-		// Skipping already declared property MaxCount
-		// Skipping already declared property IncludeHidden
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> CalendarIds
@@ -21,6 +19,8 @@ namespace Windows.ApplicationModel.Appointments
 		}
 #endif
 		// Skipping already declared property FetchProperties
+		// Skipping already declared property IncludeHidden
+		// Skipping already declared property MaxCount
 		// Skipping already declared method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FindAppointmentsOptions()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FindAppointmentsOptions()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.CalendarIds.get

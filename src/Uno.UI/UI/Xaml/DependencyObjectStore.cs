@@ -18,6 +18,7 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Media;
 
@@ -76,6 +77,12 @@ namespace Microsoft.UI.Xaml
 
 		private readonly ManagedWeakReference _originalObjectRef;
 		private DependencyObject? _hardOriginalObjectRef;
+
+		/// <summary>
+		/// Cached VisualTree pointer, matching WinUI's CDependencyObject::m_pVisualTree.
+		/// Set during Enter when the element enters the live tree.
+		/// </summary>
+		private ManagedWeakReference? _visualTreeCacheWeakReference;
 
 		/// <summary>
 		/// This field is used to pass a reference to itself in the case
@@ -166,6 +173,28 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the cached VisualTree for this DependencyObject.
+		/// Matches WinUI's CDependencyObject::GetVisualTree/SetVisualTree.
+		/// </summary>
+		internal VisualTree? VisualTreeCache
+		{
+			get => _visualTreeCacheWeakReference?.IsDisposed == false
+				? _visualTreeCacheWeakReference.Target as VisualTree
+				: null;
+			set
+			{
+				if (_visualTreeCacheWeakReference is not null)
+				{
+					WeakReferencePool.ReturnWeakReference(this, _visualTreeCacheWeakReference);
+				}
+
+				_visualTreeCacheWeakReference = value is not null
+					? WeakReferencePool.RentWeakReference(this, value)
+					: null;
+			}
+		}
+
 		static DependencyObjectStore()
 		{
 			InitializeStaticBinder();
@@ -252,6 +281,11 @@ namespace Microsoft.UI.Xaml
 
 			ValidatePropertyOwner(property);
 
+			if (property.IsPropMethodCall)
+			{
+				return GetValueFromMethodCall(property);
+			}
+
 			if (_properties.DataContextPropertyDetails.Property == property)
 			{
 				// Historically, we didn't have this fast path for default value.
@@ -287,6 +321,16 @@ namespace Microsoft.UI.Xaml
 
 			if (details?.GetBaseValueSource() == DependencyPropertyValuePrecedences.Local)
 			{
+				// For PropMethodCall DPs, the authoritative local value is on the backing field
+				// via the method delegate. However, when ModifiedValue exists (coercion/animation
+				// active), the backing field holds the effective (coerced/animated) value, while
+				// the real local base value is preserved in DependencyPropertyDetails via
+				// ModifiedValue — so we must fall through to details.GetBaseValue() in that case.
+				if (property.IsPropMethodCall && details.GetModifiedValue() is null)
+				{
+					return GetValueFromMethodCall(property);
+				}
+
 				return details.GetBaseValue();
 			}
 
@@ -349,6 +393,11 @@ namespace Microsoft.UI.Xaml
 
 		private object? GetValue(DependencyPropertyDetails propertyDetails)
 		{
+			if (propertyDetails.Property.IsPropMethodCall)
+			{
+				return GetValueFromMethodCall(propertyDetails.Property);
+			}
+
 			if (propertyDetails == _properties.DataContextPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
@@ -357,6 +406,24 @@ namespace Microsoft.UI.Xaml
 			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
 				? GetDefaultValue(propertyDetails.Property)
 				: propertyDetails.GetEffectiveValue();
+		}
+
+		private object? GetValueFromMethodCall(DependencyProperty property)
+		{
+			Debug.Assert(property.IsPropMethodCall);
+			Debug.Assert(property.Metadata is FrameworkPropertyMetadata);
+			var propMethodCall = Unsafe.As<FrameworkPropertyMetadata>(property.Metadata).PropMethodCall;
+			Debug.Assert(propMethodCall is not null);
+			return propMethodCall(ActualInstance!, isGet: true, valueToSet: null);
+		}
+
+		private void SetValueViaMethodCall(DependencyProperty property, object? value)
+		{
+			Debug.Assert(property.IsPropMethodCall);
+			Debug.Assert(property.Metadata is FrameworkPropertyMetadata);
+			var propMethodCall = Unsafe.As<FrameworkPropertyMetadata>(property.Metadata).PropMethodCall;
+			Debug.Assert(propMethodCall is not null);
+			_ = propMethodCall(ActualInstance!, isGet: false, valueToSet: value);
 		}
 
 		/// <summary>
@@ -691,19 +758,19 @@ namespace Microsoft.UI.Xaml
 		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails,
 			object? previousValue, object? baseValue, DependencyPropertyValuePrecedences precedence)
 		{
+			var coerceValueCallback = propertyDetails.Property.Metadata.CoerceValueCallback;
+			if (coerceValueCallback == null)
+			{
+				// No coercion to remove or to apply.
+				return;
+			}
+
 			if (baseValue == DependencyProperty.UnsetValue)
 			{
 				// Removing any previously applied coercion
 				SetValueInternal(DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 
 				// CoerceValueCallback shouldn't be called when unsetting the value.
-				return;
-			}
-
-			var coerceValueCallback = propertyDetails.Property.Metadata.CoerceValueCallback;
-			if (coerceValueCallback == null)
-			{
-				// No coercion to remove or to apply.
 				return;
 			}
 
@@ -1157,6 +1224,15 @@ namespace Microsoft.UI.Xaml
 			if (baseValueSource == DependencyPropertyValuePrecedences.DefaultValue)
 			{
 				return (GetDefaultValue(property), DependencyPropertyValuePrecedences.DefaultValue);
+			}
+
+			// For PropMethodCall DPs, the authoritative value is on the backing field,
+			// not in DependencyPropertyDetails._value. Read it from the method delegate.
+			// When ModifiedValue exists (animation/coercion), the base value is preserved there
+			// via InitializeModifiedValue, so fall through to details.GetBaseValue().
+			if (property.IsPropMethodCall && details.GetModifiedValue() is null)
+			{
+				return (GetValueFromMethodCall(property), baseValueSource);
 			}
 
 			return (details.GetBaseValue(), baseValueSource);
@@ -1960,11 +2036,43 @@ namespace Microsoft.UI.Xaml
 				value = GetDefaultValue(propertyDetails.Property);
 			}
 
+			// For PropMethodCall Coercion/Animation: seed ModifiedValue with the real backing field value
+			// before EnsureModifiedValue() would read stale _value (which is UnsetValue for PropMethodCall).
+			if (propertyDetails.IsPropMethodCall
+				&& propertyDetails.GetModifiedValue() == null
+				&& value != DependencyProperty.UnsetValue
+				&& (precedence == DependencyPropertyValuePrecedences.Coercion
+					|| precedence == DependencyPropertyValuePrecedences.Animations))
+			{
+				propertyDetails.InitializeModifiedValue(GetValueFromMethodCall(propertyDetails.Property));
+			}
+
 			propertyDetails.SetValue(value, precedence);
 
 			if (value == DependencyProperty.UnsetValue && precedence >= DependencyPropertyValuePrecedences.Local)
 			{
 				ReevaluateBaseValue(propertyDetails);
+			}
+
+			if (propertyDetails.Property.IsPropMethodCall)
+			{
+				var highestPrecedence = propertyDetails.CurrentHighestValuePrecedence;
+				if (highestPrecedence == DependencyPropertyValuePrecedences.DefaultValue)
+				{
+					SetValueViaMethodCall(propertyDetails.Property, GetDefaultValue(propertyDetails.Property));
+				}
+				else if (highestPrecedence <= DependencyPropertyValuePrecedences.Animations)
+				{
+					// Coercion/Animation values ARE stored in ModifiedValue; GetEffectiveValue works.
+					SetValueViaMethodCall(propertyDetails.Property, propertyDetails.GetEffectiveValue());
+				}
+				else if (value != DependencyProperty.UnsetValue)
+				{
+					// Base value: pass incoming value directly, avoiding store-then-read-back.
+					SetValueViaMethodCall(propertyDetails.Property, value);
+				}
+				// else: ClearValue (UnsetValue) where ReevaluateBaseValue already called
+				// SetValueInternal recursively with the style/default value.
 			}
 		}
 
@@ -1973,15 +2081,19 @@ namespace Microsoft.UI.Xaml
 			// When local value or style value are cleared, we want to re-evaluate base value and set the value with the right precedence.
 			// The new base value will either be Style (explicit or implicit) or DefaultStyle (aka built-in style)
 			var actualInstance = ActualInstance;
-			if (actualInstance is FrameworkElement fe && fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle))
+			if (actualInstance is FrameworkElement fe &&
+				fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle) &&
+				valueFromStyle != DependencyProperty.UnsetValue)
 			{
 				// NOTE: ExplicitStyle here actually means ExplicitOrImplicitStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				propertyDetails.SetValue(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle, propertyDetails);
 			}
-			else if (actualInstance is Control control && control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle))
+			else if (actualInstance is Control control &&
+				control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle) &&
+				valueFromBuiltInStyle != DependencyProperty.UnsetValue)
 			{
 				// NOTE: ImplicitStyle here actually means DefaultStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				propertyDetails.SetValue(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle);
+				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle, propertyDetails);
 			}
 		}
 

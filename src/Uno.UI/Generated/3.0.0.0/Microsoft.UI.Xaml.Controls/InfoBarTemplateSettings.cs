@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class InfoBarTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property IconElement
 		// Skipping already declared property IconElementProperty
+		// Skipping already declared property IconElement
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.InfoBarTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.InfoBarTemplateSettings()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElementProperty.get
 	}
 }

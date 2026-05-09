@@ -3,33 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationAnimationStyle
 	{
-#if false
-		None = 0,
-#endif
-#if false
-		LasVegasLights = 1,
-#endif
-#if false
-		BlinkingBackground = 2,
-#endif
-#if false
-		SparkleText = 3,
-#endif
-#if false
-		MarchingBlackAnts = 4,
-#endif
-#if false
-		MarchingRedAnts = 5,
-#endif
-#if false
-		Shimmer = 6,
-#endif
-#if false
-		Other = 7,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.None
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.LasVegasLights
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.BlinkingBackground
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.SparkleText
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.MarchingBlackAnts
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.MarchingRedAnts
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.Shimmer
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.Other
 	}
 #endif
 }

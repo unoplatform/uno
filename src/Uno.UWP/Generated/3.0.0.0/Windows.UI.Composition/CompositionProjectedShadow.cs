@@ -15,48 +15,6 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float MinBlurRadius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MinBlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionProjectedShadow.MinBlurRadius");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MinBlurRadius");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float MaxBlurRadius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MaxBlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionProjectedShadow.MaxBlurRadius");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MaxBlurRadius");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionLight LightSource
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionLight CompositionProjectedShadow.LightSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionLight%20CompositionProjectedShadow.LightSource");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadow", "CompositionLight CompositionProjectedShadow.LightSource");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float BlurRadiusMultiplier
 		{
 			get
@@ -76,6 +34,48 @@ namespace Windows.UI.Composition
 			get
 			{
 				throw new global::System.NotImplementedException("The member CompositionProjectedShadowCasterCollection CompositionProjectedShadow.Casters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionProjectedShadowCasterCollection%20CompositionProjectedShadow.Casters");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.CompositionLight LightSource
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionLight CompositionProjectedShadow.LightSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionLight%20CompositionProjectedShadow.LightSource");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadow", "CompositionLight CompositionProjectedShadow.LightSource");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float MaxBlurRadius
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MaxBlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionProjectedShadow.MaxBlurRadius");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MaxBlurRadius");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float MinBlurRadius
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MinBlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionProjectedShadow.MinBlurRadius");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MinBlurRadius");
 			}
 		}
 #endif

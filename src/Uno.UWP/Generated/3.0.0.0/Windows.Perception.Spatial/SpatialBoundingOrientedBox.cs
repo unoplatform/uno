@@ -10,6 +10,14 @@ namespace Windows.Perception.Spatial
 	{
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.SpatialBoundingOrientedBox()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SpatialBoundingOrientedBox(global::System.Numerics.Vector3 _Center, global::System.Numerics.Vector3 _Extents, global::System.Numerics.Quaternion _Orientation)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialBoundingOrientedBox", "SpatialBoundingOrientedBox.SpatialBoundingOrientedBox(Vector3 _Center, Vector3 _Extents, Quaternion _Orientation)");
+		}
+#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.SpatialBoundingOrientedBox(System.Numerics.Vector3, System.Numerics.Vector3, System.Numerics.Quaternion)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Center;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

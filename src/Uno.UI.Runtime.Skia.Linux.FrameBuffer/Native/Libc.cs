@@ -20,6 +20,9 @@ namespace Uno.UI.Runtime.Skia.Native
 
 		public const int MAP_SHARED = 0x01;
 
+		public const int EPERM = 1;
+		public const int EACCES = 13;
+
 		[DllImport("libc", SetLastError = true)]
 		public static extern int open(string pathname, int flags, int mode);
 

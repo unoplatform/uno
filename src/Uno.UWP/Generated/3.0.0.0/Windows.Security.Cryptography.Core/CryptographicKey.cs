@@ -23,7 +23,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicKey.KeySize.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer Export()
@@ -52,5 +51,6 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member IBuffer CryptographicKey.ExportPublicKey(CryptographicPublicKeyBlobType BlobType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20CryptographicKey.ExportPublicKey%28CryptographicPublicKeyBlobType%20BlobType%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicKey.KeySize.get
 	}
 }

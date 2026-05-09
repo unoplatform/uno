@@ -193,9 +193,6 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.Name.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.XmlNamespace.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.XmlNode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities GetCapabilities()
@@ -203,21 +200,6 @@ namespace Windows.Graphics.Printing.PrintTicket
 			throw new global::System.NotImplementedException("The member PrintTicketCapabilities WorkflowPrintTicket.GetCapabilities() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketCapabilities%20WorkflowPrintTicket.GetCapabilities%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentBindingFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentCollateFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentDuplexFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentHolePunchFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentInputBinFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentNUpFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentStapleFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.JobPasscodeFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageBorderlessFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageMediaSizeFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageMediaTypeFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageOrientationFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageOutputColorFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageOutputQualityFeature.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageResolutionFeature.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature GetFeature(string name, string xmlNamespace)
@@ -267,5 +249,23 @@ namespace Windows.Graphics.Printing.PrintTicket
 			throw new global::System.NotImplementedException("The member WorkflowPrintTicket WorkflowPrintTicket.MergeAndValidateTicket(WorkflowPrintTicket deltaShemaTicket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WorkflowPrintTicket%20WorkflowPrintTicket.MergeAndValidateTicket%28WorkflowPrintTicket%20deltaShemaTicket%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentBindingFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentCollateFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentDuplexFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentHolePunchFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentInputBinFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentNUpFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.DocumentStapleFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.JobPasscodeFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.Name.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageBorderlessFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageMediaSizeFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageMediaTypeFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageOrientationFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageOutputColorFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageOutputQualityFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageResolutionFeature.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.XmlNamespace.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.XmlNode.get
 	}
 }

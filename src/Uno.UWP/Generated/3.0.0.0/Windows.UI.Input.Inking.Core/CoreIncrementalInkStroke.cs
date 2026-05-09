@@ -60,8 +60,8 @@ namespace Windows.UI.Input.Inking.Core
 			throw new global::System.NotImplementedException("The member InkStroke CoreIncrementalInkStroke.CreateInkStroke() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkStroke%20CoreIncrementalInkStroke.CreateInkStroke%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.BoundingRect.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.DrawingAttributes.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.PointTransform.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.BoundingRect.get
 	}
 }

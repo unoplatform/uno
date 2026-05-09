@@ -23,7 +23,6 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.ChangeTracker.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Appointments.AppointmentCalendar> CreateAppointmentCalendarAsync(string name)
@@ -164,8 +163,6 @@ namespace Windows.ApplicationModel.Appointments
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> AppointmentStore.FindLocalIdsFromRoamingIdAsync(string roamingId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3Cstring%3E%3E%20AppointmentStore.FindLocalIdsFromRoamingIdAsync%28string%20roamingId%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.StoreChanged.add
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.StoreChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Appointments.AppointmentCalendar> CreateAppointmentCalendarAsync(string name, string userDataAccountId)
@@ -173,6 +170,8 @@ namespace Windows.ApplicationModel.Appointments
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppointmentCalendar> AppointmentStore.CreateAppointmentCalendarAsync(string name, string userDataAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppointmentCalendar%3E%20AppointmentStore.CreateAppointmentCalendarAsync%28string%20name%2C%20string%20userDataAccountId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.StoreChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.StoreChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Appointments.AppointmentStoreChangeTracker GetChangeTracker(string identity)
@@ -180,6 +179,7 @@ namespace Windows.ApplicationModel.Appointments
 			throw new global::System.NotImplementedException("The member AppointmentStoreChangeTracker AppointmentStore.GetChangeTracker(string identity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentStoreChangeTracker%20AppointmentStore.GetChangeTracker%28string%20identity%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.ChangeTracker.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Appointments.AppointmentStore, global::Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs> StoreChanged

@@ -12,9 +12,9 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property CumulativeStepsDuration
 		// Skipping already declared property StepKind
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.StepKind.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.CumulativeSteps.get
-		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.CumulativeStepsDuration.get
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.StepKind.get
+		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.Timestamp.get
 	}
 }

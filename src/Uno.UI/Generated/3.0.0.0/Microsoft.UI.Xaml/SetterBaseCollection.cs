@@ -6,32 +6,40 @@ namespace Microsoft.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SetterBaseCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.SetterBase>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.SetterBase>
+	public partial class SetterBaseCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.SetterBase>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.SetterBase>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.SetterBase>, global::System.Collections.IEnumerable
 	{
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping collection property provided by base class: this[]
 		// Skipping already declared property IsSealed
-		// Skipping already declared property Size
 		// Skipping already declared method Microsoft.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.this[int].set
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.SetterBaseCollection.IndexOf(Microsoft.UI.Xaml.SetterBase)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.SetterBaseCollection.Insert(int, Microsoft.UI.Xaml.SetterBase)
+		// Skipping already declared method Microsoft.UI.Xaml.SetterBaseCollection.RemoveAt(int)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.SetterBaseCollection.Add(Microsoft.UI.Xaml.SetterBase)
+		// Skipping already declared method Microsoft.UI.Xaml.SetterBaseCollection.Clear()
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.SetterBaseCollection.Contains(Microsoft.UI.Xaml.SetterBase)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.SetterBaseCollection.CopyTo(Microsoft.UI.Xaml.SetterBase[], int)
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.SetterBaseCollection.Remove(Microsoft.UI.Xaml.SetterBase)
+		// Skipping already declared method Microsoft.UI.Xaml.SetterBaseCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.IsSealed.get
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.IndexOf(Microsoft.UI.Xaml.SetterBase, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.SetAt(uint, Microsoft.UI.Xaml.SetterBase)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.InsertAt(uint, Microsoft.UI.Xaml.SetterBase)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.Append(Microsoft.UI.Xaml.SetterBase)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.GetMany(uint, Microsoft.UI.Xaml.SetterBase[])
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.ReplaceAll(Microsoft.UI.Xaml.SetterBase[])
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.SetterBase>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.SetterBase>.set_Item(int, Microsoft.UI.Xaml.SetterBase)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.SetterBase>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.SetterBase>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.SetterBase>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.SetterBase>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.SetterBase>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.SetterBase>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.SetterBase>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.SetterBase>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.SetterBase>
+		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.IEnumerable
 	}
 }

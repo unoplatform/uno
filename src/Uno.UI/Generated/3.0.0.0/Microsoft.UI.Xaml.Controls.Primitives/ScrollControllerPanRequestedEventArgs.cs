@@ -12,8 +12,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property PointerPoint
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.ScrollControllerPanRequestedEventArgs(Microsoft.UI.Input.PointerPoint)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.ScrollControllerPanRequestedEventArgs(Microsoft.UI.Input.PointerPoint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.PointerPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.PointerPoint.get
 	}
 }

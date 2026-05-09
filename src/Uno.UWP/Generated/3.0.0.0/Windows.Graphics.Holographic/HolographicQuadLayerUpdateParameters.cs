@@ -65,7 +65,6 @@ namespace Windows.Graphics.Holographic
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "void HolographicQuadLayerUpdateParameters.UpdateLocationWithDisplayRelativeMode(Vector3 position, Quaternion orientation)");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.CanAcquireWithHardwareProtection.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface AcquireBufferToUpdateContentWithHardwareProtection()
@@ -73,5 +72,6 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member IDirect3DSurface HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContentWithHardwareProtection() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContentWithHardwareProtection%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.CanAcquireWithHardwareProtection.get
 	}
 }

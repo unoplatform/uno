@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewValue
 		// Skipping already declared property OldValue
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.OldValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.NewValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.OldValue.get
 	}
 }

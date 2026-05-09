@@ -15,6 +15,26 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string CallerPackageFamilyName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string FileOpenPickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerActivatedEventArgs.CallerPackageFamilyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Pickers.Provider.FileOpenPickerUI FileOpenPickerUI
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FileOpenPickerUI FileOpenPickerActivatedEventArgs.FileOpenPickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPickerUI%20FileOpenPickerActivatedEventArgs.FileOpenPickerUI");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,31 +73,11 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Pickers.Provider.FileOpenPickerUI FileOpenPickerUI
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FileOpenPickerUI FileOpenPickerActivatedEventArgs.FileOpenPickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPickerUI%20FileOpenPickerActivatedEventArgs.FileOpenPickerUI");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CallerPackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FileOpenPickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerActivatedEventArgs.CallerPackageFamilyName");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.FileOpenPickerUI.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.User.get
 		// Processing: Windows.ApplicationModel.Activation.IFileOpenPickerActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

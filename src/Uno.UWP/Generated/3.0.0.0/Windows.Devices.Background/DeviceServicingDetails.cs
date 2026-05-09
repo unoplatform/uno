@@ -43,8 +43,8 @@ namespace Windows.Devices.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.DeviceId.get
 		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.Arguments.get
+		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.DeviceId.get
 		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.ExpectedDuration.get
 	}
 }

@@ -791,16 +791,10 @@ namespace Uno.UI.Samples.Tests
 			await GenerateTestResults();
 		}
 
-		private IEnumerable<MethodInfo> FilterTests(UnitTestClassInfo testClassInfo, string[] filters)
-		{
-			var testClassNameContainsFilters = filters?.Any(f => testClassInfo.Type.FullName.Contains(f, StrComp)) ?? false;
-			return testClassInfo.Tests
-				.Where(t => !(filters?.Any() ?? false)
-					|| testClassNameContainsFilters
-					|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
-					|| filters.Any(f => t.Name.Contains(f, StrComp))
-					|| filters.Any(f => $"{t.DeclaringType.FullName}.{t.Name}".Contains(f, StrComp)));
-		}
+		private IEnumerable<UnitTestMethodInfo> FilterTests(IEnumerable<UnitTestMethodInfo> tests, string[] filters)
+			=> tests.Where(test => !(filters?.Any() ?? false)
+				|| test.MatchesFilter(filters)
+				|| test.GetMatchingCases(filters).Any());
 
 		private async Task ExecuteTestsForInstance(
 			CancellationToken ct,
@@ -812,8 +806,9 @@ namespace Uno.UI.Samples.Tests
 				? ConsoleOutputRecorder.Start()
 				: default;
 
-			var tests = FilterTests(testClassInfo, config.Filters)
-				.Select(method => new UnitTestMethodInfo(instance, method))
+			var tests = FilterTests(
+				testClassInfo.Tests.Select(method => new UnitTestMethodInfo(instance, method)),
+				config.Filters)
 				.ToArray();
 			if (!tests.Any())
 			{
@@ -849,7 +844,7 @@ namespace Uno.UI.Samples.Tests
 					}
 				}
 
-				foreach (var testCase in test.GetCases())
+				foreach (var testCase in test.GetMatchingCases(config.Filters))
 				{
 					if (ct.IsCancellationRequested)
 					{
@@ -1116,6 +1111,15 @@ namespace Uno.UI.Samples.Tests
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					ResetLastInputDeviceType();
+
+					// KeyboardStateTracker is process-wide static state. Tests that raise
+					// synthetic KeyDown events without matching KeyUp (crashes, unbalanced
+					// sequences, or deliberate-but-incomplete modifier exercises) leave
+					// modifier keys stuck in the Down state, causing subsequent tests that
+					// rely on Input_GetKeyboardModifiers (notably keyboard-accelerator
+					// matching) to see phantom modifiers and fail intermittently.
+					// Reset before each test for a clean slate.
+					Uno.UI.Core.KeyboardStateTracker.Reset();
 				});
 #else
 				await Task.CompletedTask;

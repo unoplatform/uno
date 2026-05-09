@@ -13,12 +13,14 @@ jobs:
     matrix:
       Native:
         _BuildFolder: '$(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile'
-        _ArtifactName: 'ios-testflight'
+        _PackageArtifactName: 'samplesapp-ios-native-testflight'
+        _LogsArtifactName: 'samplesapp-ios-native-testflight-logs'
         _VariantName: 'Native'
 
       Skia:
         _BuildFolder: '$(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.Skia.netcoremobile'
-        _ArtifactName: 'ios-skia-testflight'
+        _PackageArtifactName: 'samplesapp-ios-skia-testflight'
+        _LogsArtifactName: 'samplesapp-ios-skia-testflight-logs'
         _VariantName: 'Skia'
 
   pool:
@@ -95,12 +97,20 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish iOS Package'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/TestFlight
+      artifactName: $(_PackageArtifactName)
+
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish iOS TestFlight build logs'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: $(_ArtifactName)
+      PathtoPublish: $(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
+      ArtifactName: $(_LogsArtifactName)
       ArtifactType: Container
 
 - deployment: 'iOS_Publish_Native'
@@ -120,7 +130,7 @@ jobs:
 
         - task: DownloadPipelineArtifact@2
           inputs:
-            artifactName: 'ios-testflight'
+            artifactName: 'samplesapp-ios-native-testflight'
             targetPath: '$(Pipeline.Workspace)/drop'
           displayName: Download artifacts
 
@@ -129,7 +139,7 @@ jobs:
           inputs:
             serviceEndpoint: 'Uno Platform Inc. (App Store)'
             appIdentifier: 'uno.platform.samplesdev'
-            ipaPath: '$(Pipeline.Workspace)/drop/TestFlight/SamplesApp.ipa'
+            ipaPath: '$(Pipeline.Workspace)/drop/SamplesApp.ipa'
             shouldSkipWaitingForProcessing: true
             appSpecificId: 6466657985
             teamId: 'Uno Platform Inc.'
@@ -151,7 +161,7 @@ jobs:
 
         - task: DownloadPipelineArtifact@2
           inputs:
-            artifactName: 'ios-skia-testflight'
+            artifactName: 'samplesapp-ios-skia-testflight'
             targetPath: '$(Pipeline.Workspace)/drop'
           displayName: Download artifacts
 
@@ -160,7 +170,7 @@ jobs:
           inputs:
             serviceEndpoint: 'Uno Platform Inc. (App Store)'
             appIdentifier: uno.platform.samplesapp.skia
-            ipaPath: '$(Pipeline.Workspace)/drop/TestFlight/SamplesApp.ipa'
+            ipaPath: '$(Pipeline.Workspace)/drop/SamplesApp.ipa'
             shouldSkipWaitingForProcessing: true
             appSpecificId: 6744930330
             teamId: 'Uno Platform Inc.'

@@ -34,6 +34,7 @@ using _View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
+	using XamlParseException = Uno.Xaml.XamlParseException;
 	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Normal flow of operations")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Normal flow of operations")]
 	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Normal flow of operations")]
@@ -244,8 +245,13 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// reported even if we're not materializing the content explicitly.
 				ValidateContent(unknownContent?.Objects.FirstOrDefault());
 
-				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder);
+				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!;
 				TrySetContextualProperties(created, control);
+
+				foreach (var member in control.Members.Where(m => m != unknownContent && m != initializationMember))
+				{
+					ProcessNamedMember(control, created, member, rootInstance ?? created, settings);
+				}
 
 				return created;
 			}

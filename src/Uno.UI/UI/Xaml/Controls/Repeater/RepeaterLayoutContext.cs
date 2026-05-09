@@ -44,6 +44,8 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.ClearElementImpl(element);
 		}
 
+		protected override Rect VisibleRectCore() => GetOwner().VisibleWindow;
+
 		protected override Rect RealizationRectCore() => GetOwner().RealizationWindow;
 
 		protected override int RecommendedAnchorIndexCore

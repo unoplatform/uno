@@ -346,8 +346,11 @@ partial class ItemContainer : Control
 					case PointerDeviceType.Mouse:
 						m_pointerInfo.ResetIsMouseButtonPressed(true /*isForLeftMouseButton*/);
 						m_pointerInfo.ResetIsMouseButtonPressed(false /*isForLeftMouseButton*/);
-						m_pointerInfo.ResetIsMousePointerOver();
-						UpdateMousePointerOverInstance(false /*isPointerOver*/);
+						// Uno Doc: Pointer cancellation / capture loss does not imply the mouse
+						// cursor left the element (e.g. capture transferred to a popup). Leave
+						// IsMousePointerOver to be cleared by OnPointerExited.
+						// m_pointerInfo.ResetIsMousePointerOver();
+						// UpdateMousePointerOverInstance(false /*isPointerOver*/);
 						break;
 				}
 			}
@@ -369,7 +372,8 @@ partial class ItemContainer : Control
 	{
 		base.OnPointerMoved(args);
 
-		ProcessPointerOver(args, true /*isPointerOver*/);
+		// Uno Doc: PointerMoved should not change isPointerOver, it's already being tracked by PointerEntered and PointerExited.
+		// ProcessPointerOver(args, true /*isPointerOver*/);
 	}
 
 	protected override void OnPointerExited(PointerRoutedEventArgs args)
@@ -416,6 +420,8 @@ partial class ItemContainer : Control
 		if (!m_pointerInfo.IsTrackingPointer())
 		{
 			m_pointerInfo.TrackPointerId(pointerId);
+			// Uno Doc: WinUI doesn't track the pointer and therefore has visual states bugs due to inaccurate pointer state. c.f. https://github.com/unoplatform/private/issues/1074
+			CapturePointer(pointer);
 		}
 		else if (!m_pointerInfo.IsPointerIdTracked(pointerId))
 		{
@@ -464,6 +470,8 @@ partial class ItemContainer : Control
 		}
 
 		m_pointerInfo.ResetTrackedPointerId();
+		// Uno Doc: WinUI doesn't track the pointer and therefore has visual states bugs due to inaccurate pointer state. c.f. https://github.com/unoplatform/private/issues/1074
+		ReleasePointerCapture(args.Pointer);
 
 		bool canRaiseItemInvoked = CanRaiseItemInvoked();
 		var pointerDeviceType = args.Pointer.PointerDeviceType;
@@ -491,7 +499,9 @@ partial class ItemContainer : Control
 
 		if (canRaiseItemInvoked &&
 			!args.Handled &&
-			!m_pointerInfo.IsPressed())
+			!m_pointerInfo.IsPressed() &&
+			// Uno Doc: If pointer is not over, the item should not be clicked. This is a WinUI bug.
+			m_pointerInfo.IsPointerOver())
 		{
 			args.Handled = RaiseItemInvoked(ItemContainerInteractionTrigger.PointerReleased, args.OriginalSource);
 		}
@@ -505,6 +515,8 @@ partial class ItemContainer : Control
 
 		base.OnPointerCanceled(args);
 
+		// Uno Doc: WinUI doesn't track the pointer and therefore has visual states bugs due to inaccurate pointer state. c.f. https://github.com/unoplatform/private/issues/1074
+		ReleasePointerCapture(args.Pointer);
 		ProcessPointerCanceled(args);
 	}
 

@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
+using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
@@ -27,6 +28,17 @@ namespace Microsoft.UI.Xaml
 		private const KeyboardNavigationMode UnsetKeyboardNavigationMode = (KeyboardNavigationMode)3;
 
 		private KeyboardNavigationMode _keyboardNavigationMode = UnsetKeyboardNavigationMode;
+
+		// Cached automation peer, mirrors WinUI's m_tpAP field.
+		// Ensures peer identity is stable across calls so that reference
+		// comparisons (e.g. HasKeyboardFocusImpl, SetFocusHelper) work correctly.
+		private AutomationPeer? _uiElementAutomationPeer;
+
+		/// <summary>
+		/// Returns the cached automation peer without creating one. Used for raising
+		/// property change notifications only on elements that already have peers.
+		/// </summary>
+		internal AutomationPeer? CachedAutomationPeer => _uiElementAutomationPeer;
 
 		/// <summary>
 		/// Set to True when the imminent Focus(FocusState) call needs to use an animation if bringing the focused
@@ -130,39 +142,17 @@ namespace Microsoft.UI.Xaml
 				isPopupOpen = popup.IsOpen;
 			}
 
-			// this condition checks that if Control is visible and if it's popup then it must be open
+			// This condition checks that if Control is visible and if it's popup then it must be open.
+			// Mirrors WinUI's m_tpAP caching: the peer is created once and reused so that
+			// identity-based checks (HasKeyboardFocusImpl, SetFocusHelper) work correctly.
 			if (Visibility != Visibility.Collapsed && isPopupOpen)
 			{
-				// TODO Uno: Our simplified version just returns new automation peer
-				return OnCreateAutomationPeerInternal();
-				//if (!m_tpAP)
-				//{
-				//	ctl::ComPtr<xaml_automation_peers::IAutomationPeer> spAP;
-				//	if (FAILED(UIElementGenerated::OnCreateAutomationPeerProtected(&spAP)))
-				//	{
-				//		RRETURN(E_FAIL);
-				//	}
-				//	else if (!spAP)
-				//	{
-				//		RRETURN(S_false);
-				//	}
-
-				//	// This FX peer gains state when the AutomationPeer is stored in m_tpAP, so mark as
-				//	// having state. Otherwise, a stateless FX peer will be released, which will
-				//	// release the automation peer.
-				//	IFC(MarkHasState());
-
-				//	SetPtrValue(m_tpAP, spAP.Get());
-				//}
+				return _uiElementAutomationPeer ??= OnCreateAutomationPeerInternal();
 			}
 			else
 			{
+				_uiElementAutomationPeer = null;
 				return null;
-				//if (m_tpAP)
-				//{
-				//	m_tpAP.Clear();
-				//}
-				//RRETURN(S_false);
 			}
 		}
 
@@ -500,10 +490,9 @@ namespace Microsoft.UI.Xaml
 			//return pParent;
 		}
 
-		//UNO TODO: Implement GetUIElementParentInternal on UIElement
 		internal DependencyObject GetAccessKeyScopeOwner()
 		{
-			throw new NotImplementedException("GetUIElementParentInternal is not implemented on UIElement");
+			return (DependencyObject)GetValue(AccessKeyScopeOwnerProperty);
 		}
 
 		/// <summary>
@@ -838,10 +827,26 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		//UNO TODO: Implement GetGlobalBoundsWithOptions on UIElement
 		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
 		{
-			return new Rect();
+#if __SKIA__
+			if (!IsInLiveTree)
+			{
+				return default;
+			}
+
+			var size = Visual.Size;
+			if (size.X <= 0 || size.Y <= 0)
+			{
+				return default;
+			}
+
+			var transform = GetTransform(from: this, to: null);
+			var localRect = new Rect(0, 0, size.X, size.Y);
+			return transform.Transform(localRect);
+#else
+			return default;
+#endif
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
@@ -863,24 +868,18 @@ namespace Microsoft.UI.Xaml
 
 			try
 			{
-				// UNO TODO: We naively call EnterImpl right away.
-				EnterImpl(@params, depth);
-
 				//if (this is XamlIslandRoot xamlIsland)
 				//{
-				//	// The CXamlIslandRoot can enter the tree in a few different ways, and we need to make sure
-				//	// that however it enters, we override the params.visualTree with the one from the CXamlIslandRoot.
-				//	// CXamlIslandRoot always defines its own visual tree, so we must set it here.  Note that after
-				//	// the tree refactoring, this won't be necessary because the XamlIslandRoot won't be in the tree
-				//	// anymore.
 				//	@params.VisualTree = xamlIsland.GetVisualTreeNoRef();
 				//}
 
-				//if (@params.IsLive && @params.VisualTree is not null)
-				//{
-				//	// As the DO enters the live tree, we call SetVisualTree to remember which one it's associated with
-				//	SetVisualTree(@params.VisualTree);
-				//}
+				if (@params.IsLive && @params.VisualTree is not null)
+				{
+					// As the DO enters the live tree, we call SetVisualTree to remember which one it's associated with
+					this.SetVisualTree(@params.VisualTree);
+				}
+
+				EnterImpl(@params, depth);
 
 				//DependencyObject pAdjustedNamescopeOwner = pNamescopeOwner;
 
@@ -1108,7 +1107,6 @@ namespace Microsoft.UI.Xaml
 			}
 			// ----------------------- UNO-specific END -----------------------
 
-
 			//if (@params.IsLive && m_bitFields.fWantsInheritanceContextChanged)
 			//{
 			//	// We only raise this InheritanceContextChanged if we're entering the live tree because the
@@ -1147,6 +1145,14 @@ namespace Microsoft.UI.Xaml
 		internal virtual void EnterImpl(EnterParams @params, int depth)
 		{
 			Depth = depth;
+
+			// Ensure VisualTree is propagated through the Enter walk.
+			// ChildEnter may call EnterImpl directly (bypassing UIElement.Enter),
+			// so we resolve the VisualTree here as a fallback.
+			if (@params.VisualTree is null)
+			{
+				@params.VisualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+			}
 
 			var core = this.GetContext();
 			//bool isParentEnabled = @params.CoercedIsEnabled;
@@ -1236,17 +1242,34 @@ namespace Microsoft.UI.Xaml
 			// Pass updated params to children.
 			DependencyObject_EnterImpl(@params);
 
-			//// Extends EnterImpl to the ContextFlyout
-			//FlyoutBase pFlyoutBase = this.ContextFlyout;
-			//if (pFlyoutBase is not null)
-			//{
-			//	// This FlyoutBase can be shared between ContentRoots -- remove the VisualTree
-			//	// pointer here for this enter.  TODO: figure out why this happens
-			//	// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
-			//	EnterParams newParams = @params;
-			//	newParams.VisualTree = null;
-			//	pFlyoutBase.Enter(pNamescopeOwner, newParams/*EnterParams*/);
-			//}
+			// Extends EnterImpl to the ContextFlyout.
+			// In WinUI, EnterSparseProperties calls EnterEffectiveValue for IsVisualTreeProperty values,
+			// which calls AddParent(this) + Enter(). We mirror that here.
+			// Remove this workaround when https://github.com/unoplatform/uno/issues/22949 is implemented.
+			// WinUI nulls out the VisualTree pointer before this call because a FlyoutBase can
+			// be shared between ContentRoots (Bug 19548424). We do the same to avoid associating
+			// the shared flyout with a specific visual tree, which would prevent GC of the owning
+			// element's subtree once it leaves the tree.
+			FlyoutBase pFlyoutBase = this.ContextFlyout;
+			if (pFlyoutBase is not null)
+			{
+				pFlyoutBase.SetParent(this);
+				var flyoutParams = @params;
+				flyoutParams.VisualTree = null;
+				pFlyoutBase.Enter(null, flyoutParams);
+			}
+
+			// TODO: Uno specific - In WinUI, CDependencyObject::EnterImpl calls EnterSparseProperties
+			// which generically walks all sparse IsVisualTreeProperty values. Remove this explicit
+			// KA propagation when Uno implements EnterSparseProperties/LeaveSparseProperties.
+			// Use IsDependencyPropertySet to avoid creating default empty collections.
+			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
+			{
+				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
+				{
+					kac.Enter(null, @params);
+				}
+			}
 
 			//// Work on the children
 			//if (m_pChildren is not null)
@@ -1400,7 +1423,7 @@ namespace Microsoft.UI.Xaml
 		// then the object is leaving the "Live" tree, and the object can no
 		// longer respond to OM requests related to being Live.   Actions
 		// like downloads and animation will be halted.
-		private void Leave(LeaveParams @params)
+		internal void Leave(LeaveParams @params)
 		{
 			// If IsProcessingEnterLeave is true, then this element is already part of the
 			// Enter/Leave walk.  This can happen, for instance, if a custom DP's value has
@@ -1647,6 +1670,7 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			//LeaveSparseProperties(pNamescopeOwner, @params);
+
 			//if (@params.IsLive)
 			//{
 			//	// If we're currently the focused element, remove ourselves from being focused
@@ -1679,6 +1703,12 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual void LeaveImpl(LeaveParams @params)
 		{
+			// Ensure VisualTree is propagated through the Leave walk.
+			if (@params.VisualTree is null)
+			{
+				@params.VisualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+			}
+
 			// --------- UNO Specific BEGIN ---------
 			// This should be done in FrameworkElement's override of LeaveImpl.
 			// But:
@@ -1882,12 +1912,35 @@ namespace Microsoft.UI.Xaml
 
 			DependencyObject_LeaveImpl(@params);
 
-			//// Extends LeaveImpl to the ContextFlyout.
-			//FlyoutBase pFlyoutBase = ContextFlyout;
-			//if (pFlyoutBase is not null)
-			//{
-			//	pFlyoutBase.Leave(pNamescopeOwner, @params /*LeaveParams*/);
-			//}
+			// Extends LeaveImpl to the ContextFlyout.
+			// In WinUI, LeaveSparseProperties calls LeaveEffectiveValue for IsVisualTreeProperty values,
+			// which calls Leave() + RemoveParent(this). We mirror that here.
+			// Remove this workaround when https://github.com/unoplatform/uno/issues/22949 is implemented.
+			// WinUI nulls out the VisualTree pointer before this call because a FlyoutBase can
+			// be shared between ContentRoots (Bug 19548424).
+			FlyoutBase pFlyoutBase = ContextFlyout;
+			if (pFlyoutBase is not null)
+			{
+				var flyoutParams = @params;
+				flyoutParams.VisualTree = null;
+				pFlyoutBase.Leave(null, flyoutParams);
+
+				if (ReferenceEquals(pFlyoutBase.GetParent(), this))
+				{
+					pFlyoutBase.SetParent(null);
+				}
+			}
+
+			// TODO: Uno specific - In WinUI, CDependencyObject::LeaveImpl calls LeaveSparseProperties
+			// which generically walks all sparse IsVisualTreeProperty values. Remove this explicit
+			// KA propagation when Uno implements EnterSparseProperties/LeaveSparseProperties.
+			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
+			{
+				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
+				{
+					kac.Leave(null, @params);
+				}
+			}
 
 			//if (EventEnabledElementRemovedInfo() && @params.fIsLive)
 			//{

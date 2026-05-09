@@ -55,6 +55,16 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ProfileId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaFrameSourceInfo.ProfileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaFrameSourceInfo.ProfileId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
 		{
 			get
@@ -85,16 +95,6 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ProfileId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaFrameSourceInfo.ProfileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaFrameSourceInfo.ProfileId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription> VideoProfileMediaDescription
 		{
 			get
@@ -103,15 +103,6 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.Id.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.MediaStreamType.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.SourceKind.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.SourceGroup.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.DeviceInformation.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.Properties.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.CoordinateSystem.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.ProfileId.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.VideoProfileMediaDescription.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.Panel GetRelativePanel(global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
@@ -119,5 +110,14 @@ namespace Windows.Media.Capture.Frames
 			throw new global::System.NotImplementedException("The member Panel MediaFrameSourceInfo.GetRelativePanel(DisplayRegion displayRegion) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Panel%20MediaFrameSourceInfo.GetRelativePanel%28DisplayRegion%20displayRegion%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.CoordinateSystem.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.DeviceInformation.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.Id.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.MediaStreamType.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.ProfileId.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.Properties.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.SourceGroup.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.SourceKind.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.VideoProfileMediaDescription.get
 	}
 }

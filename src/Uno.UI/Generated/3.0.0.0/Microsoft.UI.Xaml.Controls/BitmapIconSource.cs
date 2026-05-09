@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class BitmapIconSource : global::Microsoft.UI.Xaml.Controls.IconSource
 	{
-		// Skipping already declared property UriSource
-		// Skipping already declared property ShowAsMonochrome
 		// Skipping already declared property ShowAsMonochromeProperty
 		// Skipping already declared property UriSourceProperty
+		// Skipping already declared property ShowAsMonochrome
+		// Skipping already declared property UriSource
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.BitmapIconSource.BitmapIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.BitmapIconSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.ShowAsMonochromeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.ShowAsMonochrome.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.ShowAsMonochrome.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.ShowAsMonochromeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSource.set
 	}
 }

@@ -10,71 +10,11 @@ namespace Windows.Devices.WiFiDirect.Services
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceStatus ServiceStatus
+		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertisementStatus AdvertisementStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceStatus WiFiDirectServiceAdvertiser.ServiceStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectServiceStatus%20WiFiDirectServiceAdvertiser.ServiceStatus");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "WiFiDirectServiceStatus WiFiDirectServiceAdvertiser.ServiceStatus");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer ServiceInfo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceAdvertiser.ServiceInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectServiceAdvertiser.ServiceInfo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "IBuffer WiFiDirectServiceAdvertiser.ServiceInfo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool PreferGroupOwnerMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool WiFiDirectServiceAdvertiser.PreferGroupOwnerMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WiFiDirectServiceAdvertiser.PreferGroupOwnerMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "bool WiFiDirectServiceAdvertiser.PreferGroupOwnerMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer DeferredSessionInfo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceAdvertiser.DeferredSessionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectServiceAdvertiser.DeferredSessionInfo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "IBuffer WiFiDirectServiceAdvertiser.DeferredSessionInfo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint CustomServiceStatusCode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint WiFiDirectServiceAdvertiser.CustomServiceStatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WiFiDirectServiceAdvertiser.CustomServiceStatusCode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "uint WiFiDirectServiceAdvertiser.CustomServiceStatusCode");
+				throw new global::System.NotImplementedException("The member WiFiDirectServiceAdvertisementStatus WiFiDirectServiceAdvertiser.AdvertisementStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectServiceAdvertisementStatus%20WiFiDirectServiceAdvertiser.AdvertisementStatus");
 			}
 		}
 #endif
@@ -94,11 +34,43 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceError ServiceError
+		public uint CustomServiceStatusCode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceError WiFiDirectServiceAdvertiser.ServiceError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectServiceError%20WiFiDirectServiceAdvertiser.ServiceError");
+				throw new global::System.NotImplementedException("The member uint WiFiDirectServiceAdvertiser.CustomServiceStatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WiFiDirectServiceAdvertiser.CustomServiceStatusCode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "uint WiFiDirectServiceAdvertiser.CustomServiceStatusCode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IBuffer DeferredSessionInfo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceAdvertiser.DeferredSessionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectServiceAdvertiser.DeferredSessionInfo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "IBuffer WiFiDirectServiceAdvertiser.DeferredSessionInfo");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool PreferGroupOwnerMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool WiFiDirectServiceAdvertiser.PreferGroupOwnerMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WiFiDirectServiceAdvertiser.PreferGroupOwnerMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "bool WiFiDirectServiceAdvertiser.PreferGroupOwnerMode");
 			}
 		}
 #endif
@@ -109,6 +81,30 @@ namespace Windows.Devices.WiFiDirect.Services
 			get
 			{
 				throw new global::System.NotImplementedException("The member IList<WiFiDirectServiceConfigurationMethod> WiFiDirectServiceAdvertiser.PreferredConfigurationMethods is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectServiceConfigurationMethod%3E%20WiFiDirectServiceAdvertiser.PreferredConfigurationMethods");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceError ServiceError
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WiFiDirectServiceError WiFiDirectServiceAdvertiser.ServiceError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectServiceError%20WiFiDirectServiceAdvertiser.ServiceError");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IBuffer ServiceInfo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceAdvertiser.ServiceInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectServiceAdvertiser.ServiceInfo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "IBuffer WiFiDirectServiceAdvertiser.ServiceInfo");
 			}
 		}
 #endif
@@ -134,11 +130,15 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertisementStatus AdvertisementStatus
+		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceStatus ServiceStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceAdvertisementStatus WiFiDirectServiceAdvertiser.AdvertisementStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectServiceAdvertisementStatus%20WiFiDirectServiceAdvertiser.AdvertisementStatus");
+				throw new global::System.NotImplementedException("The member WiFiDirectServiceStatus WiFiDirectServiceAdvertiser.ServiceStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectServiceStatus%20WiFiDirectServiceAdvertiser.ServiceStatus");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "WiFiDirectServiceStatus WiFiDirectServiceAdvertiser.ServiceStatus");
 			}
 		}
 #endif
@@ -150,29 +150,6 @@ namespace Windows.Devices.WiFiDirect.Services
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.WiFiDirectServiceAdvertiser(string)
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceName.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceNamePrefixes.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceInfo.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceInfo.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSession.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSession.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.PreferGroupOwnerMode.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.PreferGroupOwnerMode.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.PreferredConfigurationMethods.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceStatus.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceStatus.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.CustomServiceStatusCode.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.CustomServiceStatusCode.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.DeferredSessionInfo.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.DeferredSessionInfo.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AdvertisementStatus.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceError.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.SessionRequested.add
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.SessionRequested.remove
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSessionConnected.add
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSessionConnected.remove
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AdvertisementStatusChanged.add
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AdvertisementStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession> ConnectAsync(global::Windows.Devices.Enumeration.DeviceInformation deviceInfo)
@@ -201,6 +178,29 @@ namespace Windows.Devices.WiFiDirect.Services
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "void WiFiDirectServiceAdvertiser.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AdvertisementStatusChanged.add
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AdvertisementStatusChanged.remove
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSessionConnected.add
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSessionConnected.remove
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.SessionRequested.add
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.SessionRequested.remove
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AdvertisementStatus.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSession.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.AutoAcceptSession.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.CustomServiceStatusCode.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.CustomServiceStatusCode.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.DeferredSessionInfo.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.DeferredSessionInfo.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.PreferGroupOwnerMode.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.PreferGroupOwnerMode.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.PreferredConfigurationMethods.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceError.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceInfo.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceInfo.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceName.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceNamePrefixes.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceStatus.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser.ServiceStatus.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser, object> AdvertisementStatusChanged

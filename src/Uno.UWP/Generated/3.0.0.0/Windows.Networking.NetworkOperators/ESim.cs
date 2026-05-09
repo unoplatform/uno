@@ -73,12 +73,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.AvailableMemoryInBytes.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Eid.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.FirmwareVersion.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.MobileBroadbandModemDeviceId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Policy.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.ESimProfile> GetProfiles()
@@ -137,6 +131,12 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync(string serverAddress, string matchingId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimDiscoverResult%3E%20ESim.DiscoverAsync%28string%20serverAddress%2C%20string%20matchingId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.AvailableMemoryInBytes.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Eid.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.FirmwareVersion.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.MobileBroadbandModemDeviceId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Policy.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.NetworkOperators.ESim, object> ProfileChanged

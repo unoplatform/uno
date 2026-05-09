@@ -40,8 +40,8 @@
       "Uno.UI.Wasm.Tests\\Uno.UI.Wasm.Tests.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Wasm.csproj",
       "Uno.UI\\Uno.UI.Wasm.csproj",
-      "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
-      "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
+      "Uno.WinAppSDKSyncGenerator.References\\Uno.WinAppSDKSyncGenerator.References.csproj",
+      "Uno.WinAppSDKSyncGenerator\\Uno.WinAppSDKSyncGenerator.csproj",
       "Uno.UWP\\Uno.Wasm.csproj"
     ]
   }

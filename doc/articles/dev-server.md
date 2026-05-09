@@ -48,7 +48,7 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling
 - `--port | -p <int>`: Optional port value for MCP proxy mode
 - `--mcp-wait-tools-list`: Wait for the upstream Uno App tools to become available before responding to clients. Use this when working with MCP agents that do not react to `tools/list_changed` (for example, Codex or Claude Code).
-- `--force-roots-fallback`: Force the `uno_app_initialize` tool to be exposed so agents that cannot send workspace roots can still initialize. This is now auto-detected when the client does not advertise the MCP roots capability; the flag is still available for explicit override.
+- `--force-roots-fallback`: Legacy explicit override. The DevServer auto-detects when the client does not advertise the MCP roots capability and exposes the `uno_app_initialize` tool automatically, so this flag is rarely needed.
 - `--force-generate-tool-cache`: Deprecated (no-op). Kept for backward compatibility.
 - `--solution-dir <path>`: Explicit solution directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents). Defaults to the current working directory when omitted.
 
@@ -125,3 +125,11 @@ The Dev Server enables Hot Reload for a faster inner loop:
        ![Level output drop-down](Assets/features/hotreload/rider-output-level-trace.png)
 
 ---
+
+## See also
+
+- [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) — how to register, inspect, and uninstall Uno MCP entries across supported agents.
+- [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) — inspect your environment and tool resolution.
+- [Supported agents and features](xref:Uno.GetStarted#supported-agents-features) — per-agent capability summary.
+- Per-agent setup guides: [Claude Code](xref:Uno.GetStarted.AI.Claude), [Codex CLI](xref:Uno.GetStarted.AI.Codex), [Cursor](xref:Uno.GetStarted.AI.Cursor), [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI), [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity).
+- [Troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents).

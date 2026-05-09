@@ -43,21 +43,21 @@ namespace Windows.Web.Syndication
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.ServerCredential.get
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.ServerCredential.set
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.ProxyCredential.get
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.ProxyCredential.set
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.MaxResponseBufferSize.get
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.MaxResponseBufferSize.set
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.Timeout.get
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.Timeout.set
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.BypassCacheOnRetrieve.get
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.BypassCacheOnRetrieve.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void SetRequestHeader(string name, string value);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationFeed, global::Windows.Web.Syndication.RetrievalProgress> RetrieveFeedAsync(global::System.Uri uri);
 #endif
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.BypassCacheOnRetrieve.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.BypassCacheOnRetrieve.set
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.MaxResponseBufferSize.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.MaxResponseBufferSize.set
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.ProxyCredential.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.ProxyCredential.set
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.ServerCredential.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.ServerCredential.set
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.Timeout.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.Timeout.set
 	}
 }

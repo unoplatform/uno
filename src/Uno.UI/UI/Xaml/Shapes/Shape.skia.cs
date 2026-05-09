@@ -115,5 +115,19 @@ namespace Microsoft.UI.Xaml.Shapes
 		{
 			_shape.StrokeDashOffset = (float)StrokeDashOffset;
 		}
+
+		/// <summary>
+		/// Returns a mask that represents the alpha channel of the shape as a CompositionBrush.
+		/// This brush can be used with CompositionMaskBrush or DropShadow.Mask to create shaped effects.
+		/// </summary>
+		/// <returns>A CompositionBrush representing the shape as an alpha mask.</returns>
+		public CompositionBrush GetAlphaMask()
+		{
+			var compositor = Compositor.GetSharedCompositor();
+			var surface = new AlphaMaskSurface(compositor, Visual);
+			var brush = compositor.CreateSurfaceBrush(surface);
+			brush.Stretch = CompositionStretch.None;
+			return brush;
+		}
 	}
 }

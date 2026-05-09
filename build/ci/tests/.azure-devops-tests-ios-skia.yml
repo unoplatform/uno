@@ -7,7 +7,6 @@ parameters:
   xCodeRootTest: ''
   xCodeRootBuild: ''
   poolName: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
   # Runtime Test Groups
@@ -43,6 +42,7 @@ jobs:
       UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
       UITEST_VARIANT: 'skia'
+      TEST_KIND: runtime
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - Skia_Tests_Build_iOS

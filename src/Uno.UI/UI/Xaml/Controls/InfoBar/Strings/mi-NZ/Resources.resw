@@ -126,7 +126,7 @@
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
-    <value>I ākiritia a Paemōhio</value>
+    <value>I ākiritia a PaeMōhio</value>
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">
@@ -142,7 +142,7 @@
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
-    <value>Ata angitū</value>
+    <value>Ata angitu</value>
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
@@ -150,23 +150,23 @@
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">
-    <value>%1!s!, %2!s!, %3!s!</value>
+    <value>%1!s! %2!s! %3!s!</value>
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>Karere mōhiohio, hapa pākahatanga</value>
+    <value>Karere mōhiohio, he hapa pākahatanga</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>Karere mōhiohio, pākahatanga ā-mōhiohio</value>
+    <value>Karere mōhiohio, he pākahatanga ā-mōhiohio</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
-    <value>Karere mōhiohio, angitu pākahatanga</value>
+    <value>Karere mōhiohio, he angitu te pākahatanga</value>
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">
-    <value>Karere mōhiohio, whakatūpato pākahatanga</value>
+    <value>Karere mōhiohio, he whakatūpato pākahatanga</value>
     <comment>Name used to announce severity warning to users.</comment>
   </data>
 </root>

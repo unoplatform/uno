@@ -275,10 +275,16 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}) : TextHighlighters;
+			(int startIndex, int length)? compositionRange = null;
+			if (OwningTextBox is { IsComposing: true, CompositionUnderlineLength: > 0 } owningTextBox)
+			{
+				compositionRange = (owningTextBox.CompositionUnderlineStart, owningTextBox.CompositionUnderlineLength);
+			}
 			ParsedText.Draw(
 				session,
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
-				highligherters);
+				highligherters,
+				compositionRange);
 			session.Canvas.Restore();
 			DrawingFinished?.Invoke();
 		}
@@ -291,7 +297,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <returns>Computed line height</returns>
 		private FontDetails GetDefaultFontDetails()
 		{
-			var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+			var scaledSize = Uno.UI.Xaml.Core.TextScaleHelper.GetScaledFontSize(FontSize, Uno.UI.Xaml.Core.CoreServices.Instance.FontScale, IsTextScaleFactorEnabled && !Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor);
+			var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)scaledSize, FontWeight, FontStretch, FontStyle);
 			if (task.IsCompletedSuccessfully)
 			{
 				return task.Result;
@@ -481,6 +488,20 @@ namespace Microsoft.UI.Xaml.Controls
 				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
 				_lastInlinesArrangeWithPadding.Height > ActualHeight
 			);
+		}
+
+		/// <summary>
+		/// Returns a mask that represents the alpha channel of the text as a CompositionBrush.
+		/// This brush can be used with CompositionMaskBrush or DropShadow.Mask to create shaped effects.
+		/// </summary>
+		/// <returns>A CompositionBrush representing the text as an alpha mask.</returns>
+		public CompositionBrush GetAlphaMask()
+		{
+			var compositor = Compositor.GetSharedCompositor();
+			var surface = new AlphaMaskSurface(compositor, Visual);
+			var brush = compositor.CreateSurfaceBrush(surface);
+			brush.Stretch = CompositionStretch.None;
+			return brush;
 		}
 
 		#region SelectionFlyout Support

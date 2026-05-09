@@ -64,9 +64,9 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.ActivityId.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.IsComplete.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.IsComplete.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.ErrorCode.get
 	}
 }

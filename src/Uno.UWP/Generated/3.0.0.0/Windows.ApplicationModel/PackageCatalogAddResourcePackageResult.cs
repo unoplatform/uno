@@ -43,8 +43,8 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.Package.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.IsComplete.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.ExtendedError.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.IsComplete.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddResourcePackageResult.Package.get
 	}
 }

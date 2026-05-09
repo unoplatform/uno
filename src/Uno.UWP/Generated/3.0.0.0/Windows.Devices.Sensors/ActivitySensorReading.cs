@@ -43,8 +43,8 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReading.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReading.Activity.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReading.Confidence.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReading.Timestamp.get
 	}
 }

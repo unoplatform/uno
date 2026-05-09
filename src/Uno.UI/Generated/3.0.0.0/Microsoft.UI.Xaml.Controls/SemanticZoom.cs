@@ -11,76 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation ZoomedOutView
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation)this.GetValue(ZoomedOutViewProperty);
-			}
-			set
-			{
-				this.SetValue(ZoomedOutViewProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation ZoomedInView
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation)this.GetValue(ZoomedInViewProperty);
-			}
-			set
-			{
-				this.SetValue(ZoomedInViewProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsZoomedInViewActive
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomedInViewActiveProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomedInViewActiveProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsZoomOutButtonEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomOutButtonEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomOutButtonEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanChangeViews
-		{
-			get
-			{
-				return (bool)this.GetValue(CanChangeViewsProperty);
-			}
-			set
-			{
-				this.SetValue(CanChangeViewsProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CanChangeViewsProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CanChangeViews), typeof(bool),
@@ -121,24 +51,87 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CanChangeViews
+		{
+			get
+			{
+				return (bool)this.GetValue(CanChangeViewsProperty);
+			}
+			set
+			{
+				this.SetValue(CanChangeViewsProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsZoomOutButtonEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsZoomOutButtonEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsZoomOutButtonEnabledProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsZoomedInViewActive
+		{
+			get
+			{
+				return (bool)this.GetValue(IsZoomedInViewActiveProperty);
+			}
+			set
+			{
+				this.SetValue(IsZoomedInViewActiveProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation ZoomedInView
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation)this.GetValue(ZoomedInViewProperty);
+			}
+			set
+			{
+				this.SetValue(ZoomedInViewProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation ZoomedOutView
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation)this.GetValue(ZoomedOutViewProperty);
+			}
+			set
+			{
+				this.SetValue(ZoomedOutViewProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SemanticZoom() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoom", "SemanticZoom.SemanticZoom()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.SemanticZoom()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInView.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInView.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutView.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutView.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomedInViewActive.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomedInViewActive.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.CanChangeViews.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.CanChangeViews.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ViewChangeStarted.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ViewChangeStarted.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ViewChangeCompleted.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ViewChangeCompleted.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.CanChangeViewsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomOutButtonEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomedInViewActiveProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInViewProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutViewProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ToggleActiveView()
@@ -146,13 +139,20 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoom", "void SemanticZoom.ToggleActiveView()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ViewChangeCompleted.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ViewChangeCompleted.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ViewChangeStarted.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ViewChangeStarted.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.CanChangeViews.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.CanChangeViews.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomOutButtonEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomOutButtonEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInViewProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutViewProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomedInViewActiveProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.CanChangeViewsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomOutButtonEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomedInViewActive.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomedInViewActive.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInView.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInView.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutView.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutView.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventHandler ViewChangeCompleted

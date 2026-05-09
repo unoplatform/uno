@@ -159,7 +159,7 @@ Both use the same registration pattern:
 
 | ID | Requirement | Priority |
 |----|------------|----------|
-| **FR1** | MCP STDIO server starts and responds to `list_tools` within 1 second of process launch. For clients that do not re-query `list_tools` after `tools/list_changed`, meta-tools (`uno_discover_tools`, `uno_execute_tool`) provide access to upstream tools. | Must |
+| **FR1** | MCP STDIO server starts and responds to `list_tools` within 1 second of process launch. Compatibility meta-tools (`uno_discover_tools`, `uno_execute_tool`) remain available throughout the session as a stable path to upstream tools while the direct tool set changes. | Must |
 | **FR2** | Licensed MCP tools functional within 5 seconds of launch (warm cache). Tool count depends on license tier (Community 9, Pro 11, Business 12). | Must |
 | **FR3** | If host is not ready, tool calls return structured errors with remediation hints | Must |
 | **FR4** | `uno://health`, `uno_health`, and CLI `health` expose the same structured diagnostics model | Must |
@@ -187,7 +187,7 @@ Both use the same registration pattern:
 1. **Backward compatibility is critical**: Must work with older Uno SDK versions (5.x, 6.5). Package structures and add-in layouts may differ.
 2. **IDE integrations use the same Host process**: VS, Rider, VS Code extensions launch `RemoteControl.Host` directly. Changes to Host must not break these paths.
 3. **All existing CLI flags must remain accepted**: `--force-roots-fallback`, `--force-generate-tool-cache` (deprecated no-op, kept for backward compatibility), `--solution-dir`, `--mcp-wait-tools-list`, `--port`, `--log-level`, `--file-log`.
-4. **MCP protocol constraints**: Most MCP clients do not support `tools/list_changed` (only 3 of 8 do). Several don't support `roots` (Claude Desktop, Codex CLI, Windsurf). No client supports `resources/subscribe`. The `--force-roots-fallback` + `--mcp-wait-tools-list` workarounds must continue working. See [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5 for the full matrix.
+4. **MCP protocol constraints**: Most MCP clients do not support `tools/list_changed` (only 3 of 8 do). Several don't support `roots` (Claude Desktop, Codex CLI, Windsurf). No client supports `resources/subscribe`. The roots fallback is auto-enabled when the client does not advertise `capabilities.roots` (legacy `--force-roots-fallback` remains accepted as an explicit override). The `--mcp-wait-tools-list` workaround must continue working. See [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5 for the full matrix.
 5. **License validation must not block startup**: The `MCPToolsObserverService` in `Uno.UI.App.Mcp.Server` already handles license-based tool filtering asynchronously. We must not introduce new blocking license checks.
 6. **Code conventions**: New code should follow the project `.editorconfig` and **match the style of surrounding code** in each file. Prefer `internal` for new types unless they are part of a public API contract. Follow existing patterns in the target project (`*Extensions.cs` for extension methods, DI via `IServiceCollection`). Note: the existing codebase uses both block-scoped and file-scoped namespaces; `.editorconfig` expresses a preference, not a hard rule. Do not reformat existing files to match a different style.
 
@@ -258,7 +258,7 @@ Before any phase is considered complete:
 - [ ] macOS/Linux — forward slash paths, case-insensitive NuGet lookup
 - [ ] Custom `$NUGET_PACKAGES` — respected in all path resolution
 - [ ] MCP client without `tools/list_changed` — `--mcp-wait-tools-list` still works
-- [ ] MCP client without `roots` — `--force-roots-fallback` still works
+- [ ] MCP client without `roots` — roots fallback auto-enabled (and legacy `--force-roots-fallback` override still accepted)
 
 ---
 
@@ -485,7 +485,7 @@ Program.Main()
 
 On first `list_tools`:
 - Return bridge tools (`uno_health`, `uno_app_select_solution`, `uno_app_initialize` when in force-roots-fallback mode) plus meta-tools (`uno_discover_tools`, `uno_execute_tool`)
-- Meta-tools allow clients that do not re-query `list_tools` after `tools/list_changed` to discover and invoke upstream tools
+- Meta-tools provide a stable compatibility path to discover and invoke upstream tools even as `tools/list_changed` updates the direct tool set
 - Tool *calls* that arrive before the host is ready get a structured error (not a hang)
 
 > **Implementation note**: The tool cache (`tools-cache.json`, `ToolCacheFile`) has been removed entirely. There is no more file persistence for tool definitions (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync` no longer exist). The meta-tools `uno_discover_tools` and `uno_execute_tool` replace the cache as the mechanism for clients to access tools that arrive after the initial `list_tools`. The `--force-generate-tool-cache` CLI option is now a no-op, kept for backward compatibility.
@@ -533,6 +533,9 @@ internal enum IssueCode
     UnoSdkNotInGlobalJson,
     SdkNotInCache,
     PackagesJsonNotFound,
+    NoSolutionFound,
+    WorkspaceAmbiguous,
+    WorkspaceNotResolved,
 
     // DevServer issues
     DevServerPackageNotCached,
@@ -540,6 +543,7 @@ internal enum IssueCode
     HostNotStarted,
     HostCrashed,
     HostUnreachable,
+    HostMcpEndpointNotAvailable,
 
     // Runtime issues
     DotNetNotFound,
@@ -724,6 +728,33 @@ Transitions:
 - Tools-changed TCS is reset on each reconnection cycle
 - Upstream `McpClient` is disposable and recreatable
 - The notification deserialization bug (`McpClientProxy.cs:74`) must be fixed before reconnection logic is added
+
+##### Readiness Probe Result Model *(implemented)*
+
+> **Current state**: `DevServerMonitor.WaitForServerReadyAsync()` returns a `ReadinessProbeResult` enum instead of a bare `bool`, allowing the monitor to distinguish between success, process exit, missing `/mcp` endpoint, and timeout. Decision logic is extracted into `MonitorDecisions` (`MonitorDecisions.cs`) for testability.
+
+```csharp
+internal enum ReadinessProbeResult
+{
+    Ready,              // /mcp endpoint responded successfully
+    ProcessExited,      // Host process exited during probe (controller reuse scenario)
+    ServerRespondedNoMcp, // HTTP alive but /mcp returned 404/400 (pre-MCP host)
+    TimedOut,           // No HTTP response within timeout budget
+}
+```
+
+**AmbientRegistry fallback** (`DevServerMonitor.cs`): When the readiness probe returns `ProcessExited` and the monitor was launched with a solution path, the monitor re-queries `AmbientRegistry` for an active server for the same solution on a **different** port. If found, it adopts that server's port and retries the readiness probe. This handles the common scenario where the controller detected an existing DevServer (started by an IDE) and exited with code 0.
+
+```
+WaitForServerReadyAsync returns ProcessExited
+  → ShouldAttemptAmbientFallback(probeResult, solution, existingPort, currentPort)
+    → true when existingPort != currentPort AND solution is not null
+      → adopt existing port, clear _serverProcess, retry readiness probe
+```
+
+**`HostRespondedNoMcp` flag** (`DevServerMonitor.HostRespondedNoMcp`): Set when the readiness result is `ServerRespondedNoMcp`. Used by `HealthService` to surface `IssueCode.HostMcpEndpointNotAvailable` (Warning severity) with remediation suggesting a DevServer package upgrade. The flag is reset to `false` in `StopMonitoringAsync` and before each readiness probe cycle to prevent stale diagnostics across workspace transitions and crash recovery.
+
+**Known limitation**: The same-port reuse scenario (controller exits with code 0, existing server on the *same* port) is not yet handled — the fallback requires a different port. This is tracked as a follow-up improvement.
 
 #### 1g. Skip Controller Process *(Phase 1b target)*
 
@@ -1166,7 +1197,7 @@ This refactoring is a **prerequisite** for the state machine (Phase 1c). All ser
 | Upstream `MCPToolsObserverService` TCS has no timeout | If license check throws or hangs **before** `TrySetResult()` at `:161`, upstream `list_tools` blocks forever (`MCPToolsObserverService.cs:194`, TCS at `:37`). Note: `TrySetResult()` IS called in the normal 0-tool path; the gap is exception/hang before that line. | **High (upstream bug)** | Upstream fix recommended — see `uno.app-mcp/README.md` alongside this spec. CLI-side 30s timeout (Phase 1a) mitigates for MCP mode once implemented. |
 | `.targets` diagnostic finds `tools/devserver/` but entry point unknown | Silently degraded state | Medium | Warning in health resource; do NOT load DLLs blindly |
 | Upstream `list_tools` blocks on license resolution | Slower than expected "functional tools" time | Medium | FR10 acknowledges this; CLI-side cache serves tools while upstream resolves |
-| **Tool cache removed** | The `tools-cache.json` file and all associated code (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync`) have been removed. Meta-tools (`uno_discover_tools`, `uno_execute_tool`) replace the cache as the mechanism for clients that do not re-query `list_tools` after `tools/list_changed`. `--force-generate-tool-cache` is now a no-op. | **Resolved** | Meta-tools provide a runtime mechanism that does not require file persistence. |
+| **Tool cache removed** | The `tools-cache.json` file and all associated code (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync`) have been removed. Meta-tools (`uno_discover_tools`, `uno_execute_tool`) replace the cache as the runtime compatibility mechanism for accessing upstream tools as the direct tool set changes. `--force-generate-tool-cache` is now a no-op. | **Resolved** | Meta-tools provide a runtime mechanism that does not require file persistence. |
 | **Controller bypass reimplementation scope** (Phase 1b) | Missing controller responsibilities break MCP mode | **Medium-High** | Controller has 9 responsibilities (see 1g table). Each must be reimplemented or explicitly delegated. High test coverage required — each responsibility needs a dedicated test. |
 | **VS extension launcher reflection fragility** | VS extension (`uno.studio`) uses reflection to load `Uno.UI.RemoteControl.VS.dll` and probe **two type names**: `Uno.UI.DevServer.VS.EntryPoint` then `Uno.UI.RemoteControl.VS.EntryPoint` (`DevServerLauncher.cs:302-303`), with v3/v2/v1 constructor probing (`DevServerLauncher.cs:313-326`). Changes to either type name or any constructor signature break the VS extension. | Medium | Lock both type names and all three constructor signatures (v1/v2/v3) with regression tests. See `uno.studio/README.md` alongside this spec for full signature details. |
 | **Rider auto-restart race condition** | Rider extension auto-restarts Host immediately on process exit. If CLI MCP mode kills and relaunches Host, Rider may race to restart its own copy → two instances. | **Medium** | AmbientRegistry pre-check exists **only in the controller path** (`Program.Command.cs:37-49`), NOT in the server-mode startup (`Program.cs` only registers at line 221, no pre-check). Rider launches Host directly (no controller). **Mitigation requires adding AmbientRegistry pre-check to the server-mode path** OR ensuring Rider uses the controller path. Test: MCP restarts Host while Rider is connected → verify only one instance survives. |
@@ -1208,17 +1239,18 @@ This refactoring is a **prerequisite** for the state machine (Phase 1c). All ser
 
 ### Phase 1a: Immediate MCP Start (MCP-only)
 - Restructure `McpProxy` to start STDIO server immediately
-- Return bridge tools + meta-tools (`uno_discover_tools`, `uno_execute_tool`) on first `list_tools` for clients that do not re-query after `tools/list_changed`
+- Return bridge tools + meta-tools (`uno_discover_tools`, `uno_execute_tool`) on initial and subsequent `list_tools` responses so clients always retain a stable compatibility route
 - Structured error responses for premature tool calls
 - **Fix `list_tools` indefinite blocking** (FR11): bounded timeout, handle 0-tool case
 - **Fix `McpClientProxy.DisposeAsync` hang**: `TrySetCanceled()` on TCS before awaiting (process shutdown must not block)
 - Health resource (`uno://health`) + `uno_health` tool
 
-### Phase 1b: Background Discovery + Direct Server Launch (MCP-only)
-- Background discovery chain using Phase 0's fast resolution
-- Skip controller process in MCP mode (direct Host launch)
-- **Re-implement CLI-side**: AmbientRegistry check (1g-bis) + `.csproj.user` generation (currently controller-only, see `Program.Command.cs:101`)
-- Pass add-in paths via `--addins`
+### Phase 1b: Background Discovery + Direct Server Launch ✅ **IMPLEMENTED**
+- CLI `start` now bypasses the controller and launches the Host directly via `StartCommandHandler`
+- CLI-side: AmbientRegistry check, IDE channel rebind, port allocation, `.csproj.user` generation
+- All arguments (`--ideChannel`, `--addins`, `--metadata-updates`) forwarded to Host in direct mode
+- Fixes backward compatibility with older Host binaries (SDK ≤ 6.5.x) that dropped `--ideChannel` in the two-process launcher
+- See `StartCommandHandler.cs`, tests in `Given_StartCommandHandler.cs` and `Given_StartCommandHandler_Integration.cs`
 
 ### Phase 1c: Hot Reconnection (MCP-only)
 

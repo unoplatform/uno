@@ -15,15 +15,15 @@ namespace Windows.Security.Cryptography.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer KdfGenericBinary
+		public global::Windows.Security.Cryptography.Core.Capi1KdfTargetAlgorithm Capi1KdfTargetAlgorithm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KeyDerivationParameters.KdfGenericBinary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20KeyDerivationParameters.KdfGenericBinary");
+				throw new global::System.NotImplementedException("The member Capi1KdfTargetAlgorithm KeyDerivationParameters.Capi1KdfTargetAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Capi1KdfTargetAlgorithm%20KeyDerivationParameters.Capi1KdfTargetAlgorithm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Core.KeyDerivationParameters", "IBuffer KeyDerivationParameters.KdfGenericBinary");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Core.KeyDerivationParameters", "Capi1KdfTargetAlgorithm KeyDerivationParameters.Capi1KdfTargetAlgorithm");
 			}
 		}
 #endif
@@ -39,28 +39,16 @@ namespace Windows.Security.Cryptography.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Core.Capi1KdfTargetAlgorithm Capi1KdfTargetAlgorithm
+		public global::Windows.Storage.Streams.IBuffer KdfGenericBinary
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Capi1KdfTargetAlgorithm KeyDerivationParameters.Capi1KdfTargetAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Capi1KdfTargetAlgorithm%20KeyDerivationParameters.Capi1KdfTargetAlgorithm");
+				throw new global::System.NotImplementedException("The member IBuffer KeyDerivationParameters.KdfGenericBinary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20KeyDerivationParameters.KdfGenericBinary");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Core.KeyDerivationParameters", "Capi1KdfTargetAlgorithm KeyDerivationParameters.Capi1KdfTargetAlgorithm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Core.KeyDerivationParameters", "IBuffer KeyDerivationParameters.KdfGenericBinary");
 			}
-		}
-#endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.KdfGenericBinary.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.KdfGenericBinary.set
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.IterationCount.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Capi1KdfTargetAlgorithm.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Capi1KdfTargetAlgorithm.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.Cryptography.Core.KeyDerivationParameters BuildForCapi1Kdf(global::Windows.Security.Cryptography.Core.Capi1KdfTargetAlgorithm capi1KdfTargetAlgorithm)
-		{
-			throw new global::System.NotImplementedException("The member KeyDerivationParameters KeyDerivationParameters.BuildForCapi1Kdf(Capi1KdfTargetAlgorithm capi1KdfTargetAlgorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyDerivationParameters%20KeyDerivationParameters.BuildForCapi1Kdf%28Capi1KdfTargetAlgorithm%20capi1KdfTargetAlgorithm%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -84,5 +72,17 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member KeyDerivationParameters KeyDerivationParameters.BuildForSP80056a(IBuffer algorithmId, IBuffer partyUInfo, IBuffer partyVInfo, IBuffer suppPubInfo, IBuffer suppPrivInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyDerivationParameters%20KeyDerivationParameters.BuildForSP80056a%28IBuffer%20algorithmId%2C%20IBuffer%20partyUInfo%2C%20IBuffer%20partyVInfo%2C%20IBuffer%20suppPubInfo%2C%20IBuffer%20suppPrivInfo%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.Cryptography.Core.KeyDerivationParameters BuildForCapi1Kdf(global::Windows.Security.Cryptography.Core.Capi1KdfTargetAlgorithm capi1KdfTargetAlgorithm)
+		{
+			throw new global::System.NotImplementedException("The member KeyDerivationParameters KeyDerivationParameters.BuildForCapi1Kdf(Capi1KdfTargetAlgorithm capi1KdfTargetAlgorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyDerivationParameters%20KeyDerivationParameters.BuildForCapi1Kdf%28Capi1KdfTargetAlgorithm%20capi1KdfTargetAlgorithm%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Capi1KdfTargetAlgorithm.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Capi1KdfTargetAlgorithm.set
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.IterationCount.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.KdfGenericBinary.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.KdfGenericBinary.set
 	}
 }

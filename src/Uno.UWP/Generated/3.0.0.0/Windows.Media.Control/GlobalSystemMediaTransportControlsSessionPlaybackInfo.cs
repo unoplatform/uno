@@ -73,11 +73,11 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive.get
 	}
 }
