@@ -42,11 +42,22 @@ public partial class ScrollViewer
 	// Set when AnchoringArrangeOverride eagerly syncs dimension DPs, so AfterArrange can skip the duplicate call.
 	private bool m_dimensionsUpdatedInArrange;
 
+	// WinUI parity: classic `ScrollViewer.HorizontalAnchorRatio` / `VerticalAnchorRatio` default
+	// to 0.0, NOT NaN. (NaN is the default for `ScrollPresenter` / `ScrollView`, but the classic
+	// `ScrollViewer` defaults to 0.0 — which engages top/left edge element anchoring out of the
+	// box.) The MUX sample `VariableSizedItemsPage.xaml` explicitly sets `HorizontalAnchorRatio="NaN"`
+	// to opt OUT of horizontal anchoring, leaving vertical at the default 0.0 — consistent with
+	// the user-visible behaviour where vertical scroll content stays anchored across realization-
+	// range transitions when an `ItemsRepeater` is the content. With Uno's previous NaN default,
+	// `IsAnchoring` returned all-false and `AnchoringArrangeOverride` short-circuited, so any
+	// layout-origin shift in `StackLayout.GetExtent` was visible as content "jumping" between
+	// frames. Restoring the 0.0 default lets `AnchoringArrangeOverride` compensate the offset
+	// to keep the top-edge anchor element at the same viewport position across layout passes.
 	public static DependencyProperty HorizontalAnchorRatioProperty { get; } =
 		DependencyProperty.Register(
 			nameof(HorizontalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(double.NaN));
+			new FrameworkPropertyMetadata(0.0));
 
 	public double HorizontalAnchorRatio
 	{
@@ -58,7 +69,7 @@ public partial class ScrollViewer
 		DependencyProperty.Register(
 			nameof(VerticalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(double.NaN));
+			new FrameworkPropertyMetadata(0.0));
 
 	public double VerticalAnchorRatio
 	{

@@ -26,6 +26,8 @@ public partial class ScrollContentPresenter : ContentPresenter
 
 	internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 
+	internal bool IsScrollAnimationInProgress => false;
+
 	private object RealContent { get; set; }
 
 	protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);

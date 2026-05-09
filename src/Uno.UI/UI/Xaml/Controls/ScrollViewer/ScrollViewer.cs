@@ -828,10 +828,119 @@ namespace Microsoft.UI.Xaml.Controls
 			TrimOverscroll(Orientation.Vertical);
 			TrimOverscroll(Orientation.Horizontal);
 
+			// Ports the WinUI distinction between the user-requested offset (`m_Offset` in
+			// `ScrollData`) and the effective offset (`m_ComputedOffset`). On every extent
+			// change, WinUI re-coerces the requested offset against the new extent
+			// (ScrollContentPresenter_Partial.cpp:3192-3207). Without this, an iterative
+			// `TrimOverscroll` cascade can leave `VerticalOffset` below the post-settle
+			// `ScrollableHeight` because `TrimOverscroll` only fires while the viewport is
+			// past the extent — once the extent grows back (e.g. tall items getting realized
+			// as the offset descends through the list), there is no upward catch-up.
+			ReapplyRequestedOffsetForExtent();
+
 			var newSize = new Size(ExtentWidth, ExtentWidth);
 			if (oldSize != newSize)
 			{
 				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
+			}
+		}
+
+		// Last user-requested offset (set by `ChangeView` and other public scroll APIs). Tracked
+		// so that, when the extent grows after a layout pass, we can advance `VerticalOffset`
+		// toward the user's intent — matching WinUI's `m_Offset` vs `m_ComputedOffset` split.
+		private double? _requestedVerticalOffset;
+		private double? _requestedHorizontalOffset;
+		private bool _isReapplyingRequestedOffset;
+
+		internal void TrackRequestedScrollOffsets(double? horizontalOffset, double? verticalOffset)
+		{
+			if (_isReapplyingRequestedOffset)
+			{
+				return;
+			}
+
+			if (horizontalOffset is { } h)
+			{
+				_requestedHorizontalOffset = h;
+			}
+
+			if (verticalOffset is { } v)
+			{
+				_requestedVerticalOffset = v;
+			}
+		}
+
+		internal void ClearRequestedScrollOffsets()
+		{
+			if (_isReapplyingRequestedOffset)
+			{
+				return;
+			}
+
+			_requestedHorizontalOffset = null;
+			_requestedVerticalOffset = null;
+		}
+
+		private void ReapplyRequestedOffsetForExtent()
+		{
+			if (_isReapplyingRequestedOffset)
+			{
+				return;
+			}
+
+			// If a scroll animation (wheel / touch / programmatic-with-animation) is currently
+			// running, bail out: forcing a `ChangeView(disableAnimation:true)` re-coercion mid-
+			// animation would stop the in-flight `Visual.AnchorPoint` keyframe and snap the
+			// offset to a value that fights the user's smooth scroll. The animation will reach
+			// its target naturally, and the next post-animation layout pass will run Reapply
+			// with an idle scroller — the right time to apply any extent-driven catch-up.
+			if ((_presenter as ScrollContentPresenter)?.IsScrollAnimationInProgress == true)
+			{
+				return;
+			}
+
+			// `_requestedVerticalOffset` / `_requestedHorizontalOffset` are kept across layout
+			// passes — only overwritten by a subsequent `ChangeView` or by the offset reported
+			// from `OnPresenterScrolled` (see `TrackRequestedScrollOffsets`). Do NOT auto-clear
+			// when the current state matches the request: the matching state may be stale
+			// because the *next* layout pass can still shrink/grow the extent, and we need to
+			// keep coercing the original target until the user explicitly changes intent.
+			double? targetHorizontal = null;
+			double? targetVertical = null;
+
+			if (_requestedHorizontalOffset is { } reqH)
+			{
+				var maxH = global::System.Math.Max(0, ExtentWidth - ViewportWidth);
+				var coercedH = global::System.Math.Min(global::System.Math.Max(0, reqH), maxH);
+				if (global::System.Math.Abs(coercedH - HorizontalOffset) > 0.5)
+				{
+					targetHorizontal = coercedH;
+				}
+			}
+
+			if (_requestedVerticalOffset is { } reqV)
+			{
+				var maxV = global::System.Math.Max(0, ExtentHeight - ViewportHeight);
+				var coercedV = global::System.Math.Min(global::System.Math.Max(0, reqV), maxV);
+				if (global::System.Math.Abs(coercedV - VerticalOffset) > 0.5)
+				{
+					targetVertical = coercedV;
+				}
+			}
+
+			if (targetHorizontal is null && targetVertical is null)
+			{
+				return;
+			}
+
+			_isReapplyingRequestedOffset = true;
+			try
+			{
+				ChangeView(targetHorizontal, targetVertical, null, disableAnimation: true);
+			}
+			finally
+			{
+				_isReapplyingRequestedOffset = false;
 			}
 		}
 
@@ -1245,6 +1354,13 @@ namespace Microsoft.UI.Xaml.Controls
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
+			// Note: tracking of the user's "requested" offset happens at `ScrollContentPresenter.Update`
+			// (the scroll-initiation point, which captures the *target* for both animated and
+			// non-animated paths). We do NOT track here — `OnPresenterScrolled` fires for every
+			// animation frame (`isIntermediate=true`) as the keyframe runs, and treating each
+			// intermediate value as a new "request" would cause `ReapplyRequestedOffsetForExtent`
+			// to snap the scroll back to a stale frame on the next layout pass.
+
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
 
@@ -1509,6 +1625,13 @@ namespace Microsoft.UI.Xaml.Controls
 			var horizontalOffsetChanged = horizontalOffset != null && horizontalOffset != HorizontalOffset;
 			var zoomFactorChanged = zoomFactor != null && zoomFactor != ZoomFactor;
 
+			// Track the user's *requested* offsets so a subsequent extent change can re-coerce
+			// against the new range. This mirrors WinUI's `ScrollData::m_Offset` (raw request)
+			// vs `m_ComputedOffset` (clamped effective value) — see
+			// `ScrollContentPresenter_Partial.cpp:3192-3207`. Re-entrant calls from
+			// `ReapplyRequestedOffsetForExtent` are gated out via `_isReapplyingRequestedOffset`.
+			TrackRequestedScrollOffsets(horizontalOffset, verticalOffset);
+
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
 				return ChangeViewCore(
@@ -1595,7 +1718,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Automatically hide the scroll indicator after a delay without any interaction
 			if (_indicatorResetTimer == null)
 			{
-				var weakRef = WeakReferencePool.RentSelfWeakReference(this);
+				var weakRef = WeakReferencePool.RentSelfWeakReference((IWeakReferenceProvider)this);
 				_indicatorResetTimer = new DispatcherQueueTimer
 				{
 					Interval = _indicatorResetDelay,
