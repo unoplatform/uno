@@ -709,10 +709,20 @@
                             Margin="0,0,0,4"
                             Style="{StaticResource Typo03}"
                             Text="Description" />
-                        <TextBlock
+                        <ScrollViewer
+                            x:Name="DescriptionScrollViewer"
                             MaxHeight="80"
-                            Style="{StaticResource Typo05}"
-                            Text="{Binding CurrentSelectedSample.Description}" />
+                            HorizontalAlignment="Stretch"
+                            HorizontalScrollBarVisibility="Disabled"
+                            HorizontalScrollMode="Disabled"
+                            VerticalScrollBarVisibility="Auto"
+                            VerticalScrollMode="Auto">
+                            <TextBlock
+                                x:Name="CurrentSampleDescription"
+                                Style="{StaticResource Typo05}"
+                                Text="{Binding CurrentSelectedSample.Description}"
+                                TextWrapping="Wrap" />
+                        </ScrollViewer>
                     </StackPanel>
                 </Grid>
             </SplitView.Content>
