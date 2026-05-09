@@ -1468,12 +1468,37 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
 									{
-										writer.AppendLineInvariantIndented("_{0}_ResourceDictionary = ", _fileUniqueId);
-										InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true, initializers);
-										writer.AppendLineIndented(";");
+										var implicitContentMember = FindImplicitContentMember(topLevelControl);
+										var resourceCount = implicitContentMember?.Objects?.Count ?? 0;
+										var dictVarId = $"_{_fileUniqueId}_ResourceDictionary";
 										var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
-										writer.AppendLineInvariantIndented("_{0}_ResourceDictionary.Source = new global::System.Uri(\"{1}{2}\");", _fileUniqueId, XamlFilePathHelper.LocalResourcePrefix, url);
-										writer.AppendLineInvariantIndented("_{0}_ResourceDictionary.CreationComplete();", _fileUniqueId);
+
+										if (resourceCount > 0)
+										{
+											// Use the factory method to pre-size the backing dictionary, avoiding resize operations
+											// as the item count is statically known at code generation time.
+											writer.AppendLineInvariantIndented("{0} = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity({1});", dictVarId, resourceCount);
+											if (HasIsParsing(FindType(topLevelControl.Type)))
+											{
+												writer.AppendLineInvariantIndented("{0}.IsParsing = true;", dictVarId);
+											}
+											if (_isUnoAssembly)
+											{
+												writer.AppendLineInvariantIndented("{0}.IsSystemDictionary = true;", dictVarId);
+											}
+											BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: false, dictIdentifier: dictVarId);
+											BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: false, dictIdentifier: dictVarId);
+											BuildResourceDictionary(writer, implicitContentMember, isInInitializer: false, dictIdentifier: dictVarId, initializers: initializers);
+										}
+										else
+										{
+											writer.AppendLineInvariantIndented("{0} = ", dictVarId);
+											InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true, initializers);
+											writer.AppendLineIndented(";");
+										}
+
+										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.LocalResourcePrefix, url);
+										writer.AppendLineInvariantIndented("{0}.CreationComplete();", dictVarId);
 									}
 
 									writer.AppendLineInvariantIndented("return _{0}_ResourceDictionary;", _fileUniqueId);
@@ -1737,10 +1762,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				var implicitContentMember = FindImplicitContentMember(topLevelControl);
-				var resourceCount = implicitContentMember?.Objects?.Count ?? 0;
-				var ctorArg = resourceCount > 0 ? $"({resourceCount})" : string.Empty;
-				using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.ResourceDictionary{0}", ctorArg))
+				using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.ResourceDictionary"))
 				{
 					if (setIsParsing)
 					{
@@ -1752,7 +1774,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
-					BuildResourceDictionary(writer, implicitContentMember, isInInitializer: true, initializers: initializers);
+					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true, initializers: initializers);
 				}
 			}
 		}

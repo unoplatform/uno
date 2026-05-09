@@ -70,6 +70,14 @@ namespace Microsoft.UI.Xaml
 			};
 		}
 
+		/// <summary>
+		/// Creates a new <see cref="ResourceDictionary"/> with the specified initial capacity, to reduce internal resize operations.
+		/// This method is intended for use by XAML-generated code and is not meant to be called directly from user code.
+		/// </summary>
+		/// <param name="initialCapacity">The initial number of elements the dictionary can contain before resizing.</param>
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public static ResourceDictionary CreateWithCapacity(int initialCapacity) => new ResourceDictionary(initialCapacity);
+
 		private Uri _source;
 		public Uri Source
 		{
