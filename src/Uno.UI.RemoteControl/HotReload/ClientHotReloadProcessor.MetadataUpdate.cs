@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -53,6 +54,12 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
+	/// <summary>
+	/// Pending type updates that arrived before <see cref="CurrentWindow"/> was set.
+	/// Drained by <see cref="SetWindow"/> once a window with a valid dispatcher is available.
+	/// </summary>
+	private static readonly ConcurrentQueue<(HotReloadClientOperation? Hr, Type[] Types)> _pendingUpdates = new();
+
 	internal static Window? CurrentWindow { get; private set; }
 
 	private static (bool value, string reason) ShouldReload()
@@ -80,6 +87,9 @@ partial class ClientHotReloadProcessor
 			CurrentWindow.Activated += ShowDiagnosticsOnFirstActivation;
 		}
 #endif
+
+		// Drain any metadata updates that arrived before the window was registered.
+		DrainPendingUpdates();
 	}
 
 #if HAS_UNO_WINUI // No diag to show currently on windows (so no WINUI)
@@ -566,24 +576,64 @@ partial class ClientHotReloadProcessor
 			_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
 		}
 
+		if (!TryDispatchUpdate(hr, types))
+		{
+			// Window/dispatcher not available yet — buffer for replay when SetWindow is called.
+			_pendingUpdates.Enqueue((hr, types));
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn($"Dispatcher not available yet, queuing metadata update for replay when Window is set. Queued types: {string.Join(", ", types.Select(s => s.ToString()))}");
+			}
+		}
+	}
+
+	/// <summary>
+	/// Attempts to dispatch a metadata update to the UI thread via the current window's dispatcher.
+	/// </summary>
+	/// <returns><c>true</c> if the update was dispatched; <c>false</c> if no window/dispatcher is available.</returns>
+	private static bool TryDispatchUpdate(HotReloadClientOperation? hr, Type[] types)
+	{
 #if WINUI
 		if (CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
 		{
 			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(hr, window, types));
+			return true;
 		}
 #else
 		if (CurrentWindow is { Dispatcher: { } dispatcher } window)
 		{
 			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(hr, window, types));
+			return true;
 		}
 #endif
-		else
+		return false;
+	}
+
+	/// <summary>
+	/// Drains metadata updates that were queued before a window was available, dispatching them
+	/// now that <see cref="CurrentWindow"/> is set.
+	/// </summary>
+	private static void DrainPendingUpdates()
+	{
+		while (_pendingUpdates.TryDequeue(out var pending))
 		{
-			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.UseStudio()) in app startup. See https://aka.platform.uno/hot-reload";
-			hr?.ReportError(new InvalidOperationException(errorMsg));
-			if (_log.IsEnabled(LogLevel.Warning))
+			if (TryDispatchUpdate(pending.Hr, pending.Types))
 			{
-				_log.Warn(errorMsg);
+				if (_log.IsEnabled(LogLevel.Information))
+				{
+					_log.Info($"Replayed queued metadata update: {string.Join(", ", pending.Types.Select(s => s.ToString()))}");
+				}
+			}
+			else
+			{
+				// Still can't dispatch (e.g., window set but dispatcher is null).
+				// Re-enqueue and stop — will retry on next SetWindow call.
+				_pendingUpdates.Enqueue(pending);
+				if (_log.IsEnabled(LogLevel.Warning))
+				{
+					_log.Warn("Window is set but dispatcher is still unavailable, re-queued pending updates.");
+				}
+				break;
 			}
 		}
 	}
