@@ -402,9 +402,12 @@ namespace Microsoft.UI.Xaml
 					// We need to invoke them using the right resource context.
 					ResourceResolver.PushNewScope(_xamlScope);
 
-					foreach (var setter in target.setters.OfType<Setter>())
+					foreach (var setterBase in target.setters)
 					{
-						setter.ApplyValue(element);
+						if (setterBase is Setter setter)
+						{
+							setter.ApplyValue(element);
+						}
 					}
 				}
 				finally
