@@ -1475,7 +1475,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										var dictVarId = $"_{_fileUniqueId}_ResourceDictionary";
 										var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
 
-										if (resourceCount > 0)
+										// The CreateWithCapacity fast path always instantiates the base ResourceDictionary type,
+										// so it must not be used when the top-level element is a typed ResourceDictionary subclass —
+										// those still need to go through InitializeAndBuildResourceDictionary -> BuildTypedResourceDictionary
+										// to instantiate the correct derived type and apply its literal properties.
+										if (resourceCount > 0 && !IsResourceDictionarySubclass(topLevelControl.Type))
 										{
 											// Use the factory method to pre-size the backing dictionary, avoiding resize operations
 											// as the item count is statically known at code generation time.

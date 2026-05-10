@@ -1,21 +1,20 @@
 ﻿//#define DEBUG_SET_RESOURCE_SOURCE
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using Uno.UI;
-using Uno.Extensions;
-using System.ComponentModel;
-using Uno.UI.Xaml;
-using System.Linq;
-using System.Diagnostics;
-using Windows.UI.Input.Spatial;
-
-using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
-using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Data;
-using Uno.UI.DataBinding;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
+using Microsoft.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
+using Windows.UI.Input.Spatial;
+using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 
 namespace Microsoft.UI.Xaml
 {
@@ -75,8 +74,17 @@ namespace Microsoft.UI.Xaml
 		/// This method is intended for use by XAML-generated code and is not meant to be called directly from user code.
 		/// </summary>
 		/// <param name="initialCapacity">The initial number of elements the dictionary can contain before resizing.</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="initialCapacity"/> is negative.</exception>
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		public static ResourceDictionary CreateWithCapacity(int initialCapacity) => new ResourceDictionary(initialCapacity);
+		public static ResourceDictionary CreateWithCapacity(int initialCapacity)
+		{
+			if (initialCapacity < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(initialCapacity));
+			}
+
+			return new ResourceDictionary(initialCapacity);
+		}
 
 		private Uri _source;
 		public Uri Source
