@@ -9,12 +9,13 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		private protected override Rect ComputeBounds()
 		{
-			var b = GetSKPath().Bounds;
-			if (b.IsEmpty)
+			var path = GetSKPath();
+			if (path.IsEmpty)
 			{
 				return default;
 			}
 
+			var b = path.Bounds;
 			var rect = new Rect(b.Left, b.Top, b.Width, b.Height);
 			return Transform is { } transform ? transform.TransformBounds(rect) : rect;
 		}

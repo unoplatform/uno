@@ -56,12 +56,13 @@ namespace Uno.Media
 				return default;
 			}
 
-			var b = GetSKPath().Bounds;
-			if (b.IsEmpty)
+			var path = GetSKPath();
+			if (path.IsEmpty)
 			{
 				return default;
 			}
 
+			var b = path.Bounds;
 			var rect = new Windows.Foundation.Rect(b.Left, b.Top, b.Width, b.Height);
 			return Transform is { } transform ? transform.TransformBounds(rect) : rect;
 		}

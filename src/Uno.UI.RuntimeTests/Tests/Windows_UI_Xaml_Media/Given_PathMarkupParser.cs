@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[DataRow("M 0,0 v 10", 0.0, 10.0)]
 		[DataRow("M 0,0 L 10,10", 10.0, 10.0)]
 		[DataRow("M 0,0 l 10,10", 10.0, 10.0)]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void When_Path_LinearCommand_Bounds(string data, double width, double height)
 		{
 			var geometry = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), data);
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void When_Path_Implicit_Repeat_After_Move()
 		{
 			var data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "M 0,0 10,0 10,10 0,10 Z");
@@ -41,7 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void When_Path_Z_Then_Command_Without_M_Reuses_Figure_Start()
 		{
 			var data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "M 0,0 L 10,0 10,10 0,10 Z L 5,5");
@@ -52,7 +52,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void When_Path_S_After_Non_Cubic_Uses_Current_Point()
 		{
 			var withS = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "M 0,0 Q 5,5 10,0 S 20,10 30,0");
@@ -62,7 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void When_Path_T_After_Non_Quadratic_Uses_Current_Point()
 		{
 			var withT = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "M 0,0 C 2,2 8,2 10,0 T 20,0");
@@ -72,7 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void When_Path_S_After_Cubic_Reflects_Control_Point()
 		{
 			var withS = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "M 0,0 C 0,5 5,5 10,0 S 20,10 20,0");
