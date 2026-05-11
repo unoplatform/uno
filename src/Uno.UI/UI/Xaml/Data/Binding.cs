@@ -220,15 +220,25 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		internal string[] XBindPropertyPaths { get; private set; }
 
+		/// <summary>
+		/// Type of the x:Bind source property, used as the target type passed to
+		/// <see cref="IValueConverter.ConvertBack(object, Type, object, string)"/> for two-way x:Bind.
+		/// </summary>
+		internal Type XBindBackConverterTargetType { get; private set; }
+
 		// Each of these values could be null and the Binding could still be an x:Bind, but they can't all be null
 		internal bool IsXBind => XBindSelector is not null || XBindPropertyPaths is not null || CompiledSource is not null || XBindBack is not null;
 
 		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null)
+			=> SetBindingXBindProvider(compiledSource, xBindSelector, xBindBack, xBindBackConverterTargetType: null, propertyPaths);
+
+		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, Type xBindBackConverterTargetType, string[] propertyPaths = null)
 		{
 			CompiledSource = compiledSource;
 			XBindSelector = xBindSelector;
 			XBindPropertyPaths = propertyPaths;
 			XBindBack = xBindBack;
+			XBindBackConverterTargetType = xBindBackConverterTargetType;
 		}
 
 		/// <summary>

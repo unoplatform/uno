@@ -212,7 +212,7 @@ namespace Microsoft.UI.Xaml.Data
 				{
 					value = ParentBinding.Converter.ConvertBack(
 						value,
-						_bindingPath.ValueType,
+						ParentBinding.XBindBackConverterTargetType ?? _bindingPath.ValueType,
 						ParentBinding.ConverterParameter,
 						GetCurrentCulture()
 					);

@@ -54,6 +54,34 @@ public partial class BindingTests
 		Assert.AreEqual("1", SUT.myTb.Text);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19121")]
+	public async Task When_XBind_TwoWay_ConvertBack_TargetType()
+	{
+		var SUT = new XBind_TwoWay_ConvertBack_TargetType();
+		await UITestHelper.Load(SUT);
+
+		var converter = (RecordingConverter)SUT.Resources["RecordingConverter"];
+
+		// Push a new value back through the binding by invoking UpdateSource directly,
+		// which avoids depending on focus-driven LostFocus triggers in a non-interactive run.
+		SUT.StringTextBox.Text = "hello";
+		var stringExpression = SUT.StringTextBox.GetBindingExpression(TextBox.TextProperty);
+		stringExpression.UpdateSource();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(typeof(string), converter.LastConvertBackTargetType, "ConvertBack should receive the source property type (string).");
+		Assert.AreEqual("hello", SUT.ViewModel.StringValue);
+
+		SUT.IntTextBox.Text = "123";
+		var intExpression = SUT.IntTextBox.GetBindingExpression(TextBox.TextProperty);
+		intExpression.UpdateSource();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(typeof(int), converter.LastConvertBackTargetType, "ConvertBack should receive the source property type (int).");
+		Assert.AreEqual(123, SUT.ViewModel.IntValue);
+	}
+
 #if __SKIA__ && HAS_UNO_WINUI
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16520")]
