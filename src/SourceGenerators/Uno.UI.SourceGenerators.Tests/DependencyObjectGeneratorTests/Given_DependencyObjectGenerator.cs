@@ -312,4 +312,32 @@ public class Given_DependencyObjectGenerator
 		test.TestState.AdditionalReferences.AddRange(UnoAssemblyHelper.LoadAssemblies());
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task TestGeneric()
+	{
+		// Regression test for https://github.com/unoplatform/uno/issues/19540
+		// The generator was emitting `typeof(MyClass)` and `((MyClass)s)` for a class declared
+		// as `MyClass<T>`, resulting in CS0305 because the type arguments were missing.
+		var testCode = """
+			using Windows.UI.Core;
+			using Microsoft.UI.Xaml;
+
+			public partial class MyClass<T> : DependencyObject
+			{
+			}
+			""";
+
+		var test = new Verify.Test
+		{
+			TestState =
+			{
+				Sources = { testCode },
+			},
+			ReferenceAssemblies = _refAsm,
+		};
+
+		test.TestState.AdditionalReferences.AddRange(UnoAssemblyHelper.LoadAssemblies());
+		await test.RunAsync();
+	}
 }

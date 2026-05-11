@@ -450,6 +450,16 @@ partial void OnDetachedFromWindowPartial();
 				return !m.Locations.FirstOrDefault()?.SourceTree?.FilePath.Contains(nameof(DependencyObjectGenerator)) ?? true;
 			}
 
+			private static string GetTypeNameWithTypeParameters(INamedTypeSymbol typeSymbol)
+			{
+				if (!typeSymbol.IsGenericType)
+				{
+					return typeSymbol.Name;
+				}
+
+				return $"{typeSymbol.Name}<{string.Join(", ", typeSymbol.TypeParameters.Select(t => t.Name))}>";
+			}
+
 			private void WriteAndroidBinderDetails(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var hasBinderDetails = typeSymbol.Is(_androidViewSymbol);
@@ -595,6 +605,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
 				var legacyNonBrowsable = "[EditorBrowsable(EditorBrowsableState.Never)]";
+				var typeName = GetTypeNameWithTypeParameters(typeSymbol);
 
 				string dataContextChangedInvokeArgument;
 				if (typeSymbol.Is(_frameworkElementSymbol))
@@ -632,11 +643,11 @@ public static DependencyProperty DataContextProperty {{ get ; }} =
 	DependencyProperty.Register(
 		name: nameof(DataContext),
 		propertyType: typeof(object),
-		ownerType: typeof({typeSymbol.Name}),
+		ownerType: typeof({typeName}),
 		typeMetadata: new FrameworkPropertyMetadata(
 			defaultValue: null,
 			options: FrameworkPropertyMetadataOptions.Inherits,
-			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnDataContextChanged(e)
+			propertyChangedCallback: (s, e) => (({typeName})s).OnDataContextChanged(e)
 		)
 );
 
@@ -663,11 +674,11 @@ public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 	DependencyProperty.Register(
 		name: nameof(TemplatedParent),
 		propertyType: typeof(DependencyObject),
-		ownerType: typeof({typeSymbol.Name}),
+		ownerType: typeof({typeName}),
 		typeMetadata: new FrameworkPropertyMetadata(
 			defaultValue: null,
 			options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
-			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnTemplatedParentChanged(e)
+			propertyChangedCallback: (s, e) => (({typeName})s).OnTemplatedParentChanged(e)
 		)
 	);
 
