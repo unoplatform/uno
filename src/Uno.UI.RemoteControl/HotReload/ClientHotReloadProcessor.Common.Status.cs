@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using Uno.Diagnostics.UI;
 using Uno.Foundation.Logging;
@@ -535,24 +536,31 @@ public partial class ClientHotReloadProcessor
 
 		private static string FlattenExceptionMessages(Exception exception)
 		{
-			var parts = new List<string>();
-			Walk(parts, exception);
-			return string.Join(" ---> ", parts);
+			var sb = new StringBuilder();
+			Walk(sb, exception, indent: 0);
+			return sb.ToString();
 
-			static void Walk(List<string> parts, Exception ex)
+			// A causal InnerException chain stays inline with " ---> " (single root cause
+			// path). AggregateException branches each get their own indented, indexed line
+			// so sibling failures aren't misread as a single chain. Nested aggregates
+			// indent further via the carried depth.
+			static void Walk(StringBuilder sb, Exception ex, int indent)
 			{
-				parts.Add($"{ex.GetType().Name}: {ex.Message}");
+				sb.Append(ex.GetType().Name).Append(": ").Append(ex.Message);
 
 				if (ex is AggregateException aggregate)
 				{
-					foreach (var inner in aggregate.InnerExceptions)
+					var inners = aggregate.InnerExceptions;
+					for (var i = 0; i < inners.Count; i++)
 					{
-						Walk(parts, inner);
+						sb.Append("\r\n").Append(' ', indent + 2).Append('[').Append(i).Append("] ");
+						Walk(sb, inners[i], indent + 2);
 					}
 				}
 				else if (ex.InnerException is { } inner)
 				{
-					Walk(parts, inner);
+					sb.Append(" ---> ");
+					Walk(sb, inner, indent);
 				}
 			}
 		}
