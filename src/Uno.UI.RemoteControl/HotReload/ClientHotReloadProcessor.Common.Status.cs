@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using Uno.Diagnostics.UI;
 using Uno.Foundation.Logging;
@@ -504,8 +505,15 @@ public partial class ClientHotReloadProcessor
 				var client = RemoteControlClient.Instance;
 				if (client is null) return;
 
+				// Flatten via Type+Message walking InnerException and AggregateException.
+				// On iOS Release builds System.Private.CoreLib's SR resource strings are
+				// stripped, so a wrapping exception's Message alone is just the localization
+				// key (e.g. "TypeInitialization_Type, X") and loses the underlying failure
+				// that pinpoints the root cause. ToString() would include the stack and
+				// produce a huge wire payload, so we walk the inner chain manually and
+				// keep only TypeName: Message per frame.
 				var errorMessage = _exceptions.Count > 0
-					? string.Join("\r\n", _exceptions.Select(e => e.Message))
+					? string.Join("\r\n", _exceptions.Select(FlattenExceptionMessages))
 					: null;
 
 				_ = client.SendMessage(new Messages.HotReloadClientOperationEvent
@@ -525,5 +533,38 @@ public partial class ClientHotReloadProcessor
 			}
 #endif
 		}
+
+#if HAS_UNO_WINUI
+		private static string FlattenExceptionMessages(Exception exception)
+		{
+			var sb = new StringBuilder();
+			Walk(sb, exception, indent: 0);
+			return sb.ToString();
+
+			// A causal InnerException chain stays inline with " ---> " (single root cause
+			// path). AggregateException branches each get their own indented, indexed line
+			// so sibling failures aren't misread as a single chain. Nested aggregates
+			// indent further via the carried depth.
+			static void Walk(StringBuilder sb, Exception ex, int indent)
+			{
+				sb.Append(ex.GetType().Name).Append(": ").Append(ex.Message);
+
+				if (ex is AggregateException aggregate)
+				{
+					var inners = aggregate.InnerExceptions;
+					for (var i = 0; i < inners.Count; i++)
+					{
+						sb.Append("\r\n").Append(' ', indent + 2).Append('[').Append(i).Append("] ");
+						Walk(sb, inners[i], indent + 2);
+					}
+				}
+				else if (ex.InnerException is { } inner)
+				{
+					sb.Append(" ---> ");
+					Walk(sb, inner, indent);
+				}
+			}
+		}
+#endif
 	}
 }
