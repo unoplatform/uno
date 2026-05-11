@@ -388,5 +388,9 @@ namespace Microsoft.UI.Xaml.Controls
 #if __WASM__ || __NETSTD_REFERENCE__
 		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
 #endif
+
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER && !__NETSTD_REFERENCE__
+		internal bool IsScrollAnimationInProgress => false;
+#endif
 	}
 }
