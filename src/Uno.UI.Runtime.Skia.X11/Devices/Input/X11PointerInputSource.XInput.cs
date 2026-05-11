@@ -305,7 +305,16 @@ internal partial class X11PointerInputSource
 			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
 			: 1;
 
-		_ = XLib.XTranslateCoordinates(display, data.EventWindow, _host!.TopX11Window.Window, (int)data.event_x, (int)data.event_y, out var dataEventX, out var dataEventY, out _);
+		// XTranslateCoordinates only accepts integer screen pixels. Translate using the floor of
+		// the XInput2 sub-pixel position, then re-add the fractional part so the sub-pixel
+		// precision survives the source-window → uno-window translation (which is integer-only).
+		var srcIntX = (int)Math.Floor(data.event_x);
+		var srcIntY = (int)Math.Floor(data.event_y);
+		var fracX = data.event_x - srcIntX;
+		var fracY = data.event_y - srcIntY;
+		_ = XLib.XTranslateCoordinates(display, data.EventWindow, _host!.TopX11Window.Window, srcIntX, srcIntY, out var dataEventX, out var dataEventY, out _);
+		var clientX = dataEventX + fracX;
+		var clientY = dataEventY + fracY;
 
 		var timeInMicroseconds = (ulong)(data.time * 1000); // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
 		var deviceType = data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDeviceType.Touch : PointerDeviceType.Mouse;
@@ -315,8 +324,8 @@ internal partial class X11PointerInputSource
 			timestamp: timeInMicroseconds,
 			PointerDevice.For(deviceType),
 			pointerId,
-			new Point(dataEventX / scale, dataEventY / scale),
-			new Point(dataEventX / scale, dataEventY / scale),
+			new Point(clientX / scale, clientY / scale),
+			new Point(clientX / scale, clientY / scale),
 			properties.HasPressedButton,
 			properties // We don't SetUpdateKind here. We already did that above
 		);

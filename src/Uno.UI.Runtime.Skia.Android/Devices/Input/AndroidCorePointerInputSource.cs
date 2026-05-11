@@ -226,7 +226,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 		var x = nativeArgs.GetX(pointerIndex);
 		var y = nativeArgs.GetY(pointerIndex);
 
-		var position = new Point((int)x - correction[0], (int)y - correction[1]).PhysicalToLogicalPixels();
+		var position = new Point(x - correction[0], y - correction[1]).PhysicalToLogicalPixels();
 		var properties = PointerHelpers.GetProperties(nativeArgs, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
 		var point = new PointerPoint(frameId, ts, pointerDevice, pointerId, position, position, isInContact, new PointerPointProperties(properties));
 		var args = new PointerEventArgs(point, keyModifiers)
