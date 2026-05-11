@@ -16,21 +16,19 @@ using Uno.Threading;
 
 namespace Uno.HotReload;
 
-public delegate ValueTask SendUpdatesAsync(ImmutableHashSet<string> files, ImmutableArray<Update> updates, CancellationToken ct);
-
 public sealed class HotReloadManager : IDisposable
 {
 	public static async ValueTask<HotReloadManager> CreateAsync(
 		Func<CancellationToken, ValueTask<Workspace>> workspaceProvider,
 		string[] metadataUpdateCapabilities,
-		SendUpdatesAsync sendUpdates,
+		IHotReloadHandler handler,
 		IHotReloadTracker tracker,
 		CancellationToken ct,
 		bool forceEmitCompilationOutput = false)
 		=> await CreateAsync(
 			await workspaceProvider(ct).ConfigureAwait(false),
 			metadataUpdateCapabilities,
-			sendUpdates,
+			handler,
 			new ChangesDetector(new TemporaryWorkspaceAddDetector(workspaceProvider, tracker), tracker),
 			tracker,
 			ct,
@@ -43,7 +41,7 @@ public sealed class HotReloadManager : IDisposable
 	public static ValueTask<HotReloadManager> CreateAsync(
 		Workspace workspace,
 		string[] metadataUpdateCapabilities,
-		SendUpdatesAsync sendUpdates,
+		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
 		IHotReloadTracker tracker,
 		CancellationToken ct,
@@ -51,7 +49,7 @@ public sealed class HotReloadManager : IDisposable
 		=> CreateAsync(
 			workspace,
 			metadataUpdateCapabilities,
-			sendUpdates,
+			handler,
 			changesDetector,
 			new SolutionUpdater(),
 			tracker,
@@ -61,7 +59,7 @@ public sealed class HotReloadManager : IDisposable
 	public static async ValueTask<HotReloadManager> CreateAsync(
 		Workspace workspace,
 		string[] metadataUpdateCapabilities,
-		SendUpdatesAsync sendUpdates,
+		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
 		ISolutionUpdater solutionUpdater,
 		IHotReloadTracker tracker,
@@ -77,13 +75,13 @@ public sealed class HotReloadManager : IDisposable
 
 		var watch = await WatchHotReloadService.CreateAsync(workspace, metadataUpdateCapabilities, ct).ConfigureAwait(false);
 
-		return new HotReloadManager(workspace, watch, sendUpdates, changesDetector, solutionUpdater, tracker);
+		return new HotReloadManager(workspace, watch, handler, changesDetector, solutionUpdater, tracker);
 	}
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
 	private readonly Workspace _innerWorkspace;
 	private readonly WatchHotReloadService _watchService;
-	private readonly SendUpdatesAsync _sendUpdates;
+	private readonly IHotReloadHandler _handler;
 	private readonly IHotReloadTracker _tracker;
 	private readonly IChangesDetector _changesDetector;
 	private readonly ISolutionUpdater _solutionUpdater;
@@ -91,14 +89,14 @@ public sealed class HotReloadManager : IDisposable
 	private HotReloadManager(
 		Workspace innerWorkspace,
 		WatchHotReloadService watchService,
-		SendUpdatesAsync sendUpdates,
+		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
 		ISolutionUpdater solutionUpdater,
 		IHotReloadTracker tracker)
 	{
 		_innerWorkspace = innerWorkspace;
 		_watchService = watchService;
-		_sendUpdates = sendUpdates;
+		_handler = handler;
 		_tracker = tracker;
 		_changesDetector = changesDetector;
 		_solutionUpdater = solutionUpdater;
@@ -207,7 +205,13 @@ public sealed class HotReloadManager : IDisposable
 			return;
 		}
 
-		await _sendUpdates(files, updates, ct).ConfigureAwait(false);
+		var update = new HotReloadUpdate(
+			files,
+			changeSet,
+			result,
+			hotReloadDiagnostics,
+			updates);
+		await _handler.SendAsync(update, ct).ConfigureAwait(false);
 
 		await hotReload.Complete(HotReloadOperationResult.Success).ConfigureAwait(false);
 	}
