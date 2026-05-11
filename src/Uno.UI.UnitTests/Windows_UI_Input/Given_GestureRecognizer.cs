@@ -189,6 +189,58 @@ namespace Uno.UI.Tests.Windows_UI_Input
 #if RUNTIME_NATIVE_AOT
 		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
 #endif  // RUNTIME_NATIVE_AOT
+		public void DoubleTapped_Duration_WithExtensionOverride()
+		{
+			const ulong OverrideDelayMicroseconds = 100 * MicrosecondsPerMillisecond;
+
+			Uno.Foundation.Extensibility.ApiExtensibility.Register(
+				typeof(IGestureRecognizerExtension),
+				_ => new StubGestureRecognizerExtension(OverrideDelayMicroseconds));
+			GestureRecognizer.ResetCacheForTests();
+
+			try
+			{
+				GestureRecognizer.ResolvedMultiTapMaxDelayMicroseconds.Should().Be(OverrideDelayMicroseconds);
+
+				var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
+				var taps = new List<TappedEventArgs>();
+				sut.Tapped += (snd, e) => taps.Add(e);
+
+				// First tap
+				sut.ProcessDownEvent(25, 25, ts: 0);
+				sut.ProcessUpEvent(26, 26, ts: 1);
+				taps.Should().BeEquivalentTo([Tap(25, 25)]);
+
+				// Within override window — should be recognized as double-tap
+				var inWindow = GetPoint(25, 25, ts: 1 + OverrideDelayMicroseconds / 2);
+				sut.CanBeDoubleTap(inWindow).Should().BeTrue();
+
+				// Outside override window — should NOT be a double-tap, even though it would have
+				// been within the default 500ms.
+				var outsideWindow = GetPoint(25, 25, ts: 1 + OverrideDelayMicroseconds + 1);
+				sut.CanBeDoubleTap(outsideWindow).Should().BeFalse();
+			}
+			finally
+			{
+				Uno.Foundation.Extensibility.ApiExtensibility.Unregister<IGestureRecognizerExtension>();
+				GestureRecognizer.ResetCacheForTests();
+			}
+		}
+
+		private sealed class StubGestureRecognizerExtension : IGestureRecognizerExtension
+		{
+			public StubGestureRecognizerExtension(ulong? multiTapMaxDelayMicroseconds)
+			{
+				MultiTapMaxDelayMicroseconds = multiTapMaxDelayMicroseconds;
+			}
+
+			public ulong? MultiTapMaxDelayMicroseconds { get; }
+		}
+
+		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
 		public void DoubleTapped_Delta_X()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
