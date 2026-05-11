@@ -170,7 +170,7 @@ partial class ClientHotReloadProcessor
 		// OperationCanceledException through the returned task. Once the apply
 		// pass has started, DoUpdateVisualTreeCore runs to completion — the
 		// visual tree never tolerates a half-applied update.
-		var ctRegistration = ct.Register(static state => ((TaskCompletionSource<object?>)state).TrySetCanceled(), tcs);
+		var ctRegistration = ct.Register(static state => ((TaskCompletionSource<object?>)state!).TrySetCanceled(), tcs);
 
 		async Task RunAsync()
 		{
