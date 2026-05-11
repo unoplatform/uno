@@ -60,6 +60,13 @@ internal class Win32RawElementProvider :
 	internal bool RepresentsPeer(AutomationPeer peer)
 		=> ReferenceEquals(GetAutomationPeer(), peer);
 
+	/// <summary>
+	/// Exposes the private monotonically-increasing runtime id for trace messages.
+	/// Distinct from <see cref="GetRuntimeId"/> which returns the UIA-format pair
+	/// (UiaAppendRuntimeId, _runtimeId).
+	/// </summary>
+	internal int GetRuntimeIdForTrace() => _runtimeId;
+
 	// IRawElementProviderSimple
 
 	public ProviderOptions ProviderOptions =>
@@ -264,6 +271,11 @@ internal class Win32RawElementProvider :
 	{
 		try
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"Navigate({direction}) on {DescribeElement()} runtimeId={_runtimeId} → entering");
+			}
+
 			var result = direction switch
 			{
 				NavigateDirection.Parent => FindParentProvider(),
@@ -282,6 +294,14 @@ internal class Win32RawElementProvider :
 				this.Log().Debug($"[UIA] Navigate({direction}) on {DescribeElement()} → {targetDesc}");
 			}
 
+			if (Win32UiaTrace.IsEnabled)
+			{
+				var targetDesc = result is Win32RawElementProvider tp
+					? $"{tp.DescribeElement()} runtimeId={tp._runtimeId}"
+					: "(null)";
+				Win32UiaTrace.Write($"Navigate({direction}) on {DescribeElement()} runtimeId={_runtimeId} → {targetDesc}");
+			}
+
 			return result;
 		}
 		catch (Exception ex)
@@ -289,6 +309,10 @@ internal class Win32RawElementProvider :
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"Navigate({direction}) on {DescribeElement()} failed: {ex.Message}");
+			}
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"Navigate({direction}) on {DescribeElement()} runtimeId={_runtimeId} → EXCEPTION: {ex}");
 			}
 			return null;
 		}
@@ -504,6 +528,24 @@ internal class Win32RawElementProvider :
 			this.Log().Debug($"[UIA] GetAutomationChildren on {DescribeElement()} (peer={peerDesc}) → {count} children{childNames}");
 		}
 
+		if (Win32UiaTrace.IsEnabled)
+		{
+			var count = result?.Count ?? 0;
+			Win32UiaTrace.Write($"  GetAutomationChildren on {DescribeElement()} runtimeId={_runtimeId} myPeer={DescribePeer(peer)} → {count} children");
+			if (result is not null)
+			{
+				var dumpLimit = Math.Min(count, 50);
+				for (var i = 0; i < dumpLimit; i++)
+				{
+					Win32UiaTrace.Write($"    child[{i}] = {DescribePeer(result[i])}");
+				}
+				if (count > dumpLimit)
+				{
+					Win32UiaTrace.Write($"    ... ({count - dumpLimit} more)");
+				}
+			}
+		}
+
 		_cachedAutomationChildren = result;
 		return result;
 	}
@@ -545,18 +587,33 @@ internal class Win32RawElementProvider :
 		var children = GetAutomationChildren();
 		if (children is null || children.Count == 0)
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"  GetFirstChild on {DescribeElement()} runtimeId={_runtimeId}: no children");
+			}
 			return null;
 		}
 
 		HashSet<Win32RawElementProvider>? ancestors = null;
 		for (var i = 0; i < children.Count; i++)
 		{
-			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
+			var childPeer = children[i];
+			var provider = _accessibility.GetProviderForPeer(childPeer, resolveEventsSource: true);
+			if (Win32UiaTrace.IsEnabled)
+			{
+				var peerDesc = DescribePeer(childPeer);
+				var provDesc = provider is null ? "(null provider)" : $"{provider.DescribeElement()} runtimeId={provider._runtimeId}";
+				Win32UiaTrace.Write($"  GetFirstChild on {DescribeElement()} runtimeId={_runtimeId}: child[{i}] peer={peerDesc} → {provDesc}");
+			}
 			if (provider is not null)
 			{
 				ancestors ??= BuildAncestorSet();
 				if (!ancestors.Contains(provider))
 				{
+					if (Win32UiaTrace.IsEnabled)
+					{
+						Win32UiaTrace.Write($"  GetFirstChild on {DescribeElement()} runtimeId={_runtimeId}: returning child[{i}] {provider.DescribeElement()} runtimeId={provider._runtimeId}");
+					}
 					return provider;
 				}
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -565,7 +622,15 @@ internal class Win32RawElementProvider :
 						$"[UIA] Cycle detected: skipping child {provider.DescribeElement()} " +
 						$"(runtimeId={provider._runtimeId}) of {DescribeElement()} — it is an ancestor");
 				}
+				if (Win32UiaTrace.IsEnabled)
+				{
+					Win32UiaTrace.Write($"  GetFirstChild on {DescribeElement()} runtimeId={_runtimeId}: CYCLE — skipping child[{i}] {provider.DescribeElement()} runtimeId={provider._runtimeId}");
+				}
 			}
+		}
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"  GetFirstChild on {DescribeElement()} runtimeId={_runtimeId}: all {children.Count} children skipped → null");
 		}
 		return null;
 	}
@@ -575,18 +640,33 @@ internal class Win32RawElementProvider :
 		var children = GetAutomationChildren();
 		if (children is null || children.Count == 0)
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"  GetLastChild on {DescribeElement()} runtimeId={_runtimeId}: no children");
+			}
 			return null;
 		}
 
 		HashSet<Win32RawElementProvider>? ancestors = null;
 		for (var i = children.Count - 1; i >= 0; i--)
 		{
-			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
+			var childPeer = children[i];
+			var provider = _accessibility.GetProviderForPeer(childPeer, resolveEventsSource: true);
+			if (Win32UiaTrace.IsEnabled)
+			{
+				var peerDesc = DescribePeer(childPeer);
+				var provDesc = provider is null ? "(null provider)" : $"{provider.DescribeElement()} runtimeId={provider._runtimeId}";
+				Win32UiaTrace.Write($"  GetLastChild on {DescribeElement()} runtimeId={_runtimeId}: child[{i}] peer={peerDesc} → {provDesc}");
+			}
 			if (provider is not null)
 			{
 				ancestors ??= BuildAncestorSet();
 				if (!ancestors.Contains(provider))
 				{
+					if (Win32UiaTrace.IsEnabled)
+					{
+						Win32UiaTrace.Write($"  GetLastChild on {DescribeElement()} runtimeId={_runtimeId}: returning child[{i}] {provider.DescribeElement()} runtimeId={provider._runtimeId}");
+					}
 					return provider;
 				}
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -595,7 +675,15 @@ internal class Win32RawElementProvider :
 						$"[UIA] Cycle detected: skipping child {provider.DescribeElement()} " +
 						$"(runtimeId={provider._runtimeId}) of {DescribeElement()} — it is an ancestor");
 				}
+				if (Win32UiaTrace.IsEnabled)
+				{
+					Win32UiaTrace.Write($"  GetLastChild on {DescribeElement()} runtimeId={_runtimeId}: CYCLE — skipping child[{i}] {provider.DescribeElement()} runtimeId={provider._runtimeId}");
+				}
 			}
+		}
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"  GetLastChild on {DescribeElement()} runtimeId={_runtimeId}: all {children.Count} children skipped → null");
 		}
 		return null;
 	}
@@ -605,12 +693,20 @@ internal class Win32RawElementProvider :
 		var parentProvider = FindParentProvider();
 		if (parentProvider is null)
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"  GetNextSibling on {DescribeElement()} runtimeId={_runtimeId}: no parent");
+			}
 			return null;
 		}
 
 		var siblings = parentProvider.GetAutomationChildren();
 		if (siblings is null)
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"  GetNextSibling on {DescribeElement()} runtimeId={_runtimeId}: parent {parentProvider.DescribeElement()} has null children");
+			}
 			return null;
 		}
 
@@ -622,7 +718,14 @@ internal class Win32RawElementProvider :
 		{
 			if (foundSelf)
 			{
-				var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
+				var siblingPeer = siblings[i];
+				var provider = _accessibility.GetProviderForPeer(siblingPeer, resolveEventsSource: true);
+				if (Win32UiaTrace.IsEnabled)
+				{
+					var peerDesc = DescribePeer(siblingPeer);
+					var provDesc = provider is null ? "(null provider)" : $"{provider.DescribeElement()} runtimeId={provider._runtimeId}";
+					Win32UiaTrace.Write($"  GetNextSibling on {DescribeElement()} runtimeId={_runtimeId}: candidate sibling[{i}] peer={peerDesc} → {provDesc}");
+				}
 				if (provider is not null)
 				{
 					ancestors ??= BuildAncestorSet();
@@ -630,11 +733,30 @@ internal class Win32RawElementProvider :
 					{
 						return provider;
 					}
+					if (Win32UiaTrace.IsEnabled)
+					{
+						Win32UiaTrace.Write($"  GetNextSibling on {DescribeElement()} runtimeId={_runtimeId}: CYCLE — skipping sibling[{i}] {provider.DescribeElement()} runtimeId={provider._runtimeId}");
+					}
 				}
 			}
 			else if (IsSamePeer(siblings[i], myPeer))
 			{
 				foundSelf = true;
+				if (Win32UiaTrace.IsEnabled)
+				{
+					Win32UiaTrace.Write($"  GetNextSibling on {DescribeElement()} runtimeId={_runtimeId}: matched self at sibling[{i}] in parent {parentProvider.DescribeElement()} (parent has {siblings.Count} children)");
+				}
+			}
+		}
+		if (Win32UiaTrace.IsEnabled)
+		{
+			if (!foundSelf)
+			{
+				Win32UiaTrace.Write($"  GetNextSibling on {DescribeElement()} runtimeId={_runtimeId}: SELF NOT FOUND in parent {parentProvider.DescribeElement()} children (count={siblings.Count})");
+			}
+			else
+			{
+				Win32UiaTrace.Write($"  GetNextSibling on {DescribeElement()} runtimeId={_runtimeId}: no further non-ancestor sibling → null");
 			}
 		}
 		return null;
@@ -645,12 +767,20 @@ internal class Win32RawElementProvider :
 		var parentProvider = FindParentProvider();
 		if (parentProvider is null)
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"  GetPreviousSibling on {DescribeElement()} runtimeId={_runtimeId}: no parent");
+			}
 			return null;
 		}
 
 		var siblings = parentProvider.GetAutomationChildren();
 		if (siblings is null)
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"  GetPreviousSibling on {DescribeElement()} runtimeId={_runtimeId}: parent {parentProvider.DescribeElement()} has null children");
+			}
 			return null;
 		}
 
@@ -662,9 +792,21 @@ internal class Win32RawElementProvider :
 		{
 			if (IsSamePeer(siblings[i], myPeer))
 			{
+				if (Win32UiaTrace.IsEnabled)
+				{
+					var prevDesc = previous is null ? "(null)" : $"{previous.DescribeElement()} runtimeId={previous._runtimeId}";
+					Win32UiaTrace.Write($"  GetPreviousSibling on {DescribeElement()} runtimeId={_runtimeId}: matched self at sibling[{i}] → returning {prevDesc}");
+				}
 				return previous;
 			}
-			var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
+			var siblingPeer = siblings[i];
+			var provider = _accessibility.GetProviderForPeer(siblingPeer, resolveEventsSource: true);
+			if (Win32UiaTrace.IsEnabled)
+			{
+				var peerDesc = DescribePeer(siblingPeer);
+				var provDesc = provider is null ? "(null provider)" : $"{provider.DescribeElement()} runtimeId={provider._runtimeId}";
+				Win32UiaTrace.Write($"  GetPreviousSibling on {DescribeElement()} runtimeId={_runtimeId}: sibling[{i}] peer={peerDesc} → {provDesc}");
+			}
 			if (provider is not null)
 			{
 				ancestors ??= BuildAncestorSet();
@@ -672,7 +814,15 @@ internal class Win32RawElementProvider :
 				{
 					previous = provider;
 				}
+				else if (Win32UiaTrace.IsEnabled)
+				{
+					Win32UiaTrace.Write($"  GetPreviousSibling on {DescribeElement()} runtimeId={_runtimeId}: CYCLE — sibling[{i}] {provider.DescribeElement()} runtimeId={provider._runtimeId} is an ancestor");
+				}
 			}
+		}
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"  GetPreviousSibling on {DescribeElement()} runtimeId={_runtimeId}: SELF NOT FOUND in parent {parentProvider.DescribeElement()} children (count={siblings.Count})");
 		}
 		return null;
 	}
@@ -694,6 +844,10 @@ internal class Win32RawElementProvider :
 		{
 			if (!ancestors.Add(current))
 			{
+				if (Win32UiaTrace.IsEnabled)
+				{
+					Win32UiaTrace.Write($"    BuildAncestorSet self={DescribeElement()} runtimeId={_runtimeId}: parent-chain cycle at {current.DescribeElement()} runtimeId={current._runtimeId}");
+				}
 				break; // cycle in parent chain itself
 			}
 			if (current._isRoot)
@@ -701,6 +855,20 @@ internal class Win32RawElementProvider :
 				break;
 			}
 			current = current.FindParentProvider();
+		}
+		if (Win32UiaTrace.IsEnabled)
+		{
+			var sb = new System.Text.StringBuilder();
+			sb.Append("    BuildAncestorSet self=").Append(DescribeElement()).Append(" runtimeId=").Append(_runtimeId).Append(" chain=[");
+			var first = true;
+			foreach (var a in ancestors)
+			{
+				if (!first) sb.Append(", ");
+				sb.Append(a.DescribeElement()).Append("(rid=").Append(a._runtimeId).Append(')');
+				first = false;
+			}
+			sb.Append(']');
+			Win32UiaTrace.Write(sb.ToString());
 		}
 		return ancestors;
 	}
@@ -729,7 +897,15 @@ internal class Win32RawElementProvider :
 			var parentProvider = _accessibility.GetProviderForPeer(parentPeer);
 			if (parentProvider is not null)
 			{
+				if (Win32UiaTrace.IsEnabled)
+				{
+					Win32UiaTrace.Write($"    FindParentProvider on {DescribeElement()} runtimeId={_runtimeId}: via peer.GetParent() → {parentProvider.DescribeElement()} runtimeId={parentProvider._runtimeId} (parentPeer={DescribePeer(parentPeer)})");
+				}
 				return parentProvider;
+			}
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"    FindParentProvider on {DescribeElement()} runtimeId={_runtimeId}: peer.GetParent()={DescribePeer(parentPeer)} did not resolve to a provider, falling back to visual tree");
 			}
 		}
 
@@ -741,19 +917,34 @@ internal class Win32RawElementProvider :
 			// Check if this is the root element
 			if (_accessibility.RootProvider is { } root && ReferenceEquals(root.Owner, current))
 			{
+				if (Win32UiaTrace.IsEnabled)
+				{
+					Win32UiaTrace.Write($"    FindParentProvider on {DescribeElement()} runtimeId={_runtimeId}: visual ancestor is ROOT → {root.DescribeElement()} runtimeId={root._runtimeId}");
+				}
 				return root;
 			}
 
 			// Check if this ancestor has an automation peer
 			if (current.GetOrCreateAutomationPeer() is not null)
 			{
-				return _accessibility.GetOrCreateProvider(current);
+				var p = _accessibility.GetOrCreateProvider(current);
+				if (Win32UiaTrace.IsEnabled)
+				{
+					var pd = p is null ? "(null)" : $"{p.DescribeElement()} runtimeId={p._runtimeId}";
+					Win32UiaTrace.Write($"    FindParentProvider on {DescribeElement()} runtimeId={_runtimeId}: visual ancestor {current.GetType().Name} has peer → {pd}");
+				}
+				return p;
 			}
 
 			current = VisualTreeHelper.GetParent(current) as UIElement;
 		}
 
 		// If no ancestor with a peer was found, return the root
+		if (Win32UiaTrace.IsEnabled)
+		{
+			var rd = _accessibility.RootProvider is { } r ? $"{r.DescribeElement()} runtimeId={r._runtimeId}" : "(null root)";
+			Win32UiaTrace.Write($"    FindParentProvider on {DescribeElement()} runtimeId={_runtimeId}: no ancestor with peer found → returning {rd}");
+		}
 		return _accessibility.RootProvider;
 	}
 
@@ -1074,6 +1265,36 @@ internal class Win32RawElementProvider :
 	};
 
 	// Diagnostic helpers
+
+	/// <summary>
+	/// Compact description of an <see cref="AutomationPeer"/> for trace output. Includes the
+	/// peer concrete type, owner element type, and AutomationId/Name when available — this is
+	/// what distinguishes "DataGridAutomationPeer(Owner=DataGrid)" from "DataGridItemAutomationPeer(Owner=DataGrid)"
+	/// in the cycle scenarios.
+	/// </summary>
+	internal static string DescribePeer(AutomationPeer? peer)
+	{
+		if (peer is null)
+		{
+			return "(null peer)";
+		}
+		var peerType = peer.GetType().Name;
+		string ownerInfo;
+		if (peer is FrameworkElementAutomationPeer fep && fep.Owner is { } owner)
+		{
+			var aid = AutomationProperties.GetAutomationId(owner);
+			var name = AutomationProperties.GetName(owner);
+			var label = !string.IsNullOrEmpty(aid)
+				? $"aid={aid}"
+				: !string.IsNullOrEmpty(name) ? $"name=\"{name}\"" : "";
+			ownerInfo = $"Owner={owner.GetType().Name}{(string.IsNullOrEmpty(label) ? "" : "," + label)}";
+		}
+		else
+		{
+			ownerInfo = "Owner=(not-fwk-element)";
+		}
+		return $"{peerType}[{ownerInfo}]";
+	}
 
 	internal string DescribeElement()
 	{
