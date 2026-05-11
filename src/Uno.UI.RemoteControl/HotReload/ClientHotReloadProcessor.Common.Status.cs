@@ -504,8 +504,15 @@ public partial class ClientHotReloadProcessor
 				var client = RemoteControlClient.Instance;
 				if (client is null) return;
 
+				// Flatten via Type+Message walking InnerException and AggregateException.
+				// On iOS Release builds System.Private.CoreLib's SR resource strings are
+				// stripped, so a wrapping exception's Message alone is just the localization
+				// key (e.g. "TypeInitialization_Type, X") and loses the underlying failure
+				// that pinpoints the root cause. ToString() would include the stack and
+				// produce a huge wire payload, so we walk the inner chain manually and
+				// keep only TypeName: Message per frame.
 				var errorMessage = _exceptions.Count > 0
-					? string.Join("\r\n", _exceptions.Select(e => e.Message))
+					? string.Join("\r\n", _exceptions.Select(FlattenExceptionMessages))
 					: null;
 
 				_ = client.SendMessage(new Messages.HotReloadClientOperationEvent
@@ -524,6 +531,30 @@ public partial class ClientHotReloadProcessor
 				// Best-effort — never fail the operation because of a notification error.
 			}
 #endif
+		}
+
+		private static string FlattenExceptionMessages(Exception exception)
+		{
+			var parts = new List<string>();
+			Walk(parts, exception);
+			return string.Join(" ---> ", parts);
+
+			static void Walk(List<string> parts, Exception ex)
+			{
+				parts.Add($"{ex.GetType().Name}: {ex.Message}");
+
+				if (ex is AggregateException aggregate)
+				{
+					foreach (var inner in aggregate.InnerExceptions)
+					{
+						Walk(parts, inner);
+					}
+				}
+				else if (ex.InnerException is { } inner)
+				{
+					Walk(parts, inner);
+				}
+			}
 		}
 	}
 }
