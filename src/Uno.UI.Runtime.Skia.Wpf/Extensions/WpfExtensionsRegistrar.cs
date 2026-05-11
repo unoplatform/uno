@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.UI.Input;
 using Uno.Graphics;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
@@ -44,6 +45,7 @@ internal static class WpfExtensionsRegistrar
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new WpfNativeElementHostingExtension(o));
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
+		ApiExtensibility.Register(typeof(IGestureRecognizerExtension), _ => WpfGestureRecognizerExtension.Instance);
 		ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
 		ApiExtensibility.Register<DragDropManager>(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
 		ApiExtensibility.Register(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
