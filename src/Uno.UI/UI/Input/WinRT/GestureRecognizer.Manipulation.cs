@@ -30,9 +30,15 @@ namespace Windows.UI.Input
 			internal static readonly Thresholds StartPen = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
 			internal static readonly Thresholds StartMouse = new() { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
 
-			internal static readonly Thresholds DeltaTouch = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
-			internal static readonly Thresholds DeltaPen = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
-			internal static readonly Thresholds DeltaMouse = new() { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			// Translation thresholds are zero so every sub-pixel position delta flows through to
+			// ScrollViewer (matches WinUI: IInteractionContext fires INTERACTION_ID_MANIPULATION on
+			// every meaningful input change with no displacement gate). HIMETRIC touch on Win32 has
+			// ~0.038 logical px precision, MotionEvent floats on Android similar — any positive
+			// threshold would re-introduce stair-stepping. Rotate/Expansion stay non-zero because
+			// rotation/scale degrees-per-pixel is much noisier than translation.
+			internal static readonly Thresholds DeltaTouch = new() { TranslateX = 0, TranslateY = 0, Rotate = .1, Expansion = 1 };
+			internal static readonly Thresholds DeltaPen = new() { TranslateX = 0, TranslateY = 0, Rotate = .1, Expansion = 1 };
+			internal static readonly Thresholds DeltaMouse = new() { TranslateX = 0, TranslateY = 0, Rotate = .1, Expansion = 1 };
 
 			// Inertia thresholds are expressed in 'unit / millisecond' (unit being either 'logical px' or 'degree')
 			internal static readonly Thresholds InertiaTouch = new() { TranslateX = 15d / 1000, TranslateY = 15d / 1000, Rotate = 5d / 1000, Expansion = 15d / 1000 };
