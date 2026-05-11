@@ -150,6 +150,12 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _opacity, value);
 		}
 
+		// MUX Reference hwwalk.cpp ShouldOverrideRenderOpacity
+		// When true, the visual's opacity is forced to 1.0 during rendering
+		// if it's > 0 and < 1, matching WinUI's High Contrast opacity override
+		// for elements with HighContrastAdjustment = Auto.
+		internal bool IsHighContrastOpacityOverrideActive { get; set; }
+
 		public Vector3 RotationAxis
 		{
 			get => _rotationAxis;

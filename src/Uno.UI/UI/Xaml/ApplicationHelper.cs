@@ -49,7 +49,15 @@ public class ApplicationHelper
 	/// Only applications with dynamic color schemes should use this.
 	/// </remarks>
 	public static void ReapplyApplicationTheme()
-		=> Application.Current.OnRequestedThemeChanged();
+	{
+		if (Application.Current is null)
+		{
+			return;
+		}
+
+		Application.UpdateRequestedThemesForResources();
+		Application.Current.OnRequestedThemeChanged();
+	}
 
 	public static IReadOnlyList<Microsoft.UI.Xaml.Window> Windows => _windows.AsReadOnly();
 

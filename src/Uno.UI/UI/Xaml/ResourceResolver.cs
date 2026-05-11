@@ -8,6 +8,7 @@ using System.Text;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml;
@@ -15,6 +16,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Resources;
 using System.Diagnostics.CodeAnalysis;
+using Windows.UI;
 
 namespace Uno.UI
 {
@@ -51,6 +53,26 @@ namespace Uno.UI
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 		private static readonly Logger _log = typeof(ResourceResolver).Log();
+		private static readonly Dictionary<ResourceDictionary, HighContrastSystemColors> _highContrastSystemColorDefaults = new();
+		private static readonly (string ResourceKey, Func<HighContrastSystemColors, Color> Selector)[] _highContrastSystemColorMappings =
+		{
+			// MUX Reference FrameworkTheming.cpp, tag winui3/release/1.4.2, RebuildColorAndBrushResources
+			// Color resources
+			("SystemColorButtonFaceColor", colors => colors.ButtonFaceColor),
+			("SystemColorButtonTextColor", colors => colors.ButtonTextColor),
+			("SystemColorGrayTextColor", colors => colors.GrayTextColor),
+			("SystemColorHighlightColor", colors => colors.HighlightColor),
+			("SystemColorHighlightTextColor", colors => colors.HighlightTextColor),
+			("SystemColorHotlightColor", colors => colors.HotlightColor),
+			("SystemColorWindowColor", colors => colors.WindowColor),
+			("SystemColorWindowTextColor", colors => colors.WindowTextColor),
+			("SystemColorActiveCaptionColor", colors => colors.ActiveCaptionColor),
+			("SystemColorBackgroundColor", colors => colors.BackgroundColor),
+			("SystemColorCaptionTextColor", colors => colors.CaptionTextColor),
+			("SystemColorInactiveCaptionColor", colors => colors.InactiveCaptionColor),
+			("SystemColorInactiveCaptionTextColor", colors => colors.InactiveCaptionTextColor),
+			("SystemColorDisabledTextColor", colors => colors.DisabledTextColor),
+		};
 
 		private static readonly Stack<XamlScope> _scopeStack;
 
@@ -592,6 +614,9 @@ namespace Uno.UI
 		/// </summary>
 		internal static bool TrySystemResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value) => MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false);
 
+		internal static void UpdateHighContrastSystemColors()
+			=> UpdateHighContrastSystemColors(MasterDictionary, SystemThemeHelper.HighContrastSystemColors);
+
 		internal static bool ContainsKeySystem(in SpecializedResourceDictionary.ResourceKey resourceKey) => MasterDictionary.ContainsKey(resourceKey, shouldCheckSystem: false);
 
 		/// <summary>
@@ -785,7 +810,139 @@ namespace Uno.UI
 		public static object ResolveStaticResourceAlias(string resourceKey, object parseContext)
 			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
 
-		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason) => MasterDictionary.UpdateThemeBindings(updateReason);
+		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason)
+		{
+			UpdateHighContrastSystemColors();
+			MasterDictionary.UpdateThemeBindings(updateReason);
+		}
+
+		private static void UpdateHighContrastSystemColors(ResourceDictionary dictionary, HighContrastSystemColors? highContrastSystemColors)
+		{
+			ApplyHighContrastSystemColors(dictionary, highContrastSystemColors);
+
+			foreach (var mergedDictionary in dictionary.MergedDictionaries)
+			{
+				UpdateHighContrastSystemColors(mergedDictionary, highContrastSystemColors);
+			}
+		}
+
+		// MUX Reference FrameworkTheming.cpp RebuildColorAndBrushResources
+		// Brush resource keys corresponding to color keys — WinUI creates these
+		// as SolidColorBrush entries alongside the Color resources.
+		private static readonly (string BrushKey, string ColorKey)[] _highContrastSystemBrushMappings =
+		{
+			("SystemColorButtonFaceBrush", "SystemColorButtonFaceColor"),
+			("SystemColorButtonTextBrush", "SystemColorButtonTextColor"),
+			("SystemColorGrayTextBrush", "SystemColorGrayTextColor"),
+			("SystemColorHighlightBrush", "SystemColorHighlightColor"),
+			("SystemColorHighlightTextBrush", "SystemColorHighlightTextColor"),
+			("SystemColorHotlightBrush", "SystemColorHotlightColor"),
+			("SystemColorWindowBrush", "SystemColorWindowColor"),
+			("SystemColorWindowTextBrush", "SystemColorWindowTextColor"),
+			("SystemColorActiveCaptionBrush", "SystemColorActiveCaptionColor"),
+			("SystemColorBackgroundBrush", "SystemColorBackgroundColor"),
+			("SystemColorCaptionTextBrush", "SystemColorCaptionTextColor"),
+			("SystemColorInactiveCaptionBrush", "SystemColorInactiveCaptionColor"),
+			("SystemColorInactiveCaptionTextBrush", "SystemColorInactiveCaptionTextColor"),
+			("SystemColorDisabledTextBrush", "SystemColorDisabledTextColor"),
+		};
+
+		private static void ApplyHighContrastSystemColors(ResourceDictionary dictionary, HighContrastSystemColors? highContrastSystemColors)
+		{
+			if (!dictionary.TryGetThemeDictionary("HighContrast", out var highContrastThemeDictionary))
+			{
+				return;
+			}
+
+			var baselineColors = GetOrCreateHighContrastSystemColorDefaults(highContrastThemeDictionary);
+
+			foreach (var (resourceKey, selector) in _highContrastSystemColorMappings)
+			{
+				var targetColor = highContrastSystemColors is { } colors
+					? selector(colors)
+					: selector(baselineColors);
+
+				SetColorResource(highContrastThemeDictionary, resourceKey, targetColor);
+			}
+
+			// MUX Reference xcpcore.cpp UpdateColorAndBrushResources
+			// WinUI creates corresponding SolidColorBrush resources for each system color.
+			foreach (var (brushKey, colorKey) in _highContrastSystemBrushMappings)
+			{
+				if (highContrastThemeDictionary.TryGetValue(colorKey, out var colorValue, shouldCheckSystem: false)
+					&& colorValue is Color brushColor)
+				{
+					SetBrushResource(highContrastThemeDictionary, brushKey, brushColor);
+				}
+			}
+		}
+
+		private static HighContrastSystemColors GetOrCreateHighContrastSystemColorDefaults(ResourceDictionary highContrastThemeDictionary)
+		{
+			if (!_highContrastSystemColorDefaults.TryGetValue(highContrastThemeDictionary, out var defaults))
+			{
+				defaults = new HighContrastSystemColors(
+					ButtonFaceColor: GetColorResource(highContrastThemeDictionary, "SystemColorButtonFaceColor"),
+					ButtonTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorButtonTextColor"),
+					GrayTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorGrayTextColor"),
+					HighlightColor: GetColorResource(highContrastThemeDictionary, "SystemColorHighlightColor"),
+					HighlightTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorHighlightTextColor"),
+					HotlightColor: GetColorResource(highContrastThemeDictionary, "SystemColorHotlightColor"),
+					WindowColor: GetColorResource(highContrastThemeDictionary, "SystemColorWindowColor"),
+					WindowTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorWindowTextColor"),
+					ActiveCaptionColor: GetColorResource(highContrastThemeDictionary, "SystemColorActiveCaptionColor"),
+					BackgroundColor: GetColorResource(highContrastThemeDictionary, "SystemColorBackgroundColor"),
+					CaptionTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorCaptionTextColor"),
+					InactiveCaptionColor: GetColorResource(highContrastThemeDictionary, "SystemColorInactiveCaptionColor"),
+					InactiveCaptionTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorInactiveCaptionTextColor"),
+					DisabledTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorDisabledTextColor"));
+
+				_highContrastSystemColorDefaults[highContrastThemeDictionary] = defaults;
+			}
+
+			return defaults;
+		}
+
+		private static Color GetColorResource(ResourceDictionary dictionary, string resourceKey)
+		{
+			if (dictionary.TryGetValue(resourceKey, out var value, shouldCheckSystem: false)
+				&& value is Color color)
+			{
+				return color;
+			}
+
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.LogWarning($"Unable to locate high contrast color resource '{resourceKey}' in system resources.");
+			}
+
+			return global::Windows.UI.Colors.Transparent;
+		}
+
+		private static void SetColorResource(ResourceDictionary dictionary, string resourceKey, Color color)
+		{
+			if (dictionary.TryGetValue(resourceKey, out var existingValue, shouldCheckSystem: false)
+				&& existingValue is Color existingColor
+				&& existingColor == color)
+			{
+				return;
+			}
+
+			dictionary[resourceKey] = color;
+		}
+
+		// MUX Reference xcpcore.cpp UpdateColorAndBrushResources
+		private static void SetBrushResource(ResourceDictionary dictionary, string brushKey, Color color)
+		{
+			if (dictionary.TryGetValue(brushKey, out var existingValue, shouldCheckSystem: false)
+				&& existingValue is SolidColorBrush existingBrush
+				&& existingBrush.Color == color)
+			{
+				return;
+			}
+
+			dictionary[brushKey] = new SolidColorBrush(color);
+		}
 	}
 
 

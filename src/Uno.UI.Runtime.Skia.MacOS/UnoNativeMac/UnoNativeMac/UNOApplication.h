@@ -13,6 +13,31 @@ system_theme_change_fn_ptr uno_get_system_theme_change_callback(void);
 void uno_set_system_theme_change_callback(system_theme_change_fn_ptr p);
 uint32 uno_get_system_theme(void);
 
+typedef void (*high_contrast_change_fn_ptr)(void);
+high_contrast_change_fn_ptr uno_get_high_contrast_change_callback(void);
+void uno_set_high_contrast_change_callback(high_contrast_change_fn_ptr p);
+bool uno_get_high_contrast(void);
+
+// High Contrast system colors (ARGB packed as uint32)
+typedef struct {
+    uint32 buttonFaceColor;
+    uint32 buttonTextColor;
+    uint32 grayTextColor;
+    uint32 highlightColor;
+    uint32 highlightTextColor;
+    uint32 hotlightColor;
+    uint32 windowColor;
+    uint32 windowTextColor;
+    uint32 activeCaptionColor;
+    uint32 backgroundColor;
+    uint32 captionTextColor;
+    uint32 inactiveCaptionColor;
+    uint32 inactiveCaptionTextColor;
+    uint32 disabledTextColor;
+} UnoHighContrastColors;
+
+void uno_get_high_contrast_colors(UnoHighContrastColors *colors);
+
 typedef void (*text_scale_factor_change_fn_ptr)(void);
 text_scale_factor_change_fn_ptr uno_get_text_scale_factor_change_callback(void);
 void uno_set_text_scale_factor_change_callback(text_scale_factor_change_fn_ptr p);
@@ -42,6 +67,7 @@ void uno_application_quit(void);
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender;
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary<NSKeyValueChangeKey, id> *)change context:(nullable void *)context;
+- (void)accessibilityDisplayOptionsChanged:(NSNotification *)notification;
 - (void)textScalePreferenceChanged:(NSNotification *)notification;
 
 @end

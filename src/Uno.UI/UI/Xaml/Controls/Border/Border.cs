@@ -42,6 +42,28 @@ public partial class Border : FrameworkElement
 #endif
 	}
 
+	// MUX Reference Border.h, m_useBackgroundOverride
+	// When true and High Contrast is active, the background is overridden to
+	// SystemColorWindowBrush to ensure text readability (used by TextBox/RichEditBox).
+	private bool _useBackgroundOverride;
+
+	/// <summary>
+	/// When set, the background brush is overridden to SystemColorWindowBrush
+	/// during High Contrast mode. Used by text controls to ensure text readability.
+	/// </summary>
+	internal void SetUseBackgroundOverride(bool useBackgroundOverride)
+	{
+		if (_useBackgroundOverride != useBackgroundOverride)
+		{
+			_useBackgroundOverride = useBackgroundOverride;
+#if UNO_HAS_BORDER_VISUAL
+			this.UpdateBackground();
+#endif
+		}
+	}
+
+	internal bool UseBackgroundOverride => _useBackgroundOverride;
+
 #if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif

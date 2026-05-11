@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Web;
@@ -159,6 +159,8 @@ namespace Microsoft.UI.Xaml
 				InternalRequestedTheme = GetSystemTheme();
 			}
 
+			ResourceResolver.UpdateHighContrastSystemColors();
+
 			// Force-sync ResourceDictionary's static Themes.Active with the application's
 			// resolved theme before any resource lookup can happen at startup.
 			//
@@ -204,7 +206,7 @@ namespace Microsoft.UI.Xaml
 
 		internal static void UpdateRequestedThemesForResources()
 		{
-			Current.RequestedThemeForResources =
+			var newTheme =
 				(ApplicationHelper.RequestedCustomTheme, Current.RequestedTheme) switch
 				{
 					(var custom, _) when !custom.IsNullOrEmpty() => custom,
@@ -212,6 +214,11 @@ namespace Microsoft.UI.Xaml
 					(_, ApplicationTheme.Dark) => "Dark",
 					_ => throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid"),
 				};
+
+			// Always re-assign to trigger ResourceDictionary cache invalidation.
+			// This is critical for HC changes where the base theme key (Light/Dark)
+			// stays the same but the ResourceDictionary needs to re-resolve.
+			Current.RequestedThemeForResources = newTheme;
 		}
 
 		internal SpecializedResourceDictionary.ResourceKey RequestedThemeForResources
@@ -336,6 +343,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
+			SystemThemeHelper.HighContrastChanged += OnHighContrastChanged;
 
 			InitializeTextScaling();
 
@@ -376,6 +384,92 @@ namespace Microsoft.UI.Xaml
 			}
 
 			UISettings.OnColorValuesChanged();
+		}
+
+		private void OnHighContrastChanged(object sender, EventArgs e)
+		{
+			// Always respond to HC changes regardless of IsThemeSetExplicitly
+			// — HC overrides everything per WinUI behavior.
+			AccessibilitySettings.OnHighContrastChanged();
+			ResourceResolver.UpdateHighContrastSystemColors();
+			UpdateRequestedThemesForResources();
+
+			// MUX Reference framework.cpp, lines 3348-3363
+			// Set the HC-changing flag so the theme walk can fire the correct events.
+			FrameworkElement.IsHighContrastChanging = true;
+			try
+			{
+				OnRequestedThemeChanged();
+			}
+			finally
+			{
+				FrameworkElement.IsHighContrastChanging = false;
+			}
+
+			UISettings.OnColorValuesChanged();
+			InvalidateHighContrastAdjustmentVisuals();
+		}
+
+		private void OnHighContrastAdjustmentChanged()
+		{
+			if (AccessibilitySettings.IsHighContrastActive)
+			{
+				InvalidateHighContrastAdjustmentVisuals();
+			}
+		}
+
+		private void InvalidateHighContrastAdjustmentVisuals()
+		{
+			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			{
+				if (contentRoot.XamlRoot.Content is { } content)
+				{
+					InvalidateHighContrastAdjustmentVisuals(content);
+				}
+			}
+		}
+
+		private static void InvalidateHighContrastAdjustmentVisuals(object instance)
+		{
+			if (instance is UIElement element)
+			{
+				// MUX Reference application.cpp NotifyApplicationHighContrastAdjustmentChangedCore
+				// WinUI only notifies elements whose HighContrastAdjustment is at its default
+				// value (Application), meaning they inherit from Application.HighContrastAdjustment.
+				// Elements with explicit Auto or None are not affected by the App-level change.
+				if (element.HighContrastAdjustment != ElementHighContrastAdjustment.Application
+					&& element.HighContrastAdjustment != ElementHighContrastAdjustment.None
+					&& element.HighContrastAdjustment != ElementHighContrastAdjustment.Auto)
+				{
+					// Non-default value; skip this element but still walk children
+					// since children may have the default value.
+				}
+				else
+				{
+#if __SKIA__
+					element.UpdateHighContrastOpacityOverride();
+					var visual = Hosting.ElementCompositionPreview.GetElementVisual(element);
+					visual.Compositor.InvalidateRender(visual);
+#else
+					element.InvalidateMeasure();
+#endif
+				}
+			}
+
+			if (instance is Controls.Panel p)
+			{
+				foreach (object o in p.Children)
+				{
+					InvalidateHighContrastAdjustmentVisuals(o);
+				}
+			}
+			else if (instance is ViewGroup g)
+			{
+				foreach (object o in g.GetChildren())
+				{
+					InvalidateHighContrastAdjustmentVisuals(o);
+				}
+			}
 		}
 
 #if __WASM__ || __SKIA__
@@ -550,6 +644,13 @@ namespace Microsoft.UI.Xaml
 						if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 						{
 							var theme = InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
+							if (AccessibilitySettings.IsHighContrastActive)
+							{
+								// Add HC bits to the theme so that the theme walk
+								// propagates HC state through the visual tree.
+								theme |= Theme.HighContrast;
+							}
+
 							var forceRefresh = (updateReason & ResourceUpdateReason.HotReload) != 0;
 							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
 							rootFe?.NotifyThemeChanged(theme, forceRefresh);

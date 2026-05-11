@@ -316,6 +316,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	{
 		base.TraitCollectionDidChange(previousTraitCollection);
 		SystemThemeHelper.RefreshSystemTheme();
+		SystemThemeHelper.RefreshHighContrast();
 	}
 #pragma warning restore CA1422 // Validate platform compatibility
 }

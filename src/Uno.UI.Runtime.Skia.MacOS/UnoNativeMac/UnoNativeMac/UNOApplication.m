@@ -6,6 +6,7 @@
 
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
+static high_contrast_change_fn_ptr high_contrast_change;
 static text_scale_factor_change_fn_ptr text_scale_factor_change;
 static id<MTLDevice> device;
 
@@ -30,6 +31,60 @@ uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)
     NSAppearanceName appearanceName = [appearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua,
                                                                                       NSAppearanceNameDarkAqua]];
     return [appearanceName isEqualToString:NSAppearanceNameAqua] ? 0 : 1;
+}
+
+inline high_contrast_change_fn_ptr uno_get_high_contrast_change_callback(void)
+{
+    return high_contrast_change;
+}
+
+void uno_set_high_contrast_change_callback(high_contrast_change_fn_ptr p)
+{
+    high_contrast_change = p;
+}
+
+bool uno_get_high_contrast(void)
+{
+    return [[NSWorkspace sharedWorkspace] accessibilityDisplayShouldIncreaseContrast];
+}
+
+static uint32 nscolor_to_argb(NSColor *color)
+{
+    NSColor *rgbColor = [color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (!rgbColor) {
+        // Fallback for pattern/catalog colors that can't be converted
+        return 0xFF000000;
+    }
+    CGFloat r, g, b, a;
+    [rgbColor getRed:&r green:&g blue:&b alpha:&a];
+    uint8_t ar = (uint8_t)(a * 255.0 + 0.5);
+    uint8_t rr = (uint8_t)(r * 255.0 + 0.5);
+    uint8_t gr = (uint8_t)(g * 255.0 + 0.5);
+    uint8_t br = (uint8_t)(b * 255.0 + 0.5);
+    return ((uint32)ar << 24) | ((uint32)rr << 16) | ((uint32)gr << 8) | (uint32)br;
+}
+
+void uno_get_high_contrast_colors(UnoHighContrastColors *colors)
+{
+    if (!colors) return;
+
+    // Map macOS system colors to Windows HC color concepts.
+    // macOS "Increase Contrast" mode adjusts system colors
+    // to have higher contrast automatically.
+    colors->windowColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->windowTextColor = nscolor_to_argb([NSColor textColor]);
+    colors->buttonFaceColor = nscolor_to_argb([NSColor controlColor]);
+    colors->buttonTextColor = nscolor_to_argb([NSColor controlTextColor]);
+    colors->grayTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
+    colors->highlightColor = nscolor_to_argb([NSColor selectedContentBackgroundColor]);
+    colors->highlightTextColor = nscolor_to_argb([NSColor alternateSelectedControlTextColor]);
+    colors->hotlightColor = nscolor_to_argb([NSColor linkColor]);
+    colors->activeCaptionColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->backgroundColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->captionTextColor = nscolor_to_argb([NSColor textColor]);
+    colors->inactiveCaptionColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->inactiveCaptionTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
+    colors->disabledTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
 }
 
 inline text_scale_factor_change_fn_ptr uno_get_text_scale_factor_change_callback(void)
@@ -78,6 +133,12 @@ bool uno_app_initialize(bool *metal)
         // KVO observation for dark/light theme
         [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:kThemeChangeContext];
 
+        // Observe accessibility display options changes (includes "Increase Contrast")
+        [[NSNotificationCenter defaultCenter] addObserver:ad
+                                                 selector:@selector(accessibilityDisplayOptionsChanged:)
+                                                     name:NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification
+                                                   object:[NSWorkspace sharedWorkspace]];
+
         // Text size preference: observe via NSDistributedNotificationCenter (primary, undocumented name
         // used by macOS Sonoma when the Accessibility Text Size slider moves) and via KVO on the
         // standard NSUserDefaults key as a fallback. Both firing is harmless — the managed layer
@@ -91,14 +152,13 @@ bool uno_app_initialize(bool *metal)
                                                    options:NSKeyValueObservingOptionNew
                                                    context:kTextScaleFactorContext];
 
-
         if (app.mainMenu == nil) {
             NSMenu *mainMenu = [[NSMenu alloc] init];
-            
+
             // App menu
             NSMenuItem *appMenuItem = [[NSMenuItem alloc] init];
             NSMenu *appMenu = [[NSMenu alloc] init];
-            
+
             // Quit menu item with Command+Q
             NSMenuItem *quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit"
                                                                   action:@selector(terminate:)
@@ -106,11 +166,11 @@ bool uno_app_initialize(bool *metal)
             [appMenu addItem:quitMenuItem];
             [appMenuItem setSubmenu:appMenu];
             [mainMenu addItem:appMenuItem];
-            
+
             // File menu
             NSMenuItem *fileMenuItem = [[NSMenuItem alloc] initWithTitle:@"File" action:nil keyEquivalent:@""];
             NSMenu *fileMenu = [[NSMenu alloc] initWithTitle:@"File"];
-            
+
             // Close window menu item with Command+W
             NSMenuItem *closeMenuItem = [[NSMenuItem alloc] initWithTitle:@"Close Window"
                                                                    action:@selector(performClose:)
@@ -118,7 +178,7 @@ bool uno_app_initialize(bool *metal)
             [fileMenu addItem:closeMenuItem];
             [fileMenuItem setSubmenu:fileMenu];
             [mainMenu addItem:fileMenuItem];
-            
+
             [app setMainMenu:mainMenu];
 #if DEBUG
             NSLog(@"uno_app_initialize: Created default menu with Command+Q and Command+W shortcuts");
@@ -256,6 +316,18 @@ void uno_application_quit(void)
     if ([keyPath isEqualToString:NSStringFromSelector(@selector(effectiveAppearance))]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             uno_get_system_theme_change_callback()();
+        });
+    }
+}
+
+- (void)accessibilityDisplayOptionsChanged:(NSNotification *)notification
+{
+#if DEBUG
+    NSLog(@"UNOApplicationDelegate.accessibilityDisplayOptionsChanged notification:%@", notification);
+#endif
+    if (uno_get_high_contrast_change_callback()) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            uno_get_high_contrast_change_callback()();
         });
     }
 }

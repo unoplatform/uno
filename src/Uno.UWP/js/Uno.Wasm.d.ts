@@ -286,8 +286,11 @@ declare namespace Uno.Helpers.Theming {
 declare namespace Uno.Helpers.Theming {
     class SystemThemeHelper {
         private static dispatchThemeChange;
+        private static dispatchHighContrastChange;
         static getSystemTheme(): string;
+        static getHighContrast(): boolean;
         static observeSystemTheme(): void;
+        static observeHighContrast(): void;
     }
 }
 interface Window {

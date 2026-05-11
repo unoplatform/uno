@@ -281,6 +281,7 @@ namespace Microsoft.UI.Xaml.Controls
 				compositionRange = (owningTextBox.CompositionUnderlineStart, owningTextBox.CompositionUnderlineLength);
 			}
 			ParsedText.Draw(
+				this,
 				session,
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
 				highligherters,

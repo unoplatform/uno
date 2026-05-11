@@ -1,4 +1,4 @@
-﻿//#define DEBUG_SET_RESOURCE_SOURCE
+//#define DEBUG_SET_RESOURCE_SOURCE
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,6 +9,7 @@ using Uno.UI.Xaml;
 using System.Linq;
 using System.Diagnostics;
 using Windows.UI.Input.Spatial;
+using Windows.UI.ViewManagement;
 
 using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
@@ -100,7 +101,7 @@ namespace Microsoft.UI.Xaml
 					// This is safest and avoids handling edge cases.
 					// Note that adding or removing theme dictionary isn't very common,
 					// so invalidating the cache shouldn't be a performance issue.
-					_activeTheme = ResourceKey.Empty;
+					InvalidateActiveThemeDictionary();
 				};
 			}
 
@@ -561,28 +562,86 @@ namespace Microsoft.UI.Xaml
 
 		private ResourceDictionary _activeThemeDictionary;
 		private ResourceKey _activeTheme;
+		private bool _activeThemeIsHighContrast;
+		private string _activeHighContrastScheme;
 
+		// MUX Reference Resources.cpp, tag winui3/release/1.4.2, lines 718-758
 		private ResourceDictionary GetActiveThemeDictionary(in ResourceKey activeTheme)
 		{
-			if (!activeTheme.Equals(_activeTheme))
+			var isHighContrastActive = AccessibilitySettings.IsHighContrastActive;
+			var hcScheme = isHighContrastActive ? AccessibilitySettings.HighContrastSchemeName : null;
+
+			if (!activeTheme.Equals(_activeTheme) || _activeThemeIsHighContrast != isHighContrastActive
+				|| !string.Equals(_activeHighContrastScheme, hcScheme, StringComparison.Ordinal))
 			{
 				InvalidateNotFoundCache(false);
 				_activeTheme = activeTheme;
-				_activeThemeDictionary = GetThemeDictionary(activeTheme) ?? GetThemeDictionary(Themes.Default);
+				_activeThemeIsHighContrast = isHighContrastActive;
+				_activeHighContrastScheme = hcScheme;
+
+				// MUX Reference Resources.cpp:
+				// When HC is active, try scheme-specific HC dictionary first,
+				// then generic "HighContrast", then base theme, then Default.
+				if (isHighContrastActive)
+				{
+					_activeThemeDictionary = GetHighContrastThemeDictionary(activeTheme, hcScheme)
+						?? GetThemeDictionary(Themes.HighContrast)
+						?? GetThemeDictionary(activeTheme)
+						?? GetThemeDictionary(Themes.Default);
+				}
+				else
+				{
+					_activeThemeDictionary = GetThemeDictionary(activeTheme) ?? GetThemeDictionary(Themes.Default);
+				}
 			}
 
 			return _activeThemeDictionary;
 		}
 
+		// MUX Reference Resources.cpp, lines 722-756
+		// Resolves the scheme-specific HC dictionary key based on the current subtree
+		// RequestedTheme and the active HC scheme.
+		private ResourceDictionary GetHighContrastThemeDictionary(in ResourceKey activeTheme, string hcScheme)
+		{
+			// If a subtree requested a specific theme (Light/Dark), map to HC variant.
+			if (activeTheme.Equals(Themes.Light))
+			{
+				return GetThemeDictionary(Themes.HighContrastWhite);
+			}
+			else if (activeTheme.Equals(Themes.Dark))
+			{
+				return GetThemeDictionary(Themes.HighContrastBlack);
+			}
+
+			// No subtree theme override — use the actual HC scheme.
+			return hcScheme switch
+			{
+				"High Contrast Black" => GetThemeDictionary(Themes.HighContrastBlack),
+				"High Contrast White" => GetThemeDictionary(Themes.HighContrastWhite),
+				"High Contrast #1" => GetThemeDictionary(Themes.HighContrastCustom),
+				_ => null
+			};
+		}
+
 		private ResourceDictionary GetThemeDictionary(in ResourceKey theme)
 		{
+			return TryGetThemeDictionary(theme, out var dictionary)
+				? dictionary
+				: null;
+		}
+
+		internal bool TryGetThemeDictionary(in ResourceKey theme, out ResourceDictionary dictionary)
+		{
+			dictionary = null;
+
 			object dict = null;
 			if (_themeDictionaries?.TryGetValue(theme, out dict, shouldCheckSystem: false) ?? false)
 			{
-				return dict as ResourceDictionary;
+				dictionary = dict as ResourceDictionary;
+				return dictionary is not null;
 			}
 
-			return null;
+			return false;
 		}
 
 		private bool ContainsKeyTheme(in ResourceKey resourceKey, in ResourceKey activeTheme)
@@ -829,7 +888,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			foreach (var item in _values.Values)
+			foreach (var item in GetValuesSnapshot())
 			{
 				if (item is IDependencyObjectStoreProvider provider)
 				{
@@ -837,15 +896,72 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			foreach (var mergedDict in _mergedDictionaries)
+			foreach (var mergedDict in GetMergedDictionariesSnapshot())
 			{
 				mergedDict.UpdateThemeBindings(updateReason);
+			}
+
+			foreach (var themeDictionary in GetThemeDictionariesSnapshot())
+			{
+				themeDictionary.UpdateThemeBindings(updateReason);
 			}
 
 			if (_sourceDictionary?.Target is ResourceDictionary target)
 			{
 				target.UpdateThemeBindings(updateReason);
 			}
+		}
+
+		private object[] GetValuesSnapshot()
+		{
+			if (_values.Count == 0)
+			{
+				return Array.Empty<object>();
+			}
+
+			var snapshot = new object[_values.Count];
+			var index = 0;
+			foreach (var item in _values.Values)
+			{
+				snapshot[index++] = item;
+			}
+
+			return snapshot;
+		}
+
+		private ResourceDictionary[] GetMergedDictionariesSnapshot()
+		{
+			if (_mergedDictionaries.Count == 0)
+			{
+				return Array.Empty<ResourceDictionary>();
+			}
+
+			var snapshot = new ResourceDictionary[_mergedDictionaries.Count];
+			for (var i = 0; i < _mergedDictionaries.Count; i++)
+			{
+				snapshot[i] = _mergedDictionaries[i];
+			}
+
+			return snapshot;
+		}
+
+		private ResourceDictionary[] GetThemeDictionariesSnapshot()
+		{
+			if (_themeDictionaries is null || _themeDictionaries._values.Count == 0)
+			{
+				return Array.Empty<ResourceDictionary>();
+			}
+
+			var snapshot = new List<ResourceDictionary>(_themeDictionaries._values.Count);
+			foreach (var item in _themeDictionaries._values.Values)
+			{
+				if (item is ResourceDictionary resourceDictionary)
+				{
+					snapshot.Add(resourceDictionary);
+				}
+			}
+
+			return snapshot.ToArray();
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -914,6 +1030,18 @@ namespace Microsoft.UI.Xaml
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
 
+		/// <summary>
+		/// Forces all ResourceDictionary instances to re-evaluate their active theme dictionary.
+		/// This is needed when High Contrast state changes but the base theme key remains the same.
+		/// </summary>
+		internal void InvalidateActiveThemeDictionary()
+		{
+			_activeTheme = ResourceKey.Empty;
+			_activeThemeIsHighContrast = false;
+			_activeThemeDictionary = null;
+			InvalidateNotFoundCache(false);
+		}
+
 		internal void InvalidateNotFoundCache(bool propagate)
 		{
 			if (propagate)
@@ -958,6 +1086,10 @@ namespace Microsoft.UI.Xaml
 		{
 			public static SpecializedResourceDictionary.ResourceKey Light { get; } = "Light";
 			public static SpecializedResourceDictionary.ResourceKey Dark { get; } = "Dark";
+			public static SpecializedResourceDictionary.ResourceKey HighContrast { get; } = "HighContrast";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastBlack { get; } = "HighContrastBlack";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastWhite { get; } = "HighContrastWhite";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastCustom { get; } = "HighContrastCustom";
 			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
 			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Default;
 

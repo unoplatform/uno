@@ -11,21 +11,35 @@
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="HighContrast">
-                    <SolidColorBrush x:Key="LocalThemeColor" Color="Red" />
+                    <SolidColorBrush x:Key="LocalThemeColor" Color="{ThemeResource SystemColorWindowColor}" />
+                    <SolidColorBrush x:Key="LocalThemeTextColor" Color="{ThemeResource SystemColorWindowTextColor}" />
+                    <SolidColorBrush x:Key="LocalThemeAccentColor" Color="{ThemeResource SystemColorHighlightColor}" />
+                    <SolidColorBrush x:Key="LocalThemeAccentTextColor" Color="{ThemeResource SystemColorHighlightTextColor}" />
+                    <SolidColorBrush x:Key="LocalHyperlinkColor" Color="{ThemeResource SystemColorHotlightColor}" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Default">
                     <SolidColorBrush x:Key="LocalThemeColor" Color="Gray" />
+                    <SolidColorBrush x:Key="LocalThemeTextColor" Color="White" />
+                    <SolidColorBrush x:Key="LocalThemeAccentColor" Color="ForestGreen" />
+                    <SolidColorBrush x:Key="LocalThemeAccentTextColor" Color="White" />
+                    <SolidColorBrush x:Key="LocalHyperlinkColor" Color="DodgerBlue" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="LocalThemeColor" Color="Blue" />
+                    <SolidColorBrush x:Key="LocalThemeTextColor" Color="White" />
+                    <SolidColorBrush x:Key="LocalThemeAccentColor" Color="CornflowerBlue" />
+                    <SolidColorBrush x:Key="LocalThemeAccentTextColor" Color="White" />
+                    <SolidColorBrush x:Key="LocalHyperlinkColor" Color="LightSkyBlue" />
 
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="LocalThemeColor" Color="Yellow" />
+                    <SolidColorBrush x:Key="LocalThemeTextColor" Color="Black" />
+                    <SolidColorBrush x:Key="LocalThemeAccentColor" Color="Orange" />
+                    <SolidColorBrush x:Key="LocalThemeAccentTextColor" Color="Black" />
+                    <SolidColorBrush x:Key="LocalHyperlinkColor" Color="Blue" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-
-            <SolidColorBrush x:Key="LocalThemeColor2" Color="Green" />
         </ResourceDictionary>
     </Page.Resources>
 
@@ -48,25 +62,25 @@
                     Width="300"
                     Height="50"
                     Background="{ThemeResource LocalThemeColor}">
-                    <TextBlock>{ThemeResource} on a themed resource</TextBlock>
+                    <TextBlock Foreground="{ThemeResource LocalThemeTextColor}">{ThemeResource} on a themed resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
                     Background="{StaticResource LocalThemeColor}">
-                    <TextBlock>{StaticResource} on a themed resource</TextBlock>
+                    <TextBlock Foreground="{StaticResource LocalThemeTextColor}">{StaticResource} on a themed resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
-                    Background="{ThemeResource LocalThemeColor2}">
-                    <TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
+                    Background="{ThemeResource LocalThemeAccentColor}">
+                    <TextBlock Foreground="{ThemeResource LocalThemeAccentTextColor}">{ThemeResource} on an accent resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
-                    Background="{StaticResource LocalThemeColor2}">
-                    <TextBlock>{StaticResource} on a static resource (green)</TextBlock>
+                    Background="{StaticResource LocalThemeAccentColor}">
+                    <TextBlock Foreground="{StaticResource LocalThemeAccentTextColor}">{StaticResource} on an accent resource</TextBlock>
                 </Border>
             </StackPanel>
             <StackPanel
@@ -77,25 +91,25 @@
                     Width="300"
                     Height="50"
                     Background="{ThemeResource LocalThemeColor}">
-                    <TextBlock>{ThemeResource} on a themed resource</TextBlock>
+                    <TextBlock Foreground="{ThemeResource LocalThemeTextColor}">{ThemeResource} on a themed resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
                     Background="{StaticResource LocalThemeColor}">
-                    <TextBlock>{StaticResource} on a themed resource</TextBlock>
+                    <TextBlock Foreground="{StaticResource LocalThemeTextColor}">{StaticResource} on a themed resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
-                    Background="{ThemeResource LocalThemeColor2}">
-                    <TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
+                    Background="{ThemeResource LocalThemeAccentColor}">
+                    <TextBlock Foreground="{ThemeResource LocalThemeAccentTextColor}">{ThemeResource} on an accent resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
-                    Background="{StaticResource LocalThemeColor2}">
-                    <TextBlock>{StaticResource} on a static resource (green)</TextBlock>
+                    Background="{StaticResource LocalThemeAccentColor}">
+                    <TextBlock Foreground="{StaticResource LocalThemeAccentTextColor}">{StaticResource} on an accent resource</TextBlock>
                 </Border>
             </StackPanel>
             <StackPanel
@@ -106,33 +120,59 @@
                     Width="300"
                     Height="50"
                     Background="{ThemeResource LocalThemeColor}">
-                    <TextBlock>{ThemeResource} on a themed resource</TextBlock>
+                    <TextBlock Foreground="{ThemeResource LocalThemeTextColor}">{ThemeResource} on a themed resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
                     Background="{StaticResource LocalThemeColor}">
-                    <TextBlock>{StaticResource} on a themed resource</TextBlock>
+                    <TextBlock Foreground="{StaticResource LocalThemeTextColor}">{StaticResource} on a themed resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
-                    Background="{ThemeResource LocalThemeColor2}">
-                    <TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
+                    Background="{ThemeResource LocalThemeAccentColor}">
+                    <TextBlock Foreground="{ThemeResource LocalThemeAccentTextColor}">{ThemeResource} on an accent resource</TextBlock>
                 </Border>
                 <Border
                     Width="300"
                     Height="50"
-                    Background="{StaticResource LocalThemeColor2}">
-                    <TextBlock>{StaticResource} on a static resource (green)</TextBlock>
+                    Background="{StaticResource LocalThemeAccentColor}">
+                    <TextBlock Foreground="{StaticResource LocalThemeAccentTextColor}">{StaticResource} on an accent resource</TextBlock>
                 </Border>
             </StackPanel>
         </Grid>
+        <Border
+            Padding="12"
+            Background="{ThemeResource LocalThemeColor}"
+            BorderBrush="{ThemeResource LocalThemeAccentColor}"
+            BorderThickness="1">
+            <StackPanel Spacing="8">
+                <TextBlock Foreground="{ThemeResource LocalThemeTextColor}" TextWrapping="Wrap">
+                    The HighContrast dictionary uses SystemColor* resources. Text that already uses those system-aware brushes should opt out with HighContrastAdjustment='None'.
+                </TextBlock>
+                <TextBlock
+                    Foreground="OrangeRed"
+                    Opacity="0.35"
+                    Text="Auto adjustment example (explicit foreground and non-zero opacity)." />
+                <TextBlock
+                    Foreground="{ThemeResource LocalThemeTextColor}"
+                    HighContrastAdjustment="None"
+                    Opacity="0.35"
+                    Text="System-aware text opts out with HighContrastAdjustment='None'."
+                    TextWrapping="Wrap" />
+                <HyperlinkButton
+                    Content="SystemColorHotlightColor hyperlink"
+                    Foreground="{ThemeResource LocalHyperlinkColor}"
+                    HighContrastAdjustment="None"
+                    NavigateUri="https://platform.uno" />
+            </StackPanel>
+        </Border>
         <Image
             Width="200"
             Source="ms-appx:///Assets/ThemeTestImage.png"
             Stretch="UniformToFill" />
-        <TextBlock>Blue=dark, Yellow=Light, Red=High Contrast</TextBlock>
+        <TextBlock TextWrapping="Wrap">Blue and yellow still demonstrate explicit dark/light overrides. High Contrast now uses system colors instead of a hard-coded red brush.</TextBlock>
         <StackPanel Orientation="Horizontal">
             <Button Click="LocalDefault">Local Default</Button>
             <Button Click="LocalDark">Local Dark</Button>
