@@ -8,6 +8,7 @@ using Windows.UI.Core;
 
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno;
 using Windows.Devices.Haptics;
@@ -26,7 +27,29 @@ namespace Windows.UI.Input
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
+		/// <summary>
+		/// Default maximum delay (in microseconds) between two taps for them to be
+		/// recognized as a multi-tap gesture, used when no platform override is registered.
+		/// Matches WinUI's default <c>GetDoubleClickTime()</c> on Windows.
+		/// </summary>
 		internal const ulong MultiTapMaxDelayMicroseconds = 500000;
+
+		private static ulong? s_resolvedMultiTapMaxDelayMicroseconds;
+
+		/// <summary>
+		/// The effective multi-tap window (in microseconds), resolved once per process from
+		/// the registered <see cref="IGestureRecognizerExtension"/> (if any), falling back to
+		/// <see cref="MultiTapMaxDelayMicroseconds"/>.
+		/// </summary>
+		internal static ulong ResolvedMultiTapMaxDelayMicroseconds
+			=> s_resolvedMultiTapMaxDelayMicroseconds ??= ResolveMultiTapMaxDelayMicroseconds();
+
+		private static ulong ResolveMultiTapMaxDelayMicroseconds()
+			=> ApiExtensibility.CreateInstance<IGestureRecognizerExtension>(null, out var ext)
+				? ext.MultiTapMaxDelayMicroseconds ?? MultiTapMaxDelayMicroseconds
+				: MultiTapMaxDelayMicroseconds;
+
+		internal static void ResetCacheForTests() => s_resolvedMultiTapMaxDelayMicroseconds = null;
 
 		internal const long HoldMinDelayMicroseconds = 800000;
 		internal const float HoldMinPressure = .75f;
