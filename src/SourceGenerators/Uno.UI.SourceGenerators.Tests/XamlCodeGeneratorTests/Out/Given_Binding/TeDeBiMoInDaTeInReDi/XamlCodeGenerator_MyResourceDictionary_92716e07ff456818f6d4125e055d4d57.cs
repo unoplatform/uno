@@ -212,14 +212,10 @@ namespace MyProject
 				{
 					if (_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary == null)
 					{
-						_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary = 
-						new global::Microsoft.UI.Xaml.ResourceDictionary
-						{
-							IsParsing = true,
-							["myTemplate"] = 
-							new global::Uno.UI.Xaml.WeakResourceInitializer(this, Get_1)
-							,
-						}
+						_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
+						_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary.IsParsing = true;
+						_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary["myTemplate"] = 
+						new global::Uno.UI.Xaml.WeakResourceInitializer(this, Get_1)
 						;
 						_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/C:/Project/0/MyResourceDictionary.xaml");
 						_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary.CreationComplete();
