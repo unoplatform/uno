@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UnoAttachEventHandlers()
 		{
-			m_content.ManipulationMode = m_isHorizontal ? ManipulationModes.TranslateX : ManipulationModes.TranslateY /*| ManipulationModes.TranslateInertia*/;
+			m_content.ManipulationMode = (m_isHorizontal ? ManipulationModes.TranslateX : ManipulationModes.TranslateY) | ManipulationModes.System /*| ManipulationModes.TranslateInertia*/;
 			m_content.ManipulationStarting += OnSwipeManipulationStarting;
 			m_content.ManipulationStarted += OnSwipeManipulationStarted;
 			m_content.ManipulationDelta += OnSwipeManipulationDelta;
