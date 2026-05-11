@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RadioMenuFlyoutItem.cpp, commit d6634d1bb82697c9b700fff5adf4e9484e0952c5
+// MUX Reference RadioMenuFlyoutItem.cpp, commit 69097129a853c65a16447aade4c82576d4724b1a
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
@@ -15,11 +15,12 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class RadioMenuFlyoutItem : ToggleMenuFlyoutItem
 	{
 		[ThreadStatic]
-		private static ConcurrentDictionary<string, WeakReference<RadioMenuFlyoutItem>> s_selectionMap;
+		private static Dictionary<string, WeakReference<RadioMenuFlyoutItem>> s_selectionMap;
 
-		// Copies of IsChecked & GroupName to avoid using those dependency properties in the ~RadioMenuFlyoutItem() destructor which would lead to crashes.
+		// Copies of IsChecked & GroupName so Unloaded cleanup uses the values at registration time
+		// even if the dependency properties have since changed.
 		private bool m_isChecked;
-		private string m_groupName;
+		private string m_groupName = "";
 
 		private bool m_isSafeUncheck;
 
@@ -31,22 +32,30 @@ namespace Microsoft.UI.Xaml.Controls
 			if (s_selectionMap == null)
 			{
 				// Ensure that this object exists
-				s_selectionMap = new ConcurrentDictionary<string, WeakReference<RadioMenuFlyoutItem>>();
+				s_selectionMap = new Dictionary<string, WeakReference<RadioMenuFlyoutItem>>();
 			}
+
+			Loaded += OnLoaded;
+			Unloaded += OnUnloaded;
 
 			this.SetDefaultStyleKey();
 
 		}
 
-		~RadioMenuFlyoutItem()
+		private void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			// Register the item in the selection map now that all XAML-applied properties (e.g. GroupName)
+			// are guaranteed to be set. This handles the case where IsChecked is set before GroupName
+			// during XAML parsing, which would otherwise leave the item registered under an empty group name.
+			UpdateCheckedItemInGroup();
+		}
+
+		private void OnUnloaded(object sender, RoutedEventArgs e)
 		{
 			// If this is the checked item, remove it from the lookup.
 			if (m_isChecked)
 			{
-				if (m_groupName != null)
-				{
-					s_selectionMap?.TryRemove(m_groupName, out _);
-				}
+				s_selectionMap?.Remove(m_groupName);
 			}
 		}
 
