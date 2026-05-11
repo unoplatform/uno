@@ -213,14 +213,23 @@ public partial class FrameworkElement
 	/// </summary>
 	private protected virtual void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
-		// 1. Determine if ActualTheme is changing
+		// 1. Determine if theme is changing
 		var oldTheme = GetTheme();
-		var appBaseTheme = Theming.FromElementTheme(
-			Application.Current?.ActualElementTheme ?? ElementTheme.Light);
-		var oldBase = oldTheme == Theme.None ? appBaseTheme : Theming.GetBaseValue(oldTheme);
 		var newBase = Theming.GetBaseValue(theme);
 
+		// MUX Reference: Theming.cpp GetBaseValue(Theme::None) returns Theme::None (0x00),
+		// which never equals Light or Dark, ensuring themeChanged is always true for
+		// elements that haven't been through a theme walk yet. This guarantees
+		// UpdateThemeBindings is called on their first walk (fixes #23177).
+		var oldBase = Theming.GetBaseValue(oldTheme);
 		bool themeChanged = oldBase != newBase || forceRefresh;
+
+		// MUX Reference: framework.cpp RaiseActiveThemeChangedEventIfChanging uses
+		// oldTheme == Theme::None ? GetBaseTheme() : GetBaseValue(oldTheme) to prevent
+		// spurious ActualThemeChanged events and foreground inheritance on first walk.
+		var appBaseTheme = Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+		var oldBaseForEvent = oldTheme == Theme.None ? appBaseTheme : oldBase;
+		bool effectiveThemeChanged = oldBaseForEvent != newBase || forceRefresh;
 
 		// 2. PUSH this element's theme to global context
 		// The push/pop is still needed because ResourceDictionary.GetActiveThemeDictionary()
@@ -253,7 +262,7 @@ public partial class FrameworkElement
 			{
 				NotifyThemeChangedForInheritedProperties(theme, freeze: true);
 			}
-			else if (themeChanged)
+			else if (effectiveThemeChanged)
 			{
 				var parent = this.GetParent() as FrameworkElement;
 				var parentFg = parent?._themeForeground;
@@ -286,7 +295,7 @@ public partial class FrameworkElement
 			PropagateThemeToChildren(theme, forceRefresh);
 
 			// 6. Raise event LAST (WinUI: framework.cpp line 3317)
-			if (themeChanged)
+			if (effectiveThemeChanged)
 			{
 				RaiseActualThemeChanged();
 			}
