@@ -281,6 +281,107 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_TwoWay_BindBack_Returning()
+		{
+			// Covers https://github.com/unoplatform/uno/issues/19122
+			// When BindBack is a pure converter (returns a value without mutating the source),
+			// the generator must assign the return value back to the bound property.
+			var SUT = new Binding_TwoWay_BindBack_Returning();
+
+			Assert.AreEqual(0, SUT.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("0", SUT.myObject.MyProperty);
+			Assert.AreEqual(0, SUT.MyIntProperty);
+
+			SUT.MyIntProperty = 1;
+
+			Assert.AreEqual("1", SUT.myObject.MyProperty);
+
+			SUT.myObject.MyProperty = "2";
+
+			Assert.AreEqual(2, SUT.MyIntProperty);
+
+			SUT.myObject.MyProperty = "42";
+
+			Assert.AreEqual(42, SUT.MyIntProperty);
+		}
+
+		[TestMethod]
+		public void When_TwoWay_BindBack_Returning_Nested()
+		{
+			var SUT = new Binding_TwoWay_BindBack_Returning();
+
+			Assert.AreEqual(0, SUT.Model.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("0", SUT.myObjectNestedProperty.MyProperty);
+			Assert.AreEqual(0, SUT.Model.MyIntProperty);
+
+			SUT.Model.MyIntProperty = 1;
+
+			Assert.AreEqual("1", SUT.myObjectNestedProperty.MyProperty);
+
+			SUT.myObjectNestedProperty.MyProperty = "2";
+
+			Assert.AreEqual(2, SUT.Model.MyIntProperty);
+		}
+
+		[TestMethod]
+		public void When_TwoWay_BindBack_Returning_DataTemplate()
+		{
+			var SUT = new Binding_TwoWay_BindBack_Returning_DataTemplate();
+
+			var rootData = new Binding_TwoWay_BindBack_Returning_DataTemplate_Base();
+			SUT.root.Content = rootData;
+
+			Assert.AreEqual(0, rootData.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			var myObject = SUT.FindName("myObject") as TwoWay_BindBack_Returning_TestObject;
+
+			Assert.AreEqual("0", myObject.MyProperty);
+			Assert.AreEqual(0, rootData.MyIntProperty);
+
+			rootData.MyIntProperty = 1;
+
+			Assert.AreEqual("1", myObject.MyProperty);
+
+			myObject.MyProperty = "2";
+
+			Assert.AreEqual(2, rootData.MyIntProperty);
+		}
+
+		[TestMethod]
+		public void When_TwoWay_BindBack_Returning_DataTemplate_Nested()
+		{
+			var SUT = new Binding_TwoWay_BindBack_Returning_DataTemplate();
+
+			var rootData = new Binding_TwoWay_BindBack_Returning_DataTemplate_Base();
+			SUT.root.Content = rootData;
+
+			Assert.AreEqual(0, rootData.Model.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			var myObjectNestedProperty = SUT.FindName("myObjectNestedProperty") as TwoWay_BindBack_Returning_TestObject;
+
+			Assert.AreEqual("0", myObjectNestedProperty.MyProperty);
+			Assert.AreEqual(0, rootData.Model.MyIntProperty);
+
+			rootData.Model.MyIntProperty = 1;
+
+			Assert.AreEqual("1", myObjectNestedProperty.MyProperty);
+
+			myObjectNestedProperty.MyProperty = "2";
+
+			Assert.AreEqual(2, rootData.Model.MyIntProperty);
+		}
+
+		[TestMethod]
 		public void When_TwoWay_BindBack_Nested()
 		{
 			var SUT = new Binding_TwoWay_BindBack();
