@@ -534,6 +534,7 @@ public partial class ClientHotReloadProcessor
 #endif
 		}
 
+#if HAS_UNO_WINUI
 		private static string FlattenExceptionMessages(Exception exception)
 		{
 			var sb = new StringBuilder();
@@ -564,5 +565,6 @@ public partial class ClientHotReloadProcessor
 				}
 			}
 		}
+#endif
 	}
 }
