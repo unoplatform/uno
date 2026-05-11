@@ -129,9 +129,36 @@ public partial class ClientHotReloadProcessor
 		public void ConfigureSourceForNextOperation(HotReloadSource source)
 			=> _source = source;
 
+		/// <summary>
+		/// Starts a new local hot-reload operation using the source previously
+		/// stored via <see cref="ConfigureSourceForNextOperation"/>. Pair the two
+		/// when the source is decided one step earlier than the op itself — e.g.
+		/// the agent path sets <see cref="HotReloadSource.DevServer"/> when a
+		/// server frame arrives, then later calls <c>StartLocal(types)</c> from
+		/// the file-update handler without having to thread the source through
+		/// intermediate code.
+		/// <para>
+		/// For one-off operations whose source is known at the call site, prefer
+		/// the explicit <see cref="StartLocal(HotReloadSource, Type[])"/>
+		/// overload — it avoids the implicit dependency on the pre-configured
+		/// <c>_source</c> field and the race that comes with it when multiple
+		/// callers can mutate the source concurrently.
+		/// </para>
+		/// </summary>
 		public HotReloadClientOperation StartLocal(Type[] types)
+			=> StartLocal(_source, types);
+
+		/// <summary>
+		/// Starts a new local hot-reload operation tagged with the specified
+		/// <paramref name="source"/>, without consulting the configured
+		/// next-op source. Use this for one-off operations whose source is
+		/// known at the call site (e.g. user-initiated <c>UIUpdate.ForceRefresh</c>
+		/// → <see cref="HotReloadSource.Manual"/>) so the caller doesn't have
+		/// to round-trip through <see cref="ConfigureSourceForNextOperation"/>.
+		/// </summary>
+		public HotReloadClientOperation StartLocal(HotReloadSource source, Type[] types)
 		{
-			var op = new HotReloadClientOperation(_source, types, NotifyStatusChanged);
+			var op = new HotReloadClientOperation(source, types, NotifyStatusChanged);
 			ImmutableInterlocked.Update(ref _localOperations, static (history, op) => history.Add(op).Sort(CompareBySequenceId), op);
 			NotifyStatusChanged();
 

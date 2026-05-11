@@ -111,6 +111,113 @@ partial class ClientHotReloadProcessor
 #endif
 	}
 
+	/// <summary>
+	/// User-initiated re-apply of <paramref name="types"/> against the current
+	/// visual tree, bypassing any active <see cref="UIUpdate.Pause"/> handles
+	/// (Option A: drains the RD + VT phases directly). Used as the public
+	/// entry point behind <see cref="UIUpdate.ForceRefresh"/>.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Mirrors the <see cref="ResumeUIUpdate"/> dispatch shape verbatim:
+	/// resolves the singleton instance and current window, starts/continues a
+	/// local <see cref="HotReloadClientOperation"/> tagged
+	/// <see cref="HotReloadSource.Manual"/>, marshals to the UI thread, then
+	/// runs <see cref="DoUpdateVisualTreeCore"/> with <c>rdTypes</c> /
+	/// <c>vtTypes</c> equal to <paramref name="types"/> so both phases apply
+	/// regardless of the pause state.
+	/// </para>
+	/// <para>
+	/// Throws <see cref="InvalidOperationException"/> when the client has not
+	/// been wired (no <c>Window.UseStudio()</c> at startup). Returns a task
+	/// completing once the UI-thread pass finishes — exceptions inside the
+	/// dispatched body propagate through the returned task.
+	/// </para>
+	/// </remarks>
+	internal static Task ForceRefreshAsync(Type[] types, CancellationToken ct)
+	{
+		if (types is null)
+		{
+			throw new ArgumentNullException(nameof(types));
+		}
+
+		ct.ThrowIfCancellationRequested();
+
+		if (Instance is not { } instance)
+		{
+			throw new InvalidOperationException(
+				"UIUpdate.ForceRefresh requires an initialised hot-reload client. " +
+				"Make sure Window.UseStudio() has been called during app startup.");
+		}
+
+		if (CurrentWindow is not { } window)
+		{
+			throw new InvalidOperationException(
+				"UIUpdate.ForceRefresh requires an active window. " +
+				"Call ForceRefresh after the window has been activated.");
+		}
+
+		if (types.Length == 0)
+		{
+			return Task.CompletedTask;
+		}
+
+		var hr = instance._status.StartLocal(HotReloadSource.Manual, types);
+		var tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		// Propagate caller cancellation: if the token fires before the UI thread
+		// picks up our callback (or before the lock is acquired), surface
+		// OperationCanceledException through the returned task. Once the apply
+		// pass has started, DoUpdateVisualTreeCore runs to completion — the
+		// visual tree never tolerates a half-applied update.
+		var ctRegistration = ct.Register(static state => ((TaskCompletionSource<object?>)state).TrySetCanceled(), tcs);
+
+		async Task RunAsync()
+		{
+			try
+			{
+				ct.ThrowIfCancellationRequested();
+				using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(ct);
+				ct.ThrowIfCancellationRequested();
+				// Option A: pass rdTypes/vtTypes = types so both phases drain
+				// immediately, bypassing UIUpdate.Pause holders.
+				await instance.DoUpdateVisualTreeCore(hr, window, types, rdTypes: types, vtTypes: types);
+				tcs.TrySetResult(null);
+			}
+			catch (OperationCanceledException oce) when (oce.CancellationToken == ct || ct.IsCancellationRequested)
+			{
+				tcs.TrySetCanceled(ct);
+			}
+			catch (Exception ex)
+			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error("[HotReload] UIUpdate.ForceRefresh failed.", ex);
+				}
+				hr.ReportError(ex);
+				tcs.TrySetException(ex);
+			}
+			finally
+			{
+				ctRegistration.Dispose();
+			}
+		}
+
+#if HAS_UNO_WINUI || WINDOWS_WINUI
+		if (!window.DispatcherQueue.TryEnqueue(() => _ = RunAsync()))
+		{
+			var ex = new InvalidOperationException("DispatcherQueue.TryEnqueue refused the ForceRefresh callback.");
+			hr.ReportError(ex);
+			tcs.TrySetException(ex);
+			ctRegistration.Dispose();
+		}
+#else
+		_ = window.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await RunAsync());
+#endif
+
+		return tcs.Task;
+	}
+
 	internal static void SetWindow(Window window, bool disableIndicator)
 	{
 #if HAS_UNO_WINUI
