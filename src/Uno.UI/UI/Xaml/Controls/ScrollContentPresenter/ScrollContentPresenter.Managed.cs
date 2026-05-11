@@ -364,6 +364,15 @@ namespace Microsoft.UI.Xaml.Controls
 			// cannot fight with the new manipulation's direction.
 			_touchInertia = null;
 
+			return ComputeAcceptedManipulationModes();
+		}
+
+		/// <inheritdoc />
+		ManipulationModes IDirectManipulationHandler.GetCurrentlyAcceptedModes()
+			=> ComputeAcceptedManipulationModes();
+
+		private ManipulationModes ComputeAcceptedManipulationModes()
+		{
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();
 			if (scrollable.Horizontally)

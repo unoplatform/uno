@@ -124,16 +124,30 @@ partial class InputManager
 		}
 
 		/// <summary>
-		/// Cancel direct manipulation which are handled by the given <paramref name="requestingElement"/>.
+		/// Cancel direct manipulations on ancestors of <paramref name="requestingElement"/> when they would
+		/// actually conflict with the element's declared <see cref="UIElement.ManipulationMode"/>.
 		/// </summary>
+		/// <remarks>
+		/// History: PR #23135 added an after-press redo of this walk in <see cref="AfterPressForDirectManipulation"/>
+		/// to catch ancestor DMs that register LATE in the press bubble (specifically <see cref="ScrollContentPresenter"/>),
+		/// fixing pinch on a <c>ManipulationMode=Scale</c> grid inside a scrollable ScrollViewer on Skia Android.
+		/// That redo made the walk also cancel orthogonal-axis ancestors, which broke the common pattern of
+		/// <c>SwipeControl</c> (<c>TranslateX</c>) inside a <c>ListView</c> (<c>TranslateY</c>): the parent's
+		/// vertical-scroll DM was being cancelled, killing vertical scrolling. The walk is now axis-aware:
+		/// it only cancels ancestor DMs whose currently-accepted modes share an axis with the requester
+		/// (or whenever the requester declares <c>Scale</c>/<c>Rotate</c>/<c>All</c>/no specific axis, in which
+		/// case the previous aggressive behavior is preserved).
+		/// </remarks>
 		internal bool CancelDirectManipulations(UIElement requestingElement)
 		{
 			_pendingDirectManipulationCancelRequester ??= requestingElement;
 
+			var requesterModes = requestingElement.ManipulationMode;
 			var cancelled = false;
 			foreach (var manipulation in _directManipulations)
 			{
-				if (manipulation.Handlers.Any(IsForParentOfRequestingElement))
+				if (manipulation.Handlers.Any(IsForParentOfRequestingElement)
+					&& ConflictsWithRequester(requesterModes, manipulation))
 				{
 					cancelled |= manipulation.Cancel();
 				}
@@ -143,6 +157,48 @@ partial class InputManager
 
 			bool IsForParentOfRequestingElement(IDirectManipulationHandler handler)
 				=> handler.Owner is DependencyObject owner && requestingElement.GetAllParents(includeCurrent: true).Contains(owner);
+		}
+
+		private static bool ConflictsWithRequester(ManipulationModes requesterModes, DirectManipulation manipulation)
+		{
+			const ManipulationModes TranslationAxes = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+			const ManipulationModes MultiPointer = ManipulationModes.Scale | ManipulationModes.Rotate;
+
+			// No declared translation axis and no multi-pointer claim (e.g. ManipulationMode = System/None,
+			// or an explicit user-facing CancelDirectManipulations() call from an element that hasn't set
+			// ManipulationMode) -> fall back to the pre-axis-aware behavior of cancelling every ancestor DM.
+			var requesterAxes = requesterModes & TranslationAxes;
+			var requesterIsMultiPointer = (requesterModes & MultiPointer) != 0;
+			if (requesterAxes == 0 && !requesterIsMultiPointer)
+			{
+				return true;
+			}
+
+			// Multi-pointer gestures (pinch/rotate) and a translating ancestor share the first pointer:
+			// the ancestor would lock onto it before the second pointer arrives, aborting the descendant
+			// gesture. Cancel the ancestor unconditionally to preserve PR #23135's fix.
+			if (requesterIsMultiPointer)
+			{
+				return true;
+			}
+
+			// Pure translation request: only cancel ancestors whose currently-accepted modes overlap on
+			// the same axis. Any ancestor handler that doesn't expose an axis preview returns
+			// ManipulationModes.All by default, which keeps the legacy aggressive behavior for them.
+			var handlerModes = ManipulationModes.None;
+			foreach (var handler in manipulation.Handlers)
+			{
+				handlerModes |= handler.GetCurrentlyAcceptedModes();
+			}
+
+			// Ancestor wants to do multi-pointer gestures: a single-finger gesture on the descendant
+			// would steal pointers the ancestor needs, so treat it as a conflict to be safe.
+			if ((handlerModes & MultiPointer) != 0)
+			{
+				return true;
+			}
+
+			return (requesterAxes & handlerModes) != 0;
 		}
 
 		private bool IsRedirectedToManipulations(PointerIdentifier pointerId)
