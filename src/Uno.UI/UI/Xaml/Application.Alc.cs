@@ -135,7 +135,7 @@ partial class Application
 	/// in the consuming application's merged dictionaries).
 	/// </summary>
 	/// <remarks>
-	/// When the same logical app is hot-reloaded (Studio Live "Run" → modify → "Run" again),
+	/// When the same logical app is hot-reloaded,
 	/// the previous ALC may not yet be unloaded by the GC, so multiple <see cref="Application"/>
 	/// instances with the same <c>Type.FullName</c> can be registered simultaneously. The
 	/// previous instance is stale — its <see cref="Application.Resources"/> reflects the OLD

@@ -544,7 +544,7 @@ namespace Uno.UI
 			// NOTE: do NOT iterate secondary apps before the host for default-ALC parse
 			// contexts. The host's own UI elements emit default-ALC parse contexts; if we
 			// query secondary apps first, any same-key resource defined by an imported app
-			// (e.g. OnPrimaryColor in a Studio Live preview app) bleeds into the host's
+			// bleeds into the host's
 			// chrome and recolors host UI. The "same-key override should win for the
 			// secondary app" scenario (BrewHouse-style ColorOverrideDictionary on a
 			// shared-ALC brush) requires an owning-app hint plumbed through brush

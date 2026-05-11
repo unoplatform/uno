@@ -168,8 +168,7 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
-	/// Regression test for the lookup gap that broke theme switching in Studio Live's
-	/// hosted preview: when a brush living in a default-ALC (shared) assembly references
+	/// Regression test for theme switching: when a brush living in a default-ALC (shared) assembly references
 	/// a color via {StaticResource X} and X is defined ONLY in a secondary ALC's
 	/// Application.Resources, ResourceResolver.TryTopLevelRetrieval used to fall back to
 	/// Application.Current (the host) and miss the resource — causing the brush to be
@@ -209,7 +208,7 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
-	/// End-to-end regression test mirroring the Studio Live theme-switch bug shape: a
+	/// End-to-end regression test:
 	/// SolidColorBrush whose Color is bound via {StaticResource} to a Color defined in
 	/// the secondary ALC must materialize with the correct Color rather than the default
 	/// transparent value. Without the fix the lazy materialization returns a brush with
@@ -241,8 +240,7 @@ public class Given_AlcContentHost
 	/// (Application.Current) and a secondary-ALC app define the same resource key, a lookup
 	/// originating from a host / default-ALC parse context MUST return the host's value.
 	/// The earlier "Prioritize secondary-ALC apps over host" behavior iterated all secondary
-	/// apps before the host even for default-ALC contexts, which recolored Studio Live's
-	/// chrome with whichever imported preview app happened to define the same theme key.
+	/// apps before the host even for default-ALC contexts
 	/// </summary>
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
