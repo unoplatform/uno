@@ -25,6 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 public class Given_AlcContentHost
 {
 	private TestAssemblyLoadContext? _testAlc;
+	private TestAssemblyLoadContext? _testAlcSecondary;
 	private AlcContentHost? _contentHost;
 
 	[TestCleanup]
@@ -39,6 +40,12 @@ public class Given_AlcContentHost
 		{
 			_testAlc.Unload();
 			_testAlc = null;
+		}
+
+		if (_testAlcSecondary is not null)
+		{
+			_testAlcSecondary.Unload();
+			_testAlcSecondary = null;
 		}
 	}
 
@@ -288,6 +295,244 @@ public class Given_AlcContentHost
 				Application.Current.Resources.Remove(sharedKey);
 			}
 		}
+	}
+
+	/// <summary>
+	/// Counterpart to <c>When_TopLevelLookupFromHostContext_HasHostValue_Then_HostWinsOverSecondaryAlcApp</c>:
+	/// when a secondary-ALC parse context drives the lookup and BOTH the host and the secondary
+	/// app define the same key, the secondary app's value must win (priority step 1 in
+	/// <c>ResourceResolver.TryTopLevelRetrieval</c> — <c>contextApp.Resources</c> is queried
+	/// before <c>Application.Current</c>). This is what allows a secondary app's theme overrides
+	/// (e.g. a brand <c>ColorOverrideDictionary</c>) to take precedence over the host's same-key
+	/// defaults for XAML owned by that secondary app.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_TopLevelLookupFromSecondaryAlcContext_HasHostValue_Then_SecondaryWins()
+	{
+		await StartSecondaryAlcAppAsync();
+
+		// AlcAppOnlyColor in the secondary ALC's AlcAppResources.xaml is #FF112233.
+		// Define a *different* value for the same key in the host.
+		var hostColor = Windows.UI.Color.FromArgb(0xFF, 0xAA, 0xBB, 0xCC);
+		const string sharedKey = "AlcAppOnlyColor";
+
+		var hadPrior = Application.Current.Resources.TryGetValue(sharedKey, out var priorValue);
+		Application.Current.Resources[sharedKey] = hostColor;
+		try
+		{
+			// Parse context emitted by XAML in the secondary ALC's assembly. The lazy
+			// resolver on XamlParseContext.AssemblyLoadContext will pick the AlcApp's
+			// AssemblyLoadContext from AssemblyName.
+			var parseContext = new XamlParseContext
+			{
+				AssemblyName = "Uno.UI.RuntimeTests.AlcApp"
+			};
+
+			var key = new SpecializedResourceDictionary.ResourceKey(sharedKey);
+			var found = ResourceResolver.TryTopLevelRetrieval(key, parseContext, out var value);
+
+			Assert.IsTrue(found, "Lookup should succeed (both host and secondary have the key).");
+			Assert.IsInstanceOfType<Windows.UI.Color>(value);
+			Assert.AreEqual(
+				Windows.UI.Color.FromArgb(0xFF, 0x11, 0x22, 0x33),
+				(Windows.UI.Color)value,
+				"Secondary-ALC parse context must return the secondary app's value, not the host's. " +
+				"Returning the host's #FFAABBCC here means contextApp.Resources is not being queried " +
+				"before Application.Current — secondary-app theme overrides would be silently lost.");
+		}
+		finally
+		{
+			if (hadPrior)
+			{
+				Application.Current.Resources[sharedKey] = priorValue;
+			}
+			else
+			{
+				Application.Current.Resources.Remove(sharedKey);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Sibling-iteration regression test (priority step 2):
+	/// when a lookup originates from secondary app A's parse context and the key is NOT in
+	/// A's resources, <c>ResourceResolver.TryTopLevelRetrieval</c> must walk the other
+	/// registered secondary apps before falling back to the host. Without this branch, a
+	/// shared brush in app A that depends on a color defined only in a sibling secondary
+	/// app B would be force-resolved against the host (and likely miss).
+	/// </summary>
+	/// <remarks>
+	/// Loads the AlcApp DLL into a separate collectible ALC and constructs <c>AlcTestApp.AppB</c>
+	/// inside it. <c>AppB</c> has a distinct <c>Type.FullName</c> from <c>AlcTestApp.App</c>, so
+	/// the same-type dedupe in <c>EnumerateSecondaryApplications</c> does not collapse the two
+	/// registrations.
+	/// </remarks>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_TopLevelLookupFromSecondaryAlcContext_Then_FallsBackToSiblingSecondaryApp()
+	{
+		await StartSecondaryAlcAppAsync();
+
+		// Load AlcApp into a second ALC and construct AppB there. AppB is a minimal
+		// Application subclass (no XAML/InitializeComponent) — base ctor's Current = this
+		// registers it under the new ALC.
+		var siblingApp = await RegisterSiblingAlcApplicationAsync("AlcTestApp.AppB");
+
+		// Seed a key only AppB knows about. AppB starts with empty Resources (no XAML).
+		const string siblingOnlyKey = "AlcAppSiblingOnlyColor";
+		var siblingColor = Windows.UI.Color.FromArgb(0xFF, 0x44, 0xCC, 0x88);
+		siblingApp.Resources[siblingOnlyKey] = siblingColor;
+
+		Assert.IsFalse(
+			Application.Current.Resources.ContainsKey(siblingOnlyKey),
+			"Sanity: the sibling-only key must not be in the host.");
+
+		var primaryAlcApp = Application.GetForAssemblyLoadContext(_testAlc!);
+		Assert.IsNotNull(primaryAlcApp, "Primary secondary-ALC app should be registered.");
+		Assert.IsFalse(
+			primaryAlcApp!.Resources.ContainsKey(siblingOnlyKey),
+			"Sanity: the sibling-only key must not be in the primary secondary app either.");
+
+		// Parse context owned by the primary secondary ALC: contextApp resolves to it,
+		// misses the key, then EnumerateSecondaryApplications yields AppB → hit.
+		// Note: bind the ALC explicitly. The lazy resolver picks the first assembly with a
+		// matching AssemblyName, which is non-deterministic when both ALCs have AlcApp loaded.
+		var parseContext = new XamlParseContext
+		{
+			AssemblyLoadContext = _testAlc
+		};
+
+		var key = new SpecializedResourceDictionary.ResourceKey(siblingOnlyKey);
+		var found = ResourceResolver.TryTopLevelRetrieval(key, parseContext, out var value);
+
+		Assert.IsTrue(found,
+			"Sibling iteration must locate keys defined only in another registered secondary app.");
+		Assert.AreEqual(
+			siblingColor,
+			(Windows.UI.Color)value,
+			"Returned color must come from the sibling secondary app (AppB).");
+	}
+
+	/// <summary>
+	/// Hot-reload bump regression test:
+	/// when a parse context references a STALE (hot-reloaded-out) secondary ALC,
+	/// <c>ResourceResolver.TryTopLevelRetrieval</c> must redirect the lookup to the latest
+	/// registered <c>Application</c> with the same <c>Type.FullName</c>
+	/// (via <c>Application.GetLatestSecondaryApplicationForType</c>). Without the bump the
+	/// lookup would read stale resources from the previous build's <c>Application</c>.
+	/// </summary>
+	/// <remarks>
+	/// Loads the AlcApp DLL into a second collectible ALC and constructs another
+	/// <c>AlcTestApp.App</c> instance there. Both registrations share <c>Type.FullName</c>,
+	/// so the dedupe in <c>EnumerateSecondaryApplications</c> retains only the newest; the
+	/// bump operates on the (un-deduped) raw <c>_applicationsByAlc</c> registry inside
+	/// <c>GetLatestSecondaryApplicationForType</c>.
+	/// </remarks>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_StaleAlcParseContext_Then_BumpsToLiveSecondaryApp()
+	{
+		await StartSecondaryAlcAppAsync();
+
+		var staleApp = Application.GetForAssemblyLoadContext(_testAlc!);
+		Assert.IsNotNull(staleApp, "Primary (stale) secondary-ALC app should be registered.");
+
+		// Mutate the stale app's resource so the bump's effect is observable.
+		const string sharedKey = "AlcAppOnlyColor";
+		var staleColor = Windows.UI.Color.FromArgb(0xFF, 0xDE, 0xAD, 0x00);
+		staleApp!.Resources[sharedKey] = staleColor;
+
+		// Load AlcApp DLL into a second collectible ALC and construct another App instance.
+		// Its AlcRegistrationId will be higher than the stale app's, so it is "live".
+		var liveApp = await RegisterSiblingAlcApplicationAsync("AlcTestApp.App");
+
+		var liveColor = Windows.UI.Color.FromArgb(0xFF, 0xBE, 0xEF, 0x00);
+		liveApp.Resources[sharedKey] = liveColor;
+
+		Assert.AreNotSame(staleApp, liveApp,
+			"Sanity: the two ALC loads must produce distinct Application instances.");
+
+		// Parse context points at the STALE ALC — what a XAML-generated __ParseContext_
+		// from the previous build would carry after a hot reload.
+		var parseContext = new XamlParseContext
+		{
+			AssemblyLoadContext = _testAlc
+		};
+
+		var key = new SpecializedResourceDictionary.ResourceKey(sharedKey);
+		var found = ResourceResolver.TryTopLevelRetrieval(key, parseContext, out var value);
+
+		Assert.IsTrue(found, "Lookup should succeed against the live app's resources.");
+		Assert.AreEqual(
+			liveColor,
+			(Windows.UI.Color)value,
+			"Bump must redirect the lookup from the stale Application instance to the most " +
+			"recently registered one. Returning the stale color means " +
+			"GetLatestSecondaryApplicationForType was not consulted.");
+	}
+
+	/// <summary>
+	/// Loads the AlcApp DLL into a fresh collectible ALC and constructs the specified
+	/// <see cref="Application"/> subclass there via reflection. The base
+	/// <see cref="Application"/> constructor's <c>Current = this</c> assignment registers
+	/// the instance in <c>_applicationsByAlc</c> under the new ALC, giving it a higher
+	/// <c>AlcRegistrationId</c> than the primary secondary app.
+	/// </summary>
+	private async Task<Application> RegisterSiblingAlcApplicationAsync(string appTypeFullName)
+	{
+		var alcAppPath = await BuildAlcAppAsync();
+		Assert.IsNotNull(alcAppPath, "AlcApp build should succeed for sibling ALC.");
+
+		var alcAppDirectory = Path.GetDirectoryName(alcAppPath)!;
+		_testAlcSecondary = new TestAssemblyLoadContext(alcAppDirectory);
+		var alcAppAssembly = _testAlcSecondary.LoadFromAssemblyPath(alcAppPath);
+		Assert.IsNotNull(alcAppAssembly, "AlcApp assembly should be loaded into sibling ALC.");
+
+		var appType = alcAppAssembly.GetType(appTypeFullName);
+		Assert.IsNotNull(appType, $"{appTypeFullName} should be discoverable in the sibling ALC.");
+
+		Application? siblingApp = null;
+		Exception? constructionError = null;
+
+		// Construct on a dedicated thread so AssemblyLoadContext.GetLoadContext picks up
+		// the sibling ALC during the Application's base constructor; avoid colliding with
+		// the primary AlcApp's dispatcher / window initialization on the UI thread.
+		var thread = new System.Threading.Thread(() =>
+		{
+			try
+			{
+				siblingApp = (Application?)Activator.CreateInstance(appType!);
+			}
+			catch (Exception ex)
+			{
+				constructionError = ex;
+			}
+		})
+		{
+			IsBackground = true,
+			Name = $"AlcApp-Sibling-{appTypeFullName}"
+		};
+		thread.Start();
+		thread.Join();
+
+		if (constructionError is not null)
+		{
+			throw new InvalidOperationException(
+				$"Failed to construct {appTypeFullName} in sibling ALC: {constructionError.Message}",
+				constructionError);
+		}
+
+		Assert.IsNotNull(siblingApp, $"{appTypeFullName} instance should be constructed.");
+
+		// Confirm it landed in the sibling ALC (sanity-check the ALC affinity).
+		// Fully qualify: the test file's namespace ends in 'AssemblyLoadContext', so bare
+		// AssemblyLoadContext resolves to the namespace, not the type.
+		var resolvedAlc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(siblingApp!.GetType().Assembly);
+		Assert.AreSame(_testAlcSecondary, resolvedAlc,
+			"Sibling app's type must be loaded into the sibling ALC, not the primary one.");
+
+		return siblingApp!;
 	}
 
 	[TestMethod]
