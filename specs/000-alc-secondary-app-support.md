@@ -191,6 +191,49 @@ internal static Application GetForAssemblyLoadContext(AssemblyLoadContext alc);
 
 ---
 
+### `Application.EnumerateSecondaryApplications`
+
+**Visibility**: `internal static`
+
+**Purpose**: Enumerates all currently registered secondary-ALC `Application` instances, deduped by `Type.FullName` and ordered newest-first.
+
+```csharp
+internal static IEnumerable<Application> EnumerateSecondaryApplications();
+```
+
+**Behavior**:
+- Skips `Application.Current` (the host).
+- Dedupes by `Type.FullName`, keeping only the most recently registered instance (highest `AlcRegistrationId`). Hot reload can leave the previous build's `Application` registered against an ALC that hasn't yet been GC'd; its `Resources` reflect stale values and would shadow the live build's overrides if returned.
+- Yields newest-first so callers prefer the live registration before any other secondary apps.
+
+**Used by**: `ResourceResolver.TryTopLevelRetrieval` to (a) consult sibling secondary apps when the lookup originates from a secondary-ALC parse context, and (b) provide a last-resort fallback for keys defined only in a secondary ALC's `Application.Resources` when the parse context is the default ALC.
+
+---
+
+### `Application.GetLatestSecondaryApplicationForType`
+
+**Visibility**: `internal static`
+
+**Purpose**: Returns the most recently registered secondary-ALC `Application` whose `Type.FullName` matches the supplied name.
+
+```csharp
+internal static Application GetLatestSecondaryApplicationForType(string typeFullName);
+```
+
+**Used by**: `ResourceResolver.TryTopLevelRetrieval` to "bump" a parse-context-resolved `Application` to the live registration when the parse context references a stale ALC (the typical hot-reload scenario where the previous build's static `__ParseContext_` still references the previous ALC).
+
+---
+
+### `Application.AlcRegistrationId`
+
+**Visibility**: `internal`
+
+**Type**: `long`
+
+**Purpose**: Monotonically increasing identifier assigned when a non-default-ALC `Application` is registered via `SetCurrentApplication`. Higher value == more recently registered. Used to dedupe by `Type.FullName` so stale (hot-reloaded-out) instances are skipped in favor of the most recent registration.
+
+---
+
 ### `Window.ContentHostOverride` (Internal)
 
 **Visibility**: `internal static`
@@ -451,6 +494,55 @@ When `Application.HasSecondaryApps` is `true`:
 - Resource lookups check the ALC-scoped registry first
 - Falls back to the default ALC's resources if not found
 
+#### `TryTopLevelRetrieval` Lookup Priority
+
+`ResourceResolver.TryTopLevelRetrieval` (both 3-arg and 4-arg overloads) walks resource scopes in this order when secondary-ALC apps are registered:
+
+1. **Owning secondary app** — if `parseContext.AssemblyLoadContext` resolves to a non-default ALC, the `Application` registered for that ALC is queried first. Resource keys consumed by XAML uniquely owned by a secondary-ALC assembly belong to that app.
+2. **Sibling secondary apps** — when the parse context already identifies a secondary app, the remaining registered secondary apps are queried before the host. A secondary app's overrides beat sibling secondary apps' defaults.
+3. **Host (`Application.Current`)** — default-ALC parse contexts (and lookups with no parse context) resolve here. The host owns those keys and is not silently overruled by a secondary app's same-key value.
+4. **Last-resort secondary-app scan** — when the parse context is the default ALC, the registered secondary apps are scanned for a key defined ONLY in a secondary `Application.Resources`. Required when a brush in a shared (default-ALC) assembly references a key via `{StaticResource X}` and X exists only in a secondary app's resources — the parse context cannot identify the owning app up front.
+5. **Assembly resources**, then **system resources**.
+
+**Why this order**: iterating secondary apps before the host on every lookup would bleed secondary-app theme values into the host's chrome. The host UI emits default-ALC parse contexts and must resolve against itself first. The "same-key override should win for the secondary app" scenario (e.g. a `ColorOverrideDictionary` applied to a shared-ALC brush) requires an owning-app hint plumbed through brush materialization, not a guess based on `parseContext` alone.
+
+#### Hot-Reload Bump
+
+When step 1 above resolves `parseContext.AssemblyLoadContext` to an `Application`, the lookup re-resolves to the latest registered instance of that `Type.FullName` via `Application.GetLatestSecondaryApplicationForType`. A parse context emitted by a previously loaded secondary-ALC build still references that build's ALC even after a new build registers a fresh `Application`. Without the bump, the lookup would land on the stale `Application`, whose `Resources` reflect the OLD build's values.
+
+#### `XamlParseContext.AssemblyLoadContext` Lazy Resolution
+
+`XamlParseContext.AssemblyLoadContext` is lazily resolved from `AssemblyName` when the XAML codegen did not set it explicitly. The codegen only emits the setter when `UnoEnableAlcAppSupport` is `true`, so without this fallback the property would be `null` for secondary-ALC apps built without the flag, and `ResourceResolver.TryTopLevelRetrieval` would always miss step 1 above and resolve against the host.
+
+```csharp
+public AssemblyLoadContext AssemblyLoadContext
+{
+    get
+    {
+        if (_assemblyLoadContext is not null || _assemblyLoadContextResolved)
+        {
+            return _assemblyLoadContext;
+        }
+
+        _assemblyLoadContextResolved = true;
+        if (!string.IsNullOrEmpty(AssemblyName))
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (string.Equals(assembly.GetName().Name, AssemblyName, StringComparison.Ordinal))
+                {
+                    _assemblyLoadContext = AssemblyLoadContext.GetLoadContext(assembly);
+                    break;
+                }
+            }
+        }
+
+        return _assemblyLoadContext;
+    }
+    set { ... }
+}
+```
+
 #### Ambient ALC Resolution Context
 
 The source generator statically resolves `ResourceDictionary.Source` references at compile time (e.g., generating `GlobalStaticResources.Xyz_ResourceDictionary`). However, when static resolution **fails** (e.g., cross-assembly references, or certain codegen differences), the fallback path calls `ResourceResolver.RetrieveDictionaryForSource(string, string)`.
@@ -552,7 +644,7 @@ internal static Type ResolveDescriptor(string descriptor)
 | `App.xaml` | Application resources including merged dictionaries |
 | `MainPage.xaml` | Test page with named elements for verification |
 | `MainPage.xaml.cs` | Code-behind |
-| `AlcAppResources.xaml` | Test resources (brushes, styles, identifiers) |
+| `AlcAppResources.xaml` | Test resources (brushes, styles, identifiers); includes `AlcAppOnlyColor` / `AlcAppLazyBrush` fixtures exercising the secondary-ALC fallback in `ResourceResolver.TryTopLevelRetrieval` |
 | `Styles/CustomColors.xaml` | Subdirectory resource dictionary for testing ALC-aware subdirectory resolution |
 | `Uno.UI.RuntimeTests.AlcApp.csproj` | Project file |
 
@@ -581,6 +673,8 @@ internal static Type ResolveDescriptor(string descriptor)
 | `When_AlcContentHost_Then_FrameContentNavigates` | Frame.Navigate() works in secondary ALC |
 | `When_SecondaryAlcApp_Then_AlcWindowModeEnabled` | IsAlcWindow property is true |
 | `When_SecondaryAlcApp_Then_KeyboardInputStillWorks` | Keyboard input unaffected by loading secondary ALC |
+| `When_TopLevelLookupFromHostContext_Then_FallsBackToSecondaryAlcApp` | `ResourceResolver.TryTopLevelRetrieval` with a default-ALC parse context falls back to the secondary app's `Application.Resources` (last-resort scan) |
+| `When_LazyBrushReferencesSecondaryAlcColor_Then_MaterializesWithCorrectColor` | End-to-end: a brush with `Color={StaticResource AlcAppOnlyColor}` materializes with the secondary-ALC color instead of the transparent default |
 
 ---
 
