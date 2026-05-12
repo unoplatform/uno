@@ -1,4 +1,4 @@
-﻿// #define REPORT_FPS
+// #define REPORT_FPS
 
 #nullable enable
 
@@ -103,6 +103,10 @@ namespace Microsoft.UI.Xaml
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
 			callback(new ApplicationInitializationCallbackParams());
+
+			// WinUI sets DispatcherShutdownMode to OnLastWindowClose when Start is called.
+			// For XAML Islands (no Start call), the default remains OnExplicitShutdown.
+			_current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 
 			if (OperatingSystem.IsBrowser())
 			{

@@ -34,6 +34,11 @@ application_start_fn_ptr uno_get_application_start_callback(void);
 typedef bool (*application_can_exit_fn_ptr)(void);
 application_can_exit_fn_ptr uno_get_application_can_exit_callback(void);
 void uno_set_application_can_exit_callback(application_can_exit_fn_ptr p);
+
+typedef bool (*application_should_terminate_after_last_window_closed_fn_ptr)(void);
+application_should_terminate_after_last_window_closed_fn_ptr uno_get_application_should_terminate_after_last_window_closed_callback(void);
+void uno_set_application_should_terminate_after_last_window_closed_callback(application_should_terminate_after_last_window_closed_fn_ptr p);
+
 void uno_application_quit(void);
 
 @interface UNOApplicationDelegate : NSObject <NSApplicationDelegate>

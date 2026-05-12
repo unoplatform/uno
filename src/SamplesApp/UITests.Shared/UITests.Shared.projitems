@@ -1069,6 +1069,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ApplicationTests\Application_DispatcherShutdownMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ApplicationTests\Given_Application.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6674,6 +6678,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\TextScalingSample.xaml.cs">
       <DependentUpon>TextScalingSample.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ApplicationTests\Application_DispatcherShutdownMode.xaml.cs">
+      <DependentUpon>Application_DispatcherShutdownMode.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ApplicationTests\Given_Application.xaml.cs">
       <DependentUpon>Given_Application.xaml</DependentUpon>
