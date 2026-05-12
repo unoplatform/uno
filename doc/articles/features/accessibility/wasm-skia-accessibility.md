@@ -150,7 +150,7 @@ xmlns:utu="using:Uno.UI.Toolkit"
 </Border>
 ```
 
-See [Role override](role-override.md) for the full list of supported roles and per-platform behavior.
+See [Role override](xref:Uno.Features.Accessibility.RoleOverride) for the full list of supported roles and per-platform behavior.
 
 ## Supported controls
 
@@ -171,7 +171,7 @@ All standard Uno controls have built-in automation peers that produce the correc
 | `HyperlinkButton` | `link` | Rendered as `<a>` element |
 | `ProgressBar` | `progressbar` | `aria-valuenow` for determinate progress |
 
-For the full mapping table, see [Automation peers](automation-peers.md).
+For the full mapping table, see [Automation peers](xref:Uno.Features.Accessibility.AutomationPeers).
 
 ## Configuration reference
 
@@ -257,9 +257,9 @@ If you previously built Uno WASM apps with the **native rendering engine** (wher
 
 ## See also
 
-- [Accessibility overview](index.md)
-- [AutomationProperties reference](automation-properties.md)
-- [Custom automation peers](automation-peers.md)
-- [Role override](role-override.md)
-- [Testing with screen readers](testing-with-screen-readers.md)
+- [Accessibility overview](xref:Uno.Features.Accessibility)
+- [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
+- [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)
+- [Role override](xref:Uno.Features.Accessibility.RoleOverride)
+- [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders)
 - [Accessibility overview (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/accessibility-overview)
