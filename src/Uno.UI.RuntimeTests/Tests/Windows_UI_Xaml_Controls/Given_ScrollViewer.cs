@@ -730,16 +730,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(inner.GetAbsoluteBounds().GetCenter());
 			mouse.Wheel(-50, steps: 5);
 
-			// waiting for wheel animation
+			// Wheel inertia ticks via CompositionTarget.Rendering rather than a tracked CompositionAnimation,
+			// so Compositor.IsAnimating doesn't gate the wait — sleep until the coast settles.
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, outer.VerticalOffset);
 			Assert.IsGreaterThan(0d, inner.VerticalOffset, "Inner Vertical Offset is not greater than 0");
 
 			mouse.Wheel(-500, steps: 5);
 
-			// waiting for wheel animation
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
 
 			var expectedOffset = outer.ScrollableHeight / 2;
 			Assert.IsGreaterThan(expectedOffset, outer.VerticalOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
@@ -814,54 +818,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-		// Both iOS and macOS animation were disabled and will be fixed under uno-private#1788
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
-		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
+		// iOS/macOS use the immediate per-event trackpad path, not the velocity-based wheel inertia.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)]
+		public async Task When_Wheel_Then_VelocityAccumulatesAndReverses()
 		{
-			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
-			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
+			// Velocity-based wheel inertia: each wheel notch adds a velocity impulse to a per-VSync
+			// integration loop with exponential decay. Rapid same-direction notches accumulate into
+			// higher peak velocity (longer scroll); opposite-direction notches reverse the motion.
+			// This test validates the user-visible end state after each phase rather than the
+			// internal animation primitive (which is composition-driven and frame-by-frame).
 
-			FrameworkElement content;
 			var sut = new ScrollViewer
 			{
 				Height = 100,
 				Width = 100,
-				Content = content = new Border
+				Content = new Border
 				{
-					Height = 200,
+					Height = 1000,
 					Background = new SolidColorBrush(Colors.Chartreuse)
 				},
 			};
 
 			var bounds = await UITestHelper.Load(sut);
 
-			var visual = ElementCompositionPreview.GetElementVisual(content);
-
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			var initialAnimation = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			initialAnimation.Should().BeNull(because: "we have not scrolled yet");
+			Assert.AreEqual(0d, sut.VerticalOffset, "Initial offset should be 0.");
 
 			mouse.MoveTo(bounds.GetCenter());
-			mouse.Wheel(-400, steps: 1);
+			mouse.Wheel(-120, steps: 1);
+			await WaitForInertiaToSettle();
+			var offsetAfterOneNotch = sut.VerticalOffset;
+			Assert.IsGreaterThan(0d, offsetAfterOneNotch, "One wheel notch should produce visible scroll.");
 
-			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
-			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
+			// Reset and wheel two notches in quick succession — velocity coalesces.
+			sut.ChangeView(null, 0, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
 
-			// Scroll again in the same direction
-			mouse.Wheel(-200, steps: 1);
+			mouse.Wheel(-120, steps: 1);
+			mouse.Wheel(-120, steps: 1);
+			await WaitForInertiaToSettle();
+			var offsetAfterTwoNotches = sut.VerticalOffset;
+			Assert.IsGreaterThan(offsetAfterOneNotch, offsetAfterTwoNotches,
+				"Two same-direction wheel notches should scroll farther than one (velocity accumulation).");
 
-			var scrollAnimation2 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation2.Should().Be(scrollAnimation1, because: "the wheel event has no effect");
+			// Wheel the opposite direction — motion reverses.
+			mouse.Wheel(+120, steps: 1);
+			await WaitForInertiaToSettle();
+			Assert.IsLessThan(offsetAfterTwoNotches, sut.VerticalOffset,
+				"Opposite-direction wheel should reverse the scroll position.");
 
-			// But if we scroll in the opposite direction, the animation should be stopped and replaced
-			// (this basically confirm that the test is working -i.e the animation is not being re-used)
-			mouse.Wheel(+200, steps: 1);
-
-			var scrollAnimation3 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation3.Should().NotBe(scrollAnimation1, because: "the wheel event should scroll in the opposite direction");
+			// Local helper: wait for wheel inertia to finish coasting.
+			static async Task WaitForInertiaToSettle()
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1500);
+				await WindowHelper.WaitForIdle();
+			}
 		}
 #endif
 
@@ -1532,13 +1546,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.WheelUp();
 
+			// Wheel inertia ticks via CompositionTarget.Rendering, not a tracked CompositionAnimation,
+			// so Compositor.IsAnimating doesn't gate the wait — sleep until the coast settles.
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
 
 			sut.VerticalOffset.Should().BeGreaterThan(0);
 
 			mouse.WheelDown();
 
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
 
 			sut.VerticalOffset.Should().BeApproximately(0, 0.5);
 #endif
@@ -2069,5 +2089,201 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The scroll offset should remain 0 — there's nothing to scroll
 			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
 		}
+
+		#region Skia intermediate scrolling mode
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ChangeView_DisableAnimation_Then_SingleViewChangedEvent()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+			};
+
+			await UITestHelper.Load(sut);
+
+			var viewChangedCount = 0;
+			sut.ViewChanged += (s, e) => viewChangedCount++;
+
+			sut.ChangeView(null, 100, null, disableAnimation: true);
+
+			// On both WinUI and Skia, ChangeView stores offsets and defers DP updates to the arrange pass.
+			// ViewChanged fires during the layout pass. Exactly one event should be raised.
+			await WindowHelper.WaitFor(() => viewChangedCount >= 1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, viewChangedCount, "Exactly one ViewChanged event should be raised for ChangeView with disableAnimation.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ChangeView_DisableAnimation_Then_ViewChangedIsNotIntermediate()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+			};
+
+			await UITestHelper.Load(sut);
+
+			var records = new List<bool>();
+			sut.ViewChanged += (s, e) => records.Add(e.IsIntermediate);
+
+			sut.ChangeView(null, 100, null, disableAnimation: true);
+
+			// On both WinUI and Skia, ViewChanged fires during the layout pass.
+			// Exactly one non-intermediate event should be raised.
+			await WindowHelper.WaitFor(() => records.Count >= 1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, records.Count, "Exactly one ViewChanged event should be raised.");
+			Assert.IsFalse(records[0], "The ViewChanged event from ChangeView should have IsIntermediate=false.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ChangeView_DisableAnimation_Then_OffsetUpdatedAfterArrange()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+			};
+
+			await UITestHelper.Load(sut);
+
+			Assert.AreEqual(0d, sut.VerticalOffset, "Initial vertical offset should be 0.");
+
+			sut.ChangeView(null, 150, null, disableAnimation: true);
+
+			// On both WinUI and Skia, offsets are updated during the arrange pass
+			// (WinUI: ArrangeOverride → VerifyScrollData → put_VerticalOffset;
+			//  Skia: ArrangeOverride → OnPresenterArranged → set VerticalOffset DP).
+			await WindowHelper.WaitFor(() => sut.VerticalOffset == 150d);
+
+			Assert.AreEqual(150d, sut.VerticalOffset, "VerticalOffset should be updated after arrange.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("This test validates Skia-specific intermediate scrolling mode.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScroll_Then_IntermediateEventsFollowedByFinal()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+				IsScrollInertiaEnabled = false,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var records = new List<bool>();
+			sut.ViewChanged += (s, e) => records.Add(e.IsIntermediate);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			finger.Press(bounds.GetCenter());
+			finger.MoveBy(0, -100, steps: 10);
+
+			// Flush the arrange pass so intermediate offset updates are applied and
+			// intermediate ViewChanged events fire before the finger is released.
+			// This is needed because offset DPs are deferred to ArrangeOverride,
+			// matching WinUI behavior where rapid scroll events are batched per layout pass.
+			await WindowHelper.WaitForIdle();
+
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+
+			// We should have at least 2 events: some intermediate + one final
+			Assert.IsTrue(records.Count >= 2, $"Expected at least 2 ViewChanged events, got {records.Count}.");
+
+			// All events except the last should be IsIntermediate=true
+			for (int i = 0; i < records.Count - 1; i++)
+			{
+				Assert.IsTrue(records[i], $"ViewChanged event #{i} during drag should have IsIntermediate=true.");
+			}
+
+			// The last event should be IsIntermediate=false (from LeaveIntermediateViewChangedMode)
+			Assert.IsFalse(records[records.Count - 1], "The final ViewChanged event after finger release should have IsIntermediate=false.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("This test validates Skia-specific intermediate scrolling mode.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchPressReleaseWithoutScroll_Then_NoViewChangedEvents()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+				IsScrollInertiaEnabled = false,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var viewChangedCount = 0;
+			sut.ViewChanged += (s, e) => viewChangedCount++;
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			// Press and release without moving — enters and leaves intermediate mode
+			// but no scroll happened, so no final event should be raised.
+			finger.Press(bounds.GetCenter());
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, viewChangedCount, "No ViewChanged events should be raised when touch press-release occurs without scrolling.");
+		}
+
+		#endregion
 	}
 }

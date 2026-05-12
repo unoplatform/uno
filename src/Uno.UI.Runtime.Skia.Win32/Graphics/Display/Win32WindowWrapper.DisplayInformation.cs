@@ -49,12 +49,13 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			_displayInformation?.NotifyDpiChanged();
 		}
 
-		if (_refreshRate != oldRefreshRate)
+		if (_refreshRate != oldRefreshRate
+			&& FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
 		{
-			if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
-			{
-				_framePacer.UpdateTargetFps(_refreshRate);
-			}
+			// Renderers that pace via VSync (GL wglSwapInterval, software DwmFlush) are
+			// already aligned to the refresh rate and treat this as a no-op. The software
+			// DwmFlush degraded fallback (FramePacer) uses it to retarget.
+			_renderer?.UpdateRefreshRate(_refreshRate);
 		}
 	}
 

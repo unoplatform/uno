@@ -88,7 +88,10 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 	public void ReleasePointerCapture(PointerIdentifier pointer) => ReleasePointerCapture();
 
-	private ushort ReadCommonWParamInfo(WPARAM wParam, out POINTER_INFO pointerInfo, out POINTER_INPUT_TYPE pointerType, out System.Drawing.Point position, out System.Drawing.Point rawPosition)
+	// 1 logical px = 1/96 inch; 1 inch = 2540 HIMETRIC (0.01 mm) units.
+	private const double HimetricPerLogicalPx = 2540.0 / 96.0;
+
+	private ushort ReadCommonWParamInfo(WPARAM wParam, out POINTER_INFO pointerInfo, out POINTER_INPUT_TYPE pointerType, out Point position, out Point rawPosition)
 	{
 		var pointerId = Win32Helper.GET_POINTERID_WPARAM(wParam);
 
@@ -102,17 +105,38 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerInfo)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		position = pointerInfo.ptPixelLocation;
-		rawPosition = pointerInfo.ptPixelLocationRaw;
-		var success = PInvoke.ScreenToClient(_hwnd, ref position);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-		var success2 = PInvoke.ScreenToClient(_hwnd, ref rawPosition);
-		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
-
 		var scale = XamlRoot!.RasterizationScale;
-		position = new System.Drawing.Point((int)(position.X / scale), (int)(position.Y / scale));
-		rawPosition = new System.Drawing.Point((int)(rawPosition.X / scale), (int)(rawPosition.Y / scale));
+
+		// Touch and pen go through ptHimetricLocation*: HIMETRIC (0.01 mm) is ~26× finer than
+		// the pointer's logical pixel grid, so slow drags advance in sub-pixel increments
+		// instead of stair-stepping. Mouse stays on ptPixelLocation* — Win32 delivers mouse
+		// coordinates in integer screen pixels and HIMETRIC adds nothing there.
+		var useHimetric = pointerType is POINTER_INPUT_TYPE.PT_TOUCH or POINTER_INPUT_TYPE.PT_PEN;
+
+		position = ToClientLogical(pointerInfo.ptPixelLocation, pointerInfo.ptHimetricLocation, useHimetric, scale);
+		rawPosition = ToClientLogical(pointerInfo.ptPixelLocationRaw, pointerInfo.ptHimetricLocationRaw, useHimetric, scale);
 		return pointerId;
+	}
+
+	private Point ToClientLogical(System.Drawing.Point screenPx, System.Drawing.Point screenHimetric, bool useHimetric, double scale)
+	{
+		var clientPx = screenPx;
+		var success = PInvoke.ScreenToClient(_hwnd, ref clientPx);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
+
+		if (!useHimetric)
+		{
+			return new Point(clientPx.X / scale, clientPx.Y / scale);
+		}
+
+		// HIMETRIC is DPI-independent: logicalPx = himetric / HimetricPerLogicalPx regardless of monitor DPI.
+		// The screen → client translation is integer-pixel; subtract that integer offset (converted to
+		// logical px) so the HIMETRIC-derived sub-pixel precision is preserved in the client-relative result.
+		var screenLogicalX = screenHimetric.X / HimetricPerLogicalPx;
+		var screenLogicalY = screenHimetric.Y / HimetricPerLogicalPx;
+		var clientOriginLogicalX = (screenPx.X - clientPx.X) / scale;
+		var clientOriginLogicalY = (screenPx.Y - clientPx.Y) / scale;
+		return new Point(screenLogicalX - clientOriginLogicalX, screenLogicalY - clientOriginLogicalY);
 	}
 
 	private void OnPointerCaptureChanged(WPARAM wParam)
@@ -129,8 +153,8 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 				_ => PointerDeviceType.Mouse
 			}),
 			pointerId: pointerId,
-			rawPosition: new Point(rawPosition.X, rawPosition.Y),
-			position: new Point(position.X, position.Y),
+			rawPosition: rawPosition,
+			position: position,
 			isInContact: false,
 			properties: null);
 		PointerCaptureLost?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
@@ -232,8 +256,8 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 				_ => PointerDeviceType.Mouse
 			}),
 			pointerId: pointerId,
-			rawPosition: new Point(rawPosition.X, rawPosition.Y),
-			position: new Point(position.X, position.Y),
+			rawPosition: rawPosition,
+			position: position,
 			isInContact: msg is not (PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL) && Win32Helper.IS_POINTER_INCONTACT_WPARAM(wParam),
 			properties: properties
 		);
