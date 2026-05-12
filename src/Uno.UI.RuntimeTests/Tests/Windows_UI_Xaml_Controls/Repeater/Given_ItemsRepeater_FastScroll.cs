@@ -424,6 +424,88 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
+	[Ignore(
+		"Open issue: StackLayout.GetExtent recomputes extent.X every measure from the running average "
+		+ "element size; when avg shifts (tall items enter/leave the 100-slot estimation buffer mid-"
+		+ "scroll) the layout origin moves, and items reposition in IR-local space even though the "
+		+ "user's VerticalOffset is steady. Attempts to stabilize extent.X across connected-window "
+		+ "measures resolved the visible jitter but under-estimated extent.Size (When_ScrolledThroughList "
+		+ "regression), so a more involved fix is needed (likely accounting for unrealized leading "
+		+ "items' running-average contribution separately). Test left in source as the regression "
+		+ "marker; remove [Ignore] when the underlying layout-origin stability work lands.")]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#elif __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_SlowWheelOnMultiTemplate_Then_ItemsDoNotJumpInIRLocalSpace()
+	{
+		// Stronger reproducer for the "jumps while scrolling slowly" symptom: tracks each
+		// realized item's IR-local position across a sequence of wheel ticks. The user-reported
+		// flicker is *items repositioning within the IR even though the user's VerticalOffset
+		// advances monotonically* — caused by StackLayout.GetExtent recomputing extent.X
+		// (layout origin Y) as the running-average element size shifts when items enter/leave
+		// the 100-slot estimation buffer. The relevant invariant: a single item's IR-local Y
+		// must not change between consecutive measures unless the user actually scrolled past
+		// the item entirely.
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		var bounds = sut.Scroller.GetAbsoluteBounds();
+		mouse.MoveTo(new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2));
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+		// For each item index we've ever seen, record its first-observed IR-local Y. Subsequent
+		// observations must match (within 0.5 px) or we have a layout-origin shift between
+		// measures, which the user observes as visible item jumping.
+		var firstObservedY = new Dictionary<int, double>();
+		var report = new List<string>();
+
+		void Snapshot(int tickIndex)
+		{
+			for (var i = 0; i < sut.Source.Count; i++)
+			{
+				if (sut.Repeater.TryGetElement(i) is not FrameworkElement fe || fe.ActualHeight <= 0)
+				{
+					continue;
+				}
+				// IR-local Y, which is what the layout origin produces; converting via TransformToVisual(Repeater)
+				// keeps the comparison platform-agnostic.
+				var y = fe.TransformToVisual(sut.Repeater).TransformPoint(new Point(0, 0)).Y;
+				if (firstObservedY.TryGetValue(i, out var prevY))
+				{
+					if (Math.Abs(prevY - y) > 0.5)
+					{
+						report.Add($"tick #{tickIndex}: item[{i}] IR-local Y changed from {prevY:F2} to {y:F2}");
+					}
+				}
+				else
+				{
+					firstObservedY[i] = y;
+				}
+			}
+		}
+
+		Snapshot(tickIndex: 0);
+		const int Ticks = 8;
+		for (var i = 0; i < Ticks; i++)
+		{
+			mouse.WheelDown();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			Snapshot(tickIndex: i + 1);
+		}
+
+		// Report-driven assertion: build a single error message containing every observed item
+		// jump so a failure points at the exact items + values that moved.
+		report.Should().BeEmpty(
+			"No item should change its IR-local Y between successive wheel ticks (the user perceives that as the list jumping). "
+			+ $"Captured discrepancies:{Environment.NewLine}{string.Join(Environment.NewLine, report)}");
+	}
+
+	[TestMethod]
 #if __ANDROID__ || __IOS__ || __WASM__
 	[Ignore("Fails due to async native scrolling.")]
 #endif
