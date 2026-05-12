@@ -8,11 +8,6 @@ namespace Uno.Foundation.Logging
 	{
 		private static LoggerFactory _loggerFactory = new LoggerFactory();
 
-		private static class Container<T>
-		{
-			internal static readonly Logger Logger = _loggerFactory.CreateLogger(typeof(T));
-		}
-
 		public static LoggerFactory Factory => _loggerFactory;
 
 		/// <summary>
@@ -30,11 +25,20 @@ namespace Uno.Foundation.Logging
 		/// <param name="instance"></param>
 		/// <returns>A logger for the type of the instance</returns>
 		public static Logger Log<T>(this T instance)
-			=> Container<T>.Logger;
+		{
+			if (instance is Type t)
+			{
+				return _loggerFactory.CreateLogger(t);
+			}
+			else
+			{
+				return _loggerFactory.CreateLogger(typeof(T));
+			}
+		}
 
 		private static Logger? Log<T>(this T instance, LogLevel level)
 		{
-			var logger = Container<T>.Logger;
+			var logger = instance.Log();
 			return logger.IsEnabled(level) ? logger : null;
 		}
 
