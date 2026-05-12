@@ -98,10 +98,12 @@ public class Given_RadioMenuFlyoutItem
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_IsChecked_Set_Before_GroupName_Does_Not_Affect_Default_Group()
 	{
 		// Regression test for the stale-entry scenario also tracked upstream at
 		// https://github.com/microsoft/microsoft-ui-xaml/issues/11098.
+		// Excluded on NativeWinUI until the upstream issue is fixed.
 		// When IsChecked is applied before GroupName in XAML, the item used to leak a registration
 		// under the empty default group key. An unrelated item with no GroupName would then
 		// incorrectly uncheck it.
