@@ -10,7 +10,7 @@ This page lists supported .NET versions and [C# language versions](https://learn
 
 ## Table of supported versions
 
-# [**Uno Platform 6.5 and later**](#tab/uno63)
+# [**Uno Platform 6.5 and later**](#tab/uno65)
 
 | Platform                                   | Default .NET runtime | Default C# version |  Min .NET version | Max C# version |
 |--------------------------------------------|:--------------------:|:------------------:|:-----------------:|:--------------:|
