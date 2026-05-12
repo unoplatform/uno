@@ -117,7 +117,7 @@ Landmarks help screen reader users jump between major sections of the UI:
 </StackPanel>
 ```
 
-Supported values: `Main`, `Navigation`, `Search`, `Form`, `Custom`. On WASM, these map to ARIA landmark roles (`role="main"`, `role="navigation"`, etc.).
+Common values include `Main`, `Navigation`, `Search`, `Form`, and `Custom` (the default is `None`, which produces no landmark). On WASM, these map to ARIA landmark roles (`role="main"`, `role="navigation"`, etc.).
 
 ### 4. Announce dynamic content changes
 
@@ -173,7 +173,7 @@ For the full mapping table, see [Automation peers](xref:Uno.Features.Accessibili
 |---------|---------|-------------|
 | `FeatureConfiguration.AutomationPeer.AutoEnableAccessibility` | `false` | When `true`, creates the semantic tree on startup without the activation button. |
 | `FeatureConfiguration.AutomationPeer.UseSimpleAccessibility` | `false` | Aggregates children's names into a single accessibility name. Affects all platforms including Skia WASM. Originally designed for native mobile, but applies everywhere. |
-| `IsUiAutomationMappingEnabled` (MSBuild property) | `false` | Enables `AutomationId` mapping to `xamlautomationid` attributes. Enable for UI testing. |
+| `IsUiAutomationMappingEnabled` (MSBuild property) | `false` | Maps `x:Name` to `AutomationProperties.AutomationId` at build time, making elements discoverable by UI test frameworks. On native WASM this also writes `xamlautomationid` HTML attributes; on Skia WASM the `AutomationId` is reflected through the semantic DOM. |
 
 ## Testing your app
 
