@@ -29,7 +29,7 @@ namespace Uno.Foundation.Logging
 		public static Logger Log<T>(this T instance)
 		{
 			var type = instance as Type ?? typeof(T);
-			return _loggers.GetOrAdd(type, _loggerFactory.CreateLogger(type));
+			return _loggers.GetOrAdd(type, static t => _loggerFactory.CreateLogger(t));
 		}
 
 		private static Logger? Log<T>(this T instance, LogLevel level)
