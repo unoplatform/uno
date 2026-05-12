@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
@@ -4338,7 +4339,204 @@ public class Given_ElementTheme
 				$"Grandchild should use Dark resource (Orange). Got {grandchildBrush.Color}");
 		}
 	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_DataTemplate_LoadContent_Inside_Light_Subtree_Resolves_Light()
+	{
+		// Sharpest repro: while a Light subtree is loaded and on the theme stack,
+		// call FrameworkTemplate.LoadContent manually (mimicking what a virtualizing
+		// panel does during a row realization). The {ThemeResource} inside the
+		// template must resolve to Light, not the app's Dark theme.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			        RequestedTheme="Light">
+				<Border.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="K475ManualBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Default">
+								<SolidColorBrush x:Key="K475ManualBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+						<DataTemplate x:Key="ManualTemplate">
+							<Border x:Name="materialized"
+							        Width="50"
+							        Height="50"
+							        Background="{ThemeResource K475ManualBrush}" />
+						</DataTemplate>
+					</ResourceDictionary>
+				</Border.Resources>
+				<ContentControl x:Name="anchor" />
+			</Border>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		// Manually load the template content with the anchor as the templated parent
+		// — without adding it to the visual tree. The resolution captured by the
+		// template's bindings MUST be Light (Green) because the templated parent's
+		// effective theme is Light, regardless of the application theme.
+		var anchor = (ContentControl)root.FindName("anchor");
+		var template = (DataTemplate)root.Resources["ManualTemplate"];
+
+		var materializedRoot = (Border)template.LoadContent(anchor);
+		Assert.IsNotNull(materializedRoot);
+
+		var brush = materializedRoot.Background as SolidColorBrush;
+		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, brush.Color,
+			$"Template materialized for a Light-themed templated parent should resolve " +
+			$"{{ThemeResource}} to Green even though the app theme is Dark, got {brush.Color}. " +
+			$"This matches the scenario where a DataGrid row's template is realized while " +
+			$"the surrounding subtree is in Light mode but the application and OS are in Dark mode.");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_ContentTemplate_Materialized_In_Themed_Subtree_Uses_Subtree_Theme()
+	{
+		// Application is in Dark mode (OS dark), but a subtree overrides
+		// RequestedTheme=Light. A template materialized inside that subtree
+		// (e.g. DataTemplate row, ContentTemplate) must resolve {ThemeResource}
+		// against the *subtree's* Light theme, not the application's Dark theme.
+
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			        RequestedTheme="Light">
+				<Border.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="K475TestBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Default">
+								<SolidColorBrush x:Key="K475TestBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Border.Resources>
+				<ContentControl x:Name="cc">
+					<ContentControl.ContentTemplate>
+						<DataTemplate>
+							<Border x:Name="materialized"
+							        Width="50"
+							        Height="50"
+							        Background="{ThemeResource K475TestBrush}" />
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</Border>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var cc = (ContentControl)root.FindName("cc");
+		var materialized = cc.FindFirstDescendant<Border>("materialized");
+		Assert.IsNotNull(materialized, "Materialized template Border should exist");
+
+		var brush = materialized.Background as SolidColorBrush;
+		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, brush.Color,
+			$"Materialized template inside a Light subtree should resolve {{ThemeResource}} " +
+			$"against Light (Green) even when the app theme is Dark, got {brush.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_ThemeResource_On_NonFE_DependencyObject_Inside_Themed_Subtree_Resolves_Correctly()
+	{
+		// Closer repro of the real-world scenario: the affected element is a
+		// Behavior (a non-FrameworkElement DependencyObject) whose DPs are
+		// bound via {ThemeResource} inside a DataTemplate. Behaviors don't go
+		// through FrameworkElement.OnLoadingPartial themselves, so the initial
+		// resolution captured by the template must already use the subtree's
+		// theme — otherwise the captured value is wrong and the behavior
+		// installs the wrong brush onto its AssociatedObject.
+
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (Border)XamlReader.Load(
+			$$"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			        xmlns:local="using:{{typeof(Issue475ThemedDO).Namespace}}"
+			        RequestedTheme="Light">
+				<Border.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="K475DOBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Default">
+								<SolidColorBrush x:Key="K475DOBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Border.Resources>
+				<ContentControl x:Name="cc">
+					<ContentControl.ContentTemplate>
+						<DataTemplate>
+							<TextBlock x:Name="materialized">
+								<TextBlock.Tag>
+									<local:Issue475ThemedDO ForegroundBrush="{ThemeResource K475DOBrush}" />
+								</TextBlock.Tag>
+							</TextBlock>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</Border>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var cc = (ContentControl)root.FindName("cc");
+		var textBlock = cc.FindFirstDescendant<TextBlock>("materialized");
+		Assert.IsNotNull(textBlock, "Materialized TextBlock should exist");
+
+		var themedDO = textBlock.Tag as Issue475ThemedDO;
+		Assert.IsNotNull(themedDO, "ThemedDO should be attached as Tag");
+
+		var brush = themedDO.ForegroundBrush as SolidColorBrush;
+		Assert.IsNotNull(brush, "ForegroundBrush should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, brush.Color,
+			$"ThemedDO inside Light subtree should resolve {{ThemeResource}} to Green, got {brush.Color}");
+	}
 #endif
 
 	#endregion
+}
+
+public partial class Issue475ThemedDO : DependencyObject
+{
+	public static readonly DependencyProperty ForegroundBrushProperty = DependencyProperty.Register(
+		nameof(ForegroundBrush),
+		typeof(Brush),
+		typeof(Issue475ThemedDO),
+		new PropertyMetadata(null));
+
+	public Brush ForegroundBrush
+	{
+		get => (Brush)GetValue(ForegroundBrushProperty);
+		set => SetValue(ForegroundBrushProperty, value);
+	}
 }
