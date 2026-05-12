@@ -36,7 +36,7 @@ To solve this, Uno automatically builds a **hidden semantic DOM** alongside the 
 ```
 
 > [!NOTE]
-> The semantic DOM is visually hidden (off-screen) but remains in the document's accessibility tree. Screen readers navigate the semantic elements, and keyboard focus is synchronized between the semantic DOM and the Skia visual tree.
+> The semantic DOM is visually hidden (rendered transparent via CSS opacity) but remains positioned over the viewport and in the document's accessibility tree. Screen readers navigate the semantic elements, and keyboard focus is synchronized between the semantic DOM and the Skia visual tree.
 
 ## Activation flow
 
