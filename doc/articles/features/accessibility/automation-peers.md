@@ -22,7 +22,7 @@ On WASM, the ARIA role is derived from the `AutomationControlType` reported by t
 | `TextBox` | `TextBoxAutomationPeer` | `textbox` |
 | `PasswordBox` | `PasswordBoxAutomationPeer` | `textbox` (password) |
 | `ComboBox` | `ComboBoxAutomationPeer` | `combobox` |
-| `ToggleSwitch` | `ToggleSwitchAutomationPeer` | `button` (with `aria-pressed`) |
+| `ToggleSwitch` | `ToggleSwitchAutomationPeer` | `switch` (with `aria-checked`) |
 | `ToggleButton` | `ToggleButtonAutomationPeer` | `button` (with `aria-pressed`) |
 | `ListView` | `ListViewAutomationPeer` | `listbox` |
 | `ListViewItem` | `ListViewItemAutomationPeer` | `option` |

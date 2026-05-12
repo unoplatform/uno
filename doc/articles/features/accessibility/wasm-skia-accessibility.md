@@ -64,7 +64,7 @@ This creates the semantic tree as soon as the app loads, without waiting for use
 You can also activate the accessibility layer from JavaScript in the browser console, which is useful during development:
 
 ```js
-document.getElementById('uno-enable-accessibility').click();
+document.getElementById('uno-enable-accessibility')?.click();
 ```
 
 ## What you need to do
