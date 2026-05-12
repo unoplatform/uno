@@ -84,3 +84,5 @@ Use `AutomationPropertiesExtensions.Role` when:
 - [Accessibility overview](xref:Uno.Features.Accessibility)
 - [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
 - [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)
+- [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders)
+- [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility)

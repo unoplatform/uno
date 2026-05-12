@@ -64,4 +64,7 @@ Inspect using browser DevTools:
 
 - [Accessibility overview](xref:Uno.Features.Accessibility)
 - [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
+- [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)
+- [Role override](xref:Uno.Features.Accessibility.RoleOverride)
+- [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility)
 - [Accessibility testing (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/accessibility-testing)

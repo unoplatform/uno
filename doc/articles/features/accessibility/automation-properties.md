@@ -96,5 +96,7 @@ Controls whether an element appears in the automation tree.
 
 - [Accessibility overview](xref:Uno.Features.Accessibility)
 - [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)
+- [Role override](xref:Uno.Features.Accessibility.RoleOverride)
 - [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders)
+- [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility)
 - [Expose basic accessibility information (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/basic-accessibility-information)
