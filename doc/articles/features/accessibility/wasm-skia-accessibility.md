@@ -15,7 +15,7 @@ When Uno renders your app with Skia on WASM, all visual content is drawn onto a 
 
 To solve this, Uno automatically builds a **hidden semantic DOM** alongside the canvas. This DOM mirrors the accessibility-relevant parts of your visual tree: for every `Button`, `TextBox`, `Slider`, or other control, a corresponding hidden HTML element is created with the appropriate [ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) role and attributes. Screen readers interact with this semantic DOM, not the canvas.
 
-```
+```text
 ┌─────────────────────────────────┐
 │  Browser Window                 │
 │                                 │
@@ -43,8 +43,8 @@ To solve this, Uno automatically builds a **hidden semantic DOM** alongside the 
 To avoid unnecessary performance overhead, the accessibility layer is **not active by default**. It activates through the following flow:
 
 1. The user presses the **Tab** key.
-2. An **"Enable accessibility"** button appears on screen.
-3. The user activates the button (click or `Space`).
+2. A visually hidden **"Enable accessibility"** button becomes reachable via Tab or screen reader.
+3. The user activates the button (`Enter` or `Space`).
 4. The full semantic tree is created and screen reader navigation becomes available.
 
 This design ensures that apps without accessibility needs do not pay the cost of maintaining the semantic DOM.
@@ -138,9 +138,8 @@ To trigger an announcement, update the `Text` of an element that has `LiveSettin
 In rare cases, the default ARIA role assigned by the automation peer may not match your control's purpose. Use the Uno-specific `Role` attached property to override it:
 
 ```xml
-xmlns:utu="using:Uno.UI.Toolkit"
-
-<Border utu:AutomationPropertiesExtensions.Role="tablist">
+<Border xmlns:utu="using:Uno.UI.Toolkit"
+        utu:AutomationPropertiesExtensions.Role="tablist">
     <!-- Custom tab strip -->
 </Border>
 ```
@@ -173,7 +172,7 @@ For the full mapping table, see [Automation peers](xref:Uno.Features.Accessibili
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `FeatureConfiguration.AutomationPeer.AutoEnableAccessibility` | `false` | When `true`, creates the semantic tree on startup without the activation button. |
-| `FeatureConfiguration.AutomationPeer.UseSimpleAccessibility` | `false` | **iOS/Android native only.** Not used on Skia WASM. |
+| `FeatureConfiguration.AutomationPeer.UseSimpleAccessibility` | `false` | Aggregates children's names into a single accessibility name. Affects all platforms including Skia WASM. Originally designed for native mobile, but applies everywhere. |
 | `IsUiAutomationMappingEnabled` (MSBuild property) | `false` | Enables `AutomationId` mapping to `xamlautomationid` attributes. Enable for UI testing. |
 
 ## Testing your app
@@ -202,7 +201,7 @@ For the full mapping table, see [Automation peers](xref:Uno.Features.Accessibili
 
 Open your browser's DevTools and look for the `#uno-semantics-root` element in the DOM. It contains all the hidden semantic elements:
 
-```
+```text
 #uno-semantics-root
 ├── <button aria-label="Save settings">
 ├── <input type="text" aria-label="Email address" aria-description="Enter your email...">
