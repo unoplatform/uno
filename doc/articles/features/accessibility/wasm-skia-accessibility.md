@@ -156,7 +156,7 @@ All standard Uno Platform controls have built-in automation peers that produce t
 | `CheckBox` | `checkbox` | Toggle state via `aria-checked` |
 | `RadioButton` | `radio` | Selection within a group |
 | `Slider` | `slider` | Range value via `aria-valuenow` / `aria-valuemin` / `aria-valuemax` |
-| `TextBox` | `textbox` | Rendered as `<input type="text">` |
+| `TextBox` | `textbox` | Rendered as `<input type="text">` by default, or `<textarea>` when `AcceptsReturn` is true |
 | `PasswordBox` | `textbox` (password) | Rendered as `<input type="password">` |
 | `ComboBox` | `combobox` | Expand/collapse pattern |
 | `ToggleSwitch` | `switch` | Toggle state via `aria-checked` |
