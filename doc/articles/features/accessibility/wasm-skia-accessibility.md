@@ -11,9 +11,9 @@ This guide explains how accessibility works in Uno Platform WebAssembly (WASM) a
 
 ## How Skia WASM accessibility works
 
-When Uno renders your app with Skia on WASM, all visual content is drawn onto a single HTML `<canvas>` element. By itself, a canvas is opaque to assistive technologies — screen readers cannot see the buttons, text, or controls inside it.
+When Uno Platform renders your app with Skia on WASM, all visual content is drawn onto a single HTML `<canvas>` element. By itself, a canvas is opaque to assistive technologies — screen readers cannot see the buttons, text, or controls inside it.
 
-To solve this, Uno automatically builds a **hidden semantic DOM** alongside the canvas. This DOM mirrors the accessibility-relevant parts of your visual tree: for every `Button`, `TextBox`, `Slider`, or other control, a corresponding hidden HTML element is created with the appropriate [ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) role and attributes. Screen readers interact with this semantic DOM, not the canvas.
+To solve this, Uno Platform automatically builds a **hidden semantic DOM** alongside the canvas. This DOM mirrors the accessibility-relevant parts of your visual tree: for every `Button`, `TextBox`, `Slider`, or other control, a corresponding hidden HTML element is created with the appropriate [ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) role and attributes. Screen readers interact with this semantic DOM, not the canvas.
 
 ```text
 ┌─────────────────────────────────┐
@@ -135,7 +135,7 @@ To trigger an announcement, update the `Text` of an element that has `LiveSettin
 
 ### 5. Override the ARIA role when needed
 
-In rare cases, the default ARIA role assigned by the automation peer may not match your control's purpose. Use the Uno-specific `Role` attached property to override it:
+In rare cases, the default ARIA role assigned by the automation peer may not match your control's purpose. Use the Uno Platform-specific `Role` attached property to override it:
 
 ```xml
 <Border xmlns:utu="using:Uno.UI.Toolkit"
@@ -148,7 +148,7 @@ See [Role override](xref:Uno.Features.Accessibility.RoleOverride) for the full l
 
 ## Supported controls
 
-All standard Uno controls have built-in automation peers that produce the correct ARIA role and attributes on WASM. Key mappings include:
+All standard Uno Platform controls have built-in automation peers that produce the correct ARIA role and attributes on WASM. Key mappings include:
 
 | Control | ARIA Role | Notes |
 |---------|-----------|-------|
@@ -230,7 +230,7 @@ Open your browser's DevTools and look for the `#uno-semantics-root` element in t
 
 ## Coming from the native WASM renderer
 
-If you previously built Uno WASM apps with the **native rendering engine** (where each XAML element was a real HTML DOM element), here is what changed with the Skia renderer:
+If you previously built Uno Platform WASM apps with the **native rendering engine** (where each XAML element was a real HTML DOM element), here is what changed with the Skia renderer:
 
 | Aspect | Native WASM renderer | Skia WASM renderer |
 |--------|----------------------|---------------------|
