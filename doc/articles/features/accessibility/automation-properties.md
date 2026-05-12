@@ -94,7 +94,7 @@ Controls whether an element appears in the automation tree.
 
 ## See also
 
-- [Accessibility overview](index.md)
-- [Custom automation peers](automation-peers.md)
-- [Testing with screen readers](testing-with-screen-readers.md)
+- [Accessibility overview](xref:Uno.Features.Accessibility)
+- [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)
+- [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders)
 - [Expose basic accessibility information (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/basic-accessibility-information)

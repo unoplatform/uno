@@ -81,6 +81,6 @@ Use `AutomationPropertiesExtensions.Role` when:
 
 ## See also
 
-- [Accessibility overview](index.md)
-- [AutomationProperties reference](automation-properties.md)
-- [Custom automation peers](automation-peers.md)
+- [Accessibility overview](xref:Uno.Features.Accessibility)
+- [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
+- [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)

@@ -64,11 +64,11 @@ To make your Uno app accessible, follow the same patterns you would use on WinUI
 
 | Topic | Description |
 |-------|-------------|
-| [AutomationProperties reference](automation-properties.md) | Supported `AutomationProperties` with per-platform mappings |
-| [Custom automation peers](automation-peers.md) | Skia accessibility architecture and ARIA role mappings |
-| [Role override](role-override.md) | Uno-specific `AutomationPropertiesExtensions.Role` attached property for explicit ARIA role control |
-| [Testing with screen readers](testing-with-screen-readers.md) | WASM activation, SamplesApp testing, and debugging the accessibility tree |
-| [WASM Skia accessibility guide](wasm-skia-accessibility.md) | How Uno Platform generates the semantic DOM on WASM Skia, activation flow, ARIA mappings, and configuration |
+| [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties) | Supported `AutomationProperties` with per-platform mappings |
+| [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers) | Skia accessibility architecture and ARIA role mappings |
+| [Role override](xref:Uno.Features.Accessibility.RoleOverride) | Uno-specific `AutomationPropertiesExtensions.Role` attached property for explicit ARIA role control |
+| [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders) | WASM activation, SamplesApp testing, and debugging the accessibility tree |
+| [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility) | How Uno Platform generates the semantic DOM on WASM Skia, activation flow, ARIA mappings, and configuration |
 
 ## AccessibilitySettings
 

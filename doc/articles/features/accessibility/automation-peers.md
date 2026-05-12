@@ -67,7 +67,7 @@ Each platform applies its own pruning strategy. For example, WASM prunes structu
 
 ## See also
 
-- [Accessibility overview](index.md)
-- [AutomationProperties reference](automation-properties.md)
-- [Role override](role-override.md)
+- [Accessibility overview](xref:Uno.Features.Accessibility)
+- [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
+- [Role override](xref:Uno.Features.Accessibility.RoleOverride)
 - [Custom automation peers (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/custom-automation-peers)

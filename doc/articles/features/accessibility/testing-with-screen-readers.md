@@ -62,6 +62,6 @@ Inspect using browser DevTools:
 
 ## See also
 
-- [Accessibility overview](index.md)
-- [AutomationProperties reference](automation-properties.md)
+- [Accessibility overview](xref:Uno.Features.Accessibility)
+- [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
 - [Accessibility testing (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/accessibility-testing)
