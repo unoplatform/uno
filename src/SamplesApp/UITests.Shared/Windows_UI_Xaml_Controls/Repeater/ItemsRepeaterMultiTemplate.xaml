@@ -1,0 +1,213 @@
+<Page x:Class="UITests.Windows_UI_Xaml_Controls.Repeater.ItemsRepeaterMultiTemplate"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:UITests.Windows_UI_Xaml_Controls.Repeater"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <!-- Template 1: Short single-line status row (~32px) -->
+        <DataTemplate x:Key="StatusRowTemplate"
+                      x:DataType="local:FeedItem">
+            <Grid Height="32"
+                  Padding="16,0"
+                  ColumnDefinitions="Auto,*,Auto">
+                <Ellipse Grid.Column="0"
+                         Width="8"
+                         Height="8"
+                         Fill="{Binding AccentBrush}"
+                         VerticalAlignment="Center"
+                         Margin="0,0,8,0" />
+                <TextBlock Grid.Column="1"
+                           Text="{Binding Title}"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                           FontSize="13" />
+                <TextBlock Grid.Column="2"
+                           Text="{Binding Subtitle}"
+                           VerticalAlignment="Center"
+                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                           FontSize="11" />
+            </Grid>
+        </DataTemplate>
+
+        <!-- Template 2: Medium card with title + body text (~120px) -->
+        <DataTemplate x:Key="ContentCardTemplate"
+                      x:DataType="local:FeedItem">
+            <Border Margin="12,4"
+                    Padding="16,12"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="8"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="{Binding Title}"
+                               FontWeight="SemiBold"
+                               FontSize="14"
+                               TextWrapping="Wrap"
+                               Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+                    <TextBlock Text="{Binding Body}"
+                               FontSize="13"
+                               TextWrapping="Wrap"
+                               MaxLines="4"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <!-- Template 3: Tall expandable section with nested content (~200-400px) -->
+        <DataTemplate x:Key="DetailSectionTemplate"
+                      x:DataType="local:FeedItem">
+            <Border Margin="12,4"
+                    Padding="0">
+                <Expander IsExpanded="{Binding IsExpanded, Mode=OneWay}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <Grid ColumnDefinitions="Auto,*"
+                              MinHeight="32">
+                            <FontIcon Grid.Column="0"
+                                      Glyph="&#xE10B;"
+                                      FontSize="14"
+                                      FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,8,0" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Title}"
+                                       VerticalAlignment="Center"
+                                       FontSize="13" />
+                        </Grid>
+                    </Expander.Header>
+                    <StackPanel Padding="28,4,4,8"
+                                Spacing="4">
+                        <TextBlock Text="{Binding Body}"
+                                   FontSize="13"
+                                   TextWrapping="Wrap"
+                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+                        <Border Height="{Binding InnerHeight}"
+                                Background="{Binding AccentBrush}"
+                                Opacity="0.15"
+                                CornerRadius="4"
+                                Margin="0,4,0,0" />
+                    </StackPanel>
+                </Expander>
+            </Border>
+        </DataTemplate>
+
+        <!-- Template 4: User-input bubble (right-aligned, ~60px) -->
+        <DataTemplate x:Key="InputBubbleTemplate"
+                      x:DataType="local:FeedItem">
+            <Grid Padding="60,6,12,6">
+                <Border HorizontalAlignment="Right"
+                        Background="{ThemeResource SystemControlHighlightAccentBrush}"
+                        CornerRadius="12,12,2,12"
+                        Padding="14,10"
+                        MaxWidth="420">
+                    <TextBlock Text="{Binding Title}"
+                               TextWrapping="Wrap"
+                               FontSize="13"
+                               Foreground="White" />
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Template 5: Banner / outcome card (~80px) -->
+        <DataTemplate x:Key="BannerTemplate"
+                      x:DataType="local:FeedItem">
+            <Border Margin="12,6"
+                    Padding="16,14"
+                    Background="{Binding AccentBrush}"
+                    Opacity="0.85"
+                    CornerRadius="12"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
+                <Grid ColumnDefinitions="Auto,*">
+                    <FontIcon Grid.Column="0"
+                              Glyph="{Binding IconGlyph}"
+                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                              FontSize="20"
+                              Foreground="White"
+                              VerticalAlignment="Center"
+                              Margin="0,0,12,0" />
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Title}"
+                                   FontWeight="SemiBold"
+                                   FontSize="14"
+                                   Foreground="White" />
+                        <TextBlock Text="{Binding Subtitle}"
+                                   FontSize="12"
+                                   Foreground="White"
+                                   Opacity="0.8" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <local:FeedItemTemplateSelector x:Key="ItemTemplateSelector"
+                                        StatusRowTemplate="{StaticResource StatusRowTemplate}"
+                                        ContentCardTemplate="{StaticResource ContentCardTemplate}"
+                                        DetailSectionTemplate="{StaticResource DetailSectionTemplate}"
+                                        InputBubbleTemplate="{StaticResource InputBubbleTemplate}"
+                                        BannerTemplate="{StaticResource BannerTemplate}" />
+    </Page.Resources>
+
+    <Grid Padding="12"
+          RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   MaxWidth="600"
+                   HorizontalAlignment="Left"
+                   Style="{ThemeResource BodyTextBlockStyle}"
+                   TextWrapping="Wrap">
+            ScrollViewer with ItemsRepeater using a DataTemplateSelector and 5 different templates of varying heights (32–400px). 150 items anchored to bottom. Mimics a feed-style UI with status rows, cards, expandable sections, input bubbles, and banners.
+        </TextBlock>
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    Spacing="6">
+            <Button Click="OnTopClick"
+                    Content="Top" />
+            <Button Click="OnBottomClick"
+                    Content="Bottom" />
+            <Button Click="OnAddItemsClick"
+                    Content="Add 20 items" />
+            <Button Click="OnClearClick"
+                    Content="Clear" />
+            <Button Click="OnResetClick"
+                    Content="Reset" />
+            <TextBlock x:Name="StatusText"
+                       VerticalAlignment="Center"
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       FontSize="12" />
+        </StackPanel>
+
+        <Border Grid.Row="2"
+                VerticalAlignment="Stretch"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1">
+            <ScrollViewer x:Name="Scroller"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <mux:ItemsRepeater x:Name="Repeater"
+                                   VerticalAlignment="Bottom"
+                                   ItemTemplate="{StaticResource ItemTemplateSelector}">
+                    <mux:ItemsRepeater.Layout>
+                        <mux:StackLayout Orientation="Vertical"
+                                         Spacing="0" />
+                    </mux:ItemsRepeater.Layout>
+                </mux:ItemsRepeater>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>
