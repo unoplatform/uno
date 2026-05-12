@@ -86,3 +86,4 @@ Use `AutomationPropertiesExtensions.Role` when:
 - [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)
 - [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders)
 - [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility)
+- [Custom automation peers (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/custom-automation-peers)
