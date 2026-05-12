@@ -379,7 +379,108 @@ public class Given_ItemsRepeater_FastScroll
 			+ "otherwise the monotonic-advance check has nothing to validate.");
 	}
 
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#elif __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_SmallWheelFlicksOnMultiTemplateContent_Then_EachAdvancesOffset()
+	{
+		// Reproduces the "small flick of the scrollwheel often snap back to the previous scroll
+		// position instead of moving" symptom reported on the studio.live multi-template subagent
+		// markdown UI. The scenario: chat-style ItemsRepeater with mixed-height templates (32-400
+		// px). A single small wheel tick — typical when reading content carefully — must produce a
+		// visible forward advance. The user-reported regression was that the offset would jump
+		// somewhere, snap back to the prior position, and need a fresh wheel to register progress.
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		var bounds = sut.Scroller.GetAbsoluteBounds();
+		mouse.MoveTo(new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2));
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+		// Each iteration: one wheel tick, wait for full settle, capture offset. Assert each tick
+		// produced forward motion. We allow tiny floating-point noise (≤ 1 px) but anything bigger
+		// is the visible "snap-back" the user reports.
+		const int Ticks = 6;
+		var offsetsAfterEachTick = new List<double> { sut.Scroller.VerticalOffset };
+		for (var i = 0; i < Ticks; i++)
+		{
+			var before = sut.Scroller.VerticalOffset;
+			mouse.WheelDown();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			var after = sut.Scroller.VerticalOffset;
+			offsetsAfterEachTick.Add(after);
+
+			(after - before).Should().BeGreaterThan(0.5,
+				$"Single wheel-down tick #{i + 1} on multi-template content must advance the offset, "
+				+ $"but went from {before:F2} to {after:F2}. "
+				+ $"All recorded offsets: [{string.Join(", ", offsetsAfterEachTick.Select(o => o.ToString("F2")))}].");
+		}
+	}
+
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_ScrollBarThumbDragged_Then_OffsetTracksRequestMonotonically()
+	{
+		// Reproduces the "scrollbar drag becomes unresponsive" symptom reported on the studio.live
+		// multi-template subagent markdown UI. The scrollbar drag fires Scroll events with the
+		// requested offset; the ScrollViewer must apply each in order without snapping back.
+		// We simulate the drag at the SCV level by firing the same ChangeViewCore the
+		// scrollbar drag handler uses (line 1254 of ScrollViewer.cs), incrementing the offset by
+		// small steps the way the user moves the thumb pixel-by-pixel.
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+
+		// Simulate progressive scrollbar-thumb drag down by 20 px each step (typical thumb tick).
+		// The scrollbar drag handler in ScrollViewer.OnVerticalScrollBarScrolled calls
+		// ChangeViewCore with `immediate=true` (matching the e.NewValue branch). Each request
+		// must land at the requested offset — not snap back to the previous one or skip ahead.
+		const int Steps = 20;
+		const double Step = 20.0;
+		var observed = new List<double> { sut.Scroller.VerticalOffset };
+		for (var i = 1; i <= Steps; i++)
+		{
+			var target = i * Step;
+			sut.Scroller.ChangeView(null, target, null, disableAnimation: true);
+			await TestServices.WindowHelper.WaitForIdle();
+			observed.Add(sut.Scroller.VerticalOffset);
+			(observed[i] - observed[i - 1]).Should().BeGreaterThan(0.5,
+				$"Scrollbar drag step #{i} (requested {target:F2}) must advance the offset from "
+				+ $"{observed[i - 1]:F2}, but landed at {observed[i]:F2} — the user perceives this as "
+				+ $"the scrollbar 'becoming unresponsive'. "
+				+ $"All recorded offsets: [{string.Join(", ", observed.Select(o => o.ToString("F2")))}].");
+		}
+	}
+
 	// ----- helpers -----
+
+	// Mixed-template sample SUT: mimics the studio.live multi-template subagent markdown UI's
+	// shape — 5 template types of varying heights cycling through 13 indices. Used by the
+	// small-wheel and scrollbar-drag regression tests.
+	private static SutHandle CreateMixedTemplateSut(int itemCount, Size viewport)
+	{
+		var items = Enumerable.Range(0, itemCount)
+			.Select(i => new ItemModel(i, MixedTemplateHeight(i), ColorForIndex(i)))
+			.ToArray();
+		return CreateSut(items, viewport);
+	}
+
+	private static double MixedTemplateHeight(int index) => (index % 13) switch
+	{
+		0 or 1 or 3 or 4 or 6 or 8 or 10 or 11 => 32,  // StatusRow
+		2 or 9 => 120,                                  // ContentCard
+		5 => 200,                                       // DetailSection
+		7 => 80,                                        // InputBubble
+		12 => 60,                                       // Banner
+		_ => 32,
+	};
 
 	private static SutHandle CreateHighVarianceSut(int itemCount, Size viewport)
 	{

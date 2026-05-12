@@ -146,29 +146,8 @@ public partial class ScrollViewer
 		isAnchoringFarEdgeHorizontally = false;
 		isAnchoringFarEdgeVertically = false;
 
-		// When the SV has registered anchor candidates (typically from virtualizing content like
-		// ItemsRepeater that auto-flips CanBeScrollAnchor on its prepared elements) and the caller
-		// has NOT explicitly set HorizontalAnchorRatio / VerticalAnchorRatio, treat the missing
-		// ratios as 0 (near-edge anchoring). This keeps the topmost / leftmost candidate stable as
-		// the realization-driven extent fluctuates during scroll, eliminating the visible "items
-		// reposition mid-scroll" flicker on high-variance content (issue #23041 / studio.live#816).
-		// Without this, layout-origin shifts caused by extent.X recomputation in StackLayout.GetExtent
-		// translate directly to items moving on screen even when the user's scroll offset is steady,
-		// because no anchoring corrects for them.
-		var hasCandidates = m_anchorCandidates.Count > 0;
 		var horizontalAnchorRatio = HorizontalAnchorRatio;
 		var verticalAnchorRatio = VerticalAnchorRatio;
-		if (hasCandidates)
-		{
-			if (double.IsNaN(horizontalAnchorRatio))
-			{
-				horizontalAnchorRatio = 0.0;
-			}
-			if (double.IsNaN(verticalAnchorRatio))
-			{
-				verticalAnchorRatio = 0.0;
-			}
-		}
 
 		if (!double.IsNaN(horizontalAnchorRatio) && !double.IsPositiveInfinity(ViewportWidth))
 		{
@@ -251,7 +230,8 @@ public partial class ScrollViewer
 
 	private void ComputeAnchorPoint(Rect bounds, out double anchorPointX, out double anchorPointY)
 	{
-		GetEffectiveAnchorRatios(out var horizontalAnchorRatio, out var verticalAnchorRatio);
+		var horizontalAnchorRatio = HorizontalAnchorRatio;
+		var verticalAnchorRatio = VerticalAnchorRatio;
 
 		anchorPointX = double.IsNaN(horizontalAnchorRatio)
 			? double.NaN
@@ -260,26 +240,6 @@ public partial class ScrollViewer
 		anchorPointY = double.IsNaN(verticalAnchorRatio)
 			? double.NaN
 			: bounds.Y + verticalAnchorRatio * bounds.Height;
-	}
-
-	// Returns the anchor ratios to actually use, defaulting NaN to 0 (near-edge) when the SV has
-	// registered anchor candidates. Mirrors the same default in IsAnchoring so the path that
-	// checks "should we anchor?" and the path that computes anchor points stay in sync.
-	private void GetEffectiveAnchorRatios(out double horizontalAnchorRatio, out double verticalAnchorRatio)
-	{
-		horizontalAnchorRatio = HorizontalAnchorRatio;
-		verticalAnchorRatio = VerticalAnchorRatio;
-		if (m_anchorCandidates.Count > 0)
-		{
-			if (double.IsNaN(horizontalAnchorRatio))
-			{
-				horizontalAnchorRatio = 0.0;
-			}
-			if (double.IsNaN(verticalAnchorRatio))
-			{
-				verticalAnchorRatio = 0.0;
-			}
-		}
 	}
 
 	private Size ComputeViewportToElementAnchorPointsDistance(Rect zoomedViewport, bool isForPreArrange)
