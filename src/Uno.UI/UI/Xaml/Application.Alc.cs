@@ -14,6 +14,23 @@ namespace Microsoft.UI.Xaml;
 
 partial class Application
 {
+	/// <summary>
+	/// Monotonically incremented each time a non-default-ALC <see cref="Application"/> is
+	/// registered via <see cref="SetCurrentApplication"/>. Used to dedupe by
+	/// <c>Type.FullName</c> when iterating secondary applications so that stale
+	/// (hot-reloaded-out) instances are skipped in favor of the most recent registration.
+	/// Read/written only under <see cref="_applicationsByAlcSync"/>.
+	/// </summary>
+	private static long _alcRegistrationCounter;
+
+	/// <summary>
+	/// The registration order assigned to this <see cref="Application"/> by
+	/// <see cref="SetCurrentApplication"/>. Higher value == more recently registered.
+	/// Set only for non-default-ALC applications. Read/written only under
+	/// <see cref="_applicationsByAlcSync"/>.
+	/// </summary>
+	internal long AlcRegistrationId;
+
 	private static void SetCurrentApplication(Application app)
 	{
 		if (app is null)
@@ -46,6 +63,7 @@ partial class Application
 			// same ALC bootstraps multiple Application instances (e.g., AlcApp runtime tests).
 			_applicationsByAlc.Remove(alc);
 			_applicationsByAlc.Add(alc, app);
+			app.AlcRegistrationId = ++_alcRegistrationCounter;
 			_hasSecondaryApps = true;
 		}
 	}
@@ -106,6 +124,127 @@ partial class Application
 		{
 			return _applicationsByAlc.TryGetValue(alc, out var app) ? app : null;
 		}
+	}
+
+	/// <summary>
+	/// Enumerates all secondary-ALC <see cref="Application"/> instances currently registered.
+	/// Used by <see cref="ResourceResolver"/> as a last-resort fallback when a resource
+	/// lookup originating from a shared (default-ALC) assembly fails to find a key —
+	/// the resource may live in a secondary ALC's <see cref="Application.Resources"/>
+	/// (e.g. brushes from a shared theme assembly that reference colors defined only
+	/// in the consuming application's merged dictionaries).
+	/// </summary>
+	/// <remarks>
+	/// When the same logical app is hot-reloaded,
+	/// the previous ALC may not yet be unloaded by the GC, so multiple <see cref="Application"/>
+	/// instances with the same <c>Type.FullName</c> can be registered simultaneously. The
+	/// previous instance is stale — its <see cref="Application.Resources"/> reflects the OLD
+	/// build's values and would shadow the live build's overrides if returned to a resource
+	/// lookup. We therefore dedupe by <c>Type.FullName</c>, keeping only the most recently
+	/// registered instance (highest <see cref="AlcRegistrationId"/>), and yield in newest-first
+	/// order so callers prefer the live app.
+	/// </remarks>
+	internal static global::System.Collections.Generic.IEnumerable<Application> EnumerateSecondaryApplications()
+	{
+		if (!_hasSecondaryApps)
+		{
+			yield break;
+		}
+
+		global::System.Collections.Generic.List<Application> snapshot;
+		lock (_applicationsByAlcSync)
+		{
+			snapshot = new global::System.Collections.Generic.List<Application>();
+			foreach (var kvp in _applicationsByAlc)
+			{
+				if (kvp.Value is not null && kvp.Value != Current)
+				{
+					snapshot.Add(kvp.Value);
+				}
+			}
+		}
+
+		// Dedupe by Type.FullName, keeping only the most recently registered instance.
+		// Stale instances linger when a hot-reloaded app's previous ALC has not yet been
+		// unloaded by the GC; their Resources are out of date and must not be returned.
+		// Sort newest-first so that callers (e.g., ResourceResolver fallback iteration) try
+		// the live registration before any other secondary apps. With Count <= 1, neither
+		// dedupe nor sort changes anything, so we keep the cheap path.
+		if (snapshot.Count > 1)
+		{
+			var latestByType = new global::System.Collections.Generic.Dictionary<string, Application>(StringComparer.Ordinal);
+			List<Application> orphans = null;
+			foreach (var app in snapshot)
+			{
+				var typeName = app.GetType().FullName;
+				if (typeName is null)
+				{
+					// Defensive: surface anonymous/unnamed types without dedupe so we never lose them.
+					(orphans ??= new List<Application>()).Add(app);
+					continue;
+				}
+
+				if (!latestByType.TryGetValue(typeName, out var existing) || app.AlcRegistrationId > existing.AlcRegistrationId)
+				{
+					latestByType[typeName] = app;
+				}
+			}
+
+			snapshot = new List<Application>(latestByType.Values);
+			snapshot.Sort(static (a, b) => b.AlcRegistrationId.CompareTo(a.AlcRegistrationId));
+
+			if (orphans is not null)
+			{
+				snapshot.AddRange(orphans);
+			}
+		}
+
+		foreach (var app in snapshot)
+		{
+			yield return app;
+		}
+	}
+
+	/// <summary>
+	/// Returns the most recently registered secondary-ALC <see cref="Application"/> whose
+	/// <c>Type.FullName</c> matches <paramref name="typeFullName"/>, or <see langword="null"/>
+	/// if no such app is currently registered.
+	/// </summary>
+	/// <remarks>
+	/// Used by <see cref="ResourceResolver"/> to "bump" a parse-context-resolved
+	/// <see cref="Application"/> to the live registration when the parse context references a
+	/// stale ALC (the typical hot-reload scenario where the previous build's static
+	/// <c>__ParseContext_</c> still holds a reference to the previous ALC).
+	/// </remarks>
+	internal static Application GetLatestSecondaryApplicationForType(string typeFullName)
+	{
+		if (!_hasSecondaryApps || typeFullName is null)
+		{
+			return null;
+		}
+
+		Application latest = null;
+		long latestId = -1;
+		lock (_applicationsByAlcSync)
+		{
+			foreach (var kvp in _applicationsByAlc)
+			{
+				var app = kvp.Value;
+				if (app is null || app == Current)
+				{
+					continue;
+				}
+
+				if (string.Equals(app.GetType().FullName, typeFullName, StringComparison.Ordinal)
+					&& app.AlcRegistrationId > latestId)
+				{
+					latestId = app.AlcRegistrationId;
+					latest = app;
+				}
+			}
+		}
+
+		return latest;
 	}
 
 	/// <summary>

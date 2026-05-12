@@ -526,25 +526,106 @@ namespace Uno.UI
 		{
 			value = null;
 
-			// When secondary ALCs are active, check the secondary ALC's Application.Resources first
+			// Resource lookup priority when secondary-ALC apps are registered:
+			//  1. If parseContext.AssemblyLoadContext identifies a specific secondary app
+			//     (i.e. a non-default ALC), try that app first, then other secondary apps.
+			//     Brush XAML in a secondary-ALC assembly is uniquely owned by that app, and
+			//     a secondary app's overrides beat sibling-secondary apps' defaults.
+			//  2. The host (Application.Current). Default-ALC parse contexts (and lookups
+			//     with no parse context) resolve here — the host owns those keys and must
+			//     not be silently overruled by a secondary app's same-key value.
+			//  3. Last-resort: iterate registered secondary apps. Required when a brush in
+			//     a shared (default-ALC) assembly references a key via {StaticResource X}
+			//     and X exists ONLY in a secondary app's Application.Resources — the parse
+			//     context points at the default ALC, so we cannot identify the owning app
+			//     up front.
+			//  4. Assembly / system resources.
+			//
+			// NOTE: do NOT iterate secondary apps before the host for default-ALC parse
+			// contexts. The host's own UI elements emit default-ALC parse contexts; if we
+			// query secondary apps first, any same-key resource defined by an imported app
+			// bleeds into the host's
+			// chrome and recolors host UI. The "same-key override should win for the
+			// secondary app" scenario (BrewHouse-style ColorOverrideDictionary on a
+			// shared-ALC brush) requires an owning-app hint plumbed through brush
+			// materialization, not a guess based on parseContext alone.
+			Application contextApp = null;
 			if (Application.HasSecondaryApps
 				&& context is XamlParseContext parseContext
 				&& parseContext.AssemblyLoadContext is { } alc)
 			{
-				var alcApp = Application.GetForAssemblyLoadContext(alc);
-				if (alcApp is not null && alcApp != Application.Current)
+				contextApp = Application.GetForAssemblyLoadContext(alc);
+
+				if (contextApp is not null
+					&& contextApp != Application.Current)
 				{
-					if (alcApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					// Hot-reload guard: a parse context emitted by a previously loaded
+					// secondary-ALC build still references that build's ALC even after a
+					// new build has registered a fresh Application instance with the same
+					// Type.FullName. Resolving via the parse context's ALC would land on
+					// the stale Application whose Resources reflect the OLD build's
+					// values. Bump to the most recently registered live registration of
+					// the same app type so the lookup sees the live app's resources.
+					var liveApp = Application.GetLatestSecondaryApplicationForType(contextApp.GetType().FullName);
+					if (liveApp is not null && liveApp != contextApp)
+					{
+						contextApp = liveApp;
+					}
+
+					if (contextApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					{
+						return true;
+					}
+
+					// Lookup originates from a secondary-app context: also consult other
+					// secondary apps before the host, so that a sibling secondary app's
+					// override is preferred over the host's same-key default.
+					foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+					{
+						if (secondaryApp == contextApp)
+						{
+							continue;
+						}
+
+						if (secondaryApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+						{
+							return true;
+						}
+					}
+				}
+				else
+				{
+					// contextApp resolved to the host (default ALC) — treat as a host context;
+					// no secondary-app priority applies.
+					contextApp = null;
+				}
+			}
+
+			if (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
+			{
+				return true;
+			}
+
+			// Last-resort fallback for resources defined ONLY in a secondary ALC's
+			// Application.Resources when the lookup originated from a host / default-ALC
+			// parse context. Skipped when we already iterated above.
+			if (Application.HasSecondaryApps && contextApp is null)
+			{
+				foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+				{
+					if (secondaryApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 					{
 						return true;
 					}
 				}
 			}
 
-			// Fall through to host app resources (also the only path when context is null or no secondary ALCs)
-			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
-				|| TryAssemblyResourceRetrieval(resourceKey, context, out value)
-				|| TrySystemResourceRetrieval(resourceKey, out value);
+			if (TryAssemblyResourceRetrieval(resourceKey, context, out value))
+			{
+				return true;
+			}
+
+			return TrySystemResourceRetrieval(resourceKey, out value);
 		}
 
 		/// <summary>
@@ -583,9 +664,70 @@ namespace Uno.UI
 			value = null;
 			providingDictionary = null;
 
+			// See the 3-parameter overload above for the rationale of this priority order.
+			// In short: secondary apps are queried *before* the host only when parseContext
+			// identifies a non-default (secondary) ALC. Default-ALC parse contexts (and
+			// host UI lookups) resolve against the host first, with a last-resort scan of
+			// secondary apps for keys defined only there. Iterating secondary apps before
+			// the host on every lookup would bleed secondary-app theme values into the
+			// host's chrome.
+			Application contextApp = null;
+			if (Application.HasSecondaryApps
+				&& context is XamlParseContext parseContext
+				&& parseContext.AssemblyLoadContext is { } alc)
+			{
+				contextApp = Application.GetForAssemblyLoadContext(alc);
+
+				if (contextApp is not null
+					&& contextApp != Application.Current)
+				{
+					// See the 3-parameter overload for the rationale: bump a parse-context-resolved
+					// stale Application to the live registration of the same Type.FullName so we
+					// don't read stale resources from a hot-reloaded-out instance.
+					var liveApp = Application.GetLatestSecondaryApplicationForType(contextApp.GetType().FullName);
+					if (liveApp is not null && liveApp != contextApp)
+					{
+						contextApp = liveApp;
+					}
+
+					if (contextApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+					{
+						return true;
+					}
+
+					foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+					{
+						if (secondaryApp == contextApp)
+						{
+							continue;
+						}
+
+						if (secondaryApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+						{
+							return true;
+						}
+					}
+				}
+				else
+				{
+					contextApp = null;
+				}
+			}
+
 			if (Application.Current?.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false) ?? false)
 			{
 				return true;
+			}
+
+			if (Application.HasSecondaryApps && contextApp is null)
+			{
+				foreach (var secondaryApp in Application.EnumerateSecondaryApplications())
+				{
+					if (secondaryApp.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+					{
+						return true;
+					}
+				}
 			}
 
 			// Assembly and system resources don't need pinning -- RefreshValue will fall back to TryTopLevelRetrieval
