@@ -373,22 +373,21 @@ namespace Windows.UI.Input
 						_status = ManipulationStatus.Started;
 						_contacts.onStart = _contacts.current;
 
-						// Note: We first start with an empty delta, then invoke Update.
-						//		 This is required to patch a common issue in applications that are using only the
-						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
-						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
-						//		 but there is no side effect to use the same behavior for all pointer types.
+						// Note: ManipulationStarted reports an empty delta (UWP behavior for touch / pen).
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
 							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.State.Center, ManipulationDelta.Empty, _contacts.onStart));
 
 						ApplyRailing(ref changeSet);
 
+						// Absorb the threshold-crossing translation into the commit history WITHOUT firing
+						// ManipulationUpdated. This way the next pointer move produces a delta computed from
+						// the recognition point (cumulative tracking from the press point is preserved, but
+						// the threshold pixels are NOT recovered in the first reported delta).
+						// This matches WinUI, native iOS and Avalonia: scrolling/panning starts at the finger
+						// position at the moment the gesture is recognized, with no visible jump of the
+						// threshold (~15 px for touch) pixels at the start of the manipulation (see #20473).
 						CommitChanges(changeSet);
-						Debug.Assert(changeSet.Delta == changeSet.Cumulative);
-						_recognizer.ManipulationUpdated?.Invoke(
-							_recognizer,
-							new ManipulationUpdatedEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
 						break;
 
 					case ManipulationStatus.Started when pointerRemoved && InertiaProcessor.TryStart(this, ref _inertia, changeSet):
