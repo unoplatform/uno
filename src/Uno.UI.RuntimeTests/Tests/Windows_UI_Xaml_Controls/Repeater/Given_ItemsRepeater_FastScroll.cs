@@ -295,6 +295,118 @@ public class Given_ItemsRepeater_FastScroll
 	// layout-time TrimOverscroll fires. That repro path remains TODO; for now bug 1 is the
 	// gating issue.
 
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_AddItemsAtEndThenScrollToBottom_Then_ReachesNewBottom()
+	{
+		// Repro for tester feedback on `irsecondtry`: "After I click Add 20 items, I can't even
+		// scroll all the way down anymore. It always jumps back up." When items are appended to
+		// the source and the user then clicks Bottom, `ChangeView(null, ScrollableHeight, …)` must
+		// land at the actual new bottom. If anchor compensation interferes by pulling the offset
+		// back toward an anchor element near the top of the viewport, the assertion fails.
+		const int InitialCount = 50;
+		const int AddedCount = 50;
+
+		var initialItems = Enumerable.Range(0, InitialCount)
+			.Select(i => new ItemModel(i, (i % 10 == 3) ? 1200 : 40, ColorForIndex(i)));
+
+		var sut = CreateSut(initialItems.ToArray(), new Size(300, 600));
+		await LoadAsync(sut);
+
+		// Append more items at the end of the collection.
+		for (var i = InitialCount; i < InitialCount + AddedCount; i++)
+		{
+			sut.Source.Add(new ItemModel(i, (i % 10 == 3) ? 1200 : 40, ColorForIndex(i)));
+		}
+		sut.Repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Click Bottom — single click should reach the actual bottom.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.Scroller.VerticalOffset.Should().BeApproximately(sut.Scroller.ScrollableHeight, OffsetTolerance,
+			"After appending items, the Bottom button must scroll to the new bottom — not be pulled back by anchor compensation.");
+
+		var lastItem = FindMaterializedElementForIndex(sut, InitialCount + AddedCount - 1);
+		lastItem.Should().NotBeNull("Last item must be materialized after scrolling to the new bottom.");
+		var lastItemBottomY = lastItem!.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, 0)).Y + lastItem.ActualHeight;
+		lastItemBottomY.Should().BeApproximately(sut.Scroller.ViewportHeight, OffsetTolerance,
+			"Last item's bottom edge must align with viewport bottom after add-then-scroll.");
+	}
+
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_SmallChangeViewToInRangeOffset_Then_OffsetMatchesRequest()
+	{
+		// Repro for tester feedback: "small flick of the scrollwheel often snap back to the
+		// previous scroll position instead of moving." Translated to the synchronous test path:
+		// when a `ChangeView(target, disableAnimation: true)` is issued with a `target` that is
+		// strictly inside `[0, ScrollableHeight]` and the user is currently at some other in-
+		// range offset, the post-settle `VerticalOffset` must equal `target` — not be pulled
+		// back to the previous offset by anchor compensation kicking in on the resulting layout
+		// pass.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		// Establish a midpoint baseline (well within ScrollableHeight, after layout converges).
+		sut.Scroller.ChangeView(null, 2000, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+		var baselineOffset = sut.Scroller.VerticalOffset;
+		var baselineScrollable = sut.Scroller.ScrollableHeight;
+
+		// Issue a small forward ChangeView (≈ a single wheel tick worth of movement).
+		var smallStep = 80.0;
+		var requested = baselineOffset + smallStep;
+		requested.Should().BeLessThan(baselineScrollable - 0.5, "test setup: small target must be in range");
+
+		sut.Scroller.ChangeView(null, requested, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.Scroller.VerticalOffset.Should().BeApproximately(requested, OffsetTolerance,
+			$"Small in-range ChangeView({requested:F0}) must land at the requested offset — not snap back to {baselineOffset:F0}.");
+	}
+
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_AnimatedChangeViewToInRangeOffset_Then_OffsetReachesTargetAtCompletion()
+	{
+		// Repro for tester feedback on animated wheel scrolls being snapped back. Drives an
+		// animated `ChangeView(target, disableAnimation: false)` and waits long enough for the
+		// 1-second `Visual.AnchorPoint` keyframe to complete (plus a generous safety margin),
+		// then asserts the final post-animation `VerticalOffset` equals the requested target.
+		// If anchor compensation stops the in-flight animation via `ChangeView(disableAnimation:
+		// true)` mid-flight, the offset settles at a compensation target instead of the user's.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		var requested = 1500.0;
+		requested.Should().BeLessThan(sut.Scroller.ScrollableHeight - 0.5, "test setup: animated target must be in range");
+
+		sut.Scroller.ChangeView(null, requested, null, disableAnimation: false);
+
+		// Animation duration is 1s; wait 2s for completion + idle.
+		await Task.Delay(2000);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.Scroller.VerticalOffset.Should().BeApproximately(requested, OffsetTolerance,
+			$"Animated ChangeView({requested:F0}) must reach the target at completion — anchor compensation must not stop the in-flight animation and snap to a different value.");
+	}
+
 	// ----- helpers -----
 
 	private static SutHandle CreateHighVarianceSut(int itemCount, Size viewport)

@@ -44,15 +44,17 @@ public partial class ScrollViewer
 
 	// WinUI parity: classic `ScrollViewer.HorizontalAnchorRatio` / `VerticalAnchorRatio` default
 	// to 0.0, NOT NaN. (NaN is the default for `ScrollPresenter` / `ScrollView`, but the classic
-	// `ScrollViewer` defaults to 0.0 — which engages top/left edge element anchoring out of the
-	// box.) The MUX sample `VariableSizedItemsPage.xaml` explicitly sets `HorizontalAnchorRatio="NaN"`
+	// `ScrollViewer` defaults to 0.0 — which engages top-edge element anchoring out of the box.)
+	// The MUX sample `VariableSizedItemsPage.xaml` explicitly sets `HorizontalAnchorRatio="NaN"`
 	// to opt OUT of horizontal anchoring, leaving vertical at the default 0.0 — consistent with
 	// the user-visible behaviour where vertical scroll content stays anchored across realization-
 	// range transitions when an `ItemsRepeater` is the content. With Uno's previous NaN default,
 	// `IsAnchoring` returned all-false and `AnchoringArrangeOverride` short-circuited, so any
 	// layout-origin shift in `StackLayout.GetExtent` was visible as content "jumping" between
-	// frames. Restoring the 0.0 default lets `AnchoringArrangeOverride` compensate the offset
-	// to keep the top-edge anchor element at the same viewport position across layout passes.
+	// frames. With the 0.0 default + the `skipAnimationWhileRunning` guard in
+	// `PerformPositionAdjustment` (ScrollViewer_Partial.cpp:16778), in-flight wheel/touch
+	// animations are not interrupted by anchor compensation; the compensation runs on idle layout
+	// passes (post-animation, scroll-bar release, etc.) to bring the content back into alignment.
 	public static DependencyProperty HorizontalAnchorRatioProperty { get; } =
 		DependencyProperty.Register(
 			nameof(HorizontalAnchorRatio), typeof(double),
@@ -437,28 +439,53 @@ public partial class ScrollViewer
 	// Clamps negative adjustments to avoid stepping into negative territory.
 	private void PerformPositionAdjustment(bool isHorizontalDimension, double unzoomedAdjustment, Rect zoomedViewport)
 	{
-		// zoomFactor is 1 in Uno's managed ScrollViewer pipeline.
-		var zoomedAdjustment = unzoomedAdjustment;
-
-		if (isHorizontalDimension)
+		// Skip during in-flight scroll animations to avoid stopping the user's keyframe via
+		// `ChangeView(disableAnimation:true)`. Matches WinUI's `skipAnimationWhileRunning=true`
+		// flag on the underlying `ChangeViewInternal` call (ScrollViewer_Partial.cpp:16778).
+		// Without DManip in Uno's managed pipeline, the only way to honour that semantic is to
+		// skip the adjustment entirely while the animation completes.
+		if ((_presenter as ScrollContentPresenter)?.IsScrollAnimationInProgress == true)
 		{
-			var zoomedHorizontalOffset = zoomedViewport.X;
-			if (zoomedAdjustment < 0 && -zoomedAdjustment > zoomedHorizontalOffset)
-			{
-				zoomedAdjustment = -zoomedHorizontalOffset;
-			}
-			var newHorizontalOffset = zoomedAdjustment + zoomedHorizontalOffset;
-			ChangeView(newHorizontalOffset, null, null, disableAnimation: true);
+			return;
 		}
-		else
+
+		// Mark this `ChangeView` as an internal anchor-compensation adjustment so
+		// `TrackRequestedScrollOffsets` does NOT overwrite the user's `_requestedVerticalOffset`
+		// / `_requestedHorizontalOffset`. Without this gate, every layout-pass compensation
+		// updates the tracked request to the compensated value, and the user's original target
+		// is lost — `ReapplyRequestedOffsetForExtent` can no longer re-coerce the offset back
+		// to where the caller asked it to go. With the gate, the user's request survives the
+		// compensation, and the next post-Arrange Reapply pass restores the offset.
+		_isReapplyingRequestedOffset = true;
+		try
 		{
-			var zoomedVerticalOffset = zoomedViewport.Y;
-			if (zoomedAdjustment < 0 && -zoomedAdjustment > zoomedVerticalOffset)
+			// zoomFactor is 1 in Uno's managed ScrollViewer pipeline.
+			var zoomedAdjustment = unzoomedAdjustment;
+
+			if (isHorizontalDimension)
 			{
-				zoomedAdjustment = -zoomedVerticalOffset;
+				var zoomedHorizontalOffset = zoomedViewport.X;
+				if (zoomedAdjustment < 0 && -zoomedAdjustment > zoomedHorizontalOffset)
+				{
+					zoomedAdjustment = -zoomedHorizontalOffset;
+				}
+				var newHorizontalOffset = zoomedAdjustment + zoomedHorizontalOffset;
+				ChangeView(newHorizontalOffset, null, null, disableAnimation: true);
 			}
-			var newVerticalOffset = zoomedAdjustment + zoomedVerticalOffset;
-			ChangeView(null, newVerticalOffset, null, disableAnimation: true);
+			else
+			{
+				var zoomedVerticalOffset = zoomedViewport.Y;
+				if (zoomedAdjustment < 0 && -zoomedAdjustment > zoomedVerticalOffset)
+				{
+					zoomedAdjustment = -zoomedVerticalOffset;
+				}
+				var newVerticalOffset = zoomedAdjustment + zoomedVerticalOffset;
+				ChangeView(null, newVerticalOffset, null, disableAnimation: true);
+			}
+		}
+		finally
+		{
+			_isReapplyingRequestedOffset = false;
 		}
 	}
 
