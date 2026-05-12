@@ -96,4 +96,54 @@ public class Given_RadioMenuFlyoutItem
 		Assert.IsFalse(medium.IsChecked);
 		Assert.IsTrue(large.IsChecked);
 	}
+
+	[TestMethod]
+	public async Task When_IsChecked_Set_Before_GroupName_Does_Not_Affect_Default_Group()
+	{
+		// Regression test for the stale-entry scenario also tracked upstream at
+		// https://github.com/microsoft/microsoft-ui-xaml/issues/11098.
+		// When IsChecked is applied before GroupName in XAML, the item used to leak a registration
+		// under the empty default group key. An unrelated item with no GroupName would then
+		// incorrectly uncheck it.
+		var menuA = (Microsoft.UI.Xaml.Controls.MenuFlyout)XamlReader.Load(
+			"""
+			<MenuFlyout xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<RadioMenuFlyoutItem Text="A" IsChecked="True" GroupName="GroupA" />
+				<RadioMenuFlyoutItem Text="B" GroupName="GroupA" />
+			</MenuFlyout>
+			""");
+		var menuB = (Microsoft.UI.Xaml.Controls.MenuFlyout)XamlReader.Load(
+			"""
+			<MenuFlyout xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<RadioMenuFlyoutItem Text="C" />
+			</MenuFlyout>
+			""");
+
+		var itemA = (Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem)menuA.Items[0];
+		var itemC = (Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem)menuB.Items[0];
+
+		var buttonA = new Microsoft.UI.Xaml.Controls.Button { Content = "A" };
+		var buttonB = new Microsoft.UI.Xaml.Controls.Button { Content = "B" };
+		FlyoutBase.SetAttachedFlyout(buttonA, menuA);
+		FlyoutBase.SetAttachedFlyout(buttonB, menuB);
+
+		var panel = new Microsoft.UI.Xaml.Controls.StackPanel();
+		panel.Children.Add(buttonA);
+		panel.Children.Add(buttonB);
+		TestServices.WindowHelper.WindowContent = panel;
+		await TestServices.WindowHelper.WaitForLoaded(panel);
+
+		FlyoutBase.ShowAttachedFlyout(buttonA);
+		await TestServices.WindowHelper.WaitForLoaded(itemA);
+		Assert.IsTrue(itemA.IsChecked);
+
+		FlyoutBase.ShowAttachedFlyout(buttonB);
+		await TestServices.WindowHelper.WaitForLoaded(itemC);
+
+		itemC.IsChecked = true;
+
+		Assert.IsTrue(itemA.IsChecked,
+			"ItemA must remain checked because it is in GroupA, not the default '' group.");
+		Assert.IsTrue(itemC.IsChecked);
+	}
 }

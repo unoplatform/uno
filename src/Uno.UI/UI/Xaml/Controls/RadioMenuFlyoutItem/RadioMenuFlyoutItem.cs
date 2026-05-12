@@ -24,6 +24,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool m_isSafeUncheck;
 
+#if HAS_UNO
+		// Uno-specific: the GroupName under which we last registered ourselves in
+		// s_selectionMap. Used to clean up a stale registration when GroupName changes
+		// after IsChecked (the common case is the XAML attribute order
+		// IsChecked="True" GroupName="...") so unrelated items in the default ""
+		// group cannot incorrectly uncheck us.
+		// Tracked upstream at: https://github.com/microsoft/microsoft-ui-xaml/issues/11098
+		private string m_lastRegisteredGroupName;
+#endif
+
 		public RadioMenuFlyoutItem()
 		{
 			this.RegisterPropertyChangedCallback(ToggleMenuFlyoutItem.IsCheckedProperty, OnInternalIsCheckedChanged);
@@ -55,7 +65,23 @@ namespace Microsoft.UI.Xaml.Controls
 			// If this is the checked item, remove it from the lookup.
 			if (m_isChecked)
 			{
+#if HAS_UNO
+				// Uno-specific: erase via the key we actually registered under (may differ from
+				// m_groupName if GroupName changed after we registered) and only if the entry
+				// still points to this instance, so we never remove another item's registration.
+				// See https://github.com/microsoft/microsoft-ui-xaml/issues/11098
+				var key = m_lastRegisteredGroupName ?? m_groupName;
+				if (s_selectionMap is { } map
+					&& key is not null
+					&& map.TryGetValue(key, out var weak)
+					&& weak.TryGetTarget(out var target)
+					&& target == this)
+				{
+					map.Remove(key);
+				}
+#else
 				s_selectionMap?.Remove(m_groupName);
+#endif
 			}
 		}
 
@@ -117,6 +143,23 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 					}
 				}
+
+#if HAS_UNO
+				// Uno-specific: remove any stale self-registration under a previous GroupName
+				// before re-adding, so e.g. an XAML-pre-checked item that later moved to a real
+				// group no longer leaks under the empty "" key.
+				// See https://github.com/microsoft/microsoft-ui-xaml/issues/11098
+				if (m_lastRegisteredGroupName is { } prevKey && prevKey != groupName)
+				{
+					if (s_selectionMap.TryGetValue(prevKey, out var staleWeak)
+						&& staleWeak.TryGetTarget(out var staleTarget)
+						&& staleTarget == this)
+					{
+						s_selectionMap.Remove(prevKey);
+					}
+				}
+				m_lastRegisteredGroupName = groupName;
+#endif
 
 				s_selectionMap[groupName] = new WeakReference<RadioMenuFlyoutItem>(this);
 			}
