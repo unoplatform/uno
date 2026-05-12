@@ -1,12 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 
 namespace Uno.Foundation.Logging
 {
 	internal static class LogExtensionPoint
 	{
 		private static LoggerFactory _loggerFactory = new LoggerFactory();
+		private static ConcurrentDictionary<Type, Logger> _loggers = new();
 
 		public static LoggerFactory Factory => _loggerFactory;
 
@@ -26,14 +28,8 @@ namespace Uno.Foundation.Logging
 		/// <returns>A logger for the type of the instance</returns>
 		public static Logger Log<T>(this T instance)
 		{
-			if (instance is Type t)
-			{
-				return _loggerFactory.CreateLogger(t);
-			}
-			else
-			{
-				return _loggerFactory.CreateLogger(typeof(T));
-			}
+			var type = instance as Type ?? typeof(T);
+			return _loggers.GetOrAdd(type, _loggerFactory.CreateLogger(type));
 		}
 
 		private static Logger? Log<T>(this T instance, LogLevel level)
