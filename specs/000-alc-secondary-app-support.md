@@ -211,6 +211,74 @@ internal static ContentControl? ContentHostOverride { get; set; }
 
 ---
 
+### `SecondaryApplicationLauncher` (Native Mobile Secondary App Launch)
+
+**Location**: `src/Uno.UI/Hosting/SecondaryApplicationLauncher.cs`
+
+**Visibility**: `internal static class` in namespace `Uno.UI.Hosting`.
+
+**Members** (signatures frozen — see "Stability contract" below):
+
+```csharp
+internal static LaunchActivatedEventArgs CreateDefaultLaunchActivatedEventArgs();
+internal static void LaunchSecondary(Application app);
+```
+
+**Purpose**: Provide a stable, named entry point for hosts that need to instantiate and start a secondary `Application` loaded from a child `AssemblyLoadContext` on iOS and Android, where `UnoPlatformHostBuilder` cannot construct a second host (the platform's application object is a process singleton).
+
+#### Why a dedicated helper exists
+
+On Skia and WebAssembly, a host can call `UnoPlatformHostBuilder.Create().App(factory).UseX11()…Build().Run()` a second time inside the same process — the platform-host abstraction is designed to support multiple instances. On native mobile this is not possible:
+
+- **iOS**: `UIKit.UIApplicationMain` is the process singleton; calling it again raises `NSInternalInconsistencyException` ("There can only be one UIApplication instance").
+- **Android**: `android.app.Application` is constructed by the JNI/runtime before any managed code runs and is owned by the OS; there is no opportunity to inject a second `NativeApplication`.
+
+The working pattern on both platforms is to instantiate the secondary `Application` directly via the host's factory, dispatch `OnLaunched(new LaunchActivatedEventArgs())` onto the platform UI thread, and let the existing ALC content-routing pipeline (the `Window.ContentHostOverride` / `AlcContentHost` surfaces documented above) take it from there. Both `OnLaunched` and the parameterless `LaunchActivatedEventArgs` constructor are non-public.
+
+Without a dedicated helper, hosts have to reflect against `Application.OnLaunched` and `LaunchActivatedEventArgs.ctor()` directly. That has two structural problems:
+
+1. **Silent breakage on rename.** Either symbol can be renamed or reshaped as part of normal Uno internal cleanup. The host fails at runtime with a `NullReferenceException` or `MissingMethodException` deep inside the launch path — no compile-time signal.
+2. **Trimmer surface multiplication.** Every mobile bundle must ship descriptors preserving both internal members forever, so the host's linker config doesn't go stale every Uno refactor.
+
+`SecondaryApplicationLauncher` is the dedicated helper. It lives in `Uno.UI` so it can call the non-public members directly, and it exposes a small, named, frozen surface that hosts reflect against.
+
+#### Why `internal`, not `public`
+
+The helper performs what is fundamentally a privileged operation: kicking off an `Application`'s launch lifecycle outside the normal platform activation pipeline. Making it `public` would invite app-developer code to call it directly — which would silently bypass the activation arguments the platform actually delivered and cause hard-to-diagnose state inconsistencies in apps that look at `args.Arguments` / `args.UWPLaunchActivatedEventArgs.Kind`. `internal` keeps the helper out of app-developer IntelliSense and reduces the chance of misuse from in-process app code.
+
+#### Why an `InternalsVisibleTo` allowlist is intentionally NOT used
+
+`internal` would normally pair with an `InternalsVisibleTo` allowlist naming each trusted host. That isn't the model here. Trusted hosts reach the helper through `System.Reflection` against the frozen named contract below; no host name is recorded in `Uno.UI`'s `AssemblyInfo.cs`.
+
+This is the deliberate trade-off:
+
+- An `InternalsVisibleTo` entry would expose downstream product names in a public-facing source file. Hosts that prefer not to register their assembly name publicly cannot use the helper.
+- Reflection against the frozen named contract decouples Uno from the consumer list — any trusted host can pin against the contract without Uno needing to know about it.
+- Reflection here is acceptable because the named surface is frozen by spec; the failure mode (rename) is precisely what the stability contract eliminates. The host needs a trimmer descriptor for one named type + two members, not for arbitrary internal Uno members.
+
+#### Stability contract — the load-bearing part of the design
+
+The following are part of Uno's external-host extensibility surface and will not change without a deprecation cycle, even though they are declared `internal`:
+
+- The type's full name: `Uno.UI.Hosting.SecondaryApplicationLauncher`.
+- `static LaunchActivatedEventArgs CreateDefaultLaunchActivatedEventArgs()`.
+- `static void LaunchSecondary(Microsoft.UI.Xaml.Application app)` — including the exact parameter type, return type, and the contract that it must be invoked on the platform UI thread.
+
+What is free to change: the implementation body, any private helpers, the public ctor / member set of `Application.OnLaunched` and `LaunchActivatedEventArgs` themselves (the helper insulates downstream from those refactors).
+
+This split is what makes the design more reliable than direct reflection against `Application.OnLaunched`: the host's reflective access pins against a contract Uno commits to, not against incidental internal-API shape.
+
+#### Caller responsibilities
+
+The helper does NOT marshal onto a UI thread. The caller dispatches via
+`CoreFoundation.DispatchQueue.MainQueue.DispatchAsync` (iOS) or
+`new Android.OS.Handler(Android.OS.Looper.MainLooper).Post` (Android) before invoking
+`LaunchSecondary`. This split keeps the helper's signature platform-agnostic and
+stable; UI-thread strategy is platform-host-specific and naturally lives in the
+host, not in `Uno.UI`.
+
+---
+
 ### `UnoEnableAlcAppSupport` MSBuild Property
 
 **Purpose**: Enables ALC app support in the XAML source generator, allowing proper resource dictionary registration for secondary ALC applications.
