@@ -1,7 +1,11 @@
 #nullable enable
 
+using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.Foundation.Logging;
+using Uno.UI.RemoteControl.HotReload;
 
 namespace Uno.HotReload.Client;
 
@@ -62,4 +66,30 @@ public static class UIUpdate
 	/// </summary>
 	public static string GetPauseHoldersSummary()
 		=> PendingUIUpdates.GetPauseHoldersSummary();
+
+	/// <summary>
+	/// Re-applies <paramref name="types"/> against the running visual tree and
+	/// resource dictionaries immediately, bypassing any active <see cref="Pause"/>
+	/// handles. Marshals to the UI thread internally; the returned task completes
+	/// once the apply pass has finished (or with an exception when no window is
+	/// set / the dispatch failed).
+	/// </summary>
+	/// <param name="types">Types whose instances should be rebound. An empty
+	/// array is a no-op.</param>
+	/// <param name="ct">Cancellation token. Cancellation observed up to the
+	/// point the UI-thread apply pass begins; once <c>DoUpdateVisualTreeCore</c>
+	/// has started the apply, the visual tree must not be left half-rebound, so
+	/// the pass completes regardless of the token.</param>
+	/// <remarks>
+	/// "Force" here means <em>ignore pauses</em>: the call runs the same
+	/// <c>DoUpdateVisualTreeCore</c> body the metadata-update + drain paths use,
+	/// but with both RD and VT phases pre-snapshotted to <paramref name="types"/>
+	/// so the apply happens regardless of <see cref="IsPaused"/> state.
+	/// </remarks>
+	/// <exception cref="InvalidOperationException">
+	/// Thrown when no hot-reload client instance / current window is available
+	/// (typically because <c>Window.UseStudio()</c> was not called at startup).
+	/// </exception>
+	public static Task ForceRefresh(Type[] types, CancellationToken ct = default)
+		=> ClientHotReloadProcessor.ForceRefreshAsync(types, ct);
 }

@@ -27,7 +27,7 @@ namespace Uno.HotReload.Diffing;
 /// <see cref="Tracking.HotReloadOperationResult.Failed"/>; updater
 /// implementations never call <c>HotReloadOperation.Complete</c> themselves.
 /// </param>
-public sealed record SolutionUpdateResult(
+public record SolutionUpdateResult(
 	Solution Solution,
 	ChangeSet IgnoredChanges,
 	ImmutableArray<Diagnostic> Diagnostics)
