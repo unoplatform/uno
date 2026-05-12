@@ -51,13 +51,13 @@ This design ensures that apps without accessibility needs do not pay the cost of
 
 ### Enabling accessibility on startup
 
-If your app must be accessible immediately — for example, a kiosk application or a compliance requirement — skip the activation button by setting this configuration in your `App.cs` or startup code:
+If your app must be accessible immediately — for example, a kiosk application or a compliance requirement — skip the activation button by setting this property **before the host is built** (typically in `App.cs` or `App.xaml.cs` constructor, before `MainWindow` is created):
 
 ```csharp
 Uno.UI.FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true;
 ```
 
-This creates the semantic tree as soon as the app loads, without waiting for user interaction.
+This creates the semantic tree as soon as the app loads, without waiting for user interaction. The property is read once during the accessibility subsystem initialization, so setting it after the window is built has no effect for the current session.
 
 ### Programmatic activation
 
@@ -131,12 +131,7 @@ When content updates without a page navigation — such as a status message, a t
 - `Polite` — the announcement waits until the screen reader finishes its current output.
 - `Assertive` — the announcement interrupts immediately. Use sparingly.
 
-You can also announce messages programmatically:
-
-```csharp
-AccessibilityAnnouncer.AnnouncePolite("File saved successfully.");
-AccessibilityAnnouncer.AnnounceAssertive("Error: connection lost.");
-```
+To trigger an announcement, update the `Text` of an element that has `LiveSetting` set. The framework handles the ARIA live-region notification automatically.
 
 ### 5. Override the ARIA role when needed
 
@@ -165,7 +160,7 @@ All standard Uno controls have built-in automation peers that produce the correc
 | `TextBox` | `textbox` | Rendered as `<input type="text">` |
 | `PasswordBox` | `textbox` (password) | Rendered as `<input type="password">` |
 | `ComboBox` | `combobox` | Expand/collapse pattern |
-| `ToggleSwitch` | `button` | `aria-pressed` for toggle state |
+| `ToggleSwitch` | `switch` | Toggle state via `aria-checked` |
 | `ListView` | `listbox` | Selection pattern |
 | `ListViewItem` | `option` | Individual selectable items |
 | `HyperlinkButton` | `link` | Rendered as `<a>` element |
