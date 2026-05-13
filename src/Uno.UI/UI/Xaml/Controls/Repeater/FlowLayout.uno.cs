@@ -20,6 +20,7 @@ partial class FlowLayout
 		set => _scrollOrientation = value;
 	}
 
+#pragma warning disable IDE0051 // Scaffolding kept for 1:1 parity with WinUI OrientationBasedMeasures.h:12-38 — some overloads have no live caller in this port yet.
 	private ScrollOrientation GetScrollOrientation() => _scrollOrientation;
 
 	private void SetScrollOrientation(ScrollOrientation value) => _scrollOrientation = value;
@@ -49,6 +50,7 @@ partial class FlowLayout
 
 	private Size MinorMajorSize(float minor, float major)
 		=> ((OrientationBasedMeasures)this).MinorMajorSize(minor, major);
+#pragma warning restore IDE0051
 
 #if !__SKIA__
 	/// <inheritdoc />
