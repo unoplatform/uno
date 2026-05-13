@@ -14,8 +14,7 @@ partial class VirtualizingLayout
 
 	public VirtualizingLayout()
 	{
-		// TODO Uno: RuntimeProfiler marker not ported.
-		// Original C++: __RP_Marker_ClassById(RuntimeProfiler::ProfId_VirtualizingLayout);
+		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_VirtualizingLayout);
 	}
 
 	/// <summary>
