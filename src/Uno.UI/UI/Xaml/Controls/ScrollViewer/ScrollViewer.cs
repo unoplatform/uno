@@ -904,15 +904,9 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Determines if the scroll has been allowed on that scroll viewer, not matter if scroll is possible or not due to the size of the content.
 		/// </summary>
-		/// <remarks>
-		/// Only <see cref="ScrollBarVisibility"/> participates here: ScrollBarVisibility.Disabled means "content cannot overflow",
-		/// which is the only case where the content has to be measured against the viewport. ScrollMode controls user input
-		/// (pan, mouse wheel, key navigation) and intentionally does NOT affect layout — programmatic scrolling via
-		/// ChangeView / StartBringIntoView remains possible when the mode is Disabled, which can only work if the content
-		/// was given an infinite slot at measure time.
-		/// </remarks>
 		private static bool ComputeIsScrollAllowed(ScrollBarVisibility visibility, ScrollMode mode)
-			=> visibility != ScrollBarVisibility.Disabled;
+			=> visibility != ScrollBarVisibility.Disabled
+				&& mode != ScrollMode.Disabled;
 
 		private static Visibility ComputeScrollBarVisibility(double scrollable, ScrollBarVisibility visibility)
 		{

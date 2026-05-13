@@ -28,10 +28,17 @@ public partial class Given_PipsPager
 		// LayoutClip matching the viewport (60) even though its content was wider (96),
 		// which clipped away every pip that scrolled in from the trailing side.
 
+		// Give the pager an opaque, known background and force a known theme so
+		// the trailing-pixel check can distinguish rendered pip ink from the
+		// surrounding background regardless of the host's current theme.
+		// (Pip glyph color comes from theme resources — Light theme produces dark
+		// glyphs on the white background; the inverse holds for Dark theme.)
 		var SUT = new PipsPager
 		{
 			NumberOfPages = 8,
 			MaxVisiblePips = 5,
+			RequestedTheme = ElementTheme.Light,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
 		};
 
 		await UITestHelper.Load(SUT);
@@ -87,14 +94,18 @@ public partial class Given_PipsPager
 		// rendered output (clip / opacity / composition issue). The bug clipped the
 		// inner ItemsRepeater at viewport-width, so any rendered pixel that lands in
 		// the trailing half of the pager proves the trailing pips render.
-		var screenshot = await UITestHelper.ScreenShot(SUT);
+		// Use an opaque screenshot and a known white background so the only non-white
+		// pixels are actual rendered pip ink (avoiding false positives from
+		// fully-transparent RGB=0 pixels).
+		var screenshot = await UITestHelper.ScreenShot(SUT, opaque: true);
 		bool inkInTrailingHalf = false;
 		int midY = screenshot.Height / 2;
 		var trailingStart = screenshot.Width / 2;
 		for (int x = trailingStart; x < screenshot.Width; x++)
 		{
 			var c = screenshot.GetPixel(x, midY);
-			if (c.R < 200 || c.G < 200 || c.B < 200)
+			// Background is opaque white; anything materially darker is rendered ink.
+			if (c.A == 255 && (c.R < 250 || c.G < 250 || c.B < 250))
 			{
 				inkInTrailingHalf = true;
 				break;
