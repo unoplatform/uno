@@ -186,6 +186,16 @@ public partial class ItemsSourceView
 
 	void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
+		// Uno specific: ItemsRepeater originally relied on VectorChange, which has no Move action.
+		// Decompose Move into Remove+Add at the C#/WinUI bridge so consumers receive only the
+		// actions the ported control code expects.
+		if (e.Action == NotifyCollectionChangedAction.Move)
+		{
+			OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, e.OldItems, e.OldStartingIndex));
+			OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, e.NewItems, e.NewStartingIndex));
+			return;
+		}
+
 		OnItemsSourceChanged(e);
 	}
 
