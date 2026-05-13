@@ -24,7 +24,5 @@ partial class RecyclePool
 		public IPanel Owner { get; }
 	}
 
-	// Uno specific: The C++ uses std::map (ordered) but for the access patterns (lookup by key,
-	// iterate values), Dictionary provides equivalent semantics without the ordering cost.
 	private readonly Dictionary<string /*key*/, List<ElementInfo>> m_elements = new Dictionary<string, List<ElementInfo>>();
 }
