@@ -273,6 +273,104 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("UNO: ElementName binding across DataTemplate loaded via XamlReader.Load does not resolve siblings outside the template scope. Tracking: Uno DataTemplate ElementName scope handling.")]
+		public async Task ValidateDataTemplateWithElementNameBinding()
+		{
+			await ValidateDataTemplateWithElementNameBindingHelper(useNestedElements: false);
+		}
+
+		[TestMethod]
+		[Ignore("UNO: ElementName binding across DataTemplate loaded via XamlReader.Load does not resolve siblings outside the template scope. Tracking: Uno DataTemplate ElementName scope handling.")]
+		public async Task ValidateDataTemplateWithNestedElementNameBinding()
+		{
+			await ValidateDataTemplateWithElementNameBindingHelper(useNestedElements: true);
+		}
+
+		private async Task ValidateDataTemplateWithElementNameBindingHelper(bool useNestedElements)
+		{
+			const int numItems = 5;
+			ItemsRepeater itemsRepeater = null;
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				DataTemplate dataTemplate = null;
+
+				if (useNestedElements)
+				{
+					dataTemplate = XamlReader.Load(
+						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                            <Border BorderThickness='1'>
+                                <TextBlock Text='{Binding}' Tag='{Binding ElementName=siblingTextBlock, Path=Text}'/>
+                            </Border>
+                        </DataTemplate>") as DataTemplate;
+				}
+				else
+				{
+					dataTemplate = XamlReader.Load(
+						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                            <TextBlock Text='{Binding}' Tag='{Binding ElementName=siblingTextBlock, Path=Text}'/>
+                        </DataTemplate>") as DataTemplate;
+				}
+
+				var stackPanel = new StackPanel()
+				{
+					Name = "stackPanel",
+					Width = 200
+				};
+
+				var siblingTextBlock = new TextBlock()
+				{
+					Name = "siblingTextBlock",
+					Text = "DataSource"
+				};
+
+				itemsRepeater = new ItemsRepeater()
+				{
+					Name = "itemsRepeater",
+					ItemsSource = Enumerable.Range(0, numItems).Select(i => i.ToString()),
+					Layout = new StackLayout(),
+					ItemTemplate = dataTemplate
+				};
+
+				stackPanel.Children.Add(siblingTextBlock);
+				stackPanel.Children.Add(itemsRepeater);
+
+				Content = stackPanel;
+
+				Content.UpdateLayout();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(itemsRepeater));
+
+				for (int i = 0; i < numItems; i++)
+				{
+					TextBlock itemTextBlock = null;
+
+					if (useNestedElements)
+					{
+						Border itemBorder = itemsRepeater.TryGetElement(i) as Border;
+						itemTextBlock = itemBorder.Child as TextBlock;
+					}
+					else
+					{
+						itemTextBlock = itemsRepeater.TryGetElement(i) as TextBlock;
+					}
+
+					Verify.IsNotNull(itemTextBlock);
+					Verify.AreEqual(i.ToString(), itemTextBlock.Text);
+					Verify.AreEqual("DataSource", itemTextBlock.Tag);
+				}
+
+				itemsRepeater.ItemsSource = null;
+				Content.UpdateLayout();
+			});
+		}
+
+		[TestMethod]
 		public async Task ValidateDataTemplateAsItemTemplate()
 		{
 			await RunOnUIThread.ExecuteAsync(async () =>
