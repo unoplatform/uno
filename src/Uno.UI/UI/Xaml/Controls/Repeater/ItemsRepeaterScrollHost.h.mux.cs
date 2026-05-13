@@ -76,10 +76,10 @@ partial class ItemsRepeaterScrollHost
 	// Whenever the m_candidates list changes, we set this to true.
 	private bool m_isAnchorElementDirty = true;
 
-#pragma warning disable 169 // Field never used, kept for 1:1 parity with WinUI source
+#pragma warning disable 169, IDE0051 // Field never used, kept for 1:1 parity with WinUI ItemsRepeaterScrollHost.h:165-166. Uno replaces these with auto-properties in ItemsRepeaterScrollHost.mux.cs.
 	private double m_horizontalEdge;
 	private double m_verticalEdge;    // Not used in this temporary implementation.
-#pragma warning restore 169
+#pragma warning restore 169, IDE0051
 
 	// We can only bring an element into view after it got arranged and
 	// we know its bounds as well as the viewport (so that we can account
