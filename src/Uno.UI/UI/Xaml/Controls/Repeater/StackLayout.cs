@@ -203,7 +203,18 @@ namespace Microsoft.UI.Xaml.Controls
 					// frame.
 					var formulaMajorStart = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
 					var hasPrior = !float.IsNaN(stackState.Uno_LastReportedExtentMajorStart);
-					var useFormula = !hasPrior || firstRealizedItemIndex == 0;
+					// Also release the stable origin when realized items extend ABOVE it
+					// (firstRealizedLayoutBounds.MajorStart < stable). This catches the wheel-up
+					// scroll cascade where Generate backward places items at negative algorithm-Y
+					// because the previous anchor was positioned at the avg-estimate offset (smaller
+					// than the true cumulative height of items 0..firstIdx-1). Holding stable=0
+					// would leave those items above the IR's frame and the user could not scroll all
+					// the way to the top — VerticalOffset clamps to 0 but the actual first items are
+					// outside the visible range. Shifting to formula re-anchors the origin so items
+					// align with their natural IR-local positions.
+					var itemsAboveStable = hasPrior
+						&& (float)MajorStart(firstRealizedLayoutBounds) < stackState.Uno_LastReportedExtentMajorStart;
+					var useFormula = !hasPrior || firstRealizedItemIndex == 0 || itemsAboveStable;
 					var stableMajorStart = useFormula
 						? formulaMajorStart
 						: stackState.Uno_LastReportedExtentMajorStart;
