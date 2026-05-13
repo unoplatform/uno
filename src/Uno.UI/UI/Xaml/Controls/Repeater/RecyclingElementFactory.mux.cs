@@ -12,7 +12,6 @@ partial class RecyclingElementFactory
 {
 	public RecyclingElementFactory()
 	{
-		// Uno specific: m_templates is initialized inline in the .h.mux.cs file rather than here.
 	}
 
 	// #pragma region IRecyclingElementFactory

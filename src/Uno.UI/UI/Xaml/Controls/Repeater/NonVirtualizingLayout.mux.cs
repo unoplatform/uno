@@ -13,8 +13,7 @@ partial class NonVirtualizingLayout
 
 	public NonVirtualizingLayout()
 	{
-		// TODO Uno: RuntimeProfiler marker not ported.
-		// Original C++: __RP_Marker_ClassById(RuntimeProfiler::ProfId_NonVirtualizingLayout);
+		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_NonVirtualizingLayout);
 	}
 
 	/// <summary>
