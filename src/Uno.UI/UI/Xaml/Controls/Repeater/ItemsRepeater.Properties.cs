@@ -45,7 +45,9 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Layout (DP - With default callback)
 		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
 			"Layout", typeof(Layout), typeof(ItemsRepeater), new FrameworkPropertyMetadata(
-				defaultValue: new StackLayout(),
+				// WinUI defaults Layout to null and treats a null Layout as a thread-local default
+				// StackLayout via GetEffectiveLayout() / EnsureDefaultLayoutState() in ItemsRepeater.mux.cs.
+				defaultValue: null,
 				propertyChangedCallback: OnPropertyChanged
 			));
 
