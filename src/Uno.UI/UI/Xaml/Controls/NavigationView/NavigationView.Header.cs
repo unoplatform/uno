@@ -213,15 +213,4 @@ public partial class NavigationView
 	private bool m_isLeftPaneTitleEmpty;
 
 	private double m_openPaneLength = 320.0;
-
-	#region Uno specific
-
-	//TODO: Uno specific - remove when #4689 is fixed
-	private readonly SerialDisposable m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-	private readonly SerialDisposable m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-	private readonly SerialDisposable m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-	private readonly SerialDisposable m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-	private readonly SerialDisposable m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker = new();
-
-	#endregion
 }

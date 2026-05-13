@@ -7,8 +7,7 @@
 //   conjunction with weak-reference-based RegisterMeasureInvalidated / RegisterArrangeInvalidated
 //   to prevent the long-lived thread-local default StackLayout from keeping ItemsRepeater
 //   instances alive across all Uno platforms.
-// - The UIElementCollection-backed Children, IPanel implementation and the
-//   UnoBeforeElementPrepared diagnostic event used by SelectorItem-based controls.
+// - The UIElementCollection-backed Children and IPanel implementation.
 // - OnLoadedUno / OnUnloadedUno handle the load/unload cycle's re-subscription of data-source
 //   and layout events. They also run on Skia with UNO_HAS_ENHANCED_LIFECYCLE defined because
 //   the subscription teardown on Unload is still required to avoid leaks through the default
@@ -35,15 +34,6 @@ partial class ItemsRepeater : IPanel
 	UIElementCollection IPanel.Children => _repeaterChildren;
 
 	internal IList<UIElement> Children => _repeaterChildren;
-
-	//TODO: Uno specific - remove when #4689 is fixed
-	internal event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> UnoBeforeElementPrepared;
-
-	internal void OnUnoBeforeElementPrepared(UIElement element, int index)
-	{
-		var args = new ItemsRepeaterElementPreparedEventArgs(element, index);
-		UnoBeforeElementPrepared?.Invoke(this, args);
-	}
 
 	private void OnLoadedUno()
 	{

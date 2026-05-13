@@ -5,11 +5,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class NavigationView
 {
-	//TODO: Uno specific - remove when #4689 is fixed
-
-	private void OnRepeaterUnoBeforeElementPrepared(ItemsRepeater itemsRepeater, ItemsRepeaterElementPreparedEventArgs args) =>
-		OnRepeaterElementPrepared(itemsRepeater, args);
-
 	//TODO: Uno specific - remove when #4727 is fixed
 
 	private Grid m_paneHeaderContentBorderWrapper;
