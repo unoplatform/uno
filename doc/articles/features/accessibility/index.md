@@ -33,7 +33,7 @@ On Skia-rendered targets, Uno maintains a **semantic accessibility tree** alongs
 - **Web (WASM)** — Generates a hidden semantic DOM overlay with the appropriate [ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) roles and attributes, making the app accessible to any browser-based screen reader.
 
 > [!NOTE]
-> On WASM, the accessibility layer activates when the user first presses the `Tab` key. A visually hidden **"Enable accessibility"** element becomes reachable via Tab or screen reader and must be activated (click or press `Space`) before the full semantic tree is available. This is done to avoid performance overhead when accessibility is not needed.
+> On WASM, the accessibility layer activates when the user first presses the `Tab` key. A visually hidden **"Enable accessibility"** element becomes reachable via Tab or screen reader and must be activated (click, `Enter`, or `Space`) before the full semantic tree is available. This is done to avoid performance overhead when accessibility is not needed.
 
 ## Getting started
 

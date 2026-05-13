@@ -11,7 +11,7 @@ This guide covers Uno-specific steps for verifying accessibility in your applica
 
 ## Enabling the accessibility layer (WASM)
 
-On WASM Skia targets, the accessibility layer activates when the user first presses the `Tab` key. A visually hidden **"Enable accessibility"** element becomes reachable via Tab or screen reader — activate it (click or press `Space`) before the full semantic tree becomes available.
+On WASM Skia targets, the accessibility layer activates when the user first presses the `Tab` key. A visually hidden **"Enable accessibility"** element becomes reachable via Tab or screen reader — activate it (click, `Enter`, or `Space`) before the full semantic tree becomes available.
 
 To activate manually from browser DevTools:
 
