@@ -424,15 +424,6 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
-	[Ignore(
-		"Open issue: StackLayout.GetExtent recomputes extent.X every measure from the running average "
-		+ "element size; when avg shifts (tall items enter/leave the 100-slot estimation buffer mid-"
-		+ "scroll) the layout origin moves, and items reposition in IR-local space even though the "
-		+ "user's VerticalOffset is steady. Attempts to stabilize extent.X across connected-window "
-		+ "measures resolved the visible jitter but under-estimated extent.Size (When_ScrolledThroughList "
-		+ "regression), so a more involved fix is needed (likely accounting for unrealized leading "
-		+ "items' running-average contribution separately). Test left in source as the regression "
-		+ "marker; remove [Ignore] when the underlying layout-origin stability work lands.")]
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #elif __ANDROID__ || __IOS__ || __WASM__

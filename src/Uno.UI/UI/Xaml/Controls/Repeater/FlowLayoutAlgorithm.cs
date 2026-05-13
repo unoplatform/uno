@@ -28,6 +28,10 @@ namespace Microsoft.UI.Xaml.Controls
 		Rect m_lastExtent;
 		int m_firstRealizedDataIndexInsideRealizationWindow = -1;
 		int m_lastRealizedDataIndexInsideRealizationWindow = -1;
+		// Uno workaround: set when MakeAnchor or the disconnected-window branch of GetAnchorIndex
+		// runs during the current Measure pass. Layout-callback consumers (StackLayout.GetExtent)
+		// inspect and clear this so they can reset cached layout-origin state across anchor jumps.
+		internal bool Uno_LastMeasureDidAnchorJump;
 
 
 		// If the scroll orientation is the same as the follow orientation
@@ -70,6 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool disableVirtualization,
 			string layoutId)
 		{
+			Uno_LastMeasureDidAnchorJump = false;
 			ScrollOrientation = orientation;
 
 			// If minor size is infinity, there is only one line and no need to align that line.
@@ -135,6 +140,7 @@ namespace Microsoft.UI.Xaml.Controls
 			int index,
 			Size availableSize)
 		{
+			Uno_LastMeasureDidAnchorJump = true;
 			m_elementManager.ClearRealizedRange();
 			// FlowLayout requires that the anchor is the first element in the row.
 			var internalAnchor = m_algorithmCallbacks.Algorithm_GetAnchorForTargetElement(index, availableSize, context);
@@ -272,6 +278,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// Disconnected, throw everything and create new anchor
 					REPEATER_TRACE_INFO("%*s Disconnected Window - throwing away all realized elements \n", context.Indent, layoutId);
+					Uno_LastMeasureDidAnchorJump = true;
 					m_elementManager.ClearRealizedRange();
 
 					var anchor = m_context.GetOrCreateElementAt(anchorIndex, ElementRealizationOptions.ForceCreate | ElementRealizationOptions.SuppressAutoRecycle);
