@@ -303,6 +303,131 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[TestProperty("Description", "Verifies the correct items are generated when invoking StartBringIntoView for a disconnected item.")]
+		[Ignore("UNO: Requires CompositionPropertySpy.SynchronouslyTickUIThread to drive cache buffer growth deterministically.")]
+		public async Task ValidateBringIntoViewOperations()
+		{
+			await ValidateBringIntoViewOperationsHelper(0.0 /*cacheLengths*/);
+			await ValidateBringIntoViewOperationsHelper(2.0 /*cacheLengths*/);
+		}
+
+		private async Task ValidateBringIntoViewOperationsHelper(double cacheLengths)
+		{
+			Log.Comment("\r\nValidateBringIntoViewOperations cacheLengths: " + cacheLengths);
+
+			string strRealizedItemsIndices = null;
+			List<int> realizedItemsIndices = null;
+			CustomItemsSource dataSource = null;
+			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 200).ToList()));
+
+			var (itemsRepeater, _) = await SetupRepeater(dataSource: null, itemContent: @"<TextBlock Text='{Binding}' Height='24'/>");
+
+			RunOnUIThread.Execute(() =>
+			{
+				realizedItemsIndices = new List<int>();
+
+				itemsRepeater.ElementPrepared += (sender, args) =>
+				{
+					realizedItemsIndices.Add(args.Index);
+				};
+
+				itemsRepeater.ElementClearing += (sender, args) =>
+				{
+					int index = sender.GetElementIndex(args.Element);
+					realizedItemsIndices.Remove(index);
+				};
+
+				itemsRepeater.HorizontalCacheLength = cacheLengths;
+				itemsRepeater.VerticalCacheLength = cacheLengths;
+				itemsRepeater.ItemsSource = dataSource;
+			});
+
+			// The viewport size being 200px and realization window increase being 40px per measure pass,
+			// make sure there are 2.5 x cacheLengths passes to land on the final realized items.
+			// cacheLengths: number of viewports constituting the pre-fetch buffer, once completely built.
+			//               Half of it is before the current viewport, and half after.
+			// viewport: 200px
+			// cacheIncrement: 40px (buffer increment per measure pass on each side)
+			// Measure passes needed to fill the pre-fetch buffer: viewport / cacheIncrement / 2 x cacheLengths = 2.5 x cacheLengths
+
+			await TestServices.WindowHelper.WaitForIdle();
+			strRealizedItemsIndices = await LogRealizedIndicesAsync(realizedItemsIndices, (int)(2.5 * cacheLengths + 1));
+			Verify.AreEqual(
+				cacheLengths == 0 ? " 0 1 2 3 4 5 6 7 8 9" : " 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17",
+				strRealizedItemsIndices);
+
+			await StartBringIndexIntoViewAsync(itemsRepeater, index: 99);
+			strRealizedItemsIndices = await LogRealizedIndicesAsync(realizedItemsIndices, (int)(2.5 * cacheLengths + 1));
+			Verify.AreEqual(
+				cacheLengths == 0 ? " 99 100 98 97 96 95 94 93 92 91 90" : " 99 100 101 102 103 104 105 106 107 108 109 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82",
+				strRealizedItemsIndices);
+
+			await StartBringIndexIntoViewAsync(itemsRepeater, index: 199);
+			strRealizedItemsIndices = await LogRealizedIndicesAsync(realizedItemsIndices, (int)(2.5 * cacheLengths + 1));
+			Verify.AreEqual(
+				cacheLengths == 0 ? " 199 198 197 196 195 194 193 192 191 190" : " 199 198 197 196 195 194 193 192 191 190 189 188 187 186 185 184 183 182",
+				strRealizedItemsIndices);
+
+			await StartBringIndexIntoViewAsync(itemsRepeater, index: 49);
+			strRealizedItemsIndices = await LogRealizedIndicesAsync(realizedItemsIndices, (int)(2.5 * cacheLengths + 1));
+			Verify.AreEqual(
+				cacheLengths == 0 ? " 49 50 51 52 53 54 55 56 57 58 48" : " 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 48 47 46 45 44 43 42 41 40 39",
+				strRealizedItemsIndices);
+
+			await StartBringIndexIntoViewAsync(itemsRepeater, index: 0);
+			strRealizedItemsIndices = await LogRealizedIndicesAsync(realizedItemsIndices, (int)(2.5 * cacheLengths + 1));
+			Verify.AreEqual(
+				cacheLengths == 0 ? " 0 1 2 3 4 5 6 7 8 9" : " 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17",
+				strRealizedItemsIndices);
+		}
+
+		private async Task StartBringIndexIntoViewAsync(ItemsRepeater itemsRepeater, int index)
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("\r\nItemsRepeater.GetOrCreateElement(" + index + ")");
+				var item = itemsRepeater.GetOrCreateElement(index);
+
+				// Make sure the newly created item is measured so that its size is
+				// identified and can be used to bring it entirely into view.
+				Log.Comment("UIElement.UpdateLayout()");
+				item.UpdateLayout();
+
+				Log.Comment("UIElement.StartBringIntoView()");
+				item.StartBringIntoView();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		private async Task<string> LogRealizedIndicesAsync(List<int> realizedItemsIndices, int ticks)
+		{
+			string strRealizedItemsIndices = null;
+
+			do
+			{
+				RunOnUIThread.Execute(() =>
+				{
+					strRealizedItemsIndices = string.Empty;
+
+					foreach (int i in realizedItemsIndices)
+					{
+						strRealizedItemsIndices += " " + i;
+					}
+
+					Log.Comment("Realized indices:" + strRealizedItemsIndices);
+				});
+
+				ticks--;
+				// TODO Uno: Replace with CompositionPropertySpy.SynchronouslyTickUIThread when ported.
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			while (ticks >= 0);
+
+			return strRealizedItemsIndices;
+		}
+
+		[TestMethod]
 #if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
@@ -369,6 +494,67 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Verify.AreEqual(2, changedIndices.Count);
 				Verify.IsTrue(changedIndices.Contains(new KeyValuePair<int, int>(1, 0)));
 				Verify.IsTrue(changedIndices.Contains(new KeyValuePair<int, int>(2, 1)));
+			});
+		}
+
+		// Validate new items get generated when existing ones are removed from the top.
+		[TestMethod]
+		[Ignore("UNO: Requires CompositionPropertySpy.SynchronouslyTickUIThread to drive vertical cache growth.")]
+		public async Task ValidateElementCreationUponRemovals()
+		{
+			CustomItemsSource dataSource = null;
+			List<int> preparedIndices = null;
+
+			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 20).ToList()));
+
+			var (itemsRepeater, _) = await SetupRepeater(dataSource, @"<TextBlock Text='{Binding}' Height='24'/>");
+
+			RunOnUIThread.Execute(() =>
+			{
+				itemsRepeater.VerticalCacheLength = 2.0;
+			});
+
+			// The viewport size being 200px and realization window increase being 40px per measure pass,
+			// make sure there are 2.5 x cacheLengths passes to land on the final realized items.
+			// cacheLengths: number of viewports constituting the pre-fetch buffer, once completely built.
+			//               Half of it is before the current viewport, and half after.
+			// viewport: 200px
+			// cacheIncrement: 40px (buffer increment per measure pass on each side)
+			// Measure passes needed to fill the pre-fetch buffer: viewport / cacheIncrement / 2 x cacheLengths = 2.5 x cacheLengths
+			Log.Comment("Letting the item cache grow to the VerticalCacheLength value.");
+			// TODO Uno: Replace with CompositionPropertySpy.SynchronouslyTickUIThread(6) when ported.
+			for (int i = 0; i < 6; i++)
+			{
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			RunOnUIThread.Execute(() =>
+			{
+				preparedIndices = new List<int>();
+
+				itemsRepeater.ElementPrepared += (sender, args) =>
+				{
+					Log.Comment("ElementPrepared - Index={0}.", args.Index);
+					preparedIndices.Add(args.Index);
+				};
+			});
+
+			for (int iteration = 1; iteration <= 16; iteration++)
+			{
+				RunOnUIThread.Execute(() =>
+				{
+					Log.Comment("Removing top item at index 0.");
+					dataSource.Remove(index: 0, count: 1, reset: false);
+				});
+
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			RunOnUIThread.Execute(() =>
+			{
+				// Removal of top items is expected to cause new item generation.
+				Log.Comment("Final preparedIndices.Count={0}.", preparedIndices.Count);
+				Verify.IsGreaterThan(preparedIndices.Count, 0);
 			});
 		}
 
