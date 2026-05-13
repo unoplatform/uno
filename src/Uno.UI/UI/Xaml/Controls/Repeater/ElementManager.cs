@@ -60,6 +60,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public int GetRealizedElementCount => IsVirtualizingContext ? (int)(m_realizedElements.Count) : m_context.ItemCount;
 
+		public int GetFirstRealizedDataIndex => m_firstRealizedDataIndex;
+
 		private readonly List<UIElement> m_realizedElements = new List<UIElement>();
 		private readonly List<Rect> m_realizedElementLayoutBounds = new List<Rect>();
 		private int m_firstRealizedDataIndex = -1;
@@ -222,6 +224,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public void SetLayoutBoundsForRealizedIndex(int realizedIndex, Rect bounds)
 		{
 			m_realizedElementLayoutBounds[realizedIndex] = bounds;
+		}
+
+		public bool IsLayoutBoundsForRealizedIndexSet(int realizedIndex)
+		{
+			MUX_ASSERT(realizedIndex >= 0 && realizedIndex < GetRealizedElementCount);
+
+			return m_realizedElementLayoutBounds[realizedIndex] != ItemsRepeater.InvalidRect;
 		}
 
 		public bool IsDataIndexRealized(int index)
