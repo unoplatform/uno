@@ -961,13 +961,14 @@ partial class ViewManager
 
 	void EnsureEventSubscriptions()
 	{
-		if (!m_gotFocus)
+		if (m_gotFocus.Disposable == null)
 		{
-			//MUX_ASSERT(m_lostFocus == null);
-			m_owner.GotFocus += OnFocusChanged;
-			m_owner.LostFocus += OnFocusChanged;
-
-			m_gotFocus = true;
+			MUX_ASSERT(m_lostFocus.Disposable == null);
+			var owner = m_owner;
+			owner.GotFocus += OnFocusChanged;
+			m_gotFocus.Disposable = Uno.Disposables.Disposable.Create(() => owner.GotFocus -= OnFocusChanged);
+			owner.LostFocus += OnFocusChanged;
+			m_lostFocus.Disposable = Uno.Disposables.Disposable.Create(() => owner.LostFocus -= OnFocusChanged);
 		}
 	}
 
