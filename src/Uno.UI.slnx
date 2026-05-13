@@ -198,16 +198,10 @@
   </Folder>
   <Folder Name="/SamplesApp/UnoIslands/">
     <Project Path="SamplesApp/UnoIslands.Shared/UnoIslands.Shared.shproj" />
-    <Project Path="SamplesApp/UnoIslands.Skia.Wpf/UnoIslands.Skia.Wpf.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="SamplesApp/UnoIslands.Skia/UnoIslands.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SamplesApp/UnoIslands.WinForms/UnoIslands.WinForms.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="SamplesApp/UnoIslandsSamplesApp.Skia.Wpf/UnoIslandsSamplesApp.Skia.Wpf.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SamplesApp/UnoIslandsSamplesApp.Skia/UnoIslandsSamplesApp.Skia.csproj">
@@ -413,9 +407,6 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Islands/">
-    <Project Path="Uno.UI.XamlHost.Skia.Wpf/Uno.UI.XamlHost.Skia.Wpf.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -450,9 +441,6 @@
     </Project>
     <Project Path="Uno.UI.Runtime.Skia.Win32/Uno.UI.Runtime.Skia.Win32.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
-    </Project>
-    <Project Path="Uno.UI.Runtime.Skia.Wpf/Uno.UI.Runtime.Skia.Wpf.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Runtime.Skia.X11/Uno.UI.Runtime.Skia.X11.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />

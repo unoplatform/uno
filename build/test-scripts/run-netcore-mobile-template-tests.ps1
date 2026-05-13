@@ -43,11 +43,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         @("Skia.Linux.FrameBuffer", "", "")
     )
 
-    if ($IsWindows) 
-    {
-        $dotnetBuildConfigurations += , @("Skia.WPF", "", "");
-    }
-
     $dotnetBuildNet6Configurations =
     @(
         @("Mobile", "-f:net8.0-android", ""),
@@ -57,11 +52,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         @("Server", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
     )
-
-    if ($IsWindows) 
-    {
-        $dotnetBuildNet6Configurations += , @("Skia.WPF", "", "");
-    }
 
     # WinUI - Default
     pushd UnoAppWinUI
