@@ -266,13 +266,13 @@ partial class ItemsRepeater
 
 	// #pragma endregion
 
-	public UIElement GetElementImpl(int index, bool forceCreate, bool suppressAutoRecycle)
+	internal UIElement GetElementImpl(int index, bool forceCreate, bool suppressAutoRecycle)
 	{
 		var element = m_viewManager.GetElement(index, forceCreate, suppressAutoRecycle);
 		return element;
 	}
 
-	public void ClearElementImpl(UIElement element)
+	internal void ClearElementImpl(UIElement element)
 	{
 		// Clearing an element due to a collection change
 		// is more strict in that pinned elements will be forcibly
@@ -329,7 +329,7 @@ partial class ItemsRepeater
 			throw new InvalidOperationException("ItemSource doesn't have a value");
 		}
 
-		if (index >= 0 && index >= ItemsSourceView.Count)
+		if (index < 0 || index >= ItemsSourceView.Count)
 		{
 			throw new ArgumentException(nameof(index), "Argument index is invalid.");
 		}
@@ -487,10 +487,8 @@ partial class ItemsRepeater
 	// can be used to make logging a little easier to read.
 	internal int Indent()
 	{
-		int indent = 1;
-
-		// Expensive, so we do it only in debug builds.
 #if DEBUG
+		// Expensive, so we do it only in debug builds.
 		var parent = this.Parent as FrameworkElement;
 		while (parent != null && !(parent is ItemsRepeater))
 		{
@@ -499,11 +497,11 @@ partial class ItemsRepeater
 
 		if (parent is ItemsRepeater parentRepeater)
 		{
-			indent = parentRepeater.Indent();
+			return parentRepeater.Indent() * 4;
 		}
 #endif
 
-		return indent * 4;
+		return 4;
 	}
 
 	void OnLoaded(object sender, RoutedEventArgs args)
@@ -681,15 +679,6 @@ partial class ItemsRepeater
 			}
 		}
 
-#if HAS_UNO
-		if (!SharedHelpers.IsRS5OrHigher())
-		{
-			// Bug in framework's reference tracking causes crash during
-			// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
-			m_itemTemplate = newValue as IElementFactory; // DataTemplate of DataTemplateSelector
-		}
-#endif
-
 		// Clear flag for bug #776
 		m_isItemTemplateEmpty = false;
 		m_itemTemplateWrapper = newValue as IElementFactoryShim;
@@ -775,15 +764,6 @@ partial class ItemsRepeater
 
 			m_layoutState = null;
 		}
-
-#if HAS_UNO
-		if (!SharedHelpers.IsRS5OrHigher())
-		{
-			// Bug in framework's reference tracking causes crash during
-			// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
-			m_layout = newValue;
-		}
-#endif
 
 		if (newValue != null)
 		{
@@ -984,4 +964,25 @@ partial class ItemsRepeater
 
 	[global::System.ThreadStatic]
 	private static Layout s_defaultLayout;
+
+	// #pragma region RepeaterTestHooks methods
+
+	internal static int GetLogItemIndex()
+	{
+#if DEBUG
+		return s_logItemIndexDbg;
+#else
+		return -1;
+#endif
+	}
+
+	internal static void SetLogItemIndex(int logItemIndex)
+	{
+#if DEBUG
+		s_logItemIndexDbg = logItemIndex;
+		VirtualizationInfo.SetLogItemIndex(logItemIndex);
+#endif
+	}
+
+	// #pragma endregion
 }
