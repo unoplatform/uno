@@ -30,8 +30,6 @@ partial class FlowLayoutAlgorithm
 	}
 
 	// Fields
-	// TODO Uno: The C++ source uses `const ITrackerHandleManager* m_owner` for the
-	// ref-tracker pattern; Uno doesn't need it.
 	private readonly ElementManager m_elementManager = new();
 	private Size m_lastAvailableSize;
 	private double m_lastItemSpacing;
