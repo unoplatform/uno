@@ -1399,14 +1399,14 @@ public class Given_InputManager
 #elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
-	[DataRow(ManipulationModes.None)]
-	[DataRow(ManipulationModes.TranslateX)]
-	[DataRow(ManipulationModes.TranslateY)]
-	[DataRow(ManipulationModes.TranslateRailsX)]
-	[DataRow(ManipulationModes.TranslateRailsY)]
-	[DataRow(ManipulationModes.TranslateInertia)]
-	[DataRow(ManipulationModes.All)] // Does **NOT** include System
-	public async Task When_DirectManipulationDisabled(ManipulationModes mode)
+	[DataRow(ManipulationModes.None, false)]
+	[DataRow(ManipulationModes.TranslateX, true)] // Descendant claims X only -> parent's Y-axis scroll must still work.
+	[DataRow(ManipulationModes.TranslateY, false)]
+	[DataRow(ManipulationModes.TranslateRailsX, false)]
+	[DataRow(ManipulationModes.TranslateRailsY, false)]
+	[DataRow(ManipulationModes.TranslateInertia, false)]
+	[DataRow(ManipulationModes.All, false)] // Does **NOT** include System
+	public async Task When_DirectManipulationDisabled(ManipulationModes mode, bool expectsAncestorScroll)
 	{
 		ScrollViewer sv;
 		var ui = new Grid
@@ -1441,7 +1441,16 @@ public class Given_InputManager
 
 		await UITestHelper.WaitForIdle();
 
-		sv.VerticalOffset.Should().Be(0);
+		if (expectsAncestorScroll)
+		{
+			// Descendant declares a non-conflicting axis, so the ancestor ScrollViewer's
+			// vertical-scroll DM must NOT be cancelled by the descendant claim.
+			sv.VerticalOffset.Should().BeGreaterThan(0);
+		}
+		else
+		{
+			sv.VerticalOffset.Should().Be(0);
+		}
 	}
 
 	private CoreCursorType? GetCursorShape()
