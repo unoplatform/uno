@@ -17,8 +17,7 @@ partial class UniformGridLayout
 
 	public UniformGridLayout()
 	{
-		// TODO Uno: RuntimeProfiler marker not ported.
-		// Original C++: __RP_Marker_ClassById(RuntimeProfiler::ProfId_UniformGridLayout);
+		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_UniformGridLayout);
 		LayoutId = "UniformGridLayout";
 
 		UpdateIndexBasedLayoutOrientation(Orientation.Horizontal);
