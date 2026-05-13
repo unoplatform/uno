@@ -187,15 +187,30 @@ partial class InputManager
 			DirectManipulation manipulation,
 			Func<IDirectManipulationHandler, bool> isHandlerForRequesterOrAncestor)
 		{
-			const ManipulationModes TranslationAxes = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+			// Canonical translation axes: only TranslateX/Y count as actual translation on the
+			// handler side. Rails (TranslateRailsX/Y) are gesture-settings flags meant to constrain
+			// a translation axis, not to declare scrolling on their own. ScrollContentPresenter
+			// advertises rails whenever IsHorizontal/VerticalRailEnabled is set even on axes it
+			// doesn't scroll, so including rails in the handler-side mask would create false-positive
+			// overlaps with an X-axis requester (e.g. a SwipeControl) against a Y-only scroller.
+			const ManipulationModes XAxis = ManipulationModes.TranslateX;
+			const ManipulationModes YAxis = ManipulationModes.TranslateY;
+			// On the requester side rails still imply the corresponding translation axis (a
+			// TranslateRailsX-only descendant is still intending to translate on X), so they
+			// participate in the axis-claim test instead of falling through to the legacy
+			// cancel-everything path.
+			const ManipulationModes RequesterXClaim = XAxis | ManipulationModes.TranslateRailsX;
+			const ManipulationModes RequesterYClaim = YAxis | ManipulationModes.TranslateRailsY;
 			const ManipulationModes MultiPointer = ManipulationModes.Scale | ManipulationModes.Rotate;
 
 			// No declared translation axis and no multi-pointer claim (e.g. ManipulationMode = System/None,
-			// or an explicit user-facing CancelDirectManipulations() call from an element that hasn't set
-			// ManipulationMode) -> fall back to the pre-axis-aware behavior of cancelling every ancestor DM.
-			var requesterAxes = requesterModes & TranslationAxes;
+			// TranslateInertia alone, or an explicit user-facing CancelDirectManipulations() call from an
+			// element that hasn't set ManipulationMode) -> fall back to the pre-axis-aware behavior of
+			// cancelling every ancestor DM.
+			var requesterClaimsX = (requesterModes & RequesterXClaim) != 0;
+			var requesterClaimsY = (requesterModes & RequesterYClaim) != 0;
 			var requesterIsMultiPointer = (requesterModes & MultiPointer) != 0;
-			if (requesterAxes == 0 && !requesterIsMultiPointer)
+			if (!requesterClaimsX && !requesterClaimsY && !requesterIsMultiPointer)
 			{
 				return true;
 			}
@@ -235,7 +250,8 @@ partial class InputManager
 				return true;
 			}
 
-			return (requesterAxes & handlerModes) != 0;
+			return (requesterClaimsX && (handlerModes & XAxis) != 0)
+				|| (requesterClaimsY && (handlerModes & YAxis) != 0);
 		}
 
 		private bool IsRedirectedToManipulations(PointerIdentifier pointerId)

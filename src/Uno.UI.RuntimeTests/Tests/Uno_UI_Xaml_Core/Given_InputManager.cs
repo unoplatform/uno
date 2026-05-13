@@ -1402,7 +1402,7 @@ public class Given_InputManager
 	[DataRow(ManipulationModes.None, false)]
 	[DataRow(ManipulationModes.TranslateX, true)] // Descendant claims X only -> parent's Y-axis scroll must still work.
 	[DataRow(ManipulationModes.TranslateY, false)]
-	[DataRow(ManipulationModes.TranslateRailsX, false)]
+	[DataRow(ManipulationModes.TranslateRailsX, true)] // Rails-X is still an X-axis claim; doesn't conflict with Y-axis parent.
 	[DataRow(ManipulationModes.TranslateRailsY, false)]
 	[DataRow(ManipulationModes.TranslateInertia, false)]
 	[DataRow(ManipulationModes.All, false)] // Does **NOT** include System
