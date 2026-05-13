@@ -19,17 +19,14 @@ partial class BuildTreeScheduler
 
 		QueueTick();
 
-#if HAS_UNO
-		// Uno specific: WinUI uses thread_local statics that are initialized at process start. C#
-		// [ThreadStatic] fields are default-initialized per thread, so we need to lazily initialize
-		// the timer/list the first time work is registered on a thread.
+		// [ThreadStatic] fields cannot have inline initializers, so lazy-init on first use per thread.
 		if (m_pendingWork == null)
 		{
 			m_pendingWork = new List<WorkInfo>();
 			m_timer = new Stopwatch();
 			m_timer.Start();
 		}
-#endif
+
 		m_pendingWork.Add(new WorkInfo(priority, workFunc));
 	}
 
@@ -67,13 +64,9 @@ partial class BuildTreeScheduler
 			RepeaterTestHooks.NotifyBuildTreeCompleted();
 		}
 
-		// Reset the timer so it snaps the time just before rendering
-		m_timer.Reset();
-#if HAS_UNO
-		// Uno specific: Stopwatch.Reset() also stops the timer. Restart so subsequent calls to
-		// ShouldYield() / DurationInMilliSeconds keep measuring from now.
-		m_timer.Start();
-#endif
+		// Reset the timer so it snaps the time just before rendering.
+		// Stopwatch.Reset() also stops the timer, so Restart() is used to keep it measuring from now.
+		m_timer.Restart();
 	}
 
 	private static void QueueTick()

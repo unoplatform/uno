@@ -5,13 +5,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class NavigationView
 {
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-	// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
-	// so items are prepared early via this repeater-specific event.
-	private void OnRepeaterUnoBeforeElementPrepared(ItemsRepeater itemsRepeater, ItemsRepeaterElementPreparedEventArgs args) =>
-		OnRepeaterElementPrepared(itemsRepeater, args);
-#endif
-
 #if HAS_UNO // Uno workaround (#4727): the PaneHeaderContentBorderWrapper template part has no WinUI counterpart and is needed on Skia because Skia uses the Uno NavigationView template.
 	//TODO: Uno specific - remove when #4727 is fixed
 

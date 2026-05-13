@@ -33,8 +33,7 @@ partial class BuildTreeScheduler
 	[ThreadStatic]
 	private static List<WorkInfo> m_pendingWork;
 
-	// Uno specific: WinUI uses winrt::event_token (a struct containing a uint64). Here we use a bool flag
-	// because we register the handler directly via the C# event accessor instead of getting a token back.
+	// C# event subscriptions don't return a token; a bool flag tracks whether we're hooked up.
 	[ThreadStatic]
 	private static bool m_renderingToken;
 }
