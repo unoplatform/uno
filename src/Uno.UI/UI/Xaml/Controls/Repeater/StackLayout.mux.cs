@@ -17,8 +17,7 @@ partial class StackLayout
 
 	public StackLayout()
 	{
-		// TODO Uno: RuntimeProfiler marker not ported.
-		// Original C++: __RP_Marker_ClassById(RuntimeProfiler::ProfId_StackLayout);
+		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_StackLayout);
 		LayoutId = "StackLayout";
 
 		UpdateIndexBasedLayoutOrientation(Orientation.Vertical);
