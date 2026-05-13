@@ -29,14 +29,10 @@ partial class ChildrenInTabFocusOrderIterable
 			}
 		}
 
-		// TODO Uno: WinRT IIterator::GetMany overload omitted; C# IEnumerator does not expose a
-		// batched read API. Callers that need the batched form should iterate with MoveNext / Current.
-
 		// #pragma endregion
 
 		private readonly List<KeyValuePair<int /* index */, UIElement>> m_realizedChildren;
-		// Uno specific: C# IEnumerator semantics require starting at -1 so that the first MoveNext()
-		// advances to index 0. The WinRT iterator starts already positioned at index 0.
+		// C# IEnumerator starts before the first element (-1), unlike WinRT IIterator which starts at 0.
 		private int m_index = -1;
 	}
 }
