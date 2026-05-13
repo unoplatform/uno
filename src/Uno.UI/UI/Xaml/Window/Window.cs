@@ -153,6 +153,8 @@ public partial class Window
 	/// </summary>
 	public static bool SupportsMultipleWindows =>
 #if HAS_UNO
+		// Native Windows targets do not use Uno's NativeWindowFactory path, but WinUI/WinAppSDK
+		// windows still support creating secondary windows.
 		NativeWindowFactory.SupportsMultipleWindows || OperatingSystem.IsWindows();
 #else
 		true;
