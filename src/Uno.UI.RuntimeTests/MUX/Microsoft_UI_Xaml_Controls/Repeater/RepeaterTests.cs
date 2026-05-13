@@ -819,5 +819,136 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
+		// Verifies that an ItemsRepeater using a DataTemplate can be garbage
+		// collected after elements are realized, recycled and the repeater is
+		// removed from the tree. This regresses on the tracker_ref-style
+		// XAML reference tracker not breaking the RecyclePool cycle when the
+		// repeater is removed from the tree. The recycling step is critical —
+		// it creates the RecyclePool on the DataTemplate and populates it,
+		// which forms the reference cycle that must be breakable by the tracker.
+		[TestMethod]
+		[Ignore("UNO: GC-based cycle-breaking through the XAML tracker is not yet wired up in Uno.")]
+		public async Task VerifyRepeaterWithRecycledElementsDoesNotLeak()
+		{
+			WeakReference repeaterWeakRef = null;
+			var data = new ObservableCollection<string>(
+				Enumerable.Range(0, 5).Select(i => string.Format("Item #{0}", i)));
+
+			RunOnUIThread.Execute(() =>
+			{
+				var repeater = new ItemsRepeater()
+				{
+					ItemsSource = data,
+					ItemTemplate = CreateDataTemplateWithContent(@"<TextBlock Text='{Binding}' Height='50' />"),
+				};
+				repeaterWeakRef = new WeakReference(repeater);
+				Content = repeater;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				// Verify elements are realized, then clear the data source to
+				// force all elements into the RecyclePool on the DataTemplate.
+				Verify.IsNotNull(repeaterWeakRef.Target);
+				var repeater = (ItemsRepeater)repeaterWeakRef.Target;
+				Verify.IsNotNull(repeater.TryGetElement(0), "Element 0 should be realized.");
+				data.Clear();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				// Remove from tree. The RecyclePool now holds recycled elements
+				// that reference the DataTemplate and the repeater (as owner).
+				Content = null;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Force GC — the tracker_ref on ItemTemplateWrapper's DataTemplate
+			// makes the reference visible to the XAML reference tracker, which
+			// detects the RecyclePool cycle and breaks it during collection.
+			for (int i = 0; i < 5 && repeaterWeakRef.IsAlive; i++)
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			Verify.IsFalse(repeaterWeakRef.IsAlive,
+				"ItemsRepeater should be collected after recycling elements and removal.");
+		}
+
+		// Verifies that an ItemsRepeater using a RecyclingElementFactory (the
+		// DataTemplateSelector equivalent) can be garbage collected after
+		// elements are recycled and the repeater is removed from the tree.
+		[TestMethod]
+		[Ignore("UNO: GC-based cycle-breaking through the XAML tracker is not yet wired up in Uno.")]
+		public async Task VerifyRepeaterWithRecyclingElementFactoryDoesNotLeak()
+		{
+			WeakReference repeaterWeakRef = null;
+			var data = new ObservableCollection<int>(Enumerable.Range(0, 6));
+
+			RunOnUIThread.Execute(() =>
+			{
+				var elementFactory = new RecyclingElementFactory()
+				{
+					RecyclePool = new RecyclePool(),
+				};
+				elementFactory.Templates["even"] = (DataTemplate)XamlReader.Load(
+					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                        <TextBlock Text='even' Height='50' />
+                    </DataTemplate>");
+				elementFactory.Templates["odd"] = (DataTemplate)XamlReader.Load(
+					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                        <TextBlock Text='odd' Height='50' />
+                    </DataTemplate>");
+
+				elementFactory.SelectTemplateKey +=
+					delegate (RecyclingElementFactory sender, SelectTemplateEventArgs args)
+					{
+						args.TemplateKey = ((int)args.DataContext % 2 == 0) ? "even" : "odd";
+					};
+
+				var repeater = new ItemsRepeater()
+				{
+					ItemsSource = data,
+					ItemTemplate = elementFactory,
+				};
+				repeaterWeakRef = new WeakReference(repeater);
+				Content = repeater;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				// Clear items to force elements into the RecyclePool, then remove.
+				data.Clear();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Content = null;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			for (int i = 0; i < 5 && repeaterWeakRef.IsAlive; i++)
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			Verify.IsFalse(repeaterWeakRef.IsAlive,
+				"ItemsRepeater with RecyclingElementFactory should be collected after recycling and removal.");
+		}
+
 	}
 }
