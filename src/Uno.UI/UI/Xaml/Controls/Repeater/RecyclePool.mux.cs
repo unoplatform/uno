@@ -133,8 +133,6 @@ partial class RecyclePool
 		IPanel ownerAsPanel = null;
 		if (owner != null)
 		{
-			// Uno specific: WinUI casts to winrt::Panel directly. Uno's ItemsRecycler is an IPanel
-			// implementation that is not a Panel subclass, so we cast to the IPanel interface instead.
 			ownerAsPanel = owner as IPanel;
 			if (ownerAsPanel == null)
 			{

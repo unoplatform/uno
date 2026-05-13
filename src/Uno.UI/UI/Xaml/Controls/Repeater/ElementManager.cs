@@ -368,8 +368,8 @@ namespace Microsoft.UI.Xaml.Controls
 						break;
 
 					case NotifyCollectionChangedAction.Move:
-						// Move is not supported by default by ItemsRepeater (throw new NotImplementedException();)
-						// This is Uno specific
+						// Defensive fallback: ItemsSourceView normally decomposes Move into Remove+Add
+						// at the C#/WinUI bridge, so the layout should never see Move here.
 						OnItemsRemoved(args.OldStartingIndex, args.OldItems.Count);
 						OnItemsAdded(args.NewStartingIndex, args.NewItems.Count);
 						break;
