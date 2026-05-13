@@ -30,7 +30,9 @@ partial class ViewManager
 
 	public UIElement GetElement(int index, bool forceCreate, bool suppressAutoRecycle)
 	{
+		bool elementIsAnchor = false;
 		UIElement element = forceCreate ? null : GetElementIfAlreadyHeldByLayout(index);
+
 		if (element == null)
 		{
 			// check if this is the anchor made through repeater in preparation
@@ -42,13 +44,25 @@ partial class ViewManager
 				if (anchorVirtInfo.Index == index)
 				{
 					element = madeAnchor;
+					elementIsAnchor = true;
 				}
 			}
 		}
 
 		if (element == null) { element = GetElementFromUniqueIdResetPool(index); }
 
-		if (element == null) { element = GetElementFromPinnedElements(index); }
+		if (element == null || elementIsAnchor)
+		{
+			// When elementIsAnchor is True and 'element' is already set, it still needs to be removed from
+			// the pinned pool if it happens to be in there, for example because it has keyboard focus.
+			UIElement elementFromPool = GetElementFromPinnedElements(index);
+			MUX_ASSERT(elementFromPool == null || element == null || elementFromPool == element);
+
+			if (element == null && elementFromPool != null)
+			{
+				element = elementFromPool;
+			}
+		}
 
 		if (element == null) { element = GetElementFromElementFactory(index); }
 
@@ -64,6 +78,8 @@ partial class ViewManager
 			virtInfo.KeepAlive = true;
 			REPEATER_TRACE_INFO("%* GetElement: %d AutoRecycleCandidate: \n", m_owner.Indent(), virtInfo.Index);
 		}
+
+		MUX_ASSERT(virtInfo.Owner == ElementOwner.Layout);
 
 		return element;
 	}

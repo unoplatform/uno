@@ -4,8 +4,8 @@
 
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -100,6 +100,10 @@ partial class ItemsRepeater
 	// Tracks the global scale factor so that children can be re-measured when
 	// it changes, for example when moving the app to another screen.
 	double m_layoutRoundFactor;
+
+#if DEBUG
+	static int s_logItemIndexDbg = -1;
+#endif
 
 	public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> ElementPrepared;
 	public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementIndexChangedEventArgs> ElementIndexChanged;
