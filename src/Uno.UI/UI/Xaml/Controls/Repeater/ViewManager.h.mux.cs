@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -44,9 +45,9 @@ partial class ViewManager
 	bool m_isDataSourceStableResetPending;
 	bool m_recycleWithoutOwner;
 
-	// Event tokens
-	//winrt::UIElement::GotFocus_revoker m_gotFocus { };
-	//winrt::UIElement::LostFocus_revoker m_lostFocus { };
+	// Event tokens (C# SerialDisposable replaces WinUI's auto_revoke pattern).
+	private readonly SerialDisposable m_gotFocus = new SerialDisposable();
+	private readonly SerialDisposable m_lostFocus = new SerialDisposable();
 
 	Phaser m_phaser;
 
