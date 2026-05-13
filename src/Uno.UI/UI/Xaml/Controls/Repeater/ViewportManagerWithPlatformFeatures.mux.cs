@@ -1,20 +1,28 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ViewportManagerWithPlatformFeatures.cpp, commit 5f9e85113
+// MUX Reference ViewportManagerWithPlatformFeatures.cpp, commit 4b206bce3
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
 using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class ViewportManagerWithPlatformFeatures
 {
+	// Pixel delta by which to inflate the cache buffer on each side.  Rather than fill the entire
+	// cache buffer all at once, we chunk the work to make the UI thread more responsive.  We inflate
+	// the cache buffer from 0 to a max value determined by the Maximum[Horizontal,Vertical]CacheLength
+	// properties.
+	private const double CacheBufferPerSideInflationPixelDelta = 40.0;
+
 	public ViewportManagerWithPlatformFeatures(ItemsRepeater owner)
 	{
 		// ItemsRepeater is not fully constructed yet. Don't interact with it.
@@ -27,7 +35,6 @@ partial class ViewportManagerWithPlatformFeatures
 		{
 			// The element generated during the ItemsRepeater.MakeAnchor call has precedence over the next tick.
 			UIElement suggestedAnchor = m_makeAnchorElement;
-			UIElement owner = m_owner;
 
 			if (suggestedAnchor == null)
 			{
@@ -38,6 +45,7 @@ partial class ViewportManagerWithPlatformFeatures
 					// We can't simply return anchorElement because, in case of nested ItemsRepeaters, it may not
 					// be a direct child of ours, or even an indirect child. We need to walk up the tree starting
 					// from anchorElement to figure out what child of ours (if any) to use as the suggested element.
+					UIElement owner = m_owner;
 					var child = anchorElement;
 					var parent = CachedVisualTreeHelpers.GetParent(child) as UIElement;
 					while (parent != null)
@@ -58,41 +66,33 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
-	public override double HorizontalCacheLength
+	private void SetHorizontalCacheLength(double value)
 	{
-		get => m_maximumHorizontalCacheLength;
-		set
+		if (m_maximumHorizontalCacheLength != value)
 		{
-			if (m_maximumHorizontalCacheLength != value)
-			{
-				ValidateCacheLength(value);
-				m_maximumHorizontalCacheLength = value;
-				ResetCacheBuffer();
-			}
+			ValidateCacheLength(value);
+			m_maximumHorizontalCacheLength = value;
+			ResetCacheBuffer();
 		}
 	}
 
-	public override double VerticalCacheLength
+	private void SetVerticalCacheLength(double value)
 	{
-		get => m_maximumVerticalCacheLength;
-		set
+		if (m_maximumVerticalCacheLength != value)
 		{
-			if (m_maximumVerticalCacheLength != value)
-			{
-				ValidateCacheLength(value);
-				m_maximumVerticalCacheLength = value;
-				ResetCacheBuffer();
-			}
+			ValidateCacheLength(value);
+			m_maximumVerticalCacheLength = value;
+			ResetCacheBuffer();
 		}
 	}
 
 #if false
-	// TODO Uno: Port GetLayoutVisibleWindowDiscardAnchor for scroll-anchor edge cases.
+	// TODO Uno: GetLayoutVisibleWindowDiscardAnchor is declared in WinUI but has no callers.
 	Rect GetLayoutVisibleWindowDiscardAnchor()
 	{
 		var visibleWindow = m_visibleWindow;
 
-		if (HasScroller)
+		if (HasScroller())
 		{
 			visibleWindow.X += m_layoutExtent.X + m_expectedViewportShift.X + m_unshiftableShift.X;
 			visibleWindow.Y += m_layoutExtent.Y + m_expectedViewportShift.Y + m_unshiftableShift.Y;
@@ -121,7 +121,7 @@ partial class ViewportManagerWithPlatformFeatures
 			visibleWindow.X = 0.0f;
 			visibleWindow.Y = 0.0f;
 		}
-		else if (HasScroller)
+		else if (HasScroller())
 		{
 			visibleWindow.X += m_layoutExtent.X + m_expectedViewportShift.X + m_unshiftableShift.X;
 			visibleWindow.Y += m_layoutExtent.Y + m_expectedViewportShift.Y + m_unshiftableShift.Y;
@@ -133,40 +133,90 @@ partial class ViewportManagerWithPlatformFeatures
 	public override Rect GetLayoutRealizationWindow()
 	{
 		var realizationWindow = GetLayoutVisibleWindow();
-		if (HasScroller)
+		if (HasScroller())
 		{
-			realizationWindow.X -= (float)(m_horizontalCacheBufferPerSide);
-			realizationWindow.Y -= (float)(m_verticalCacheBufferPerSide);
-			realizationWindow.Width += (float)(m_horizontalCacheBufferPerSide) * 2.0f;
-			realizationWindow.Height += (float)(m_verticalCacheBufferPerSide) * 2.0f;
+			realizationWindow.X -= (float)m_horizontalCacheBufferPerSide;
+			realizationWindow.Y -= (float)m_verticalCacheBufferPerSide;
+			realizationWindow.Width += (float)m_horizontalCacheBufferPerSide * 2.0f;
+			realizationWindow.Height += (float)m_verticalCacheBufferPerSide * 2.0f;
 		}
 
 		return realizationWindow;
 	}
 
-	public override void SetLayoutExtent(Rect extent)
+	private void SetVisibleWindow(Rect visibleWindow)
+	{
+		if (visibleWindow.X != m_visibleWindow.X || visibleWindow.Y != m_visibleWindow.Y ||
+			visibleWindow.Width != m_visibleWindow.Width || visibleWindow.Height != m_visibleWindow.Height)
+		{
+			m_visibleWindow = visibleWindow;
+		}
+	}
+
+	private void SetLastLayoutRealizationWindow(Rect layoutRealizationWindow)
+	{
+		if (layoutRealizationWindow.X != m_lastLayoutRealizationWindow.X || layoutRealizationWindow.Y != m_lastLayoutRealizationWindow.Y ||
+			layoutRealizationWindow.Width != m_lastLayoutRealizationWindow.Width || layoutRealizationWindow.Height != m_lastLayoutRealizationWindow.Height)
+		{
+			m_lastLayoutRealizationWindow = layoutRealizationWindow;
+		}
+	}
+
+	private void SetPendingViewportShift(Point pendingViewportShift)
+	{
+		if (pendingViewportShift.X != m_pendingViewportShift.X || pendingViewportShift.Y != m_pendingViewportShift.Y)
+		{
+			m_pendingViewportShift = pendingViewportShift;
+		}
+	}
+
+	private void SetExpectedViewportShift(double expectedViewportShiftX, double expectedViewportShiftY)
+	{
+		if (expectedViewportShiftX != m_expectedViewportShift.X || expectedViewportShiftY != m_expectedViewportShift.Y)
+		{
+			m_expectedViewportShift = new Point(expectedViewportShiftX, expectedViewportShiftY);
+		}
+	}
+
+	private void SetUnshiftableShift(double unshiftableShiftX, double unshiftableShiftY)
+	{
+		if (unshiftableShiftX != m_unshiftableShift.X || unshiftableShiftY != m_unshiftableShift.Y)
+		{
+			m_unshiftableShift = new Point(unshiftableShiftX, unshiftableShiftY);
+		}
+	}
+
+	private void SetLastScrollPresenterViewChangeCorrelationId(int correlationId)
+	{
+		if (correlationId != m_lastScrollPresenterViewChangeCorrelationId)
+		{
+			m_lastScrollPresenterViewChangeCorrelationId = correlationId;
+		}
+	}
+
+	public override void SetLayoutExtent(Rect layoutExtent)
 	{
 		// UNO specific
 		// On Uno (especially Android) the InvalidateArrange at the bottom of this method will actually cause an invalidate measure.
 		// But this SetLayoutExtent method is invoked on each measure ... so it will cause a layout cycle!
-		if (m_layoutExtent == extent)
+		if (m_layoutExtent == layoutExtent)
 		{
 			return;
 		}
 
-		m_expectedViewportShift.X += m_layoutExtent.X - extent.X;
-		m_expectedViewportShift.Y += m_layoutExtent.Y - extent.Y;
+		double expectedViewportShiftX = m_expectedViewportShift.X + m_layoutExtent.X - layoutExtent.X;
+		double expectedViewportShiftY = m_expectedViewportShift.Y + m_layoutExtent.Y - layoutExtent.Y;
+
+		SetExpectedViewportShift(expectedViewportShiftX, expectedViewportShiftY);
 
 		// We tolerate viewport imprecisions up to 1 pixel to avoid invaliding layout too much.
-		if (Math.Abs(m_expectedViewportShift.X) > 1 || Math.Abs(m_expectedViewportShift.Y) > 1)
+		if (Math.Abs(m_expectedViewportShift.X) > 1.0 || Math.Abs(m_expectedViewportShift.Y) > 1.0)
 		{
-			REPEATER_TRACE_INFO("%ls: \tExpecting viewport shift of (%.0f,%.0f) \n", GetLayoutId(), m_expectedViewportShift.X, m_expectedViewportShift.Y);
-
 			// There are cases where we might be expecting a shift but not get it. We will
-			// be waiting for the effective viewport event but if the scroll viewer is not able
+			// be waiting for the effective viewport event but if the scroller is not able
 			// to perform the shift (perhaps because it cannot scroll in negative offset),
-			// then we will end up not realizing elements in the visible
-			// window. To avoid this, we register to layout updated for this layout pass. If we
+			// then we will end up not realizing elements in the visible window.
+			// To avoid this, we register to layout updated for this layout pass. If we
 			// get an effective viewport, we know we have a new viewport and we unregister from
 			// layout updated. If we get the layout updated handler, then we know that the
 			// scroller was unable to perform the shift and we invalidate measure and unregister
@@ -182,24 +232,92 @@ partial class ViewportManagerWithPlatformFeatures
 			}
 		}
 
-		m_layoutExtent = extent;
-		m_pendingViewportShift = m_expectedViewportShift;
+		if (layoutExtent.X != m_layoutExtent.X || layoutExtent.Y != m_layoutExtent.Y ||
+			layoutExtent.Width != m_layoutExtent.Width || layoutExtent.Height != m_layoutExtent.Height)
+		{
+			m_layoutExtent = layoutExtent;
+		}
 
-		// We just finished a measure pass and have a new extent.
-		// Let's make sure the scrollers will run its arrange so that they track the anchor.
+		SetPendingViewportShift(m_expectedViewportShift);
+
 		if (m_scroller != null)
 		{
+			// We just finished a measure pass and have a new extent.
+			// Let's make sure the scroller will run its arrange so that it tracks the anchor.
 			(m_scroller as UIElement).InvalidateArrange();
 		}
 	}
+
+	private void ResetLayoutExtent()
+	{
+		if (m_layoutExtent.X != 0.0f || m_layoutExtent.Y != 0.0f ||
+			m_layoutExtent.Width != 0.0f || m_layoutExtent.Height != 0.0f)
+		{
+			m_layoutExtent = default;
+		}
+	}
+
+	private void ResetVisibleWindow()
+	{
+		if (m_visibleWindow.X != 0.0f || m_visibleWindow.Y != 0.0f ||
+			m_visibleWindow.Width != 0.0f || m_visibleWindow.Height != 0.0f)
+		{
+			m_visibleWindow = default;
+		}
+	}
+
+	private void ResetLastLayoutRealizationWindow()
+	{
+		if (m_lastLayoutRealizationWindow.X != 0.0f || m_lastLayoutRealizationWindow.Y != 0.0f ||
+			m_lastLayoutRealizationWindow.Width != 0.0f || m_lastLayoutRealizationWindow.Height != 0.0f)
+		{
+			m_lastLayoutRealizationWindow = default;
+		}
+	}
+
+	private void ResetExpectedViewportShift()
+	{
+		if (m_expectedViewportShift.X != 0.0f || m_expectedViewportShift.Y != 0.0f)
+		{
+			m_expectedViewportShift = default;
+		}
+	}
+
+	private void ResetPendingViewportShift()
+	{
+		if (m_pendingViewportShift.X != 0.0f || m_pendingViewportShift.Y != 0.0f)
+		{
+			m_pendingViewportShift = default;
+		}
+	}
+
+	private void ResetUnshiftableShift()
+	{
+		if (m_unshiftableShift.X != 0.0f || m_unshiftableShift.Y != 0.0f)
+		{
+			m_unshiftableShift = default;
+		}
+	}
+
+	private void ResetLastScrollPresenterViewChangeCorrelationId()
+	{
+		if (m_lastScrollPresenterViewChangeCorrelationId != -1)
+		{
+			m_lastScrollPresenterViewChangeCorrelationId = -1;
+		}
+	}
+
+	// #ifdef DBG
+	// TODO Uno: OnScrollViewerViewChangingDbg / OnScrollViewerViewChangedDbg are tracing-only and not ported.
+	// #endif // DBG
 
 	public override void OnLayoutChanged(bool isVirtualizing)
 	{
 		m_managingViewportDisabled = !isVirtualizing;
 
-		m_layoutExtent = default;
-		m_expectedViewportShift = default;
-		m_pendingViewportShift = default;
+		ResetLayoutExtent();
+		ResetExpectedViewportShift();
+		ResetPendingViewportShift();
 
 		if (m_managingViewportDisabled)
 		{
@@ -220,20 +338,36 @@ partial class ViewportManagerWithPlatformFeatures
 			m_owner.EffectiveViewportChanged += OnEffectiveViewportChanged;
 		}
 
-		m_unshiftableShift = default;
+		ResetUnshiftableShift();
 		ResetCacheBuffer();
 	}
 
 	public override void OnElementPrepared(UIElement element)
 	{
-		// If we have an anchor element, we do not want the
-		// scroll anchor provider to start anchoring some other element.
-		element.CanBeScrollAnchor = true;
+		// The newly prepared element is not registered as an anchor candidate right away. It first needs to be arranged at least once so its position
+		// tracked by the scroller is valid.
+		// The element is first put into a list of prepared elements. Then once arranged it is put into a list of prepared+arranged elements. Then finally
+		// at the beginning of the following measure pass, it is registered as an anchor candidate.
+
+		if (!m_preparedElements.Contains(element))
+		{
+			m_preparedElements.Add(element);
+		}
 	}
 
 	public override void OnElementCleared(UIElement element)
 	{
-		element.CanBeScrollAnchor = false;
+		// Remove the element from the prepared and prepared+arranged lists so it no longer gets registered as an anchor candidate for the scroller
+		// after the next arrange pass.
+
+		m_preparedElements.Remove(element);
+		m_preparedAndArrangedElements.Remove(element);
+
+		if (element.CanBeScrollAnchor)
+		{
+			// Unregister the element as an anchor candidate since it was already declared as such.
+			element.CanBeScrollAnchor = false;
+		}
 	}
 
 	public override void OnOwnerMeasuring()
@@ -243,6 +377,30 @@ partial class ViewportManagerWithPlatformFeatures
 		// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 		EnsureScroller();
 
+		Rect currentLayoutRealizationWindow = GetLayoutRealizationWindow();
+
+		if ((m_horizontalCacheBufferPerSide != 0.0 || m_verticalCacheBufferPerSide != 0.0) &&
+			(m_lastLayoutRealizationWindow.Width <= 0.0f || m_lastLayoutRealizationWindow.Height <= 0.0f ||
+			 currentLayoutRealizationWindow.Width <= 0.0f || currentLayoutRealizationWindow.Height <= 0.0f ||
+			 !SharedHelpers.DoRectsIntersect(m_lastLayoutRealizationWindow, currentLayoutRealizationWindow)))
+		{
+			// Two consecutive measure passes use disconnected realization windows.
+			// Reset the potential cache buffer so that it regrows from scratch.
+			ResetLayoutRealizationWindowCacheBuffer();
+		}
+
+		SetLastLayoutRealizationWindow(currentLayoutRealizationWindow);
+
+		if (m_skipScrollAnchorRegistrationsDuringNextMeasurePass)
+		{
+			m_skipScrollAnchorRegistrationsDuringNextMeasurePass = false;
+		}
+		else if (!m_skipScrollAnchorRegistrationsDuringNextArrangePass)
+		{
+			// Now that a new measure pass is starting, register the previously arranged elements as anchor candidates for the scroller.
+			RegisterPreparedAndArrangedElementsAsScrollAnchorCandidates();
+		}
+
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		// Uno workaround: Perf
 		_uno_viewportUsedInLastMeasure = m_visibleWindow;
@@ -251,7 +409,24 @@ partial class ViewportManagerWithPlatformFeatures
 
 	public override void OnOwnerArranged()
 	{
-		m_expectedViewportShift = default;
+		if (!m_skipScrollAnchorRegistrationsDuringNextMeasurePass)
+		{
+			if (m_skipScrollAnchorRegistrationsDuringNextArrangePass)
+			{
+				m_skipScrollAnchorRegistrationsDuringNextArrangePass = false;
+			}
+			else
+			{
+				// Now that an arrange pass completed, register the prepared elements as arranged. They will be registered as anchor candidates
+				// during the next measure pass.
+				RegisterPreparedElementsAsArranged();
+			}
+		}
+
+		ResetExpectedViewportShift();
+
+		// TODO Uno: Port the m_unshiftableShift / scroller offset reconciliation that requires
+		// the ScrollViewer.HorizontalOffset / ScrollPresenter.HorizontalOffset values.
 
 		if (!m_managingViewportDisabled)
 		{
@@ -260,7 +435,7 @@ partial class ViewportManagerWithPlatformFeatures
 			// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 			// EnsureScroller();
 
-			if (HasScroller)
+			if (HasScroller())
 			{
 				double maximumHorizontalCacheBufferPerSide = m_maximumHorizontalCacheLength * m_visibleWindow.Width / 2.0;
 				double maximumVerticalCacheBufferPerSide = m_maximumVerticalCacheLength * m_visibleWindow.Height / 2.0;
@@ -285,7 +460,7 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
-	void OnLayoutUpdated(object sender, object args)
+	private void OnLayoutUpdated(object sender, object args)
 	{
 		m_layoutUpdatedRevoker?.Dispose();
 
@@ -296,9 +471,9 @@ partial class ViewportManagerWithPlatformFeatures
 
 		// We were expecting a viewport shift but we never got one and we are not going to in this
 		// layout pass. We likely will never get this shift, so lets assume that we are never going to get it and
-		// adjust our expected shift to track that. One case where this can happen is when there is no scrollviewer
+		// adjust our expected shift to track that. One case where this can happen is when there is no scroller
 		// that can scroll in the direction where the shift is expected.
-		if (m_pendingViewportShift.X != 0 || m_pendingViewportShift.Y != 0)
+		if (m_pendingViewportShift.X != 0.0f || m_pendingViewportShift.Y != 0.0f)
 		{
 			REPEATER_TRACE_INFO("%ls: \tLayout Updated with pending shift %.0f %.0f- invalidating measure \n",
 				GetLayoutId(),
@@ -306,10 +481,9 @@ partial class ViewportManagerWithPlatformFeatures
 				m_pendingViewportShift.Y);
 
 			// Assume this is never going to come.
-			m_unshiftableShift.X += m_pendingViewportShift.X;
-			m_unshiftableShift.Y += m_pendingViewportShift.Y;
-			m_pendingViewportShift = default;
-			m_expectedViewportShift = default;
+			SetUnshiftableShift(m_unshiftableShift.X + m_pendingViewportShift.X, m_unshiftableShift.Y + m_pendingViewportShift.Y);
+			ResetPendingViewportShift();
+			ResetExpectedViewportShift();
 
 			TryInvalidateMeasure();
 		}
@@ -345,13 +519,7 @@ partial class ViewportManagerWithPlatformFeatures
 			var targetChild = GetImmediateChildOfRepeater(args.TargetElement);
 
 			// Make sure that only the target child can be the anchor during the bring into view operation.
-			foreach (var child in m_owner.Children)
-			{
-				if (child.CanBeScrollAnchor && child != targetChild)
-				{
-					child.CanBeScrollAnchor = false;
-				}
-			}
+			UnregisterScrollAnchorCandidates(targetChild /*exceptionElement*/, false /*registerAsPreparedAndArrangedElements*/);
 
 			// Register to rendering event to go back to how things were before where any child can be the anchor.
 			m_isBringIntoViewInProgress = true;
@@ -367,7 +535,7 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
-	UIElement GetImmediateChildOfRepeater(UIElement descendant)
+	private UIElement GetImmediateChildOfRepeater(UIElement descendant)
 	{
 		UIElement targetChild = descendant;
 		UIElement parent = CachedVisualTreeHelpers.GetParent(descendant) as UIElement;
@@ -385,14 +553,29 @@ partial class ViewportManagerWithPlatformFeatures
 		return targetChild;
 	}
 
-	void OnCompositionTargetRendering(object sender, object args)
+	private void OnCompositionTargetRendering(object sender, object args)
 	{
-		global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+		MUX_ASSERT(!m_managingViewportDisabled);
 
 		m_renderingToken?.Dispose();
 
 		m_isBringIntoViewInProgress = false;
-		m_makeAnchorElement = null;
+
+		if (m_makeAnchorElement != null)
+		{
+			m_makeAnchorElement = null;
+
+			if (m_isAnchorOutsideRealizedRange)
+			{
+				m_isAnchorOutsideRealizedRange = false;
+
+				// During the bring-into-view operation, the layout anchor was positioned at the top/left
+				// of the viewport (see ViewportManagerWithPlatformFeatures::GetLayoutVisibleWindow()).
+				// Now it may move within the viewport and require different items to be generated given
+				// its final position. Thus a new measure pass is requested.
+				TryInvalidateMeasure();
+			}
+		}
 
 		// Now that the item has been brought into view, we can let the anchor provider pick a new anchor.
 		foreach (var child in m_owner.Children)
@@ -416,11 +599,19 @@ partial class ViewportManagerWithPlatformFeatures
 	public override void ResetScrollers()
 	{
 		m_scroller = null;
+		// TODO Uno: ScrollPresenter ScrollStarting/ScrollCompleted/ZoomStarting/ZoomCompleted revokers not ported.
 		m_effectiveViewportChangedRevoker?.Dispose();
+		m_isAnchorOutsideRealizedRange = false;
+		m_skipScrollAnchorRegistrationsDuringNextMeasurePass = false;
+		m_skipScrollAnchorRegistrationsDuringNextArrangePass = false;
 		m_ensuredScroller = false;
+		ResetExpectedViewportShift();
+		ResetPendingViewportShift();
+		ResetUnshiftableShift();
+		ResetLastScrollPresenterViewChangeCorrelationId();
 	}
 
-	void OnCacheBuildActionCompleted()
+	private void OnCacheBuildActionCompleted()
 	{
 		m_cacheBuildAction = null;
 		if (!m_managingViewportDisabled)
@@ -429,26 +620,58 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
-	void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
-	{
-		global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
-		REPEATER_TRACE_INFO("%ls: \tEffectiveViewportChanged event callback \n", GetLayoutId());
-		UpdateViewport(args.EffectiveViewport);
+	// TODO Uno: Detect an imminent ScrollPresenter view change triggered by a ScrollTo, ScrollBy, ZoomTo, or ZoomBy
+	// call. The C++ source implements OnScrollPresenterScrollStarting, OnScrollPresenterZoomStarting,
+	// OnScrollPresenterViewChangeStarting, OnScrollPresenterScrollCompleted, OnScrollPresenterZoomCompleted,
+	// OnScrollPresenterViewChangeCompleted to anticipate the destination view and re-realize items around it before
+	// the Compositor moves the ScrollPresenter.Content visual. These handlers depend on IScrollPresenter2 events
+	// (ScrollStarting/ZoomStarting) and the m_skipScrollAnchorRegistrations* flags + m_lastScrollPresenterViewChangeCorrelationId.
 
-		m_pendingViewportShift = default;
-		m_unshiftableShift = default;
-		if (m_visibleWindow == new Rect())
+	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+	{
+		MUX_ASSERT(!m_managingViewportDisabled);
+		REPEATER_TRACE_INFO("%ls: \tEffectiveViewportChanged event callback \n", GetLayoutId());
+
+		if (m_lastScrollPresenterViewChangeCorrelationId != -1)
 		{
-			// We got cleared.
-			m_layoutExtent = default;
+			return;
 		}
 
-		// We got a new viewport, we dont need to wait for layout updated anymore to
+		bool invalidateMeasure = false;
+		bool invalidatedMeasure = UpdateViewport(args.EffectiveViewport);
+		Point emptyPoint = default;
+		Rect emptyRect = default;
+
+		if (m_pendingViewportShift != emptyPoint)
+		{
+			ResetPendingViewportShift();
+			invalidateMeasure = true;
+		}
+
+		if (m_unshiftableShift != emptyPoint)
+		{
+			ResetUnshiftableShift();
+			invalidateMeasure = true;
+		}
+
+		if (m_visibleWindow == emptyRect && m_layoutExtent != emptyRect)
+		{
+			// We got cleared.
+			ResetLayoutExtent();
+			invalidateMeasure = true;
+		}
+
+		if (invalidateMeasure && !invalidatedMeasure)
+		{
+			TryInvalidateMeasure();
+		}
+
+		// We got a new viewport, we don't need to wait for layout updated anymore to
 		// see if our request for a pending shift was handled.
 		m_layoutUpdatedRevoker?.Dispose();
 	}
 
-	void EnsureScroller()
+	private void EnsureScroller()
 	{
 		if (!m_ensuredScroller)
 		{
@@ -489,6 +712,7 @@ partial class ViewportManagerWithPlatformFeatures
 			else*/
 			if (!m_managingViewportDisabled)
 			{
+				// When the ItemsRepeater is hosted in a Popup, m_scroller is null, but ItemsRepeater.EffectiveViewportChanged will still get raised.
 				m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 				{
 					m_owner.EffectiveViewportChanged -= OnEffectiveViewportChanged;
@@ -497,49 +721,53 @@ partial class ViewportManagerWithPlatformFeatures
 				m_owner.EffectiveViewportChanged += OnEffectiveViewportChanged;
 			}
 
+			// TODO Uno: Subscribe to IScrollPresenter ScrollStarting/ScrollCompleted/ZoomStarting/ZoomCompleted events.
+			// The IScrollPresenter implementation in Uno does not currently expose the v2 ScrollStarting/ZoomStarting
+			// events required to anticipate the destination view in OnScrollPresenterScrollStarting/OnScrollPresenterZoomStarting.
+
 			m_ensuredScroller = true;
 		}
 	}
 
-	void UpdateViewport(Rect viewport)
+	// Returns True when m_visibleWindow changes and TryInvalidateMeasure is invoked.
+	private bool UpdateViewport(Rect effectiveViewport)
 	{
 		// Disabled for non-virtualizing layout in RadioButtons, may need to be revisited (https://github.com/unoplatform/uno/issues/4752)
-		// global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+		// MUX_ASSERT(!m_managingViewportDisabled);
 
-		var previousVisibleWindow = m_visibleWindow;
-		REPEATER_TRACE_INFO("%ls: \tEffective Viewport: (%.0f,%.0f,%.0f,%.0f).(%.0f,%.0f,%.0f,%.0f). \n",
-			GetLayoutId(),
-			previousVisibleWindow.X, previousVisibleWindow.Y, previousVisibleWindow.Width, previousVisibleWindow.Height,
-			viewport.X, viewport.Y, viewport.Width, viewport.Height);
-
-		var currentVisibleWindow = viewport;
-
-		if (-currentVisibleWindow.X <= ItemsRepeater.ClearedElementsArrangePosition.X &&
-			-currentVisibleWindow.Y <= ItemsRepeater.ClearedElementsArrangePosition.Y)
+		if (-effectiveViewport.X <= ItemsRepeater.ClearedElementsArrangePosition.X &&
+			-effectiveViewport.Y <= ItemsRepeater.ClearedElementsArrangePosition.Y)
 		{
 			REPEATER_TRACE_INFO("%ls: \tViewport is invalid. visible window cleared. \n", GetLayoutId());
 			// We got cleared.
-			m_visibleWindow = default;
+			ResetVisibleWindow();
 		}
 		else
 		{
-			REPEATER_TRACE_INFO("%ls: \tUsed Viewport: (%.0f,%.0f,%.0f,%.0f).(%.0f,%.0f,%.0f,%.0f). \n",
-				GetLayoutId(),
-				previousVisibleWindow.X, previousVisibleWindow.Y, previousVisibleWindow.Width, previousVisibleWindow.Height,
-				currentVisibleWindow.X, currentVisibleWindow.Y, currentVisibleWindow.Width, currentVisibleWindow.Height);
-			m_visibleWindow = currentVisibleWindow;
-		}
+			const float roundingTolerance = 0.01f;
+
+			if (Math.Abs(m_visibleWindow.X - effectiveViewport.X) > roundingTolerance ||
+				Math.Abs(m_visibleWindow.Y - effectiveViewport.Y) > roundingTolerance ||
+				Math.Abs(m_visibleWindow.Width - effectiveViewport.Width) > roundingTolerance ||
+				Math.Abs(m_visibleWindow.Height - effectiveViewport.Height) > roundingTolerance)
+			{
+				SetVisibleWindow(effectiveViewport);
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-		// Uno workaround [BEGIN]: For perf considerations, do not invalidate the tree on each viewport update
-		// (Viewport updates are quite frequent, this would cause lot of unnecessary layout pass which would impact scroll perf, especially on Android).
-		if (m_owner.Layout is VirtualizingLayout vl // If not a VirtualizingLayout, we actually don't have to re-measure items!
-			&& vl.IsSignificantViewportChange(m_owner.LayoutState, _uno_viewportUsedInLastMeasure, m_visibleWindow))
-		// Uno workaround [END]
+				// Uno workaround [BEGIN]: For perf considerations, do not invalidate the tree on each viewport update
+				// (Viewport updates are quite frequent, this would cause lot of unnecessary layout pass which would impact scroll perf, especially on Android).
+				if (m_owner.Layout is VirtualizingLayout vl // If not a VirtualizingLayout, we actually don't have to re-measure items!
+					&& vl.IsSignificantViewportChange(m_owner.LayoutState, _uno_viewportUsedInLastMeasure, m_visibleWindow))
+				// Uno workaround [END]
 #endif
-		{
-			TryInvalidateMeasure();
+				{
+					TryInvalidateMeasure();
+					return true;
+				}
+			}
 		}
+
+		return false;
 	}
 
 	public override void ResetLayoutRealizationWindowCacheBuffer()
@@ -547,7 +775,7 @@ partial class ViewportManagerWithPlatformFeatures
 		ResetCacheBuffer(false /*registerCacheBuildWork*/);
 	}
 
-	void ResetCacheBuffer(bool registerCacheBuildWork = true)
+	private void ResetCacheBuffer(bool registerCacheBuildWork = true)
 	{
 		m_horizontalCacheBufferPerSide = 0.0;
 		m_verticalCacheBufferPerSide = 0.0;
@@ -559,7 +787,7 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
-	void ValidateCacheLength(double cacheLength)
+	private void ValidateCacheLength(double cacheLength)
 	{
 		if (cacheLength < 0.0 || double.IsInfinity(cacheLength) || double.IsNaN(cacheLength))
 		{
@@ -567,9 +795,50 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
-	void RegisterCacheBuildWork()
+	private void RegisterPreparedElementsAsArranged()
 	{
-		global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+		if (m_preparedElements.Count == 0)
+		{
+			return;
+		}
+
+		foreach (var preparedElement in m_preparedElements)
+		{
+			if (!m_preparedAndArrangedElements.Contains(preparedElement))
+			{
+				m_preparedAndArrangedElements.Add(preparedElement);
+			}
+		}
+
+		m_preparedElements.Clear();
+	}
+
+	private void RegisterPreparedAndArrangedElementsAsScrollAnchorCandidates()
+	{
+		if (m_preparedAndArrangedElements.Count == 0)
+		{
+			return;
+		}
+
+		foreach (var anchorCandidate in m_preparedAndArrangedElements)
+		{
+			if (!anchorCandidate.CanBeScrollAnchor)
+			{
+				var info = ItemsRepeater.GetVirtualizationInfo(anchorCandidate);
+
+				if (info.IsRealized && info.IsHeldByLayout)
+				{
+					anchorCandidate.CanBeScrollAnchor = true;
+				}
+			}
+		}
+
+		m_preparedAndArrangedElements.Clear();
+	}
+
+	private void RegisterCacheBuildWork()
+	{
+		MUX_ASSERT(!m_managingViewportDisabled);
 		if (m_owner.Layout != null &&
 			m_cacheBuildAction == null)
 		{
@@ -583,7 +852,7 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
-	void TryInvalidateMeasure()
+	private void TryInvalidateMeasure()
 	{
 		// Don't invalidate measure if we have an invalid window.
 		if (m_visibleWindow != new Rect()
@@ -612,6 +881,31 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
-	string GetLayoutId()
+	private void UnregisterScrollAnchorCandidates(UIElement exceptionElement, bool registerAsPreparedAndArrangedElements)
+	{
+		foreach (var child in m_owner.Children)
+		{
+			if (child is null)
+			{
+				continue;
+			}
+
+			if (child.CanBeScrollAnchor && child != exceptionElement)
+			{
+				child.CanBeScrollAnchor = false;
+
+				if (registerAsPreparedAndArrangedElements)
+				{
+					m_preparedAndArrangedElements.Add(child);
+				}
+			}
+		}
+	}
+
+	private string GetLayoutId()
 		=> m_owner.Layout?.LayoutId;
+
+	// #ifdef DBG
+	// TODO Uno: TraceFieldsDbg / TraceScrollerDbg are tracing-only helpers and are not ported.
+	// #endif // DBG
 }

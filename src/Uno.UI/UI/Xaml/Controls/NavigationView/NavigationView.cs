@@ -486,7 +486,7 @@ public partial class NavigationView : ContentControl
 				if (leftNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
@@ -519,7 +519,7 @@ public partial class NavigationView : ContentControl
 				if (topNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
@@ -553,7 +553,7 @@ public partial class NavigationView : ContentControl
 				if (topNavListOverflowRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
@@ -611,7 +611,7 @@ public partial class NavigationView : ContentControl
 				if (leftFooterMenuNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
@@ -645,7 +645,7 @@ public partial class NavigationView : ContentControl
 				if (topFooterMenuNavRepeater.Layout is StackLayout stackLayout)
 				{
 					var stackLayoutImpl = stackLayout;
-					stackLayoutImpl.DisableVirtualization = true;
+					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
 #if IS_UNO
