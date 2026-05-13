@@ -186,6 +186,7 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
+#pragma warning disable IDE0051 // Called only by unported OnScrollPresenterViewChangeStarting (parity gap I6, blocked on IScrollPresenter2). Kept for 1:1 parity with WinUI ViewportManagerWithPlatformFeatures.cpp:215-223.
 	private void SetLastScrollPresenterViewChangeCorrelationId(int correlationId)
 	{
 		if (correlationId != m_lastScrollPresenterViewChangeCorrelationId)
@@ -193,6 +194,7 @@ partial class ViewportManagerWithPlatformFeatures
 			m_lastScrollPresenterViewChangeCorrelationId = correlationId;
 		}
 	}
+#pragma warning restore IDE0051
 
 	public override void SetLayoutExtent(Rect layoutExtent)
 	{
@@ -266,6 +268,7 @@ partial class ViewportManagerWithPlatformFeatures
 		}
 	}
 
+#pragma warning disable IDE0051 // 1:1 port of WinUI ViewportManagerWithPlatformFeatures.cpp:304-314; defined-but-uncalled scaffolding in WinUI itself.
 	private void ResetLastLayoutRealizationWindow()
 	{
 		if (m_lastLayoutRealizationWindow.X != 0.0f || m_lastLayoutRealizationWindow.Y != 0.0f ||
@@ -274,6 +277,7 @@ partial class ViewportManagerWithPlatformFeatures
 			m_lastLayoutRealizationWindow = default;
 		}
 	}
+#pragma warning restore IDE0051
 
 	private void ResetExpectedViewportShift()
 	{
