@@ -213,5 +213,4 @@ public partial class NavigationView
 	private bool m_isLeftPaneTitleEmpty;
 
 	private double m_openPaneLength = 320.0;
-
 }
