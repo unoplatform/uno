@@ -255,8 +255,6 @@
 
     - name: Embedding
       items:
-      - name: Uno Platform in WPF
-        href: guides/uno-islands.md
       - name: Native Views
         href: native-views.md
       - name: Native Views with Skia

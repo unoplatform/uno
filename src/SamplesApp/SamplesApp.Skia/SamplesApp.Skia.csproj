@@ -99,14 +99,4 @@
 	<ItemGroup>
 		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
-
-	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
-		<ItemGroup>
-			<!--
-			This removes the transitive dependency to WPF which has a requirement to
-			have net9.0-windows and not net9.0.
-			-->
-			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
-		</ItemGroup>
-	</Target>
 </Project>
