@@ -5,7 +5,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class NavigationView
 {
-
 #if HAS_UNO // Uno workaround (#4727): the PaneHeaderContentBorderWrapper template part has no WinUI counterpart and is needed on Skia because Skia uses the Uno NavigationView template.
 	//TODO: Uno specific - remove when #4727 is fixed
 
