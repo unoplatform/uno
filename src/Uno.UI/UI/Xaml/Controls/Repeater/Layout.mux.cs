@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference Layout.cpp, commit 5f9e851133b3
+// MUX Reference Layout.cpp, commit 4b206bce3
 
 using System;
 using Windows.Foundation;
@@ -19,30 +19,16 @@ partial class Layout
 		set => m_layoutId = value;
 	}
 
-	internal int LogItemIndexDbg()
-	{
-		return m_logItemIndexDbg;
-	}
+	// Invoked by LayoutsTestHooks only for testing purposes
+	internal int LogItemIndexDbg() => m_logItemIndexDbg;
 
-	internal void LogItemIndexDbg(int logItemIndex)
-	{
-		m_logItemIndexDbg = logItemIndex;
-	}
+	internal void LogItemIndexDbg(int logItemIndex) => m_logItemIndexDbg = logItemIndex;
 
-	internal int LayoutAnchorIndexDbg()
-	{
-		return m_layoutAnchorInfoDbg.Index;
-	}
+	internal int LayoutAnchorIndexDbg() => m_layoutAnchorInfoDbg.Index;
 
-	internal double LayoutAnchorOffsetDbg()
-	{
-		return m_layoutAnchorInfoDbg.Offset;
-	}
+	internal double LayoutAnchorOffsetDbg() => m_layoutAnchorInfoDbg.Offset;
 
-	internal IndexBasedLayoutOrientation GetForcedIndexBasedLayoutOrientationDbg()
-	{
-		return m_forcedIndexBasedLayoutOrientationDbg;
-	}
+	internal IndexBasedLayoutOrientation GetForcedIndexBasedLayoutOrientationDbg() => m_forcedIndexBasedLayoutOrientationDbg;
 
 	internal void SetForcedIndexBasedLayoutOrientationDbg(IndexBasedLayoutOrientation forcedIndexBasedLayoutOrientation)
 	{
@@ -56,12 +42,13 @@ partial class Layout
 		m_isForcedIndexBasedLayoutOrientationSetDbg = false;
 	}
 
+	// #ifdef DBG — always available in Uno (no separate DBG build) as a test hook.
 	private protected void SetLayoutAnchorInfoDbg(int index, double offset)
 	{
 		bool layoutAnchorIndexChanged = m_layoutAnchorInfoDbg.Index != index;
 		bool layoutAnchorOffsetChanged = m_layoutAnchorInfoDbg.Offset != offset;
 
-		m_layoutAnchorInfoDbg = (index, offset);
+		m_layoutAnchorInfoDbg = new FlowLayoutAnchorInfo(index, offset);
 
 		if (layoutAnchorIndexChanged || layoutAnchorOffsetChanged)
 		{
@@ -80,6 +67,7 @@ partial class Layout
 			}
 		}
 	}
+	// #endif // DBG
 
 	/// <summary>
 	/// Gets the orientation, if any, in which items are laid out based on their
@@ -95,6 +83,7 @@ partial class Layout
 			? m_forcedIndexBasedLayoutOrientationDbg
 			: m_indexBasedLayoutOrientation;
 
+	// Anonymous namespace in C++ — Uno: internal static helpers on the type itself.
 	internal static VirtualizingLayoutContext GetVirtualizingLayoutContext(LayoutContext context)
 	{
 		switch (context)
@@ -251,9 +240,7 @@ partial class Layout
 	/// items are laid out based on their index in the source collection.
 	/// </param>
 	protected void SetIndexBasedLayoutOrientation(IndexBasedLayoutOrientation orientation)
-	{
-		m_indexBasedLayoutOrientation = orientation;
-	}
+		=> m_indexBasedLayoutOrientation = orientation;
 
 	// #pragma endregion
 }
