@@ -149,6 +149,16 @@ public partial class Window
 	{ get; }
 
 	/// <summary>
+	/// Gets a value that indicates whether secondary windows are supported on the current target.
+	/// </summary>
+	public static bool SupportsMultipleWindows =>
+#if HAS_UNO
+		NativeWindowFactory.SupportsMultipleWindows || OperatingSystem.IsWindows();
+#else
+		true;
+#endif
+
+	/// <summary>
 	/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
 	/// </summary>
 	public Rect Bounds => _windowImplementation.Bounds;

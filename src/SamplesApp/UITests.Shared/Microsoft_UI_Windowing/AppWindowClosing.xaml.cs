@@ -10,12 +10,6 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Graphics;
 
-#if !WINDOWS_UWP && !WINAPPSDK
-using Uno.UI.Xaml;
-using Uno.UI.Xaml.Controls;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-#endif
-
 namespace UITests.Microsoft_UI_Windowing;
 
 [Sample(
@@ -30,19 +24,12 @@ public sealed partial class AppWindowClosing : Page
 	public AppWindowClosing()
 	{
 		this.InitializeComponent();
-		if (!SupportsMultipleWindows)
+		if (!Window.SupportsMultipleWindows)
 		{
 			LogTextBlock.Text = "This platform does not support multiple windows.";
 			OpenWindowButton.IsEnabled = false;
 		}
 	}
-
-	private bool SupportsMultipleWindows =>
-#if HAS_UNO
-		NativeWindowFactory.SupportsMultipleWindows;
-#else
-		true;
-#endif
 
 	private void OnOpenWindow(object sender, RoutedEventArgs args)
 	{
