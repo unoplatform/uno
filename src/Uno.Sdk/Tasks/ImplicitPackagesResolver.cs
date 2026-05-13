@@ -153,24 +153,13 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 				var frameworkParts = TargetFramework.Split('-');
 				TargetFrameworkVersion = frameworkParts[0];
 				var runtime = frameworkParts[1].ToLowerInvariant();
-				if (runtime.Contains("windows"))
-				{
-					TargetRuntime = runtime.StartsWith(UnoTarget.Windows, StringComparison.InvariantCultureIgnoreCase) ? UnoTarget.Windows : UnoTarget.SkiaWpf;
-				}
-				else
-				{
-					TargetRuntime = runtime;
-				}
+				TargetRuntime = runtime;
 			}
 			else
 			{
 				TargetFrameworkVersion = TargetFramework;
 				TargetRuntime = UnoTarget.Reference;
-				if (ProjectName.EndsWith("Skia.WPF", StringComparison.InvariantCultureIgnoreCase))
-				{
-					TargetRuntime = UnoTarget.SkiaWpf;
-				}
-				else if (ProjectName.EndsWith("Skia.Linux.FrameBuffer", StringComparison.InvariantCultureIgnoreCase))
+				if (ProjectName.EndsWith("Skia.Linux.FrameBuffer", StringComparison.InvariantCultureIgnoreCase))
 				{
 					TargetRuntime = UnoTarget.SkiaLinuxFramebuffer;
 				}

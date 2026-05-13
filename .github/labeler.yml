@@ -32,14 +32,10 @@ area/skia ✏️:
   - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/**/*
   - src/Uno.UI.Runtime.Skia.Tizen/*
   - src/Uno.UI.Runtime.Skia.Tizen/**/*
-  - src/Uno.UI.Runtime.Skia.Wpf/*
-  - src/Uno.UI.Runtime.Skia.Wpf/**/*
   - src/Uno.UI.Runtime.Skia.Android/*
   - src/Uno.UI.Runtime.Skia.Android/**/*
   - src/Uno.UI.Runtime.Skia.AppleUIKit/*
   - src/Uno.UI.Runtime.Skia.AppleUIKit/**/*
-  - src/Uno.UI.XamlHost.Skia.Wpf/**/*
-  - src/Uno.UI.XamlHost.Skia.Wpf/**/*
 
 area/solution-templates:
   - src/SolutionTemplate/*
@@ -85,7 +81,3 @@ platform/macos 🍏:
 platform/x11 🐧:
   - src/Uno.UI.Runtime.Skia.X11/*
   - src/Uno.UI.Runtime.Skia.X11/**/*
-
-platform/wpf 🪟:
-  - src/Uno.UI.Runtime.Skia.Wpf/*
-  - src/Uno.UI.Runtime.Skia.Wpf/**/*
