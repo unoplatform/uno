@@ -294,10 +294,6 @@ partial class ItemsRepeater
 					throw new ArgumentException("ItemTemplate", "ItemTemplate");
 				}
 			}
-
-			// Bug in framework's reference tracking causes crash during
-			// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
-			m_itemTemplate = newValue as IElementFactory; // DataTemplate of DataTemplateSelector
 		}
 	}
 }
