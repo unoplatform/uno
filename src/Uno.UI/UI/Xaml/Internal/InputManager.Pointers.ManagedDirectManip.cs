@@ -124,25 +124,134 @@ partial class InputManager
 		}
 
 		/// <summary>
-		/// Cancel direct manipulation which are handled by the given <paramref name="requestingElement"/>.
+		/// Cancel direct manipulations whose handler is owned by <paramref name="requestingElement"/>
+		/// itself or by any of its ancestors, when they would actually conflict with the element's
+		/// declared <see cref="UIElement.ManipulationMode"/>.
 		/// </summary>
+		/// <remarks>
+		/// Self-owned handlers are intentionally included: <see cref="ScrollContentPresenter"/>'s
+		/// <see cref="IDirectManipulationHandler.Owner"/> is its <c>ScrollOwner</c>
+		/// (the containing <see cref="ScrollViewer"/>), so callers like <see cref="FlipView"/> that
+		/// invoke <see cref="UIElement.CancelDirectManipulations"/> directly on their inner
+		/// <see cref="ScrollViewer"/> can release that ScrollViewer's own DM. Strict-ancestor-only
+		/// semantics would silently no-op those call sites.
+		///
+		/// History: PR #23135 added an after-press redo of this walk in <see cref="AfterPressForDirectManipulation"/>
+		/// to catch ancestor DMs that register LATE in the press bubble (specifically <see cref="ScrollContentPresenter"/>),
+		/// fixing pinch on a <c>ManipulationMode=Scale</c> grid inside a scrollable ScrollViewer on Skia Android.
+		/// That redo made the walk also cancel orthogonal-axis ancestors, which broke the common pattern of
+		/// <c>SwipeControl</c> (<c>TranslateX</c>) inside a <c>ListView</c> (<c>TranslateY</c>): the parent's
+		/// vertical-scroll DM was being cancelled, killing vertical scrolling. The walk is now axis-aware:
+		/// it only cancels matching DMs whose currently-accepted modes share an axis with the requester
+		/// (or whenever the requester declares <c>Scale</c>/<c>Rotate</c>/<c>All</c>/no specific axis, in which
+		/// case the previous aggressive behavior is preserved).
+		/// The axis aggregation in <see cref="ConflictsWithRequester"/> is restricted to handlers that
+		/// match the requester-or-ancestor predicate, so a co-resident handler on the same pointer
+		/// outside that chain (e.g. an <see cref="InteractionTracker"/> redirection whose default modes
+		/// preview is <see cref="ManipulationModes.All"/>) cannot widen the effective modes and force a
+		/// false-positive cancel.
+		/// </remarks>
 		internal bool CancelDirectManipulations(UIElement requestingElement)
 		{
 			_pendingDirectManipulationCancelRequester ??= requestingElement;
 
+			var requesterModes = requestingElement.ManipulationMode;
+
+			// Materialize the requester's self-and-ancestor chain once: the predicate runs up to
+			// twice per handler (once for the Any() pre-check, once inside ConflictsWithRequester's
+			// modes aggregation), and re-walking the visual tree each time would be O(handlers * depth)
+			// on every pointer-down. A HashSet gives O(1) Contains and is built in one pass.
+			var requesterAndAncestors = new HashSet<DependencyObject>(requestingElement.GetAllParents(includeCurrent: true));
+
+			// Matches handlers owned by `requestingElement` itself or by any of its ancestors.
+			// Self-inclusion is required for the FlipView-style "cancel my inner ScrollViewer's DM"
+			// path (see method <remarks>). Hoisted to a local Func so the delegate is allocated once.
+			Func<IDirectManipulationHandler, bool> isForRequesterOrAncestor = handler =>
+				handler.Owner is DependencyObject owner && requesterAndAncestors.Contains(owner);
+
 			var cancelled = false;
 			foreach (var manipulation in _directManipulations)
 			{
-				if (manipulation.Handlers.Any(IsForParentOfRequestingElement))
+				if (manipulation.Handlers.Any(isForRequesterOrAncestor)
+					&& ConflictsWithRequester(requesterModes, manipulation, isForRequesterOrAncestor))
 				{
 					cancelled |= manipulation.Cancel();
 				}
 			}
 
 			return cancelled;
+		}
 
-			bool IsForParentOfRequestingElement(IDirectManipulationHandler handler)
-				=> handler.Owner is DependencyObject owner && requestingElement.GetAllParents(includeCurrent: true).Contains(owner);
+		private static bool ConflictsWithRequester(
+			ManipulationModes requesterModes,
+			DirectManipulation manipulation,
+			Func<IDirectManipulationHandler, bool> isHandlerForRequesterOrAncestor)
+		{
+			// Canonical translation axes: only TranslateX/Y count as actual translation on the
+			// handler side. Rails (TranslateRailsX/Y) are gesture-settings flags meant to constrain
+			// a translation axis, not to declare scrolling on their own. ScrollContentPresenter
+			// advertises rails whenever IsHorizontal/VerticalRailEnabled is set even on axes it
+			// doesn't scroll, so including rails in the handler-side mask would create false-positive
+			// overlaps with an X-axis requester (e.g. a SwipeControl) against a Y-only scroller.
+			const ManipulationModes XAxis = ManipulationModes.TranslateX;
+			const ManipulationModes YAxis = ManipulationModes.TranslateY;
+			// On the requester side rails still imply the corresponding translation axis (a
+			// TranslateRailsX-only descendant is still intending to translate on X), so they
+			// participate in the axis-claim test instead of falling through to the legacy
+			// cancel-everything path.
+			const ManipulationModes RequesterXClaim = XAxis | ManipulationModes.TranslateRailsX;
+			const ManipulationModes RequesterYClaim = YAxis | ManipulationModes.TranslateRailsY;
+			const ManipulationModes MultiPointer = ManipulationModes.Scale | ManipulationModes.Rotate;
+
+			// No declared translation axis and no multi-pointer claim (e.g. ManipulationMode = System/None,
+			// TranslateInertia alone, or an explicit user-facing CancelDirectManipulations() call from an
+			// element that hasn't set ManipulationMode) -> fall back to the pre-axis-aware behavior of
+			// cancelling every ancestor DM.
+			var requesterClaimsX = (requesterModes & RequesterXClaim) != 0;
+			var requesterClaimsY = (requesterModes & RequesterYClaim) != 0;
+			var requesterIsMultiPointer = (requesterModes & MultiPointer) != 0;
+			if (!requesterClaimsX && !requesterClaimsY && !requesterIsMultiPointer)
+			{
+				return true;
+			}
+
+			// Multi-pointer gestures (pinch/rotate) and a translating ancestor share the first pointer:
+			// the ancestor would lock onto it before the second pointer arrives, aborting the descendant
+			// gesture. Cancel the ancestor unconditionally to preserve PR #23135's fix.
+			if (requesterIsMultiPointer)
+			{
+				return true;
+			}
+
+			// Pure translation request: only cancel handlers (owned by the requester or its ancestors)
+			// whose currently-accepted modes overlap on the same axis. We aggregate modes from
+			// requester-or-ancestor handlers only — a co-resident handler on the same DirectManipulation
+			// that falls outside that chain (e.g. an InteractionTracker redirection registered via
+			// RedirectPointer) whose default GetCurrentlyAcceptedModes() preview is ManipulationModes.All
+			// must not widen handlerModes to All and force cancellation of an in-chain handler whose
+			// effective axis doesn't actually conflict with the requester.
+			// In-chain handlers that don't expose an axis preview still return ManipulationModes.All
+			// by default, which keeps the legacy aggressive behavior for them.
+			var handlerModes = ManipulationModes.None;
+			foreach (var handler in manipulation.Handlers)
+			{
+				if (!isHandlerForRequesterOrAncestor(handler))
+				{
+					continue;
+				}
+
+				handlerModes |= handler.GetCurrentlyAcceptedModes();
+			}
+
+			// In-chain handler wants to do multi-pointer gestures: a single-finger gesture on the
+			// descendant would steal pointers it needs, so treat it as a conflict to be safe.
+			if ((handlerModes & MultiPointer) != 0)
+			{
+				return true;
+			}
+
+			return (requesterClaimsX && (handlerModes & XAxis) != 0)
+				|| (requesterClaimsY && (handlerModes & YAxis) != 0);
 		}
 
 		private bool IsRedirectedToManipulations(PointerIdentifier pointerId)
