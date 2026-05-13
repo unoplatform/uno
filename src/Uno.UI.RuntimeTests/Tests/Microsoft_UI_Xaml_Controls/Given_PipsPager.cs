@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO && !HAS_UNO_WINUI
@@ -17,6 +18,96 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [TestClass]
 public partial class Given_PipsPager
 {
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_SelectedIndex_Beyond_MaxVisiblePips_All_Visible_Pips_Are_Realized()
+	{
+		// Repro for the trailing-pips-disappear bug: with NumberOfPages > MaxVisiblePips,
+		// navigating past the initial visible window must scroll the trailing pips into
+		// view and they must render. Previously the inner ItemsRepeater was given a
+		// LayoutClip matching the viewport (60) even though its content was wider (96),
+		// which clipped away every pip that scrolled in from the trailing side.
+
+		var SUT = new PipsPager
+		{
+			NumberOfPages = 8,
+			MaxVisiblePips = 5,
+		};
+
+		await UITestHelper.Load(SUT);
+
+		var repeater = SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater");
+		Assert.IsNotNull(repeater, "Inner ItemsRepeater not found");
+
+		var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>("PipsPagerScrollViewer");
+		Assert.IsNotNull(scrollViewer, "Inner ScrollViewer not found");
+
+		SUT.SelectedPageIndex = 5;
+		await TestServices.WindowHelper.WaitForIdle();
+		// Allow the BringIntoView animation (≈1s on Skia) to complete before sampling.
+		await Task.Delay(1500);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var horizontalOffset = scrollViewer.HorizontalOffset;
+		var viewportWidth = scrollViewer.ViewportWidth;
+		var extentWidth = scrollViewer.ExtentWidth;
+
+		// With pip 5 centered, the visible window covers indices 3..7 — all five must
+		// be realized and laid out at distinct positions inside the pager.
+		var positions = new System.Collections.Generic.Dictionary<int, Windows.Foundation.Point>();
+		for (int i = 3; i <= 7; i++)
+		{
+			var pip = repeater.TryGetElement(i) as FrameworkElement;
+			Assert.IsNotNull(pip, $"Pip {i} must be realized when SelectedPageIndex centers it in the viewport");
+			Assert.IsTrue(pip.ActualWidth > 0, $"Pip {i} must have non-zero ActualWidth after navigation, was {pip.ActualWidth}");
+			Assert.IsTrue(pip.ActualHeight > 0, $"Pip {i} must have non-zero ActualHeight after navigation, was {pip.ActualHeight}");
+			positions[i] = pip.TransformToVisual(SUT).TransformPoint(new Windows.Foundation.Point(0, 0));
+		}
+
+		Assert.IsTrue(horizontalOffset > 0,
+			$"ScrollViewer must have scrolled to bring the selected pip into view. " +
+			$"HorizontalOffset={horizontalOffset}, ViewportWidth={viewportWidth}, ExtentWidth={extentWidth}");
+
+		for (int i = 4; i <= 7; i++)
+		{
+			Assert.IsTrue(positions[i].X > positions[i - 1].X,
+				$"Pip {i} ({positions[i].X}) must lay out to the right of pip {i - 1} ({positions[i - 1].X})");
+		}
+
+		for (int i = 3; i <= 7; i++)
+		{
+			Assert.IsTrue(positions[i].X >= 0 && positions[i].X < SUT.ActualWidth,
+				$"Pip {i} X position {positions[i].X} is outside pager width {SUT.ActualWidth}. " +
+				$"ScrollViewer offset={horizontalOffset}, viewport={viewportWidth}, extent={extentWidth}");
+		}
+
+#if HAS_RENDER_TARGET_BITMAP
+		// Visual check — the previous assertions only verify layout state. This catches
+		// the case where pips are at the right coordinates but never make it to the
+		// rendered output (clip / opacity / composition issue). The bug clipped the
+		// inner ItemsRepeater at viewport-width, so any rendered pixel that lands in
+		// the trailing half of the pager proves the trailing pips render.
+		var screenshot = await UITestHelper.ScreenShot(SUT);
+		bool inkInTrailingHalf = false;
+		int midY = screenshot.Height / 2;
+		var trailingStart = screenshot.Width / 2;
+		for (int x = trailingStart; x < screenshot.Width; x++)
+		{
+			var c = screenshot.GetPixel(x, midY);
+			if (c.R < 200 || c.G < 200 || c.B < 200)
+			{
+				inkInTrailingHalf = true;
+				break;
+			}
+		}
+
+		Assert.IsTrue(inkInTrailingHalf,
+			$"Expected pip ink in the pager's trailing half (>= x={trailingStart}). " +
+			$"Before the fix the inner ItemsRepeater was clipped at viewport-width, so the trailing pips never rendered. " +
+			$"ScrollViewer offset={horizontalOffset}, viewport={viewportWidth}, extent={extentWidth}.");
+#endif
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 #if __WASM__
