@@ -156,23 +156,30 @@ partial class InputManager
 			_pendingDirectManipulationCancelRequester ??= requestingElement;
 
 			var requesterModes = requestingElement.ManipulationMode;
+
+			// Materialize the requester's self-and-ancestor chain once: the predicate runs up to
+			// twice per handler (once for the Any() pre-check, once inside ConflictsWithRequester's
+			// modes aggregation), and re-walking the visual tree each time would be O(handlers * depth)
+			// on every pointer-down. A HashSet gives O(1) Contains and is built in one pass.
+			var requesterAndAncestors = new HashSet<DependencyObject>(requestingElement.GetAllParents(includeCurrent: true));
+
+			// Matches handlers owned by `requestingElement` itself or by any of its ancestors.
+			// Self-inclusion is required for the FlipView-style "cancel my inner ScrollViewer's DM"
+			// path (see method <remarks>). Hoisted to a local Func so the delegate is allocated once.
+			Func<IDirectManipulationHandler, bool> isForRequesterOrAncestor = handler =>
+				handler.Owner is DependencyObject owner && requesterAndAncestors.Contains(owner);
+
 			var cancelled = false;
 			foreach (var manipulation in _directManipulations)
 			{
-				if (manipulation.Handlers.Any(IsForRequesterOrAncestor)
-					&& ConflictsWithRequester(requesterModes, manipulation, IsForRequesterOrAncestor))
+				if (manipulation.Handlers.Any(isForRequesterOrAncestor)
+					&& ConflictsWithRequester(requesterModes, manipulation, isForRequesterOrAncestor))
 				{
 					cancelled |= manipulation.Cancel();
 				}
 			}
 
 			return cancelled;
-
-			// Matches handlers owned by `requestingElement` itself or by any of its ancestors.
-			// Self-inclusion is required for the FlipView-style "cancel my inner ScrollViewer's DM"
-			// path (see method <remarks>).
-			bool IsForRequesterOrAncestor(IDirectManipulationHandler handler)
-				=> handler.Owner is DependencyObject owner && requestingElement.GetAllParents(includeCurrent: true).Contains(owner);
 		}
 
 		private static bool ConflictsWithRequester(
