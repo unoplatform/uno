@@ -7,8 +7,6 @@
 //   conjunction with weak-reference-based RegisterMeasureInvalidated / RegisterArrangeInvalidated
 //   to prevent the long-lived thread-local default StackLayout from keeping ItemsRepeater
 //   instances alive across all Uno platforms.
-// - Strong references to the ItemTemplate and Layout that work around a downlevel framework
-//   issue (only relevant when SharedHelpers.IsRS5OrHigher() is false).
 // - The UIElementCollection-backed Children, IPanel implementation and the
 //   UnoBeforeElementPrepared diagnostic event used by SelectorItem-based controls.
 // - OnLoadedUno / OnUnloadedUno handle the load/unload cycle's re-subscription of data-source
@@ -37,11 +35,6 @@ partial class ItemsRepeater : IPanel
 	UIElementCollection IPanel.Children => _repeaterChildren;
 
 	internal IList<UIElement> Children => _repeaterChildren;
-
-	// Bug in framework's reference tracking causes crash during
-	// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
-	IElementFactory m_itemTemplate;
-	Layout m_layout;
 
 	//TODO: Uno specific - remove when #4689 is fixed
 	internal event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> UnoBeforeElementPrepared;
