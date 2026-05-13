@@ -778,7 +778,7 @@ public partial class PipsPager : Control
 		// Make sure to reset the layout virtualization settings on old layout
 		if (m_itemsRepeaterStackLayout is StackLayout stackLayout)
 		{
-			stackLayout.DisableVirtualization = m_cachedIsVirtualizationEnabledFlag;
+			stackLayout.IsVirtualizationEnabled = m_cachedIsVirtualizationEnabledFlag;
 		}
 		m_itemsRepeaterStackLayout = null;
 		m_cachedIsVirtualizationEnabledFlag = true;
@@ -795,12 +795,10 @@ public partial class PipsPager : Control
 				// when navigating to the last page from the first page
 				if (m_itemsRepeaterStackLayout is not { })
 				{
-					//TODO Officially it is using 
-					//m_cachedIsVirtualizationEnabledFlag = stackLayout.IsVirtualizationEnabled;
-					m_cachedIsVirtualizationEnabledFlag = stackLayout.DisableVirtualization;
+					m_cachedIsVirtualizationEnabledFlag = stackLayout.IsVirtualizationEnabled;
 					m_itemsRepeaterStackLayout = stackLayout;
 				}
-				stackLayout.DisableVirtualization = !IsWrapEnabled;
+				stackLayout.IsVirtualizationEnabled = IsWrapEnabled;
 			}
 		}
 	}

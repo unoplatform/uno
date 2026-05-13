@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ItemsRepeater.cpp, commit 5f9e85113
+// MUX Reference ItemsRepeater.cpp, commit 4b206bce3
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 

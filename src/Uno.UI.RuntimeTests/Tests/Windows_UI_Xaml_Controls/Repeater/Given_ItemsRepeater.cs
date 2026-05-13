@@ -407,9 +407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Fails due to async native scrolling.")]
-#endif
+		[Ignore("Validated the Uno-specific firstRealizedMajor clamping in StackLayout.GetExtent, which was removed in favor of WinUI parity. Fails on Skia (WinUI behavior) and on native targets (async native scrolling).")]
 		public async Task When_ItemSignificantlyTaller_Then_VirtualizeProperly()
 		{
 			var sut = SUT.Create(
@@ -467,9 +465,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Fails due to async native scrolling.")]
-#endif
+		[Ignore("Validated the Uno-specific firstRealizedMajor clamping in StackLayout.GetExtent, which was removed in favor of WinUI parity. Fails on Skia (WinUI behavior) and on native targets (async native scrolling).")]
 		public async Task When_UnloadReload_Then_MaterializeItemsForCurrentViewport()
 		{
 			var sut = SUT.Create(30, new Size(100, 500));
