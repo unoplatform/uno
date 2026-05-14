@@ -8,20 +8,8 @@ namespace Windows.System
 #endif
 	public static partial class Launcher
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync(global::Windows.Storage.IStorageFile file)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchFileAsync%28IStorageFile%20file%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync(global::Windows.Storage.IStorageFile file, global::Windows.System.LauncherOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file, LauncherOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchFileAsync%28IStorageFile%20file%2C%20LauncherOptions%20options%29");
-		}
-#endif
+		// Skipping already declared method Windows.System.Launcher.LaunchFileAsync(Windows.Storage.IStorageFile)
+		// Skipping already declared method Windows.System.Launcher.LaunchFileAsync(Windows.Storage.IStorageFile, Windows.System.LauncherOptions)
 		// Skipping already declared method Windows.System.Launcher.LaunchUriAsync(System.Uri)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
