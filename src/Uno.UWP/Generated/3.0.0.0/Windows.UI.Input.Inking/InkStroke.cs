@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "Rect InkStroke.BoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "BoundingRect");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "InkDrawingAttributes InkStroke.DrawingAttributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "DrawingAttributes");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "InkDrawingAttributes InkStroke.DrawingAttributes");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "DrawingAttributes");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "uint InkStroke.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "Id");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "Matrix3x2 InkStroke.PointTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "PointTransform");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "Matrix3x2 InkStroke.PointTransform");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "PointTransform");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "bool InkStroke.Recognized");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "Recognized");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "bool InkStroke.Selected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "Selected");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "bool InkStroke.Selected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "Selected");
 			}
 		}
 #endif
@@ -91,11 +91,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "TimeSpan? InkStroke.StrokeDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "StrokeDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "TimeSpan? InkStroke.StrokeDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "StrokeDuration");
 			}
 		}
 #endif
@@ -105,11 +105,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "DateTimeOffset? InkStroke.StrokeStartedTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "StrokeStartedTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "DateTimeOffset? InkStroke.StrokeStartedTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "StrokeStartedTime");
 			}
 		}
 #endif
@@ -117,21 +117,21 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkStrokeRenderingSegment> GetRenderingSegments()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "IReadOnlyList<InkStrokeRenderingSegment> InkStroke.GetRenderingSegments()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "GetRenderingSegments()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Inking.InkStroke Clone()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "InkStroke InkStroke.Clone()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "Clone()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkPoint> GetInkPoints()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "IReadOnlyList<InkPoint> InkStroke.GetInkPoints()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "GetInkPoints()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.BoundingRect.get

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "Appointment AppointmentCalendarCreateOrUpdateAppointmentRequest.Appointment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "Appointment");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "string AppointmentCalendarCreateOrUpdateAppointmentRequest.AppointmentCalendarLocalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "AppointmentCalendarLocalId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "IReadOnlyList<string> AppointmentCalendarCreateOrUpdateAppointmentRequest.ChangedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "ChangedProperties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "bool AppointmentCalendarCreateOrUpdateAppointmentRequest.NotifyInvitees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "NotifyInvitees");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::Windows.ApplicationModel.Appointments.Appointment createdOrUpdatedAppointment)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "IAsyncAction AppointmentCalendarCreateOrUpdateAppointmentRequest.ReportCompletedAsync(Appointment createdOrUpdatedAppointment)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "ReportCompletedAsync(Appointment createdOrUpdatedAppointment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "IAsyncAction AppointmentCalendarCreateOrUpdateAppointmentRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.Appointment.get

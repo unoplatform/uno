@@ -19,11 +19,11 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs", "bool WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs", "bool WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs", "Uri WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs", "Uri");
 			}
 		}
 #endif

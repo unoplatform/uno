@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "string ClaimedBarcodeScanner.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "DeviceId");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "bool ClaimedBarcodeScanner.IsDecodeDataEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IsDecodeDataEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "bool ClaimedBarcodeScanner.IsDecodeDataEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IsDecodeDataEnabled");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "bool ClaimedBarcodeScanner.IsDisabledOnDataReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IsDisabledOnDataReceived");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "bool ClaimedBarcodeScanner.IsDisabledOnDataReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IsDisabledOnDataReceived");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "bool ClaimedBarcodeScanner.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IsEnabled");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "bool ClaimedBarcodeScanner.IsVideoPreviewShownOnEnable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IsVideoPreviewShownOnEnable");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "bool ClaimedBarcodeScanner.IsVideoPreviewShownOnEnable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IsVideoPreviewShownOnEnable");
 			}
 		}
 #endif
@@ -79,49 +79,49 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction EnableAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncAction ClaimedBarcodeScanner.EnableAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "EnableAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DisableAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncAction ClaimedBarcodeScanner.DisableAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "DisableAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RetainDevice()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "void ClaimedBarcodeScanner.RetainDevice()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "RetainDevice()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetActiveSymbologiesAsync(global::System.Collections.Generic.IEnumerable<uint> symbologies)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncAction ClaimedBarcodeScanner.SetActiveSymbologiesAsync(IEnumerable<uint> symbologies)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "SetActiveSymbologiesAsync(IEnumerable<uint> symbologies)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ResetStatisticsAsync(global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncAction ClaimedBarcodeScanner.ResetStatisticsAsync(IEnumerable<string> statisticsCategories)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "ResetStatisticsAsync(IEnumerable<string> statisticsCategories)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction UpdateStatisticsAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> statistics)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncAction ClaimedBarcodeScanner.UpdateStatisticsAsync(IEnumerable<KeyValuePair<string, string>> statistics)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "UpdateStatisticsAsync(IEnumerable<KeyValuePair<string, string>> statistics)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetActiveProfileAsync(string profile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncAction ClaimedBarcodeScanner.SetActiveProfileAsync(string profile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "SetActiveProfileAsync(string profile)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.DataReceived.add
@@ -140,42 +140,42 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StartSoftwareTriggerAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncAction ClaimedBarcodeScanner.StartSoftwareTriggerAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "StartSoftwareTriggerAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StopSoftwareTriggerAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncAction ClaimedBarcodeScanner.StopSoftwareTriggerAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "StopSoftwareTriggerAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.BarcodeSymbologyAttributes> GetSymbologyAttributesAsync(uint barcodeSymbology)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncOperation<BarcodeSymbologyAttributes> ClaimedBarcodeScanner.GetSymbologyAttributesAsync(uint barcodeSymbology)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "GetSymbologyAttributesAsync(uint barcodeSymbology)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SetSymbologyAttributesAsync(uint barcodeSymbology, global::Windows.Devices.PointOfService.BarcodeSymbologyAttributes attributes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncOperation<bool> ClaimedBarcodeScanner.SetSymbologyAttributesAsync(uint barcodeSymbology, BarcodeSymbologyAttributes attributes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "SetSymbologyAttributesAsync(uint barcodeSymbology, BarcodeSymbologyAttributes attributes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> ShowVideoPreviewAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "IAsyncOperation<bool> ClaimedBarcodeScanner.ShowVideoPreviewAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "ShowVideoPreviewAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void HideVideoPreview()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "void ClaimedBarcodeScanner.HideVideoPreview()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "HideVideoPreview()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.Closed.add
@@ -184,7 +184,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "void ClaimedBarcodeScanner.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.DeviceId.get
@@ -202,12 +202,12 @@ namespace Windows.Devices.PointOfService
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, BarcodeScannerDataReceivedEventArgs> ClaimedBarcodeScanner.DataReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event DataReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, BarcodeScannerDataReceivedEventArgs> ClaimedBarcodeScanner.DataReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event DataReceived");
 			}
 		}
 #endif
@@ -218,12 +218,12 @@ namespace Windows.Devices.PointOfService
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, BarcodeScannerErrorOccurredEventArgs> ClaimedBarcodeScanner.ErrorOccurred");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event ErrorOccurred");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, BarcodeScannerErrorOccurredEventArgs> ClaimedBarcodeScanner.ErrorOccurred");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event ErrorOccurred");
 			}
 		}
 #endif
@@ -234,12 +234,12 @@ namespace Windows.Devices.PointOfService
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, BarcodeScannerImagePreviewReceivedEventArgs> ClaimedBarcodeScanner.ImagePreviewReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event ImagePreviewReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, BarcodeScannerImagePreviewReceivedEventArgs> ClaimedBarcodeScanner.ImagePreviewReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event ImagePreviewReceived");
 			}
 		}
 #endif
@@ -250,12 +250,12 @@ namespace Windows.Devices.PointOfService
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event EventHandler<ClaimedBarcodeScanner> ClaimedBarcodeScanner.ReleaseDeviceRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event ReleaseDeviceRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event EventHandler<ClaimedBarcodeScanner> ClaimedBarcodeScanner.ReleaseDeviceRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event ReleaseDeviceRequested");
 			}
 		}
 #endif
@@ -266,12 +266,12 @@ namespace Windows.Devices.PointOfService
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event EventHandler<ClaimedBarcodeScanner> ClaimedBarcodeScanner.TriggerPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TriggerPressed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event EventHandler<ClaimedBarcodeScanner> ClaimedBarcodeScanner.TriggerPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TriggerPressed");
 			}
 		}
 #endif
@@ -282,12 +282,12 @@ namespace Windows.Devices.PointOfService
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event EventHandler<ClaimedBarcodeScanner> ClaimedBarcodeScanner.TriggerReleased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TriggerReleased");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event EventHandler<ClaimedBarcodeScanner> ClaimedBarcodeScanner.TriggerReleased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TriggerReleased");
 			}
 		}
 #endif
@@ -298,12 +298,12 @@ namespace Windows.Devices.PointOfService
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, ClaimedBarcodeScannerClosedEventArgs> ClaimedBarcodeScanner.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event Closed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event TypedEventHandler<ClaimedBarcodeScanner, ClaimedBarcodeScannerClosedEventArgs> ClaimedBarcodeScanner.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "event Closed");
 			}
 		}
 #endif

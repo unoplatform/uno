@@ -14,7 +14,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "MessageWebSocketControl MessageWebSocket.Control");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "Control");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "MessageWebSocketInformation MessageWebSocket.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "Information");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "IOutputStream MessageWebSocket.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "OutputStream");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MessageWebSocket()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "MessageWebSocket.MessageWebSocket()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "MessageWebSocket()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.MessageWebSocket()
@@ -52,21 +52,21 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "IAsyncAction MessageWebSocket.ConnectAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "ConnectAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetRequestHeader(string headerName, string headerValue)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "void MessageWebSocket.SetRequestHeader(string headerName, string headerValue)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "SetRequestHeader(string headerName, string headerValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close(ushort code, string reason)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "void MessageWebSocket.Close(ushort code, string reason)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "Close(ushort code, string reason)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.Closed.add
@@ -75,7 +75,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "void MessageWebSocket.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.ServerCustomValidationRequested.add
@@ -84,14 +84,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendNonfinalFrameAsync(global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendNonfinalFrameAsync(IBuffer data)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "SendNonfinalFrameAsync(IBuffer data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendFinalFrameAsync(global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendFinalFrameAsync(IBuffer data)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "SendFinalFrameAsync(IBuffer data)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.Control.get
@@ -104,12 +104,12 @@ namespace Windows.Networking.Sockets
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event TypedEventHandler<MessageWebSocket, MessageWebSocketMessageReceivedEventArgs> MessageWebSocket.MessageReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event MessageReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event TypedEventHandler<MessageWebSocket, MessageWebSocketMessageReceivedEventArgs> MessageWebSocket.MessageReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event MessageReceived");
 			}
 		}
 #endif
@@ -120,12 +120,12 @@ namespace Windows.Networking.Sockets
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event TypedEventHandler<IWebSocket, WebSocketClosedEventArgs> MessageWebSocket.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event Closed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event TypedEventHandler<IWebSocket, WebSocketClosedEventArgs> MessageWebSocket.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event Closed");
 			}
 		}
 #endif
@@ -136,12 +136,12 @@ namespace Windows.Networking.Sockets
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event TypedEventHandler<MessageWebSocket, WebSocketServerCustomValidationRequestedEventArgs> MessageWebSocket.ServerCustomValidationRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event ServerCustomValidationRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event TypedEventHandler<MessageWebSocket, WebSocketServerCustomValidationRequestedEventArgs> MessageWebSocket.ServerCustomValidationRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "event ServerCustomValidationRequested");
 			}
 		}
 #endif

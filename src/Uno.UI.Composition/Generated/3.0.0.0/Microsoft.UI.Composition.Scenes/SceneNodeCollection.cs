@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "int SceneNodeCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "bool SceneNodeCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "IsReadOnly");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "SceneNode SceneNodeCollection.this[int index]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "this[int index]");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "SceneNode SceneNodeCollection.this[int index]");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "this[int index]");
 			}
 		}
 #endif
@@ -55,63 +55,63 @@ namespace Microsoft.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Microsoft.UI.Composition.Scenes.SceneNode item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "int SceneNodeCollection.IndexOf(SceneNode item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "IndexOf(SceneNode item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Insert(int index, global::Microsoft.UI.Composition.Scenes.SceneNode item)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "void SceneNodeCollection.Insert(int index, SceneNode item)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "Insert(int index, SceneNode item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveAt(int index)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "void SceneNodeCollection.RemoveAt(int index)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "RemoveAt(int index)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::Microsoft.UI.Composition.Scenes.SceneNode item)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "void SceneNodeCollection.Add(SceneNode item)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "Add(SceneNode item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "void SceneNodeCollection.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Microsoft.UI.Composition.Scenes.SceneNode item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "bool SceneNodeCollection.Contains(SceneNode item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "Contains(SceneNode item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::Microsoft.UI.Composition.Scenes.SceneNode[] array, int arrayIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "void SceneNodeCollection.CopyTo(SceneNode[] array, int arrayIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "CopyTo(SceneNode[] array, int arrayIndex)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Microsoft.UI.Composition.Scenes.SceneNode item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "bool SceneNodeCollection.Remove(SceneNode item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "Remove(SceneNode item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Composition.Scenes.SceneNode> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "IEnumerator<SceneNode> SceneNodeCollection.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNodeCollection", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.System.Collections.IEnumerable.GetEnumerator()

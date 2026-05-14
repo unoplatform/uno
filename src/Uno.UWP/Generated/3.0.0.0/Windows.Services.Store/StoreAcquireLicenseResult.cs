@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAcquireLicenseResult", "Exception StoreAcquireLicenseResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAcquireLicenseResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAcquireLicenseResult", "StorePackageLicense StoreAcquireLicenseResult.StorePackageLicense");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAcquireLicenseResult", "StorePackageLicense");
 			}
 		}
 #endif

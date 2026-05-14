@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "MicrosoftAccountMultiFactorSessionApprovalStatus MicrosoftAccountMultiFactorSessionInfo.ApprovalStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "ApprovalStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "MicrosoftAccountMultiFactorAuthenticationType MicrosoftAccountMultiFactorSessionInfo.AuthenticationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "AuthenticationType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "string MicrosoftAccountMultiFactorSessionInfo.DisplaySessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "DisplaySessionId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "DateTimeOffset MicrosoftAccountMultiFactorSessionInfo.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "ExpirationTime");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "DateTimeOffset MicrosoftAccountMultiFactorSessionInfo.RequestTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "RequestTime");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "string MicrosoftAccountMultiFactorSessionInfo.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "SessionId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "string MicrosoftAccountMultiFactorSessionInfo.UserAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo", "UserAccountId");
 			}
 		}
 #endif

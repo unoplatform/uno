@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs", "bool PasswordBoxPasswordChangingEventArgs.IsContentChanging");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs", "IsContentChanging");
 			}
 		}
 #endif

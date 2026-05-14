@@ -19,7 +19,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevicePickerFilter", "IList<string> DialDevicePickerFilter.SupportedAppNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevicePickerFilter", "SupportedAppNames");
 			}
 		}
 #endif

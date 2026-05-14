@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo", "IReadOnlyList<CoreWebView2FrameInfo> CoreWebView2ProcessExtendedInfo.AssociatedFrameInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo", "AssociatedFrameInfos");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo", "CoreWebView2ProcessInfo CoreWebView2ProcessExtendedInfo.ProcessInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo", "ProcessInfo");
 			}
 		}
 #endif

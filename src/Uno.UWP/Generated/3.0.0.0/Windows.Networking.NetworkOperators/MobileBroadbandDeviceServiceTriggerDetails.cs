@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails", "string MobileBroadbandDeviceServiceTriggerDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails", "DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails", "Guid MobileBroadbandDeviceServiceTriggerDetails.DeviceServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails", "DeviceServiceId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails", "IBuffer MobileBroadbandDeviceServiceTriggerDetails.ReceivedData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails", "ReceivedData");
 			}
 		}
 #endif

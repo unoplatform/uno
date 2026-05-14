@@ -14,11 +14,11 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "InjectedInputKeyOptions InjectedInputKeyboardInfo.KeyOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "KeyOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "InjectedInputKeyOptions InjectedInputKeyboardInfo.KeyOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "KeyOptions");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "ushort InjectedInputKeyboardInfo.ScanCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "ScanCode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "ushort InjectedInputKeyboardInfo.ScanCode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "ScanCode");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "ushort InjectedInputKeyboardInfo.VirtualKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "VirtualKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "ushort InjectedInputKeyboardInfo.VirtualKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "VirtualKey");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Input.Preview.Injection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InjectedInputKeyboardInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "InjectedInputKeyboardInfo.InjectedInputKeyboardInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "InjectedInputKeyboardInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.InjectedInputKeyboardInfo()

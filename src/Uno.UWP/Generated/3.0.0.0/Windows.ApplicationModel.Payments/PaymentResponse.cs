@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "string PaymentResponse.PayerEmail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PayerEmail");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "string PaymentResponse.PayerName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PayerName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "string PaymentResponse.PayerPhoneNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PayerPhoneNumber");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PaymentToken PaymentResponse.PaymentToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PaymentToken");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PaymentAddress PaymentResponse.ShippingAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "ShippingAddress");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PaymentShippingOption PaymentResponse.ShippingOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "ShippingOption");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CompleteAsync(global::Windows.ApplicationModel.Payments.PaymentRequestCompletionStatus status)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "IAsyncAction PaymentResponse.CompleteAsync(PaymentRequestCompletionStatus status)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "CompleteAsync(PaymentRequestCompletionStatus status)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PayerEmail.get

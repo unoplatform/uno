@@ -14,7 +14,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "int WwwFormUrlDecoder.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "Count");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "IWwwFormUrlDecoderEntry WwwFormUrlDecoder.this[int index]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "this[int index]");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WwwFormUrlDecoder(string query)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.WwwFormUrlDecoder", "WwwFormUrlDecoder.WwwFormUrlDecoder(string query)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.WwwFormUrlDecoder", "WwwFormUrlDecoder(string query)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WwwFormUrlDecoder(string)
@@ -40,7 +40,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetFirstValueByName(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "string WwwFormUrlDecoder.GetFirstValueByName(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "GetFirstValueByName(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.Count.get
@@ -49,7 +49,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Foundation.IWwwFormUrlDecoderEntry> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "IEnumerator<IWwwFormUrlDecoderEntry> WwwFormUrlDecoder.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.System.Collections.IEnumerable.GetEnumerator()

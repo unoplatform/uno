@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "string VpnCredential.AdditionalPin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "AdditionalPin");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "Certificate VpnCredential.CertificateCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "CertificateCredential");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "PasswordCredential VpnCredential.OldPasswordCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "OldPasswordCredential");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "PasswordCredential VpnCredential.PasskeyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "PasskeyCredential");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "GameControllerVersionInfo GipGameControllerProvider.FirmwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "FirmwareVersionInfo");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "ushort GipGameControllerProvider.HardwareProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "HardwareProductId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "ushort GipGameControllerProvider.HardwareVendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "HardwareVendorId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "GameControllerVersionInfo GipGameControllerProvider.HardwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "HardwareVersionInfo");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "bool GipGameControllerProvider.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "IsConnected");
 			}
 		}
 #endif
@@ -67,21 +67,21 @@ namespace Windows.Gaming.Input.Custom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendMessage(global::Windows.Gaming.Input.Custom.GipMessageClass messageClass, byte messageId, byte[] messageBuffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GipGameControllerProvider", "void GipGameControllerProvider.SendMessage(GipMessageClass messageClass, byte messageId, byte[] messageBuffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GipGameControllerProvider", "SendMessage(GipMessageClass messageClass, byte messageId, byte[] messageBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendReceiveMessage(global::Windows.Gaming.Input.Custom.GipMessageClass messageClass, byte messageId, byte[] requestMessageBuffer, byte[] responseMessageBuffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GipGameControllerProvider", "void GipGameControllerProvider.SendReceiveMessage(GipMessageClass messageClass, byte messageId, byte[] requestMessageBuffer, byte[] responseMessageBuffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GipGameControllerProvider", "SendReceiveMessage(GipMessageClass messageClass, byte messageId, byte[] requestMessageBuffer, byte[] responseMessageBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Gaming.Input.Custom.GipFirmwareUpdateResult, global::Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress> UpdateFirmwareAsync(global::Windows.Storage.Streams.IInputStream firmwareImage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "IAsyncOperationWithProgress<GipFirmwareUpdateResult, GipFirmwareUpdateProgress> GipGameControllerProvider.UpdateFirmwareAsync(IInputStream firmwareImage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "UpdateFirmwareAsync(IInputStream firmwareImage)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.FirmwareVersionInfo.get

@@ -19,11 +19,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.SpringVector2NaturalMotionAnimation", "float SpringVector2NaturalMotionAnimation.DampingRatio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.SpringVector2NaturalMotionAnimation", "DampingRatio");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpringVector2NaturalMotionAnimation", "float SpringVector2NaturalMotionAnimation.DampingRatio");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpringVector2NaturalMotionAnimation", "DampingRatio");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.SpringVector2NaturalMotionAnimation", "TimeSpan SpringVector2NaturalMotionAnimation.Period");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.SpringVector2NaturalMotionAnimation", "Period");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpringVector2NaturalMotionAnimation", "TimeSpan SpringVector2NaturalMotionAnimation.Period");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.SpringVector2NaturalMotionAnimation", "Period");
 			}
 		}
 #endif

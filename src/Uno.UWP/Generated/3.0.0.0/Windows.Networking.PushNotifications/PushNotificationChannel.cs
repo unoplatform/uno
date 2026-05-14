@@ -19,7 +19,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannel", "DateTimeOffset PushNotificationChannel.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannel", "ExpirationTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannel", "string PushNotificationChannel.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannel", "Uri");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Networking.PushNotifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannel", "void PushNotificationChannel.Close()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannel", "Close()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.PushNotificationReceived.add
@@ -51,12 +51,12 @@ namespace Windows.Networking.PushNotifications
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannel", "event TypedEventHandler<PushNotificationChannel, PushNotificationReceivedEventArgs> PushNotificationChannel.PushNotificationReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannel", "event PushNotificationReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannel", "event TypedEventHandler<PushNotificationChannel, PushNotificationReceivedEventArgs> PushNotificationChannel.PushNotificationReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannel", "event PushNotificationReceived");
 			}
 		}
 #endif

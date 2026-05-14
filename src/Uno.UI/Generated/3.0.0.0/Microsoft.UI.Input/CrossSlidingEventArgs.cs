@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CrossSlidingEventArgs", "CrossSlidingState CrossSlidingEventArgs.CrossSlidingState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CrossSlidingEventArgs", "CrossSlidingState");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CrossSlidingEventArgs", "PointerDeviceType CrossSlidingEventArgs.PointerDeviceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CrossSlidingEventArgs", "PointerDeviceType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CrossSlidingEventArgs", "Point CrossSlidingEventArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CrossSlidingEventArgs", "Position");
 			}
 		}
 #endif

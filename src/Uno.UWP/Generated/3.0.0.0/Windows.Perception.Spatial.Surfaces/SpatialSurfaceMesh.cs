@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "SpatialCoordinateSystem SpatialSurfaceMesh.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "CoordinateSystem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "SpatialSurfaceInfo SpatialSurfaceMesh.SurfaceInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "SurfaceInfo");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "SpatialSurfaceMeshBuffer SpatialSurfaceMesh.TriangleIndices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "TriangleIndices");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "SpatialSurfaceMeshBuffer SpatialSurfaceMesh.VertexNormals");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "VertexNormals");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "Vector3 SpatialSurfaceMesh.VertexPositionScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "VertexPositionScale");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "SpatialSurfaceMeshBuffer SpatialSurfaceMesh.VertexPositions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh", "VertexPositions");
 			}
 		}
 #endif

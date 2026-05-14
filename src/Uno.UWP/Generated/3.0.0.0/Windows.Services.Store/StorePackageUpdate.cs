@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdate", "bool StorePackageUpdate.Mandatory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdate", "Mandatory");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdate", "Package StorePackageUpdate.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdate", "Package");
 			}
 		}
 #endif

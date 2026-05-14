@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DistantLight", "Color DistantLight.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DistantLight", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DistantLight", "Color DistantLight.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DistantLight", "Color");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DistantLight", "Visual DistantLight.CoordinateSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DistantLight", "CoordinateSpace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DistantLight", "Visual DistantLight.CoordinateSpace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DistantLight", "CoordinateSpace");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DistantLight", "Vector3 DistantLight.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DistantLight", "Direction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DistantLight", "Vector3 DistantLight.Direction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DistantLight", "Direction");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DistantLight", "float DistantLight.Intensity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DistantLight", "Intensity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DistantLight", "float DistantLight.Intensity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DistantLight", "Intensity");
 			}
 		}
 #endif

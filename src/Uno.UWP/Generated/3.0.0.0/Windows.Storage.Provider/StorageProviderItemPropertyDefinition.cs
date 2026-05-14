@@ -14,11 +14,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "string StorageProviderItemPropertyDefinition.DisplayNameResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "DisplayNameResource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "string StorageProviderItemPropertyDefinition.DisplayNameResource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "DisplayNameResource");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "int StorageProviderItemPropertyDefinition.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "int StorageProviderItemPropertyDefinition.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "Id");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public StorageProviderItemPropertyDefinition()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "StorageProviderItemPropertyDefinition.StorageProviderItemPropertyDefinition()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "StorageProviderItemPropertyDefinition()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemPropertyDefinition.StorageProviderItemPropertyDefinition()

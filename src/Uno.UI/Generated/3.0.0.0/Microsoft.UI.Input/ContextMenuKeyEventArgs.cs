@@ -19,11 +19,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.ContextMenuKeyEventArgs", "bool ContextMenuKeyEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.ContextMenuKeyEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.ContextMenuKeyEventArgs", "bool ContextMenuKeyEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.ContextMenuKeyEventArgs", "Handled");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "string FaceDetectionEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "ActivatableClassId");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "FaceDetectionMode FaceDetectionEffectDefinition.DetectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "DetectionMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectDefinition", "FaceDetectionMode FaceDetectionEffectDefinition.DetectionMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectDefinition", "DetectionMode");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "IPropertySet FaceDetectionEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "Properties");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "bool FaceDetectionEffectDefinition.SynchronousDetectionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "SynchronousDetectionEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectDefinition", "bool FaceDetectionEffectDefinition.SynchronousDetectionEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectDefinition", "SynchronousDetectionEnabled");
 			}
 		}
 #endif
@@ -60,7 +60,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public FaceDetectionEffectDefinition()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectDefinition", "FaceDetectionEffectDefinition.FaceDetectionEffectDefinition()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectDefinition", "FaceDetectionEffectDefinition()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.FaceDetectionEffectDefinition()

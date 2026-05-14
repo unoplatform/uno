@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "IList<string> EmailQueryOptions.FolderIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "FolderIds");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryKind EmailQueryOptions.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "Kind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryKind EmailQueryOptions.Kind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "Kind");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortDirection EmailQueryOptions.SortDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "SortDirection");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortDirection EmailQueryOptions.SortDirection");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "SortDirection");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortProperty EmailQueryOptions.SortProperty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "SortProperty");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortProperty EmailQueryOptions.SortProperty");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "SortProperty");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryTextSearch EmailQueryOptions.TextSearch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "TextSearch");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailQueryOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryOptions.EmailQueryOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.EmailQueryOptions()
@@ -82,7 +82,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailQueryOptions(string text)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryOptions.EmailQueryOptions(string text)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryOptions(string text)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.EmailQueryOptions(string)
@@ -90,7 +90,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailQueryOptions(string text, global::Windows.ApplicationModel.Email.EmailQuerySearchFields fields)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryOptions.EmailQueryOptions(string text, EmailQuerySearchFields fields)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryOptions(string text, EmailQuerySearchFields fields)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.EmailQueryOptions(string, Windows.ApplicationModel.Email.EmailQuerySearchFields)

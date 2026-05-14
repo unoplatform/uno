@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "IReadOnlyList<IMediaCue> TimedMetadataTrack.ActiveCues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "ActiveCues");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "IReadOnlyList<IMediaCue> TimedMetadataTrack.Cues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "Cues");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "string TimedMetadataTrack.DispatchType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "DispatchType");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "string TimedMetadataTrack.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "Id");
 			}
 		}
 #endif
@@ -54,11 +54,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "string TimedMetadataTrack.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "string TimedMetadataTrack.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "Label");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "string TimedMetadataTrack.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "Language");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "string TimedMetadataTrack.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "Name");
 			}
 		}
 #endif
@@ -88,7 +88,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "MediaPlaybackItem TimedMetadataTrack.PlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "PlaybackItem");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "TimedMetadataKind TimedMetadataTrack.TimedMetadataKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "TimedMetadataKind");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "MediaTrackKind TimedMetadataTrack.TrackKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrack", "TrackKind");
 			}
 		}
 #endif
@@ -116,7 +116,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TimedMetadataTrack(string id, string language, global::Windows.Media.Core.TimedMetadataKind kind)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "TimedMetadataTrack.TimedMetadataTrack(string id, string language, TimedMetadataKind kind)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "TimedMetadataTrack(string id, string language, TimedMetadataKind kind)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.TimedMetadataTrack(string, string, Windows.Media.Core.TimedMetadataKind)
@@ -124,14 +124,14 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddCue(global::Windows.Media.Core.IMediaCue cue)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "void TimedMetadataTrack.AddCue(IMediaCue cue)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "AddCue(IMediaCue cue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveCue(global::Windows.Media.Core.IMediaCue cue)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "void TimedMetadataTrack.RemoveCue(IMediaCue cue)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "RemoveCue(IMediaCue cue)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.CueEntered.add
@@ -158,12 +158,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event TypedEventHandler<TimedMetadataTrack, MediaCueEventArgs> TimedMetadataTrack.CueEntered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event CueEntered");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event TypedEventHandler<TimedMetadataTrack, MediaCueEventArgs> TimedMetadataTrack.CueEntered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event CueEntered");
 			}
 		}
 #endif
@@ -174,12 +174,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event TypedEventHandler<TimedMetadataTrack, MediaCueEventArgs> TimedMetadataTrack.CueExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event CueExited");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event TypedEventHandler<TimedMetadataTrack, MediaCueEventArgs> TimedMetadataTrack.CueExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event CueExited");
 			}
 		}
 #endif
@@ -190,12 +190,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event TypedEventHandler<TimedMetadataTrack, TimedMetadataTrackFailedEventArgs> TimedMetadataTrack.TrackFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event TrackFailed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event TypedEventHandler<TimedMetadataTrack, TimedMetadataTrackFailedEventArgs> TimedMetadataTrack.TrackFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "event TrackFailed");
 			}
 		}
 #endif

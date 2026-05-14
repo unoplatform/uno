@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "int? MobileBroadbandCellGsm.BaseStationId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "BaseStationId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "int? MobileBroadbandCellGsm.CellId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "CellId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "int? MobileBroadbandCellGsm.ChannelNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "ChannelNumber");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "int? MobileBroadbandCellGsm.LocationAreaCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "LocationAreaCode");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "string MobileBroadbandCellGsm.ProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "ProviderId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "double? MobileBroadbandCellGsm.ReceivedSignalStrengthInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "ReceivedSignalStrengthInDBm");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "int? MobileBroadbandCellGsm.TimingAdvanceInBitPeriods");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellGsm", "TimingAdvanceInBitPeriods");
 			}
 		}
 #endif

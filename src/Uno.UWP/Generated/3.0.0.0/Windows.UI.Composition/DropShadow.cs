@@ -19,11 +19,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "float DropShadow.BlurRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "BlurRadius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "float DropShadow.BlurRadius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "BlurRadius");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "Color DropShadow.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "Color DropShadow.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "Color");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "CompositionBrush DropShadow.Mask");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "Mask");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "CompositionBrush DropShadow.Mask");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "Mask");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "Vector3 DropShadow.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "Offset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "Vector3 DropShadow.Offset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "Offset");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "float DropShadow.Opacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "Opacity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "float DropShadow.Opacity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "Opacity");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "CompositionDropShadowSourcePolicy DropShadow.SourcePolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.DropShadow", "SourcePolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "CompositionDropShadowSourcePolicy DropShadow.SourcePolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DropShadow", "SourcePolicy");
 			}
 		}
 #endif

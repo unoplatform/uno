@@ -19,7 +19,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AdvertisingManagerForUser", "string AdvertisingManagerForUser.AdvertisingId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AdvertisingManagerForUser", "AdvertisingId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AdvertisingManagerForUser", "User AdvertisingManagerForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AdvertisingManagerForUser", "User");
 			}
 		}
 #endif

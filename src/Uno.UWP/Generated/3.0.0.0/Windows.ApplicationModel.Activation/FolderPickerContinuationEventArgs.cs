@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "ValueSet FolderPickerContinuationEventArgs.ContinuationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "ContinuationData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "StorageFolder FolderPickerContinuationEventArgs.Folder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "Folder");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "ActivationKind FolderPickerContinuationEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "Kind");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "ApplicationExecutionState FolderPickerContinuationEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "SplashScreen FolderPickerContinuationEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "User FolderPickerContinuationEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs", "User");
 			}
 		}
 #endif

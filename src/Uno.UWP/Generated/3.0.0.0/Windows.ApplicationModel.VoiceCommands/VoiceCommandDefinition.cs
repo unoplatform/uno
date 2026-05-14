@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition", "string VoiceCommandDefinition.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition", "Language");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition", "string VoiceCommandDefinition.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition", "Name");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetPhraseListAsync(string phraseListName, global::System.Collections.Generic.IEnumerable<string> phraseList)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition", "IAsyncAction VoiceCommandDefinition.SetPhraseListAsync(string phraseListName, IEnumerable<string> phraseList)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition", "SetPhraseListAsync(string phraseListName, IEnumerable<string> phraseList)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Language.get

@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "bool PhotoConfirmationControl.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "Enabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "bool PhotoConfirmationControl.Enabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "Enabled");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "MediaPixelFormat PhotoConfirmationControl.PixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "PixelFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "MediaPixelFormat PhotoConfirmationControl.PixelFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "PixelFormat");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "bool PhotoConfirmationControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "Supported");
 			}
 		}
 #endif

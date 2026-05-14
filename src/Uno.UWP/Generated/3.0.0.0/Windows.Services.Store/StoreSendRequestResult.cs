@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "Exception StoreSendRequestResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "HttpStatusCode StoreSendRequestResult.HttpStatusCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "HttpStatusCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "string StoreSendRequestResult.Response");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "Response");
 			}
 		}
 #endif

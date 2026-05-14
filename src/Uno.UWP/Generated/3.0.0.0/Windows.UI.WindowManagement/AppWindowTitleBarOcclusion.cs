@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowTitleBarOcclusion", "Rect AppWindowTitleBarOcclusion.OccludingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowTitleBarOcclusion", "OccludingRect");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "uint? PhotoImportSource.BatteryLevelPercent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "BatteryLevelPercent");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "string PhotoImportSource.ConnectionProtocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "ConnectionProtocol");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "PhotoImportConnectionTransport PhotoImportSource.ConnectionTransport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "ConnectionTransport");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "DateTimeOffset? PhotoImportSource.DateTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "DateTime");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "string PhotoImportSource.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "Description");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "string PhotoImportSource.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "DisplayName");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "string PhotoImportSource.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "Id");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "bool? PhotoImportSource.IsLocked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "IsLocked");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "bool PhotoImportSource.IsMassStorage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "IsMassStorage");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "string PhotoImportSource.Manufacturer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "Manufacturer");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "string PhotoImportSource.Model");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "Model");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "PhotoImportPowerSource PhotoImportSource.PowerSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "PowerSource");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "string PhotoImportSource.SerialNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "SerialNumber");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "IReadOnlyList<PhotoImportStorageMedium> PhotoImportSource.StorageMedia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "StorageMedia");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "IRandomAccessStreamReference PhotoImportSource.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "Thumbnail");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "PhotoImportSourceType PhotoImportSource.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "Type");
 			}
 		}
 #endif
@@ -177,21 +177,21 @@ namespace Windows.Media.Import
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Import.PhotoImportSource> FromIdAsync(string sourceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "IAsyncOperation<PhotoImportSource> PhotoImportSource.FromIdAsync(string sourceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "FromIdAsync(string sourceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Import.PhotoImportSource> FromFolderAsync(global::Windows.Storage.IStorageFolder sourceRootFolder)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "IAsyncOperation<PhotoImportSource> PhotoImportSource.FromFolderAsync(IStorageFolder sourceRootFolder)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "FromFolderAsync(IStorageFolder sourceRootFolder)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Import.PhotoImportSession CreateImportSession()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "PhotoImportSession PhotoImportSource.CreateImportSession()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSource", "CreateImportSession()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportSource.BatteryLevelPercent.get

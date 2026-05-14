@@ -19,7 +19,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "DateTimeOffset? HttpDateOrDeltaHeaderValue.Date");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "Date");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "TimeSpan? HttpDateOrDeltaHeaderValue.Delta");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "Delta");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue Parse(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "HttpDateOrDeltaHeaderValue HttpDateOrDeltaHeaderValue.Parse(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue dateOrDeltaHeaderValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "bool HttpDateOrDeltaHeaderValue.TryParse(string input, out HttpDateOrDeltaHeaderValue dateOrDeltaHeaderValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "TryParse(string input, out HttpDateOrDeltaHeaderValue dateOrDeltaHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "string HttpDateOrDeltaHeaderValue.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue.Date.get

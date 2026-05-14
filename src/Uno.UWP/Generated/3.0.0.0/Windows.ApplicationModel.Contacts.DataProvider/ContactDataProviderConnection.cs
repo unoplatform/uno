@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "void ContactDataProviderConnection.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "Start()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.ServerSearchReadBatchRequested.add
@@ -35,12 +35,12 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event TypedEventHandler<ContactDataProviderConnection, ContactListServerSearchReadBatchRequestEventArgs> ContactDataProviderConnection.ServerSearchReadBatchRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event ServerSearchReadBatchRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event TypedEventHandler<ContactDataProviderConnection, ContactListServerSearchReadBatchRequestEventArgs> ContactDataProviderConnection.ServerSearchReadBatchRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event ServerSearchReadBatchRequested");
 			}
 		}
 #endif
@@ -51,12 +51,12 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event TypedEventHandler<ContactDataProviderConnection, ContactListSyncManagerSyncRequestEventArgs> ContactDataProviderConnection.SyncRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event SyncRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event TypedEventHandler<ContactDataProviderConnection, ContactListSyncManagerSyncRequestEventArgs> ContactDataProviderConnection.SyncRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event SyncRequested");
 			}
 		}
 #endif
@@ -67,12 +67,12 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event TypedEventHandler<ContactDataProviderConnection, ContactListCreateOrUpdateContactRequestEventArgs> ContactDataProviderConnection.CreateOrUpdateContactRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event CreateOrUpdateContactRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event TypedEventHandler<ContactDataProviderConnection, ContactListCreateOrUpdateContactRequestEventArgs> ContactDataProviderConnection.CreateOrUpdateContactRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event CreateOrUpdateContactRequested");
 			}
 		}
 #endif
@@ -83,12 +83,12 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event TypedEventHandler<ContactDataProviderConnection, ContactListDeleteContactRequestEventArgs> ContactDataProviderConnection.DeleteContactRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event DeleteContactRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event TypedEventHandler<ContactDataProviderConnection, ContactListDeleteContactRequestEventArgs> ContactDataProviderConnection.DeleteContactRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "event DeleteContactRequested");
 			}
 		}
 #endif

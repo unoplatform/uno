@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "double EffectiveViewportChangedEventArgs.BringIntoViewDistanceX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "BringIntoViewDistanceX");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "double EffectiveViewportChangedEventArgs.BringIntoViewDistanceY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "BringIntoViewDistanceY");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "Rect EffectiveViewportChangedEventArgs.MaxViewport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "MaxViewport");
 			}
 		}
 #endif

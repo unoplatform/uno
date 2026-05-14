@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "Language VoiceCommandServiceConnection.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "Language");
 			}
 		}
 #endif
@@ -27,56 +27,56 @@ namespace Windows.ApplicationModel.VoiceCommands
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection FromAppServiceTriggerDetails(global::Windows.ApplicationModel.AppService.AppServiceTriggerDetails triggerDetails)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "VoiceCommandServiceConnection VoiceCommandServiceConnection.FromAppServiceTriggerDetails(AppServiceTriggerDetails triggerDetails)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "FromAppServiceTriggerDetails(AppServiceTriggerDetails triggerDetails)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.VoiceCommands.VoiceCommand> GetVoiceCommandAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "IAsyncOperation<VoiceCommand> VoiceCommandServiceConnection.GetVoiceCommandAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "GetVoiceCommandAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandConfirmationResult> RequestConfirmationAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "IAsyncOperation<VoiceCommandConfirmationResult> VoiceCommandServiceConnection.RequestConfirmationAsync(VoiceCommandResponse response)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "RequestConfirmationAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult> RequestDisambiguationAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "IAsyncOperation<VoiceCommandDisambiguationResult> VoiceCommandServiceConnection.RequestDisambiguationAsync(VoiceCommandResponse response)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "RequestDisambiguationAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportProgressAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "IAsyncAction VoiceCommandServiceConnection.ReportProgressAsync(VoiceCommandResponse response)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "ReportProgressAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportSuccessAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "IAsyncAction VoiceCommandServiceConnection.ReportSuccessAsync(VoiceCommandResponse response)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "ReportSuccessAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailureAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "IAsyncAction VoiceCommandServiceConnection.ReportFailureAsync(VoiceCommandResponse response)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "ReportFailureAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RequestAppLaunchAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "IAsyncAction VoiceCommandServiceConnection.RequestAppLaunchAsync(VoiceCommandResponse response)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "RequestAppLaunchAsync(VoiceCommandResponse response)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection.VoiceCommandCompleted.add
@@ -89,12 +89,12 @@ namespace Windows.ApplicationModel.VoiceCommands
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "event TypedEventHandler<VoiceCommandServiceConnection, VoiceCommandCompletedEventArgs> VoiceCommandServiceConnection.VoiceCommandCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "event VoiceCommandCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "event TypedEventHandler<VoiceCommandServiceConnection, VoiceCommandCompletedEventArgs> VoiceCommandServiceConnection.VoiceCommandCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "event VoiceCommandCompleted");
 			}
 		}
 #endif

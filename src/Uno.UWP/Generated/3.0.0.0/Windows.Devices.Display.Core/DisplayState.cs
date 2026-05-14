@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "bool DisplayState.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "IsReadOnly");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "bool DisplayState.IsStale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "IsStale");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "IDictionary<Guid, object> DisplayState.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "Properties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "IReadOnlyList<DisplayTarget> DisplayState.Targets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "Targets");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "IReadOnlyList<DisplayView> DisplayState.Views");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "Views");
 			}
 		}
 #endif
@@ -67,63 +67,63 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayPath ConnectTarget(global::Windows.Devices.Display.Core.DisplayTarget target)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "DisplayPath DisplayState.ConnectTarget(DisplayTarget target)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "ConnectTarget(DisplayTarget target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayPath ConnectTarget(global::Windows.Devices.Display.Core.DisplayTarget target, global::Windows.Devices.Display.Core.DisplayView view)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "DisplayPath DisplayState.ConnectTarget(DisplayTarget target, DisplayView view)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "ConnectTarget(DisplayTarget target, DisplayView view)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanConnectTargetToView(global::Windows.Devices.Display.Core.DisplayTarget target, global::Windows.Devices.Display.Core.DisplayView view)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "bool DisplayState.CanConnectTargetToView(DisplayTarget target, DisplayView view)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "CanConnectTargetToView(DisplayTarget target, DisplayView view)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayView GetViewForTarget(global::Windows.Devices.Display.Core.DisplayTarget target)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "DisplayView DisplayState.GetViewForTarget(DisplayTarget target)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "GetViewForTarget(DisplayTarget target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayPath GetPathForTarget(global::Windows.Devices.Display.Core.DisplayTarget target)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "DisplayPath DisplayState.GetPathForTarget(DisplayTarget target)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "GetPathForTarget(DisplayTarget target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DisconnectTarget(global::Windows.Devices.Display.Core.DisplayTarget target)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayState", "void DisplayState.DisconnectTarget(DisplayTarget target)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayState", "DisconnectTarget(DisplayTarget target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayStateOperationResult TryFunctionalize(global::Windows.Devices.Display.Core.DisplayStateFunctionalizeOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "DisplayStateOperationResult DisplayState.TryFunctionalize(DisplayStateFunctionalizeOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "TryFunctionalize(DisplayStateFunctionalizeOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayStateOperationResult TryApply(global::Windows.Devices.Display.Core.DisplayStateApplyOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "DisplayStateOperationResult DisplayState.TryApply(DisplayStateApplyOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "TryApply(DisplayStateApplyOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayState Clone()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "DisplayState DisplayState.Clone()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayState", "Clone()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.IsReadOnly.get

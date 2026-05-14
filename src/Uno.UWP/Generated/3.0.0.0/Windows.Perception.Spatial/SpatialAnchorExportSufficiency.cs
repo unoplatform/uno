@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "bool SpatialAnchorExportSufficiency.IsMinimallySufficient");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "IsMinimallySufficient");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "double SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "RecommendedSufficiencyLevel");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "double SpatialAnchorExportSufficiency.SufficiencyLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "SufficiencyLevel");
 			}
 		}
 #endif

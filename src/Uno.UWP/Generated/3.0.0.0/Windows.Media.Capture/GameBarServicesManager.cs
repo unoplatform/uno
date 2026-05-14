@@ -17,7 +17,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.GameBarServicesManager GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesManager", "GameBarServicesManager GameBarServicesManager.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesManager", "GetDefault()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.GameBarServicesCreated.add
@@ -29,12 +29,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServicesManager", "event TypedEventHandler<GameBarServicesManager, GameBarServicesManagerGameBarServicesCreatedEventArgs> GameBarServicesManager.GameBarServicesCreated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServicesManager", "event GameBarServicesCreated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServicesManager", "event TypedEventHandler<GameBarServicesManager, GameBarServicesManagerGameBarServicesCreatedEventArgs> GameBarServicesManager.GameBarServicesCreated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServicesManager", "event GameBarServicesCreated");
 			}
 		}
 #endif

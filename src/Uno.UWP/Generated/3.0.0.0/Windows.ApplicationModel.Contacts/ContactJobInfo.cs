@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "CompanyAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "CompanyAddress");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "CompanyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "CompanyName");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyYomiName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "CompanyYomiName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyYomiName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "CompanyYomiName");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Department");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "Department");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Department");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "Department");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "Description");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Manager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "Manager");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Manager");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "Manager");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Office");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "Office");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Office");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "Office");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "Title");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactJobInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "ContactJobInfo.ContactJobInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactJobInfo", "ContactJobInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.ContactJobInfo()

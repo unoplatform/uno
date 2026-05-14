@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.CanModifyParticipants");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "CanModifyParticipants");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.CanModifyParticipants");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "CanModifyParticipants");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.HasUnreadMessages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "HasUnreadMessages");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "Id");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.IsConversationMuted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IsConversationMuted");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.IsConversationMuted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "IsConversationMuted");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "ChatItemKind ChatConversation.ItemKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "ItemKind");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.MostRecentMessageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "MostRecentMessageId");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IList<string> ChatConversation.Participants");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "Participants");
 			}
 		}
 #endif
@@ -97,11 +97,11 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "Subject");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.Subject");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "Subject");
 			}
 		}
 #endif
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "ChatConversationThreadingInfo ChatConversation.ThreadingInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "ThreadingInfo");
 			}
 		}
 #endif
@@ -119,49 +119,49 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IAsyncAction ChatConversation.DeleteAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "DeleteAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Chat.ChatMessageReader GetMessageReader()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "ChatMessageReader ChatConversation.GetMessageReader()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "GetMessageReader()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction MarkMessagesAsReadAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IAsyncAction ChatConversation.MarkMessagesAsReadAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "MarkMessagesAsReadAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction MarkMessagesAsReadAsync(global::System.DateTimeOffset value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IAsyncAction ChatConversation.MarkMessagesAsReadAsync(DateTimeOffset value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "MarkMessagesAsReadAsync(DateTimeOffset value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IAsyncAction ChatConversation.SaveAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "SaveAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyLocalParticipantComposing(string transportId, string participantAddress, bool isComposing)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "void ChatConversation.NotifyLocalParticipantComposing(string transportId, string participantAddress, bool isComposing)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "NotifyLocalParticipantComposing(string transportId, string participantAddress, bool isComposing)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyRemoteParticipantComposing(string transportId, string participantAddress, bool isComposing)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "void ChatConversation.NotifyRemoteParticipantComposing(string transportId, string participantAddress, bool isComposing)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "NotifyRemoteParticipantComposing(string transportId, string participantAddress, bool isComposing)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.RemoteParticipantComposingChanged.add
@@ -185,12 +185,12 @@ namespace Windows.ApplicationModel.Chat
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "event TypedEventHandler<ChatConversation, RemoteParticipantComposingChangedEventArgs> ChatConversation.RemoteParticipantComposingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "event RemoteParticipantComposingChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "event TypedEventHandler<ChatConversation, RemoteParticipantComposingChangedEventArgs> ChatConversation.RemoteParticipantComposingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "event RemoteParticipantComposingChanged");
 			}
 		}
 #endif

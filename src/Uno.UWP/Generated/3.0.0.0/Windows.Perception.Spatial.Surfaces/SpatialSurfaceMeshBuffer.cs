@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "IBuffer SpatialSurfaceMeshBuffer.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "uint SpatialSurfaceMeshBuffer.ElementCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "ElementCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "DirectXPixelFormat SpatialSurfaceMeshBuffer.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "Format");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "uint SpatialSurfaceMeshBuffer.Stride");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "Stride");
 			}
 		}
 #endif

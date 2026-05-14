@@ -19,7 +19,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceUseDetails", "string DeviceUseDetails.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceUseDetails", "Arguments");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceUseDetails", "string DeviceUseDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceUseDetails", "DeviceId");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate CmsSignerInfo.Certificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate CmsSignerInfo.Certificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "string CmsSignerInfo.HashAlgorithmName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "HashAlgorithmName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "string CmsSignerInfo.HashAlgorithmName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "HashAlgorithmName");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "CmsTimestampInfo CmsSignerInfo.TimestampInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "TimestampInfo");
 			}
 		}
 #endif
@@ -50,7 +50,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CmsSignerInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "CmsSignerInfo.CmsSignerInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "CmsSignerInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.CmsSignerInfo()

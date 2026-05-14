@@ -19,11 +19,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "string AppBroadcastServices.BroadcastLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "BroadcastLanguage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "string AppBroadcastServices.BroadcastLanguage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "BroadcastLanguage");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "string AppBroadcastServices.BroadcastTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "BroadcastTitle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "string AppBroadcastServices.BroadcastTitle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "BroadcastTitle");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "bool AppBroadcastServices.CanCapture");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "CanCapture");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "AppBroadcastCaptureTargetType AppBroadcastServices.CaptureTargetType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "CaptureTargetType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "AppBroadcastCaptureTargetType AppBroadcastServices.CaptureTargetType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "CaptureTargetType");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "AppBroadcastState AppBroadcastServices.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "State");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "string AppBroadcastServices.UserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "UserName");
 			}
 		}
 #endif
@@ -89,42 +89,42 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<uint> EnterBroadcastModeAsync(global::Windows.Media.Capture.AppBroadcastPlugIn plugIn)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "IAsyncOperation<uint> AppBroadcastServices.EnterBroadcastModeAsync(AppBroadcastPlugIn plugIn)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "EnterBroadcastModeAsync(AppBroadcastPlugIn plugIn)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ExitBroadcastMode(global::Windows.Media.Capture.AppBroadcastExitBroadcastModeReason reason)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "void AppBroadcastServices.ExitBroadcastMode(AppBroadcastExitBroadcastModeReason reason)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "ExitBroadcastMode(AppBroadcastExitBroadcastModeReason reason)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartBroadcast()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "void AppBroadcastServices.StartBroadcast()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "StartBroadcast()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void PauseBroadcast()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "void AppBroadcastServices.PauseBroadcast()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "PauseBroadcast()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ResumeBroadcast()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "void AppBroadcastServices.ResumeBroadcast()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastServices", "ResumeBroadcast()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.AppBroadcastPreview StartPreview(global::Windows.Foundation.Size desiredSize)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "AppBroadcastPreview AppBroadcastServices.StartPreview(Size desiredSize)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "StartPreview(Size desiredSize)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastServices.BroadcastLanguage.get

@@ -17,42 +17,42 @@ namespace Windows.UI.ApplicationSettings
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.ApplicationSettings.AccountsSettingsPane GetForCurrentView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "AccountsSettingsPane AccountsSettingsPane.GetForCurrentView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Show()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPane", "void AccountsSettingsPane.Show()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPane", "Show()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction ShowManageAccountsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "IAsyncAction AccountsSettingsPane.ShowManageAccountsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "ShowManageAccountsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction ShowAddAccountAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "IAsyncAction AccountsSettingsPane.ShowAddAccountAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "ShowAddAccountAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction ShowManageAccountsForUserAsync(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "IAsyncAction AccountsSettingsPane.ShowManageAccountsForUserAsync(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "ShowManageAccountsForUserAsync(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction ShowAddAccountForUserAsync(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "IAsyncAction AccountsSettingsPane.ShowAddAccountForUserAsync(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPane", "ShowAddAccountForUserAsync(User user)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.AccountCommandsRequested.add
@@ -64,12 +64,12 @@ namespace Windows.UI.ApplicationSettings
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPane", "event TypedEventHandler<AccountsSettingsPane, AccountsSettingsPaneCommandsRequestedEventArgs> AccountsSettingsPane.AccountCommandsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPane", "event AccountCommandsRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPane", "event TypedEventHandler<AccountsSettingsPane, AccountsSettingsPaneCommandsRequestedEventArgs> AccountsSettingsPane.AccountCommandsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPane", "event AccountCommandsRequested");
 			}
 		}
 #endif

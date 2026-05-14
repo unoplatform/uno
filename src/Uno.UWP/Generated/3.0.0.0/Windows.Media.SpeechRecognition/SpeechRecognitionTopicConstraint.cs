@@ -14,11 +14,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "bool SpeechRecognitionTopicConstraint.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "bool SpeechRecognitionTopicConstraint.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "IsEnabled");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionTopicConstraint.Probability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Probability");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionTopicConstraint.Probability");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Probability");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionScenario SpeechRecognitionTopicConstraint.Scenario");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Scenario");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "string SpeechRecognitionTopicConstraint.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Tag");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "string SpeechRecognitionTopicConstraint.Tag");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Tag");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "string SpeechRecognitionTopicConstraint.TopicHint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "TopicHint");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionConstraintType SpeechRecognitionTopicConstraint.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Type");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognitionTopicConstraint(global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario, string topicHint)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(Windows.Media.SpeechRecognition.SpeechRecognitionScenario, string)
@@ -92,7 +92,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognitionTopicConstraint(global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario, string topicHint, string tag)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint, string tag)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint, string tag)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(Windows.Media.SpeechRecognition.SpeechRecognitionScenario, string, string)

@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "Guid GattDescriptorUuids.CharacteristicAggregateFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "CharacteristicAggregateFormat");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "Guid GattDescriptorUuids.CharacteristicExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "CharacteristicExtendedProperties");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "Guid GattDescriptorUuids.CharacteristicPresentationFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "CharacteristicPresentationFormat");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "Guid GattDescriptorUuids.CharacteristicUserDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "CharacteristicUserDescription");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "Guid GattDescriptorUuids.ClientCharacteristicConfiguration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "ClientCharacteristicConfiguration");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "Guid GattDescriptorUuids.ServerCharacteristicConfiguration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "ServerCharacteristicConfiguration");
 			}
 		}
 #endif

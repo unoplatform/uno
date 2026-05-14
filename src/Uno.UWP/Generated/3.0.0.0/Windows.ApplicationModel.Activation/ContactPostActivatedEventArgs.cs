@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "Contact ContactPostActivatedEventArgs.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "Contact");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "ActivationKind ContactPostActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "ApplicationExecutionState ContactPostActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "string ContactPostActivatedEventArgs.ServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "ServiceId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "string ContactPostActivatedEventArgs.ServiceUserId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "ServiceUserId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "SplashScreen ContactPostActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "string ContactPostActivatedEventArgs.Verb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs", "Verb");
 			}
 		}
 #endif

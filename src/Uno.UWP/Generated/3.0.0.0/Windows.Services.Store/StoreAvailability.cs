@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "DateTimeOffset StoreAvailability.EndDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "EndDate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "string StoreAvailability.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "ExtendedJsonData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "StorePrice StoreAvailability.Price");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "Price");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "string StoreAvailability.StoreId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "StoreId");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.Services.Store
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "IAsyncOperation<StorePurchaseResult> StoreAvailability.RequestPurchaseAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "RequestPurchaseAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync(global::Windows.Services.Store.StorePurchaseProperties storePurchaseProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "IAsyncOperation<StorePurchaseResult> StoreAvailability.RequestPurchaseAsync(StorePurchaseProperties storePurchaseProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAvailability", "RequestPurchaseAsync(StorePurchaseProperties storePurchaseProperties)");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StoreAvailability.EndDate.get

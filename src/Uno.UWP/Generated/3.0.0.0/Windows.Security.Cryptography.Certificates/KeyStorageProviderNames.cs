@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "string KeyStorageProviderNames.PassportKeyStorageProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "PassportKeyStorageProvider");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "string KeyStorageProviderNames.PlatformKeyStorageProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "PlatformKeyStorageProvider");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "string KeyStorageProviderNames.SmartcardKeyStorageProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "SmartcardKeyStorageProvider");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "string KeyStorageProviderNames.SoftwareKeyStorageProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "SoftwareKeyStorageProvider");
 			}
 		}
 #endif

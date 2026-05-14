@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult", "IBuffer MobileBroadbandUiccAppReadRecordResult.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult", "Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult", "MobileBroadbandUiccAppOperationStatus MobileBroadbandUiccAppReadRecordResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult", "Status");
 			}
 		}
 #endif

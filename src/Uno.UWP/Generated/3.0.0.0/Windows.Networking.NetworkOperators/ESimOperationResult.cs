@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimOperationResult", "ESimOperationStatus ESimOperationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimOperationResult", "Status");
 			}
 		}
 #endif

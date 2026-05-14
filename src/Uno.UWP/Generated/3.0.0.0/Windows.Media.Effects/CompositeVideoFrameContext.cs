@@ -19,7 +19,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.CompositeVideoFrameContext", "VideoFrame CompositeVideoFrameContext.BackgroundFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.CompositeVideoFrameContext", "BackgroundFrame");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.CompositeVideoFrameContext", "VideoFrame CompositeVideoFrameContext.OutputFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.CompositeVideoFrameContext", "OutputFrame");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.CompositeVideoFrameContext", "IReadOnlyList<IDirect3DSurface> CompositeVideoFrameContext.SurfacesToOverlay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.CompositeVideoFrameContext", "SurfacesToOverlay");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Media.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaOverlay GetOverlayForSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surfaceToOverlay)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.CompositeVideoFrameContext", "MediaOverlay CompositeVideoFrameContext.GetOverlayForSurface(IDirect3DSurface surfaceToOverlay)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.CompositeVideoFrameContext", "GetOverlayForSurface(IDirect3DSurface surfaceToOverlay)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.BackgroundFrame.get

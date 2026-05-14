@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult", "PaymentCanMakePaymentResultStatus PaymentCanMakePaymentResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult", "Status");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentCanMakePaymentResult(global::Windows.ApplicationModel.Payments.PaymentCanMakePaymentResultStatus value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult", "PaymentCanMakePaymentResult.PaymentCanMakePaymentResult(PaymentCanMakePaymentResultStatus value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult", "PaymentCanMakePaymentResult(PaymentCanMakePaymentResultStatus value)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.PaymentCanMakePaymentResult(Windows.ApplicationModel.Payments.PaymentCanMakePaymentResultStatus)

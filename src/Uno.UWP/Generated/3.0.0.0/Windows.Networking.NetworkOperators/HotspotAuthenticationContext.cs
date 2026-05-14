@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "Uri HotspotAuthenticationContext.AuthenticationUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "AuthenticationUrl");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "NetworkAdapter HotspotAuthenticationContext.NetworkAdapter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "NetworkAdapter");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "Uri HotspotAuthenticationContext.RedirectMessageUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "RedirectMessageUrl");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "XmlDocument HotspotAuthenticationContext.RedirectMessageXml");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "RedirectMessageXml");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "byte[] HotspotAuthenticationContext.WirelessNetworkId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "WirelessNetworkId");
 			}
 		}
 #endif
@@ -67,42 +67,42 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryGetAuthenticationContext(string evenToken, out global::Windows.Networking.NetworkOperators.HotspotAuthenticationContext context)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "bool HotspotAuthenticationContext.TryGetAuthenticationContext(string evenToken, out HotspotAuthenticationContext context)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "TryGetAuthenticationContext(string evenToken, out HotspotAuthenticationContext context)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void IssueCredentials(string userName, string password, string extraParameters, bool markAsManualConnectOnFailure)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "void HotspotAuthenticationContext.IssueCredentials(string userName, string password, string extraParameters, bool markAsManualConnectOnFailure)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "IssueCredentials(string userName, string password, string extraParameters, bool markAsManualConnectOnFailure)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AbortAuthentication(bool markAsManual)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "void HotspotAuthenticationContext.AbortAuthentication(bool markAsManual)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "AbortAuthentication(bool markAsManual)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SkipAuthentication()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "void HotspotAuthenticationContext.SkipAuthentication()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "SkipAuthentication()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void TriggerAttentionRequired(string packageRelativeApplicationId, string applicationParameters)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "void HotspotAuthenticationContext.TriggerAttentionRequired(string packageRelativeApplicationId, string applicationParameters)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "TriggerAttentionRequired(string packageRelativeApplicationId, string applicationParameters)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult> IssueCredentialsAsync(string userName, string password, string extraParameters, bool markAsManualConnectOnFailure)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "IAsyncOperation<HotspotCredentialsAuthenticationResult> HotspotAuthenticationContext.IssueCredentialsAsync(string userName, string password, string extraParameters, bool markAsManualConnectOnFailure)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationContext", "IssueCredentialsAsync(string userName, string password, string extraParameters, bool markAsManualConnectOnFailure)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.AuthenticationUrl.get

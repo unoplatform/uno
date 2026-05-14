@@ -19,7 +19,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "Battery Battery.AggregateBattery");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "AggregateBattery");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "string Battery.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "DeviceId");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.Devices.Power
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Power.Battery> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "IAsyncOperation<Battery> Battery.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "string Battery.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "GetDeviceSelector()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Power.Battery.AggregateBattery.get
@@ -52,7 +52,7 @@ namespace Windows.Devices.Power
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport GetReport()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "BatteryReport Battery.GetReport()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "GetReport()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.add
@@ -65,12 +65,12 @@ namespace Windows.Devices.Power
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Power.Battery", "event TypedEventHandler<Battery, object> Battery.ReportUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Power.Battery", "event ReportUpdated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Power.Battery", "event TypedEventHandler<Battery, object> Battery.ReportUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Power.Battery", "event ReportUpdated");
 			}
 		}
 #endif

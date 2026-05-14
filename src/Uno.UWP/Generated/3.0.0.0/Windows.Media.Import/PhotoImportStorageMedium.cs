@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "ulong PhotoImportStorageMedium.AvailableSpaceInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "AvailableSpaceInBytes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "ulong PhotoImportStorageMedium.CapacityInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "CapacityInBytes");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "string PhotoImportStorageMedium.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "Description");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "string PhotoImportStorageMedium.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "Name");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "string PhotoImportStorageMedium.SerialNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "SerialNumber");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "PhotoImportStorageMediumType PhotoImportStorageMedium.StorageMediumType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "StorageMediumType");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "PhotoImportAccessMode PhotoImportStorageMedium.SupportedAccessMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportStorageMedium", "SupportedAccessMode");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Import
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Refresh()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportStorageMedium", "void PhotoImportStorageMedium.Refresh()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportStorageMedium", "Refresh()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportStorageMedium.AvailableSpaceInBytes.get

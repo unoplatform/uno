@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "GeofenceMonitor GeofenceMonitor.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "Current");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "IList<Geofence> GeofenceMonitor.Geofences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "Geofences");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "Geoposition GeofenceMonitor.LastKnownGeoposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "LastKnownGeoposition");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "GeofenceMonitorStatus GeofenceMonitor.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "Status");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport> ReadReports()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "IReadOnlyList<GeofenceStateChangeReport> GeofenceMonitor.ReadReports()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "ReadReports()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GeofenceStateChanged.add
@@ -75,12 +75,12 @@ namespace Windows.Devices.Geolocation.Geofencing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event TypedEventHandler<GeofenceMonitor, object> GeofenceMonitor.GeofenceStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event GeofenceStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event TypedEventHandler<GeofenceMonitor, object> GeofenceMonitor.GeofenceStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event GeofenceStateChanged");
 			}
 		}
 #endif
@@ -91,12 +91,12 @@ namespace Windows.Devices.Geolocation.Geofencing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event TypedEventHandler<GeofenceMonitor, object> GeofenceMonitor.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event StatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event TypedEventHandler<GeofenceMonitor, object> GeofenceMonitor.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event StatusChanged");
 			}
 		}
 #endif

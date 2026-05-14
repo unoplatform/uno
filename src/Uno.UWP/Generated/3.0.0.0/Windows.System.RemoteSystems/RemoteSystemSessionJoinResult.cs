@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinResult", "RemoteSystemSession RemoteSystemSessionJoinResult.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinResult", "Session");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinResult", "RemoteSystemSessionJoinStatus RemoteSystemSessionJoinResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinResult", "Status");
 			}
 		}
 #endif

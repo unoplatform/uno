@@ -290,7 +290,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "RichEditTextDocument RichEditBox.Document");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "Document");
 			}
 		}
 #endif
@@ -520,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "RichEditTextDocument RichEditBox.TextDocument");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "TextDocument");
 			}
 		}
 #endif
@@ -582,7 +582,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetLinguisticAlternativesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "IAsyncOperation<IReadOnlyList<string>> RichEditBox.GetLinguisticAlternativesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "GetLinguisticAlternativesAsync()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.CandidateWindowBoundsChanged.add
@@ -665,12 +665,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, CandidateWindowBoundsChangedEventArgs> RichEditBox.CandidateWindowBoundsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event CandidateWindowBoundsChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, CandidateWindowBoundsChangedEventArgs> RichEditBox.CandidateWindowBoundsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event CandidateWindowBoundsChanged");
 			}
 		}
 #endif
@@ -681,12 +681,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event ContextMenuOpeningEventHandler RichEditBox.ContextMenuOpening");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event ContextMenuOpening");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event ContextMenuOpeningEventHandler RichEditBox.ContextMenuOpening");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event ContextMenuOpening");
 			}
 		}
 #endif
@@ -697,12 +697,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextControlCopyingToClipboardEventArgs> RichEditBox.CopyingToClipboard");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event CopyingToClipboard");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextControlCopyingToClipboardEventArgs> RichEditBox.CopyingToClipboard");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event CopyingToClipboard");
 			}
 		}
 #endif
@@ -713,12 +713,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextControlCuttingToClipboardEventArgs> RichEditBox.CuttingToClipboard");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event CuttingToClipboard");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextControlCuttingToClipboardEventArgs> RichEditBox.CuttingToClipboard");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event CuttingToClipboard");
 			}
 		}
 #endif
@@ -729,12 +729,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextControlPasteEventHandler RichEditBox.Paste");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event Paste");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextControlPasteEventHandler RichEditBox.Paste");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event Paste");
 			}
 		}
 #endif
@@ -745,12 +745,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event RoutedEventHandler RichEditBox.SelectionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event SelectionChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event RoutedEventHandler RichEditBox.SelectionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event SelectionChanged");
 			}
 		}
 #endif
@@ -761,12 +761,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, RichEditBoxSelectionChangingEventArgs> RichEditBox.SelectionChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event SelectionChanging");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, RichEditBoxSelectionChangingEventArgs> RichEditBox.SelectionChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event SelectionChanging");
 			}
 		}
 #endif
@@ -777,12 +777,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event RoutedEventHandler RichEditBox.TextChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event RoutedEventHandler RichEditBox.TextChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextChanged");
 			}
 		}
 #endif
@@ -793,12 +793,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs> RichEditBox.TextChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextChanging");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs> RichEditBox.TextChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextChanging");
 			}
 		}
 #endif
@@ -809,12 +809,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextCompositionChangedEventArgs> RichEditBox.TextCompositionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextCompositionChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextCompositionChangedEventArgs> RichEditBox.TextCompositionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextCompositionChanged");
 			}
 		}
 #endif
@@ -825,12 +825,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextCompositionEndedEventArgs> RichEditBox.TextCompositionEnded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextCompositionEnded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextCompositionEndedEventArgs> RichEditBox.TextCompositionEnded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextCompositionEnded");
 			}
 		}
 #endif
@@ -841,12 +841,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextCompositionStartedEventArgs> RichEditBox.TextCompositionStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextCompositionStarted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TypedEventHandler<RichEditBox, TextCompositionStartedEventArgs> RichEditBox.TextCompositionStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBox", "event TextCompositionStarted");
 			}
 		}
 #endif

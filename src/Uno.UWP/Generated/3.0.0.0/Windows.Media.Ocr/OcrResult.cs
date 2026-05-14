@@ -19,7 +19,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "IReadOnlyList<OcrLine> OcrResult.Lines");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "Lines");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "string OcrResult.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "Text");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "double? OcrResult.TextAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "TextAngle");
 			}
 		}
 #endif

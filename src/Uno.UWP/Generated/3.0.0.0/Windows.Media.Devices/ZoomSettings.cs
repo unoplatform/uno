@@ -14,11 +14,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomSettings", "ZoomTransitionMode ZoomSettings.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomSettings", "Mode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomSettings", "ZoomTransitionMode ZoomSettings.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomSettings", "Mode");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomSettings", "float ZoomSettings.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomSettings", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomSettings", "float ZoomSettings.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomSettings", "Value");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ZoomSettings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomSettings", "ZoomSettings.ZoomSettings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomSettings", "ZoomSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.ZoomSettings.ZoomSettings()

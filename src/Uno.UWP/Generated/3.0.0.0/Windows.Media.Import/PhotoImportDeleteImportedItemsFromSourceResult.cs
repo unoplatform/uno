@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "IReadOnlyList<PhotoImportItem> PhotoImportDeleteImportedItemsFromSourceResult.DeletedItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "DeletedItems");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "bool PhotoImportDeleteImportedItemsFromSourceResult.HasSucceeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "HasSucceeded");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.PhotosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "PhotosCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.PhotosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "PhotosSizeInBytes");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "PhotoImportSession PhotoImportDeleteImportedItemsFromSourceResult.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "Session");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.SiblingsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "SiblingsCount");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.SiblingsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "SiblingsSizeInBytes");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.SidecarsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "SidecarsCount");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.SidecarsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "SidecarsSizeInBytes");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.TotalCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "TotalCount");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.TotalSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "TotalSizeInBytes");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.VideosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "VideosCount");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.VideosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "VideosSizeInBytes");
 			}
 		}
 #endif

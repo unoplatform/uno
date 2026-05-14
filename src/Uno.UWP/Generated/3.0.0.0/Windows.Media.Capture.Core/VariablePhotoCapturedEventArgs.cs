@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "TimeSpan VariablePhotoCapturedEventArgs.CaptureTimeOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "CaptureTimeOffset");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "CapturedFrameControlValues VariablePhotoCapturedEventArgs.CapturedFrameControlValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "CapturedFrameControlValues");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "CapturedFrame VariablePhotoCapturedEventArgs.Frame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "Frame");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "uint? VariablePhotoCapturedEventArgs.UsedFrameControllerIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "UsedFrameControllerIndex");
 			}
 		}
 #endif

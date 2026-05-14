@@ -19,7 +19,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "uint HidBooleanControlDescription.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "bool HidBooleanControlDescription.IsAbsolute");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "IsAbsolute");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "IReadOnlyList<HidCollection> HidBooleanControlDescription.ParentCollections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "ParentCollections");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "ushort HidBooleanControlDescription.ReportId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "ReportId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "HidReportType HidBooleanControlDescription.ReportType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "ReportType");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "ushort HidBooleanControlDescription.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "UsageId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "ushort HidBooleanControlDescription.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription", "UsagePage");
 			}
 		}
 #endif

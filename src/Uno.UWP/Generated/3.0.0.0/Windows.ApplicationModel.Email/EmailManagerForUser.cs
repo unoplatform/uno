@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailManagerForUser", "User EmailManagerForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailManagerForUser", "User");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ShowComposeNewEmailAsync(global::Windows.ApplicationModel.Email.EmailMessage message)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailManagerForUser", "IAsyncAction EmailManagerForUser.ShowComposeNewEmailAsync(EmailMessage message)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailManagerForUser", "ShowComposeNewEmailAsync(EmailMessage message)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailStore> RequestStoreAsync(global::Windows.ApplicationModel.Email.EmailStoreAccessType accessType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailManagerForUser", "IAsyncOperation<EmailStore> EmailManagerForUser.RequestStoreAsync(EmailStoreAccessType accessType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailManagerForUser", "RequestStoreAsync(EmailStoreAccessType accessType)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.User.get

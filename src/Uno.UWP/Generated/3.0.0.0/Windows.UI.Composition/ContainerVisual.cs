@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ContainerVisual", "VisualCollection ContainerVisual.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ContainerVisual", "Children");
 			}
 		}
 #endif

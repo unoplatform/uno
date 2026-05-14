@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs", "uint AppBroadcastCameraCaptureStateChangedEventArgs.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs", "ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs", "AppBroadcastCameraCaptureState AppBroadcastCameraCaptureStateChangedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs", "State");
 			}
 		}
 #endif

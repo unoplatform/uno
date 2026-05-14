@@ -19,11 +19,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "bool SpeechRecognitionVoiceCommandDefinitionConstraint.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "bool SpeechRecognitionVoiceCommandDefinitionConstraint.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "IsEnabled");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionVoiceCommandDefinitionConstraint.Probability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "Probability");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionVoiceCommandDefinitionConstraint.Probability");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "Probability");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "string SpeechRecognitionVoiceCommandDefinitionConstraint.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "Tag");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "string SpeechRecognitionVoiceCommandDefinitionConstraint.Tag");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "Tag");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "SpeechRecognitionConstraintType SpeechRecognitionVoiceCommandDefinitionConstraint.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "Type");
 			}
 		}
 #endif

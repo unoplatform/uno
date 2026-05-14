@@ -14,11 +14,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.IndexableContent", "string IndexableContent.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.IndexableContent", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "string IndexableContent.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "Id");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.IndexableContent", "IDictionary<string, object> IndexableContent.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.IndexableContent", "Properties");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.IndexableContent", "IRandomAccessStream IndexableContent.Stream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.IndexableContent", "Stream");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "IRandomAccessStream IndexableContent.Stream");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "Stream");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.IndexableContent", "string IndexableContent.StreamContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.IndexableContent", "StreamContentType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "string IndexableContent.StreamContentType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "StreamContentType");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public IndexableContent()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "IndexableContent.IndexableContent()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "IndexableContent()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.IndexableContent()

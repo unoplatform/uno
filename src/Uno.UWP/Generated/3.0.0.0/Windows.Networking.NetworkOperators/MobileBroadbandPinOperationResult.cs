@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult", "uint MobileBroadbandPinOperationResult.AttemptsRemaining");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult", "AttemptsRemaining");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult", "bool MobileBroadbandPinOperationResult.IsSuccessful");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult", "IsSuccessful");
 			}
 		}
 #endif

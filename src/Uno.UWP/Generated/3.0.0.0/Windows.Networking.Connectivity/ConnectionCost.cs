@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "bool ConnectionCost.ApproachingDataLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "ApproachingDataLimit");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "bool ConnectionCost.BackgroundDataUsageRestricted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "BackgroundDataUsageRestricted");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "NetworkCostType ConnectionCost.NetworkCostType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "NetworkCostType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "bool ConnectionCost.OverDataLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "OverDataLimit");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "bool ConnectionCost.Roaming");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionCost", "Roaming");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelDownEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsChannelDownEnabled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelUpEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsChannelUpEnabled");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsFastForwardEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsFastForwardEnabled");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsNextEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsNextEnabled");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPauseEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsPauseEnabled");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsPlayEnabled");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayPauseToggleEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsPlayPauseToggleEnabled");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackPositionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsPlaybackPositionEnabled");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackRateEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsPlaybackRateEnabled");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPreviousEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsPreviousEnabled");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRecordEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsRecordEnabled");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRepeatEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsRepeatEnabled");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRewindEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsRewindEnabled");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsShuffleEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsShuffleEnabled");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "bool GlobalSystemMediaTransportControlsSessionPlaybackControls.IsStopEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls", "IsStopEnabled");
 			}
 		}
 #endif

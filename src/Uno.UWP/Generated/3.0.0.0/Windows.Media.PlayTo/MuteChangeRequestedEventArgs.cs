@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.MuteChangeRequestedEventArgs", "bool MuteChangeRequestedEventArgs.Mute");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.MuteChangeRequestedEventArgs", "Mute");
 			}
 		}
 #endif

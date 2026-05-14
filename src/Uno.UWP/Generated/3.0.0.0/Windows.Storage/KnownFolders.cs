@@ -14,7 +14,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.AppCaptures");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "AppCaptures");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.CameraRoll");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "CameraRoll");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.DocumentsLibrary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "DocumentsLibrary");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.HomeGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "HomeGroup");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.MediaServerDevices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "MediaServerDevices");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.MusicLibrary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "MusicLibrary");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.Objects3D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "Objects3D");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.PicturesLibrary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "PicturesLibrary");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.Playlists");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "Playlists");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.RecordedCalls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "RecordedCalls");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.RemovableDevices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "RemovableDevices");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.SavedPictures");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "SavedPictures");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "StorageFolder KnownFolders.VideosLibrary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "VideosLibrary");
 			}
 		}
 #endif
@@ -142,28 +142,28 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderForUserAsync(global::Windows.System.User user, global::Windows.Storage.KnownFolderId folderId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "IAsyncOperation<StorageFolder> KnownFolders.GetFolderForUserAsync(User user, KnownFolderId folderId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "GetFolderForUserAsync(User user, KnownFolderId folderId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.KnownFoldersAccessStatus> RequestAccessAsync(global::Windows.Storage.KnownFolderId folderId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "IAsyncOperation<KnownFoldersAccessStatus> KnownFolders.RequestAccessAsync(KnownFolderId folderId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "RequestAccessAsync(KnownFolderId folderId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.KnownFoldersAccessStatus> RequestAccessForUserAsync(global::Windows.System.User user, global::Windows.Storage.KnownFolderId folderId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "IAsyncOperation<KnownFoldersAccessStatus> KnownFolders.RequestAccessForUserAsync(User user, KnownFolderId folderId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "RequestAccessForUserAsync(User user, KnownFolderId folderId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync(global::Windows.Storage.KnownFolderId folderId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "IAsyncOperation<StorageFolder> KnownFolders.GetFolderAsync(KnownFolderId folderId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.KnownFolders", "GetFolderAsync(KnownFolderId folderId)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.KnownFolders.AppCaptures.get

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "ActivationKind PrintWorkflowUIActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "ApplicationExecutionState PrintWorkflowUIActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "PrintWorkflowForegroundSession PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "PrintWorkflowSession");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "SplashScreen PrintWorkflowUIActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "User PrintWorkflowUIActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs", "User");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Album");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Album");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Album");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "Album");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.AlbumArtist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "AlbumArtist");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.AlbumArtist");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "AlbumArtist");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Artist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Artist");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Artist");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "Artist");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "uint MusicProperties.Bitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Bitrate");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "IList<string> MusicProperties.Composers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Composers");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "IList<string> MusicProperties.Conductors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Conductors");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "TimeSpan MusicProperties.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Duration");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "IList<string> MusicProperties.Genre");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Genre");
 			}
 		}
 #endif
@@ -111,7 +111,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "IList<string> MusicProperties.Producers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Producers");
 			}
 		}
 #endif
@@ -121,11 +121,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Publisher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Publisher");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Publisher");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "Publisher");
 			}
 		}
 #endif
@@ -135,11 +135,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "uint MusicProperties.Rating");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Rating");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "uint MusicProperties.Rating");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "Rating");
 			}
 		}
 #endif
@@ -149,11 +149,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Subtitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Subtitle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Subtitle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "Subtitle");
 			}
 		}
 #endif
@@ -163,11 +163,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "string MusicProperties.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "Title");
 			}
 		}
 #endif
@@ -177,11 +177,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "uint MusicProperties.TrackNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "TrackNumber");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "uint MusicProperties.TrackNumber");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "TrackNumber");
 			}
 		}
 #endif
@@ -191,7 +191,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "IList<string> MusicProperties.Writers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Writers");
 			}
 		}
 #endif
@@ -201,11 +201,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "uint MusicProperties.Year");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "Year");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "uint MusicProperties.Year");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.MusicProperties", "Year");
 			}
 		}
 #endif
@@ -213,21 +213,21 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync(global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "IAsyncOperation<IDictionary<string, object>> MusicProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SavePropertiesAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>> propertiesToSave)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "IAsyncAction MusicProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SavePropertiesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "IAsyncAction MusicProperties.SavePropertiesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.MusicProperties", "SavePropertiesAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.FileProperties.MusicProperties.Album.get

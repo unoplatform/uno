@@ -14,11 +14,11 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "HostName EndpointPair.LocalHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "LocalHostName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "HostName EndpointPair.LocalHostName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "LocalHostName");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "string EndpointPair.LocalServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "LocalServiceName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "string EndpointPair.LocalServiceName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "LocalServiceName");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "HostName EndpointPair.RemoteHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "RemoteHostName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "HostName EndpointPair.RemoteHostName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "RemoteHostName");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "string EndpointPair.RemoteServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "RemoteServiceName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "string EndpointPair.RemoteServiceName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "RemoteServiceName");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.Networking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EndpointPair(global::Windows.Networking.HostName localHostName, string localServiceName, global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "EndpointPair.EndpointPair(HostName localHostName, string localServiceName, HostName remoteHostName, string remoteServiceName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "EndpointPair(HostName localHostName, string localServiceName, HostName remoteHostName, string remoteServiceName)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.EndpointPair.EndpointPair(Windows.Networking.HostName, string, Windows.Networking.HostName, string)

@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BrowserProcessExitedEventArgs", "CoreWebView2BrowserProcessExitKind CoreWebView2BrowserProcessExitedEventArgs.BrowserProcessExitKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BrowserProcessExitedEventArgs", "BrowserProcessExitKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BrowserProcessExitedEventArgs", "uint CoreWebView2BrowserProcessExitedEventArgs.BrowserProcessId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BrowserProcessExitedEventArgs", "BrowserProcessId");
 			}
 		}
 #endif

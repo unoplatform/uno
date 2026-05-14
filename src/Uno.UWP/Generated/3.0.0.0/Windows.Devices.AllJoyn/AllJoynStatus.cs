@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.AuthenticationFailed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "AuthenticationFailed");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.AuthenticationRejectedByUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "AuthenticationRejectedByUser");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.ConnectionRefused");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "ConnectionRefused");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.Fail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "Fail");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InsufficientSecurity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InsufficientSecurity");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InvalidArgument1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InvalidArgument1");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InvalidArgument2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InvalidArgument2");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InvalidArgument3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InvalidArgument3");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InvalidArgument4");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InvalidArgument4");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InvalidArgument5");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InvalidArgument5");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InvalidArgument6");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InvalidArgument6");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InvalidArgument7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InvalidArgument7");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.InvalidArgument8");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "InvalidArgument8");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.Ok");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "Ok");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.OperationTimedOut");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "OperationTimedOut");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.OtherEndClosed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "OtherEndClosed");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.SslConnectFailed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "SslConnectFailed");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "int AllJoynStatus.SslIdentityVerificationFailed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynStatus", "SslIdentityVerificationFailed");
 			}
 		}
 #endif

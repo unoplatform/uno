@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "DateTimeOffset StoreLicense.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "ExpirationDate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "string StoreLicense.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "ExtendedJsonData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "string StoreLicense.InAppOfferToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "InAppOfferToken");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "bool StoreLicense.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "IsActive");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "string StoreLicense.SkuStoreId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "SkuStoreId");
 			}
 		}
 #endif

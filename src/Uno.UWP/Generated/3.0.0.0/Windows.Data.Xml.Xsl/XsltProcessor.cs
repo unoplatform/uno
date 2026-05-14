@@ -12,7 +12,7 @@ namespace Windows.Data.Xml.Xsl
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public XsltProcessor(global::Windows.Data.Xml.Dom.XmlDocument document)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Xsl.XsltProcessor", "XsltProcessor.XsltProcessor(XmlDocument document)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Xsl.XsltProcessor", "XsltProcessor(XmlDocument document)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.XsltProcessor(Windows.Data.Xml.Dom.XmlDocument)
@@ -20,14 +20,14 @@ namespace Windows.Data.Xml.Xsl
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TransformToString(global::Windows.Data.Xml.Dom.IXmlNode inputNode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Xsl.XsltProcessor", "string XsltProcessor.TransformToString(IXmlNode inputNode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Xsl.XsltProcessor", "TransformToString(IXmlNode inputNode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument TransformToDocument(global::Windows.Data.Xml.Dom.IXmlNode inputNode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Xsl.XsltProcessor", "XmlDocument XsltProcessor.TransformToDocument(IXmlNode inputNode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Xsl.XsltProcessor", "TransformToDocument(IXmlNode inputNode)");
 		}
 #endif
 	}

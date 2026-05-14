@@ -19,7 +19,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialAppStateDetails", "string DialAppStateDetails.FullXml");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialAppStateDetails", "FullXml");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialAppStateDetails", "DialAppState DialAppStateDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialAppStateDetails", "State");
 			}
 		}
 #endif

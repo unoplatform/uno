@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "ICollection<string> InitialValueExpressionCollection.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "Keys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "ICollection<string> InitialValueExpressionCollection.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "Values");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "int InitialValueExpressionCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "Count");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "bool InitialValueExpressionCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "IsReadOnly");
 			}
 		}
 #endif
@@ -59,11 +59,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "string InitialValueExpressionCollection.this[string key]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "this[string key]");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "string InitialValueExpressionCollection.this[string key]");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "this[string key]");
 			}
 		}
 #endif
@@ -77,56 +77,56 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(string key, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "void InitialValueExpressionCollection.Add(string key, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "Add(string key, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "bool InitialValueExpressionCollection.ContainsKey(string key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "ContainsKey(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(string key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "bool InitialValueExpressionCollection.Remove(string key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "Remove(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out string value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "bool InitialValueExpressionCollection.TryGetValue(string key, out string value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "TryGetValue(string key, out string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "void InitialValueExpressionCollection.Add(KeyValuePair<string, string> item)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "Add(KeyValuePair<string, string> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "void InitialValueExpressionCollection.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "bool InitialValueExpressionCollection.Contains(KeyValuePair<string, string> item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "Contains(KeyValuePair<string, string> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, string>[] array, int arrayIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "void InitialValueExpressionCollection.CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.InitialValueExpressionCollection", "CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.Remove(System.Collections.Generic.KeyValuePair<string, string>)
@@ -134,7 +134,7 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "IEnumerator<KeyValuePair<string, string>> InitialValueExpressionCollection.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.InitialValueExpressionCollection", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.System.Collections.IEnumerable.GetEnumerator()

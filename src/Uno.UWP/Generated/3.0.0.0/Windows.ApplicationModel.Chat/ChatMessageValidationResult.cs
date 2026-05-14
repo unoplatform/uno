@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "uint? ChatMessageValidationResult.MaxPartCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "MaxPartCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "uint? ChatMessageValidationResult.PartCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "PartCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "uint? ChatMessageValidationResult.RemainingCharacterCountInPart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "RemainingCharacterCountInPart");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "ChatMessageValidationStatus ChatMessageValidationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "Status");
 			}
 		}
 #endif

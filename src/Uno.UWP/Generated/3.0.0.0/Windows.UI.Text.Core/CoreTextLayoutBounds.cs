@@ -19,11 +19,11 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutBounds", "Rect CoreTextLayoutBounds.ControlBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutBounds", "ControlBounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextLayoutBounds", "Rect CoreTextLayoutBounds.ControlBounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextLayoutBounds", "ControlBounds");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutBounds", "Rect CoreTextLayoutBounds.TextBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutBounds", "TextBounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextLayoutBounds", "Rect CoreTextLayoutBounds.TextBounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextLayoutBounds", "TextBounds");
 			}
 		}
 #endif

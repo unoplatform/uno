@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "byte UsbInterruptInEndpointDescriptor.EndpointNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "EndpointNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "TimeSpan UsbInterruptInEndpointDescriptor.Interval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "Interval");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "uint UsbInterruptInEndpointDescriptor.MaxPacketSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "MaxPacketSize");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "UsbInterruptInPipe UsbInterruptInEndpointDescriptor.Pipe");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "Pipe");
 			}
 		}
 #endif

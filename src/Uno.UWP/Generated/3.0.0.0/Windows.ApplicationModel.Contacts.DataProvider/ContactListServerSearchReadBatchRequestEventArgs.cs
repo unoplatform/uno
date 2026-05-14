@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequestEventArgs", "ContactListServerSearchReadBatchRequest ContactListServerSearchReadBatchRequestEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequestEventArgs", "Request");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequestEventArgs", "Deferral ContactListServerSearchReadBatchRequestEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequestEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequestEventArgs.Request.get

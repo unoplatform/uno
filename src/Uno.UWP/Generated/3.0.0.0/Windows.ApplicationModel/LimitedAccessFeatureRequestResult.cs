@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "DateTimeOffset? LimitedAccessFeatureRequestResult.EstimatedRemovalDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "EstimatedRemovalDate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "string LimitedAccessFeatureRequestResult.FeatureId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "FeatureId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "LimitedAccessFeatureStatus LimitedAccessFeatureRequestResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "Status");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessMemoryReport", "ulong ProcessMemoryReport.PrivateWorkingSetUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessMemoryReport", "PrivateWorkingSetUsage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessMemoryReport", "ulong ProcessMemoryReport.TotalWorkingSetUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessMemoryReport", "TotalWorkingSetUsage");
 			}
 		}
 #endif

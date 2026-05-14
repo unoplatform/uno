@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "long ProcessDiskUsageReport.BytesReadCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "BytesReadCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "long ProcessDiskUsageReport.BytesWrittenCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "BytesWrittenCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "long ProcessDiskUsageReport.OtherBytesCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "OtherBytesCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "long ProcessDiskUsageReport.OtherOperationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "OtherOperationCount");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "long ProcessDiskUsageReport.ReadOperationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "ReadOperationCount");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "long ProcessDiskUsageReport.WriteOperationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "WriteOperationCount");
 			}
 		}
 #endif

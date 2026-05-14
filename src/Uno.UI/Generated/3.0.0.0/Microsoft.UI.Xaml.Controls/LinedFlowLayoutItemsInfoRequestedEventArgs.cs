@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "ItemsRangeRequestedLength");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "ItemsRangeStartIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "ItemsRangeStartIndex");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "MaxWidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "MaxWidth");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "MinWidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "MinWidth");
 			}
 		}
 #endif
@@ -69,21 +69,21 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDesiredAspectRatios(double[] values)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "void LinedFlowLayoutItemsInfoRequestedEventArgs.SetDesiredAspectRatios(double[] values)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "SetDesiredAspectRatios(double[] values)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetMinWidths(double[] values)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "void LinedFlowLayoutItemsInfoRequestedEventArgs.SetMinWidths(double[] values)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "SetMinWidths(double[] values)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetMaxWidths(double[] values)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "void LinedFlowLayoutItemsInfoRequestedEventArgs.SetMaxWidths(double[] values)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "SetMaxWidths(double[] values)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength.get

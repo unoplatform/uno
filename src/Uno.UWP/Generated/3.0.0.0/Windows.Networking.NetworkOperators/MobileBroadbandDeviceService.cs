@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceService", "Guid MobileBroadbandDeviceService.DeviceServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceService", "DeviceServiceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceService", "IReadOnlyList<uint> MobileBroadbandDeviceService.SupportedCommands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceService", "SupportedCommands");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataSession OpenDataSession()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceService", "MobileBroadbandDeviceServiceDataSession MobileBroadbandDeviceService.OpenDataSession()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceService", "OpenDataSession()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession OpenCommandSession()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceService", "MobileBroadbandDeviceServiceCommandSession MobileBroadbandDeviceService.OpenCommandSession()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceService", "OpenCommandSession()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.DeviceServiceId.get

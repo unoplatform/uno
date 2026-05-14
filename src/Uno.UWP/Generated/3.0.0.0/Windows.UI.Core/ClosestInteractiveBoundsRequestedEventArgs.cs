@@ -19,11 +19,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "Rect ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "ClosestInteractiveBounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "Rect ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "ClosestInteractiveBounds");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "Point ClosestInteractiveBoundsRequestedEventArgs.PointerPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "PointerPosition");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "Rect ClosestInteractiveBoundsRequestedEventArgs.SearchBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "SearchBounds");
 			}
 		}
 #endif

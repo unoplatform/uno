@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletBarcode", "WalletBarcodeSymbology WalletBarcode.Symbology");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletBarcode", "Symbology");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletBarcode", "string WalletBarcode.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletBarcode", "Value");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Wallet
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WalletBarcode(global::Windows.ApplicationModel.Wallet.WalletBarcodeSymbology symbology, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletBarcode", "WalletBarcode.WalletBarcode(WalletBarcodeSymbology symbology, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletBarcode", "WalletBarcode(WalletBarcodeSymbology symbology, string value)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WalletBarcode(Windows.ApplicationModel.Wallet.WalletBarcodeSymbology, string)
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Wallet
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WalletBarcode(global::Windows.Storage.Streams.IRandomAccessStreamReference streamToBarcodeImage)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletBarcode", "WalletBarcode.WalletBarcode(IRandomAccessStreamReference streamToBarcodeImage)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletBarcode", "WalletBarcode(IRandomAccessStreamReference streamToBarcodeImage)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WalletBarcode(Windows.Storage.Streams.IRandomAccessStreamReference)
@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.Wallet
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamReference> GetImageAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletBarcode", "IAsyncOperation<IRandomAccessStreamReference> WalletBarcode.GetImageAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletBarcode", "GetImageAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Symbology.get

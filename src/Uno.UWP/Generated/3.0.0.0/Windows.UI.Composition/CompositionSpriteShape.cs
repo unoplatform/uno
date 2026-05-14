@@ -19,11 +19,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionBrush CompositionSpriteShape.FillBrush");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "FillBrush");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "CompositionBrush CompositionSpriteShape.FillBrush");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "FillBrush");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionGeometry CompositionSpriteShape.Geometry");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "Geometry");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "CompositionGeometry CompositionSpriteShape.Geometry");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "Geometry");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "bool CompositionSpriteShape.IsStrokeNonScaling");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "IsStrokeNonScaling");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "bool CompositionSpriteShape.IsStrokeNonScaling");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "IsStrokeNonScaling");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionBrush CompositionSpriteShape.StrokeBrush");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeBrush");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "CompositionBrush CompositionSpriteShape.StrokeBrush");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "StrokeBrush");
 			}
 		}
 #endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeDashArray CompositionSpriteShape.StrokeDashArray");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeDashArray");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeDashCap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeDashCap");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeDashCap");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "StrokeDashCap");
 			}
 		}
 #endif
@@ -99,11 +99,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeDashOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeDashOffset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeDashOffset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "StrokeDashOffset");
 			}
 		}
 #endif
@@ -113,11 +113,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeEndCap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeEndCap");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeEndCap");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "StrokeEndCap");
 			}
 		}
 #endif
@@ -127,11 +127,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeLineJoin CompositionSpriteShape.StrokeLineJoin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeLineJoin");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeLineJoin CompositionSpriteShape.StrokeLineJoin");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "StrokeLineJoin");
 			}
 		}
 #endif
@@ -141,11 +141,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeMiterLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeMiterLimit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeMiterLimit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "StrokeMiterLimit");
 			}
 		}
 #endif
@@ -155,11 +155,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeStartCap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeStartCap");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeStartCap");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "StrokeStartCap");
 			}
 		}
 #endif
@@ -169,11 +169,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeThickness");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "StrokeThickness");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeThickness");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionSpriteShape", "StrokeThickness");
 			}
 		}
 #endif

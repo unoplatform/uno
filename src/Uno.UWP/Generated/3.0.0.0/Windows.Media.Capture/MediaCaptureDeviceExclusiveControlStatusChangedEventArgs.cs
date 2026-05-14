@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs", "string MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs", "DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs", "MediaCaptureDeviceExclusiveControlStatus MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs", "Status");
 			}
 		}
 #endif

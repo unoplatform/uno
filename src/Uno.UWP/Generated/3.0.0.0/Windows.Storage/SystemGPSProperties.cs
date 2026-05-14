@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemGPSProperties", "string SystemGPSProperties.LatitudeDecimal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemGPSProperties", "LatitudeDecimal");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemGPSProperties", "string SystemGPSProperties.LongitudeDecimal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemGPSProperties", "LongitudeDecimal");
 			}
 		}
 #endif

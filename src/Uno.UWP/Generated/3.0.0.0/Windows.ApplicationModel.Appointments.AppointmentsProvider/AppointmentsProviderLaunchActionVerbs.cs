@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "string AppointmentsProviderLaunchActionVerbs.AddAppointment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "AddAppointment");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "string AppointmentsProviderLaunchActionVerbs.RemoveAppointment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "RemoveAppointment");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "string AppointmentsProviderLaunchActionVerbs.ReplaceAppointment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "ReplaceAppointment");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "string AppointmentsProviderLaunchActionVerbs.ShowAppointmentDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "ShowAppointmentDetails");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "string AppointmentsProviderLaunchActionVerbs.ShowTimeFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "ShowTimeFrame");
 			}
 		}
 #endif

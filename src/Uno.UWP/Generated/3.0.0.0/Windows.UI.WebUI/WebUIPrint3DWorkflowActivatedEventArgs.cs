@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "ActivatedOperation WebUIPrint3DWorkflowActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "ActivationKind WebUIPrint3DWorkflowActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "ApplicationExecutionState WebUIPrint3DWorkflowActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "SplashScreen WebUIPrint3DWorkflowActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "Print3DWorkflow WebUIPrint3DWorkflowActivatedEventArgs.Workflow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs", "Workflow");
 			}
 		}
 #endif

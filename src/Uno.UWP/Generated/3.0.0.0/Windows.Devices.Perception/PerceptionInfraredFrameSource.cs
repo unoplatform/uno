@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "bool PerceptionInfraredFrameSource.Active");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "Active");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "bool PerceptionInfraredFrameSource.Available");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "Available");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IReadOnlyList<PerceptionVideoProfile> PerceptionInfraredFrameSource.AvailableVideoProfiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "AvailableVideoProfiles");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "CameraIntrinsics PerceptionInfraredFrameSource.CameraIntrinsics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "CameraIntrinsics");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "string PerceptionInfraredFrameSource.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "DeviceId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "string PerceptionInfraredFrameSource.DeviceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "DeviceKind");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "string PerceptionInfraredFrameSource.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "DisplayName");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "string PerceptionInfraredFrameSource.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "Id");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "bool PerceptionInfraredFrameSource.IsControlled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IsControlled");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IReadOnlyDictionary<string, object> PerceptionInfraredFrameSource.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "Properties");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IReadOnlyList<PerceptionVideoProfile> PerceptionInfraredFrameSource.SupportedVideoProfiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "SupportedVideoProfiles");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "PerceptionVideoProfile PerceptionInfraredFrameSource.VideoProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "VideoProfile");
 			}
 		}
 #endif
@@ -137,84 +137,84 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher CreateWatcher()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "PerceptionInfraredFrameSourceWatcher PerceptionInfraredFrameSource.CreateWatcher()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "CreateWatcher()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Perception.PerceptionInfraredFrameSource>> FindAllAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IAsyncOperation<IReadOnlyList<PerceptionInfraredFrameSource>> PerceptionInfraredFrameSource.FindAllAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "FindAllAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionInfraredFrameSource> FromIdAsync(string id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IAsyncOperation<PerceptionInfraredFrameSource> PerceptionInfraredFrameSource.FromIdAsync(string id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "FromIdAsync(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourceAccessStatus> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IAsyncOperation<PerceptionFrameSourceAccessStatus> PerceptionInfraredFrameSource.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionControlSession AcquireControlSession()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "PerceptionControlSession PerceptionInfraredFrameSource.AcquireControlSession()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "AcquireControlSession()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanControlIndependentlyFrom(string targetId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "bool PerceptionInfraredFrameSource.CanControlIndependentlyFrom(string targetId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "CanControlIndependentlyFrom(string targetId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsCorrelatedWith(string targetId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "bool PerceptionInfraredFrameSource.IsCorrelatedWith(string targetId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IsCorrelatedWith(string targetId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetTransformTo(string targetId, out global::System.Numerics.Matrix4x4 result)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "bool PerceptionInfraredFrameSource.TryGetTransformTo(string targetId, out Matrix4x4 result)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "TryGetTransformTo(string targetId, out Matrix4x4 result)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics> TryGetDepthCorrelatedCameraIntrinsicsAsync(global::Windows.Devices.Perception.PerceptionDepthFrameSource target)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IAsyncOperation<PerceptionDepthCorrelatedCameraIntrinsics> PerceptionInfraredFrameSource.TryGetDepthCorrelatedCameraIntrinsicsAsync(PerceptionDepthFrameSource target)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "TryGetDepthCorrelatedCameraIntrinsicsAsync(PerceptionDepthFrameSource target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper> TryGetDepthCorrelatedCoordinateMapperAsync(string targetId, global::Windows.Devices.Perception.PerceptionDepthFrameSource depthFrameSourceToMapWith)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IAsyncOperation<PerceptionDepthCorrelatedCoordinateMapper> PerceptionInfraredFrameSource.TryGetDepthCorrelatedCoordinateMapperAsync(string targetId, PerceptionDepthFrameSource depthFrameSourceToMapWith)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "TryGetDepthCorrelatedCoordinateMapperAsync(string targetId, PerceptionDepthFrameSource depthFrameSourceToMapWith)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult> TrySetVideoProfileAsync(global::Windows.Devices.Perception.PerceptionControlSession controlSession, global::Windows.Devices.Perception.PerceptionVideoProfile profile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "IAsyncOperation<PerceptionFrameSourcePropertyChangeResult> PerceptionInfraredFrameSource.TrySetVideoProfileAsync(PerceptionControlSession controlSession, PerceptionVideoProfile profile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "TrySetVideoProfileAsync(PerceptionControlSession controlSession, PerceptionVideoProfile profile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionInfraredFrameReader OpenReader()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "PerceptionInfraredFrameReader PerceptionInfraredFrameSource.OpenReader()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameSource", "OpenReader()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.ActiveChanged.add
@@ -246,12 +246,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, object> PerceptionInfraredFrameSource.ActiveChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event ActiveChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, object> PerceptionInfraredFrameSource.ActiveChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event ActiveChanged");
 			}
 		}
 #endif
@@ -262,12 +262,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, object> PerceptionInfraredFrameSource.AvailableChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event AvailableChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, object> PerceptionInfraredFrameSource.AvailableChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event AvailableChanged");
 			}
 		}
 #endif
@@ -278,12 +278,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, object> PerceptionInfraredFrameSource.CameraIntrinsicsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event CameraIntrinsicsChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, object> PerceptionInfraredFrameSource.CameraIntrinsicsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event CameraIntrinsicsChanged");
 			}
 		}
 #endif
@@ -294,12 +294,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, PerceptionFrameSourcePropertiesChangedEventArgs> PerceptionInfraredFrameSource.PropertiesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event PropertiesChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, PerceptionFrameSourcePropertiesChangedEventArgs> PerceptionInfraredFrameSource.PropertiesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event PropertiesChanged");
 			}
 		}
 #endif
@@ -310,12 +310,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, object> PerceptionInfraredFrameSource.VideoProfileChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event VideoProfileChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event TypedEventHandler<PerceptionInfraredFrameSource, object> PerceptionInfraredFrameSource.VideoProfileChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameSource", "event VideoProfileChanged");
 			}
 		}
 #endif

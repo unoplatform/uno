@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "byte NetworkOperatorNotificationEventDetails.EncodingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "EncodingType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "string NetworkOperatorNotificationEventDetails.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "Message");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "string NetworkOperatorNotificationEventDetails.NetworkAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "NetworkAccountId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "NetworkOperatorEventMessageType NetworkOperatorNotificationEventDetails.NotificationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "NotificationType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "string NetworkOperatorNotificationEventDetails.RuleId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "RuleId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "ISmsMessage NetworkOperatorNotificationEventDetails.SmsMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "SmsMessage");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AuthorizeTethering(bool allow, string entitlementFailureReason)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "void NetworkOperatorNotificationEventDetails.AuthorizeTethering(bool allow, string entitlementFailureReason)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "AuthorizeTethering(bool allow, string entitlementFailureReason)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.EncodingType.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbBulkInEndpointDescriptor> UsbInterfaceSetting.BulkInEndpoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "BulkInEndpoints");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbBulkOutEndpointDescriptor> UsbInterfaceSetting.BulkOutEndpoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "BulkOutEndpoints");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbDescriptor> UsbInterfaceSetting.Descriptors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "Descriptors");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "UsbInterfaceDescriptor UsbInterfaceSetting.InterfaceDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "InterfaceDescriptor");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbInterruptInEndpointDescriptor> UsbInterfaceSetting.InterruptInEndpoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "InterruptInEndpoints");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbInterruptOutEndpointDescriptor> UsbInterfaceSetting.InterruptOutEndpoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "InterruptOutEndpoints");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "bool UsbInterfaceSetting.Selected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "Selected");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SelectSettingAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IAsyncAction UsbInterfaceSetting.SelectSettingAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "SelectSettingAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.BulkInEndpoints.get

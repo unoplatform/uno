@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectedEventArgs", "FaceDetectionEffectFrame FaceDetectedEventArgs.ResultFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectedEventArgs", "ResultFrame");
 			}
 		}
 #endif

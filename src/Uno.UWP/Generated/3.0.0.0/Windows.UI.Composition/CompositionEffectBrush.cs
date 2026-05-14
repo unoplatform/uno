@@ -17,14 +17,14 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionBrush GetSourceParameter(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEffectBrush", "CompositionBrush CompositionEffectBrush.GetSourceParameter(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEffectBrush", "GetSourceParameter(string name)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetSourceParameter(string name, global::Windows.UI.Composition.CompositionBrush source)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionEffectBrush", "void CompositionEffectBrush.SetSourceParameter(string name, CompositionBrush source)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionEffectBrush", "SetSourceParameter(string name, CompositionBrush source)");
 		}
 #endif
 	}

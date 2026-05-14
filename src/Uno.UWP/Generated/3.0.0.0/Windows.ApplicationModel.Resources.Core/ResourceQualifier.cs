@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "bool ResourceQualifier.IsDefault");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "IsDefault");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "bool ResourceQualifier.IsMatch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "IsMatch");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "double ResourceQualifier.Score");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "Score");
 			}
 		}
 #endif

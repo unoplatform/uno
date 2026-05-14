@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutPipe", "UsbBulkOutEndpointDescriptor UsbBulkOutPipe.EndpointDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutPipe", "EndpointDescriptor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutPipe", "IOutputStream UsbBulkOutPipe.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutPipe", "OutputStream");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutPipe", "UsbWriteOptions UsbBulkOutPipe.WriteOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutPipe", "WriteOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbBulkOutPipe", "UsbWriteOptions UsbBulkOutPipe.WriteOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbBulkOutPipe", "WriteOptions");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearStallAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutPipe", "IAsyncAction UsbBulkOutPipe.ClearStallAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutPipe", "ClearStallAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.EndpointDescriptor.get

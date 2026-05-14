@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails", "string RcsEndUserMessageAvailableTriggerDetails.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails", "Text");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails", "string RcsEndUserMessageAvailableTriggerDetails.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails", "Title");
 			}
 		}
 #endif

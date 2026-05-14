@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "float AnimationController.MaxPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "MaxPlaybackRate");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "float AnimationController.MinPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "MinPlaybackRate");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "float AnimationController.PlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "PlaybackRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "float AnimationController.PlaybackRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "PlaybackRate");
 			}
 		}
 #endif
@@ -49,11 +49,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "AnimationControllerProgressBehavior AnimationController.ProgressBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "ProgressBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "AnimationControllerProgressBehavior AnimationController.ProgressBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "ProgressBehavior");
 			}
 		}
 #endif

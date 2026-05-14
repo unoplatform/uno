@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMesh", "SceneBoundingBox SceneMesh.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMesh", "Bounds");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMesh", "DirectXPrimitiveTopology SceneMesh.PrimitiveTopology");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMesh", "PrimitiveTopology");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMesh", "DirectXPrimitiveTopology SceneMesh.PrimitiveTopology");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMesh", "PrimitiveTopology");
 			}
 		}
 #endif
@@ -41,14 +41,14 @@ namespace Microsoft.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneMesh Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMesh", "SceneMesh SceneMesh.Create(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMesh", "Create(Compositor compositor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void FillMeshAttribute(global::Microsoft.UI.Composition.Scenes.SceneAttributeSemantic semantic, global::Microsoft.Graphics.DirectX.DirectXPixelFormat format, global::Windows.Foundation.MemoryBuffer memory)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMesh", "void SceneMesh.FillMeshAttribute(SceneAttributeSemantic semantic, DirectXPixelFormat format, MemoryBuffer memory)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMesh", "FillMeshAttribute(SceneAttributeSemantic semantic, DirectXPixelFormat format, MemoryBuffer memory)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMesh.Bounds.get

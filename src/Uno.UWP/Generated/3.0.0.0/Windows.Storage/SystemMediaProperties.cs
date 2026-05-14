@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "string SystemMediaProperties.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "Duration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "string SystemMediaProperties.Producer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "Producer");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "string SystemMediaProperties.Publisher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "Publisher");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "string SystemMediaProperties.SubTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "SubTitle");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "string SystemMediaProperties.Writer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "Writer");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "string SystemMediaProperties.Year");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMediaProperties", "Year");
 			}
 		}
 #endif

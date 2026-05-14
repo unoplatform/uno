@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkSecuritySettings", "NetworkAuthenticationType NetworkSecuritySettings.NetworkAuthenticationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkSecuritySettings", "NetworkAuthenticationType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkSecuritySettings", "NetworkEncryptionType NetworkSecuritySettings.NetworkEncryptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkSecuritySettings", "NetworkEncryptionType");
 			}
 		}
 #endif

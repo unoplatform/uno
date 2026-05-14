@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.IsRequestedByTransmitter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "IsRequestedByTransmitter");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.IsTransmittingInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "IsTransmittingInput");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.TransmitInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "TransmitInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.TransmitInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "TransmitInput");
 			}
 		}
 #endif
@@ -60,12 +60,12 @@ namespace Windows.Media.Miracast
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "event TypedEventHandler<MiracastReceiverKeyboardDevice, object> MiracastReceiverKeyboardDevice.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "event Changed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "event TypedEventHandler<MiracastReceiverKeyboardDevice, object> MiracastReceiverKeyboardDevice.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "event Changed");
 			}
 		}
 #endif

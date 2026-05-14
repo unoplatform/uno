@@ -19,11 +19,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketControl", "SocketMessageType ServerMessageWebSocketControl.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketControl", "MessageType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerMessageWebSocketControl", "SocketMessageType ServerMessageWebSocketControl.MessageType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerMessageWebSocketControl", "MessageType");
 			}
 		}
 #endif

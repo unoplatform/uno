@@ -15,7 +15,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "object CoreWebView2HttpHeadersCollectionIterator.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "Current");
 			}
 		}
 #endif
@@ -24,14 +24,14 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Reset()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "void CoreWebView2HttpHeadersCollectionIterator.Reset()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "Reset()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "void CoreWebView2HttpHeadersCollectionIterator.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.Current.get

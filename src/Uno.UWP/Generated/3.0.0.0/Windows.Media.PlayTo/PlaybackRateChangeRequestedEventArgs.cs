@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs", "double PlaybackRateChangeRequestedEventArgs.Rate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlaybackRateChangeRequestedEventArgs", "Rate");
 			}
 		}
 #endif

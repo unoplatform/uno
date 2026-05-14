@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "SceneNodeCollection SceneNode.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "Children");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "SceneComponentCollection SceneNode.Components");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "Components");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "SceneNode SceneNode.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "Parent");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "SceneModelTransform SceneNode.Transform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "Transform");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Microsoft.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneNode Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "SceneNode SceneNode.Create(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "Create(Compositor compositor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneComponent FindFirstComponentOfType(global::Microsoft.UI.Composition.Scenes.SceneComponentType value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "SceneComponent SceneNode.FindFirstComponentOfType(SceneComponentType value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneNode", "FindFirstComponentOfType(SceneComponentType value)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Children.get

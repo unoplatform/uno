@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "MagneticStripeReaderCapabilities MagneticStripeReader.Capabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "Capabilities");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "MagneticStripeReaderAuthenticationProtocol MagneticStripeReader.DeviceAuthenticationProtocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "DeviceAuthenticationProtocol");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "string MagneticStripeReader.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "DeviceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "uint[] MagneticStripeReader.SupportedCardTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "SupportedCardTypes");
 			}
 		}
 #endif
@@ -57,56 +57,56 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.MagneticStripeReader> GetDefaultAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "IAsyncOperation<MagneticStripeReader> MagneticStripeReader.GetDefaultAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "GetDefaultAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.MagneticStripeReader> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "IAsyncOperation<MagneticStripeReader> MagneticStripeReader.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "string MagneticStripeReader.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "string MagneticStripeReader.GetDeviceSelector(PosConnectionTypes connectionTypes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "GetDeviceSelector(PosConnectionTypes connectionTypes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> CheckHealthAsync(global::Windows.Devices.PointOfService.UnifiedPosHealthCheckLevel level)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "IAsyncOperation<string> MagneticStripeReader.CheckHealthAsync(UnifiedPosHealthCheckLevel level)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "CheckHealthAsync(UnifiedPosHealthCheckLevel level)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedMagneticStripeReader> ClaimReaderAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "IAsyncOperation<ClaimedMagneticStripeReader> MagneticStripeReader.ClaimReaderAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "ClaimReaderAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> RetrieveStatisticsAsync(global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "IAsyncOperation<IBuffer> MagneticStripeReader.RetrieveStatisticsAsync(IEnumerable<string> statisticsCategories)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "RetrieveStatisticsAsync(IEnumerable<string> statisticsCategories)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.MagneticStripeReaderErrorReportingType GetErrorReportingType()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "MagneticStripeReaderErrorReportingType MagneticStripeReader.GetErrorReportingType()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReader", "GetErrorReportingType()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.StatusUpdated.add
@@ -115,7 +115,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.MagneticStripeReader", "void MagneticStripeReader.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.MagneticStripeReader", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReader.Capabilities.get
@@ -129,12 +129,12 @@ namespace Windows.Devices.PointOfService
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.MagneticStripeReader", "event TypedEventHandler<MagneticStripeReader, MagneticStripeReaderStatusUpdatedEventArgs> MagneticStripeReader.StatusUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.MagneticStripeReader", "event StatusUpdated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.MagneticStripeReader", "event TypedEventHandler<MagneticStripeReader, MagneticStripeReaderStatusUpdatedEventArgs> MagneticStripeReader.StatusUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.MagneticStripeReader", "event StatusUpdated");
 			}
 		}
 #endif

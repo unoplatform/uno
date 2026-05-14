@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AccelerometerShakenEventArgs", "DateTimeOffset AccelerometerShakenEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AccelerometerShakenEventArgs", "Timestamp");
 			}
 		}
 #endif

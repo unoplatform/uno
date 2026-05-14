@@ -12,14 +12,14 @@ namespace Windows.System.Profile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Profile.SystemIdentificationInfo GetSystemIdForPublisher()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentification", "SystemIdentificationInfo SystemIdentification.GetSystemIdForPublisher()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentification", "GetSystemIdForPublisher()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Profile.SystemIdentificationInfo GetSystemIdForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentification", "SystemIdentificationInfo SystemIdentification.GetSystemIdForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentification", "GetSystemIdForUser(User user)");
 		}
 #endif
 	}

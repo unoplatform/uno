@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.AlbumArtist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "AlbumArtist");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.AlbumTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "AlbumTitle");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.Artist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "Artist");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.Composer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "Composer");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.Conductor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "Conductor");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.DisplayArtist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "DisplayArtist");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.Genre");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "Genre");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.TrackNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "TrackNumber");
 			}
 		}
 #endif

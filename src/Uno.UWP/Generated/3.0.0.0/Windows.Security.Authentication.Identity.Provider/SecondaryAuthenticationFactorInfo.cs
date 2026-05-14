@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "IBuffer SecondaryAuthenticationFactorInfo.DeviceConfigurationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "DeviceConfigurationData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "string SecondaryAuthenticationFactorInfo.DeviceFriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "DeviceFriendlyName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "string SecondaryAuthenticationFactorInfo.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "DeviceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "string SecondaryAuthenticationFactorInfo.DeviceModelNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "DeviceModelNumber");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "bool SecondaryAuthenticationFactorInfo.IsAuthenticationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "IsAuthenticationSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "SecondaryAuthenticationFactorDevicePresenceMonitoringMode SecondaryAuthenticationFactorInfo.PresenceMonitoringMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "PresenceMonitoringMode");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction UpdateDevicePresenceAsync(global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorDevicePresence presenceState)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "IAsyncAction SecondaryAuthenticationFactorInfo.UpdateDevicePresenceAsync(SecondaryAuthenticationFactorDevicePresence presenceState)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "UpdateDevicePresenceAsync(SecondaryAuthenticationFactorDevicePresence presenceState)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceConfigurationData.get

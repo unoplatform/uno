@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDescriptor", "byte UsbDescriptor.DescriptorType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDescriptor", "DescriptorType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDescriptor", "byte UsbDescriptor.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDescriptor", "Length");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReadDescriptorBuffer(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbDescriptor", "void UsbDescriptor.ReadDescriptorBuffer(IBuffer buffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbDescriptor", "ReadDescriptorBuffer(IBuffer buffer)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbDescriptor.DescriptorType.get

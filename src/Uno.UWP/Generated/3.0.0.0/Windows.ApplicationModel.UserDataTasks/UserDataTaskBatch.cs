@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskBatch", "IReadOnlyList<UserDataTask> UserDataTaskBatch.Tasks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskBatch", "Tasks");
 			}
 		}
 #endif

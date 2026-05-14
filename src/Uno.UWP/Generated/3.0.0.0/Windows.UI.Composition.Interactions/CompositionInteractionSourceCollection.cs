@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "int CompositionInteractionSourceCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "Count");
 			}
 		}
 #endif
@@ -27,28 +27,28 @@ namespace Windows.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::Windows.UI.Composition.Interactions.ICompositionInteractionSource value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "void CompositionInteractionSourceCollection.Add(ICompositionInteractionSource value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "Add(ICompositionInteractionSource value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Remove(global::Windows.UI.Composition.Interactions.ICompositionInteractionSource value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "void CompositionInteractionSourceCollection.Remove(ICompositionInteractionSource value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "Remove(ICompositionInteractionSource value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveAll()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "void CompositionInteractionSourceCollection.RemoveAll()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "RemoveAll()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.Interactions.ICompositionInteractionSource> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "IEnumerator<ICompositionInteractionSource> CompositionInteractionSourceCollection.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.System.Collections.IEnumerable.GetEnumerator()

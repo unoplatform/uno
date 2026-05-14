@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo", "long PlatformDiagnosticTraceRuntimeInfo.EtwRuntimeFileTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo", "EtwRuntimeFileTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo", "long PlatformDiagnosticTraceRuntimeInfo.RuntimeFileTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo", "RuntimeFileTime");
 			}
 		}
 #endif

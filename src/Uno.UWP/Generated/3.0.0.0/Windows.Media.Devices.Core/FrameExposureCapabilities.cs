@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCapabilities", "TimeSpan FrameExposureCapabilities.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCapabilities", "Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCapabilities", "TimeSpan FrameExposureCapabilities.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCapabilities", "Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCapabilities", "TimeSpan FrameExposureCapabilities.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCapabilities", "Step");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCapabilities", "bool FrameExposureCapabilities.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCapabilities", "Supported");
 			}
 		}
 #endif

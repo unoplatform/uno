@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "Guid WebUIBackgroundTaskInstanceRuntimeClass.InstanceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "InstanceId");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "uint WebUIBackgroundTaskInstanceRuntimeClass.Progress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "Progress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "uint WebUIBackgroundTaskInstanceRuntimeClass.Progress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "Progress");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "bool WebUIBackgroundTaskInstanceRuntimeClass.Succeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "Succeeded");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "bool WebUIBackgroundTaskInstanceRuntimeClass.Succeeded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "Succeeded");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "uint WebUIBackgroundTaskInstanceRuntimeClass.SuspendedCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "SuspendedCount");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "BackgroundTaskRegistration WebUIBackgroundTaskInstanceRuntimeClass.Task");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "Task");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "object WebUIBackgroundTaskInstanceRuntimeClass.TriggerDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "TriggerDetails");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Background.BackgroundTaskDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "BackgroundTaskDeferral WebUIBackgroundTaskInstanceRuntimeClass.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Canceled.add
@@ -105,12 +105,12 @@ namespace Windows.UI.WebUI
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "event BackgroundTaskCanceledEventHandler WebUIBackgroundTaskInstanceRuntimeClass.Canceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "event Canceled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "event BackgroundTaskCanceledEventHandler WebUIBackgroundTaskInstanceRuntimeClass.Canceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "event Canceled");
 			}
 		}
 #endif

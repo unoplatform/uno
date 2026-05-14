@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.CameraManufacturer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "CameraManufacturer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.CameraModel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "CameraModel");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.DateTaken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "DateTaken");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "Orientation");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.PeopleNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "PeopleNames");
 			}
 		}
 #endif

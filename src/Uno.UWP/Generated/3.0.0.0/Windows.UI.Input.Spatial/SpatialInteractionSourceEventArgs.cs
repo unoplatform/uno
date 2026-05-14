@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs", "SpatialInteractionPressKind SpatialInteractionSourceEventArgs.PressKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs", "PressKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs", "SpatialInteractionSourceState SpatialInteractionSourceEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs", "State");
 			}
 		}
 #endif

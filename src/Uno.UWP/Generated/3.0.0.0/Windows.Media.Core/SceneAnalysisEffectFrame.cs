@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "SceneAnalysisRecommendation SceneAnalysisEffectFrame.AnalysisRecommendation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "AnalysisRecommendation");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "Duration");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "IPropertySet SceneAnalysisEffectFrame.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "ExtendedProperties");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "CapturedFrameControlValues SceneAnalysisEffectFrame.FrameControlValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "FrameControlValues");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "HighDynamicRangeOutput SceneAnalysisEffectFrame.HighDynamicRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "HighDynamicRange");
 			}
 		}
 #endif
@@ -73,11 +73,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "bool SceneAnalysisEffectFrame.IsDiscontinuous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "IsDiscontinuous");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "bool SceneAnalysisEffectFrame.IsDiscontinuous");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "IsDiscontinuous");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "bool SceneAnalysisEffectFrame.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "IsReadOnly");
 			}
 		}
 #endif
@@ -97,11 +97,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "RelativeTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.RelativeTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "RelativeTime");
 			}
 		}
 #endif
@@ -111,11 +111,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "SystemRelativeTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.SystemRelativeTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "SystemRelativeTime");
 			}
 		}
 #endif
@@ -125,7 +125,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "string SceneAnalysisEffectFrame.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "Type");
 			}
 		}
 #endif
@@ -133,7 +133,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "void SceneAnalysisEffectFrame.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectFrame", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.AnalysisRecommendation.get

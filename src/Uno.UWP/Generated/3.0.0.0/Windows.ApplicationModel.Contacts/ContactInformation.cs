@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "IReadOnlyList<ContactField> ContactInformation.CustomFields");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "CustomFields");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "IReadOnlyList<ContactField> ContactInformation.Emails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "Emails");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "IReadOnlyList<ContactInstantMessageField> ContactInformation.InstantMessages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "InstantMessages");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "IReadOnlyList<ContactLocationField> ContactInformation.Locations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "Locations");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "string ContactInformation.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "Name");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "IReadOnlyList<ContactField> ContactInformation.PhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "PhoneNumbers");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> GetThumbnailAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "IAsyncOperation<IRandomAccessStreamWithContentType> ContactInformation.GetThumbnailAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "GetThumbnailAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactField> QueryCustomFields(string customName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "IReadOnlyList<ContactField> ContactInformation.QueryCustomFields(string customName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInformation", "QueryCustomFields(string customName)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.CustomFields.get

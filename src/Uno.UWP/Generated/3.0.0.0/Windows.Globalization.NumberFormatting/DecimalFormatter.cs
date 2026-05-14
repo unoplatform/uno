@@ -15,7 +15,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "string DecimalFormatter.GeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "GeographicRegion");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "string DecimalFormatter.ResolvedGeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "ResolvedGeographicRegion");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DecimalFormatter(global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.DecimalFormatter", "DecimalFormatter.DecimalFormatter(IEnumerable<string> languages, string geographicRegion)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.DecimalFormatter", "DecimalFormatter(IEnumerable<string> languages, string geographicRegion)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter(System.Collections.Generic.IEnumerable<string>, string)
@@ -52,14 +52,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "string DecimalFormatter.Format(long value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "Format(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "string DecimalFormatter.Format(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "Format(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.Format(double)
@@ -67,14 +67,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatInt(long value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "string DecimalFormatter.FormatInt(long value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "FormatInt(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatUInt(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "string DecimalFormatter.FormatUInt(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "FormatUInt(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.FormatDouble(double)
@@ -82,14 +82,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public long? ParseInt(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "long? DecimalFormatter.ParseInt(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "ParseInt(string text)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong? ParseUInt(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "ulong? DecimalFormatter.ParseUInt(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "ParseUInt(string text)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.ParseDouble(string)

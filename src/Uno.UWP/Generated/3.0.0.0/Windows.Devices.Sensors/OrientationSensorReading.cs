@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "TimeSpan? OrientationSensorReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "PerformanceCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "IReadOnlyDictionary<string, object> OrientationSensorReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "Properties");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "SensorQuaternion OrientationSensorReading.Quaternion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "Quaternion");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "SensorRotationMatrix OrientationSensorReading.RotationMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "RotationMatrix");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "DateTimeOffset OrientationSensorReading.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "Timestamp");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "MagnetometerAccuracy OrientationSensorReading.YawAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.OrientationSensorReading", "YawAccuracy");
 			}
 		}
 #endif

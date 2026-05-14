@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "Description");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.DisplayAmount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "DisplayAmount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.DisplayAmount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "DisplayAmount");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.DisplayLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "DisplayLocation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.DisplayLocation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "DisplayLocation");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "bool WalletTransaction.IgnoreTimeOfDay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "IgnoreTimeOfDay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "bool WalletTransaction.IgnoreTimeOfDay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "IgnoreTimeOfDay");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "bool WalletTransaction.IsLaunchable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "IsLaunchable");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "bool WalletTransaction.IsLaunchable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "IsLaunchable");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "DateTimeOffset? WalletTransaction.TransactionDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "TransactionDate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "DateTimeOffset? WalletTransaction.TransactionDate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "TransactionDate");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.ApplicationModel.Wallet
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WalletTransaction()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "WalletTransaction.WalletTransaction()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletTransaction", "WalletTransaction()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WalletTransaction()

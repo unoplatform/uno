@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "void EmailDataProviderConnection.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "Start()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.CreateFolderRequested.add
@@ -57,12 +57,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxCreateFolderRequestEventArgs> EmailDataProviderConnection.CreateFolderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event CreateFolderRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxCreateFolderRequestEventArgs> EmailDataProviderConnection.CreateFolderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event CreateFolderRequested");
 			}
 		}
 #endif
@@ -73,12 +73,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxDeleteFolderRequestEventArgs> EmailDataProviderConnection.DeleteFolderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event DeleteFolderRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxDeleteFolderRequestEventArgs> EmailDataProviderConnection.DeleteFolderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event DeleteFolderRequested");
 			}
 		}
 #endif
@@ -89,12 +89,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxDownloadAttachmentRequestEventArgs> EmailDataProviderConnection.DownloadAttachmentRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event DownloadAttachmentRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxDownloadAttachmentRequestEventArgs> EmailDataProviderConnection.DownloadAttachmentRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event DownloadAttachmentRequested");
 			}
 		}
 #endif
@@ -105,12 +105,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxDownloadMessageRequestEventArgs> EmailDataProviderConnection.DownloadMessageRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event DownloadMessageRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxDownloadMessageRequestEventArgs> EmailDataProviderConnection.DownloadMessageRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event DownloadMessageRequested");
 			}
 		}
 #endif
@@ -121,12 +121,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxEmptyFolderRequestEventArgs> EmailDataProviderConnection.EmptyFolderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event EmptyFolderRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxEmptyFolderRequestEventArgs> EmailDataProviderConnection.EmptyFolderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event EmptyFolderRequested");
 			}
 		}
 #endif
@@ -137,12 +137,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxForwardMeetingRequestEventArgs> EmailDataProviderConnection.ForwardMeetingRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ForwardMeetingRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxForwardMeetingRequestEventArgs> EmailDataProviderConnection.ForwardMeetingRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ForwardMeetingRequested");
 			}
 		}
 #endif
@@ -153,12 +153,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxGetAutoReplySettingsRequestEventArgs> EmailDataProviderConnection.GetAutoReplySettingsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event GetAutoReplySettingsRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxGetAutoReplySettingsRequestEventArgs> EmailDataProviderConnection.GetAutoReplySettingsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event GetAutoReplySettingsRequested");
 			}
 		}
 #endif
@@ -169,12 +169,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxSyncManagerSyncRequestEventArgs> EmailDataProviderConnection.MailboxSyncRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event MailboxSyncRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxSyncManagerSyncRequestEventArgs> EmailDataProviderConnection.MailboxSyncRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event MailboxSyncRequested");
 			}
 		}
 #endif
@@ -185,12 +185,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxMoveFolderRequestEventArgs> EmailDataProviderConnection.MoveFolderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event MoveFolderRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxMoveFolderRequestEventArgs> EmailDataProviderConnection.MoveFolderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event MoveFolderRequested");
 			}
 		}
 #endif
@@ -201,12 +201,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxProposeNewTimeForMeetingRequestEventArgs> EmailDataProviderConnection.ProposeNewTimeForMeetingRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ProposeNewTimeForMeetingRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxProposeNewTimeForMeetingRequestEventArgs> EmailDataProviderConnection.ProposeNewTimeForMeetingRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ProposeNewTimeForMeetingRequested");
 			}
 		}
 #endif
@@ -217,12 +217,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxResolveRecipientsRequestEventArgs> EmailDataProviderConnection.ResolveRecipientsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ResolveRecipientsRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxResolveRecipientsRequestEventArgs> EmailDataProviderConnection.ResolveRecipientsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ResolveRecipientsRequested");
 			}
 		}
 #endif
@@ -233,12 +233,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxServerSearchReadBatchRequestEventArgs> EmailDataProviderConnection.ServerSearchReadBatchRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ServerSearchReadBatchRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxServerSearchReadBatchRequestEventArgs> EmailDataProviderConnection.ServerSearchReadBatchRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ServerSearchReadBatchRequested");
 			}
 		}
 #endif
@@ -249,12 +249,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxSetAutoReplySettingsRequestEventArgs> EmailDataProviderConnection.SetAutoReplySettingsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event SetAutoReplySettingsRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxSetAutoReplySettingsRequestEventArgs> EmailDataProviderConnection.SetAutoReplySettingsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event SetAutoReplySettingsRequested");
 			}
 		}
 #endif
@@ -265,12 +265,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxUpdateMeetingResponseRequestEventArgs> EmailDataProviderConnection.UpdateMeetingResponseRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event UpdateMeetingResponseRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxUpdateMeetingResponseRequestEventArgs> EmailDataProviderConnection.UpdateMeetingResponseRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event UpdateMeetingResponseRequested");
 			}
 		}
 #endif
@@ -281,12 +281,12 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxValidateCertificatesRequestEventArgs> EmailDataProviderConnection.ValidateCertificatesRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ValidateCertificatesRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event TypedEventHandler<EmailDataProviderConnection, EmailMailboxValidateCertificatesRequestEventArgs> EmailDataProviderConnection.ValidateCertificatesRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "event ValidateCertificatesRequested");
 			}
 		}
 #endif

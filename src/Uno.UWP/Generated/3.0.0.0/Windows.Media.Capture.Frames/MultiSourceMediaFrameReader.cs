@@ -19,11 +19,11 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "MediaFrameReaderAcquisitionMode MultiSourceMediaFrameReader.AcquisitionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "AcquisitionMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "MediaFrameReaderAcquisitionMode MultiSourceMediaFrameReader.AcquisitionMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "AcquisitionMode");
 			}
 		}
 #endif
@@ -31,21 +31,21 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.Frames.MultiSourceMediaFrameReference TryAcquireLatestFrame()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "MultiSourceMediaFrameReference MultiSourceMediaFrameReader.TryAcquireLatestFrame()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "TryAcquireLatestFrame()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MultiSourceMediaFrameReaderStartStatus> StartAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "IAsyncOperation<MultiSourceMediaFrameReaderStartStatus> MultiSourceMediaFrameReader.StartAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "StartAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StopAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "IAsyncAction MultiSourceMediaFrameReader.StopAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "StopAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.FrameArrived.add
@@ -54,7 +54,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "void MultiSourceMediaFrameReader.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.AcquisitionMode.get
@@ -66,12 +66,12 @@ namespace Windows.Media.Capture.Frames
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "event TypedEventHandler<MultiSourceMediaFrameReader, MultiSourceMediaFrameArrivedEventArgs> MultiSourceMediaFrameReader.FrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "event FrameArrived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "event TypedEventHandler<MultiSourceMediaFrameReader, MultiSourceMediaFrameArrivedEventArgs> MultiSourceMediaFrameReader.FrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "event FrameArrived");
 			}
 		}
 #endif

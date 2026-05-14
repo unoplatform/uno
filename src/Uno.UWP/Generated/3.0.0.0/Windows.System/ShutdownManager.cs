@@ -12,35 +12,35 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void BeginShutdown(global::Windows.System.ShutdownKind shutdownKind, global::System.TimeSpan timeout)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ShutdownManager", "void ShutdownManager.BeginShutdown(ShutdownKind shutdownKind, TimeSpan timeout)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ShutdownManager", "BeginShutdown(ShutdownKind shutdownKind, TimeSpan timeout)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void CancelShutdown()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ShutdownManager", "void ShutdownManager.CancelShutdown()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ShutdownManager", "CancelShutdown()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsPowerStateSupported(global::Windows.System.PowerState powerState)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ShutdownManager", "bool ShutdownManager.IsPowerStateSupported(PowerState powerState)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ShutdownManager", "IsPowerStateSupported(PowerState powerState)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void EnterPowerState(global::Windows.System.PowerState powerState)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ShutdownManager", "void ShutdownManager.EnterPowerState(PowerState powerState)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ShutdownManager", "EnterPowerState(PowerState powerState)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void EnterPowerState(global::Windows.System.PowerState powerState, global::System.TimeSpan wakeUpAfter)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ShutdownManager", "void ShutdownManager.EnterPowerState(PowerState powerState, TimeSpan wakeUpAfter)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ShutdownManager", "EnterPowerState(PowerState powerState, TimeSpan wakeUpAfter)");
 		}
 #endif
 	}

@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "string Magnetometer.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "DeviceId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "uint Magnetometer.MaxBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "MaxBatchSize");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "uint Magnetometer.MinimumReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "MinimumReportInterval");
 			}
 		}
 #endif
@@ -44,11 +44,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "DisplayOrientations Magnetometer.ReadingTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "ReadingTransform");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "DisplayOrientations Magnetometer.ReadingTransform");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "ReadingTransform");
 			}
 		}
 #endif
@@ -58,11 +58,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "uint Magnetometer.ReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "ReportInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "uint Magnetometer.ReportInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "ReportInterval");
 			}
 		}
 #endif
@@ -72,11 +72,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "uint Magnetometer.ReportLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "ReportLatency");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "uint Magnetometer.ReportLatency");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "ReportLatency");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "MagnetometerDataThreshold Magnetometer.ReportThreshold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "ReportThreshold");
 			}
 		}
 #endif
@@ -95,21 +95,21 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "string Magnetometer.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Magnetometer> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "IAsyncOperation<Magnetometer> Magnetometer.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.MagnetometerReading GetCurrentReading()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "MagnetometerReading Magnetometer.GetCurrentReading()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Magnetometer", "GetCurrentReading()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.ReadingChanged.add
@@ -131,12 +131,12 @@ namespace Windows.Devices.Sensors
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "event TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs> Magnetometer.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "event ReadingChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "event TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs> Magnetometer.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Magnetometer", "event ReadingChanged");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Bordered");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "Bordered");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Bordered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "Bordered");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Compulsory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "Compulsory");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Compulsory");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "Compulsory");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "string VpnCustomComboBox.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "string VpnCustomComboBox.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "Label");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "IReadOnlyList<string> VpnCustomComboBox.OptionsText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "OptionsText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "IReadOnlyList<string> VpnCustomComboBox.OptionsText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "OptionsText");
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "uint VpnCustomComboBox.Selected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "Selected");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnCustomComboBox()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "VpnCustomComboBox.VpnCustomComboBox()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomComboBox", "VpnCustomComboBox()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.VpnCustomComboBox()

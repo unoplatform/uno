@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult", "byte? GattWriteResult.ProtocolError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult", "ProtocolError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult", "GattCommunicationStatus GattWriteResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult", "Status");
 			}
 		}
 #endif

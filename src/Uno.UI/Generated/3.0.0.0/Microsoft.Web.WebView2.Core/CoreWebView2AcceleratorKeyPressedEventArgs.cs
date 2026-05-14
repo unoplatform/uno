@@ -19,11 +19,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "bool CoreWebView2AcceleratorKeyPressedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "bool CoreWebView2AcceleratorKeyPressedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "bool CoreWebView2AcceleratorKeyPressedEventArgs.IsBrowserAcceleratorKeyEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "IsBrowserAcceleratorKeyEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "bool CoreWebView2AcceleratorKeyPressedEventArgs.IsBrowserAcceleratorKeyEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "IsBrowserAcceleratorKeyEnabled");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "CoreWebView2KeyEventKind CoreWebView2AcceleratorKeyPressedEventArgs.KeyEventKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "KeyEventKind");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "int CoreWebView2AcceleratorKeyPressedEventArgs.KeyEventLParam");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "KeyEventLParam");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "CoreWebView2PhysicalKeyStatus CoreWebView2AcceleratorKeyPressedEventArgs.PhysicalKeyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "PhysicalKeyStatus");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "uint CoreWebView2AcceleratorKeyPressedEventArgs.VirtualKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "VirtualKey");
 			}
 		}
 #endif

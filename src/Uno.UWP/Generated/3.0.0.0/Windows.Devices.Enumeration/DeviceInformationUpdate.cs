@@ -15,7 +15,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationUpdate", "DeviceInformationKind DeviceInformationUpdate.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationUpdate", "Kind");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationUpdate", "IReadOnlyDictionary<string, object> DeviceInformationUpdate.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationUpdate", "Properties");
 			}
 		}
 #endif

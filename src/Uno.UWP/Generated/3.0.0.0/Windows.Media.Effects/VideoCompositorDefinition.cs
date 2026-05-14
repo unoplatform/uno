@@ -14,7 +14,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoCompositorDefinition", "string VideoCompositorDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoCompositorDefinition", "ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoCompositorDefinition", "IPropertySet VideoCompositorDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoCompositorDefinition", "Properties");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Media.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VideoCompositorDefinition(string activatableClassId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoCompositorDefinition", "VideoCompositorDefinition.VideoCompositorDefinition(string activatableClassId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoCompositorDefinition", "VideoCompositorDefinition(string activatableClassId)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.VideoCompositorDefinition.VideoCompositorDefinition(string)
@@ -40,7 +40,7 @@ namespace Windows.Media.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VideoCompositorDefinition(string activatableClassId, global::Windows.Foundation.Collections.IPropertySet props)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoCompositorDefinition", "VideoCompositorDefinition.VideoCompositorDefinition(string activatableClassId, IPropertySet props)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoCompositorDefinition", "VideoCompositorDefinition(string activatableClassId, IPropertySet props)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.VideoCompositorDefinition.VideoCompositorDefinition(string, Windows.Foundation.Collections.IPropertySet)

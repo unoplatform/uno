@@ -14,7 +14,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainer", "IReadOnlyDictionary<string, ApplicationDataContainer> ApplicationDataContainer.Containers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainer", "Containers");
 			}
 		}
 #endif
@@ -25,14 +25,14 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.ApplicationDataContainer CreateContainer(string name, global::Windows.Storage.ApplicationDataCreateDisposition disposition)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainer", "ApplicationDataContainer ApplicationDataContainer.CreateContainer(string name, ApplicationDataCreateDisposition disposition)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainer", "CreateContainer(string name, ApplicationDataCreateDisposition disposition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DeleteContainer(string name)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainer", "void ApplicationDataContainer.DeleteContainer(string name)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainer", "DeleteContainer(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Containers.get

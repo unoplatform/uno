@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "UserActivityAttribution UserActivityVisualElements.Attribution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Attribution");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "UserActivityAttribution UserActivityVisualElements.Attribution");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Attribution");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.AttributionDisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "AttributionDisplayText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.AttributionDisplayText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "AttributionDisplayText");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Color UserActivityVisualElements.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Color UserActivityVisualElements.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "BackgroundColor");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "IAdaptiveCard UserActivityVisualElements.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Content");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "IAdaptiveCard UserActivityVisualElements.Content");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Content");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Description");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "DisplayText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.DisplayText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "DisplayText");
 			}
 		}
 #endif

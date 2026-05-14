@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "IList<string> ClipboardContentOptions.HistoryFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "HistoryFormats");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "bool ClipboardContentOptions.IsAllowedInHistory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "IsAllowedInHistory");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "bool ClipboardContentOptions.IsAllowedInHistory");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "IsAllowedInHistory");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "bool ClipboardContentOptions.IsRoamable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "IsRoamable");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "bool ClipboardContentOptions.IsRoamable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "IsRoamable");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "IList<string> ClipboardContentOptions.RoamingFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "RoamingFormats");
 			}
 		}
 #endif
@@ -60,7 +60,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ClipboardContentOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "ClipboardContentOptions.ClipboardContentOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "ClipboardContentOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.ClipboardContentOptions()

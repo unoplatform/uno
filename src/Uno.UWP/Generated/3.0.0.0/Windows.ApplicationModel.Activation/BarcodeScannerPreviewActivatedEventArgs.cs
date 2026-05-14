@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "string BarcodeScannerPreviewActivatedEventArgs.ConnectionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "ConnectionId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "ActivationKind BarcodeScannerPreviewActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "ApplicationExecutionState BarcodeScannerPreviewActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "SplashScreen BarcodeScannerPreviewActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "User BarcodeScannerPreviewActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs", "User");
 			}
 		}
 #endif

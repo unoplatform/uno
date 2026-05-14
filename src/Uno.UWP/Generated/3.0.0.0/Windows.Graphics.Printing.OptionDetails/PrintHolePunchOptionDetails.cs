@@ -19,11 +19,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "string PrintHolePunchOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "string PrintHolePunchOptionDetails.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "Description");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "string PrintHolePunchOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "ErrorText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "string PrintHolePunchOptionDetails.ErrorText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "ErrorText");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "IReadOnlyList<object> PrintHolePunchOptionDetails.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "Items");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "string PrintHolePunchOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "OptionId");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "PrintOptionType PrintHolePunchOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "OptionType");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "PrintOptionStates PrintHolePunchOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "State");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "PrintOptionStates PrintHolePunchOptionDetails.State");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "State");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "object PrintHolePunchOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "Value");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "string PrintHolePunchOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "WarningText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "string PrintHolePunchOptionDetails.WarningText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "WarningText");
 			}
 		}
 #endif
@@ -113,7 +113,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "bool PrintHolePunchOptionDetails.TrySetValue(object value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails", "TrySetValue(object value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.Description.get

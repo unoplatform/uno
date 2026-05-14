@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "IList<string> ContactQueryOptions.AnnotationListIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "AnnotationListIds");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "IList<string> ContactQueryOptions.ContactListIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactListIds");
 			}
 		}
 #endif
@@ -35,11 +35,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactAnnotationOperations ContactQueryOptions.DesiredOperations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "DesiredOperations");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactAnnotationOperations ContactQueryOptions.DesiredOperations");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "DesiredOperations");
 			}
 		}
 #endif
@@ -49,11 +49,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "bool ContactQueryOptions.IncludeContactsFromHiddenLists");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "IncludeContactsFromHiddenLists");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "bool ContactQueryOptions.IncludeContactsFromHiddenLists");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "IncludeContactsFromHiddenLists");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactQueryTextSearch ContactQueryOptions.TextSearch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "TextSearch");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcherTrigger.AdvertisementFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "AdvertisementFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcherTrigger.AdvertisementFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "AdvertisementFilter");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "bool BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "AllowExtendedAdvertisements");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "bool BluetoothLEAdvertisementWatcherTrigger.AllowExtendedAdvertisements");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "AllowExtendedAdvertisements");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "TimeSpan BluetoothLEAdvertisementWatcherTrigger.MaxOutOfRangeTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "MaxOutOfRangeTimeout");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "TimeSpan BluetoothLEAdvertisementWatcherTrigger.MaxSamplingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "MaxSamplingInterval");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "TimeSpan BluetoothLEAdvertisementWatcherTrigger.MinOutOfRangeTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "MinOutOfRangeTimeout");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "TimeSpan BluetoothLEAdvertisementWatcherTrigger.MinSamplingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "MinSamplingInterval");
 			}
 		}
 #endif
@@ -82,11 +82,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "SignalStrengthFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTrigger.SignalStrengthFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "SignalStrengthFilter");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BluetoothLEAdvertisementWatcherTrigger()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothLEAdvertisementWatcherTrigger.BluetoothLEAdvertisementWatcherTrigger()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger", "BluetoothLEAdvertisementWatcherTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.BluetoothLEAdvertisementWatcherTrigger()

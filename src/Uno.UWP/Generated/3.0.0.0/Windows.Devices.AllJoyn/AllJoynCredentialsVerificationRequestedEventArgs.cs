@@ -19,7 +19,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "AllJoynAuthenticationMechanism AllJoynCredentialsVerificationRequestedEventArgs.AuthenticationMechanism");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "AuthenticationMechanism");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "Certificate AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "PeerCertificate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "SocketSslErrorSeverity AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "PeerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "IReadOnlyList<ChainValidationResult> AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "PeerCertificateErrors");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "IReadOnlyList<Certificate> AllJoynCredentialsVerificationRequestedEventArgs.PeerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "PeerIntermediateCertificates");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "string AllJoynCredentialsVerificationRequestedEventArgs.PeerUniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "PeerUniqueName");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Accept()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "void AllJoynCredentialsVerificationRequestedEventArgs.Accept()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "Accept()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "Deferral AllJoynCredentialsVerificationRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsVerificationRequestedEventArgs.AuthenticationMechanism.get

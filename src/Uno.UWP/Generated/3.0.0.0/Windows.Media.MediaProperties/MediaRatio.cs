@@ -19,11 +19,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaRatio", "uint MediaRatio.Denominator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaRatio", "Denominator");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaRatio", "uint MediaRatio.Denominator");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaRatio", "Denominator");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaRatio", "uint MediaRatio.Numerator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaRatio", "Numerator");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaRatio", "uint MediaRatio.Numerator");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaRatio", "Numerator");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppDiagnosticInfoWatcherEventArgs", "AppDiagnosticInfo AppDiagnosticInfoWatcherEventArgs.AppDiagnosticInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppDiagnosticInfoWatcherEventArgs", "AppDiagnosticInfo");
 			}
 		}
 #endif

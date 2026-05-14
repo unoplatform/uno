@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ContactNameOrder ContactManagerForUser.SystemDisplayNameOrder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "SystemDisplayNameOrder");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ContactNameOrder ContactManagerForUser.SystemDisplayNameOrder");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "SystemDisplayNameOrder");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ContactNameOrder ContactManagerForUser.SystemSortOrder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "SystemSortOrder");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ContactNameOrder ContactManagerForUser.SystemSortOrder");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "SystemSortOrder");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "User ContactManagerForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "User");
 			}
 		}
 #endif
@@ -55,42 +55,42 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.RandomAccessStreamReference> ConvertContactToVCardAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "IAsyncOperation<RandomAccessStreamReference> ContactManagerForUser.ConvertContactToVCardAsync(Contact contact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ConvertContactToVCardAsync(Contact contact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.RandomAccessStreamReference> ConvertContactToVCardAsync(global::Windows.ApplicationModel.Contacts.Contact contact, uint maxBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "IAsyncOperation<RandomAccessStreamReference> ContactManagerForUser.ConvertContactToVCardAsync(Contact contact, uint maxBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ConvertContactToVCardAsync(Contact contact, uint maxBytes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> ConvertVCardToContactAsync(global::Windows.Storage.Streams.IRandomAccessStreamReference vCard)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "IAsyncOperation<Contact> ContactManagerForUser.ConvertVCardToContactAsync(IRandomAccessStreamReference vCard)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ConvertVCardToContactAsync(IRandomAccessStreamReference vCard)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.ContactStore> RequestStoreAsync(global::Windows.ApplicationModel.Contacts.ContactStoreAccessType accessType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "IAsyncOperation<ContactStore> ContactManagerForUser.RequestStoreAsync(ContactStoreAccessType accessType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "RequestStoreAsync(ContactStoreAccessType accessType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.ContactAnnotationStore> RequestAnnotationStoreAsync(global::Windows.ApplicationModel.Contacts.ContactAnnotationStoreAccessType accessType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "IAsyncOperation<ContactAnnotationStore> ContactManagerForUser.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType accessType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactManagerForUser", "RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType accessType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ShowFullContactCard(global::Windows.ApplicationModel.Contacts.Contact contact, global::Windows.ApplicationModel.Contacts.FullContactCardOptions fullContactCardOptions)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "void ContactManagerForUser.ShowFullContactCard(Contact contact, FullContactCardOptions fullContactCardOptions)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ShowFullContactCard(Contact contact, FullContactCardOptions fullContactCardOptions)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemDisplayNameOrder.get

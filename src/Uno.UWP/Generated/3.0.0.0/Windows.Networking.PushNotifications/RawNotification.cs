@@ -19,7 +19,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.RawNotification", "string RawNotification.ChannelId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.RawNotification", "ChannelId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.RawNotification", "string RawNotification.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.RawNotification", "Content");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.RawNotification", "IBuffer RawNotification.ContentBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.RawNotification", "ContentBytes");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.RawNotification", "IReadOnlyDictionary<string, string> RawNotification.Headers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.RawNotification", "Headers");
 			}
 		}
 #endif

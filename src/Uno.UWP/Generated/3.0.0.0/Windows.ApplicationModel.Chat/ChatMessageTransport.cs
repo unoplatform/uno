@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "ChatMessageTransportConfiguration ChatMessageTransport.Configuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "Configuration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "bool ChatMessageTransport.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "IsActive");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "bool ChatMessageTransport.IsAppSetAsNotificationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "IsAppSetAsNotificationProvider");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "string ChatMessageTransport.TransportFriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "TransportFriendlyName");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "string ChatMessageTransport.TransportId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "TransportId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "ChatMessageTransportKind ChatMessageTransport.TransportKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "TransportKind");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RequestSetAsNotificationProviderAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "IAsyncAction ChatMessageTransport.RequestSetAsNotificationProviderAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransport", "RequestSetAsNotificationProviderAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.Configuration.get

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "SizeInt32 Direct3D11CaptureFrame.ContentSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "ContentSize");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "IDirect3DSurface Direct3D11CaptureFrame.Surface");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "Surface");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "TimeSpan Direct3D11CaptureFrame.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "SystemRelativeTime");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.Direct3D11CaptureFrame", "void Direct3D11CaptureFrame.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.Direct3D11CaptureFrame", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ContentSize.get

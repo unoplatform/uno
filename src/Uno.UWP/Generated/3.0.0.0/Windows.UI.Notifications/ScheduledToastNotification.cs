@@ -16,11 +16,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "DateTimeOffset? ScheduledToastNotification.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "ExpirationTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "DateTimeOffset? ScheduledToastNotification.ExpirationTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "ExpirationTime");
 			}
 		}
 #endif
@@ -30,11 +30,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.Group");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "Group");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.Group");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "Group");
 			}
 		}
 #endif
@@ -44,11 +44,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "Id");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "uint ScheduledToastNotification.MaximumSnoozeCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "MaximumSnoozeCount");
 			}
 		}
 #endif
@@ -68,11 +68,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "NotificationMirroring ScheduledToastNotification.NotificationMirroring");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "NotificationMirroring");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "NotificationMirroring ScheduledToastNotification.NotificationMirroring");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "NotificationMirroring");
 			}
 		}
 #endif
@@ -82,11 +82,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.RemoteId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "RemoteId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.RemoteId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "RemoteId");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "TimeSpan? ScheduledToastNotification.SnoozeInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "SnoozeInterval");
 			}
 		}
 #endif
@@ -106,11 +106,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "bool ScheduledToastNotification.SuppressPopup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "SuppressPopup");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "bool ScheduledToastNotification.SuppressPopup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "SuppressPopup");
 			}
 		}
 #endif
@@ -121,7 +121,7 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ScheduledToastNotification(global::Windows.Data.Xml.Dom.XmlDocument content, global::System.DateTimeOffset deliveryTime, global::System.TimeSpan snoozeInterval, uint maximumSnoozeCount)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "ScheduledToastNotification.ScheduledToastNotification(XmlDocument content, DateTimeOffset deliveryTime, TimeSpan snoozeInterval, uint maximumSnoozeCount)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "ScheduledToastNotification(XmlDocument content, DateTimeOffset deliveryTime, TimeSpan snoozeInterval, uint maximumSnoozeCount)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ScheduledToastNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset, System.TimeSpan, uint)

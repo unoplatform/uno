@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "int MediaPlaybackVideoTrackList.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "VideoTrack MediaPlaybackVideoTrackList.this[int index]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "this[int index]");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "int MediaPlaybackVideoTrackList.SelectedIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "SelectedIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackVideoTrackList", "int MediaPlaybackVideoTrackList.SelectedIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackVideoTrackList", "SelectedIndex");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Core.VideoTrack> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "IEnumerator<VideoTrack> MediaPlaybackVideoTrackList.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.System.Collections.IEnumerable.GetEnumerator()
@@ -69,12 +69,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackVideoTrackList", "event TypedEventHandler<ISingleSelectMediaTrackList, object> MediaPlaybackVideoTrackList.SelectedIndexChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackVideoTrackList", "event SelectedIndexChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackVideoTrackList", "event TypedEventHandler<ISingleSelectMediaTrackList, object> MediaPlaybackVideoTrackList.SelectedIndexChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackVideoTrackList", "event SelectedIndexChanged");
 			}
 		}
 #endif

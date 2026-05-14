@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "ActivatedOperation WebUIProtocolActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "string WebUIProtocolActivatedEventArgs.CallerPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "CallerPackageFamilyName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "int WebUIProtocolActivatedEventArgs.CurrentlyShownApplicationViewId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "CurrentlyShownApplicationViewId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "ValueSet WebUIProtocolActivatedEventArgs.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "Data");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "ActivationKind WebUIProtocolActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "ApplicationExecutionState WebUIProtocolActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "SplashScreen WebUIProtocolActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "Uri WebUIProtocolActivatedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "Uri");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "User WebUIProtocolActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolActivatedEventArgs", "User");
 			}
 		}
 #endif

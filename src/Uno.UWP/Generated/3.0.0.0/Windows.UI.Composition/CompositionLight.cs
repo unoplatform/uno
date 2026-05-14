@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "VisualUnorderedCollection CompositionLight.ExclusionsFromTargets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "ExclusionsFromTargets");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "bool CompositionLight.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionLight", "bool CompositionLight.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionLight", "IsEnabled");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "VisualUnorderedCollection CompositionLight.Targets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "Targets");
 			}
 		}
 #endif

@@ -17,28 +17,28 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool SetCookie(global::Windows.Web.Http.HttpCookie cookie)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpCookieManager", "bool HttpCookieManager.SetCookie(HttpCookie cookie)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpCookieManager", "SetCookie(HttpCookie cookie)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool SetCookie(global::Windows.Web.Http.HttpCookie cookie, bool thirdParty)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpCookieManager", "bool HttpCookieManager.SetCookie(HttpCookie cookie, bool thirdParty)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpCookieManager", "SetCookie(HttpCookie cookie, bool thirdParty)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DeleteCookie(global::Windows.Web.Http.HttpCookie cookie)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpCookieManager", "void HttpCookieManager.DeleteCookie(HttpCookie cookie)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpCookieManager", "DeleteCookie(HttpCookie cookie)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.HttpCookieCollection GetCookies(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpCookieManager", "HttpCookieCollection HttpCookieManager.GetCookies(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpCookieManager", "GetCookies(Uri uri)");
 		}
 #endif
 	}

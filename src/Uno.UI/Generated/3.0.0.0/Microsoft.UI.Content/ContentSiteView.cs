@@ -14,7 +14,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "Vector2 ContentSiteView.ActualSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ActualSize");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ContentAutomationOptions ContentSiteView.AutomationOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "AutomationOption");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "SizeInt32 ContentSiteView.ClientSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ClientSize");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ContentCoordinateConverter ContentSiteView.CoordinateConverter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "CoordinateConverter");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "DispatcherQueue ContentSiteView.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "DispatcherQueue");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ContentSiteEnvironmentView ContentSiteView.EnvironmentView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "EnvironmentView");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "bool ContentSiteView.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "IsConnected");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "bool ContentSiteView.IsSiteEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "IsSiteEnabled");
 			}
 		}
 #endif
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ContentLayoutDirection ContentSiteView.LayoutDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "LayoutDirection");
 			}
 		}
 #endif
@@ -105,7 +105,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "Matrix4x4 ContentSiteView.LocalToClientTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "LocalToClientTransformMatrix");
 			}
 		}
 #endif
@@ -115,7 +115,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "Matrix4x4 ContentSiteView.LocalToParentTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "LocalToParentTransformMatrix");
 			}
 		}
 #endif
@@ -127,7 +127,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "bool ContentSiteView.ProcessesKeyboardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ProcessesKeyboardInput");
 			}
 		}
 #endif
@@ -137,7 +137,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "bool ContentSiteView.ProcessesPointerInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ProcessesPointerInput");
 			}
 		}
 #endif
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "Vector2 ContentSiteView.RequestedSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "RequestedSize");
 			}
 		}
 #endif
@@ -158,7 +158,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "bool ContentSiteView.ShouldApplyRasterizationScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ShouldApplyRasterizationScale");
 			}
 		}
 #endif

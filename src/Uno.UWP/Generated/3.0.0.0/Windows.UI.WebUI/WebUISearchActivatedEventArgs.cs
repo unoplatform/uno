@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "ActivatedOperation WebUISearchActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "int WebUISearchActivatedEventArgs.CurrentlyShownApplicationViewId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "CurrentlyShownApplicationViewId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "ActivationKind WebUISearchActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "string WebUISearchActivatedEventArgs.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "Language");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "SearchPaneQueryLinguisticDetails WebUISearchActivatedEventArgs.LinguisticDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "LinguisticDetails");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "ApplicationExecutionState WebUISearchActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "string WebUISearchActivatedEventArgs.QueryText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "QueryText");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "SplashScreen WebUISearchActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUISearchActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif

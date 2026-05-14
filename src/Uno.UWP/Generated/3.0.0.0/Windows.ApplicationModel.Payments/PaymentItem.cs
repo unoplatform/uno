@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentItem", "PaymentCurrencyAmount PaymentItem.Amount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentItem", "Amount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "PaymentCurrencyAmount PaymentItem.Amount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "Amount");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentItem", "string PaymentItem.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentItem", "Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "string PaymentItem.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "Label");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentItem", "bool PaymentItem.Pending");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentItem", "Pending");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "bool PaymentItem.Pending");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "Pending");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentItem(string label, global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "PaymentItem.PaymentItem(string label, PaymentCurrencyAmount amount)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "PaymentItem(string label, PaymentCurrencyAmount amount)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentItem.PaymentItem(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount)

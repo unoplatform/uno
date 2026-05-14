@@ -14,11 +14,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncherOptions", "Uri RemoteLauncherOptions.FallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncherOptions", "FallbackUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteLauncherOptions", "Uri RemoteLauncherOptions.FallbackUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteLauncherOptions", "FallbackUri");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncherOptions", "IList<string> RemoteLauncherOptions.PreferredAppIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncherOptions", "PreferredAppIds");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RemoteLauncherOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteLauncherOptions", "RemoteLauncherOptions.RemoteLauncherOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteLauncherOptions", "RemoteLauncherOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.RemoteLauncherOptions()

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceRequest", "ValueSet AppServiceRequest.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceRequest", "Message");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.AppService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.AppServiceResponseStatus> SendResponseAsync(global::Windows.Foundation.Collections.ValueSet message)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceRequest", "IAsyncOperation<AppServiceResponseStatus> AppServiceRequest.SendResponseAsync(ValueSet message)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceRequest", "SendResponseAsync(ValueSet message)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.Message.get

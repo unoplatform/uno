@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "ExpandCollapseState SplitMenuFlyoutItemAutomationPeer.ExpandCollapseState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "ExpandCollapseState");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SplitMenuFlyoutItemAutomationPeer(global::Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem owner) : base(owner)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "SplitMenuFlyoutItemAutomationPeer.SplitMenuFlyoutItemAutomationPeer(SplitMenuFlyoutItem owner)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "SplitMenuFlyoutItemAutomationPeer(SplitMenuFlyoutItem owner)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer.SplitMenuFlyoutItemAutomationPeer(Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem)
@@ -31,14 +31,14 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Collapse()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "void SplitMenuFlyoutItemAutomationPeer.Collapse()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "Collapse()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Expand()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "void SplitMenuFlyoutItemAutomationPeer.Expand()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "Expand()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer.ExpandCollapseState.get

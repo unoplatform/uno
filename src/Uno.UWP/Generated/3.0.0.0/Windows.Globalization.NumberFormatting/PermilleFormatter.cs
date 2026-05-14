@@ -15,7 +15,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.GeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "GeographicRegion");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.ResolvedGeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "ResolvedGeographicRegion");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PermilleFormatter(global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.PermilleFormatter", "PermilleFormatter.PermilleFormatter(IEnumerable<string> languages, string geographicRegion)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.PermilleFormatter", "PermilleFormatter(IEnumerable<string> languages, string geographicRegion)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.PermilleFormatter(System.Collections.Generic.IEnumerable<string>, string)
@@ -52,14 +52,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.Format(long value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "Format(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.Format(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "Format(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.Format(double)
@@ -67,14 +67,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatInt(long value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.FormatInt(long value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "FormatInt(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatUInt(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.FormatUInt(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "FormatUInt(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.FormatDouble(double)
@@ -82,14 +82,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public long? ParseInt(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "long? PermilleFormatter.ParseInt(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "ParseInt(string text)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong? ParseUInt(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "ulong? PermilleFormatter.ParseUInt(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "ParseUInt(string text)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.ParseDouble(string)

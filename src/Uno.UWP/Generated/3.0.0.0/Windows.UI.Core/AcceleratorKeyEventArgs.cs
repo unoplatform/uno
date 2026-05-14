@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "string AcceleratorKeyEventArgs.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "CoreAcceleratorKeyEventType AcceleratorKeyEventArgs.EventType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "EventType");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "bool AcceleratorKeyEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AcceleratorKeyEventArgs", "bool AcceleratorKeyEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AcceleratorKeyEventArgs", "Handled");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "CorePhysicalKeyStatus AcceleratorKeyEventArgs.KeyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "KeyStatus");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "VirtualKey AcceleratorKeyEventArgs.VirtualKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "VirtualKey");
 			}
 		}
 #endif

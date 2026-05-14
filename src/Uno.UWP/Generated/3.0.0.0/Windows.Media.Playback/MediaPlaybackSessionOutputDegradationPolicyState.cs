@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSessionOutputDegradationPolicyState", "MediaPlaybackSessionVideoConstrictionReason MediaPlaybackSessionOutputDegradationPolicyState.VideoConstrictionReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSessionOutputDegradationPolicyState", "VideoConstrictionReason");
 			}
 		}
 #endif

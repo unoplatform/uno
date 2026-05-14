@@ -19,11 +19,11 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.AccentColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "AccentColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.AccentColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "AccentColor");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "BackgroundColor");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.ForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "ForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.ForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "ForegroundColor");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedAccentColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedAccentColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedAccentColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedAccentColor");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedBackgroundColor");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedForegroundColor");
 			}
 		}
 #endif
@@ -103,11 +103,11 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "string DevicePickerAppearance.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "string DevicePickerAppearance.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Title");
 			}
 		}
 #endif

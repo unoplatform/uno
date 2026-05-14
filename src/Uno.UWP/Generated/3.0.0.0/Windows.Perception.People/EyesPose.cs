@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "SpatialRay? EyesPose.Gaze");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "Gaze");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "bool EyesPose.IsCalibrationValid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "IsCalibrationValid");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "PerceptionTimestamp EyesPose.UpdateTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "UpdateTimestamp");
 			}
 		}
 #endif
@@ -47,14 +47,14 @@ namespace Windows.Perception.People
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "bool EyesPose.IsSupported()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Input.GazeInputAccessStatus> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "IAsyncOperation<GazeInputAccessStatus> EyesPose.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.EyesPose", "RequestAccessAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.EyesPose.Gaze.get

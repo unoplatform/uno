@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "IReadOnlyList<Certificate> CmsTimestampInfo.Certificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "Certificates");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "Certificate CmsTimestampInfo.SigningCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "SigningCertificate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "DateTimeOffset CmsTimestampInfo.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "Timestamp");
 			}
 		}
 #endif

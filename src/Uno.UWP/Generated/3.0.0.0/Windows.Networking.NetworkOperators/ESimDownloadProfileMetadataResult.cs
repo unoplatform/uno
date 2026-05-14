@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult", "ESimProfileMetadata ESimDownloadProfileMetadataResult.ProfileMetadata");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult", "ProfileMetadata");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult", "ESimOperationResult ESimDownloadProfileMetadataResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult", "Result");
 			}
 		}
 #endif

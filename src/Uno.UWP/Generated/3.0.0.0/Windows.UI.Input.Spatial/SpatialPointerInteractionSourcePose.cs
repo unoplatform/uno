@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Vector3 SpatialPointerInteractionSourcePose.ForwardDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "ForwardDirection");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Quaternion SpatialPointerInteractionSourcePose.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Orientation");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Vector3 SpatialPointerInteractionSourcePose.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Position");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "SpatialInteractionSourcePositionAccuracy SpatialPointerInteractionSourcePose.PositionAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "PositionAccuracy");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Vector3 SpatialPointerInteractionSourcePose.UpDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "UpDirection");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.FaceAnalysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.DetectedFace", "BitmapBounds DetectedFace.FaceBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.DetectedFace", "FaceBox");
 			}
 		}
 #endif

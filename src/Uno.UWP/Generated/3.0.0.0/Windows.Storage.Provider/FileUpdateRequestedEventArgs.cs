@@ -19,7 +19,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequestedEventArgs", "FileUpdateRequest FileUpdateRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequestedEventArgs", "Request");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastActivatedEventArgs", "string ToastActivatedEventArgs.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastActivatedEventArgs", "Arguments");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastActivatedEventArgs", "ValueSet ToastActivatedEventArgs.UserInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastActivatedEventArgs", "UserInput");
 			}
 		}
 #endif

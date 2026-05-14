@@ -14,11 +14,11 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "IHttpContent HttpResponseMessage.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "Content");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "IHttpContent HttpResponseMessage.Content");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "Content");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "HttpResponseHeaderCollection HttpResponseMessage.Headers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "Headers");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "bool HttpResponseMessage.IsSuccessStatusCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "IsSuccessStatusCode");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "string HttpResponseMessage.ReasonPhrase");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "ReasonPhrase");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "string HttpResponseMessage.ReasonPhrase");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "ReasonPhrase");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "HttpRequestMessage HttpResponseMessage.RequestMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "RequestMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpRequestMessage HttpResponseMessage.RequestMessage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "RequestMessage");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessageSource HttpResponseMessage.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "Source");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessageSource HttpResponseMessage.Source");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "Source");
 			}
 		}
 #endif
@@ -90,11 +90,11 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "HttpStatusCode HttpResponseMessage.StatusCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "StatusCode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpStatusCode HttpResponseMessage.StatusCode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "StatusCode");
 			}
 		}
 #endif
@@ -104,11 +104,11 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "HttpVersion HttpResponseMessage.Version");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "Version");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpVersion HttpResponseMessage.Version");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "Version");
 			}
 		}
 #endif
@@ -116,7 +116,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpResponseMessage()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessage.HttpResponseMessage()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessage()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.HttpResponseMessage()
@@ -124,7 +124,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpResponseMessage(global::Windows.Web.Http.HttpStatusCode statusCode)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessage.HttpResponseMessage(HttpStatusCode statusCode)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessage(HttpStatusCode statusCode)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.HttpResponseMessage(Windows.Web.Http.HttpStatusCode)
@@ -132,21 +132,21 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.HttpResponseMessage EnsureSuccessStatusCode()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessage HttpResponseMessage.EnsureSuccessStatusCode()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "EnsureSuccessStatusCode()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "void HttpResponseMessage.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "string HttpResponseMessage.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpResponseMessage", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.Content.get

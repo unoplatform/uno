@@ -40,7 +40,7 @@ namespace Windows.Storage.Streams
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IOutputStream DetachStream()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataWriter", "IOutputStream DataWriter.DetachStream()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataWriter", "DetachStream()");
 		}
 #endif
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.Dispose()

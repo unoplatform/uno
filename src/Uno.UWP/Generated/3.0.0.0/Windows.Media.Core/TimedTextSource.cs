@@ -17,56 +17,56 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "TimedTextSource TimedTextSource.CreateFromStream(IRandomAccessStream stream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "CreateFromStream(IRandomAccessStream stream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromUri(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "TimedTextSource TimedTextSource.CreateFromUri(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "CreateFromUri(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream, string defaultLanguage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "TimedTextSource TimedTextSource.CreateFromStream(IRandomAccessStream stream, string defaultLanguage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "CreateFromStream(IRandomAccessStream stream, string defaultLanguage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromUri(global::System.Uri uri, string defaultLanguage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "TimedTextSource TimedTextSource.CreateFromUri(Uri uri, string defaultLanguage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "CreateFromUri(Uri uri, string defaultLanguage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromStreamWithIndex(global::Windows.Storage.Streams.IRandomAccessStream stream, global::Windows.Storage.Streams.IRandomAccessStream indexStream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "TimedTextSource TimedTextSource.CreateFromStreamWithIndex(IRandomAccessStream stream, IRandomAccessStream indexStream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "CreateFromStreamWithIndex(IRandomAccessStream stream, IRandomAccessStream indexStream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromUriWithIndex(global::System.Uri uri, global::System.Uri indexUri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "TimedTextSource TimedTextSource.CreateFromUriWithIndex(Uri uri, Uri indexUri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "CreateFromUriWithIndex(Uri uri, Uri indexUri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromStreamWithIndex(global::Windows.Storage.Streams.IRandomAccessStream stream, global::Windows.Storage.Streams.IRandomAccessStream indexStream, string defaultLanguage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "TimedTextSource TimedTextSource.CreateFromStreamWithIndex(IRandomAccessStream stream, IRandomAccessStream indexStream, string defaultLanguage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "CreateFromStreamWithIndex(IRandomAccessStream stream, IRandomAccessStream indexStream, string defaultLanguage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromUriWithIndex(global::System.Uri uri, global::System.Uri indexUri, string defaultLanguage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "TimedTextSource TimedTextSource.CreateFromUriWithIndex(Uri uri, Uri indexUri, string defaultLanguage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSource", "CreateFromUriWithIndex(Uri uri, Uri indexUri, string defaultLanguage)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextSource.Resolved.add
@@ -78,12 +78,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextSource", "event TypedEventHandler<TimedTextSource, TimedTextSourceResolveResultEventArgs> TimedTextSource.Resolved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextSource", "event Resolved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextSource", "event TypedEventHandler<TimedTextSource, TimedTextSourceResolveResultEventArgs> TimedTextSource.Resolved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextSource", "event Resolved");
 			}
 		}
 #endif

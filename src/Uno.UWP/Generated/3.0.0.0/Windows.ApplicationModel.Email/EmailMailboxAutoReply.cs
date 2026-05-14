@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "bool EmailMailboxAutoReply.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "bool EmailMailboxAutoReply.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "IsEnabled");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "string EmailMailboxAutoReply.Response");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "Response");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "string EmailMailboxAutoReply.Response");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "Response");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactFieldCategory ContactLocationField.Category");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "Category");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.City");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "City");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Country");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "Country");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "Name");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.PostalCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "PostalCode");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Region");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "Region");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Street");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "Street");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactFieldType ContactLocationField.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "Type");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.UnstructuredAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "UnstructuredAddress");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "Value");
 			}
 		}
 #endif
@@ -112,7 +112,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactLocationField(string unstructuredAddress)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField.ContactLocationField(string unstructuredAddress)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField(string unstructuredAddress)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.ContactLocationField(string)
@@ -120,7 +120,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactLocationField(string unstructuredAddress, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField.ContactLocationField(string unstructuredAddress, ContactFieldCategory category)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField(string unstructuredAddress, ContactFieldCategory category)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.ContactLocationField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory)
@@ -128,7 +128,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactLocationField(string unstructuredAddress, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category, string street, string city, string region, string country, string postalCode)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField.ContactLocationField(string unstructuredAddress, ContactFieldCategory category, string street, string city, string region, string country, string postalCode)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField(string unstructuredAddress, ContactFieldCategory category, string street, string city, string region, string country, string postalCode)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.ContactLocationField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory, string, string, string, string, string)

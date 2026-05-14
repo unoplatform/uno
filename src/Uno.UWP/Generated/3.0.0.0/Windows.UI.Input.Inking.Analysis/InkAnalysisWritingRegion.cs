@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "Rect InkAnalysisWritingRegion.BoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "BoundingRect");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "IReadOnlyList<IInkAnalysisNode> InkAnalysisWritingRegion.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "Children");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "uint InkAnalysisWritingRegion.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "InkAnalysisNodeKind InkAnalysisWritingRegion.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "Kind");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "IInkAnalysisNode InkAnalysisWritingRegion.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "Parent");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "string InkAnalysisWritingRegion.RecognizedText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "RecognizedText");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "IReadOnlyList<Point> InkAnalysisWritingRegion.RotatedBoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "RotatedBoundingRect");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "IReadOnlyList<uint> InkAnalysisWritingRegion.GetStrokeIds()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "GetStrokeIds()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.BoundingRect.get

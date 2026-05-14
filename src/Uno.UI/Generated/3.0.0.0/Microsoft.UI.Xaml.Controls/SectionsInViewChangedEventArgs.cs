@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SectionsInViewChangedEventArgs", "IList<HubSection> SectionsInViewChangedEventArgs.AddedSections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SectionsInViewChangedEventArgs", "AddedSections");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SectionsInViewChangedEventArgs", "IList<HubSection> SectionsInViewChangedEventArgs.RemovedSections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SectionsInViewChangedEventArgs", "RemovedSections");
 			}
 		}
 #endif

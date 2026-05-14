@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs", "ActivitySensorReading ActivitySensorReadingChangedEventArgs.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReadingChangedEventArgs", "Reading");
 			}
 		}
 #endif

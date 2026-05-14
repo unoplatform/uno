@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "StorageLibraryChangeTracker StorageLibrary.ChangeTracker");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "ChangeTracker");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "IObservableVector<StorageFolder> StorageLibrary.Folders");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "Folders");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "StorageFolder StorageLibrary.SaveFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "SaveFolder");
 			}
 		}
 #endif
@@ -47,28 +47,28 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryAsync(global::Windows.Storage.KnownLibraryId libraryId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryAsync(KnownLibraryId libraryId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "GetLibraryAsync(KnownLibraryId libraryId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryForUserAsync(global::Windows.System.User user, global::Windows.Storage.KnownLibraryId libraryId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryForUserAsync(User user, KnownLibraryId libraryId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "GetLibraryForUserAsync(User user, KnownLibraryId libraryId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> RequestAddFolderAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "IAsyncOperation<StorageFolder> StorageLibrary.RequestAddFolderAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "RequestAddFolderAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestRemoveFolderAsync(global::Windows.Storage.StorageFolder folder)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "IAsyncOperation<bool> StorageLibrary.RequestRemoveFolderAsync(StorageFolder folder)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "RequestRemoveFolderAsync(StorageFolder folder)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.StorageLibrary.DefinitionChanged.add
@@ -77,7 +77,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> AreFolderSuggestionsAvailableAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "IAsyncOperation<bool> StorageLibrary.AreFolderSuggestionsAvailableAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageLibrary", "AreFolderSuggestionsAvailableAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.StorageLibrary.ChangeTracker.get
@@ -90,12 +90,12 @@ namespace Windows.Storage
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.StorageLibrary", "event TypedEventHandler<StorageLibrary, object> StorageLibrary.DefinitionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.StorageLibrary", "event DefinitionChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.StorageLibrary", "event TypedEventHandler<StorageLibrary, object> StorageLibrary.DefinitionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.StorageLibrary", "event DefinitionChanged");
 			}
 		}
 #endif

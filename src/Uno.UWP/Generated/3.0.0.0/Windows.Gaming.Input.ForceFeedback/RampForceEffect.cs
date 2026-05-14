@@ -14,11 +14,11 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "double RampForceEffect.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "Gain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "double RampForceEffect.Gain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "Gain");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "ForceFeedbackEffectState RampForceEffect.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "State");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RampForceEffect()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "RampForceEffect.RampForceEffect()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "RampForceEffect()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.RampForceEffect()
@@ -44,28 +44,28 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "void RampForceEffect.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "void RampForceEffect.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParameters(global::System.Numerics.Vector3 startVector, global::System.Numerics.Vector3 endVector, global::System.TimeSpan duration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "void RampForceEffect.SetParameters(Vector3 startVector, Vector3 endVector, TimeSpan duration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "SetParameters(Vector3 startVector, Vector3 endVector, TimeSpan duration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParametersWithEnvelope(global::System.Numerics.Vector3 startVector, global::System.Numerics.Vector3 endVector, float attackGain, float sustainGain, float releaseGain, global::System.TimeSpan startDelay, global::System.TimeSpan attackDuration, global::System.TimeSpan sustainDuration, global::System.TimeSpan releaseDuration, uint repeatCount)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "void RampForceEffect.SetParametersWithEnvelope(Vector3 startVector, Vector3 endVector, float attackGain, float sustainGain, float releaseGain, TimeSpan startDelay, TimeSpan attackDuration, TimeSpan sustainDuration, TimeSpan releaseDuration, uint repeatCount)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.RampForceEffect", "SetParametersWithEnvelope(Vector3 startVector, Vector3 endVector, float attackGain, float sustainGain, float releaseGain, TimeSpan startDelay, TimeSpan attackDuration, TimeSpan sustainDuration, TimeSpan releaseDuration, uint repeatCount)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Gain.get

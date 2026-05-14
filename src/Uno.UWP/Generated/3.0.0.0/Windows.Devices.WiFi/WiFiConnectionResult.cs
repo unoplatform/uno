@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiConnectionResult", "WiFiConnectionStatus WiFiConnectionResult.ConnectionStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiConnectionResult", "ConnectionStatus");
 			}
 		}
 #endif

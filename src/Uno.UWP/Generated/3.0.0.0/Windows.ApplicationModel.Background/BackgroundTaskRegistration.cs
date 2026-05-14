@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "IReadOnlyDictionary<string, BackgroundTaskRegistrationGroup> BackgroundTaskRegistration.AllTaskGroups");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "AllTaskGroups");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "IReadOnlyDictionary<Guid, IBackgroundTaskRegistration> BackgroundTaskRegistration.AllTasks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "AllTasks");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "BackgroundTaskRegistrationGroup BackgroundTaskRegistration.TaskGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "TaskGroup");
 			}
 		}
 #endif
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "Guid BackgroundTaskRegistration.TaskId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "TaskId");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup GetTaskGroup(string groupId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "BackgroundTaskRegistrationGroup BackgroundTaskRegistration.GetTaskGroup(string groupId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "GetTaskGroup(string groupId)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.AllTaskGroups.get
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Unregister(bool cancelTask)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "void BackgroundTaskRegistration.Unregister(bool cancelTask)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "Unregister(bool cancelTask)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Completed.add
@@ -81,12 +81,12 @@ namespace Windows.ApplicationModel.Background
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "event BackgroundTaskCompletedEventHandler BackgroundTaskRegistration.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "event Completed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "event BackgroundTaskCompletedEventHandler BackgroundTaskRegistration.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "event Completed");
 			}
 		}
 #endif
@@ -97,12 +97,12 @@ namespace Windows.ApplicationModel.Background
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "event BackgroundTaskProgressEventHandler BackgroundTaskRegistration.Progress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "event Progress");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "event BackgroundTaskProgressEventHandler BackgroundTaskRegistration.Progress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "event Progress");
 			}
 		}
 #endif

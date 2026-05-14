@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "bool CoreTextLayoutRequest.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "IsCanceled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "CoreTextLayoutBounds CoreTextLayoutRequest.LayoutBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "LayoutBounds");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "CoreTextLayoutBounds CoreTextLayoutRequest.LayoutBoundsVisualPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "LayoutBoundsVisualPixels");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "CoreTextRange CoreTextLayoutRequest.Range");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "Range");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "Deferral CoreTextLayoutRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.IsCanceled.get

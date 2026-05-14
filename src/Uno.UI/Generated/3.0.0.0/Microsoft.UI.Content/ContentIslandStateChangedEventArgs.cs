@@ -16,7 +16,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandStateChangedEventArgs", "bool ContentIslandStateChangedEventArgs.DidLocalToClientTransformMatrixChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandStateChangedEventArgs", "DidLocalToClientTransformMatrixChange");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandStateChangedEventArgs", "bool ContentIslandStateChangedEventArgs.DidLocalToParentTransformMatrixChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandStateChangedEventArgs", "DidLocalToParentTransformMatrixChange");
 			}
 		}
 #endif

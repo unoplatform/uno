@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "DateTimeOffset PhotoImportVideoSegment.Date");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "Date");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "string PhotoImportVideoSegment.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "PhotoImportSidecar PhotoImportVideoSegment.Sibling");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "Sibling");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "IReadOnlyList<PhotoImportSidecar> PhotoImportVideoSegment.Sidecars");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "Sidecars");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "ulong PhotoImportVideoSegment.SizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "SizeInBytes");
 			}
 		}
 #endif

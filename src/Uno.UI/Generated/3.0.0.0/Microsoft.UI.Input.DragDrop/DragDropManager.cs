@@ -19,11 +19,11 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragDropManager", "bool DragDropManager.AreConcurrentOperationsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragDropManager", "AreConcurrentOperationsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "bool DragDropManager.AreConcurrentOperationsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "AreConcurrentOperationsEnabled");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Input.DragDrop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.DragDrop.DragDropManager GetForIsland(global::Microsoft.UI.Content.ContentIsland content)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragDropManager", "DragDropManager DragDropManager.GetForIsland(ContentIsland content)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragDropManager", "GetForIsland(ContentIsland content)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.add
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Input.DragDrop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "void DragDropManager.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.get
@@ -52,12 +52,12 @@ namespace Microsoft.UI.Input.DragDrop
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "event TypedEventHandler<DragDropManager, DropOperationTargetRequestedEventArgs> DragDropManager.TargetRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "event TargetRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "event TypedEventHandler<DragDropManager, DropOperationTargetRequestedEventArgs> DragDropManager.TargetRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "event TargetRequested");
 			}
 		}
 #endif

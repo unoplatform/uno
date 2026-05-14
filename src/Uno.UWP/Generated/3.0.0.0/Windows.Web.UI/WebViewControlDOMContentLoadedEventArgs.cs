@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs", "Uri WebViewControlDOMContentLoadedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs", "Uri");
 			}
 		}
 #endif

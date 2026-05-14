@@ -12,7 +12,7 @@ namespace Windows.Data.Html
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string ConvertToText(string html)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Html.HtmlUtilities", "string HtmlUtilities.ConvertToText(string html)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Html.HtmlUtilities", "ConvertToText(string html)");
 		}
 #endif
 	}

@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CubicBezierEasingFunction", "Vector2 CubicBezierEasingFunction.ControlPoint1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CubicBezierEasingFunction", "ControlPoint1");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CubicBezierEasingFunction", "Vector2 CubicBezierEasingFunction.ControlPoint2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CubicBezierEasingFunction", "ControlPoint2");
 			}
 		}
 #endif

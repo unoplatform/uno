@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult", "string NetworkOperatorTetheringOperationResult.AdditionalErrorMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult", "AdditionalErrorMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult", "TetheringOperationStatus NetworkOperatorTetheringOperationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult", "Status");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.IsUserInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "IsUserInitiated");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "CoreWebView2PermissionKind CoreWebView2PermissionRequestedEventArgs.PermissionKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "PermissionKind");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.SavesInProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "SavesInProfile");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.SavesInProfile");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "SavesInProfile");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "CoreWebView2PermissionState CoreWebView2PermissionRequestedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "State");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "CoreWebView2PermissionState CoreWebView2PermissionRequestedEventArgs.State");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "State");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "string CoreWebView2PermissionRequestedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "Uri");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "Deferral CoreWebView2PermissionRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.Handled.get

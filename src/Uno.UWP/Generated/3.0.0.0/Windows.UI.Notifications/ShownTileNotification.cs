@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ShownTileNotification", "string ShownTileNotification.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ShownTileNotification", "Arguments");
 			}
 		}
 #endif

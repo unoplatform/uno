@@ -14,11 +14,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.AutoProcessInertia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "AutoProcessInertia");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.AutoProcessInertia");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "AutoProcessInertia");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideExact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "CrossSlideExact");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideExact");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "CrossSlideExact");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideHorizontally");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "CrossSlideHorizontally");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideHorizontally");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "CrossSlideHorizontally");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "CrossSlideThresholds GestureRecognizer.CrossSlideThresholds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "CrossSlideThresholds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "CrossSlideThresholds GestureRecognizer.CrossSlideThresholds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "CrossSlideThresholds");
 			}
 		}
 #endif
@@ -71,11 +71,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "InertiaExpansion");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansion");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "InertiaExpansion");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansionDeceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "InertiaExpansionDeceleration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansionDeceleration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "InertiaExpansionDeceleration");
 			}
 		}
 #endif
@@ -99,11 +99,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "InertiaRotationAngle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationAngle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "InertiaRotationAngle");
 			}
 		}
 #endif
@@ -113,11 +113,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationDeceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "InertiaRotationDeceleration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationDeceleration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "InertiaRotationDeceleration");
 			}
 		}
 #endif
@@ -127,11 +127,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaTranslationDeceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "InertiaTranslationDeceleration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaTranslationDeceleration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "InertiaTranslationDeceleration");
 			}
 		}
 #endif
@@ -141,11 +141,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaTranslationDisplacement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "InertiaTranslationDisplacement");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaTranslationDisplacement");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "InertiaTranslationDisplacement");
 			}
 		}
 #endif
@@ -156,7 +156,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.IsInertial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "IsInertial");
 			}
 		}
 #endif
@@ -166,11 +166,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.ManipulationExact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "ManipulationExact");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.ManipulationExact");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "ManipulationExact");
 			}
 		}
 #endif
@@ -180,7 +180,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "MouseWheelParameters GestureRecognizer.MouseWheelParameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "MouseWheelParameters");
 			}
 		}
 #endif
@@ -190,11 +190,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "Point GestureRecognizer.PivotCenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "PivotCenter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "Point GestureRecognizer.PivotCenter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "PivotCenter");
 			}
 		}
 #endif
@@ -204,11 +204,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.PivotRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "PivotRadius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "float GestureRecognizer.PivotRadius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "PivotRadius");
 			}
 		}
 #endif
@@ -218,11 +218,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.ShowGestureFeedback");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.GestureRecognizer", "ShowGestureFeedback");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "bool GestureRecognizer.ShowGestureFeedback");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "ShowGestureFeedback");
 			}
 		}
 #endif
@@ -236,14 +236,14 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ProcessMouseWheelEvent(global::Microsoft.UI.Input.PointerPoint value, bool isShiftKeyDown, bool isControlKeyDown)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessMouseWheelEvent(PointerPoint value, bool isShiftKeyDown, bool isControlKeyDown)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "ProcessMouseWheelEvent(PointerPoint value, bool isShiftKeyDown, bool isControlKeyDown)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ProcessInertia()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessInertia()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "ProcessInertia()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.ProcessUpEvent(Microsoft.UI.Input.PointerPoint)
@@ -305,12 +305,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, CrossSlidingEventArgs> GestureRecognizer.CrossSliding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "event CrossSliding");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, CrossSlidingEventArgs> GestureRecognizer.CrossSliding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "event CrossSliding");
 			}
 		}
 #endif

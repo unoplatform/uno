@@ -14,7 +14,7 @@ namespace Windows.UI.Popups
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Popups.PopupMenu", "IList<IUICommand> PopupMenu.Commands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Popups.PopupMenu", "Commands");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Popups
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync(global::Windows.Foundation.Point invocationPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Popups.PopupMenu", "IAsyncOperation<IUICommand> PopupMenu.ShowAsync(Point invocationPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Popups.PopupMenu", "ShowAsync(Point invocationPoint)");
 		}
 #endif
 		// Skipping already declared method Windows.UI.Popups.PopupMenu.ShowForSelectionAsync(Windows.Foundation.Rect)

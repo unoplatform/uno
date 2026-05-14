@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkRecognitionResult", "Rect InkRecognitionResult.BoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkRecognitionResult", "BoundingRect");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> GetTextCandidates()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkRecognitionResult", "IReadOnlyList<string> InkRecognitionResult.GetTextCandidates()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkRecognitionResult", "GetTextCandidates()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkStroke> GetStrokes()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkRecognitionResult", "IReadOnlyList<InkStroke> InkRecognitionResult.GetStrokes()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkRecognitionResult", "GetStrokes()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.BoundingRect.get

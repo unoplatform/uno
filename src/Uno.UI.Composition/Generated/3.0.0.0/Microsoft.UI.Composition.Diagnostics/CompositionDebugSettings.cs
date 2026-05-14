@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings", "CompositionDebugHeatMaps CompositionDebugSettings.HeatMaps");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings", "HeatMaps");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Composition.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings TryGetSettings(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings", "CompositionDebugSettings CompositionDebugSettings.TryGetSettings(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings", "TryGetSettings(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings.HeatMaps.get

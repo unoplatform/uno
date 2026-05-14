@@ -19,11 +19,11 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommOutboundConnectionInformation", "RfcommServiceId RfcommOutboundConnectionInformation.RemoteServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommOutboundConnectionInformation", "RemoteServiceId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommOutboundConnectionInformation", "RfcommServiceId RfcommOutboundConnectionInformation.RemoteServiceId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommOutboundConnectionInformation", "RemoteServiceId");
 			}
 		}
 #endif

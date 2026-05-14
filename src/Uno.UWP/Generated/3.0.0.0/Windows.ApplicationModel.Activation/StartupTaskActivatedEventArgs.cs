@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "ActivationKind StartupTaskActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "ApplicationExecutionState StartupTaskActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "SplashScreen StartupTaskActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "string StartupTaskActivatedEventArgs.TaskId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "TaskId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "User StartupTaskActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs", "User");
 			}
 		}
 #endif

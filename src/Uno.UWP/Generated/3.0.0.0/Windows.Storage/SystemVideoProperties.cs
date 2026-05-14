@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.Director");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "Director");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.FrameHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "FrameHeight");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.FrameWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "FrameWidth");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "Orientation");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.TotalBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "TotalBitrate");
 			}
 		}
 #endif

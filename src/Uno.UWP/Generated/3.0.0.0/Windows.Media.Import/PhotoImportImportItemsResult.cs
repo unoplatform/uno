@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "bool PhotoImportImportItemsResult.HasSucceeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "HasSucceeded");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "IReadOnlyList<PhotoImportItem> PhotoImportImportItemsResult.ImportedItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "ImportedItems");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "uint PhotoImportImportItemsResult.PhotosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "PhotosCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "ulong PhotoImportImportItemsResult.PhotosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "PhotosSizeInBytes");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "PhotoImportSession PhotoImportImportItemsResult.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "Session");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "uint PhotoImportImportItemsResult.SiblingsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "SiblingsCount");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "ulong PhotoImportImportItemsResult.SiblingsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "SiblingsSizeInBytes");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "uint PhotoImportImportItemsResult.SidecarsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "SidecarsCount");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "ulong PhotoImportImportItemsResult.SidecarsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "SidecarsSizeInBytes");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "uint PhotoImportImportItemsResult.TotalCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "TotalCount");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "ulong PhotoImportImportItemsResult.TotalSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "TotalSizeInBytes");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "uint PhotoImportImportItemsResult.VideosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "VideosCount");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "ulong PhotoImportImportItemsResult.VideosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "VideosSizeInBytes");
 			}
 		}
 #endif
@@ -147,7 +147,7 @@ namespace Windows.Media.Import
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult, double> DeleteImportedItemsFromSourceAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "IAsyncOperationWithProgress<PhotoImportDeleteImportedItemsFromSourceResult, double> PhotoImportImportItemsResult.DeleteImportedItemsFromSourceAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportImportItemsResult", "DeleteImportedItemsFromSourceAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.HasSucceeded.get

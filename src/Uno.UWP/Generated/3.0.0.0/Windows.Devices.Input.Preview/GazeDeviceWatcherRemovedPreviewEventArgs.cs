@@ -19,7 +19,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeDeviceWatcherRemovedPreviewEventArgs", "GazeDevicePreview GazeDeviceWatcherRemovedPreviewEventArgs.Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeDeviceWatcherRemovedPreviewEventArgs", "Device");
 			}
 		}
 #endif

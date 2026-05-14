@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineWatcherEventArgs", "Guid PhoneLineWatcherEventArgs.LineId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineWatcherEventArgs", "LineId");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.AccentColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "AccentColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.AccentColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "AccentColor");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.AreRaysVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "AreRaysVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.AreRaysVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "AreRaysVisible");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.AreTickMarksVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "AreTickMarksVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.AreTickMarksVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "AreTickMarksVisible");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "BackgroundColor");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.ForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "ForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.ForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "ForegroundColor");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsAngleReadoutVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "IsAngleReadoutVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsAngleReadoutVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "IsAngleReadoutVisible");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsCenterMarkerVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "IsCenterMarkerVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsCenterMarkerVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "IsCenterMarkerVisible");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsResizable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "IsResizable");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsResizable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "IsResizable");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "IsVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "IsVisible");
 			}
 		}
 #endif
@@ -140,7 +140,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "InkPresenterStencilKind InkPresenterProtractor.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Kind");
 			}
 		}
 #endif
@@ -150,11 +150,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "double InkPresenterProtractor.Radius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Radius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "double InkPresenterProtractor.Radius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Radius");
 			}
 		}
 #endif
@@ -164,11 +164,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Matrix3x2 InkPresenterProtractor.Transform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Transform");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Matrix3x2 InkPresenterProtractor.Transform");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Transform");
 			}
 		}
 #endif
@@ -176,7 +176,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InkPresenterProtractor(global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "InkPresenterProtractor.InkPresenterProtractor(InkPresenter inkPresenter)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "InkPresenterProtractor(InkPresenter inkPresenter)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.InkPresenterProtractor(Windows.UI.Input.Inking.InkPresenter)

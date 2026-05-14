@@ -14,11 +14,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float? ScalarNaturalMotionAnimation.FinalValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "FinalValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float? ScalarNaturalMotionAnimation.FinalValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "FinalValue");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float? ScalarNaturalMotionAnimation.InitialValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "InitialValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float? ScalarNaturalMotionAnimation.InitialValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "InitialValue");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float ScalarNaturalMotionAnimation.InitialVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "InitialVelocity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float ScalarNaturalMotionAnimation.InitialVelocity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "InitialVelocity");
 			}
 		}
 #endif

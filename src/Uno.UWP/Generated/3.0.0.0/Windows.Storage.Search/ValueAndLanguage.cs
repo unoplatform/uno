@@ -14,11 +14,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ValueAndLanguage", "string ValueAndLanguage.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ValueAndLanguage", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "string ValueAndLanguage.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "Language");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ValueAndLanguage", "object ValueAndLanguage.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ValueAndLanguage", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "object ValueAndLanguage.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "Value");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ValueAndLanguage()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "ValueAndLanguage.ValueAndLanguage()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "ValueAndLanguage()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.ValueAndLanguage()

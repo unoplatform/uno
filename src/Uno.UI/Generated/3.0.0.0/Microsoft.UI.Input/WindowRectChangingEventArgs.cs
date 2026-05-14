@@ -19,11 +19,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "bool WindowRectChangingEventArgs.AllowRectChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "AllowRectChange");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "bool WindowRectChangingEventArgs.AllowRectChange");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "AllowRectChange");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "MoveSizeOperation WindowRectChangingEventArgs.MoveSizeOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "MoveSizeOperation");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "RectInt32 WindowRectChangingEventArgs.NewWindowRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "NewWindowRect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "RectInt32 WindowRectChangingEventArgs.NewWindowRect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "NewWindowRect");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "RectInt32 WindowRectChangingEventArgs.OldWindowRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "OldWindowRect");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "PointInt32 WindowRectChangingEventArgs.PointerScreenPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "PointerScreenPoint");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "bool WindowRectChangingEventArgs.ShowWindow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "ShowWindow");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "bool WindowRectChangingEventArgs.ShowWindow");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "ShowWindow");
 			}
 		}
 #endif

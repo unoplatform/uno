@@ -19,11 +19,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "string PrintCollationOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "string PrintCollationOptionDetails.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "Description");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "string PrintCollationOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "ErrorText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "string PrintCollationOptionDetails.ErrorText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "ErrorText");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "IReadOnlyList<object> PrintCollationOptionDetails.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "Items");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "string PrintCollationOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "OptionId");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "PrintOptionType PrintCollationOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "OptionType");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "PrintOptionStates PrintCollationOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "State");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "PrintOptionStates PrintCollationOptionDetails.State");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "State");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "object PrintCollationOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "Value");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "string PrintCollationOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "WarningText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "string PrintCollationOptionDetails.WarningText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "WarningText");
 			}
 		}
 #endif
@@ -113,7 +113,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "bool PrintCollationOptionDetails.TrySetValue(object value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails", "TrySetValue(object value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.Description.get

@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "HostName DatagramSocketMessageReceivedEventArgs.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "LocalAddress");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "HostName DatagramSocketMessageReceivedEventArgs.RemoteAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "RemoteAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "string DatagramSocketMessageReceivedEventArgs.RemotePort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "RemotePort");
 			}
 		}
 #endif
@@ -48,14 +48,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.DataReader GetDataReader()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "DataReader DatagramSocketMessageReceivedEventArgs.GetDataReader()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "GetDataReader()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetDataStream()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "IInputStream DatagramSocketMessageReceivedEventArgs.GetDataStream()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs", "GetDataStream()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.LocalAddress.get

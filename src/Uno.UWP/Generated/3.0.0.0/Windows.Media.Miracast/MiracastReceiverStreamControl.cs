@@ -19,11 +19,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverStreamControl", "bool MiracastReceiverStreamControl.MuteAudio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverStreamControl", "MuteAudio");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverStreamControl", "bool MiracastReceiverStreamControl.MuteAudio");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverStreamControl", "MuteAudio");
 			}
 		}
 #endif
@@ -31,28 +31,28 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Miracast.MiracastReceiverVideoStreamSettings GetVideoStreamSettings()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverStreamControl", "MiracastReceiverVideoStreamSettings MiracastReceiverStreamControl.GetVideoStreamSettings()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverStreamControl", "GetVideoStreamSettings()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Miracast.MiracastReceiverVideoStreamSettings> GetVideoStreamSettingsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverStreamControl", "IAsyncOperation<MiracastReceiverVideoStreamSettings> MiracastReceiverStreamControl.GetVideoStreamSettingsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverStreamControl", "GetVideoStreamSettingsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SuggestVideoStreamSettings(global::Windows.Media.Miracast.MiracastReceiverVideoStreamSettings settings)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverStreamControl", "void MiracastReceiverStreamControl.SuggestVideoStreamSettings(MiracastReceiverVideoStreamSettings settings)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverStreamControl", "SuggestVideoStreamSettings(MiracastReceiverVideoStreamSettings settings)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SuggestVideoStreamSettingsAsync(global::Windows.Media.Miracast.MiracastReceiverVideoStreamSettings settings)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverStreamControl", "IAsyncAction MiracastReceiverStreamControl.SuggestVideoStreamSettingsAsync(MiracastReceiverVideoStreamSettings settings)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverStreamControl", "SuggestVideoStreamSettingsAsync(MiracastReceiverVideoStreamSettings settings)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStreamControl.MuteAudio.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItemError", "MediaPlaybackItemErrorCode MediaPlaybackItemError.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItemError", "ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItemError", "Exception MediaPlaybackItemError.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItemError", "ExtendedError");
 			}
 		}
 #endif

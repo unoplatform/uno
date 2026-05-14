@@ -14,7 +14,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserProfilePersonalizationSettings", "UserProfilePersonalizationSettings UserProfilePersonalizationSettings.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserProfilePersonalizationSettings", "Current");
 			}
 		}
 #endif
@@ -24,14 +24,14 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TrySetLockScreenImageAsync(global::Windows.Storage.StorageFile imageFile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserProfilePersonalizationSettings", "IAsyncOperation<bool> UserProfilePersonalizationSettings.TrySetLockScreenImageAsync(StorageFile imageFile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserProfilePersonalizationSettings", "TrySetLockScreenImageAsync(StorageFile imageFile)");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TrySetWallpaperImageAsync(global::Windows.Storage.StorageFile imageFile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserProfilePersonalizationSettings", "IAsyncOperation<bool> UserProfilePersonalizationSettings.TrySetWallpaperImageAsync(StorageFile imageFile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserProfilePersonalizationSettings", "TrySetWallpaperImageAsync(StorageFile imageFile)");
 		}
 #endif
 	}

@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.BlurRadiusMultiplier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "BlurRadiusMultiplier");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.BlurRadiusMultiplier");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadow", "BlurRadiusMultiplier");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "CompositionProjectedShadowCasterCollection CompositionProjectedShadow.Casters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "Casters");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "CompositionLight CompositionProjectedShadow.LightSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "LightSource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadow", "CompositionLight CompositionProjectedShadow.LightSource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadow", "LightSource");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MaxBlurRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "MaxBlurRadius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MaxBlurRadius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadow", "MaxBlurRadius");
 			}
 		}
 #endif
@@ -71,11 +71,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MinBlurRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "MinBlurRadius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MinBlurRadius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadow", "MinBlurRadius");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "CompositionProjectedShadowReceiverUnorderedCollection CompositionProjectedShadow.Receivers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadow", "Receivers");
 			}
 		}
 #endif

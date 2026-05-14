@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "DateTimeOffset? EmailMailboxAutoReplySettings.EndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EndTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "DateTimeOffset? EmailMailboxAutoReplySettings.EndTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EndTime");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReply EmailMailboxAutoReplySettings.InternalReply");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "InternalReply");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "bool EmailMailboxAutoReplySettings.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "bool EmailMailboxAutoReplySettings.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "IsEnabled");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReply EmailMailboxAutoReplySettings.KnownExternalReply");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "KnownExternalReply");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReplyMessageResponseKind EmailMailboxAutoReplySettings.ResponseKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "ResponseKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReplyMessageResponseKind EmailMailboxAutoReplySettings.ResponseKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "ResponseKind");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "DateTimeOffset? EmailMailboxAutoReplySettings.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "StartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "DateTimeOffset? EmailMailboxAutoReplySettings.StartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "StartTime");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReply EmailMailboxAutoReplySettings.UnknownExternalReply");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "UnknownExternalReply");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailMailboxAutoReplySettings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReplySettings.EmailMailboxAutoReplySettings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReplySettings()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.EmailMailboxAutoReplySettings()

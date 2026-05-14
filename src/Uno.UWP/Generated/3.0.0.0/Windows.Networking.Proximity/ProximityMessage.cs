@@ -19,7 +19,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "IBuffer ProximityMessage.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "string ProximityMessage.DataAsString");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "DataAsString");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "string ProximityMessage.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "MessageType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "long ProximityMessage.SubscriptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "SubscriptionId");
 			}
 		}
 #endif

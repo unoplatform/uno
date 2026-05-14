@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "ushort GattCharacteristic.AttributeHandle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "AttributeHandle");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IReadOnlyList<GattPresentationFormat> GattCharacteristic.PresentationFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "PresentationFormats");
 			}
 		}
 #endif
@@ -35,11 +35,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GattProtectionLevel GattCharacteristic.ProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "ProtectionLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GattProtectionLevel GattCharacteristic.ProtectionLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "ProtectionLevel");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GattDeviceService GattCharacteristic.Service");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "Service");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "string GattCharacteristic.UserDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "UserDescription");
 			}
 		}
 #endif
@@ -68,56 +68,56 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid ConvertShortIdToUuid(ushort shortId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "Guid GattCharacteristic.ConvertShortIdToUuid(ushort shortId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "ConvertShortIdToUuid(ushort shortId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor> GetDescriptors(global::System.Guid descriptorUuid)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IReadOnlyList<GattDescriptor> GattCharacteristic.GetDescriptors(Guid descriptorUuid)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GetDescriptors(Guid descriptorUuid)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult> ReadValueAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattReadResult> GattCharacteristic.ReadValueAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "ReadValueAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult> ReadValueAsync(global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattReadResult> GattCharacteristic.ReadValueAsync(BluetoothCacheMode cacheMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "ReadValueAsync(BluetoothCacheMode cacheMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus> WriteValueAsync(global::Windows.Storage.Streams.IBuffer value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteValueAsync(IBuffer value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "WriteValueAsync(IBuffer value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus> WriteValueAsync(global::Windows.Storage.Streams.IBuffer value, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteOption writeOption)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteValueAsync(IBuffer value, GattWriteOption writeOption)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "WriteValueAsync(IBuffer value, GattWriteOption writeOption)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadClientCharacteristicConfigurationDescriptorResult> ReadClientCharacteristicConfigurationDescriptorAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattReadClientCharacteristicConfigurationDescriptorResult> GattCharacteristic.ReadClientCharacteristicConfigurationDescriptorAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "ReadClientCharacteristicConfigurationDescriptorAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus> WriteClientCharacteristicConfigurationDescriptorAsync(global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattCommunicationStatus> GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.ValueChanged.add
@@ -126,56 +126,56 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor> GetAllDescriptors()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IReadOnlyList<GattDescriptor> GattCharacteristic.GetAllDescriptors()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GetAllDescriptors()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult> GetDescriptorsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GetDescriptorsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult> GetDescriptorsAsync(global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsAsync(BluetoothCacheMode cacheMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GetDescriptorsAsync(BluetoothCacheMode cacheMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult> GetDescriptorsForUuidAsync(global::System.Guid descriptorUuid)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsForUuidAsync(Guid descriptorUuid)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GetDescriptorsForUuidAsync(Guid descriptorUuid)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult> GetDescriptorsForUuidAsync(global::System.Guid descriptorUuid, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattDescriptorsResult> GattCharacteristic.GetDescriptorsForUuidAsync(Guid descriptorUuid, BluetoothCacheMode cacheMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "GetDescriptorsForUuidAsync(Guid descriptorUuid, BluetoothCacheMode cacheMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult> WriteValueWithResultAsync(global::Windows.Storage.Streams.IBuffer value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattWriteResult> GattCharacteristic.WriteValueWithResultAsync(IBuffer value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "WriteValueWithResultAsync(IBuffer value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult> WriteValueWithResultAsync(global::Windows.Storage.Streams.IBuffer value, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteOption writeOption)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattWriteResult> GattCharacteristic.WriteValueWithResultAsync(IBuffer value, GattWriteOption writeOption)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "WriteValueWithResultAsync(IBuffer value, GattWriteOption writeOption)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult> WriteClientCharacteristicConfigurationDescriptorWithResultAsync(global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "IAsyncOperation<GattWriteResult> GattCharacteristic.WriteClientCharacteristicConfigurationDescriptorWithResultAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "WriteClientCharacteristicConfigurationDescriptorWithResultAsync(GattClientCharacteristicConfigurationDescriptorValue clientCharacteristicConfigurationDescriptorValue)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.AttributeHandle.get
@@ -193,12 +193,12 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "event TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs> GattCharacteristic.ValueChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "event ValueChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "event TypedEventHandler<GattCharacteristic, GattValueChangedEventArgs> GattCharacteristic.ValueChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic", "event ValueChanged");
 			}
 		}
 #endif

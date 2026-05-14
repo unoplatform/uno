@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults", "bool ProvisionFromXmlDocumentResults.AllElementsProvisioned");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults", "AllElementsProvisioned");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults", "string ProvisionFromXmlDocumentResults.ProvisionResultsXml");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults", "ProvisionResultsXml");
 			}
 		}
 #endif

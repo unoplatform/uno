@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData", "IBuffer EncryptedAndAuthenticatedData.AuthenticationTag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData", "AuthenticationTag");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData", "IBuffer EncryptedAndAuthenticatedData.EncryptedData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData", "EncryptedData");
 			}
 		}
 #endif

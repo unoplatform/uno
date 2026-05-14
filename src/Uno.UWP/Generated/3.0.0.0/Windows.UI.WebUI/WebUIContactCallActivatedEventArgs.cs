@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "ActivatedOperation WebUIContactCallActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "Contact WebUIContactCallActivatedEventArgs.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "Contact");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "ActivationKind WebUIContactCallActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "ApplicationExecutionState WebUIContactCallActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "string WebUIContactCallActivatedEventArgs.ServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "ServiceId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "string WebUIContactCallActivatedEventArgs.ServiceUserId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "ServiceUserId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "SplashScreen WebUIContactCallActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "string WebUIContactCallActivatedEventArgs.Verb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIContactCallActivatedEventArgs", "Verb");
 			}
 		}
 #endif

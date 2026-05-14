@@ -14,7 +14,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackAudioTrackList MediaPlaybackItem.AudioTracks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "AudioTracks");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "AutoLoadedDisplayPropertyKind MediaPlaybackItem.AutoLoadedDisplayProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "AutoLoadedDisplayProperties");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "AutoLoadedDisplayPropertyKind MediaPlaybackItem.AutoLoadedDisplayProperties");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "AutoLoadedDisplayProperties");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "MediaBreakSchedule MediaPlaybackItem.BreakSchedule");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "BreakSchedule");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "bool MediaPlaybackItem.CanSkip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "CanSkip");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "bool MediaPlaybackItem.CanSkip");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "CanSkip");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "TimeSpan? MediaPlaybackItem.DurationLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "DurationLimit");
 			}
 		}
 #endif
@@ -72,11 +72,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "bool MediaPlaybackItem.IsDisabledInPlaybackList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "IsDisabledInPlaybackList");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "bool MediaPlaybackItem.IsDisabledInPlaybackList");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "IsDisabledInPlaybackList");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "MediaSource MediaPlaybackItem.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "Source");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "TimeSpan MediaPlaybackItem.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "StartTime");
 			}
 		}
 #endif
@@ -106,7 +106,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackTimedMetadataTrackList MediaPlaybackItem.TimedMetadataTracks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "TimedMetadataTracks");
 			}
 		}
 #endif
@@ -116,7 +116,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "double MediaPlaybackItem.TotalDownloadProgress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "TotalDownloadProgress");
 			}
 		}
 #endif
@@ -126,7 +126,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackVideoTrackList MediaPlaybackItem.VideoTracks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "VideoTracks");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public MediaPlaybackItem(global::Windows.Media.Core.MediaSource source)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem.MediaPlaybackItem(MediaSource source)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem(MediaSource source)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.MediaPlaybackItem(Windows.Media.Core.MediaSource)
@@ -142,7 +142,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaPlaybackItem(global::Windows.Media.Core.MediaSource source, global::System.TimeSpan startTime)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem.MediaPlaybackItem(MediaSource source, TimeSpan startTime)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem(MediaSource source, TimeSpan startTime)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.MediaPlaybackItem(Windows.Media.Core.MediaSource, System.TimeSpan)
@@ -150,7 +150,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaPlaybackItem(global::Windows.Media.Core.MediaSource source, global::System.TimeSpan startTime, global::System.TimeSpan durationLimit)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem.MediaPlaybackItem(MediaSource source, TimeSpan startTime, TimeSpan durationLimit)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem(MediaSource source, TimeSpan startTime, TimeSpan durationLimit)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.MediaPlaybackItem(Windows.Media.Core.MediaSource, System.TimeSpan, System.TimeSpan)
@@ -158,7 +158,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Playback.MediaPlaybackItem FindFromMediaSource(global::Windows.Media.Core.MediaSource source)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem MediaPlaybackItem.FindFromMediaSource(MediaSource source)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "FindFromMediaSource(MediaSource source)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.AudioTracksChanged.add
@@ -171,14 +171,14 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.MediaItemDisplayProperties GetDisplayProperties()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "MediaItemDisplayProperties MediaPlaybackItem.GetDisplayProperties()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItem", "GetDisplayProperties()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ApplyDisplayProperties(global::Windows.Media.Playback.MediaItemDisplayProperties value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "void MediaPlaybackItem.ApplyDisplayProperties(MediaItemDisplayProperties value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "ApplyDisplayProperties(MediaItemDisplayProperties value)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.AudioTracks.get
@@ -202,12 +202,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event TypedEventHandler<MediaPlaybackItem, IVectorChangedEventArgs> MediaPlaybackItem.AudioTracksChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event AudioTracksChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event TypedEventHandler<MediaPlaybackItem, IVectorChangedEventArgs> MediaPlaybackItem.AudioTracksChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event AudioTracksChanged");
 			}
 		}
 #endif
@@ -218,12 +218,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event TypedEventHandler<MediaPlaybackItem, IVectorChangedEventArgs> MediaPlaybackItem.TimedMetadataTracksChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event TimedMetadataTracksChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event TypedEventHandler<MediaPlaybackItem, IVectorChangedEventArgs> MediaPlaybackItem.TimedMetadataTracksChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event TimedMetadataTracksChanged");
 			}
 		}
 #endif
@@ -234,12 +234,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event TypedEventHandler<MediaPlaybackItem, IVectorChangedEventArgs> MediaPlaybackItem.VideoTracksChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event VideoTracksChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event TypedEventHandler<MediaPlaybackItem, IVectorChangedEventArgs> MediaPlaybackItem.VideoTracksChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "event VideoTracksChanged");
 			}
 		}
 #endif

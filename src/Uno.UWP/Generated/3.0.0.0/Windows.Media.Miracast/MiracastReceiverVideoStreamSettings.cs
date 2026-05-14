@@ -19,11 +19,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "int MiracastReceiverVideoStreamSettings.Bitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "Bitrate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "int MiracastReceiverVideoStreamSettings.Bitrate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "Bitrate");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "SizeInt32 MiracastReceiverVideoStreamSettings.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "Size");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "SizeInt32 MiracastReceiverVideoStreamSettings.Size");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverVideoStreamSettings", "Size");
 			}
 		}
 #endif

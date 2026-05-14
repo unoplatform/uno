@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessageAction", "string RcsEndUserMessageAction.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessageAction", "Label");
 			}
 		}
 #endif

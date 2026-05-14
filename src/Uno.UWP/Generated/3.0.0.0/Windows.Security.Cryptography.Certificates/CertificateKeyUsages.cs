@@ -14,11 +14,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.CrlSign");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "CrlSign");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.CrlSign");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "CrlSign");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.DataEncipherment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "DataEncipherment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.DataEncipherment");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "DataEncipherment");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.DigitalSignature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "DigitalSignature");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.DigitalSignature");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "DigitalSignature");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.EncipherOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "EncipherOnly");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.EncipherOnly");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "EncipherOnly");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyAgreement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "KeyAgreement");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyAgreement");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "KeyAgreement");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyCertificateSign");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "KeyCertificateSign");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyCertificateSign");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "KeyCertificateSign");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyEncipherment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "KeyEncipherment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyEncipherment");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "KeyEncipherment");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.NonRepudiation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "NonRepudiation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.NonRepudiation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "NonRepudiation");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CertificateKeyUsages()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "CertificateKeyUsages.CertificateKeyUsages()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "CertificateKeyUsages()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.CertificateKeyUsages()

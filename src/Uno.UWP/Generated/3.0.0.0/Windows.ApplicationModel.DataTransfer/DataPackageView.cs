@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> GetTextAsync(string formatId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataPackageView", "IAsyncOperation<string> DataPackageView.GetTextAsync(string formatId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataPackageView", "GetTextAsync(string formatId)");
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.GetUriAsync()
@@ -34,21 +34,21 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataPackageView", "IAsyncOperation<ProtectionPolicyEvaluationResult> DataPackageView.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataPackageView", "RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync(string enterpriseId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataPackageView", "IAsyncOperation<ProtectionPolicyEvaluationResult> DataPackageView.RequestAccessAsync(string enterpriseId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataPackageView", "RequestAccessAsync(string enterpriseId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult UnlockAndAssumeEnterpriseIdentity()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataPackageView", "ProtectionPolicyEvaluationResult DataPackageView.UnlockAndAssumeEnterpriseIdentity()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataPackageView", "UnlockAndAssumeEnterpriseIdentity()");
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.SetAcceptedFormatId(string)

@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail", "ToastHistoryChangedType ToastNotificationHistoryChangedTriggerDetail.ChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail", "ChangeType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail", "string ToastNotificationHistoryChangedTriggerDetail.CollectionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail", "CollectionId");
 			}
 		}
 #endif

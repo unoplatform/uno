@@ -14,11 +14,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "string PlayReadyMeteringReportServiceRequest.ChallengeCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "ChallengeCustomData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "string PlayReadyMeteringReportServiceRequest.ChallengeCustomData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "ChallengeCustomData");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "byte[] PlayReadyMeteringReportServiceRequest.MeteringCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "MeteringCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "byte[] PlayReadyMeteringReportServiceRequest.MeteringCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "MeteringCertificate");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Guid PlayReadyMeteringReportServiceRequest.ProtectionSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "ProtectionSystem");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "string PlayReadyMeteringReportServiceRequest.ResponseCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "ResponseCustomData");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Guid PlayReadyMeteringReportServiceRequest.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Type");
 			}
 		}
 #endif
@@ -72,11 +72,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Uri PlayReadyMeteringReportServiceRequest.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Uri PlayReadyMeteringReportServiceRequest.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Uri");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyMeteringReportServiceRequest()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "PlayReadyMeteringReportServiceRequest.PlayReadyMeteringReportServiceRequest()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "PlayReadyMeteringReportServiceRequest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.PlayReadyMeteringReportServiceRequest()
@@ -92,28 +92,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BeginServiceRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "IAsyncAction PlayReadyMeteringReportServiceRequest.BeginServiceRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "BeginServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest NextServiceRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "IPlayReadyServiceRequest PlayReadyMeteringReportServiceRequest.NextServiceRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "NextServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "PlayReadySoapMessage PlayReadyMeteringReportServiceRequest.GenerateManualEnablingChallenge()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "GenerateManualEnablingChallenge()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Exception ProcessManualEnablingResponse(byte[] responseBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Exception PlayReadyMeteringReportServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "ProcessManualEnablingResponse(byte[] responseBytes)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ChallengeCustomData.get

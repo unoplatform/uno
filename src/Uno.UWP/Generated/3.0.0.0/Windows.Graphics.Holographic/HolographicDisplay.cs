@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "HolographicAdapterId HolographicDisplay.AdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "AdapterId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "string HolographicDisplay.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "bool HolographicDisplay.IsOpaque");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "IsOpaque");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "bool HolographicDisplay.IsStereo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "IsStereo");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "Size HolographicDisplay.MaxViewportSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "MaxViewportSize");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "double HolographicDisplay.RefreshRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "RefreshRate");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "SpatialLocator HolographicDisplay.SpatialLocator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "SpatialLocator");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Holographic.HolographicDisplay GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "HolographicDisplay HolographicDisplay.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicViewConfiguration TryGetViewConfiguration(global::Windows.Graphics.Holographic.HolographicViewConfigurationKind kind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "HolographicViewConfiguration HolographicDisplay.TryGetViewConfiguration(HolographicViewConfigurationKind kind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "TryGetViewConfiguration(HolographicViewConfigurationKind kind)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.AdapterId.get

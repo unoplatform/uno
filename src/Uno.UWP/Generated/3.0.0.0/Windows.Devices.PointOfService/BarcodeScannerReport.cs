@@ -14,7 +14,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerReport", "IBuffer BarcodeScannerReport.ScanData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerReport", "ScanData");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerReport", "IBuffer BarcodeScannerReport.ScanDataLabel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerReport", "ScanDataLabel");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerReport", "uint BarcodeScannerReport.ScanDataType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerReport", "ScanDataType");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BarcodeScannerReport(uint scanDataType, global::Windows.Storage.Streams.IBuffer scanData, global::Windows.Storage.Streams.IBuffer scanDataLabel)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeScannerReport", "BarcodeScannerReport.BarcodeScannerReport(uint scanDataType, IBuffer scanData, IBuffer scanDataLabel)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeScannerReport", "BarcodeScannerReport(uint scanDataType, IBuffer scanData, IBuffer scanDataLabel)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.BarcodeScannerReport(uint, Windows.Storage.Streams.IBuffer, Windows.Storage.Streams.IBuffer)

@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStoredBitmap", "string LineDisplayStoredBitmap.EscapeSequence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStoredBitmap", "EscapeSequence");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryDeleteAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStoredBitmap", "IAsyncOperation<bool> LineDisplayStoredBitmap.TryDeleteAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStoredBitmap", "TryDeleteAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.EscapeSequence.get

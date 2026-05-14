@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs", "CastingConnectionErrorStatus CastingConnectionErrorOccurredEventArgs.ErrorStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs", "ErrorStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs", "string CastingConnectionErrorOccurredEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs", "Message");
 			}
 		}
 #endif

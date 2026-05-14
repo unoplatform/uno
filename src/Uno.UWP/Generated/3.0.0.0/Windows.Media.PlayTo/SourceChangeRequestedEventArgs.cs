@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "string SourceChangeRequestedEventArgs.Album");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Album");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "string SourceChangeRequestedEventArgs.Author");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Author");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "DateTimeOffset? SourceChangeRequestedEventArgs.Date");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Date");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "string SourceChangeRequestedEventArgs.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Description");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "string SourceChangeRequestedEventArgs.Genre");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Genre");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "IReadOnlyDictionary<string, object> SourceChangeRequestedEventArgs.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Properties");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "uint? SourceChangeRequestedEventArgs.Rating");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Rating");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "IRandomAccessStreamWithContentType SourceChangeRequestedEventArgs.Stream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Stream");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "IRandomAccessStreamReference SourceChangeRequestedEventArgs.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Thumbnail");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "string SourceChangeRequestedEventArgs.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.SourceChangeRequestedEventArgs", "Title");
 			}
 		}
 #endif

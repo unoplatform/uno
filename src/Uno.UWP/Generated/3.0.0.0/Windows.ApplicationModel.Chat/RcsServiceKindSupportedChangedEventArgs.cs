@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs", "RcsServiceKind RcsServiceKindSupportedChangedEventArgs.ServiceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs", "ServiceKind");
 			}
 		}
 #endif

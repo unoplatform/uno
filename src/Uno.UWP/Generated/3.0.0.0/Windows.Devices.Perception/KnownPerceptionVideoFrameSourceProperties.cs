@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "string KnownPerceptionVideoFrameSourceProperties.AvailableVideoProfiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "AvailableVideoProfiles");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "string KnownPerceptionVideoFrameSourceProperties.CameraIntrinsics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "CameraIntrinsics");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "string KnownPerceptionVideoFrameSourceProperties.IsMirrored");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "IsMirrored");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "string KnownPerceptionVideoFrameSourceProperties.SupportedVideoProfiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "SupportedVideoProfiles");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "string KnownPerceptionVideoFrameSourceProperties.VideoProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "VideoProfile");
 			}
 		}
 #endif

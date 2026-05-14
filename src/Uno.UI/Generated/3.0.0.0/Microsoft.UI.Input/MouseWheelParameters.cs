@@ -19,11 +19,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.CharTranslation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.MouseWheelParameters", "CharTranslation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.CharTranslation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "CharTranslation");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.MouseWheelParameters", "float MouseWheelParameters.DeltaRotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.MouseWheelParameters", "DeltaRotationAngle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "float MouseWheelParameters.DeltaRotationAngle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "DeltaRotationAngle");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.MouseWheelParameters", "float MouseWheelParameters.DeltaScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.MouseWheelParameters", "DeltaScale");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "float MouseWheelParameters.DeltaScale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "DeltaScale");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.PageTranslation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.MouseWheelParameters", "PageTranslation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.PageTranslation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.MouseWheelParameters", "PageTranslation");
 			}
 		}
 #endif

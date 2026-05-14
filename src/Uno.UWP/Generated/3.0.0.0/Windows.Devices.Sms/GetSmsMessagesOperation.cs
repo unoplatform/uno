@@ -19,11 +19,11 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "AsyncOperationWithProgressCompletedHandler<IReadOnlyList<ISmsMessage>, int> GetSmsMessagesOperation.Completed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "Completed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.GetSmsMessagesOperation", "AsyncOperationWithProgressCompletedHandler<IReadOnlyList<ISmsMessage>, int> GetSmsMessagesOperation.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.GetSmsMessagesOperation", "Completed");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "Exception GetSmsMessagesOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "ErrorCode");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "uint GetSmsMessagesOperation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "Id");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "AsyncOperationProgressHandler<IReadOnlyList<ISmsMessage>, int> GetSmsMessagesOperation.Progress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "Progress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.GetSmsMessagesOperation", "AsyncOperationProgressHandler<IReadOnlyList<ISmsMessage>, int> GetSmsMessagesOperation.Progress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.GetSmsMessagesOperation", "Progress");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "AsyncStatus GetSmsMessagesOperation.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "Status");
 			}
 		}
 #endif
@@ -75,21 +75,21 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sms.ISmsMessage> GetResults()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "IReadOnlyList<ISmsMessage> GetSmsMessagesOperation.GetResults()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "GetResults()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.GetSmsMessagesOperation", "void GetSmsMessagesOperation.Cancel()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.GetSmsMessagesOperation", "Cancel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.GetSmsMessagesOperation", "void GetSmsMessagesOperation.Close()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.GetSmsMessagesOperation", "Close()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.GetSmsMessagesOperation.Completed.get

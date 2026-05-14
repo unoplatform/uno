@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogAddResourcePackageResult", "Exception PackageCatalogAddResourcePackageResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogAddResourcePackageResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogAddResourcePackageResult", "bool PackageCatalogAddResourcePackageResult.IsComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogAddResourcePackageResult", "IsComplete");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogAddResourcePackageResult", "Package PackageCatalogAddResourcePackageResult.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogAddResourcePackageResult", "Package");
 			}
 		}
 #endif

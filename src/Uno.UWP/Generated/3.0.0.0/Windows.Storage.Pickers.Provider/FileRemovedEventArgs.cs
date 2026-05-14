@@ -19,7 +19,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileRemovedEventArgs", "string FileRemovedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileRemovedEventArgs", "Id");
 			}
 		}
 #endif

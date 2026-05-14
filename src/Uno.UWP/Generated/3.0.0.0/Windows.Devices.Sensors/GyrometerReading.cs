@@ -17,7 +17,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.GyrometerReading", "TimeSpan? GyrometerReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.GyrometerReading", "PerformanceCount");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.GyrometerReading", "IReadOnlyDictionary<string, object> GyrometerReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.GyrometerReading", "Properties");
 			}
 		}
 #endif

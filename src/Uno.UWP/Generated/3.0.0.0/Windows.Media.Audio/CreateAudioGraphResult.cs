@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "Exception CreateAudioGraphResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "AudioGraph CreateAudioGraphResult.Graph");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "Graph");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "AudioGraphCreationStatus CreateAudioGraphResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "Status");
 			}
 		}
 #endif

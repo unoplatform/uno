@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "bool CachedFileUpdaterTriggerDetails.CanRequestUserInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "CanRequestUserInput");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "FileUpdateRequest CachedFileUpdaterTriggerDetails.UpdateRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "UpdateRequest");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "CachedFileTarget CachedFileUpdaterTriggerDetails.UpdateTarget");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "UpdateTarget");
 			}
 		}
 #endif

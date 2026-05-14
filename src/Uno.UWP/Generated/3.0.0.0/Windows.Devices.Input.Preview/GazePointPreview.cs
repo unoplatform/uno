@@ -19,7 +19,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "Point? GazePointPreview.EyeGazePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "EyeGazePosition");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "Point? GazePointPreview.HeadGazePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "HeadGazePosition");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "HidInputReport GazePointPreview.HidInputReport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "HidInputReport");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "GazeDevicePreview GazePointPreview.SourceDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "SourceDevice");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "ulong GazePointPreview.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "Timestamp");
 			}
 		}
 #endif

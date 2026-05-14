@@ -19,11 +19,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "string PrintBindingOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "string PrintBindingOptionDetails.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "Description");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "string PrintBindingOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "ErrorText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "string PrintBindingOptionDetails.ErrorText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "ErrorText");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "IReadOnlyList<object> PrintBindingOptionDetails.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "Items");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "string PrintBindingOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "OptionId");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "PrintOptionType PrintBindingOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "OptionType");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "PrintOptionStates PrintBindingOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "State");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "PrintOptionStates PrintBindingOptionDetails.State");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "State");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "object PrintBindingOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "Value");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "string PrintBindingOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "WarningText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "string PrintBindingOptionDetails.WarningText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "WarningText");
 			}
 		}
 #endif
@@ -113,7 +113,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "bool PrintBindingOptionDetails.TrySetValue(object value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails", "TrySetValue(object value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBindingOptionDetails.Description.get

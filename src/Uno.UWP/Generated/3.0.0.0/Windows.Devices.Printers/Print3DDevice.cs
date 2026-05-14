@@ -19,7 +19,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "PrintSchema Print3DDevice.PrintSchema");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "PrintSchema");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Devices.Printers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Printers.Print3DDevice> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "IAsyncOperation<Print3DDevice> Print3DDevice.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "string Print3DDevice.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "GetDeviceSelector()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Printers.Print3DDevice.PrintSchema.get

@@ -19,14 +19,14 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData> GetManufacturerDataByCompanyId(ushort companyId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "IReadOnlyList<BluetoothLEManufacturerData> BluetoothLEAdvertisement.GetManufacturerDataByCompanyId(ushort companyId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "GetManufacturerDataByCompanyId(ushort companyId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection> GetSectionsByType(byte type)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "IReadOnlyList<BluetoothLEAdvertisementDataSection> BluetoothLEAdvertisement.GetSectionsByType(byte type)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "GetSectionsByType(byte type)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement.DataSections.get

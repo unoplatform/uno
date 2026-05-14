@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "IReadOnlyList<SmsMessageRegistration> SmsMessageRegistration.AllRegistrations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "AllRegistrations");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "string SmsMessageRegistration.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "Id");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsMessageRegistration Register(string id, global::Windows.Devices.Sms.SmsFilterRules filterRules)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "Register(string id, SmsFilterRules filterRules)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.AllRegistrations.get
@@ -45,7 +45,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Unregister()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageRegistration", "void SmsMessageRegistration.Unregister()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageRegistration", "Unregister()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.MessageReceived.add
@@ -58,12 +58,12 @@ namespace Windows.Devices.Sms
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageRegistration", "event TypedEventHandler<SmsMessageRegistration, SmsMessageReceivedTriggerDetails> SmsMessageRegistration.MessageReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageRegistration", "event MessageReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageRegistration", "event TypedEventHandler<SmsMessageRegistration, SmsMessageReceivedTriggerDetails> SmsMessageRegistration.MessageReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageRegistration", "event MessageReceived");
 			}
 		}
 #endif

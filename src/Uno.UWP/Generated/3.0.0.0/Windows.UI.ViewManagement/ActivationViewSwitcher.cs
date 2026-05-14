@@ -17,21 +17,21 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ShowAsStandaloneAsync(int viewId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ActivationViewSwitcher", "IAsyncAction ActivationViewSwitcher.ShowAsStandaloneAsync(int viewId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ActivationViewSwitcher", "ShowAsStandaloneAsync(int viewId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ShowAsStandaloneAsync(int viewId, global::Windows.UI.ViewManagement.ViewSizePreference sizePreference)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ActivationViewSwitcher", "IAsyncAction ActivationViewSwitcher.ShowAsStandaloneAsync(int viewId, ViewSizePreference sizePreference)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ActivationViewSwitcher", "ShowAsStandaloneAsync(int viewId, ViewSizePreference sizePreference)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsViewPresentedOnActivationVirtualDesktop(int viewId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ActivationViewSwitcher", "bool ActivationViewSwitcher.IsViewPresentedOnActivationVirtualDesktop(int viewId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ActivationViewSwitcher", "IsViewPresentedOnActivationVirtualDesktop(int viewId)");
 		}
 #endif
 	}

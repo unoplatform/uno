@@ -19,11 +19,11 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.TargetFileRequest", "IStorageFile TargetFileRequest.TargetFile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.TargetFileRequest", "TargetFile");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.TargetFileRequest", "IStorageFile TargetFileRequest.TargetFile");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.TargetFileRequest", "TargetFile");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.Storage.Pickers.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Pickers.Provider.TargetFileRequestDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.TargetFileRequest", "TargetFileRequestDeferral TargetFileRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.TargetFileRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequest.TargetFile.get

@@ -14,7 +14,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "int Mpeg2ProfileIds.High");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "High");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "int Mpeg2ProfileIds.Main");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "Main");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "int Mpeg2ProfileIds.SignalNoiseRatioScalable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "SignalNoiseRatioScalable");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "int Mpeg2ProfileIds.Simple");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "Simple");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "int Mpeg2ProfileIds.SpatiallyScalable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.Mpeg2ProfileIds", "SpatiallyScalable");
 			}
 		}
 #endif

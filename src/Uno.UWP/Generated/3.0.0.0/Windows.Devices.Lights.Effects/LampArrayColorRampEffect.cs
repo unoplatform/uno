@@ -14,11 +14,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "Color LampArrayColorRampEffect.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "Color LampArrayColorRampEffect.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "Color");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "LampArrayEffectCompletionBehavior LampArrayColorRampEffect.CompletionBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "CompletionBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "LampArrayEffectCompletionBehavior LampArrayColorRampEffect.CompletionBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "CompletionBehavior");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.RampDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "RampDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.RampDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "RampDuration");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.StartDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "StartDelay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.StartDelay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "StartDelay");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "int LampArrayColorRampEffect.ZIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "ZIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "int LampArrayColorRampEffect.ZIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "ZIndex");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Devices.Lights.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LampArrayColorRampEffect(global::Windows.Devices.Lights.LampArray lampArray, int[] lampIndexes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "LampArrayColorRampEffect.LampArrayColorRampEffect(LampArray lampArray, int[] lampIndexes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "LampArrayColorRampEffect(LampArray lampArray, int[] lampIndexes)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.LampArrayColorRampEffect(Windows.Devices.Lights.LampArray, int[])

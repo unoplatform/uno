@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "HostName DatagramSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "LocalAddress");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "string DatagramSocketInformation.LocalPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "LocalPort");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "HostName DatagramSocketInformation.RemoteAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "RemoteAddress");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "string DatagramSocketInformation.RemotePort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "RemotePort");
 			}
 		}
 #endif

@@ -12,7 +12,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SetAsync(global::Windows.Storage.IStorageItem item, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Provider.StorageProviderItemProperty> itemProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemProperties", "IAsyncAction StorageProviderItemProperties.SetAsync(IStorageItem item, IEnumerable<StorageProviderItemProperty> itemProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemProperties", "SetAsync(IStorageItem item, IEnumerable<StorageProviderItemProperty> itemProperties)");
 		}
 #endif
 	}

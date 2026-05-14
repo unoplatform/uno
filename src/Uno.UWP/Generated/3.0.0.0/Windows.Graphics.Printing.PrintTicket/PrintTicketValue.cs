@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketValue", "PrintTicketValueType PrintTicketValue.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketValue", "Type");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Graphics.Printing.PrintTicket
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetValueAsInteger()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketValue", "int PrintTicketValue.GetValueAsInteger()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketValue", "GetValueAsInteger()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetValueAsString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketValue", "string PrintTicketValue.GetValueAsString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketValue", "GetValueAsString()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.Type.get

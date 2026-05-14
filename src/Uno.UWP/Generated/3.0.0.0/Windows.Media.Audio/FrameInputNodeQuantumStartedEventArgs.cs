@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs", "int FrameInputNodeQuantumStartedEventArgs.RequiredSamples");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs", "RequiredSamples");
 			}
 		}
 #endif

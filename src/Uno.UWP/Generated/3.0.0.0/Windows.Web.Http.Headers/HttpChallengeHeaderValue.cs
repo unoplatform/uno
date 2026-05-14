@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "IList<HttpNameValueHeaderValue> HttpChallengeHeaderValue.Parameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "Parameters");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "string HttpChallengeHeaderValue.Scheme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "Scheme");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "string HttpChallengeHeaderValue.Token");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "Token");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpChallengeHeaderValue(string scheme)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "HttpChallengeHeaderValue.HttpChallengeHeaderValue(string scheme)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "HttpChallengeHeaderValue(string scheme)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.HttpChallengeHeaderValue(string)
@@ -50,7 +50,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpChallengeHeaderValue(string scheme, string token)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "HttpChallengeHeaderValue.HttpChallengeHeaderValue(string scheme, string token)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "HttpChallengeHeaderValue(string scheme, string token)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.HttpChallengeHeaderValue(string, string)
@@ -58,21 +58,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpChallengeHeaderValue Parse(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "HttpChallengeHeaderValue HttpChallengeHeaderValue.Parse(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpChallengeHeaderValue challengeHeaderValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "bool HttpChallengeHeaderValue.TryParse(string input, out HttpChallengeHeaderValue challengeHeaderValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "TryParse(string input, out HttpChallengeHeaderValue challengeHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "string HttpChallengeHeaderValue.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.Parameters.get

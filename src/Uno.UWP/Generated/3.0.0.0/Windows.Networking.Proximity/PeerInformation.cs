@@ -19,7 +19,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "IBuffer PeerInformation.DiscoveryData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "DiscoveryData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "string PeerInformation.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "HostName PeerInformation.HostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "HostName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "string PeerInformation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "Id");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "string PeerInformation.ServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "ServiceName");
 			}
 		}
 #endif

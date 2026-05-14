@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.UIElement GetLayoutExceptionElement(object dispatcher)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation", "UIElement LayoutInformation.GetLayoutExceptionElement(object dispatcher)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation", "GetLayoutExceptionElement(object dispatcher)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.GetLayoutSlot(Microsoft.UI.Xaml.FrameworkElement)

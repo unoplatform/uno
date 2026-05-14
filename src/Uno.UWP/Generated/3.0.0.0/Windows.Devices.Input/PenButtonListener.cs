@@ -17,14 +17,14 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PenButtonListener GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenButtonListener", "PenButtonListener PenButtonListener.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenButtonListener", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSupported()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenButtonListener", "bool PenButtonListener.IsSupported()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenButtonListener", "IsSupported()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.IsSupportedChanged.add
@@ -42,12 +42,12 @@ namespace Windows.Devices.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TypedEventHandler<PenButtonListener, object> PenButtonListener.IsSupportedChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event IsSupportedChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TypedEventHandler<PenButtonListener, object> PenButtonListener.IsSupportedChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event IsSupportedChanged");
 			}
 		}
 #endif
@@ -58,12 +58,12 @@ namespace Windows.Devices.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TypedEventHandler<PenButtonListener, PenTailButtonClickedEventArgs> PenButtonListener.TailButtonClicked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TailButtonClicked");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TypedEventHandler<PenButtonListener, PenTailButtonClickedEventArgs> PenButtonListener.TailButtonClicked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TailButtonClicked");
 			}
 		}
 #endif
@@ -74,12 +74,12 @@ namespace Windows.Devices.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TypedEventHandler<PenButtonListener, PenTailButtonDoubleClickedEventArgs> PenButtonListener.TailButtonDoubleClicked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TailButtonDoubleClicked");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TypedEventHandler<PenButtonListener, PenTailButtonDoubleClickedEventArgs> PenButtonListener.TailButtonDoubleClicked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TailButtonDoubleClicked");
 			}
 		}
 #endif
@@ -90,12 +90,12 @@ namespace Windows.Devices.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TypedEventHandler<PenButtonListener, PenTailButtonLongPressedEventArgs> PenButtonListener.TailButtonLongPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TailButtonLongPressed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TypedEventHandler<PenButtonListener, PenTailButtonLongPressedEventArgs> PenButtonListener.TailButtonLongPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.PenButtonListener", "event TailButtonLongPressed");
 			}
 		}
 #endif

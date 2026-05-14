@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "IMediaStreamDescriptor MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "NewStreamDescriptor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "IMediaStreamDescriptor MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "OldStreamDescriptor");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "MediaStreamSourceSwitchStreamsRequestDeferral MediaStreamSourceSwitchStreamsRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor.get

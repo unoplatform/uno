@@ -14,11 +14,11 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.CharSet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "CharSet");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.CharSet");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "CharSet");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.MediaType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "MediaType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.MediaType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "MediaType");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "IList<HttpNameValueHeaderValue> HttpMediaTypeHeaderValue.Parameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "Parameters");
 			}
 		}
 #endif
@@ -50,7 +50,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpMediaTypeHeaderValue(string mediaType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "HttpMediaTypeHeaderValue.HttpMediaTypeHeaderValue(string mediaType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "HttpMediaTypeHeaderValue(string mediaType)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.HttpMediaTypeHeaderValue(string)
@@ -58,21 +58,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue Parse(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "HttpMediaTypeHeaderValue HttpMediaTypeHeaderValue.Parse(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue mediaTypeHeaderValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "bool HttpMediaTypeHeaderValue.TryParse(string input, out HttpMediaTypeHeaderValue mediaTypeHeaderValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "TryParse(string input, out HttpMediaTypeHeaderValue mediaTypeHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.CharSet.get

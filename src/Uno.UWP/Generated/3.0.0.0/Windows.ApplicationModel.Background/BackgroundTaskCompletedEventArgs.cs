@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs", "Guid BackgroundTaskCompletedEventArgs.InstanceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs", "InstanceId");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CheckResult()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs", "void BackgroundTaskCompletedEventArgs.CheckResult()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs", "CheckResult()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.InstanceId.get

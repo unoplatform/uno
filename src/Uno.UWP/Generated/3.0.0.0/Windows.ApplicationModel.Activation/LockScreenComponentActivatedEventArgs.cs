@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LockScreenComponentActivatedEventArgs", "ActivationKind LockScreenComponentActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LockScreenComponentActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LockScreenComponentActivatedEventArgs", "ApplicationExecutionState LockScreenComponentActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LockScreenComponentActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LockScreenComponentActivatedEventArgs", "SplashScreen LockScreenComponentActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LockScreenComponentActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif

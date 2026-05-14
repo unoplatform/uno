@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "AppMemoryUsageLevel AppResourceGroupMemoryReport.CommitUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "CommitUsageLevel");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "ulong AppResourceGroupMemoryReport.CommitUsageLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "CommitUsageLimit");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "ulong AppResourceGroupMemoryReport.PrivateCommitUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "PrivateCommitUsage");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "ulong AppResourceGroupMemoryReport.TotalCommitUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "TotalCommitUsage");
 			}
 		}
 #endif

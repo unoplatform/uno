@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs", "VpnChannelActivityEventType VpnChannelActivityStateChangedArgs.ActivityState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs", "ActivityState");
 			}
 		}
 #endif

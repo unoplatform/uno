@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastViewerCountChangedEventArgs", "uint AppBroadcastViewerCountChangedEventArgs.ViewerCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastViewerCountChangedEventArgs", "ViewerCount");
 			}
 		}
 #endif

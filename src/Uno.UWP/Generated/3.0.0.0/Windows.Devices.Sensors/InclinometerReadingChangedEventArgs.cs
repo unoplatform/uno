@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReadingChangedEventArgs", "InclinometerReading InclinometerReadingChangedEventArgs.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReadingChangedEventArgs", "Reading");
 			}
 		}
 #endif

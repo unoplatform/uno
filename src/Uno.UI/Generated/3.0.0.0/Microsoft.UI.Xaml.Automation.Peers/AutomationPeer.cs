@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId GenerateRawElementProviderRuntimeId()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RawElementProviderRuntimeId AutomationPeer.GenerateRawElementProviderRuntimeId()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "GenerateRawElementProviderRuntimeId()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetPattern(Microsoft.UI.Xaml.Automation.Peers.PatternInterface)
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RaiseTextEditTextChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, global::System.Collections.Generic.IReadOnlyList<string> changedData)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetPositionInSet()
@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual object GetElementFromPointCore(global::Windows.Foundation.Point pointInWindowCoordinates)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "object AutomationPeer.GetElementFromPointCore(Point pointInWindowCoordinates)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "GetElementFromPointCore(Point pointInWindowCoordinates)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetFocusedElementCore()

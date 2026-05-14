@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "TimeSpan AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "Duration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "ActivationKind AppointmentsProviderShowTimeFrameActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "ApplicationExecutionState AppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "SplashScreen AppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "DateTimeOffset AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "TimeToShow");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "User AppointmentsProviderShowTimeFrameActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "User");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "string AppointmentsProviderShowTimeFrameActivatedEventArgs.Verb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "Verb");
 			}
 		}
 #endif

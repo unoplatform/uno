@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFailedEventArgs", "uint MediaCaptureFailedEventArgs.Code");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFailedEventArgs", "Code");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFailedEventArgs", "string MediaCaptureFailedEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFailedEventArgs", "Message");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureDurationGeneratedEventArgs", "TimeSpan AppCaptureDurationGeneratedEventArgs.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureDurationGeneratedEventArgs", "Duration");
 			}
 		}
 #endif

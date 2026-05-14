@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "ICollection<string> ImplicitAnimationCollection.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "Keys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "ICollection<ICompositionAnimationBase> ImplicitAnimationCollection.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "Values");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "int ImplicitAnimationCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "Count");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "bool ImplicitAnimationCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "IsReadOnly");
 			}
 		}
 #endif
@@ -59,11 +59,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "ICompositionAnimationBase ImplicitAnimationCollection.this[string key]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "this[string key]");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "ICompositionAnimationBase ImplicitAnimationCollection.this[string key]");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "this[string key]");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase>> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "IEnumerator<KeyValuePair<string, ICompositionAnimationBase>> ImplicitAnimationCollection.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.System.Collections.IEnumerable.GetEnumerator()
@@ -85,56 +85,56 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(string key, global::Windows.UI.Composition.ICompositionAnimationBase value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "void ImplicitAnimationCollection.Add(string key, ICompositionAnimationBase value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "Add(string key, ICompositionAnimationBase value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "bool ImplicitAnimationCollection.ContainsKey(string key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "ContainsKey(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(string key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "bool ImplicitAnimationCollection.Remove(string key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "Remove(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out global::Windows.UI.Composition.ICompositionAnimationBase value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "bool ImplicitAnimationCollection.TryGetValue(string key, out ICompositionAnimationBase value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "TryGetValue(string key, out ICompositionAnimationBase value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "void ImplicitAnimationCollection.Add(KeyValuePair<string, ICompositionAnimationBase> item)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "Add(KeyValuePair<string, ICompositionAnimationBase> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "void ImplicitAnimationCollection.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "bool ImplicitAnimationCollection.Contains(KeyValuePair<string, ICompositionAnimationBase> item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ImplicitAnimationCollection", "Contains(KeyValuePair<string, ICompositionAnimationBase> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase>[] array, int arrayIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "void ImplicitAnimationCollection.CopyTo(KeyValuePair<string, ICompositionAnimationBase>[] array, int arrayIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ImplicitAnimationCollection", "CopyTo(KeyValuePair<string, ICompositionAnimationBase>[] array, int arrayIndex)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>.Remove(System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>)

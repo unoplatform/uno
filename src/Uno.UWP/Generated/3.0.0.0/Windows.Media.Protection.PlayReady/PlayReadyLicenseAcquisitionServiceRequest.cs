@@ -14,11 +14,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "string PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "ChallengeCustomData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "string PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "ChallengeCustomData");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "PlayReadyContentHeader PlayReadyLicenseAcquisitionServiceRequest.ContentHeader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "ContentHeader");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "PlayReadyContentHeader PlayReadyLicenseAcquisitionServiceRequest.ContentHeader");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "ContentHeader");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Guid PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "DomainServiceId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Guid PlayReadyLicenseAcquisitionServiceRequest.DomainServiceId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "DomainServiceId");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Guid PlayReadyLicenseAcquisitionServiceRequest.ProtectionSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "ProtectionSystem");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "string PlayReadyLicenseAcquisitionServiceRequest.ResponseCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "ResponseCustomData");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Guid PlayReadyLicenseAcquisitionServiceRequest.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "SessionId");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Guid PlayReadyLicenseAcquisitionServiceRequest.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Type");
 			}
 		}
 #endif
@@ -96,11 +96,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Uri PlayReadyLicenseAcquisitionServiceRequest.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Uri PlayReadyLicenseAcquisitionServiceRequest.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Uri");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyLicenseAcquisitionServiceRequest()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "PlayReadyLicenseAcquisitionServiceRequest.PlayReadyLicenseAcquisitionServiceRequest()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "PlayReadyLicenseAcquisitionServiceRequest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.PlayReadyLicenseAcquisitionServiceRequest()
@@ -116,35 +116,35 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BeginServiceRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "IAsyncAction PlayReadyLicenseAcquisitionServiceRequest.BeginServiceRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "BeginServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest NextServiceRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "IPlayReadyServiceRequest PlayReadyLicenseAcquisitionServiceRequest.NextServiceRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "NextServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "PlayReadySoapMessage PlayReadyLicenseAcquisitionServiceRequest.GenerateManualEnablingChallenge()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "GenerateManualEnablingChallenge()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Exception ProcessManualEnablingResponse(byte[] responseBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "Exception PlayReadyLicenseAcquisitionServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "ProcessManualEnablingResponse(byte[] responseBytes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable CreateLicenseIterable(global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader, bool fullyEvaluated)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "PlayReadyLicenseIterable PlayReadyLicenseAcquisitionServiceRequest.CreateLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "CreateLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.ChallengeCustomData.get

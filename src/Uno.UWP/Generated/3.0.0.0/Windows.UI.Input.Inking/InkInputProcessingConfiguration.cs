@@ -19,11 +19,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "InkInputProcessingMode InkInputProcessingConfiguration.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "Mode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "InkInputProcessingMode InkInputProcessingConfiguration.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "Mode");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "InkInputRightDragAction InkInputProcessingConfiguration.RightDragAction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "RightDragAction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "InkInputRightDragAction InkInputProcessingConfiguration.RightDragAction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "RightDragAction");
 			}
 		}
 #endif

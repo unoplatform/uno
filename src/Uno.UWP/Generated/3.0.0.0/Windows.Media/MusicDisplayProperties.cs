@@ -19,11 +19,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.AlbumArtist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "AlbumArtist");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.AlbumArtist");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "AlbumArtist");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.AlbumTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "AlbumTitle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.AlbumTitle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "AlbumTitle");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "uint MusicDisplayProperties.AlbumTrackCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "AlbumTrackCount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "uint MusicDisplayProperties.AlbumTrackCount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "AlbumTrackCount");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.Artist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "Artist");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.Artist");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "Artist");
 			}
 		}
 #endif
@@ -75,7 +75,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "IList<string> MusicDisplayProperties.Genres");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "Genres");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "string MusicDisplayProperties.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "Title");
 			}
 		}
 #endif
@@ -99,11 +99,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "uint MusicDisplayProperties.TrackNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MusicDisplayProperties", "TrackNumber");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "uint MusicDisplayProperties.TrackNumber");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MusicDisplayProperties", "TrackNumber");
 			}
 		}
 #endif

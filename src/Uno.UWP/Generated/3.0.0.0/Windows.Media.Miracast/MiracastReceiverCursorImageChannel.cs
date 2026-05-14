@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "IRandomAccessStreamWithContentType MiracastReceiverCursorImageChannel.ImageStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "ImageStream");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "bool MiracastReceiverCursorImageChannel.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "IsEnabled");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "SizeInt32 MiracastReceiverCursorImageChannel.MaxImageSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "MaxImageSize");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "PointInt32 MiracastReceiverCursorImageChannel.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "Position");
 			}
 		}
 #endif
@@ -68,12 +68,12 @@ namespace Windows.Media.Miracast
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "event TypedEventHandler<MiracastReceiverCursorImageChannel, object> MiracastReceiverCursorImageChannel.ImageStreamChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "event ImageStreamChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "event TypedEventHandler<MiracastReceiverCursorImageChannel, object> MiracastReceiverCursorImageChannel.ImageStreamChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "event ImageStreamChanged");
 			}
 		}
 #endif
@@ -84,12 +84,12 @@ namespace Windows.Media.Miracast
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "event TypedEventHandler<MiracastReceiverCursorImageChannel, object> MiracastReceiverCursorImageChannel.PositionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "event PositionChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "event TypedEventHandler<MiracastReceiverCursorImageChannel, object> MiracastReceiverCursorImageChannel.PositionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "event PositionChanged");
 			}
 		}
 #endif

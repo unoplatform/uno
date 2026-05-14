@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "uint WebViewControlPermissionRequest.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "WebViewControlPermissionType WebViewControlPermissionRequest.PermissionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "PermissionType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "WebViewControlPermissionState WebViewControlPermissionRequest.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "State");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "Uri WebViewControlPermissionRequest.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "Uri");
 			}
 		}
 #endif
@@ -57,21 +57,21 @@ namespace Windows.Web.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Defer()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlPermissionRequest", "void WebViewControlPermissionRequest.Defer()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlPermissionRequest", "Defer()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Allow()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlPermissionRequest", "void WebViewControlPermissionRequest.Allow()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlPermissionRequest", "Allow()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Deny()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlPermissionRequest", "void WebViewControlPermissionRequest.Deny()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlPermissionRequest", "Deny()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequest.Id.get

@@ -19,11 +19,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.CornerRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "CornerRadius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.CornerRadius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "CornerRadius");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Offset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.Offset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Offset");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Size");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.Size");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Size");
 			}
 		}
 #endif

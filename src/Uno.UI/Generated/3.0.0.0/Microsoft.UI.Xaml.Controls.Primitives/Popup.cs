@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.Popup", "bool Popup.IsConstrainedToRootBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.Popup", "IsConstrainedToRootBounds");
 			}
 		}
 #endif

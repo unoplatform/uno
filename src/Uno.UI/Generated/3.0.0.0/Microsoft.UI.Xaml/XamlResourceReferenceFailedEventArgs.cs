@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs", "string XamlResourceReferenceFailedEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs", "Message");
 			}
 		}
 #endif

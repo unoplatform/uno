@@ -14,11 +14,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRoute", "HostName VpnRoute.Address");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRoute", "Address");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRoute", "HostName VpnRoute.Address");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRoute", "Address");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRoute", "byte VpnRoute.PrefixSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRoute", "PrefixSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRoute", "byte VpnRoute.PrefixSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRoute", "PrefixSize");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnRoute(global::Windows.Networking.HostName address, byte prefixSize)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRoute", "VpnRoute.VpnRoute(HostName address, byte prefixSize)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnRoute", "VpnRoute(HostName address, byte prefixSize)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.VpnRoute(Windows.Networking.HostName, byte)

@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "string AudioDeviceModule.ClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "ClassId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "string AudioDeviceModule.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "uint AudioDeviceModule.InstanceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "InstanceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "uint AudioDeviceModule.MajorVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "MajorVersion");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "uint AudioDeviceModule.MinorVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "MinorVersion");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Devices.ModuleCommandResult> SendCommandAsync(global::Windows.Storage.Streams.IBuffer Command)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "IAsyncOperation<ModuleCommandResult> AudioDeviceModule.SendCommandAsync(IBuffer Command)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "SendCommandAsync(IBuffer Command)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.ClassId.get

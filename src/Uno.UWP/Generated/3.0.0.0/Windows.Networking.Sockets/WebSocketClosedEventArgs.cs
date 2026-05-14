@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketClosedEventArgs", "ushort WebSocketClosedEventArgs.Code");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketClosedEventArgs", "Code");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketClosedEventArgs", "string WebSocketClosedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketClosedEventArgs", "Reason");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "string SearchPaneSuggestionsRequestedEventArgs.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "Language");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "SearchPaneQueryLinguisticDetails SearchPaneSuggestionsRequestedEventArgs.LinguisticDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "LinguisticDetails");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "string SearchPaneSuggestionsRequestedEventArgs.QueryText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "QueryText");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "SearchPaneSuggestionsRequest SearchPaneSuggestionsRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "Request");
 			}
 		}
 #endif

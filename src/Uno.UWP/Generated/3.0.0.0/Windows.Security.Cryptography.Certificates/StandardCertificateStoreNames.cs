@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "string StandardCertificateStoreNames.IntermediateCertificationAuthorities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "IntermediateCertificationAuthorities");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "string StandardCertificateStoreNames.Personal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "Personal");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "string StandardCertificateStoreNames.TrustedRootCertificationAuthorities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "TrustedRootCertificationAuthorities");
 			}
 		}
 #endif

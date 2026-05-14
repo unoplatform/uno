@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "TextPointer TextElement.ContentEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "ContentEnd");
 			}
 		}
 #endif
@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "TextPointer TextElement.ContentStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "ContentStart");
 			}
 		}
 #endif
@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "TextPointer TextElement.ElementEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "ElementEnd");
 			}
 		}
 #endif
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "TextPointer TextElement.ElementStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "ElementStart");
 			}
 		}
 #endif
@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object FindName(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "object TextElement.FindName(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "FindName(string name)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AccessKeyDisplayDismissed.add
@@ -281,7 +281,7 @@ namespace Microsoft.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnDisconnectVisualChildren()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "void TextElement.OnDisconnectVisualChildren()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "OnDisconnectVisualChildren()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AccessKey.get
@@ -334,12 +334,12 @@ namespace Microsoft.UI.Xaml.Documents
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event TypedEventHandler<TextElement, AccessKeyDisplayDismissedEventArgs> TextElement.AccessKeyDisplayDismissed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event AccessKeyDisplayDismissed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event TypedEventHandler<TextElement, AccessKeyDisplayDismissedEventArgs> TextElement.AccessKeyDisplayDismissed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event AccessKeyDisplayDismissed");
 			}
 		}
 #endif
@@ -350,12 +350,12 @@ namespace Microsoft.UI.Xaml.Documents
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event TypedEventHandler<TextElement, AccessKeyDisplayRequestedEventArgs> TextElement.AccessKeyDisplayRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event AccessKeyDisplayRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event TypedEventHandler<TextElement, AccessKeyDisplayRequestedEventArgs> TextElement.AccessKeyDisplayRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event AccessKeyDisplayRequested");
 			}
 		}
 #endif
@@ -366,12 +366,12 @@ namespace Microsoft.UI.Xaml.Documents
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event TypedEventHandler<TextElement, AccessKeyInvokedEventArgs> TextElement.AccessKeyInvoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event AccessKeyInvoked");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event TypedEventHandler<TextElement, AccessKeyInvokedEventArgs> TextElement.AccessKeyInvoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "event AccessKeyInvoked");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowResizeManager", "bool CoreWindowResizeManager.ShouldWaitForLayoutCompletion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowResizeManager", "ShouldWaitForLayoutCompletion");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "bool CoreWindowResizeManager.ShouldWaitForLayoutCompletion");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "ShouldWaitForLayoutCompletion");
 			}
 		}
 #endif
@@ -31,14 +31,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Core.CoreWindowResizeManager GetForCurrentView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowResizeManager", "CoreWindowResizeManager CoreWindowResizeManager.GetForCurrentView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowResizeManager", "GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyLayoutCompleted()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "void CoreWindowResizeManager.NotifyLayoutCompleted()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "NotifyLayoutCompleted()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.get

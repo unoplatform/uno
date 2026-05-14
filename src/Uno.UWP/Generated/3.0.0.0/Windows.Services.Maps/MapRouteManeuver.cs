@@ -19,7 +19,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "double MapRouteManeuver.EndHeading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "EndHeading");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "string MapRouteManeuver.ExitNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "ExitNumber");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "string MapRouteManeuver.InstructionText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "InstructionText");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "MapRouteManeuverKind MapRouteManeuver.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "Kind");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "double MapRouteManeuver.LengthInMeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "LengthInMeters");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "MapManeuverNotices MapRouteManeuver.ManeuverNotices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "ManeuverNotices");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "double MapRouteManeuver.StartHeading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "StartHeading");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "Geopoint MapRouteManeuver.StartingPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "StartingPoint");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "string MapRouteManeuver.StreetName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "StreetName");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "IReadOnlyList<ManeuverWarning> MapRouteManeuver.Warnings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "Warnings");
 			}
 		}
 #endif

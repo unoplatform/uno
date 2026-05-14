@@ -17,14 +17,14 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetRelativeScrollPosition(global::Microsoft.UI.Xaml.Controls.ListViewBase listViewBase, global::Microsoft.UI.Xaml.Controls.ListViewItemToKeyHandler itemToKeyHandler)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper", "string ListViewPersistenceHelper.GetRelativeScrollPosition(ListViewBase listViewBase, ListViewItemToKeyHandler itemToKeyHandler)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper", "GetRelativeScrollPosition(ListViewBase listViewBase, ListViewItemToKeyHandler itemToKeyHandler)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SetRelativeScrollPositionAsync(global::Microsoft.UI.Xaml.Controls.ListViewBase listViewBase, string relativeScrollPosition, global::Microsoft.UI.Xaml.Controls.ListViewKeyToItemHandler keyToItemHandler)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper", "IAsyncAction ListViewPersistenceHelper.SetRelativeScrollPositionAsync(ListViewBase listViewBase, string relativeScrollPosition, ListViewKeyToItemHandler keyToItemHandler)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper", "SetRelativeScrollPositionAsync(ListViewBase listViewBase, string relativeScrollPosition, ListViewKeyToItemHandler keyToItemHandler)");
 		}
 #endif
 	}

@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "DeviceWatcherStatus PerceptionColorFrameSourceWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "Status");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "void PerceptionColorFrameSourceWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "void PerceptionColorFrameSourceWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "Stop()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceWatcher.EnumerationCompleted.add
@@ -53,12 +53,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event TypedEventHandler<PerceptionColorFrameSourceWatcher, object> PerceptionColorFrameSourceWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event EnumerationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event TypedEventHandler<PerceptionColorFrameSourceWatcher, object> PerceptionColorFrameSourceWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event EnumerationCompleted");
 			}
 		}
 #endif
@@ -69,12 +69,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event TypedEventHandler<PerceptionColorFrameSourceWatcher, PerceptionColorFrameSourceAddedEventArgs> PerceptionColorFrameSourceWatcher.SourceAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event SourceAdded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event TypedEventHandler<PerceptionColorFrameSourceWatcher, PerceptionColorFrameSourceAddedEventArgs> PerceptionColorFrameSourceWatcher.SourceAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event SourceAdded");
 			}
 		}
 #endif
@@ -85,12 +85,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event TypedEventHandler<PerceptionColorFrameSourceWatcher, PerceptionColorFrameSourceRemovedEventArgs> PerceptionColorFrameSourceWatcher.SourceRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event SourceRemoved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event TypedEventHandler<PerceptionColorFrameSourceWatcher, PerceptionColorFrameSourceRemovedEventArgs> PerceptionColorFrameSourceWatcher.SourceRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event SourceRemoved");
 			}
 		}
 #endif
@@ -101,12 +101,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event TypedEventHandler<PerceptionColorFrameSourceWatcher, object> PerceptionColorFrameSourceWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event Stopped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event TypedEventHandler<PerceptionColorFrameSourceWatcher, object> PerceptionColorFrameSourceWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameSourceWatcher", "event Stopped");
 			}
 		}
 #endif

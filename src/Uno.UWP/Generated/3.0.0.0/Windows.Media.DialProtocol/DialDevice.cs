@@ -19,7 +19,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "string DialDevice.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "FriendlyName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "string DialDevice.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "IRandomAccessStreamReference DialDevice.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "Thumbnail");
 			}
 		}
 #endif
@@ -47,28 +47,28 @@ namespace Windows.Media.DialProtocol
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(string appName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "string DialDevice.GetDeviceSelector(string appName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "GetDeviceSelector(string appName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> FromIdAsync(string value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "IAsyncOperation<DialDevice> DialDevice.FromIdAsync(string value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "FromIdAsync(string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> DeviceInfoSupportsDialAsync(global::Windows.Devices.Enumeration.DeviceInformation device)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "IAsyncOperation<bool> DialDevice.DeviceInfoSupportsDialAsync(DeviceInformation device)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "DeviceInfoSupportsDialAsync(DeviceInformation device)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.DialProtocol.DialApp GetDialApp(string appName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "DialApp DialDevice.GetDialApp(string appName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "GetDialApp(string appName)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.FriendlyName.get

@@ -12,7 +12,7 @@ namespace Windows.Gaming.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GameChatOverlayMessageSource()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlayMessageSource", "GameChatOverlayMessageSource.GameChatOverlayMessageSource()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlayMessageSource", "GameChatOverlayMessageSource()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.GameChatOverlayMessageSource()
@@ -20,7 +20,7 @@ namespace Windows.Gaming.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDelayBeforeClosingAfterMessageReceived(global::System.TimeSpan value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlayMessageSource", "void GameChatOverlayMessageSource.SetDelayBeforeClosingAfterMessageReceived(TimeSpan value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlayMessageSource", "SetDelayBeforeClosingAfterMessageReceived(TimeSpan value)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.MessageReceived.add
@@ -32,12 +32,12 @@ namespace Windows.Gaming.UI
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlayMessageSource", "event TypedEventHandler<GameChatOverlayMessageSource, GameChatMessageReceivedEventArgs> GameChatOverlayMessageSource.MessageReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlayMessageSource", "event MessageReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlayMessageSource", "event TypedEventHandler<GameChatOverlayMessageSource, GameChatMessageReceivedEventArgs> GameChatOverlayMessageSource.MessageReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlayMessageSource", "event MessageReceived");
 			}
 		}
 #endif

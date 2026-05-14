@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer", "CompositionObject AnimatedVisualPlayer.ProgressObject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer", "ProgressObject");
 			}
 		}
 #endif

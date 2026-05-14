@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCustomGlyphs", "Size LineDisplayCustomGlyphs.SizeInPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCustomGlyphs", "SizeInPixels");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCustomGlyphs", "IReadOnlyList<uint> LineDisplayCustomGlyphs.SupportedGlyphCodes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCustomGlyphs", "SupportedGlyphCodes");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRedefineAsync(uint glyphCode, global::Windows.Storage.Streams.IBuffer glyphData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCustomGlyphs", "IAsyncOperation<bool> LineDisplayCustomGlyphs.TryRedefineAsync(uint glyphCode, IBuffer glyphData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCustomGlyphs", "TryRedefineAsync(uint glyphCode, IBuffer glyphData)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.SizeInPixels.get

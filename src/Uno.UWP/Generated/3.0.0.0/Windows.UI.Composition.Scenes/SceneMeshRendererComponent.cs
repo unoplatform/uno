@@ -19,11 +19,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "SceneMaterial SceneMeshRendererComponent.Material");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "Material");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "SceneMaterial SceneMeshRendererComponent.Material");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "Material");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "SceneMesh SceneMeshRendererComponent.Mesh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "Mesh");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "SceneMesh SceneMeshRendererComponent.Mesh");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "Mesh");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "SceneMeshMaterialAttributeMap SceneMeshRendererComponent.UVMappings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "UVMappings");
 			}
 		}
 #endif
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Scenes.SceneMeshRendererComponent Create(global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "SceneMeshRendererComponent SceneMeshRendererComponent.Create(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshRendererComponent", "Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshRendererComponent.Material.get

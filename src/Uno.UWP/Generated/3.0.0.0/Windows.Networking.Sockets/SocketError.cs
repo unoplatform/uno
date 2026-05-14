@@ -12,7 +12,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.Sockets.SocketErrorStatus GetStatus(int hresult)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketError", "SocketErrorStatus SocketError.GetStatus(int hresult)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketError", "GetStatus(int hresult)");
 		}
 #endif
 	}

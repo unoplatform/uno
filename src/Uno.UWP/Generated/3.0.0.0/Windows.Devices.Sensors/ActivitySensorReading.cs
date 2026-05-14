@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "ActivityType ActivitySensorReading.Activity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "Activity");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "ActivitySensorReadingConfidence ActivitySensorReading.Confidence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "Confidence");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "DateTimeOffset ActivitySensorReading.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "Timestamp");
 			}
 		}
 #endif

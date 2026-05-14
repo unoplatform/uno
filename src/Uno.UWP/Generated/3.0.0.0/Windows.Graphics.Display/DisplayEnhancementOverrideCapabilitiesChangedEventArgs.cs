@@ -19,7 +19,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs", "DisplayEnhancementOverrideCapabilities DisplayEnhancementOverrideCapabilitiesChangedEventArgs.Capabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs", "Capabilities");
 			}
 		}
 #endif

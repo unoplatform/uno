@@ -19,7 +19,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "GazePointPreview GazeExitedPreviewEventArgs.CurrentPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "CurrentPoint");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "bool GazeExitedPreviewEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "bool GazeExitedPreviewEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "Handled");
 			}
 		}
 #endif

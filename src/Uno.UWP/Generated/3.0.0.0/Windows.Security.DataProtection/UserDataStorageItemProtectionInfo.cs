@@ -19,7 +19,7 @@ namespace Windows.Security.DataProtection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataStorageItemProtectionInfo", "UserDataAvailability UserDataStorageItemProtectionInfo.Availability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataStorageItemProtectionInfo", "Availability");
 			}
 		}
 #endif

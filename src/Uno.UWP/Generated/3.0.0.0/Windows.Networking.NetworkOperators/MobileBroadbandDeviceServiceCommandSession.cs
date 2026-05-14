@@ -17,21 +17,21 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult> SendQueryCommandAsync(uint commandId, global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "IAsyncOperation<MobileBroadbandDeviceServiceCommandResult> MobileBroadbandDeviceServiceCommandSession.SendQueryCommandAsync(uint commandId, IBuffer data)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "SendQueryCommandAsync(uint commandId, IBuffer data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult> SendSetCommandAsync(uint commandId, global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "IAsyncOperation<MobileBroadbandDeviceServiceCommandResult> MobileBroadbandDeviceServiceCommandSession.SendSetCommandAsync(uint commandId, IBuffer data)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "SendSetCommandAsync(uint commandId, IBuffer data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CloseSession()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "void MobileBroadbandDeviceServiceCommandSession.CloseSession()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "CloseSession()");
 		}
 #endif
 	}

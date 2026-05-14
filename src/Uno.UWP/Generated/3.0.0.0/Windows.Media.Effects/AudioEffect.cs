@@ -19,7 +19,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioEffect", "AudioEffectType AudioEffect.AudioEffectType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioEffect", "AudioEffectType");
 			}
 		}
 #endif

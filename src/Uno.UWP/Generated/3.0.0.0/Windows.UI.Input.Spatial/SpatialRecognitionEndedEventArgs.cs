@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialRecognitionEndedEventArgs", "SpatialInteractionSourceKind SpatialRecognitionEndedEventArgs.InteractionSourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialRecognitionEndedEventArgs", "InteractionSourceKind");
 			}
 		}
 #endif

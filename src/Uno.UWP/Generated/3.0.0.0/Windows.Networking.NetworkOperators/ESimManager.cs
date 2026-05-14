@@ -14,7 +14,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimManager", "ESimServiceInfo ESimManager.ServiceInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimManager", "ServiceInfo");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.NetworkOperators.ESimWatcher TryCreateESimWatcher()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimManager", "ESimWatcher ESimManager.TryCreateESimWatcher()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimManager", "TryCreateESimWatcher()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimManager.ServiceInfoChanged.add
@@ -35,12 +35,12 @@ namespace Windows.Networking.NetworkOperators
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ESimManager", "event EventHandler<object> ESimManager.ServiceInfoChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ESimManager", "event ServiceInfoChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ESimManager", "event EventHandler<object> ESimManager.ServiceInfoChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ESimManager", "event ServiceInfoChanged");
 			}
 		}
 #endif

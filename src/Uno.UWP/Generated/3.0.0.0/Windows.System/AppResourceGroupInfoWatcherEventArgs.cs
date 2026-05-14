@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupInfoWatcherEventArgs", "IReadOnlyList<AppDiagnosticInfo> AppResourceGroupInfoWatcherEventArgs.AppDiagnosticInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupInfoWatcherEventArgs", "AppDiagnosticInfos");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupInfoWatcherEventArgs", "AppResourceGroupInfo AppResourceGroupInfoWatcherEventArgs.AppResourceGroupInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupInfoWatcherEventArgs", "AppResourceGroupInfo");
 			}
 		}
 #endif

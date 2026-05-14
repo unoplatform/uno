@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager", "IReadOnlyDictionary<string, VoiceCommandDefinition> VoiceCommandDefinitionManager.InstalledCommandDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager", "InstalledCommandDefinitions");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction InstallCommandDefinitionsFromStorageFileAsync(global::Windows.Storage.StorageFile file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager", "IAsyncAction VoiceCommandDefinitionManager.InstallCommandDefinitionsFromStorageFileAsync(StorageFile file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager", "InstallCommandDefinitionsFromStorageFileAsync(StorageFile file)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager.InstalledCommandDefinitions.get

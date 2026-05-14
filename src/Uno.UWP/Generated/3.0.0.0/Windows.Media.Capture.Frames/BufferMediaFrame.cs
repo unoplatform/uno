@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.BufferMediaFrame", "IBuffer BufferMediaFrame.Buffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.BufferMediaFrame", "Buffer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.BufferMediaFrame", "MediaFrameReference BufferMediaFrame.FrameReference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.BufferMediaFrame", "FrameReference");
 			}
 		}
 #endif

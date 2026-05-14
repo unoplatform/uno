@@ -14,7 +14,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "IVideoCompositorDefinition MediaOverlayLayer.CustomCompositorDefinition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "CustomCompositorDefinition");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "IList<MediaOverlay> MediaOverlayLayer.Overlays");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "Overlays");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaOverlayLayer()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer.MediaOverlayLayer()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.MediaOverlayLayer()
@@ -40,7 +40,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaOverlayLayer(global::Windows.Media.Effects.IVideoCompositorDefinition compositorDefinition)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer.MediaOverlayLayer(IVideoCompositorDefinition compositorDefinition)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer(IVideoCompositorDefinition compositorDefinition)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.MediaOverlayLayer(Windows.Media.Effects.IVideoCompositorDefinition)
@@ -49,7 +49,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaOverlayLayer Clone()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer MediaOverlayLayer.Clone()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "Clone()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.CustomCompositorDefinition.get

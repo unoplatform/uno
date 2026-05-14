@@ -19,7 +19,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "string SystemSupportDeviceInfo.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "FriendlyName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "string SystemSupportDeviceInfo.OperatingSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "OperatingSystem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "string SystemSupportDeviceInfo.SystemFirmwareVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemFirmwareVersion");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "string SystemSupportDeviceInfo.SystemHardwareVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemHardwareVersion");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "string SystemSupportDeviceInfo.SystemManufacturer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemManufacturer");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "string SystemSupportDeviceInfo.SystemProductName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemProductName");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "string SystemSupportDeviceInfo.SystemSku");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemSku");
 			}
 		}
 #endif

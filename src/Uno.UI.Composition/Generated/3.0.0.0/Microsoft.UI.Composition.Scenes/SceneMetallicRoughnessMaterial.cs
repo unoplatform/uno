@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "Vector4 SceneMetallicRoughnessMaterial.BaseColorFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "BaseColorFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "Vector4 SceneMetallicRoughnessMaterial.BaseColorFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "BaseColorFactor");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "SceneMaterialInput SceneMetallicRoughnessMaterial.BaseColorInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "BaseColorInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "SceneMaterialInput SceneMetallicRoughnessMaterial.BaseColorInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "BaseColorInput");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "float SceneMetallicRoughnessMaterial.MetallicFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "MetallicFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "float SceneMetallicRoughnessMaterial.MetallicFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "MetallicFactor");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "SceneMaterialInput SceneMetallicRoughnessMaterial.MetallicRoughnessInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "MetallicRoughnessInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "SceneMaterialInput SceneMetallicRoughnessMaterial.MetallicRoughnessInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "MetallicRoughnessInput");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "float SceneMetallicRoughnessMaterial.RoughnessFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "RoughnessFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "float SceneMetallicRoughnessMaterial.RoughnessFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "RoughnessFactor");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "SceneMetallicRoughnessMaterial SceneMetallicRoughnessMaterial.Create(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.get

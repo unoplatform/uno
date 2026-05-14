@@ -14,7 +14,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "string WebAccount.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "Id");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "IReadOnlyDictionary<string, string> WebAccount.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "Properties");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "WebAccountState WebAccount.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "State");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "string WebAccount.UserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "UserName");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "WebAccountProvider WebAccount.WebAccountProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "WebAccountProvider");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Security.Credentials
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebAccount(global::Windows.Security.Credentials.WebAccountProvider webAccountProvider, string userName, global::Windows.Security.Credentials.WebAccountState state)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.WebAccount", "WebAccount.WebAccount(WebAccountProvider webAccountProvider, string userName, WebAccountState state)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.WebAccount", "WebAccount(WebAccountProvider webAccountProvider, string userName, WebAccountState state)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.WebAccount(Windows.Security.Credentials.WebAccountProvider, string, Windows.Security.Credentials.WebAccountState)
@@ -70,21 +70,21 @@ namespace Windows.Security.Credentials
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetPictureAsync(global::Windows.Security.Credentials.WebAccountPictureSize desizedSize)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "IAsyncOperation<IRandomAccessStream> WebAccount.GetPictureAsync(WebAccountPictureSize desizedSize)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "GetPictureAsync(WebAccountPictureSize desizedSize)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SignOutAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "IAsyncAction WebAccount.SignOutAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "SignOutAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SignOutAsync(string clientId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "IAsyncAction WebAccount.SignOutAsync(string clientId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccount", "SignOutAsync(string clientId)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.Id.get

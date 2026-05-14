@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinManager", "IReadOnlyList<MobileBroadbandPinType> MobileBroadbandPinManager.SupportedPins");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinManager", "SupportedPins");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandPin GetPin(global::Windows.Networking.NetworkOperators.MobileBroadbandPinType pinType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinManager", "MobileBroadbandPin MobileBroadbandPinManager.GetPin(MobileBroadbandPinType pinType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinManager", "GetPin(MobileBroadbandPinType pinType)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.SupportedPins.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs", "WiFiDirectError WiFiDirectAdvertisementPublisherStatusChangedEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs", "Error");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs", "WiFiDirectAdvertisementPublisherStatus WiFiDirectAdvertisementPublisherStatusChangedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs", "Status");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DataTemplateKey", "object DataTemplateKey.DataType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DataTemplateKey", "DataType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplateKey", "object DataTemplateKey.DataType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplateKey", "DataType");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DataTemplateKey()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplateKey", "DataTemplateKey.DataTemplateKey()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplateKey", "DataTemplateKey()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplateKey.DataTemplateKey()
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DataTemplateKey(object dataType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplateKey", "DataTemplateKey.DataTemplateKey(object dataType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplateKey", "DataTemplateKey(object dataType)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplateKey.DataTemplateKey(object)

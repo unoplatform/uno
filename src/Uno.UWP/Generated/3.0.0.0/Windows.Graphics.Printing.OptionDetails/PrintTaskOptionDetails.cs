@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "IList<string> PrintTaskOptionDetails.DisplayedOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "DisplayedOptions");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "IReadOnlyDictionary<string, IPrintOptionDetails> PrintTaskOptionDetails.Options");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "Options");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails GetFromPrintTaskOptions(global::Windows.Graphics.Printing.PrintTaskOptions printTaskOptions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "PrintTaskOptionDetails PrintTaskOptionDetails.GetFromPrintTaskOptions(PrintTaskOptions printTaskOptions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "GetFromPrintTaskOptions(PrintTaskOptions printTaskOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails CreateItemListOption(string optionId, string displayName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "PrintCustomItemListOptionDetails PrintTaskOptionDetails.CreateItemListOption(string optionId, string displayName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "CreateItemListOption(string optionId, string displayName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails CreateTextOption(string optionId, string displayName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "PrintCustomTextOptionDetails PrintTaskOptionDetails.CreateTextOption(string optionId, string displayName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "CreateTextOption(string optionId, string displayName)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.BeginValidation.add
@@ -62,14 +62,14 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription(uint jobPageNumber)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "PrintPageDescription PrintTaskOptionDetails.GetPageDescription(uint jobPageNumber)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "GetPageDescription(uint jobPageNumber)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails CreateToggleOption(string optionId, string displayName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "PrintCustomToggleOptionDetails PrintTaskOptionDetails.CreateToggleOption(string optionId, string displayName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "CreateToggleOption(string optionId, string displayName)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.DisplayedOptions.get
@@ -81,12 +81,12 @@ namespace Windows.Graphics.Printing.OptionDetails
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "event TypedEventHandler<PrintTaskOptionDetails, object> PrintTaskOptionDetails.BeginValidation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "event BeginValidation");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "event TypedEventHandler<PrintTaskOptionDetails, object> PrintTaskOptionDetails.BeginValidation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "event BeginValidation");
 			}
 		}
 #endif
@@ -97,12 +97,12 @@ namespace Windows.Graphics.Printing.OptionDetails
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "event TypedEventHandler<PrintTaskOptionDetails, PrintTaskOptionChangedEventArgs> PrintTaskOptionDetails.OptionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "event OptionChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "event TypedEventHandler<PrintTaskOptionDetails, PrintTaskOptionChangedEventArgs> PrintTaskOptionDetails.OptionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails", "event OptionChanged");
 			}
 		}
 #endif

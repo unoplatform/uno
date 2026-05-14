@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "ActivationKind AppointmentsProviderReplaceAppointmentActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "ApplicationExecutionState AppointmentsProviderReplaceAppointmentActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "ReplaceAppointmentOperation AppointmentsProviderReplaceAppointmentActivatedEventArgs.ReplaceAppointmentOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "ReplaceAppointmentOperation");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "SplashScreen AppointmentsProviderReplaceAppointmentActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "User AppointmentsProviderReplaceAppointmentActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "User");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "string AppointmentsProviderReplaceAppointmentActivatedEventArgs.Verb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderReplaceAppointmentActivatedEventArgs", "Verb");
 			}
 		}
 #endif

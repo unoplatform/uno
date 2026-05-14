@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "string SmsDevice2.AccountPhoneNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "AccountPhoneNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "CellularClass SmsDevice2.CellularClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "CellularClass");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "string SmsDevice2.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "DeviceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "SmsDeviceStatus SmsDevice2.DeviceStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "DeviceStatus");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "string SmsDevice2.ParentDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "ParentDeviceId");
 			}
 		}
 #endif
@@ -69,11 +69,11 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "string SmsDevice2.SmscAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "SmscAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsDevice2", "string SmsDevice2.SmscAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsDevice2", "SmscAddress");
 			}
 		}
 #endif
@@ -81,42 +81,42 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "string SmsDevice2.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsDevice2 FromId(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "SmsDevice2 SmsDevice2.FromId(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "FromId(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsDevice2 GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "SmsDevice2 SmsDevice2.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsDevice2 FromParentId(string parentDeviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "SmsDevice2 SmsDevice2.FromParentId(string parentDeviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "FromParentId(string parentDeviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sms.SmsEncodedLength CalculateLength(global::Windows.Devices.Sms.ISmsMessageBase message)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "SmsEncodedLength SmsDevice2.CalculateLength(ISmsMessageBase message)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "CalculateLength(ISmsMessageBase message)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sms.SmsSendMessageResult> SendMessageAndGetResultAsync(global::Windows.Devices.Sms.ISmsMessageBase message)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "IAsyncOperation<SmsSendMessageResult> SmsDevice2.SendMessageAndGetResultAsync(ISmsMessageBase message)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDevice2", "SendMessageAndGetResultAsync(ISmsMessageBase message)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatusChanged.add
@@ -135,12 +135,12 @@ namespace Windows.Devices.Sms
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsDevice2", "event TypedEventHandler<SmsDevice2, object> SmsDevice2.DeviceStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsDevice2", "event DeviceStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsDevice2", "event TypedEventHandler<SmsDevice2, object> SmsDevice2.DeviceStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsDevice2", "event DeviceStatusChanged");
 			}
 		}
 #endif

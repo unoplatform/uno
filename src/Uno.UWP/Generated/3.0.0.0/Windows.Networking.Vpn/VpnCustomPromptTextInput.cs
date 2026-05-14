@@ -14,11 +14,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "bool VpnCustomPromptTextInput.Compulsory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "Compulsory");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "bool VpnCustomPromptTextInput.Compulsory");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "Compulsory");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "string VpnCustomPromptTextInput.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "string VpnCustomPromptTextInput.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "DisplayName");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "bool VpnCustomPromptTextInput.Emphasized");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "Emphasized");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "bool VpnCustomPromptTextInput.Emphasized");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "Emphasized");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "bool VpnCustomPromptTextInput.IsTextHidden");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "IsTextHidden");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "bool VpnCustomPromptTextInput.IsTextHidden");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "IsTextHidden");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "string VpnCustomPromptTextInput.PlaceholderText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "PlaceholderText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "string VpnCustomPromptTextInput.PlaceholderText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "PlaceholderText");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "string VpnCustomPromptTextInput.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptTextInput", "Text");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnCustomPromptTextInput()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "VpnCustomPromptTextInput.VpnCustomPromptTextInput()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomPromptTextInput", "VpnCustomPromptTextInput()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptTextInput.VpnCustomPromptTextInput()

@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionInfo", "string RemoteSystemSessionInfo.ControllerDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionInfo", "ControllerDisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionInfo", "string RemoteSystemSessionInfo.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionInfo", "DisplayName");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystemSessionJoinResult> JoinAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionInfo", "IAsyncOperation<RemoteSystemSessionJoinResult> RemoteSystemSessionInfo.JoinAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionInfo", "JoinAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInfo.ControllerDisplayName.get

@@ -17,7 +17,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.EdgeGesture GetForCurrentView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.EdgeGesture", "EdgeGesture EdgeGesture.GetForCurrentView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.EdgeGesture", "GetForCurrentView()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Canceled.add
@@ -33,12 +33,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Canceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event Canceled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Canceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event Canceled");
 			}
 		}
 #endif
@@ -49,12 +49,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event Completed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event Completed");
 			}
 		}
 #endif
@@ -65,12 +65,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Starting");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event Starting");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Starting");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event Starting");
 			}
 		}
 #endif

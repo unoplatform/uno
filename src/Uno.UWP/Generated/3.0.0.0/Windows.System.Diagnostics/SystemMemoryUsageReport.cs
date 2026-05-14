@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "ulong SystemMemoryUsageReport.AvailableSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "AvailableSizeInBytes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "ulong SystemMemoryUsageReport.CommittedSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "CommittedSizeInBytes");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "ulong SystemMemoryUsageReport.TotalPhysicalSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "TotalPhysicalSizeInBytes");
 			}
 		}
 #endif

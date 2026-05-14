@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneQuerySubmittedEventArgs", "string SearchPaneQuerySubmittedEventArgs.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneQuerySubmittedEventArgs", "Language");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneQuerySubmittedEventArgs", "SearchPaneQueryLinguisticDetails SearchPaneQuerySubmittedEventArgs.LinguisticDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneQuerySubmittedEventArgs", "LinguisticDetails");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneQuerySubmittedEventArgs", "string SearchPaneQuerySubmittedEventArgs.QueryText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneQuerySubmittedEventArgs", "QueryText");
 			}
 		}
 #endif

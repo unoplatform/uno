@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "Geoposition Geovisit.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "Position");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "VisitStateChange Geovisit.StateChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "StateChange");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "DateTimeOffset Geovisit.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "Timestamp");
 			}
 		}
 #endif

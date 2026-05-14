@@ -19,7 +19,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "IEnumerable<string> FirstSignInSettings.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "Keys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "IEnumerable<object> FirstSignInSettings.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "Values");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "int FirstSignInSettings.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "Count");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "object FirstSignInSettings.this[string key]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "this[string key]");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserProfile.FirstSignInSettings GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "FirstSignInSettings FirstSignInSettings.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "GetDefault()");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Keys.get
@@ -68,21 +68,21 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "bool FirstSignInSettings.ContainsKey(string key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "ContainsKey(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out object value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "bool FirstSignInSettings.TryGetValue(string key, out object value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "TryGetValue(string key, out object value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "IEnumerator<KeyValuePair<string, object>> FirstSignInSettings.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.FirstSignInSettings", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.System.Collections.IEnumerable.GetEnumerator()

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraViewportParameters", "Vector2[] HolographicCameraViewportParameters.HiddenAreaMesh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraViewportParameters", "HiddenAreaMesh");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraViewportParameters", "Vector2[] HolographicCameraViewportParameters.VisibleAreaMesh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraViewportParameters", "VisibleAreaMesh");
 			}
 		}
 #endif

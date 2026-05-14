@@ -14,7 +14,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioEffectDefinition", "string AudioEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioEffectDefinition", "ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioEffectDefinition", "IPropertySet AudioEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioEffectDefinition", "Properties");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Media.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioEffectDefinition(string activatableClassId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioEffectDefinition", "AudioEffectDefinition.AudioEffectDefinition(string activatableClassId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioEffectDefinition", "AudioEffectDefinition(string activatableClassId)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.AudioEffectDefinition(string)
@@ -40,7 +40,7 @@ namespace Windows.Media.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioEffectDefinition(string activatableClassId, global::Windows.Foundation.Collections.IPropertySet props)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioEffectDefinition", "AudioEffectDefinition.AudioEffectDefinition(string activatableClassId, IPropertySet props)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioEffectDefinition", "AudioEffectDefinition(string activatableClassId, IPropertySet props)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.AudioEffectDefinition(string, Windows.Foundation.Collections.IPropertySet)

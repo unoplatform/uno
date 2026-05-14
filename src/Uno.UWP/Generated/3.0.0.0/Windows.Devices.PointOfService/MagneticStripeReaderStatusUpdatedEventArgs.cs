@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs", "uint MagneticStripeReaderStatusUpdatedEventArgs.ExtendedStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs", "ExtendedStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs", "MagneticStripeReaderStatus MagneticStripeReaderStatusUpdatedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs", "Status");
 			}
 		}
 #endif

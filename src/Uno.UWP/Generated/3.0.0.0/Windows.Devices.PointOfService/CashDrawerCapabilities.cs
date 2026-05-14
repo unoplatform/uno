@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "bool CashDrawerCapabilities.IsDrawerOpenSensorAvailable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "IsDrawerOpenSensorAvailable");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "bool CashDrawerCapabilities.IsStatisticsReportingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "IsStatisticsReportingSupported");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "bool CashDrawerCapabilities.IsStatisticsUpdatingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "IsStatisticsUpdatingSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "bool CashDrawerCapabilities.IsStatusMultiDrawerDetectSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "IsStatusMultiDrawerDetectSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "bool CashDrawerCapabilities.IsStatusReportingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "IsStatusReportingSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "UnifiedPosPowerReportingType CashDrawerCapabilities.PowerReportingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerCapabilities", "PowerReportingType");
 			}
 		}
 #endif

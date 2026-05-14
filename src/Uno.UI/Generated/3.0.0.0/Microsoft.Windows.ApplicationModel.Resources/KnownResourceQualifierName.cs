@@ -14,7 +14,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Contrast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "Contrast");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Custom");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "Custom");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.DeviceFamily");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "DeviceFamily");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.HomeRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "HomeRegion");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "Language");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.LayoutDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "LayoutDirection");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "Scale");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.TargetSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "TargetSize");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Theme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "Theme");
 			}
 		}
 #endif

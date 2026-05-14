@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "GattServiceProviderAdvertisingParameters GattServiceProviderTrigger.AdvertisingParameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "AdvertisingParameters");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "GattServiceProviderAdvertisingParameters GattServiceProviderTrigger.AdvertisingParameters");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "AdvertisingParameters");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "GattLocalService GattServiceProviderTrigger.Service");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "Service");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "string GattServiceProviderTrigger.TriggerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "TriggerId");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.GattServiceProviderTriggerResult> CreateAsync(string triggerId, global::System.Guid serviceUuid)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "IAsyncOperation<GattServiceProviderTriggerResult> GattServiceProviderTrigger.CreateAsync(string triggerId, Guid serviceUuid)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "CreateAsync(string triggerId, Guid serviceUuid)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.AdvertisingParameters.get

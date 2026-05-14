@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioFrame", "IBuffer AppBroadcastStreamAudioFrame.AudioBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioFrame", "AudioBuffer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioFrame", "AppBroadcastStreamAudioHeader AppBroadcastStreamAudioFrame.AudioHeader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioFrame", "AudioHeader");
 			}
 		}
 #endif

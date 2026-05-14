@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "SmartCardEmulator SmartCardTriggerDetails.Emulator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "Emulator");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "SmartCard SmartCardTriggerDetails.SmartCard");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "SmartCard");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "IBuffer SmartCardTriggerDetails.SourceAppletId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "SourceAppletId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "IBuffer SmartCardTriggerDetails.TriggerData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "TriggerData");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "SmartCardTriggerType SmartCardTriggerDetails.TriggerType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "TriggerType");
 			}
 		}
 #endif
@@ -67,14 +67,14 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryLaunchCurrentAppAsync(string arguments)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "IAsyncOperation<bool> SmartCardTriggerDetails.TryLaunchCurrentAppAsync(string arguments)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "TryLaunchCurrentAppAsync(string arguments)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryLaunchCurrentAppAsync(string arguments, global::Windows.Devices.SmartCards.SmartCardLaunchBehavior behavior)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "IAsyncOperation<bool> SmartCardTriggerDetails.TryLaunchCurrentAppAsync(string arguments, SmartCardLaunchBehavior behavior)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "TryLaunchCurrentAppAsync(string arguments, SmartCardLaunchBehavior behavior)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardTriggerDetails.Emulator.get

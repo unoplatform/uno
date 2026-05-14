@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ChatMessage ChatMessageNotificationTriggerDetails.ChatMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ChatMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "bool ChatMessageNotificationTriggerDetails.ShouldDisplayToast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ShouldDisplayToast");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "bool ChatMessageNotificationTriggerDetails.ShouldUpdateActionCenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ShouldUpdateActionCenter");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "bool ChatMessageNotificationTriggerDetails.ShouldUpdateBadge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ShouldUpdateBadge");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "bool ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ShouldUpdateDetailText");
 			}
 		}
 #endif

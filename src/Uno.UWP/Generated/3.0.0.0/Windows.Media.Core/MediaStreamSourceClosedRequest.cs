@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceClosedRequest", "MediaStreamSourceClosedReason MediaStreamSourceClosedRequest.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceClosedRequest", "Reason");
 			}
 		}
 #endif

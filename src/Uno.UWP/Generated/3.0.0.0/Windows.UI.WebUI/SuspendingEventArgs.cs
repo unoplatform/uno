@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.SuspendingEventArgs", "SuspendingOperation SuspendingEventArgs.SuspendingOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.SuspendingEventArgs", "SuspendingOperation");
 			}
 		}
 #endif

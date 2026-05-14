@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfo", "string AllJoynServiceInfo.ObjectPath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfo", "ObjectPath");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfo", "ushort AllJoynServiceInfo.SessionPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfo", "SessionPort");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfo", "string AllJoynServiceInfo.UniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfo", "UniqueName");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AllJoynServiceInfo(string uniqueName, string objectPath, ushort sessionPort)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynServiceInfo", "AllJoynServiceInfo.AllJoynServiceInfo(string uniqueName, string objectPath, ushort sessionPort)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynServiceInfo", "AllJoynServiceInfo(string uniqueName, string objectPath, ushort sessionPort)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.AllJoynServiceInfo(string, string, ushort)
@@ -50,7 +50,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynServiceInfo> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfo", "IAsyncOperation<AllJoynServiceInfo> AllJoynServiceInfo.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfo", "FromIdAsync(string deviceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.ObjectPath.get

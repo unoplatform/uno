@@ -14,11 +14,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "string PlayReadyIndividualizationServiceRequest.ChallengeCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "ChallengeCustomData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "string PlayReadyIndividualizationServiceRequest.ChallengeCustomData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "ChallengeCustomData");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "Guid PlayReadyIndividualizationServiceRequest.ProtectionSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "ProtectionSystem");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "string PlayReadyIndividualizationServiceRequest.ResponseCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "ResponseCustomData");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "Guid PlayReadyIndividualizationServiceRequest.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "Type");
 			}
 		}
 #endif
@@ -58,11 +58,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "Uri PlayReadyIndividualizationServiceRequest.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "Uri PlayReadyIndividualizationServiceRequest.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "Uri");
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyIndividualizationServiceRequest()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "PlayReadyIndividualizationServiceRequest.PlayReadyIndividualizationServiceRequest()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "PlayReadyIndividualizationServiceRequest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest.PlayReadyIndividualizationServiceRequest()
@@ -78,28 +78,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BeginServiceRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "IAsyncAction PlayReadyIndividualizationServiceRequest.BeginServiceRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "BeginServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest NextServiceRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "IPlayReadyServiceRequest PlayReadyIndividualizationServiceRequest.NextServiceRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "NextServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "PlayReadySoapMessage PlayReadyIndividualizationServiceRequest.GenerateManualEnablingChallenge()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "GenerateManualEnablingChallenge()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Exception ProcessManualEnablingResponse(byte[] responseBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "Exception PlayReadyIndividualizationServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest", "ProcessManualEnablingResponse(byte[] responseBytes)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyIndividualizationServiceRequest.ChallengeCustomData.get

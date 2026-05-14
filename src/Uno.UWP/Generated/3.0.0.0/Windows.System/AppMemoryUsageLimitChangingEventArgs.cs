@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryUsageLimitChangingEventArgs", "ulong AppMemoryUsageLimitChangingEventArgs.NewLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryUsageLimitChangingEventArgs", "NewLimit");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryUsageLimitChangingEventArgs", "ulong AppMemoryUsageLimitChangingEventArgs.OldLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryUsageLimitChangingEventArgs", "OldLimit");
 			}
 		}
 #endif

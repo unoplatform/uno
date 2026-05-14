@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails", "ContactDataProviderConnection ContactDataProviderTriggerDetails.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails", "Connection");
 			}
 		}
 #endif

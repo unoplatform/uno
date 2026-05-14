@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "SpatialCoordinateSystem SpatialGraphInteropFrameOfReferencePreview.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "CoordinateSystem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "Matrix4x4 SpatialGraphInteropFrameOfReferencePreview.CoordinateSystemToNodeTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "CoordinateSystemToNodeTransform");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "Guid SpatialGraphInteropFrameOfReferencePreview.NodeId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "NodeId");
 			}
 		}
 #endif

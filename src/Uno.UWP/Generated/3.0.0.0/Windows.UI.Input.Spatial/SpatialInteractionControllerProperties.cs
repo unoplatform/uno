@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "bool SpatialInteractionControllerProperties.IsThumbstickPressed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "IsThumbstickPressed");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "bool SpatialInteractionControllerProperties.IsTouchpadPressed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "IsTouchpadPressed");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "bool SpatialInteractionControllerProperties.IsTouchpadTouched");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "IsTouchpadTouched");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "double SpatialInteractionControllerProperties.ThumbstickX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "ThumbstickX");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "double SpatialInteractionControllerProperties.ThumbstickY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "ThumbstickY");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "double SpatialInteractionControllerProperties.TouchpadX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "TouchpadX");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "double SpatialInteractionControllerProperties.TouchpadY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "TouchpadY");
 			}
 		}
 #endif

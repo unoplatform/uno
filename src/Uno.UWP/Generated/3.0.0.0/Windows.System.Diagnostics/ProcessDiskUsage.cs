@@ -17,7 +17,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.Diagnostics.ProcessDiskUsageReport GetReport()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsage", "ProcessDiskUsageReport ProcessDiskUsage.GetReport()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsage", "GetReport()");
 		}
 #endif
 	}

@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "HdrVideoMode HdrVideoControl.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "Mode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.HdrVideoControl", "HdrVideoMode HdrVideoControl.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.HdrVideoControl", "Mode");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "bool HdrVideoControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "Supported");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "IReadOnlyList<HdrVideoMode> HdrVideoControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "SupportedModes");
 			}
 		}
 #endif

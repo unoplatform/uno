@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSessionMemberRemovedEventArgs", "string AllJoynSessionMemberRemovedEventArgs.UniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSessionMemberRemovedEventArgs", "UniqueName");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AllJoynSessionMemberRemovedEventArgs(string uniqueName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynSessionMemberRemovedEventArgs", "AllJoynSessionMemberRemovedEventArgs.AllJoynSessionMemberRemovedEventArgs(string uniqueName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynSessionMemberRemovedEventArgs", "AllJoynSessionMemberRemovedEventArgs(string uniqueName)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberRemovedEventArgs.AllJoynSessionMemberRemovedEventArgs(string)

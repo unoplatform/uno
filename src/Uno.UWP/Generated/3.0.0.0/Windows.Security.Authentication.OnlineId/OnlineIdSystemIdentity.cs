@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemIdentity", "string OnlineIdSystemIdentity.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemIdentity", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemIdentity", "OnlineIdServiceTicket OnlineIdSystemIdentity.Ticket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemIdentity", "Ticket");
 			}
 		}
 #endif

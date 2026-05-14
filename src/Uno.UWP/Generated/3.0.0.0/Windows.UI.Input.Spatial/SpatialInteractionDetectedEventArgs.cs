@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "SpatialInteraction SpatialInteractionDetectedEventArgs.Interaction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "Interaction");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "SpatialInteractionSource SpatialInteractionDetectedEventArgs.InteractionSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "InteractionSource");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "SpatialInteractionSourceKind SpatialInteractionDetectedEventArgs.InteractionSourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "InteractionSourceKind");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetPointerPose(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "SpatialPointerPose SpatialInteractionDetectedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "TryGetPointerPose(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs.Interaction.get

@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionSegment", "string CoreTextCompositionSegment.PreconversionString");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionSegment", "PreconversionString");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionSegment", "CoreTextRange CoreTextCompositionSegment.Range");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionSegment", "Range");
 			}
 		}
 #endif

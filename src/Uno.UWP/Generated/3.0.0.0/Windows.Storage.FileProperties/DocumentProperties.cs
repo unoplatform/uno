@@ -19,7 +19,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "IList<string> DocumentProperties.Author");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "Author");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "string DocumentProperties.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "Comment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.DocumentProperties", "string DocumentProperties.Comment");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.DocumentProperties", "Comment");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "IList<string> DocumentProperties.Keywords");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "Keywords");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "string DocumentProperties.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.DocumentProperties", "string DocumentProperties.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.DocumentProperties", "Title");
 			}
 		}
 #endif
@@ -65,21 +65,21 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync(global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "IAsyncOperation<IDictionary<string, object>> DocumentProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SavePropertiesAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>> propertiesToSave)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "IAsyncAction DocumentProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SavePropertiesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "IAsyncAction DocumentProperties.SavePropertiesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.DocumentProperties", "SavePropertiesAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.FileProperties.DocumentProperties.Author.get

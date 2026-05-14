@@ -19,11 +19,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "bool AudioSubmixNode.ConsumeInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "ConsumeInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "bool AudioSubmixNode.ConsumeInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "ConsumeInput");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "IList<IAudioEffectDefinition> AudioSubmixNode.EffectDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "EffectDefinitions");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "AudioNodeEmitter AudioSubmixNode.Emitter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "Emitter");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "AudioEncodingProperties AudioSubmixNode.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "EncodingProperties");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "IReadOnlyList<AudioGraphConnection> AudioSubmixNode.OutgoingConnections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "OutgoingConnections");
 			}
 		}
 #endif
@@ -73,11 +73,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "double AudioSubmixNode.OutgoingGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioSubmixNode", "OutgoingGain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "double AudioSubmixNode.OutgoingGain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "OutgoingGain");
 			}
 		}
 #endif
@@ -85,63 +85,63 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.AddOutgoingConnection(IAudioNode destination)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "AddOutgoingConnection(IAudioNode destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination, double gain)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.AddOutgoingConnection(IAudioNode destination, double gain)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "AddOutgoingConnection(IAudioNode destination, double gain)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.RemoveOutgoingConnection(IAudioNode destination)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "RemoveOutgoingConnection(IAudioNode destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Reset()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.Reset()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "Reset()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DisableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.DisableEffectsByDefinition(IAudioEffectDefinition definition)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "DisableEffectsByDefinition(IAudioEffectDefinition definition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void EnableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.EnableEffectsByDefinition(IAudioEffectDefinition definition)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "EnableEffectsByDefinition(IAudioEffectDefinition definition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "void AudioSubmixNode.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioSubmixNode", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioSubmixNode.ConsumeInput.get

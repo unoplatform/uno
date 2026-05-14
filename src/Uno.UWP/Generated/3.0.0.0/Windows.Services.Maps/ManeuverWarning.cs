@@ -19,7 +19,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.ManeuverWarning", "ManeuverWarningKind ManeuverWarning.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.ManeuverWarning", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.ManeuverWarning", "ManeuverWarningSeverity ManeuverWarning.Severity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.ManeuverWarning", "Severity");
 			}
 		}
 #endif

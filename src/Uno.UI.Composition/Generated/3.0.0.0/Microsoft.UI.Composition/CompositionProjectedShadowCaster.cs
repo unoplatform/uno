@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "CompositionBrush CompositionProjectedShadowCaster.Brush");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "Brush");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "CompositionBrush CompositionProjectedShadowCaster.Brush");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "Brush");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "Visual CompositionProjectedShadowCaster.CastingVisual");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "CastingVisual");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "Visual CompositionProjectedShadowCaster.CastingVisual");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "CastingVisual");
 			}
 		}
 #endif

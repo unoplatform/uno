@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "WiFiDirectConnectionStatus WiFiDirectDevice.ConnectionStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "ConnectionStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "string WiFiDirectDevice.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "DeviceId");
 			}
 		}
 #endif
@@ -37,35 +37,35 @@ namespace Windows.Devices.WiFiDirect
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "string WiFiDirectDevice.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.WiFiDirectDevice> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "IAsyncOperation<WiFiDirectDevice> WiFiDirectDevice.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::Windows.Devices.WiFiDirect.WiFiDirectDeviceSelectorType type)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "string WiFiDirectDevice.GetDeviceSelector(WiFiDirectDeviceSelectorType type)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "GetDeviceSelector(WiFiDirectDeviceSelectorType type)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.WiFiDirectDevice> FromIdAsync(string deviceId, global::Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters connectionParameters)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "IAsyncOperation<WiFiDirectDevice> WiFiDirectDevice.FromIdAsync(string deviceId, WiFiDirectConnectionParameters connectionParameters)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "FromIdAsync(string deviceId, WiFiDirectConnectionParameters connectionParameters)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetConnectionEndpointPairs()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "IReadOnlyList<EndpointPair> WiFiDirectDevice.GetConnectionEndpointPairs()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectDevice", "GetConnectionEndpointPairs()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatusChanged.add
@@ -74,7 +74,7 @@ namespace Windows.Devices.WiFiDirect
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectDevice", "void WiFiDirectDevice.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectDevice", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatus.get
@@ -86,12 +86,12 @@ namespace Windows.Devices.WiFiDirect
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectDevice", "event TypedEventHandler<WiFiDirectDevice, object> WiFiDirectDevice.ConnectionStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectDevice", "event ConnectionStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectDevice", "event TypedEventHandler<WiFiDirectDevice, object> WiFiDirectDevice.ConnectionStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectDevice", "event ConnectionStatusChanged");
 			}
 		}
 #endif

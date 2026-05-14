@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "string EmailMailboxDownloadAttachmentRequest.EmailAttachmentId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "EmailAttachmentId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "string EmailMailboxDownloadAttachmentRequest.EmailMailboxId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "EmailMailboxId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "string EmailMailboxDownloadAttachmentRequest.EmailMessageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "EmailMessageId");
 			}
 		}
 #endif
@@ -47,14 +47,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "IAsyncAction EmailMailboxDownloadAttachmentRequest.ReportCompletedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "IAsyncAction EmailMailboxDownloadAttachmentRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequest.EmailAttachmentId.get

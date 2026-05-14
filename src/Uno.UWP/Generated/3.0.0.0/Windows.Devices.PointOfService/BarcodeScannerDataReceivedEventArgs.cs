@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerDataReceivedEventArgs", "BarcodeScannerReport BarcodeScannerDataReceivedEventArgs.Report");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerDataReceivedEventArgs", "Report");
 			}
 		}
 #endif

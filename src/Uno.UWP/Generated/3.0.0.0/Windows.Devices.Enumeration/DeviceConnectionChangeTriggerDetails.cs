@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails", "string DeviceConnectionChangeTriggerDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails", "DeviceId");
 			}
 		}
 #endif

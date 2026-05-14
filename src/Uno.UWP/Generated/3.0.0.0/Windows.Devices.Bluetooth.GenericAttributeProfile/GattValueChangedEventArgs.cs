@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattValueChangedEventArgs", "IBuffer GattValueChangedEventArgs.CharacteristicValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattValueChangedEventArgs", "CharacteristicValue");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattValueChangedEventArgs", "DateTimeOffset GattValueChangedEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattValueChangedEventArgs", "Timestamp");
 			}
 		}
 #endif

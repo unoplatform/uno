@@ -12,14 +12,14 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.WebTokenRequestResult> RequestTokenForWindowAsync(nint appWindow, global::Windows.Security.Authentication.Web.Core.WebTokenRequest request)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManagerInterop", "IAsyncOperation<WebTokenRequestResult> WebAuthenticationCoreManagerInterop.RequestTokenForWindowAsync(nint appWindow, WebTokenRequest request)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManagerInterop", "RequestTokenForWindowAsync(nint appWindow, WebTokenRequest request)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.WebTokenRequestResult> RequestTokenWithWebAccountForWindowAsync(nint appWindow, global::Windows.Security.Authentication.Web.Core.WebTokenRequest request, global::Windows.Security.Credentials.WebAccount webAccount)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManagerInterop", "IAsyncOperation<WebTokenRequestResult> WebAuthenticationCoreManagerInterop.RequestTokenWithWebAccountForWindowAsync(nint appWindow, WebTokenRequest request, WebAccount webAccount)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManagerInterop", "RequestTokenWithWebAccountForWindowAsync(nint appWindow, WebTokenRequest request, WebAccount webAccount)");
 		}
 #endif
 	}

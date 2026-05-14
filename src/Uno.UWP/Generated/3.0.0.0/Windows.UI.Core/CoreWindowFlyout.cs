@@ -14,11 +14,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "UICommandInvokedHandler CoreWindowFlyout.BackButtonCommand");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "BackButtonCommand");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "UICommandInvokedHandler CoreWindowFlyout.BackButtonCommand");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "BackButtonCommand");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "IList<IUICommand> CoreWindowFlyout.Commands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "Commands");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "uint CoreWindowFlyout.DefaultCommandIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "DefaultCommandIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "uint CoreWindowFlyout.DefaultCommandIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "DefaultCommandIndex");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "int CoreWindowFlyout.IsInteractionDelayed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "IsInteractionDelayed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "int CoreWindowFlyout.IsInteractionDelayed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "IsInteractionDelayed");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "Size CoreWindowFlyout.MaxSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "MaxSize");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "Size CoreWindowFlyout.MinSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "MinSize");
 			}
 		}
 #endif
@@ -86,11 +86,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "string CoreWindowFlyout.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "string CoreWindowFlyout.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "Title");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreWindowFlyout(global::Windows.Foundation.Point position)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "CoreWindowFlyout.CoreWindowFlyout(Point position)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "CoreWindowFlyout(Point position)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.CoreWindowFlyout(Windows.Foundation.Point)
@@ -106,7 +106,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreWindowFlyout(global::Windows.Foundation.Point position, string title)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "CoreWindowFlyout.CoreWindowFlyout(Point position, string title)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "CoreWindowFlyout(Point position, string title)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.CoreWindowFlyout(Windows.Foundation.Point, string)
@@ -114,7 +114,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "IAsyncOperation<IUICommand> CoreWindowFlyout.ShowAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowFlyout", "ShowAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.Showing.add
@@ -137,12 +137,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "event TypedEventHandler<CoreWindow, CoreWindowPopupShowingEventArgs> CoreWindowFlyout.Showing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "event Showing");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "event TypedEventHandler<CoreWindow, CoreWindowPopupShowingEventArgs> CoreWindowFlyout.Showing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowFlyout", "event Showing");
 			}
 		}
 #endif

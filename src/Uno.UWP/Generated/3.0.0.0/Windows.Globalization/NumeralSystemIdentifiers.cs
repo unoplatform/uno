@@ -14,7 +14,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Arab");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Arab");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.ArabExt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "ArabExt");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Bali");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Bali");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Beng");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Beng");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Brah");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Brah");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Cham");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Cham");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Deva");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Deva");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.FullWide");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "FullWide");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Gujr");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Gujr");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Guru");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Guru");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.HaniDec");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "HaniDec");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Java");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Java");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Kali");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Kali");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Khmr");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Khmr");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Knda");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Knda");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Lana");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Lana");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.LanaTham");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "LanaTham");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Laoo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Laoo");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Latn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Latn");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Lepc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Lepc");
 			}
 		}
 #endif
@@ -214,7 +214,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Limb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Limb");
 			}
 		}
 #endif
@@ -224,7 +224,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.MathBold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "MathBold");
 			}
 		}
 #endif
@@ -234,7 +234,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.MathDbl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "MathDbl");
 			}
 		}
 #endif
@@ -244,7 +244,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.MathMono");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "MathMono");
 			}
 		}
 #endif
@@ -254,7 +254,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.MathSanb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "MathSanb");
 			}
 		}
 #endif
@@ -264,7 +264,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.MathSans");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "MathSans");
 			}
 		}
 #endif
@@ -274,7 +274,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Mlym");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Mlym");
 			}
 		}
 #endif
@@ -284,7 +284,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Mong");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Mong");
 			}
 		}
 #endif
@@ -294,7 +294,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Mtei");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Mtei");
 			}
 		}
 #endif
@@ -304,7 +304,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Mymr");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Mymr");
 			}
 		}
 #endif
@@ -314,7 +314,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.MymrShan");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "MymrShan");
 			}
 		}
 #endif
@@ -324,7 +324,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Nkoo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Nkoo");
 			}
 		}
 #endif
@@ -334,7 +334,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Olck");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Olck");
 			}
 		}
 #endif
@@ -344,7 +344,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Orya");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Orya");
 			}
 		}
 #endif
@@ -354,7 +354,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Osma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Osma");
 			}
 		}
 #endif
@@ -364,7 +364,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Saur");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Saur");
 			}
 		}
 #endif
@@ -374,7 +374,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Sund");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Sund");
 			}
 		}
 #endif
@@ -384,7 +384,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Talu");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Talu");
 			}
 		}
 #endif
@@ -394,7 +394,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.TamlDec");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "TamlDec");
 			}
 		}
 #endif
@@ -404,7 +404,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Telu");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Telu");
 			}
 		}
 #endif
@@ -414,7 +414,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Thai");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Thai");
 			}
 		}
 #endif
@@ -424,7 +424,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Tibt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Tibt");
 			}
 		}
 #endif
@@ -434,7 +434,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.Vaii");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "Vaii");
 			}
 		}
 #endif
@@ -444,7 +444,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.ZmthBold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "ZmthBold");
 			}
 		}
 #endif
@@ -454,7 +454,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.ZmthDbl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "ZmthDbl");
 			}
 		}
 #endif
@@ -464,7 +464,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.ZmthMono");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "ZmthMono");
 			}
 		}
 #endif
@@ -474,7 +474,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.ZmthSanb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "ZmthSanb");
 			}
 		}
 #endif
@@ -484,7 +484,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "string NumeralSystemIdentifiers.ZmthSans");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumeralSystemIdentifiers", "ZmthSans");
 			}
 		}
 #endif

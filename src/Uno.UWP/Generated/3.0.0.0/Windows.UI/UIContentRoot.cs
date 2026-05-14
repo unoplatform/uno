@@ -19,7 +19,7 @@ namespace Windows.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.UIContentRoot", "UIContext UIContentRoot.UIContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.UIContentRoot", "UIContext");
 			}
 		}
 #endif

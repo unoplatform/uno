@@ -19,7 +19,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "ulong ContentIndexer.Revision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "Revision");
 			}
 		}
 #endif
@@ -27,77 +27,77 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Search.ContentIndexer GetIndexer(string indexName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "ContentIndexer ContentIndexer.GetIndexer(string indexName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "GetIndexer(string indexName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Search.ContentIndexer GetIndexer()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "ContentIndexer ContentIndexer.GetIndexer()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "GetIndexer()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction AddAsync(global::Windows.Storage.Search.IIndexableContent indexableContent)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "IAsyncAction ContentIndexer.AddAsync(IIndexableContent indexableContent)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "AddAsync(IIndexableContent indexableContent)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction UpdateAsync(global::Windows.Storage.Search.IIndexableContent indexableContent)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "IAsyncAction ContentIndexer.UpdateAsync(IIndexableContent indexableContent)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "UpdateAsync(IIndexableContent indexableContent)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync(string contentId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "IAsyncAction ContentIndexer.DeleteAsync(string contentId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "DeleteAsync(string contentId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteMultipleAsync(global::System.Collections.Generic.IEnumerable<string> contentIds)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "IAsyncAction ContentIndexer.DeleteMultipleAsync(IEnumerable<string> contentIds)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "DeleteMultipleAsync(IEnumerable<string> contentIds)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAllAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "IAsyncAction ContentIndexer.DeleteAllAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "DeleteAllAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, object>> RetrievePropertiesAsync(string contentId, global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "IAsyncOperation<IReadOnlyDictionary<string, object>> ContentIndexer.RetrievePropertiesAsync(string contentId, IEnumerable<string> propertiesToRetrieve)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "RetrievePropertiesAsync(string contentId, IEnumerable<string> propertiesToRetrieve)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.ContentIndexerQuery CreateQuery(string searchFilter, global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Search.SortEntry> sortOrder, string searchFilterLanguage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "ContentIndexerQuery ContentIndexer.CreateQuery(string searchFilter, IEnumerable<string> propertiesToRetrieve, IEnumerable<SortEntry> sortOrder, string searchFilterLanguage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "CreateQuery(string searchFilter, IEnumerable<string> propertiesToRetrieve, IEnumerable<SortEntry> sortOrder, string searchFilterLanguage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.ContentIndexerQuery CreateQuery(string searchFilter, global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Search.SortEntry> sortOrder)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "ContentIndexerQuery ContentIndexer.CreateQuery(string searchFilter, IEnumerable<string> propertiesToRetrieve, IEnumerable<SortEntry> sortOrder)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "CreateQuery(string searchFilter, IEnumerable<string> propertiesToRetrieve, IEnumerable<SortEntry> sortOrder)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.ContentIndexerQuery CreateQuery(string searchFilter, global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "ContentIndexerQuery ContentIndexer.CreateQuery(string searchFilter, IEnumerable<string> propertiesToRetrieve)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ContentIndexer", "CreateQuery(string searchFilter, IEnumerable<string> propertiesToRetrieve)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.ContentIndexer.Revision.get

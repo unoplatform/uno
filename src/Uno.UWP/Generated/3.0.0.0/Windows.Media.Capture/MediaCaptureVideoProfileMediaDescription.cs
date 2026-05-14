@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "double MediaCaptureVideoProfileMediaDescription.FrameRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "FrameRate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "uint MediaCaptureVideoProfileMediaDescription.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "Height");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "bool MediaCaptureVideoProfileMediaDescription.IsHdrVideoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "IsHdrVideoSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "bool MediaCaptureVideoProfileMediaDescription.IsVariablePhotoSequenceSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "IsVariablePhotoSequenceSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "IReadOnlyDictionary<Guid, object> MediaCaptureVideoProfileMediaDescription.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "Properties");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "string MediaCaptureVideoProfileMediaDescription.Subtype");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "Subtype");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "uint MediaCaptureVideoProfileMediaDescription.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "Width");
 			}
 		}
 #endif

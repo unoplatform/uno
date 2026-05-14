@@ -19,7 +19,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGrouping", "string CharacterGrouping.First");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGrouping", "First");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGrouping", "string CharacterGrouping.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGrouping", "Label");
 			}
 		}
 #endif

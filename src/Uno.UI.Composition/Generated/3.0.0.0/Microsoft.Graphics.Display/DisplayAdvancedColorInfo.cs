@@ -19,7 +19,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "Point DisplayAdvancedColorInfo.BluePrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "BluePrimary");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "DisplayAdvancedColorKind DisplayAdvancedColorInfo.CurrentAdvancedColorKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "CurrentAdvancedColorKind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "Point DisplayAdvancedColorInfo.GreenPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "GreenPrimary");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "double DisplayAdvancedColorInfo.MaxAverageFullFrameLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "MaxAverageFullFrameLuminanceInNits");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "double DisplayAdvancedColorInfo.MaxLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "MaxLuminanceInNits");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "double DisplayAdvancedColorInfo.MinLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "MinLuminanceInNits");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "Point DisplayAdvancedColorInfo.RedPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "RedPrimary");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "double DisplayAdvancedColorInfo.SdrWhiteLevelInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "SdrWhiteLevelInNits");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "Point DisplayAdvancedColorInfo.WhitePoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "WhitePoint");
 			}
 		}
 #endif
@@ -107,14 +107,14 @@ namespace Microsoft.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsHdrMetadataFormatCurrentlySupported(global::Microsoft.Graphics.Display.DisplayHdrMetadataFormat format)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "bool DisplayAdvancedColorInfo.IsHdrMetadataFormatCurrentlySupported(DisplayHdrMetadataFormat format)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "IsHdrMetadataFormatCurrentlySupported(DisplayHdrMetadataFormat format)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsAdvancedColorKindAvailable(global::Microsoft.Graphics.Display.DisplayAdvancedColorKind kind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "bool DisplayAdvancedColorInfo.IsAdvancedColorKindAvailable(DisplayAdvancedColorKind kind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayAdvancedColorInfo", "IsAdvancedColorKindAvailable(DisplayAdvancedColorKind kind)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Graphics.Display.DisplayAdvancedColorInfo.BluePrimary.get

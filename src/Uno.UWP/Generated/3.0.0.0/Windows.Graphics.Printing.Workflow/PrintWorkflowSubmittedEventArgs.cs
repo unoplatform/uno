@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs", "PrintWorkflowSubmittedOperation PrintWorkflowSubmittedEventArgs.Operation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs", "Operation");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Graphics.Printing.Workflow
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowTarget GetTarget(global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket jobPrintTicket)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs", "PrintWorkflowTarget PrintWorkflowSubmittedEventArgs.GetTarget(WorkflowPrintTicket jobPrintTicket)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs", "GetTarget(WorkflowPrintTicket jobPrintTicket)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs", "Deferral PrintWorkflowSubmittedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs.Operation.get

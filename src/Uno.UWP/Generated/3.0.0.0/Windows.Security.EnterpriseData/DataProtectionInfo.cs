@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.DataProtectionInfo", "string DataProtectionInfo.Identity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.DataProtectionInfo", "Identity");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.DataProtectionInfo", "DataProtectionStatus DataProtectionInfo.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.DataProtectionInfo", "Status");
 			}
 		}
 #endif

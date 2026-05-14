@@ -19,7 +19,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrWord", "Rect OcrWord.BoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrWord", "BoundingRect");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrWord", "string OcrWord.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrWord", "Text");
 			}
 		}
 #endif

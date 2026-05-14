@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "ExecutionTime");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "StopPageScriptExecution");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "StopPageScriptExecution");
 			}
 		}
 #endif

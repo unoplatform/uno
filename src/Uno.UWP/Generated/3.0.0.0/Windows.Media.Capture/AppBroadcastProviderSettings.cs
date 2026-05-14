@@ -19,11 +19,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.AudioEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "AudioEncodingBitrate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.AudioEncodingBitrate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "AudioEncodingBitrate");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "CustomVideoEncodingBitrate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingBitrate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "CustomVideoEncodingBitrate");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "CustomVideoEncodingHeight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingHeight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "CustomVideoEncodingHeight");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "CustomVideoEncodingWidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingWidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "CustomVideoEncodingWidth");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "string AppBroadcastProviderSettings.DefaultBroadcastTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "DefaultBroadcastTitle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "string AppBroadcastProviderSettings.DefaultBroadcastTitle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "DefaultBroadcastTitle");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "AppBroadcastVideoEncodingBitrateMode AppBroadcastProviderSettings.VideoEncodingBitrateMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "VideoEncodingBitrateMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "AppBroadcastVideoEncodingBitrateMode AppBroadcastProviderSettings.VideoEncodingBitrateMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "VideoEncodingBitrateMode");
 			}
 		}
 #endif
@@ -103,11 +103,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "AppBroadcastVideoEncodingResolutionMode AppBroadcastProviderSettings.VideoEncodingResolutionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "VideoEncodingResolutionMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "AppBroadcastVideoEncodingResolutionMode AppBroadcastProviderSettings.VideoEncodingResolutionMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastProviderSettings", "VideoEncodingResolutionMode");
 			}
 		}
 #endif

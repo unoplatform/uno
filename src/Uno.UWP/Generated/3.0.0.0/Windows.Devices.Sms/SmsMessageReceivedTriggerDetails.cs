@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsAppMessage SmsMessageReceivedTriggerDetails.AppMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "AppMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsBroadcastMessage SmsMessageReceivedTriggerDetails.BroadcastMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "BroadcastMessage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsMessageType SmsMessageReceivedTriggerDetails.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "MessageType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsStatusMessage SmsMessageReceivedTriggerDetails.StatusMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "StatusMessage");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsTextMessage2 SmsMessageReceivedTriggerDetails.TextMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "TextMessage");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsVoicemailMessage SmsMessageReceivedTriggerDetails.VoicemailMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "VoicemailMessage");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsWapMessage SmsMessageReceivedTriggerDetails.WapMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "WapMessage");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Drop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "void SmsMessageReceivedTriggerDetails.Drop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "Drop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Accept()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "void SmsMessageReceivedTriggerDetails.Accept()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "Accept()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.AppMessage.get

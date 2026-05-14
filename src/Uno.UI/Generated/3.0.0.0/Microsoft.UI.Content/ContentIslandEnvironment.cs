@@ -14,7 +14,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "WindowId ContentIslandEnvironment.AppWindowId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "AppWindowId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "DisplayId ContentIslandEnvironment.DisplayId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "DisplayId");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "float ContentIslandEnvironment.DisplayScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "DisplayScale");
 			}
 		}
 #endif
@@ -52,12 +52,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandEnvironment", "event TypedEventHandler<ContentIslandEnvironment, ContentEnvironmentSettingChangedEventArgs> ContentIslandEnvironment.SettingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandEnvironment", "event SettingChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandEnvironment", "event TypedEventHandler<ContentIslandEnvironment, ContentEnvironmentSettingChangedEventArgs> ContentIslandEnvironment.SettingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandEnvironment", "event SettingChanged");
 			}
 		}
 #endif
@@ -68,12 +68,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandEnvironment", "event TypedEventHandler<ContentIslandEnvironment, ContentEnvironmentStateChangedEventArgs> ContentIslandEnvironment.StateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandEnvironment", "event StateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandEnvironment", "event TypedEventHandler<ContentIslandEnvironment, ContentEnvironmentStateChangedEventArgs> ContentIslandEnvironment.StateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIslandEnvironment", "event StateChanged");
 			}
 		}
 #endif

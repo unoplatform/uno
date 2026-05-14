@@ -19,7 +19,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "bool PrepareTranscodeResult.CanTranscode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "CanTranscode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "TranscodeFailureReason PrepareTranscodeResult.FailureReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "FailureReason");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Transcoding
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncActionWithProgress<double> TranscodeAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "IAsyncActionWithProgress<double> PrepareTranscodeResult.TranscodeAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "TranscodeAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.CanTranscode.get

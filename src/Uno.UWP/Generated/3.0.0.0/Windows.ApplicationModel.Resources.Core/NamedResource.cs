@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "IReadOnlyList<ResourceCandidate> NamedResource.Candidates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "Candidates");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "Uri NamedResource.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "Uri");
 			}
 		}
 #endif
@@ -37,28 +37,28 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate Resolve()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "ResourceCandidate NamedResource.Resolve()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "Resolve()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate Resolve(global::Windows.ApplicationModel.Resources.Core.ResourceContext resourceContext)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "ResourceCandidate NamedResource.Resolve(ResourceContext resourceContext)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "Resolve(ResourceContext resourceContext)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.ResourceCandidate> ResolveAll()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "IReadOnlyList<ResourceCandidate> NamedResource.ResolveAll()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "ResolveAll()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.ResourceCandidate> ResolveAll(global::Windows.ApplicationModel.Resources.Core.ResourceContext resourceContext)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "IReadOnlyList<ResourceCandidate> NamedResource.ResolveAll(ResourceContext resourceContext)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.NamedResource", "ResolveAll(ResourceContext resourceContext)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.Candidates.get

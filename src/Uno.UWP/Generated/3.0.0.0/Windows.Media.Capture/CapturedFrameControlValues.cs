@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "TimeSpan? CapturedFrameControlValues.Exposure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "Exposure");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "float? CapturedFrameControlValues.ExposureCompensation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "ExposureCompensation");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "float? CapturedFrameControlValues.FlashPowerPercent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "FlashPowerPercent");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "bool? CapturedFrameControlValues.Flashed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "Flashed");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "uint? CapturedFrameControlValues.Focus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "Focus");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "MediaCaptureFocusState? CapturedFrameControlValues.FocusState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "FocusState");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "double? CapturedFrameControlValues.IsoAnalogGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "IsoAnalogGain");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "double? CapturedFrameControlValues.IsoDigitalGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "IsoDigitalGain");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "uint? CapturedFrameControlValues.IsoSpeed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "IsoSpeed");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "CaptureSceneMode? CapturedFrameControlValues.SceneMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "SceneMode");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "MediaRatio CapturedFrameControlValues.SensorFrameRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "SensorFrameRate");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "uint? CapturedFrameControlValues.WhiteBalance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "WhiteBalance");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "WhiteBalanceGain? CapturedFrameControlValues.WhiteBalanceGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "WhiteBalanceGain");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "float? CapturedFrameControlValues.ZoomFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedFrameControlValues", "ZoomFactor");
 			}
 		}
 #endif

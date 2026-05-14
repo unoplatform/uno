@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskProgressEventArgs", "Guid BackgroundTaskProgressEventArgs.InstanceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskProgressEventArgs", "InstanceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskProgressEventArgs", "uint BackgroundTaskProgressEventArgs.Progress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskProgressEventArgs", "Progress");
 			}
 		}
 #endif

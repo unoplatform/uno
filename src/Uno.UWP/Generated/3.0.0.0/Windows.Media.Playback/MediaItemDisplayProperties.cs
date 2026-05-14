@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaItemDisplayProperties", "MusicDisplayProperties MediaItemDisplayProperties.MusicProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaItemDisplayProperties", "MusicProperties");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaItemDisplayProperties", "RandomAccessStreamReference MediaItemDisplayProperties.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaItemDisplayProperties", "Thumbnail");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "RandomAccessStreamReference MediaItemDisplayProperties.Thumbnail");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "Thumbnail");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaItemDisplayProperties", "MediaPlaybackType MediaItemDisplayProperties.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaItemDisplayProperties", "Type");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "MediaPlaybackType MediaItemDisplayProperties.Type");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "Type");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaItemDisplayProperties", "VideoDisplayProperties MediaItemDisplayProperties.VideoProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaItemDisplayProperties", "VideoProperties");
 			}
 		}
 #endif
@@ -65,7 +65,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearAll()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "void MediaItemDisplayProperties.ClearAll()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "ClearAll()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.MusicProperties.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "DateTimeOffset AppBroadcastStreamVideoHeader.AbsoluteTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "AbsoluteTimestamp");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "TimeSpan AppBroadcastStreamVideoHeader.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "Duration");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "ulong AppBroadcastStreamVideoHeader.FrameId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "FrameId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "bool AppBroadcastStreamVideoHeader.HasDiscontinuity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "HasDiscontinuity");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "bool AppBroadcastStreamVideoHeader.IsKeyFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "IsKeyFrame");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "TimeSpan AppBroadcastStreamVideoHeader.RelativeTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "RelativeTimestamp");
 			}
 		}
 #endif

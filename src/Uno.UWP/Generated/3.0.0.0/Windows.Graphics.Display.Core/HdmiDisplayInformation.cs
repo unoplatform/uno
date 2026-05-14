@@ -17,49 +17,49 @@ namespace Windows.Graphics.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Display.Core.HdmiDisplayInformation GetForCurrentView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "HdmiDisplayInformation HdmiDisplayInformation.GetForCurrentView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Display.Core.HdmiDisplayMode> GetSupportedDisplayModes()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "IReadOnlyList<HdmiDisplayMode> HdmiDisplayInformation.GetSupportedDisplayModes()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "GetSupportedDisplayModes()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Display.Core.HdmiDisplayMode GetCurrentDisplayMode()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "HdmiDisplayMode HdmiDisplayInformation.GetCurrentDisplayMode()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "GetCurrentDisplayMode()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetDefaultDisplayModeAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "IAsyncAction HdmiDisplayInformation.SetDefaultDisplayModeAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "SetDefaultDisplayModeAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "IAsyncOperation<bool> HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode, global::Windows.Graphics.Display.Core.HdmiDisplayHdrOption hdrOption)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "IAsyncOperation<bool> HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode, HdmiDisplayHdrOption hdrOption)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode, HdmiDisplayHdrOption hdrOption)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode, global::Windows.Graphics.Display.Core.HdmiDisplayHdrOption hdrOption, global::Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata hdrMetadata)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "IAsyncOperation<bool> HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode, HdmiDisplayHdrOption hdrOption, HdmiDisplayHdr2086Metadata hdrMetadata)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayInformation", "RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode, HdmiDisplayHdrOption hdrOption, HdmiDisplayHdr2086Metadata hdrMetadata)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayInformation.DisplayModesChanged.add
@@ -71,12 +71,12 @@ namespace Windows.Graphics.Display.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.Core.HdmiDisplayInformation", "event TypedEventHandler<HdmiDisplayInformation, object> HdmiDisplayInformation.DisplayModesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.Core.HdmiDisplayInformation", "event DisplayModesChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.Core.HdmiDisplayInformation", "event TypedEventHandler<HdmiDisplayInformation, object> HdmiDisplayInformation.DisplayModesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.Core.HdmiDisplayInformation", "event DisplayModesChanged");
 			}
 		}
 #endif

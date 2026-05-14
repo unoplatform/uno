@@ -14,11 +14,11 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.FullScreenPresentationConfiguration", "bool FullScreenPresentationConfiguration.IsExclusive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.FullScreenPresentationConfiguration", "IsExclusive");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.FullScreenPresentationConfiguration", "bool FullScreenPresentationConfiguration.IsExclusive");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.FullScreenPresentationConfiguration", "IsExclusive");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public FullScreenPresentationConfiguration()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.FullScreenPresentationConfiguration", "FullScreenPresentationConfiguration.FullScreenPresentationConfiguration()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.FullScreenPresentationConfiguration", "FullScreenPresentationConfiguration()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.FullScreenPresentationConfiguration()

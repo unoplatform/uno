@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.VenueData", "string VenueData.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.VenueData", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.VenueData", "string VenueData.Level");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.VenueData", "Level");
 			}
 		}
 #endif

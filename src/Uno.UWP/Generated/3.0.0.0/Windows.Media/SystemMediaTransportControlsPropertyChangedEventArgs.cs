@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsPropertyChangedEventArgs", "SystemMediaTransportControlsProperty SystemMediaTransportControlsPropertyChangedEventArgs.Property");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsPropertyChangedEventArgs", "Property");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter", "RemoteSystemAuthorizationKind RemoteSystemAuthorizationKindFilter.RemoteSystemAuthorizationKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter", "RemoteSystemAuthorizationKind");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RemoteSystemAuthorizationKindFilter(global::Windows.System.RemoteSystems.RemoteSystemAuthorizationKind remoteSystemAuthorizationKind)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter", "RemoteSystemAuthorizationKindFilter.RemoteSystemAuthorizationKindFilter(RemoteSystemAuthorizationKind remoteSystemAuthorizationKind)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter", "RemoteSystemAuthorizationKindFilter(RemoteSystemAuthorizationKind remoteSystemAuthorizationKind)");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAuthorizationKindFilter.RemoteSystemAuthorizationKindFilter(Windows.System.RemoteSystems.RemoteSystemAuthorizationKind)

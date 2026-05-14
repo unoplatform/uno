@@ -19,7 +19,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "IPlayReadySecureStopServiceRequest PlayReadySecureStopIterator.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "Current");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "object PlayReadySecureStopIterator.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "Current");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MoveNext()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "bool PlayReadySecureStopIterator.MoveNext()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "MoveNext()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Reset()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "void PlayReadySecureStopIterator.Reset()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "Reset()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "void PlayReadySecureStopIterator.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.Current.get

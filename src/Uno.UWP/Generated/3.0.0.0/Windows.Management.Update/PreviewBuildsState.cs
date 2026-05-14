@@ -19,7 +19,7 @@ namespace Windows.Management.Update
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsState", "ValueSet PreviewBuildsState.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsState", "Properties");
 			}
 		}
 #endif

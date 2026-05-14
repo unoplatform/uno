@@ -17,28 +17,28 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.WindowManagement.AppWindowPresentationConfiguration GetConfiguration()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresenter", "AppWindowPresentationConfiguration AppWindowPresenter.GetConfiguration()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresenter", "GetConfiguration()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsPresentationSupported(global::Windows.UI.WindowManagement.AppWindowPresentationKind presentationKind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresenter", "bool AppWindowPresenter.IsPresentationSupported(AppWindowPresentationKind presentationKind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresenter", "IsPresentationSupported(AppWindowPresentationKind presentationKind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RequestPresentation(global::Windows.UI.WindowManagement.AppWindowPresentationConfiguration configuration)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresenter", "bool AppWindowPresenter.RequestPresentation(AppWindowPresentationConfiguration configuration)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresenter", "RequestPresentation(AppWindowPresentationConfiguration configuration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RequestPresentation(global::Windows.UI.WindowManagement.AppWindowPresentationKind presentationKind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresenter", "bool AppWindowPresenter.RequestPresentation(AppWindowPresentationKind presentationKind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresenter", "RequestPresentation(AppWindowPresentationKind presentationKind)");
 		}
 #endif
 	}

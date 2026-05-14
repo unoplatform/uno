@@ -14,7 +14,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "IDictionary<string, string> WebTokenRequest.AppProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "AppProperties");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "string WebTokenRequest.ClientId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "ClientId");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "string WebTokenRequest.CorrelationId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "CorrelationId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "string WebTokenRequest.CorrelationId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "CorrelationId");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequestPromptType WebTokenRequest.PromptType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "PromptType");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "IDictionary<string, string> WebTokenRequest.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "Properties");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "string WebTokenRequest.Scope");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "Scope");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebAccountProvider WebTokenRequest.WebAccountProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebAccountProvider");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope, string clientId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider, string scope, string clientId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest(WebAccountProvider provider, string scope, string clientId)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string, string)
@@ -94,7 +94,7 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope, string clientId, global::Windows.Security.Authentication.Web.Core.WebTokenRequestPromptType promptType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider, string scope, string clientId, WebTokenRequestPromptType promptType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest(WebAccountProvider provider, string scope, string clientId, WebTokenRequestPromptType promptType)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string, string, Windows.Security.Authentication.Web.Core.WebTokenRequestPromptType)
@@ -102,7 +102,7 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest(WebAccountProvider provider)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider)
@@ -110,7 +110,7 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider, string scope)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest(WebAccountProvider provider, string scope)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string)

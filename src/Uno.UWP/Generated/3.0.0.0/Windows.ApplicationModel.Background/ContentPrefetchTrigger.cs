@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "TimeSpan ContentPrefetchTrigger.WaitInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "WaitInterval");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContentPrefetchTrigger()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger.ContentPrefetchTrigger()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.ContentPrefetchTrigger()
@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContentPrefetchTrigger(global::System.TimeSpan waitInterval)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger.ContentPrefetchTrigger(TimeSpan waitInterval)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger(TimeSpan waitInterval)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.ContentPrefetchTrigger(System.TimeSpan)

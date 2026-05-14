@@ -19,11 +19,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.KeyboardDeliveryInterceptor", "bool KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.KeyboardDeliveryInterceptor", "IsInterceptionEnabledWhenInForeground");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "bool KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "IsInterceptionEnabledWhenInForeground");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.KeyboardDeliveryInterceptor GetForCurrentView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.KeyboardDeliveryInterceptor", "KeyboardDeliveryInterceptor KeyboardDeliveryInterceptor.GetForCurrentView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.KeyboardDeliveryInterceptor", "GetForCurrentView()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyDown.add
@@ -47,12 +47,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "event TypedEventHandler<KeyboardDeliveryInterceptor, KeyEventArgs> KeyboardDeliveryInterceptor.KeyDown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "event KeyDown");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "event TypedEventHandler<KeyboardDeliveryInterceptor, KeyEventArgs> KeyboardDeliveryInterceptor.KeyDown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "event KeyDown");
 			}
 		}
 #endif
@@ -63,12 +63,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "event TypedEventHandler<KeyboardDeliveryInterceptor, KeyEventArgs> KeyboardDeliveryInterceptor.KeyUp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "event KeyUp");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "event TypedEventHandler<KeyboardDeliveryInterceptor, KeyEventArgs> KeyboardDeliveryInterceptor.KeyUp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.KeyboardDeliveryInterceptor", "event KeyUp");
 			}
 		}
 #endif

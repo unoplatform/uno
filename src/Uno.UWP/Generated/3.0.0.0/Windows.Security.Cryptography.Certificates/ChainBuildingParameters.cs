@@ -14,11 +14,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.AuthorityInformationAccessEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "AuthorityInformationAccessEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.AuthorityInformationAccessEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "AuthorityInformationAccessEnabled");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.CurrentTimeValidationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "CurrentTimeValidationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.CurrentTimeValidationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "CurrentTimeValidationEnabled");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "IList<string> ChainBuildingParameters.EnhancedKeyUsages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "EnhancedKeyUsages");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "IList<Certificate> ChainBuildingParameters.ExclusiveTrustRoots");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "ExclusiveTrustRoots");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.NetworkRetrievalEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "NetworkRetrievalEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.NetworkRetrievalEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "NetworkRetrievalEnabled");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.RevocationCheckEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "RevocationCheckEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "bool ChainBuildingParameters.RevocationCheckEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "RevocationCheckEnabled");
 			}
 		}
 #endif
@@ -90,11 +90,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "DateTimeOffset ChainBuildingParameters.ValidationTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "ValidationTimestamp");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "DateTimeOffset ChainBuildingParameters.ValidationTimestamp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "ValidationTimestamp");
 			}
 		}
 #endif
@@ -102,7 +102,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChainBuildingParameters()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "ChainBuildingParameters.ChainBuildingParameters()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainBuildingParameters", "ChainBuildingParameters()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ChainBuildingParameters()

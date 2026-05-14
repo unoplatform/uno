@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "bool DetectionConfigurationAvailabilityInfo.HasLockScreenPermission");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "HasLockScreenPermission");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "bool DetectionConfigurationAvailabilityInfo.HasPermission");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "HasPermission");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "bool DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "HasSystemResourceAccess");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "bool DetectionConfigurationAvailabilityInfo.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "IsEnabled");
 			}
 		}
 #endif

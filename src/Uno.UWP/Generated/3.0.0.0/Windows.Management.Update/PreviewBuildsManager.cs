@@ -19,11 +19,11 @@ namespace Windows.Management.Update
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "bool PreviewBuildsManager.ArePreviewBuildsAllowed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "ArePreviewBuildsAllowed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Update.PreviewBuildsManager", "bool PreviewBuildsManager.ArePreviewBuildsAllowed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Update.PreviewBuildsManager", "ArePreviewBuildsAllowed");
 			}
 		}
 #endif
@@ -31,28 +31,28 @@ namespace Windows.Management.Update
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Management.Update.PreviewBuildsManager GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "PreviewBuildsManager PreviewBuildsManager.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "bool PreviewBuildsManager.IsSupported()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Management.Update.PreviewBuildsState GetCurrentState()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "PreviewBuildsState PreviewBuildsManager.GetCurrentState()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "GetCurrentState()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "IAsyncOperation<bool> PreviewBuildsManager.SyncAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsManager", "SyncAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.ArePreviewBuildsAllowed.get

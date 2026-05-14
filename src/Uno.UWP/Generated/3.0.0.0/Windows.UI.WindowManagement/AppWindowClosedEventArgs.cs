@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowClosedEventArgs", "AppWindowClosedReason AppWindowClosedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowClosedEventArgs", "Reason");
 			}
 		}
 #endif

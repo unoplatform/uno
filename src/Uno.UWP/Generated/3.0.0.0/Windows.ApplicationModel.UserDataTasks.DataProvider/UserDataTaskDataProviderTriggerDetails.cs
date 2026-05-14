@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskDataProviderTriggerDetails", "UserDataTaskDataProviderConnection UserDataTaskDataProviderTriggerDetails.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskDataProviderTriggerDetails", "Connection");
 			}
 		}
 #endif

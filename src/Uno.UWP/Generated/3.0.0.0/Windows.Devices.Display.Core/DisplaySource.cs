@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "DisplayAdapterId DisplaySource.AdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "AdapterId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "uint DisplaySource.SourceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "SourceId");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer GetMetadata(global::System.Guid Key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "IBuffer DisplaySource.GetMetadata(Guid Key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "GetMetadata(Guid Key)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.AdapterId.get

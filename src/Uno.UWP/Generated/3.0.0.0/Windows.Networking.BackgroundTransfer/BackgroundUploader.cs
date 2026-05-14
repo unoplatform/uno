@@ -14,7 +14,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundTransferCompletionGroup BackgroundUploader.CompletionGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "CompletionGroup");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundTransferCostPolicy BackgroundUploader.CostPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "CostPolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundTransferCostPolicy BackgroundUploader.CostPolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "CostPolicy");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "TileNotification BackgroundUploader.FailureTileNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "FailureTileNotification");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "TileNotification BackgroundUploader.FailureTileNotification");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "FailureTileNotification");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "ToastNotification BackgroundUploader.FailureToastNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "FailureToastNotification");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "ToastNotification BackgroundUploader.FailureToastNotification");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "FailureToastNotification");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "string BackgroundUploader.Group");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "Group");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "string BackgroundUploader.Group");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "Group");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "string BackgroundUploader.Method");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "Method");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "string BackgroundUploader.Method");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "Method");
 			}
 		}
 #endif
@@ -94,11 +94,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "PasswordCredential BackgroundUploader.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "ProxyCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "PasswordCredential BackgroundUploader.ProxyCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "ProxyCredential");
 			}
 		}
 #endif
@@ -108,11 +108,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "PasswordCredential BackgroundUploader.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "ServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "PasswordCredential BackgroundUploader.ServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "ServerCredential");
 			}
 		}
 #endif
@@ -122,11 +122,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "TileNotification BackgroundUploader.SuccessTileNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "SuccessTileNotification");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "TileNotification BackgroundUploader.SuccessTileNotification");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "SuccessTileNotification");
 			}
 		}
 #endif
@@ -136,11 +136,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "ToastNotification BackgroundUploader.SuccessToastNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "SuccessToastNotification");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "ToastNotification BackgroundUploader.SuccessToastNotification");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "SuccessToastNotification");
 			}
 		}
 #endif
@@ -150,11 +150,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundTransferGroup BackgroundUploader.TransferGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "TransferGroup");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundTransferGroup BackgroundUploader.TransferGroup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "TransferGroup");
 			}
 		}
 #endif
@@ -162,7 +162,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BackgroundUploader()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundUploader.BackgroundUploader()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundUploader()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.BackgroundUploader()
@@ -170,7 +170,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BackgroundUploader(global::Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup completionGroup)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundUploader.BackgroundUploader(BackgroundTransferCompletionGroup completionGroup)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "BackgroundUploader(BackgroundTransferCompletionGroup completionGroup)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.BackgroundUploader(Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup)
@@ -178,70 +178,70 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.UploadOperation>> GetCurrentUploadsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "GetCurrentUploadsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.UploadOperation>> GetCurrentUploadsAsync(string group)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsAsync(string group)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "GetCurrentUploadsAsync(string group)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.UploadOperation>> GetCurrentUploadsForTransferGroupAsync(global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup group)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "IAsyncOperation<IReadOnlyList<UploadOperation>> BackgroundUploader.GetCurrentUploadsForTransferGroupAsync(BackgroundTransferGroup group)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "GetCurrentUploadsForTransferGroupAsync(BackgroundTransferGroup group)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UnconstrainedTransferRequestResult> RequestUnconstrainedUploadsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.UploadOperation> operations)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "IAsyncOperation<UnconstrainedTransferRequestResult> BackgroundUploader.RequestUnconstrainedUploadsAsync(IEnumerable<UploadOperation> operations)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "RequestUnconstrainedUploadsAsync(IEnumerable<UploadOperation> operations)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.BackgroundTransfer.UploadOperation CreateUpload(global::System.Uri uri, global::Windows.Storage.IStorageFile sourceFile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "UploadOperation BackgroundUploader.CreateUpload(Uri uri, IStorageFile sourceFile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "CreateUpload(Uri uri, IStorageFile sourceFile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadFromStreamAsync(global::System.Uri uri, global::Windows.Storage.Streams.IInputStream sourceStream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadFromStreamAsync(Uri uri, IInputStream sourceStream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "CreateUploadFromStreamAsync(Uri uri, IInputStream sourceStream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync(global::System.Uri uri, global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync(global::System.Uri uri, global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts, string subType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync(global::System.Uri uri, global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts, string subType, string boundary)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType, string boundary)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundUploader", "CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType, string boundary)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetRequestHeader(string headerName, string headerValue)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "void BackgroundUploader.SetRequestHeader(string headerName, string headerValue)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "SetRequestHeader(string headerName, string headerValue)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.CompletionGroup.get

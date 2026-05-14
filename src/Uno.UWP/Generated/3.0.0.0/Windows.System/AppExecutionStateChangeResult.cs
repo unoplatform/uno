@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppExecutionStateChangeResult", "Exception AppExecutionStateChangeResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppExecutionStateChangeResult", "ExtendedError");
 			}
 		}
 #endif

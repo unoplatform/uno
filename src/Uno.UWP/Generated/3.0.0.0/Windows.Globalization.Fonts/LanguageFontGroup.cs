@@ -14,7 +14,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.DocumentAlternate1Font");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "DocumentAlternate1Font");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.DocumentAlternate2Font");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "DocumentAlternate2Font");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.DocumentHeadingFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "DocumentHeadingFont");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.FixedWidthTextFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "FixedWidthTextFont");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.ModernDocumentFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "ModernDocumentFont");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.TraditionalDocumentFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "TraditionalDocumentFont");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.UICaptionFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "UICaptionFont");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.UIHeadingFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "UIHeadingFont");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.UINotificationHeadingFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "UINotificationHeadingFont");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.UITextFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "UITextFont");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFont LanguageFontGroup.UITitleFont");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFontGroup", "UITitleFont");
 			}
 		}
 #endif
@@ -122,7 +122,7 @@ namespace Windows.Globalization.Fonts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LanguageFontGroup(string languageTag)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFontGroup.LanguageFontGroup(string languageTag)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Fonts.LanguageFontGroup", "LanguageFontGroup(string languageTag)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.LanguageFontGroup(string)

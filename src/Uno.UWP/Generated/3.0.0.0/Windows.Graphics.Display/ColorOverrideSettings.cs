@@ -19,7 +19,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.ColorOverrideSettings", "DisplayColorOverrideScenario ColorOverrideSettings.DesiredDisplayColorOverrideScenario");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.ColorOverrideSettings", "DesiredDisplayColorOverrideScenario");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Display.ColorOverrideSettings CreateFromDisplayColorOverrideScenario(global::Windows.Graphics.Display.DisplayColorOverrideScenario overrideScenario)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.ColorOverrideSettings", "ColorOverrideSettings ColorOverrideSettings.CreateFromDisplayColorOverrideScenario(DisplayColorOverrideScenario overrideScenario)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.ColorOverrideSettings", "CreateFromDisplayColorOverrideScenario(DisplayColorOverrideScenario overrideScenario)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.ColorOverrideSettings.DesiredDisplayColorOverrideScenario.get

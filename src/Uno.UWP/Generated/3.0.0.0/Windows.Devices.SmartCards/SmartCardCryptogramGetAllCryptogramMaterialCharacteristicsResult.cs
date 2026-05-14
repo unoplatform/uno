@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult", "IReadOnlyList<SmartCardCryptogramMaterialCharacteristics> SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult.Characteristics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult", "Characteristics");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult", "SmartCardCryptogramGeneratorOperationStatus SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult.OperationStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult", "OperationStatus");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult", "SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult", "SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult()

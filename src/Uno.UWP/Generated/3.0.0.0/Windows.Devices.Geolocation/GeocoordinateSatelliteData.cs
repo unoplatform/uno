@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "double? GeocoordinateSatelliteData.HorizontalDilutionOfPrecision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "HorizontalDilutionOfPrecision");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "double? GeocoordinateSatelliteData.PositionDilutionOfPrecision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "PositionDilutionOfPrecision");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "double? GeocoordinateSatelliteData.VerticalDilutionOfPrecision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "VerticalDilutionOfPrecision");
 			}
 		}
 #endif

@@ -12,56 +12,56 @@ namespace Windows.System.Diagnostics.TraceReporting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsScenarioEnabled(global::System.Guid scenarioId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "bool PlatformDiagnosticActions.IsScenarioEnabled(Guid scenarioId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "IsScenarioEnabled(Guid scenarioId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryEscalateScenario(global::System.Guid scenarioId, global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticEscalationType escalationType, string outputDirectory, bool timestampOutputDirectory, bool forceEscalationUpload, global::System.Collections.Generic.IReadOnlyDictionary<string, string> triggers)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "bool PlatformDiagnosticActions.TryEscalateScenario(Guid scenarioId, PlatformDiagnosticEscalationType escalationType, string outputDirectory, bool timestampOutputDirectory, bool forceEscalationUpload, IReadOnlyDictionary<string, string> triggers)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "TryEscalateScenario(Guid scenarioId, PlatformDiagnosticEscalationType escalationType, string outputDirectory, bool timestampOutputDirectory, bool forceEscalationUpload, IReadOnlyDictionary<string, string> triggers)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActionState DownloadLatestSettingsForNamespace(string partner, string feature, bool isScenarioNamespace, bool downloadOverCostedNetwork, bool downloadOverBattery)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "PlatformDiagnosticActionState PlatformDiagnosticActions.DownloadLatestSettingsForNamespace(string partner, string feature, bool isScenarioNamespace, bool downloadOverCostedNetwork, bool downloadOverBattery)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "DownloadLatestSettingsForNamespace(string partner, string feature, bool isScenarioNamespace, bool downloadOverCostedNetwork, bool downloadOverBattery)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::System.Guid> GetActiveScenarioList()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "IReadOnlyList<Guid> PlatformDiagnosticActions.GetActiveScenarioList()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "GetActiveScenarioList()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActionState ForceUpload(global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticEventBufferLatencies latency, bool uploadOverCostedNetwork, bool uploadOverBattery)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "PlatformDiagnosticActionState PlatformDiagnosticActions.ForceUpload(PlatformDiagnosticEventBufferLatencies latency, bool uploadOverCostedNetwork, bool uploadOverBattery)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "ForceUpload(PlatformDiagnosticEventBufferLatencies latency, bool uploadOverCostedNetwork, bool uploadOverBattery)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceSlotState IsTraceRunning(global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceSlotType slotType, global::System.Guid scenarioId, ulong traceProfileHash)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "PlatformDiagnosticTraceSlotState PlatformDiagnosticActions.IsTraceRunning(PlatformDiagnosticTraceSlotType slotType, Guid scenarioId, ulong traceProfileHash)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "IsTraceRunning(PlatformDiagnosticTraceSlotType slotType, Guid scenarioId, ulong traceProfileHash)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo GetActiveTraceRuntime(global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceSlotType slotType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "PlatformDiagnosticTraceRuntimeInfo PlatformDiagnosticActions.GetActiveTraceRuntime(PlatformDiagnosticTraceSlotType slotType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "GetActiveTraceRuntime(PlatformDiagnosticTraceSlotType slotType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo> GetKnownTraceList(global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceSlotType slotType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "IReadOnlyList<PlatformDiagnosticTraceInfo> PlatformDiagnosticActions.GetKnownTraceList(PlatformDiagnosticTraceSlotType slotType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions", "GetKnownTraceList(PlatformDiagnosticTraceSlotType slotType)");
 		}
 #endif
 	}

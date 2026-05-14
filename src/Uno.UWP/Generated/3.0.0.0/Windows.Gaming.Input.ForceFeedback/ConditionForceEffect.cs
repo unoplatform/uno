@@ -14,11 +14,11 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "double ConditionForceEffect.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "Gain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "double ConditionForceEffect.Gain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "Gain");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "ConditionForceEffectKind ConditionForceEffect.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "Kind");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "ForceFeedbackEffectState ConditionForceEffect.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "State");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ConditionForceEffect(global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind effectKind)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "ConditionForceEffect.ConditionForceEffect(ConditionForceEffectKind effectKind)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "ConditionForceEffect(ConditionForceEffectKind effectKind)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.ConditionForceEffect(Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind)
@@ -54,21 +54,21 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParameters(global::System.Numerics.Vector3 direction, float positiveCoefficient, float negativeCoefficient, float maxPositiveMagnitude, float maxNegativeMagnitude, float deadZone, float bias)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.SetParameters(Vector3 direction, float positiveCoefficient, float negativeCoefficient, float maxPositiveMagnitude, float maxNegativeMagnitude, float deadZone, float bias)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "SetParameters(Vector3 direction, float positiveCoefficient, float negativeCoefficient, float maxPositiveMagnitude, float maxNegativeMagnitude, float deadZone, float bias)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Gain.get

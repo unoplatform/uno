@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "bool AllJoynAcceptSessionJoinerEventArgs.SameNetwork");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "SameNetwork");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "bool AllJoynAcceptSessionJoinerEventArgs.SamePhysicalNode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "SamePhysicalNode");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "ushort AllJoynAcceptSessionJoinerEventArgs.SessionPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "SessionPort");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "AllJoynTrafficType AllJoynAcceptSessionJoinerEventArgs.TrafficType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "TrafficType");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "string AllJoynAcceptSessionJoinerEventArgs.UniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "UniqueName");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AllJoynAcceptSessionJoinerEventArgs(string uniqueName, ushort sessionPort, global::Windows.Devices.AllJoyn.AllJoynTrafficType trafficType, byte proximity, global::Windows.Devices.AllJoyn.IAllJoynAcceptSessionJoiner acceptSessionJoiner)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "AllJoynAcceptSessionJoinerEventArgs.AllJoynAcceptSessionJoinerEventArgs(string uniqueName, ushort sessionPort, AllJoynTrafficType trafficType, byte proximity, IAllJoynAcceptSessionJoiner acceptSessionJoiner)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "AllJoynAcceptSessionJoinerEventArgs(string uniqueName, ushort sessionPort, AllJoynTrafficType trafficType, byte proximity, IAllJoynAcceptSessionJoiner acceptSessionJoiner)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.AllJoynAcceptSessionJoinerEventArgs(string, ushort, Windows.Devices.AllJoyn.AllJoynTrafficType, byte, Windows.Devices.AllJoyn.IAllJoynAcceptSessionJoiner)
@@ -70,7 +70,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Accept()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "void AllJoynAcceptSessionJoinerEventArgs.Accept()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "Accept()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.SameNetwork.get

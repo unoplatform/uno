@@ -19,11 +19,11 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCompensationControl", "float? FrameExposureCompensationControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCompensationControl", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameExposureCompensationControl", "float? FrameExposureCompensationControl.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameExposureCompensationControl", "Value");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.UI.Accessibility
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Accessibility.ScreenReaderService", "ScreenReaderPositionChangedEventArgs ScreenReaderService.CurrentScreenReaderPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Accessibility.ScreenReaderService", "CurrentScreenReaderPosition");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.UI.Accessibility
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ScreenReaderService()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Accessibility.ScreenReaderService", "ScreenReaderService.ScreenReaderService()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Accessibility.ScreenReaderService", "ScreenReaderService()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderService()
@@ -36,12 +36,12 @@ namespace Windows.UI.Accessibility
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Accessibility.ScreenReaderService", "event TypedEventHandler<ScreenReaderService, ScreenReaderPositionChangedEventArgs> ScreenReaderService.ScreenReaderPositionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Accessibility.ScreenReaderService", "event ScreenReaderPositionChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Accessibility.ScreenReaderService", "event TypedEventHandler<ScreenReaderService, ScreenReaderPositionChangedEventArgs> ScreenReaderService.ScreenReaderPositionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Accessibility.ScreenReaderService", "event ScreenReaderPositionChanged");
 			}
 		}
 #endif

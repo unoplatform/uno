@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "AudioDeviceController MediaFrameSourceController.AudioDeviceController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "AudioDeviceController");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "VideoDeviceController MediaFrameSourceController.VideoDeviceController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "VideoDeviceController");
 			}
 		}
 #endif
@@ -37,28 +37,28 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameSourceGetPropertyResult> GetPropertyAsync(string propertyId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "IAsyncOperation<MediaFrameSourceGetPropertyResult> MediaFrameSourceController.GetPropertyAsync(string propertyId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "GetPropertyAsync(string propertyId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameSourceSetPropertyStatus> SetPropertyAsync(string propertyId, object propertyValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "IAsyncOperation<MediaFrameSourceSetPropertyStatus> MediaFrameSourceController.SetPropertyAsync(string propertyId, object propertyValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "SetPropertyAsync(string propertyId, object propertyValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameSourceGetPropertyResult> GetPropertyByExtendedIdAsync(byte[] extendedPropertyId, uint? maxPropertyValueSize)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "IAsyncOperation<MediaFrameSourceGetPropertyResult> MediaFrameSourceController.GetPropertyByExtendedIdAsync(byte[] extendedPropertyId, uint? maxPropertyValueSize)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "GetPropertyByExtendedIdAsync(byte[] extendedPropertyId, uint? maxPropertyValueSize)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameSourceSetPropertyStatus> SetPropertyByExtendedIdAsync(byte[] extendedPropertyId, byte[] propertyValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "IAsyncOperation<MediaFrameSourceSetPropertyStatus> MediaFrameSourceController.SetPropertyByExtendedIdAsync(byte[] extendedPropertyId, byte[] propertyValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceController", "SetPropertyByExtendedIdAsync(byte[] extendedPropertyId, byte[] propertyValue)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceController.AudioDeviceController.get

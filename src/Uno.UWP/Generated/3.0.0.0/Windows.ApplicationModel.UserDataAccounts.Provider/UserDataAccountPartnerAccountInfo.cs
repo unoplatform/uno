@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo", "UserDataAccountProviderPartnerAccountKind UserDataAccountPartnerAccountInfo.AccountKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo", "AccountKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo", "string UserDataAccountPartnerAccountInfo.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo", "DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo", "uint UserDataAccountPartnerAccountInfo.Priority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo", "Priority");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "SmsBinaryMessage SmsReceivedEventDetails.BinaryMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "BinaryMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "string SmsReceivedEventDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "DeviceId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "SmsMessageClass SmsReceivedEventDetails.MessageClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "MessageClass");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "uint SmsReceivedEventDetails.MessageIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "MessageIndex");
 			}
 		}
 #endif

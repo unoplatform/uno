@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "uint WhiteBalanceControl.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "uint WhiteBalanceControl.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "ColorTemperaturePreset WhiteBalanceControl.Preset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Preset");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "uint WhiteBalanceControl.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Step");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "bool WhiteBalanceControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Supported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "uint WhiteBalanceControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Value");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetPresetAsync(global::Windows.Media.Devices.ColorTemperaturePreset preset)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "IAsyncAction WhiteBalanceControl.SetPresetAsync(ColorTemperaturePreset preset)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "SetPresetAsync(ColorTemperaturePreset preset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(uint temperature)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "IAsyncAction WhiteBalanceControl.SetValueAsync(uint temperature)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "SetValueAsync(uint temperature)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Max.get

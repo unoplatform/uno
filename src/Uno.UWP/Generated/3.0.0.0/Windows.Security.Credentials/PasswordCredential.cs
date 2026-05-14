@@ -15,7 +15,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.PasswordCredential", "IPropertySet PasswordCredential.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.PasswordCredential", "Properties");
 			}
 		}
 #endif

@@ -12,7 +12,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadySecureStopIterable(byte[] publisherCertBytes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable", "PlayReadySecureStopIterable.PlayReadySecureStopIterable(byte[] publisherCertBytes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable", "PlayReadySecureStopIterable(byte[] publisherCertBytes)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable.PlayReadySecureStopIterable(byte[])
@@ -20,7 +20,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable", "IEnumerator<IPlayReadySecureStopServiceRequest> PlayReadySecureStopIterable.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable.System.Collections.IEnumerable.GetEnumerator()

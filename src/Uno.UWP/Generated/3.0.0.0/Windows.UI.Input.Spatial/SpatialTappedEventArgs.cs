@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialTappedEventArgs", "SpatialInteractionSourceKind SpatialTappedEventArgs.InteractionSourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialTappedEventArgs", "InteractionSourceKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialTappedEventArgs", "uint SpatialTappedEventArgs.TapCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialTappedEventArgs", "TapCount");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetPointerPose(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialTappedEventArgs", "SpatialPointerPose SpatialTappedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialTappedEventArgs", "TryGetPointerPose(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialTappedEventArgs.InteractionSourceKind.get

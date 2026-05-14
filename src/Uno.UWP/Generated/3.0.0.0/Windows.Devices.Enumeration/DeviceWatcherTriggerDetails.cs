@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherTriggerDetails", "IReadOnlyList<DeviceWatcherEvent> DeviceWatcherTriggerDetails.DeviceWatcherEvents");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherTriggerDetails", "DeviceWatcherEvents");
 			}
 		}
 #endif

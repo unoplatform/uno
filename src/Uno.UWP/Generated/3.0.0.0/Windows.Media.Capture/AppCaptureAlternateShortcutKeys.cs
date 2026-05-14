@@ -19,11 +19,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "SaveHistoricalVideoKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "SaveHistoricalVideoKey");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "SaveHistoricalVideoKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "SaveHistoricalVideoKeyModifiers");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.TakeScreenshotKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "TakeScreenshotKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.TakeScreenshotKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "TakeScreenshotKey");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.TakeScreenshotKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "TakeScreenshotKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.TakeScreenshotKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "TakeScreenshotKeyModifiers");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleBroadcastKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleBroadcastKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleBroadcastKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleBroadcastKey");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleBroadcastKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleBroadcastKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleBroadcastKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleBroadcastKeyModifiers");
 			}
 		}
 #endif
@@ -103,11 +103,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleCameraCaptureKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleCameraCaptureKey");
 			}
 		}
 #endif
@@ -117,11 +117,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleCameraCaptureKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleCameraCaptureKeyModifiers");
 			}
 		}
 #endif
@@ -131,11 +131,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleGameBarKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleGameBarKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleGameBarKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleGameBarKey");
 			}
 		}
 #endif
@@ -145,11 +145,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleGameBarKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleGameBarKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleGameBarKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleGameBarKeyModifiers");
 			}
 		}
 #endif
@@ -159,11 +159,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleMicrophoneCaptureKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleMicrophoneCaptureKey");
 			}
 		}
 #endif
@@ -173,11 +173,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleMicrophoneCaptureKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleMicrophoneCaptureKeyModifiers");
 			}
 		}
 #endif
@@ -187,11 +187,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingIndicatorKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingIndicatorKey");
 			}
 		}
 #endif
@@ -201,11 +201,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingIndicatorKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingIndicatorKeyModifiers");
 			}
 		}
 #endif
@@ -215,11 +215,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingKey");
 			}
 		}
 #endif
@@ -229,11 +229,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingKeyModifiers");
 			}
 		}
 #endif

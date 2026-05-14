@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "Appointment AppointmentStoreChange.Appointment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "Appointment");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "AppointmentCalendar AppointmentStoreChange.AppointmentCalendar");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "AppointmentCalendar");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "AppointmentStoreChangeType AppointmentStoreChange.ChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "ChangeType");
 			}
 		}
 #endif

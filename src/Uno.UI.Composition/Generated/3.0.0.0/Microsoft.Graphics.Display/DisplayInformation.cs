@@ -19,7 +19,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "DispatcherQueue DisplayInformation.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "DispatcherQueue");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "bool DisplayInformation.IsStereoEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "IsStereoEnabled");
 			}
 		}
 #endif
@@ -37,35 +37,35 @@ namespace Microsoft.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Graphics.Display.DisplayInformation CreateForWindowId(global::Microsoft.UI.WindowId windowId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "DisplayInformation DisplayInformation.CreateForWindowId(WindowId windowId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "CreateForWindowId(WindowId windowId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Graphics.Display.DisplayInformation CreateForDisplayId(global::Microsoft.UI.DisplayId displayId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "DisplayInformation DisplayInformation.CreateForDisplayId(DisplayId displayId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "CreateForDisplayId(DisplayId displayId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "IAsyncOperation<IRandomAccessStream> DisplayInformation.GetColorProfileAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "GetColorProfileAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream GetColorProfile()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "IRandomAccessStream DisplayInformation.GetColorProfile()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "GetColorProfile()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Graphics.Display.DisplayAdvancedColorInfo GetAdvancedColorInfo()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "DisplayAdvancedColorInfo DisplayInformation.GetAdvancedColorInfo()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Graphics.Display.DisplayInformation", "GetAdvancedColorInfo()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.add
@@ -80,7 +80,7 @@ namespace Microsoft.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "void DisplayInformation.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.DispatcherQueue.get
@@ -92,12 +92,12 @@ namespace Microsoft.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.AdvancedColorInfoChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event AdvancedColorInfoChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.AdvancedColorInfoChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event AdvancedColorInfoChanged");
 			}
 		}
 #endif
@@ -108,12 +108,12 @@ namespace Microsoft.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.ColorProfileChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event ColorProfileChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.ColorProfileChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event ColorProfileChanged");
 			}
 		}
 #endif
@@ -124,12 +124,12 @@ namespace Microsoft.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.Destroyed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event Destroyed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.Destroyed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event Destroyed");
 			}
 		}
 #endif
@@ -140,12 +140,12 @@ namespace Microsoft.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.IsStereoEnabledChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event IsStereoEnabledChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.IsStereoEnabledChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "event IsStereoEnabledChanged");
 			}
 		}
 #endif

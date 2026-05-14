@@ -14,11 +14,11 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "short WiFiDirectConnectionParameters.GroupOwnerIntent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "GroupOwnerIntent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "short WiFiDirectConnectionParameters.GroupOwnerIntent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "GroupOwnerIntent");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "IList<WiFiDirectConfigurationMethod> WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "PreferenceOrderedConfigurationMethods");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "WiFiDirectPairingProcedure WiFiDirectConnectionParameters.PreferredPairingProcedure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "PreferredPairingProcedure");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "WiFiDirectPairingProcedure WiFiDirectConnectionParameters.PreferredPairingProcedure");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "PreferredPairingProcedure");
 			}
 		}
 #endif
@@ -50,7 +50,7 @@ namespace Windows.Devices.WiFiDirect
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WiFiDirectConnectionParameters()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "WiFiDirectConnectionParameters.WiFiDirectConnectionParameters()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "WiFiDirectConnectionParameters()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.WiFiDirectConnectionParameters()
@@ -58,7 +58,7 @@ namespace Windows.Devices.WiFiDirect
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.DevicePairingKinds GetDevicePairingKinds(global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod configurationMethod)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "DevicePairingKinds WiFiDirectConnectionParameters.GetDevicePairingKinds(WiFiDirectConfigurationMethod configurationMethod)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "GetDevicePairingKinds(WiFiDirectConfigurationMethod configurationMethod)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.GroupOwnerIntent.get

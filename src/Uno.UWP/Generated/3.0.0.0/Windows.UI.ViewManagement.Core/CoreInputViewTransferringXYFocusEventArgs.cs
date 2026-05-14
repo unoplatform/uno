@@ -19,7 +19,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "CoreInputViewXYFocusTransferDirection CoreInputViewTransferringXYFocusEventArgs.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "Direction");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "bool CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "KeepPrimaryViewVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "bool CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "KeepPrimaryViewVisible");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "Rect CoreInputViewTransferringXYFocusEventArgs.Origin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "Origin");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "bool CoreInputViewTransferringXYFocusEventArgs.TransferHandled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "TransferHandled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "bool CoreInputViewTransferringXYFocusEventArgs.TransferHandled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "TransferHandled");
 			}
 		}
 #endif

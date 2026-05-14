@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "UnifiedPosErrorData MagneticStripeReaderErrorOccurredEventArgs.ErrorData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "ErrorData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderReport MagneticStripeReaderErrorOccurredEventArgs.PartialInputData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "PartialInputData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track1Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "Track1Status");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track2Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "Track2Status");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track3Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "Track3Status");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track4Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "Track4Status");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioRenderEffectsManager", "string AudioRenderEffectsManager.EffectsProviderSettingsLabel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioRenderEffectsManager", "EffectsProviderSettingsLabel");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioRenderEffectsManager", "IRandomAccessStreamWithContentType AudioRenderEffectsManager.EffectsProviderThumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioRenderEffectsManager", "EffectsProviderThumbnail");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Effects.AudioEffect> GetAudioRenderEffects()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioRenderEffectsManager", "IReadOnlyList<AudioEffect> AudioRenderEffectsManager.GetAudioRenderEffects()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioRenderEffectsManager", "GetAudioRenderEffects()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.AudioRenderEffectsChanged.add
@@ -46,7 +46,7 @@ namespace Windows.Media.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ShowSettingsUI()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioRenderEffectsManager", "void AudioRenderEffectsManager.ShowSettingsUI()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioRenderEffectsManager", "ShowSettingsUI()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.EffectsProviderSettingsLabel.get
@@ -58,12 +58,12 @@ namespace Windows.Media.Effects
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioRenderEffectsManager", "event TypedEventHandler<AudioRenderEffectsManager, object> AudioRenderEffectsManager.AudioRenderEffectsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioRenderEffectsManager", "event AudioRenderEffectsChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioRenderEffectsManager", "event TypedEventHandler<AudioRenderEffectsManager, object> AudioRenderEffectsManager.AudioRenderEffectsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioRenderEffectsManager", "event AudioRenderEffectsChanged");
 			}
 		}
 #endif

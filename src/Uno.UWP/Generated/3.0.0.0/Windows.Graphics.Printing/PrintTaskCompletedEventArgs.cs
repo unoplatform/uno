@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskCompletedEventArgs", "PrintTaskCompletion PrintTaskCompletedEventArgs.Completion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskCompletedEventArgs", "Completion");
 			}
 		}
 #endif

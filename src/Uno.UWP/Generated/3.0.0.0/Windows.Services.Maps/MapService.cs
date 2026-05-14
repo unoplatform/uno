@@ -14,7 +14,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapService", "string MapService.DataAttributions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapService", "DataAttributions");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapService", "MapServiceDataUsagePreference MapService.DataUsagePreference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapService", "DataUsagePreference");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapService", "MapServiceDataUsagePreference MapService.DataUsagePreference");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapService", "DataUsagePreference");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapService", "string MapService.ServiceToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapService", "ServiceToken");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapService", "string MapService.ServiceToken");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapService", "ServiceToken");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapService", "string MapService.WorldViewRegionCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapService", "WorldViewRegionCode");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFlashCapabilities", "bool FrameFlashCapabilities.PowerSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFlashCapabilities", "PowerSupported");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFlashCapabilities", "bool FrameFlashCapabilities.RedEyeReductionSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFlashCapabilities", "RedEyeReductionSupported");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFlashCapabilities", "bool FrameFlashCapabilities.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFlashCapabilities", "Supported");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "AppBroadcastPlugIn AppBroadcastPlugInManager.DefaultPlugIn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "DefaultPlugIn");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPlugInManager", "AppBroadcastPlugIn AppBroadcastPlugInManager.DefaultPlugIn");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPlugInManager", "DefaultPlugIn");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "bool AppBroadcastPlugInManager.IsBroadcastProviderAvailable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "IsBroadcastProviderAvailable");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "IReadOnlyList<AppBroadcastPlugIn> AppBroadcastPlugInManager.PlugInList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "PlugInList");
 			}
 		}
 #endif
@@ -51,14 +51,14 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.AppBroadcastPlugInManager GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "AppBroadcastPlugInManager AppBroadcastPlugInManager.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.AppBroadcastPlugInManager GetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "AppBroadcastPlugInManager AppBroadcastPlugInManager.GetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInManager", "GetForUser(User user)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.DefaultPlugIn.get

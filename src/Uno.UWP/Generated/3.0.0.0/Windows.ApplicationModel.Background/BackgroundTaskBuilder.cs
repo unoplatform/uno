@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "bool BackgroundTaskBuilder.CancelOnConditionLoss");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "CancelOnConditionLoss");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "bool BackgroundTaskBuilder.CancelOnConditionLoss");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "CancelOnConditionLoss");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "bool BackgroundTaskBuilder.IsNetworkRequested");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "IsNetworkRequested");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "bool BackgroundTaskBuilder.IsNetworkRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "IsNetworkRequested");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "string BackgroundTaskBuilder.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "string BackgroundTaskBuilder.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "Name");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "string BackgroundTaskBuilder.TaskEntryPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "TaskEntryPoint");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "string BackgroundTaskBuilder.TaskEntryPoint");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "TaskEntryPoint");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "BackgroundTaskRegistrationGroup BackgroundTaskBuilder.TaskGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "TaskGroup");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "BackgroundTaskRegistrationGroup BackgroundTaskBuilder.TaskGroup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "TaskGroup");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BackgroundTaskBuilder()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "BackgroundTaskBuilder.BackgroundTaskBuilder()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "BackgroundTaskBuilder()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.BackgroundTaskBuilder()
@@ -90,28 +90,28 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetTrigger(global::Windows.ApplicationModel.Background.IBackgroundTrigger trigger)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "void BackgroundTaskBuilder.SetTrigger(IBackgroundTrigger trigger)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "SetTrigger(IBackgroundTrigger trigger)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddCondition(global::Windows.ApplicationModel.Background.IBackgroundCondition condition)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "void BackgroundTaskBuilder.AddCondition(IBackgroundCondition condition)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "AddCondition(IBackgroundCondition condition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Background.BackgroundTaskRegistration Register()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "BackgroundTaskRegistration BackgroundTaskBuilder.Register()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "Register()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetTaskEntryPointClsid(global::System.Guid TaskEntryPoint)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "void BackgroundTaskBuilder.SetTaskEntryPointClsid(Guid TaskEntryPoint)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "SetTaskEntryPointClsid(Guid TaskEntryPoint)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.CancelOnConditionLoss.get

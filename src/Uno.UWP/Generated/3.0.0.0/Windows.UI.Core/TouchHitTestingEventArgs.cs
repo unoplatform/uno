@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "Rect TouchHitTestingEventArgs.BoundingBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "BoundingBox");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "bool TouchHitTestingEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.TouchHitTestingEventArgs", "bool TouchHitTestingEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.TouchHitTestingEventArgs", "Handled");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "Point TouchHitTestingEventArgs.Point");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "Point");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "CoreProximityEvaluation TouchHitTestingEventArgs.ProximityEvaluation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "ProximityEvaluation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.TouchHitTestingEventArgs", "CoreProximityEvaluation TouchHitTestingEventArgs.ProximityEvaluation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.TouchHitTestingEventArgs", "ProximityEvaluation");
 			}
 		}
 #endif
@@ -65,14 +65,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity(global::Windows.Foundation.Rect controlBoundingBox)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Rect controlBoundingBox)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "EvaluateProximity(Rect controlBoundingBox)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity(global::Windows.Foundation.Point[] controlVertices)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Point[] controlVertices)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "EvaluateProximity(Point[] controlVertices)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.BoundingBox.get

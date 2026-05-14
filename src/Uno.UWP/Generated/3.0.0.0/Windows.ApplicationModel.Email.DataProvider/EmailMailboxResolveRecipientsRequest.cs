@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest", "string EmailMailboxResolveRecipientsRequest.EmailMailboxId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest", "EmailMailboxId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest", "IReadOnlyList<string> EmailMailboxResolveRecipientsRequest.Recipients");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest", "Recipients");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Email.EmailRecipientResolutionResult> resolutionResults)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest", "IAsyncAction EmailMailboxResolveRecipientsRequest.ReportCompletedAsync(IEnumerable<EmailRecipientResolutionResult> resolutionResults)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest", "ReportCompletedAsync(IEnumerable<EmailRecipientResolutionResult> resolutionResults)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest", "IAsyncAction EmailMailboxResolveRecipientsRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequest.EmailMailboxId.get

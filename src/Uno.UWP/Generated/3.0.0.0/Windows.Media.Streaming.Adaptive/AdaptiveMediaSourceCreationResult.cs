@@ -19,7 +19,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "Exception AdaptiveMediaSourceCreationResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "HttpResponseMessage AdaptiveMediaSourceCreationResult.HttpResponseMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "HttpResponseMessage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "AdaptiveMediaSource AdaptiveMediaSourceCreationResult.MediaSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "MediaSource");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "AdaptiveMediaSourceCreationStatus AdaptiveMediaSourceCreationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "Status");
 			}
 		}
 #endif

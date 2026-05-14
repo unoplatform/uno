@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceProperties", "double SpatialInteractionSourceProperties.SourceLossRisk");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceProperties", "SourceLossRisk");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3? TryGetSourceLossMitigationDirection(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceProperties", "Vector3? SpatialInteractionSourceProperties.TryGetSourceLossMitigationDirection(SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceProperties", "TryGetSourceLossMitigationDirection(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceLocation TryGetLocation(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceProperties", "SpatialInteractionSourceLocation SpatialInteractionSourceProperties.TryGetLocation(SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceProperties", "TryGetLocation(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceProperties.SourceLossRisk.get

@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs", "int InteractionTrackerRequestIgnoredArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs", "RequestId");
 			}
 		}
 #endif

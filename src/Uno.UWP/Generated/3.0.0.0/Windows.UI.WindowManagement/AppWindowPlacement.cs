@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "DisplayRegion AppWindowPlacement.DisplayRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "DisplayRegion");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "Point AppWindowPlacement.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "Offset");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "Size AppWindowPlacement.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "Size");
 			}
 		}
 #endif

@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Trim(global::Windows.Graphics.RectInt32[] rects)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionVirtualDrawingSurface", "void CompositionVirtualDrawingSurface.Trim(RectInt32[] rects)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionVirtualDrawingSurface", "Trim(RectInt32[] rects)");
 		}
 #endif
 	}

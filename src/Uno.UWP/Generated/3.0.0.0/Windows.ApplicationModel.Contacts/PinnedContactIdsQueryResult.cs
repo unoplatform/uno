@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult", "IList<string> PinnedContactIdsQueryResult.ContactIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult", "ContactIds");
 			}
 		}
 #endif

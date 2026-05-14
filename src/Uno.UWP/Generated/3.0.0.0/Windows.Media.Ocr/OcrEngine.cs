@@ -19,7 +19,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "IReadOnlyList<Language> OcrEngine.AvailableRecognizerLanguages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "AvailableRecognizerLanguages");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "uint OcrEngine.MaxImageDimension");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "MaxImageDimension");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "Language OcrEngine.RecognizerLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "RecognizerLanguage");
 			}
 		}
 #endif
@@ -47,21 +47,21 @@ namespace Windows.Media.Ocr
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsLanguageSupported(global::Windows.Globalization.Language language)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "bool OcrEngine.IsLanguageSupported(Language language)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "IsLanguageSupported(Language language)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Ocr.OcrEngine TryCreateFromLanguage(global::Windows.Globalization.Language language)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "OcrEngine OcrEngine.TryCreateFromLanguage(Language language)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "TryCreateFromLanguage(Language language)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Ocr.OcrEngine TryCreateFromUserProfileLanguages()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "OcrEngine OcrEngine.TryCreateFromUserProfileLanguages()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "TryCreateFromUserProfileLanguages()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.AvailableRecognizerLanguages.get
@@ -70,7 +70,7 @@ namespace Windows.Media.Ocr
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Ocr.OcrResult> RecognizeAsync(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "IAsyncOperation<OcrResult> OcrEngine.RecognizeAsync(SoftwareBitmap bitmap)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrEngine", "RecognizeAsync(SoftwareBitmap bitmap)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.RecognizerLanguage.get

@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "string KnownPerceptionVideoProfileProperties.BitmapAlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "BitmapAlphaMode");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "string KnownPerceptionVideoProfileProperties.BitmapPixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "BitmapPixelFormat");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "string KnownPerceptionVideoProfileProperties.FrameDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "FrameDuration");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "string KnownPerceptionVideoProfileProperties.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "Height");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "string KnownPerceptionVideoProfileProperties.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "Width");
 			}
 		}
 #endif

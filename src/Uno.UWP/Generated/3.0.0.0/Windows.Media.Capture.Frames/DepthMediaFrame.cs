@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "DepthMediaFrameFormat DepthMediaFrame.DepthFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "DepthFormat");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "MediaFrameReference DepthMediaFrame.FrameReference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "FrameReference");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "uint DepthMediaFrame.MaxReliableDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "MaxReliableDepth");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "uint DepthMediaFrame.MinReliableDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "MinReliableDepth");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "VideoMediaFrame DepthMediaFrame.VideoMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "VideoMediaFrame");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper TryCreateCoordinateMapper(global::Windows.Media.Devices.Core.CameraIntrinsics cameraIntrinsics, global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "DepthCorrelatedCoordinateMapper DepthMediaFrame.TryCreateCoordinateMapper(CameraIntrinsics cameraIntrinsics, SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "TryCreateCoordinateMapper(CameraIntrinsics cameraIntrinsics, SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.DepthFormat.get

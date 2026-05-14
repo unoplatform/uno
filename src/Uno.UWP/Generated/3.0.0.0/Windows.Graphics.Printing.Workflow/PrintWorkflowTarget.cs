@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowTarget", "PrintWorkflowStreamTarget PrintWorkflowTarget.TargetAsStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowTarget", "TargetAsStream");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowTarget", "PrintWorkflowObjectModelTargetPackage PrintWorkflowTarget.TargetAsXpsObjectModelPackage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowTarget", "TargetAsXpsObjectModelPackage");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskManager", "User UserDataTaskManager.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskManager", "User");
 			}
 		}
 #endif
@@ -27,21 +27,21 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserDataTasks.UserDataTaskManager GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskManager", "UserDataTaskManager UserDataTaskManager.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskManager", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserDataTasks.UserDataTaskManager GetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskManager", "UserDataTaskManager UserDataTaskManager.GetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskManager", "GetForUser(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStoreAccessType accessType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskManager", "IAsyncOperation<UserDataTaskStore> UserDataTaskManager.RequestStoreAsync(UserDataTaskStoreAccessType accessType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskManager", "RequestStoreAsync(UserDataTaskStoreAccessType accessType)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.User.get

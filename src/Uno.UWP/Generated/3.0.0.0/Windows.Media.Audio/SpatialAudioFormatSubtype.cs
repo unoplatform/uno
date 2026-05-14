@@ -14,7 +14,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "string SpatialAudioFormatSubtype.DTSHeadphoneX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "DTSHeadphoneX");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "string SpatialAudioFormatSubtype.DTSXUltra");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "DTSXUltra");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "string SpatialAudioFormatSubtype.DolbyAtmosForHeadphones");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "DolbyAtmosForHeadphones");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "string SpatialAudioFormatSubtype.DolbyAtmosForHomeTheater");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "DolbyAtmosForHomeTheater");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "string SpatialAudioFormatSubtype.DolbyAtmosForSpeakers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "DolbyAtmosForSpeakers");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "string SpatialAudioFormatSubtype.WindowsSonic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "WindowsSonic");
 			}
 		}
 #endif

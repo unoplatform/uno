@@ -14,11 +14,11 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Index");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "Index");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Index");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "Index");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "Length");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Length");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "Length");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "byte UsbSetupPacket.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "Request");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "byte UsbSetupPacket.Request");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "Request");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "UsbControlRequestType UsbSetupPacket.RequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "RequestType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "UsbControlRequestType UsbSetupPacket.RequestType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "RequestType");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "Value");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UsbSetupPacket()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "UsbSetupPacket.UsbSetupPacket()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "UsbSetupPacket()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.UsbSetupPacket()
@@ -90,7 +90,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UsbSetupPacket(global::Windows.Storage.Streams.IBuffer eightByteBuffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "UsbSetupPacket.UsbSetupPacket(IBuffer eightByteBuffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "UsbSetupPacket(IBuffer eightByteBuffer)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.UsbSetupPacket(Windows.Storage.Streams.IBuffer)

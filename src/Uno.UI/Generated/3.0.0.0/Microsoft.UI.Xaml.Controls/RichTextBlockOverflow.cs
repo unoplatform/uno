@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "double RichTextBlockOverflow.BaselineOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "BaselineOffset");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "TextPointer RichTextBlockOverflow.ContentEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "ContentEnd");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "RichTextBlock RichTextBlockOverflow.ContentSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "ContentSource");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "TextPointer RichTextBlockOverflow.ContentStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "ContentStart");
 			}
 		}
 #endif
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Documents.TextPointer GetPositionFromPoint(global::Windows.Foundation.Point point)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "TextPointer RichTextBlockOverflow.GetPositionFromPoint(Point point)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "GetPositionFromPoint(Point point)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged.add
@@ -185,12 +185,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "event TypedEventHandler<RichTextBlockOverflow, IsTextTrimmedChangedEventArgs> RichTextBlockOverflow.IsTextTrimmedChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "event IsTextTrimmedChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "event TypedEventHandler<RichTextBlockOverflow, IsTextTrimmedChangedEventArgs> RichTextBlockOverflow.IsTextTrimmedChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "event IsTextTrimmedChanged");
 			}
 		}
 #endif

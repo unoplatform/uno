@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "string Headset.CaptureDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "CaptureDeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "string Headset.RenderDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "RenderDeviceId");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "BatteryReport Headset.TryGetBatteryReport()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "TryGetBatteryReport()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Headset.CaptureDeviceId.get

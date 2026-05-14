@@ -12,7 +12,7 @@ namespace Windows.System.Profile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Profile.UnsupportedAppRequirement> GetUnsupportedAppRequirements(global::System.Collections.Generic.IEnumerable<string> capabilities)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.AppApplicability", "IReadOnlyList<UnsupportedAppRequirement> AppApplicability.GetUnsupportedAppRequirements(IEnumerable<string> capabilities)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.AppApplicability", "GetUnsupportedAppRequirements(IEnumerable<string> capabilities)");
 		}
 #endif
 	}

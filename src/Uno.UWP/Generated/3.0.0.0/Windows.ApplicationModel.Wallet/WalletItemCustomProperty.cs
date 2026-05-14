@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "bool WalletItemCustomProperty.AutoDetectLinks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "AutoDetectLinks");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "bool WalletItemCustomProperty.AutoDetectLinks");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "AutoDetectLinks");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletDetailViewPosition WalletItemCustomProperty.DetailViewPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "DetailViewPosition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletDetailViewPosition WalletItemCustomProperty.DetailViewPosition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "DetailViewPosition");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "Name");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletSummaryViewPosition WalletItemCustomProperty.SummaryViewPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "SummaryViewPosition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletSummaryViewPosition WalletItemCustomProperty.SummaryViewPosition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "SummaryViewPosition");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "Value");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.ApplicationModel.Wallet
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WalletItemCustomProperty(string name, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletItemCustomProperty.WalletItemCustomProperty(string name, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletItemCustomProperty(string name, string value)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WalletItemCustomProperty(string, string)

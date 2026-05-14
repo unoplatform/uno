@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiNetworkReport", "IReadOnlyList<WiFiAvailableNetwork> WiFiNetworkReport.AvailableNetworks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiNetworkReport", "AvailableNetworks");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiNetworkReport", "DateTimeOffset WiFiNetworkReport.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiNetworkReport", "Timestamp");
 			}
 		}
 #endif

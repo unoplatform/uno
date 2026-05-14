@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorConnectionDeactivatedEventArgs", "SmartCardEmulatorConnectionProperties SmartCardEmulatorConnectionDeactivatedEventArgs.ConnectionProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorConnectionDeactivatedEventArgs", "ConnectionProperties");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorConnectionDeactivatedEventArgs", "SmartCardEmulatorConnectionDeactivatedReason SmartCardEmulatorConnectionDeactivatedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorConnectionDeactivatedEventArgs", "Reason");
 			}
 		}
 #endif

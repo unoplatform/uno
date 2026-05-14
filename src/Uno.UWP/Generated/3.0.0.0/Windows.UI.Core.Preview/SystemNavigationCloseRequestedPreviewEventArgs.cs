@@ -19,11 +19,11 @@ namespace Windows.UI.Core.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs", "bool SystemNavigationCloseRequestedPreviewEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs", "bool SystemNavigationCloseRequestedPreviewEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs", "Handled");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.UI.Core.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs", "Deferral SystemNavigationCloseRequestedPreviewEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.Handled.get

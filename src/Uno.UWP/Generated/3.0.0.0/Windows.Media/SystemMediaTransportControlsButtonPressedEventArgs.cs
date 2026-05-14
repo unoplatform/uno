@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs", "SystemMediaTransportControlsButton SystemMediaTransportControlsButtonPressedEventArgs.Button");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs", "Button");
 			}
 		}
 #endif

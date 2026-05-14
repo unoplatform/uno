@@ -19,11 +19,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.TileMixedRealityModel", "TileMixedRealityModelActivationBehavior TileMixedRealityModel.ActivationBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.TileMixedRealityModel", "ActivationBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "TileMixedRealityModelActivationBehavior TileMixedRealityModel.ActivationBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "ActivationBehavior");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.TileMixedRealityModel", "SpatialBoundingBox? TileMixedRealityModel.BoundingBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.TileMixedRealityModel", "BoundingBox");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "SpatialBoundingBox? TileMixedRealityModel.BoundingBox");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "BoundingBox");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.TileMixedRealityModel", "Uri TileMixedRealityModel.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.TileMixedRealityModel", "Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "Uri TileMixedRealityModel.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.TileMixedRealityModel", "Uri");
 			}
 		}
 #endif

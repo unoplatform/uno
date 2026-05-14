@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "IBuffer SmartCardCryptogramStorageKeyInfo.Attestation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "Attestation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "IBuffer SmartCardCryptogramStorageKeyInfo.AttestationCertificateChain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "AttestationCertificateChain");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "SmartCardCryptographicKeyAttestationStatus SmartCardCryptogramStorageKeyInfo.AttestationStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "AttestationStatus");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "SmartCardCryptogramStorageKeyCapabilities SmartCardCryptogramStorageKeyInfo.Capabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "Capabilities");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "SmartCardCryptogramGeneratorOperationStatus SmartCardCryptogramStorageKeyInfo.OperationStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "OperationStatus");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "string SmartCardCryptogramStorageKeyInfo.OperationalRequirements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "OperationalRequirements");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "IBuffer SmartCardCryptogramStorageKeyInfo.PublicKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "PublicKey");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "CryptographicPublicKeyBlobType SmartCardCryptogramStorageKeyInfo.PublicKeyBlobType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "PublicKeyBlobType");
 			}
 		}
 #endif

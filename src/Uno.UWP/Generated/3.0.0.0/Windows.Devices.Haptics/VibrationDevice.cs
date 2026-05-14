@@ -14,7 +14,7 @@ namespace Windows.Devices.Haptics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.VibrationDevice", "string VibrationDevice.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.VibrationDevice", "Id");
 			}
 		}
 #endif
@@ -24,14 +24,14 @@ namespace Windows.Devices.Haptics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.VibrationDevice", "string VibrationDevice.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.VibrationDevice", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Haptics.VibrationDevice> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.VibrationDevice", "IAsyncOperation<VibrationDevice> VibrationDevice.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.VibrationDevice", "FromIdAsync(string deviceId)");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Haptics.VibrationDevice.GetDefaultAsync()
@@ -39,7 +39,7 @@ namespace Windows.Devices.Haptics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Haptics.VibrationDevice>> FindAllAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.VibrationDevice", "IAsyncOperation<IReadOnlyList<VibrationDevice>> VibrationDevice.FindAllAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.VibrationDevice", "FindAllAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.Id.get

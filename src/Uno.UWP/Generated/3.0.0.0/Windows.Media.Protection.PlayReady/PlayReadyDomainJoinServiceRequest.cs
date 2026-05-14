@@ -14,11 +14,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "string PlayReadyDomainJoinServiceRequest.ChallengeCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "ChallengeCustomData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "string PlayReadyDomainJoinServiceRequest.ChallengeCustomData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "ChallengeCustomData");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Guid PlayReadyDomainJoinServiceRequest.DomainAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "DomainAccountId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Guid PlayReadyDomainJoinServiceRequest.DomainAccountId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "DomainAccountId");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "string PlayReadyDomainJoinServiceRequest.DomainFriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "DomainFriendlyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "string PlayReadyDomainJoinServiceRequest.DomainFriendlyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "DomainFriendlyName");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Guid PlayReadyDomainJoinServiceRequest.DomainServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "DomainServiceId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Guid PlayReadyDomainJoinServiceRequest.DomainServiceId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "DomainServiceId");
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Guid PlayReadyDomainJoinServiceRequest.ProtectionSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "ProtectionSystem");
 			}
 		}
 #endif
@@ -80,7 +80,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "string PlayReadyDomainJoinServiceRequest.ResponseCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "ResponseCustomData");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Guid PlayReadyDomainJoinServiceRequest.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Type");
 			}
 		}
 #endif
@@ -100,11 +100,11 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Uri PlayReadyDomainJoinServiceRequest.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Uri PlayReadyDomainJoinServiceRequest.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Uri");
 			}
 		}
 #endif
@@ -112,7 +112,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyDomainJoinServiceRequest()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "PlayReadyDomainJoinServiceRequest.PlayReadyDomainJoinServiceRequest()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "PlayReadyDomainJoinServiceRequest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.PlayReadyDomainJoinServiceRequest()
@@ -120,28 +120,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BeginServiceRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "IAsyncAction PlayReadyDomainJoinServiceRequest.BeginServiceRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "BeginServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest NextServiceRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "IPlayReadyServiceRequest PlayReadyDomainJoinServiceRequest.NextServiceRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "NextServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "PlayReadySoapMessage PlayReadyDomainJoinServiceRequest.GenerateManualEnablingChallenge()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "GenerateManualEnablingChallenge()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Exception ProcessManualEnablingResponse(byte[] responseBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "Exception PlayReadyDomainJoinServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest", "ProcessManualEnablingResponse(byte[] responseBytes)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.ChallengeCustomData.get

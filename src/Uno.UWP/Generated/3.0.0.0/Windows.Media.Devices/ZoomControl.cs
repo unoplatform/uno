@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "float ZoomControl.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "float ZoomControl.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "ZoomTransitionMode ZoomControl.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "Mode");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "float ZoomControl.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "Step");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "bool ZoomControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "Supported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "IReadOnlyList<ZoomTransitionMode> ZoomControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "SupportedModes");
 			}
 		}
 #endif
@@ -79,11 +79,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "float ZoomControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomControl", "float ZoomControl.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomControl", "Value");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Configure(global::Windows.Media.Devices.ZoomSettings settings)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomControl", "void ZoomControl.Configure(ZoomSettings settings)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomControl", "Configure(ZoomSettings settings)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.ZoomControl.Max.get

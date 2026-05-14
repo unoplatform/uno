@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "InkPresenter CoreWetStrokeUpdateSource.InkPresenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "InkPresenter");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource Create(global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "CoreWetStrokeUpdateSource CoreWetStrokeUpdateSource.Create(InkPresenter inkPresenter)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "Create(InkPresenter inkPresenter)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource.WetStrokeCanceled.add
@@ -48,12 +48,12 @@ namespace Windows.UI.Input.Inking.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeCanceled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeCanceled");
 			}
 		}
 #endif
@@ -64,12 +64,12 @@ namespace Windows.UI.Input.Inking.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeCompleted");
 			}
 		}
 #endif
@@ -80,12 +80,12 @@ namespace Windows.UI.Input.Inking.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeContinuing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeContinuing");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeContinuing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeContinuing");
 			}
 		}
 #endif
@@ -96,12 +96,12 @@ namespace Windows.UI.Input.Inking.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeStarting");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeStarting");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeStarting");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeStarting");
 			}
 		}
 #endif
@@ -112,12 +112,12 @@ namespace Windows.UI.Input.Inking.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeStopping");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeStopping");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event TypedEventHandler<CoreWetStrokeUpdateSource, CoreWetStrokeUpdateEventArgs> CoreWetStrokeUpdateSource.WetStrokeStopping");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "event WetStrokeStopping");
 			}
 		}
 #endif

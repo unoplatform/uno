@@ -19,11 +19,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "WebAuthenticationResult AppBroadcastState.AuthenticationResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AuthenticationResult");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "WebAuthenticationResult AppBroadcastState.AuthenticationResult");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "AuthenticationResult");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "uint AppBroadcastState.CameraCaptureError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "CameraCaptureError");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastCameraCaptureState AppBroadcastState.CameraCaptureState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "CameraCaptureState");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "Size AppBroadcastState.EncodedVideoSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "EncodedVideoSize");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "bool AppBroadcastState.IsCaptureTargetRunning");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "IsCaptureTargetRunning");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "uint AppBroadcastState.MicrophoneCaptureError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "MicrophoneCaptureError");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastMicrophoneCaptureState AppBroadcastState.MicrophoneCaptureState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "MicrophoneCaptureState");
 			}
 		}
 #endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "Uri AppBroadcastState.OAuthCallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "OAuthCallbackUri");
 			}
 		}
 #endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "Uri AppBroadcastState.OAuthRequestUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "OAuthRequestUri");
 			}
 		}
 #endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastPlugInState AppBroadcastState.PlugInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "PlugInState");
 			}
 		}
 #endif
@@ -123,11 +123,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "bool AppBroadcastState.ShouldCaptureCamera");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "ShouldCaptureCamera");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "bool AppBroadcastState.ShouldCaptureCamera");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "ShouldCaptureCamera");
 			}
 		}
 #endif
@@ -137,11 +137,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "bool AppBroadcastState.ShouldCaptureMicrophone");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "ShouldCaptureMicrophone");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "bool AppBroadcastState.ShouldCaptureMicrophone");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "ShouldCaptureMicrophone");
 			}
 		}
 #endif
@@ -151,11 +151,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastSignInState AppBroadcastState.SignInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "SignInState");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "AppBroadcastSignInState AppBroadcastState.SignInState");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "SignInState");
 			}
 		}
 #endif
@@ -165,7 +165,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastStreamState AppBroadcastState.StreamState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "StreamState");
 			}
 		}
 #endif
@@ -175,7 +175,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastTerminationReason AppBroadcastState.TerminationReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "TerminationReason");
 			}
 		}
 #endif
@@ -185,7 +185,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "uint AppBroadcastState.TerminationReasonPlugInSpecific");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "TerminationReasonPlugInSpecific");
 			}
 		}
 #endif
@@ -195,7 +195,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "uint AppBroadcastState.ViewerCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "ViewerCount");
 			}
 		}
 #endif
@@ -203,14 +203,14 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RestartMicrophoneCapture()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "void AppBroadcastState.RestartMicrophoneCapture()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "RestartMicrophoneCapture()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RestartCameraCapture()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "void AppBroadcastState.RestartCameraCapture()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "RestartCameraCapture()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastState.CameraCaptureStateChanged.add
@@ -253,12 +253,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastCameraCaptureStateChangedEventArgs> AppBroadcastState.CameraCaptureStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event CameraCaptureStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastCameraCaptureStateChangedEventArgs> AppBroadcastState.CameraCaptureStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event CameraCaptureStateChanged");
 			}
 		}
 #endif
@@ -269,12 +269,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, object> AppBroadcastState.CaptureTargetClosed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event CaptureTargetClosed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, object> AppBroadcastState.CaptureTargetClosed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event CaptureTargetClosed");
 			}
 		}
 #endif
@@ -285,12 +285,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastMicrophoneCaptureStateChangedEventArgs> AppBroadcastState.MicrophoneCaptureStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event MicrophoneCaptureStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastMicrophoneCaptureStateChangedEventArgs> AppBroadcastState.MicrophoneCaptureStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event MicrophoneCaptureStateChanged");
 			}
 		}
 #endif
@@ -301,12 +301,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastPlugInStateChangedEventArgs> AppBroadcastState.PlugInStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event PlugInStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastPlugInStateChangedEventArgs> AppBroadcastState.PlugInStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event PlugInStateChanged");
 			}
 		}
 #endif
@@ -317,12 +317,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastStreamStateChangedEventArgs> AppBroadcastState.StreamStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event StreamStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastStreamStateChangedEventArgs> AppBroadcastState.StreamStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event StreamStateChanged");
 			}
 		}
 #endif
@@ -333,12 +333,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastViewerCountChangedEventArgs> AppBroadcastState.ViewerCountChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event ViewerCountChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event TypedEventHandler<AppBroadcastState, AppBroadcastViewerCountChangedEventArgs> AppBroadcastState.ViewerCountChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastState", "event ViewerCountChanged");
 			}
 		}
 #endif

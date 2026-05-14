@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkUsage", "ulong NetworkUsage.BytesReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkUsage", "BytesReceived");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkUsage", "ulong NetworkUsage.BytesSent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkUsage", "BytesSent");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkUsage", "TimeSpan NetworkUsage.ConnectionDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkUsage", "ConnectionDuration");
 			}
 		}
 #endif

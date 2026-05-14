@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "DeviceId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.DeviceModelVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "DeviceModelVersion");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.EnclosureLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "EnclosureLocation");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.FrameKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "FrameKind");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "Id");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.PhysicalDeviceIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "PhysicalDeviceIds");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayAreaWatcher", "DisplayAreaWatcherStatus DisplayAreaWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayAreaWatcher", "Status");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Microsoft.UI.Windowing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "void DisplayAreaWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "void DisplayAreaWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "Stop()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Added.add
@@ -55,12 +55,12 @@ namespace Microsoft.UI.Windowing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, DisplayArea> DisplayAreaWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event Added");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, DisplayArea> DisplayAreaWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event Added");
 			}
 		}
 #endif
@@ -71,12 +71,12 @@ namespace Microsoft.UI.Windowing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, object> DisplayAreaWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event EnumerationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, object> DisplayAreaWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event EnumerationCompleted");
 			}
 		}
 #endif
@@ -87,12 +87,12 @@ namespace Microsoft.UI.Windowing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, DisplayArea> DisplayAreaWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event Removed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, DisplayArea> DisplayAreaWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event Removed");
 			}
 		}
 #endif
@@ -103,12 +103,12 @@ namespace Microsoft.UI.Windowing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, object> DisplayAreaWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event Stopped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, object> DisplayAreaWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event Stopped");
 			}
 		}
 #endif
@@ -119,12 +119,12 @@ namespace Microsoft.UI.Windowing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, DisplayArea> DisplayAreaWatcher.Updated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event Updated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event TypedEventHandler<DisplayAreaWatcher, DisplayArea> DisplayAreaWatcher.Updated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "event Updated");
 			}
 		}
 #endif

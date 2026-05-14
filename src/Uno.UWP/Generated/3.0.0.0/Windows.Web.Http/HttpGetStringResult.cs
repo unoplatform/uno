@@ -19,7 +19,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "Exception HttpGetStringResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "HttpRequestMessage HttpGetStringResult.RequestMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "RequestMessage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "HttpResponseMessage HttpGetStringResult.ResponseMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "ResponseMessage");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "bool HttpGetStringResult.Succeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "Succeeded");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "string HttpGetStringResult.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "Value");
 			}
 		}
 #endif
@@ -67,14 +67,14 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpGetStringResult", "void HttpGetStringResult.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpGetStringResult", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "string HttpGetStringResult.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetStringResult", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.ExtendedError.get

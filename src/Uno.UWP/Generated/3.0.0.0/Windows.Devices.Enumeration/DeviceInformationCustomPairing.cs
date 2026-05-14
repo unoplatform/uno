@@ -17,21 +17,21 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "PairAsync(DevicePairingKinds pairingKindsSupported)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported, global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported, global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel, global::Windows.Devices.Enumeration.IDevicePairingSettings devicePairingSettings)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel, IDevicePairingSettings devicePairingSettings)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel, IDevicePairingSettings devicePairingSettings)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.PairingRequested.add
@@ -43,12 +43,12 @@ namespace Windows.Devices.Enumeration
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "event TypedEventHandler<DeviceInformationCustomPairing, DevicePairingRequestedEventArgs> DeviceInformationCustomPairing.PairingRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "event PairingRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "event TypedEventHandler<DeviceInformationCustomPairing, DevicePairingRequestedEventArgs> DeviceInformationCustomPairing.PairingRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "event PairingRequested");
 			}
 		}
 #endif

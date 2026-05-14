@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "CastingDevice CastingConnection.Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "Device");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "CastingSource CastingConnection.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "Source");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "CastingSource CastingConnection.Source");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "Source");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "CastingConnectionState CastingConnection.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "State");
 			}
 		}
 #endif
@@ -51,14 +51,14 @@ namespace Windows.Media.Casting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingConnectionErrorStatus> RequestStartCastingAsync(global::Windows.Media.Casting.CastingSource value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "IAsyncOperation<CastingConnectionErrorStatus> CastingConnection.RequestStartCastingAsync(CastingSource value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "RequestStartCastingAsync(CastingSource value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingConnectionErrorStatus> DisconnectAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "IAsyncOperation<CastingConnectionErrorStatus> CastingConnection.DisconnectAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnection", "DisconnectAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Casting.CastingConnection.ErrorOccurred.add
@@ -69,7 +69,7 @@ namespace Windows.Media.Casting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "void CastingConnection.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Casting.CastingConnection.Device.get
@@ -83,12 +83,12 @@ namespace Windows.Media.Casting
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "event TypedEventHandler<CastingConnection, CastingConnectionErrorOccurredEventArgs> CastingConnection.ErrorOccurred");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "event ErrorOccurred");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "event TypedEventHandler<CastingConnection, CastingConnectionErrorOccurredEventArgs> CastingConnection.ErrorOccurred");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "event ErrorOccurred");
 			}
 		}
 #endif
@@ -99,12 +99,12 @@ namespace Windows.Media.Casting
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "event TypedEventHandler<CastingConnection, object> CastingConnection.StateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "event StateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "event TypedEventHandler<CastingConnection, object> CastingConnection.StateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingConnection", "event StateChanged");
 			}
 		}
 #endif

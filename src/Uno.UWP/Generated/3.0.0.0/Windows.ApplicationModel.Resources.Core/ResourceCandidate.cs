@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "bool ResourceCandidate.IsDefault");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "IsDefault");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "bool ResourceCandidate.IsMatch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "IsMatch");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "bool ResourceCandidate.IsMatchAsDefault");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "IsMatchAsDefault");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "ResourceCandidateKind ResourceCandidate.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "Kind");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetValueAsFileAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "IAsyncOperation<StorageFile> ResourceCandidate.GetValueAsFileAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "GetValueAsFileAsync()");
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Resources.Core.ResourceCandidate.GetQualifierValue(string)
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetValueAsStreamAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "IAsyncOperation<IRandomAccessStream> ResourceCandidate.GetValueAsStreamAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceCandidate", "GetValueAsStreamAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.IsDefault.get

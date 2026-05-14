@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanUsage", "DateTimeOffset DataPlanUsage.LastSyncTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanUsage", "LastSyncTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanUsage", "uint DataPlanUsage.MegabytesUsed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanUsage", "MegabytesUsed");
 			}
 		}
 #endif

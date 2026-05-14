@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult", "Exception LicenseSatisfactionResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult", "IReadOnlyDictionary<string, LicenseSatisfactionInfo> LicenseSatisfactionResult.LicenseSatisfactionInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult", "LicenseSatisfactionInfos");
 			}
 		}
 #endif

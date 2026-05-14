@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequestEventArgs", "EmailMailboxValidateCertificatesRequest EmailMailboxValidateCertificatesRequestEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequestEventArgs", "Request");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequestEventArgs", "Deferral EmailMailboxValidateCertificatesRequestEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequestEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequestEventArgs.Request.get

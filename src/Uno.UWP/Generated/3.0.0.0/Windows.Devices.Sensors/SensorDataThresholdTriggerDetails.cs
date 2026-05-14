@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorDataThresholdTriggerDetails", "string SensorDataThresholdTriggerDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorDataThresholdTriggerDetails", "DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorDataThresholdTriggerDetails", "SensorType SensorDataThresholdTriggerDetails.SensorType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorDataThresholdTriggerDetails", "SensorType");
 			}
 		}
 #endif

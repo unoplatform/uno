@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GamepadVibration(double _LeftMotor, double _RightMotor, double _LeftTrigger, double _RightTrigger)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.GamepadVibration", "GamepadVibration.GamepadVibration(double _LeftMotor, double _RightMotor, double _LeftTrigger, double _RightTrigger)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.GamepadVibration", "GamepadVibration(double _LeftMotor, double _RightMotor, double _LeftTrigger, double _RightTrigger)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.GamepadVibration(double, double, double, double)

@@ -14,11 +14,11 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "Size ViewModePreferences.CustomSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "CustomSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ViewModePreferences", "Size ViewModePreferences.CustomSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ViewModePreferences", "CustomSize");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "ViewSizePreference ViewModePreferences.ViewSizePreference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "ViewSizePreference");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ViewModePreferences", "ViewSizePreference ViewModePreferences.ViewSizePreference");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ViewModePreferences", "ViewSizePreference");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.ViewManagement.ViewModePreferences CreateDefault(global::Windows.UI.ViewManagement.ApplicationViewMode mode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "ViewModePreferences ViewModePreferences.CreateDefault(ApplicationViewMode mode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "CreateDefault(ApplicationViewMode mode)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.CustomSize.get

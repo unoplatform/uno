@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "BluetoothLEAdvertisement BluetoothLEAdvertisementReceivedEventArgs.Advertisement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "Advertisement");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "BluetoothLEAdvertisementType BluetoothLEAdvertisementReceivedEventArgs.AdvertisementType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "AdvertisementType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "ulong BluetoothLEAdvertisementReceivedEventArgs.BluetoothAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "BluetoothAddress");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "BluetoothAddressType BluetoothLEAdvertisementReceivedEventArgs.BluetoothAddressType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "BluetoothAddressType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsAnonymous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "IsAnonymous");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsConnectable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "IsConnectable");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsDirected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "IsDirected");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsScanResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "IsScanResponse");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsScannable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "IsScannable");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "short BluetoothLEAdvertisementReceivedEventArgs.RawSignalStrengthInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "RawSignalStrengthInDBm");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "DateTimeOffset BluetoothLEAdvertisementReceivedEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "Timestamp");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "short? BluetoothLEAdvertisementReceivedEventArgs.TransmitPowerLevelInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "TransmitPowerLevelInDBm");
 			}
 		}
 #endif

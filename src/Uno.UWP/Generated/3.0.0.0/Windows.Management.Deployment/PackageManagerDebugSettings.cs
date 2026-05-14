@@ -17,14 +17,14 @@ namespace Windows.Management.Deployment
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetContentGroupStateAsync(global::Windows.ApplicationModel.Package package, string contentGroupName, global::Windows.ApplicationModel.PackageContentGroupState state)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManagerDebugSettings", "IAsyncAction PackageManagerDebugSettings.SetContentGroupStateAsync(Package package, string contentGroupName, PackageContentGroupState state)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManagerDebugSettings", "SetContentGroupStateAsync(Package package, string contentGroupName, PackageContentGroupState state)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetContentGroupStateAsync(global::Windows.ApplicationModel.Package package, string contentGroupName, global::Windows.ApplicationModel.PackageContentGroupState state, double completionPercentage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManagerDebugSettings", "IAsyncAction PackageManagerDebugSettings.SetContentGroupStateAsync(Package package, string contentGroupName, PackageContentGroupState state, double completionPercentage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManagerDebugSettings", "SetContentGroupStateAsync(Package package, string contentGroupName, PackageContentGroupState state, double completionPercentage)");
 		}
 #endif
 	}

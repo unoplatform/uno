@@ -19,7 +19,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs", "uint AdaptiveMediaSourceDownloadBitrateChangedEventArgs.NewValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs", "NewValue");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs", "uint AdaptiveMediaSourceDownloadBitrateChangedEventArgs.OldValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs", "OldValue");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs", "AdaptiveMediaSourceDownloadBitrateChangedReason AdaptiveMediaSourceDownloadBitrateChangedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs", "Reason");
 			}
 		}
 #endif

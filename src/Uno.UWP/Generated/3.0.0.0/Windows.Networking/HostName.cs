@@ -14,7 +14,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "string HostName.CanonicalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "CanonicalName");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "string HostName.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "DisplayName");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "IPInformation HostName.IPInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "IPInformation");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "string HostName.RawName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "RawName");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "HostNameType HostName.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "Type");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Networking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HostName(string hostName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.HostName", "HostName.HostName(string hostName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.HostName", "HostName(string hostName)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.HostName.HostName(string)
@@ -70,21 +70,21 @@ namespace Windows.Networking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int Compare(string value1, string value2)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "int HostName.Compare(string value1, string value2)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "Compare(string value1, string value2)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Networking.HostName hostName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "bool HostName.IsEqual(HostName hostName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "IsEqual(HostName hostName)");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "string HostName.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.HostName.CanonicalName.get

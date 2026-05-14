@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs", "IReadOnlyList<EndpointPair> WiFiDirectServiceRemotePortAddedEventArgs.EndpointPairs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs", "EndpointPairs");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs", "WiFiDirectServiceIPProtocol WiFiDirectServiceRemotePortAddedEventArgs.Protocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs", "Protocol");
 			}
 		}
 #endif

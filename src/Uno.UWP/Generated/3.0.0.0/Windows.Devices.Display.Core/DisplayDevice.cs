@@ -17,49 +17,49 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplaySource CreateScanoutSource(global::Windows.Devices.Display.Core.DisplayTarget target)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "DisplaySource DisplayDevice.CreateScanoutSource(DisplayTarget target)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "CreateScanoutSource(DisplayTarget target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplaySurface CreatePrimary(global::Windows.Devices.Display.Core.DisplayTarget target, global::Windows.Devices.Display.Core.DisplayPrimaryDescription desc)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "DisplaySurface DisplayDevice.CreatePrimary(DisplayTarget target, DisplayPrimaryDescription desc)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "CreatePrimary(DisplayTarget target, DisplayPrimaryDescription desc)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayTaskPool CreateTaskPool()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "DisplayTaskPool DisplayDevice.CreateTaskPool()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "CreateTaskPool()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayFence CreatePeriodicFence(global::Windows.Devices.Display.Core.DisplayTarget target, global::System.TimeSpan offsetFromVBlank)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "DisplayFence DisplayDevice.CreatePeriodicFence(DisplayTarget target, TimeSpan offsetFromVBlank)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "CreatePeriodicFence(DisplayTarget target, TimeSpan offsetFromVBlank)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void WaitForVBlank(global::Windows.Devices.Display.Core.DisplaySource source)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayDevice", "void DisplayDevice.WaitForVBlank(DisplaySource source)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayDevice", "WaitForVBlank(DisplaySource source)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayScanout CreateSimpleScanout(global::Windows.Devices.Display.Core.DisplaySource pSource, global::Windows.Devices.Display.Core.DisplaySurface pSurface, uint SubResourceIndex, uint SyncInterval)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "DisplayScanout DisplayDevice.CreateSimpleScanout(DisplaySource pSource, DisplaySurface pSurface, uint SubResourceIndex, uint SyncInterval)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "CreateSimpleScanout(DisplaySource pSource, DisplaySurface pSurface, uint SubResourceIndex, uint SyncInterval)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsCapabilitySupported(global::Windows.Devices.Display.Core.DisplayDeviceCapability capability)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "bool DisplayDevice.IsCapabilitySupported(DisplayDeviceCapability capability)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "IsCapabilitySupported(DisplayDeviceCapability capability)");
 		}
 #endif
 	}

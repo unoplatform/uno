@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUpdateAvailabilityResult", "PackageUpdateAvailability PackageUpdateAvailabilityResult.Availability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUpdateAvailabilityResult", "Availability");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUpdateAvailabilityResult", "Exception PackageUpdateAvailabilityResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUpdateAvailabilityResult", "ExtendedError");
 			}
 		}
 #endif

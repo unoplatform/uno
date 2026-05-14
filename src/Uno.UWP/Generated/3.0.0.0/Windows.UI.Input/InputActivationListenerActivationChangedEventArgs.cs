@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.InputActivationListenerActivationChangedEventArgs", "InputActivationState InputActivationListenerActivationChangedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.InputActivationListenerActivationChangedEventArgs", "State");
 			}
 		}
 #endif

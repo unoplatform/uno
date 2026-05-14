@@ -19,7 +19,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "bool HidNumericControlDescription.HasNull");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "HasNull");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "uint HidNumericControlDescription.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "bool HidNumericControlDescription.IsAbsolute");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "IsAbsolute");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "int HidNumericControlDescription.LogicalMaximum");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "LogicalMaximum");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "int HidNumericControlDescription.LogicalMinimum");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "LogicalMinimum");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "IReadOnlyList<HidCollection> HidNumericControlDescription.ParentCollections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "ParentCollections");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "int HidNumericControlDescription.PhysicalMaximum");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "PhysicalMaximum");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "int HidNumericControlDescription.PhysicalMinimum");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "PhysicalMinimum");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "uint HidNumericControlDescription.ReportCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "ReportCount");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "ushort HidNumericControlDescription.ReportId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "ReportId");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "uint HidNumericControlDescription.ReportSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "ReportSize");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "HidReportType HidNumericControlDescription.ReportType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "ReportType");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "uint HidNumericControlDescription.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "Unit");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "uint HidNumericControlDescription.UnitExponent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "UnitExponent");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "ushort HidNumericControlDescription.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "UsageId");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "ushort HidNumericControlDescription.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription", "UsagePage");
 			}
 		}
 #endif

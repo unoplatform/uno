@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "ExpressionAnimation CompositionConditionalValue.Condition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "Condition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "ExpressionAnimation CompositionConditionalValue.Condition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "Condition");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "ExpressionAnimation CompositionConditionalValue.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "ExpressionAnimation CompositionConditionalValue.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "Value");
 			}
 		}
 #endif
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.CompositionConditionalValue Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "CompositionConditionalValue CompositionConditionalValue.Create(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionConditionalValue.Condition.get

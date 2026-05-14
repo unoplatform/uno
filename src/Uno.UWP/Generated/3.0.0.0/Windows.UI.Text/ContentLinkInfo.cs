@@ -14,11 +14,11 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "DisplayText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.DisplayText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "DisplayText");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "uint ContentLinkInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "uint ContentLinkInfo.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "Id");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.LinkContentKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "LinkContentKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.LinkContentKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "LinkContentKind");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.SecondaryText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "SecondaryText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.SecondaryText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "SecondaryText");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "Uri ContentLinkInfo.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "Uri ContentLinkInfo.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "Uri");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.UI.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContentLinkInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "ContentLinkInfo.ContentLinkInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.ContentLinkInfo", "ContentLinkInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.ContentLinkInfo()

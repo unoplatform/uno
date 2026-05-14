@@ -15,7 +15,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "ValueSet FileOpenPicker.ContinuationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "ContinuationData");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "User FileOpenPicker.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "User");
 			}
 		}
 #endif
@@ -39,49 +39,49 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> ResumePickSingleFileAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "IAsyncOperation<StorageFile> FileOpenPicker.ResumePickSingleFileAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "ResumePickSingleFileAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Pickers.FileOpenPicker CreateForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "FileOpenPicker FileOpenPicker.CreateForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "CreateForUser(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void PickSingleFileAndContinue()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "void FileOpenPicker.PickSingleFileAndContinue()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "PickSingleFileAndContinue()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void PickMultipleFilesAndContinue()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "void FileOpenPicker.PickMultipleFilesAndContinue()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "PickMultipleFilesAndContinue()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync(string pickerOperationId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync(string pickerOperationId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "PickSingleFileAsync(string pickerOperationId)");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "PickSingleFileAsync()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> PickMultipleFilesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "IAsyncOperation<IReadOnlyList<StorageFile>> FileOpenPicker.PickMultipleFilesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FileOpenPicker", "PickMultipleFilesAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.CommitButtonText.get

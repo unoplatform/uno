@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs", "PlayToConnectionState PlayToConnectionStateChangedEventArgs.CurrentState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs", "CurrentState");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs", "PlayToConnectionState PlayToConnectionStateChangedEventArgs.PreviousState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs", "PreviousState");
 			}
 		}
 #endif

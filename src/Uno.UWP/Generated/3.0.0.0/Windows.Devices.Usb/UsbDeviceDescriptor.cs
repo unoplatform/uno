@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "uint UsbDeviceDescriptor.BcdDeviceRevision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "BcdDeviceRevision");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "uint UsbDeviceDescriptor.BcdUsb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "BcdUsb");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "byte UsbDeviceDescriptor.MaxPacketSize0");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "MaxPacketSize0");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "byte UsbDeviceDescriptor.NumberOfConfigurations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "NumberOfConfigurations");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "uint UsbDeviceDescriptor.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "ProductId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "uint UsbDeviceDescriptor.VendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "VendorId");
 			}
 		}
 #endif

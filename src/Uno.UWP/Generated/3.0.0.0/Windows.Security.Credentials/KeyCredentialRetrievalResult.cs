@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialRetrievalResult", "KeyCredential KeyCredentialRetrievalResult.Credential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialRetrievalResult", "Credential");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialRetrievalResult", "KeyCredentialStatus KeyCredentialRetrievalResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialRetrievalResult", "Status");
 			}
 		}
 #endif

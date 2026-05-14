@@ -16,7 +16,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ResourceLoader(string fileName, string resourceMap)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "ResourceLoader.ResourceLoader(string fileName, string resourceMap)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "ResourceLoader(string fileName, string resourceMap)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string, string)
@@ -24,7 +24,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDefaultResourceFilePath()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "string ResourceLoader.GetDefaultResourceFilePath()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "GetDefaultResourceFilePath()");
 		}
 #endif
 		// Skipping already declared method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.GetString(string)
@@ -32,7 +32,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetStringForUri(global::System.Uri resourceUri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "string ResourceLoader.GetStringForUri(Uri resourceUri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "GetStringForUri(Uri resourceUri)");
 		}
 #endif
 	}

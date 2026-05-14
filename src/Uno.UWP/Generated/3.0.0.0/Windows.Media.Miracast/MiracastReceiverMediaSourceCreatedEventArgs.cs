@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "MiracastReceiverConnection MiracastReceiverMediaSourceCreatedEventArgs.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "Connection");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "MiracastReceiverCursorImageChannelSettings MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "CursorImageChannelSettings");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "MediaSource MiracastReceiverMediaSourceCreatedEventArgs.MediaSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "MediaSource");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "Deferral MiracastReceiverMediaSourceCreatedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs.Connection.get

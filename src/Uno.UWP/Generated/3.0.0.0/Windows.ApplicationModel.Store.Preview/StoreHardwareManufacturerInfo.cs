@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo", "string StoreHardwareManufacturerInfo.HardwareManufacturerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo", "HardwareManufacturerId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo", "string StoreHardwareManufacturerInfo.ManufacturerName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo", "ManufacturerName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo", "string StoreHardwareManufacturerInfo.ModelName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo", "ModelName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo", "string StoreHardwareManufacturerInfo.StoreContentModifierId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo", "StoreContentModifierId");
 			}
 		}
 #endif

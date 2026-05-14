@@ -14,7 +14,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "Color TextConstants.AutoColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "AutoColor");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "int TextConstants.MaxUnitCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "MaxUnitCount");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "int TextConstants.MinUnitCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "MinUnitCount");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "Color TextConstants.UndefinedColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "UndefinedColor");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "float TextConstants.UndefinedFloatValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "UndefinedFloatValue");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "FontStretch TextConstants.UndefinedFontStretch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "UndefinedFontStretch");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "FontStyle TextConstants.UndefinedFontStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "UndefinedFontStyle");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "int TextConstants.UndefinedInt32Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "UndefinedInt32Value");
 			}
 		}
 #endif

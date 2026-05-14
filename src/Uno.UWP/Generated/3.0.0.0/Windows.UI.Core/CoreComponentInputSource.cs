@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "CoreDispatcher CoreComponentInputSource.Dispatcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "Dispatcher");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "DispatcherQueue CoreComponentInputSource.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "DispatcherQueue");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "bool CoreComponentInputSource.HasCapture");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "HasCapture");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "bool CoreComponentInputSource.HasFocus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "HasFocus");
 			}
 		}
 #endif
@@ -59,11 +59,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "bool CoreComponentInputSource.IsInputEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "IsInputEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "bool CoreComponentInputSource.IsInputEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "IsInputEnabled");
 			}
 		}
 #endif
@@ -73,11 +73,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "CoreCursor CoreComponentInputSource.PointerCursor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "PointerCursor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "CoreCursor CoreComponentInputSource.PointerCursor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "PointerCursor");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "Point CoreComponentInputSource.PointerPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "PointerPosition");
 			}
 		}
 #endif
@@ -97,14 +97,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReleasePointerCapture()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "void CoreComponentInputSource.ReleasePointerCapture()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "ReleasePointerCapture()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPointerCapture()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "void CoreComponentInputSource.SetPointerCapture()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "SetPointerCapture()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerCaptureLost.add
@@ -125,7 +125,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Core.CoreVirtualKeyStates GetCurrentKeyState(global::Windows.System.VirtualKey virtualKey)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "CoreVirtualKeyStates CoreComponentInputSource.GetCurrentKeyState(VirtualKey virtualKey)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "GetCurrentKeyState(VirtualKey virtualKey)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.CharacterReceived.add
@@ -146,7 +146,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetCurrentKeyEventDeviceId()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "string CoreComponentInputSource.GetCurrentKeyEventDeviceId()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreComponentInputSource", "GetCurrentKeyEventDeviceId()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.Dispatcher.get
@@ -165,12 +165,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, InputEnabledEventArgs> CoreComponentInputSource.InputEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event InputEnabled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, InputEnabledEventArgs> CoreComponentInputSource.InputEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event InputEnabled");
 			}
 		}
 #endif
@@ -181,12 +181,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerCaptureLost");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerCaptureLost");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerCaptureLost");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerCaptureLost");
 			}
 		}
 #endif
@@ -197,12 +197,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerEntered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerEntered");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerEntered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerEntered");
 			}
 		}
 #endif
@@ -213,12 +213,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerExited");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerExited");
 			}
 		}
 #endif
@@ -229,12 +229,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerMoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerMoved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerMoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerMoved");
 			}
 		}
 #endif
@@ -245,12 +245,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerPressed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerPressed");
 			}
 		}
 #endif
@@ -261,12 +261,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerReleased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerReleased");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerReleased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerReleased");
 			}
 		}
 #endif
@@ -277,12 +277,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerWheelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerWheelChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, PointerEventArgs> CoreComponentInputSource.PointerWheelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event PointerWheelChanged");
 			}
 		}
 #endif
@@ -293,12 +293,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, CharacterReceivedEventArgs> CoreComponentInputSource.CharacterReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event CharacterReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, CharacterReceivedEventArgs> CoreComponentInputSource.CharacterReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event CharacterReceived");
 			}
 		}
 #endif
@@ -309,12 +309,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, KeyEventArgs> CoreComponentInputSource.KeyDown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event KeyDown");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, KeyEventArgs> CoreComponentInputSource.KeyDown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event KeyDown");
 			}
 		}
 #endif
@@ -325,12 +325,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, KeyEventArgs> CoreComponentInputSource.KeyUp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event KeyUp");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, KeyEventArgs> CoreComponentInputSource.KeyUp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event KeyUp");
 			}
 		}
 #endif
@@ -341,12 +341,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, CoreWindowEventArgs> CoreComponentInputSource.GotFocus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event GotFocus");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, CoreWindowEventArgs> CoreComponentInputSource.GotFocus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event GotFocus");
 			}
 		}
 #endif
@@ -357,12 +357,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, CoreWindowEventArgs> CoreComponentInputSource.LostFocus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event LostFocus");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, CoreWindowEventArgs> CoreComponentInputSource.LostFocus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event LostFocus");
 			}
 		}
 #endif
@@ -373,12 +373,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, TouchHitTestingEventArgs> CoreComponentInputSource.TouchHitTesting");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TouchHitTesting");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<object, TouchHitTestingEventArgs> CoreComponentInputSource.TouchHitTesting");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TouchHitTesting");
 			}
 		}
 #endif
@@ -389,12 +389,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<CoreComponentInputSource, ClosestInteractiveBoundsRequestedEventArgs> CoreComponentInputSource.ClosestInteractiveBoundsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event ClosestInteractiveBoundsRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event TypedEventHandler<CoreComponentInputSource, ClosestInteractiveBoundsRequestedEventArgs> CoreComponentInputSource.ClosestInteractiveBoundsRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreComponentInputSource", "event ClosestInteractiveBoundsRequested");
 			}
 		}
 #endif

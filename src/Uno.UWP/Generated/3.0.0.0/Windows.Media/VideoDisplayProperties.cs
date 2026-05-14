@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoDisplayProperties", "IList<string> VideoDisplayProperties.Genres");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoDisplayProperties", "Genres");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoDisplayProperties", "string VideoDisplayProperties.Subtitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoDisplayProperties", "Subtitle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoDisplayProperties", "string VideoDisplayProperties.Subtitle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoDisplayProperties", "Subtitle");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoDisplayProperties", "string VideoDisplayProperties.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoDisplayProperties", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoDisplayProperties", "string VideoDisplayProperties.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoDisplayProperties", "Title");
 			}
 		}
 #endif

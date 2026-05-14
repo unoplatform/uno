@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "AudioNodeEmitterDecayKind AudioNodeEmitterDecayModel.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "double AudioNodeEmitterDecayModel.MaxGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "MaxGain");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "double AudioNodeEmitterDecayModel.MinGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "MinGain");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "AudioNodeEmitterNaturalDecayModelProperties AudioNodeEmitterDecayModel.NaturalProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "NaturalProperties");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateNatural(double minGain, double maxGain, double unityGainDistance, double cutoffDistance)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "AudioNodeEmitterDecayModel AudioNodeEmitterDecayModel.CreateNatural(double minGain, double maxGain, double unityGainDistance, double cutoffDistance)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "CreateNatural(double minGain, double maxGain, double unityGainDistance, double cutoffDistance)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateCustom(double minGain, double maxGain)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "AudioNodeEmitterDecayModel AudioNodeEmitterDecayModel.CreateCustom(double minGain, double maxGain)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterDecayModel", "CreateCustom(double minGain, double maxGain)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.Kind.get

@@ -19,7 +19,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "int HttpExpectationHeaderValueCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "bool HttpExpectationHeaderValueCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "IsReadOnly");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "HttpExpectationHeaderValue HttpExpectationHeaderValueCollection.this[int index]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "this[int index]");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "HttpExpectationHeaderValue HttpExpectationHeaderValueCollection.this[int index]");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "this[int index]");
 			}
 		}
 #endif
@@ -51,14 +51,14 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ParseAdd(string input)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "void HttpExpectationHeaderValueCollection.ParseAdd(string input)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "ParseAdd(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryParseAdd(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "bool HttpExpectationHeaderValueCollection.TryParseAdd(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "TryParseAdd(string input)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection.Count.get
@@ -69,63 +69,63 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Windows.Web.Http.Headers.HttpExpectationHeaderValue item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "int HttpExpectationHeaderValueCollection.IndexOf(HttpExpectationHeaderValue item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "IndexOf(HttpExpectationHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Insert(int index, global::Windows.Web.Http.Headers.HttpExpectationHeaderValue item)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "void HttpExpectationHeaderValueCollection.Insert(int index, HttpExpectationHeaderValue item)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "Insert(int index, HttpExpectationHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveAt(int index)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "void HttpExpectationHeaderValueCollection.RemoveAt(int index)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "RemoveAt(int index)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::Windows.Web.Http.Headers.HttpExpectationHeaderValue item)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "void HttpExpectationHeaderValueCollection.Add(HttpExpectationHeaderValue item)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "Add(HttpExpectationHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "void HttpExpectationHeaderValueCollection.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Windows.Web.Http.Headers.HttpExpectationHeaderValue item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "bool HttpExpectationHeaderValueCollection.Contains(HttpExpectationHeaderValue item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "Contains(HttpExpectationHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::Windows.Web.Http.Headers.HttpExpectationHeaderValue[] array, int arrayIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "void HttpExpectationHeaderValueCollection.CopyTo(HttpExpectationHeaderValue[] array, int arrayIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "CopyTo(HttpExpectationHeaderValue[] array, int arrayIndex)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Windows.Web.Http.Headers.HttpExpectationHeaderValue item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "bool HttpExpectationHeaderValueCollection.Remove(HttpExpectationHeaderValue item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "Remove(HttpExpectationHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.Headers.HttpExpectationHeaderValue> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "IEnumerator<HttpExpectationHeaderValue> HttpExpectationHeaderValueCollection.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection.System.Collections.IEnumerable.GetEnumerator()
@@ -133,7 +133,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "string HttpExpectationHeaderValueCollection.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpExpectationHeaderValue>.get_Item(int)

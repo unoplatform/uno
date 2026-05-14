@@ -19,11 +19,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "bool MiracastReceiverCursorImageChannelSettings.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "bool MiracastReceiverCursorImageChannelSettings.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "IsEnabled");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "MaxImageSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "MaxImageSize");
 			}
 		}
 #endif

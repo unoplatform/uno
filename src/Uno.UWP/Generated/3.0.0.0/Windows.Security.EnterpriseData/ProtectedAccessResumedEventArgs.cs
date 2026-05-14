@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs", "IReadOnlyList<string> ProtectedAccessResumedEventArgs.Identities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs", "Identities");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "MediaPlaybackItem CurrentMediaPlaybackItemChangedEventArgs.NewItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "NewItem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "MediaPlaybackItem CurrentMediaPlaybackItemChangedEventArgs.OldItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "OldItem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "MediaPlaybackItemChangedReason CurrentMediaPlaybackItemChangedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "Reason");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "bool AppCaptureState.IsHistoricalCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "IsHistoricalCaptureEnabled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "bool AppCaptureState.IsTargetRunning");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "IsTargetRunning");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "uint AppCaptureState.MicrophoneCaptureError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "MicrophoneCaptureError");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "AppCaptureMicrophoneCaptureState AppCaptureState.MicrophoneCaptureState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "MicrophoneCaptureState");
 			}
 		}
 #endif
@@ -59,11 +59,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "bool AppCaptureState.ShouldCaptureMicrophone");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "ShouldCaptureMicrophone");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "bool AppCaptureState.ShouldCaptureMicrophone");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "ShouldCaptureMicrophone");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RestartMicrophoneCapture()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "void AppCaptureState.RestartMicrophoneCapture()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "RestartMicrophoneCapture()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppCaptureState.CaptureTargetClosed.add
@@ -91,12 +91,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "event TypedEventHandler<AppCaptureState, object> AppCaptureState.CaptureTargetClosed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "event CaptureTargetClosed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "event TypedEventHandler<AppCaptureState, object> AppCaptureState.CaptureTargetClosed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "event CaptureTargetClosed");
 			}
 		}
 #endif
@@ -107,12 +107,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "event TypedEventHandler<AppCaptureState, AppCaptureMicrophoneCaptureStateChangedEventArgs> AppCaptureState.MicrophoneCaptureStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "event MicrophoneCaptureStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "event TypedEventHandler<AppCaptureState, AppCaptureMicrophoneCaptureStateChangedEventArgs> AppCaptureState.MicrophoneCaptureStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureState", "event MicrophoneCaptureStateChanged");
 			}
 		}
 #endif

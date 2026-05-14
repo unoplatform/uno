@@ -13,14 +13,14 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputFocusController GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusController", "InputFocusController InputFocusController.GetForIsland(ContentIsland island)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusController", "GetForIsland(ContentIsland island)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetFocus()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusController", "bool InputFocusController.TrySetFocus()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusController", "TrySetFocus()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.add
@@ -40,12 +40,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusController", "event TypedEventHandler<InputFocusController, FocusNavigationRequestEventArgs> InputFocusController.NavigateFocusRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusController", "event NavigateFocusRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusController", "event TypedEventHandler<InputFocusController, FocusNavigationRequestEventArgs> InputFocusController.NavigateFocusRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusController", "event NavigateFocusRequested");
 			}
 		}
 #endif

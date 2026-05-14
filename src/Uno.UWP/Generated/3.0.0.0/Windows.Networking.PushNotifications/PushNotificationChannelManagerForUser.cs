@@ -19,7 +19,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "User PushNotificationChannelManagerForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "User");
 			}
 		}
 #endif
@@ -27,35 +27,35 @@ namespace Windows.Networking.PushNotifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForApplicationAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForApplicationAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "CreatePushNotificationChannelForApplicationAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForApplicationAsync(string applicationId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForApplicationAsync(string applicationId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "CreatePushNotificationChannelForApplicationAsync(string applicationId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForSecondaryTileAsync(string tileId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForSecondaryTileAsync(string tileId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "CreatePushNotificationChannelForSecondaryTileAsync(string tileId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(global::Windows.Storage.Streams.IBuffer appServerKey, string channelId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(IBuffer appServerKey, string channelId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(IBuffer appServerKey, string channelId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(global::Windows.Storage.Streams.IBuffer appServerKey, string channelId, string appId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(IBuffer appServerKey, string channelId, string appId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(IBuffer appServerKey, string channelId, string appId)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser.User.get

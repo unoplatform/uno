@@ -14,11 +14,11 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.Currency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "Currency");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.Currency");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "Currency");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.GeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "GeographicRegion");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.ResolvedGeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "ResolvedGeographicRegion");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CurrencyFormatter(string currencyCode, global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "CurrencyFormatter.CurrencyFormatter(string currencyCode, IEnumerable<string> languages, string geographicRegion)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "CurrencyFormatter(string currencyCode, IEnumerable<string> languages, string geographicRegion)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.CurrencyFormatter(string, System.Collections.Generic.IEnumerable<string>, string)
@@ -67,14 +67,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public long? ParseInt(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "long? CurrencyFormatter.ParseInt(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "ParseInt(string text)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong? ParseUInt(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "ulong? CurrencyFormatter.ParseUInt(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "ParseUInt(string text)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.CurrencyFormatter.ParseDouble(string)
@@ -82,14 +82,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatInt(long value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.FormatInt(long value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "FormatInt(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatUInt(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.FormatUInt(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "FormatUInt(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.CurrencyFormatter.FormatDouble(double)
@@ -97,14 +97,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.Format(long value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "Format(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.Format(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.CurrencyFormatter", "Format(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.CurrencyFormatter.Format(double)

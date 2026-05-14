@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "Language CoreTextTextUpdatingEventArgs.InputLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "InputLanguage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "bool CoreTextTextUpdatingEventArgs.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "IsCanceled");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "CoreTextRange CoreTextTextUpdatingEventArgs.NewSelection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "NewSelection");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "CoreTextRange CoreTextTextUpdatingEventArgs.Range");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "Range");
 			}
 		}
 #endif
@@ -59,11 +59,11 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "CoreTextTextUpdatingResult CoreTextTextUpdatingEventArgs.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "Result");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "CoreTextTextUpdatingResult CoreTextTextUpdatingEventArgs.Result");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "Result");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "string CoreTextTextUpdatingEventArgs.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "Text");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "Deferral CoreTextTextUpdatingEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs.InputLanguage.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs", "AudioDeviceModule AudioDeviceModuleNotificationEventArgs.Module");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs", "Module");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs", "IBuffer AudioDeviceModuleNotificationEventArgs.NotificationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs", "NotificationData");
 			}
 		}
 #endif

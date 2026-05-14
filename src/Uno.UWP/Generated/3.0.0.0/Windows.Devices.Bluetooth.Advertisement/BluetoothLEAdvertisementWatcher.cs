@@ -14,11 +14,11 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcher.AdvertisementFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "AdvertisementFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcher.AdvertisementFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "AdvertisementFilter");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "AllowExtendedAdvertisements");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "AllowExtendedAdvertisements");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "TimeSpan BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "MaxOutOfRangeTimeout");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "TimeSpan BluetoothLEAdvertisementWatcher.MaxSamplingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "MaxSamplingInterval");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "TimeSpan BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "MinOutOfRangeTimeout");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "TimeSpan BluetoothLEAdvertisementWatcher.MinSamplingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "MinSamplingInterval");
 			}
 		}
 #endif
@@ -82,11 +82,11 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "ScanningMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "ScanningMode");
 			}
 		}
 #endif
@@ -96,11 +96,11 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "SignalStrengthFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "SignalStrengthFilter");
 			}
 		}
 #endif
@@ -110,7 +110,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementWatcherStatus BluetoothLEAdvertisementWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "Status");
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BluetoothLEAdvertisementWatcher()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementWatcher.BluetoothLEAdvertisementWatcher()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementWatcher()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.BluetoothLEAdvertisementWatcher()
@@ -126,7 +126,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BluetoothLEAdvertisementWatcher(global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter advertisementFilter)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementWatcher.BluetoothLEAdvertisementWatcher(BluetoothLEAdvertisementFilter advertisementFilter)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementWatcher(BluetoothLEAdvertisementFilter advertisementFilter)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.BluetoothLEAdvertisementWatcher(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter)
@@ -134,14 +134,14 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "void BluetoothLEAdvertisementWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "void BluetoothLEAdvertisementWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "Stop()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.Received.add
@@ -168,12 +168,12 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "event TypedEventHandler<BluetoothLEAdvertisementWatcher, BluetoothLEAdvertisementReceivedEventArgs> BluetoothLEAdvertisementWatcher.Received");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "event Received");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "event TypedEventHandler<BluetoothLEAdvertisementWatcher, BluetoothLEAdvertisementReceivedEventArgs> BluetoothLEAdvertisementWatcher.Received");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "event Received");
 			}
 		}
 #endif
@@ -184,12 +184,12 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "event TypedEventHandler<BluetoothLEAdvertisementWatcher, BluetoothLEAdvertisementWatcherStoppedEventArgs> BluetoothLEAdvertisementWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "event Stopped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "event TypedEventHandler<BluetoothLEAdvertisementWatcher, BluetoothLEAdvertisementWatcherStoppedEventArgs> BluetoothLEAdvertisementWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "event Stopped");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "AppId");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastChannel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "BroadcastChannel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastChannel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "BroadcastChannel");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "BroadcastLanguage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastLanguage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "BroadcastLanguage");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "BroadcastTitle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastTitle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "BroadcastTitle");
 			}
 		}
 #endif
@@ -71,11 +71,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastPlugInState AppBroadcastBackgroundService.PlugInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "PlugInState");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastPlugInState AppBroadcastBackgroundService.PlugInState");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "PlugInState");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastBackgroundServiceSignInInfo AppBroadcastBackgroundService.SignInInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "SignInInfo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastBackgroundServiceSignInInfo AppBroadcastBackgroundService.SignInInfo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "SignInInfo");
 			}
 		}
 #endif
@@ -99,11 +99,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastBackgroundServiceStreamInfo AppBroadcastBackgroundService.StreamInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "StreamInfo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastBackgroundServiceStreamInfo AppBroadcastBackgroundService.StreamInfo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "StreamInfo");
 			}
 		}
 #endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.TitleId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "TitleId");
 			}
 		}
 #endif
@@ -123,11 +123,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "uint AppBroadcastBackgroundService.ViewerCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "ViewerCount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "uint AppBroadcastBackgroundService.ViewerCount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "ViewerCount");
 			}
 		}
 #endif
@@ -135,7 +135,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void TerminateBroadcast(global::Windows.Media.Capture.AppBroadcastTerminationReason reason, uint providerSpecificReason)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "void AppBroadcastBackgroundService.TerminateBroadcast(AppBroadcastTerminationReason reason, uint providerSpecificReason)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "TerminateBroadcast(AppBroadcastTerminationReason reason, uint providerSpecificReason)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundService.HeartbeatRequested.add
@@ -169,12 +169,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event TypedEventHandler<AppBroadcastBackgroundService, AppBroadcastHeartbeatRequestedEventArgs> AppBroadcastBackgroundService.HeartbeatRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event HeartbeatRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event TypedEventHandler<AppBroadcastBackgroundService, AppBroadcastHeartbeatRequestedEventArgs> AppBroadcastBackgroundService.HeartbeatRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event HeartbeatRequested");
 			}
 		}
 #endif
@@ -185,12 +185,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event TypedEventHandler<AppBroadcastBackgroundService, object> AppBroadcastBackgroundService.BroadcastChannelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event BroadcastChannelChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event TypedEventHandler<AppBroadcastBackgroundService, object> AppBroadcastBackgroundService.BroadcastChannelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event BroadcastChannelChanged");
 			}
 		}
 #endif
@@ -201,12 +201,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event TypedEventHandler<AppBroadcastBackgroundService, object> AppBroadcastBackgroundService.BroadcastLanguageChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event BroadcastLanguageChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event TypedEventHandler<AppBroadcastBackgroundService, object> AppBroadcastBackgroundService.BroadcastLanguageChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event BroadcastLanguageChanged");
 			}
 		}
 #endif
@@ -217,12 +217,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event TypedEventHandler<AppBroadcastBackgroundService, object> AppBroadcastBackgroundService.BroadcastTitleChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event BroadcastTitleChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event TypedEventHandler<AppBroadcastBackgroundService, object> AppBroadcastBackgroundService.BroadcastTitleChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundService", "event BroadcastTitleChanged");
 			}
 		}
 #endif

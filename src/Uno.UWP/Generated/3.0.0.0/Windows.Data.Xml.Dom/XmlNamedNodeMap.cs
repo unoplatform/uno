@@ -19,21 +19,21 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode GetNamedItemNS(object namespaceUri, string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "IXmlNode XmlNamedNodeMap.GetNamedItemNS(object namespaceUri, string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "GetNamedItemNS(object namespaceUri, string name)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode RemoveNamedItemNS(object namespaceUri, string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "IXmlNode XmlNamedNodeMap.RemoveNamedItemNS(object namespaceUri, string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "RemoveNamedItemNS(object namespaceUri, string name)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode SetNamedItemNS(global::Windows.Data.Xml.Dom.IXmlNode node)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "IXmlNode XmlNamedNodeMap.SetNamedItemNS(IXmlNode node)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "SetNamedItemNS(IXmlNode node)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Count.get

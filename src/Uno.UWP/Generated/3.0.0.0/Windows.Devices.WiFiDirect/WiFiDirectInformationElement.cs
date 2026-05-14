@@ -14,11 +14,11 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IBuffer WiFiDirectInformationElement.Oui");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "Oui");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IBuffer WiFiDirectInformationElement.Oui");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "Oui");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "byte WiFiDirectInformationElement.OuiType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "OuiType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "byte WiFiDirectInformationElement.OuiType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "OuiType");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IBuffer WiFiDirectInformationElement.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IBuffer WiFiDirectInformationElement.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "Value");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.WiFiDirect
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WiFiDirectInformationElement()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "WiFiDirectInformationElement.WiFiDirectInformationElement()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "WiFiDirectInformationElement()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WiFiDirectInformationElement()
@@ -62,14 +62,14 @@ namespace Windows.Devices.WiFiDirect
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromBuffer(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IList<WiFiDirectInformationElement> WiFiDirectInformationElement.CreateFromBuffer(IBuffer buffer)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "CreateFromBuffer(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromDeviceInformation(global::Windows.Devices.Enumeration.DeviceInformation deviceInformation)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "IList<WiFiDirectInformationElement> WiFiDirectInformationElement.CreateFromDeviceInformation(DeviceInformation deviceInformation)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectInformationElement", "CreateFromDeviceInformation(DeviceInformation deviceInformation)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Oui.get

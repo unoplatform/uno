@@ -14,7 +14,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SmbiosInformation", "string SmbiosInformation.SerialNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SmbiosInformation", "SerialNumber");
 			}
 		}
 #endif

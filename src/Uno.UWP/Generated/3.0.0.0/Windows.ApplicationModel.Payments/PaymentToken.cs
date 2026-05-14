@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentToken", "string PaymentToken.JsonDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentToken", "JsonDetails");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentToken", "string PaymentToken.PaymentMethodId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentToken", "PaymentMethodId");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentToken(string paymentMethodId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentToken", "PaymentToken.PaymentToken(string paymentMethodId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentToken", "PaymentToken(string paymentMethodId)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentToken(string)
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentToken(string paymentMethodId, string jsonDetails)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentToken", "PaymentToken.PaymentToken(string paymentMethodId, string jsonDetails)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentToken", "PaymentToken(string paymentMethodId, string jsonDetails)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentToken(string, string)

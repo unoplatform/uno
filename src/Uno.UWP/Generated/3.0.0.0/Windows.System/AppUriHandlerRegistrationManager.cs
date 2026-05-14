@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "User AppUriHandlerRegistrationManager.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "User");
 			}
 		}
 #endif
@@ -27,21 +27,21 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.AppUriHandlerRegistrationManager GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "AppUriHandlerRegistrationManager AppUriHandlerRegistrationManager.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.AppUriHandlerRegistrationManager GetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "AppUriHandlerRegistrationManager AppUriHandlerRegistrationManager.GetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "GetForUser(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.AppUriHandlerRegistration TryGetRegistration(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "AppUriHandlerRegistration AppUriHandlerRegistrationManager.TryGetRegistration(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "TryGetRegistration(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.User.get

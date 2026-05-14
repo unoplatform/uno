@@ -19,11 +19,11 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs", "bool SpatialLocatorPositionalTrackingDeactivatingEventArgs.Canceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs", "Canceled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs", "bool SpatialLocatorPositionalTrackingDeactivatingEventArgs.Canceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorPositionalTrackingDeactivatingEventArgs", "Canceled");
 			}
 		}
 #endif

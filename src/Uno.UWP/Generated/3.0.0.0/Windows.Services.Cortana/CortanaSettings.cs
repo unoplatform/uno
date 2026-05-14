@@ -19,7 +19,7 @@ namespace Windows.Services.Cortana
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaSettings", "bool CortanaSettings.HasUserConsentToVoiceActivation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaSettings", "HasUserConsentToVoiceActivation");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Services.Cortana
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaSettings", "bool CortanaSettings.IsVoiceActivationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaSettings", "IsVoiceActivationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Cortana.CortanaSettings", "bool CortanaSettings.IsVoiceActivationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Cortana.CortanaSettings", "IsVoiceActivationEnabled");
 			}
 		}
 #endif
@@ -41,14 +41,14 @@ namespace Windows.Services.Cortana
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaSettings", "bool CortanaSettings.IsSupported()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaSettings", "IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Cortana.CortanaSettings GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaSettings", "CortanaSettings CortanaSettings.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaSettings", "GetDefault()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.HasUserConsentToVoiceActivation.get

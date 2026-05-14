@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs", "BluetoothError BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs", "Error");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs", "short? BluetoothLEAdvertisementPublisherStatusChangedEventArgs.SelectedTransmitPowerLevelInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs", "SelectedTransmitPowerLevelInDBm");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs", "BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs", "Status");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "GeoboundingBox MapRoute.BoundingBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "BoundingBox");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "TimeSpan MapRoute.DurationWithoutTraffic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "DurationWithoutTraffic");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "TimeSpan MapRoute.EstimatedDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "EstimatedDuration");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "bool MapRoute.HasBlockedRoads");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "HasBlockedRoads");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "bool MapRoute.IsScenic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "IsScenic");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "bool MapRoute.IsTrafficBased");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "IsTrafficBased");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "IReadOnlyList<MapRouteLeg> MapRoute.Legs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "Legs");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "double MapRoute.LengthInMeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "LengthInMeters");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "Geopath MapRoute.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "Path");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "TrafficCongestion MapRoute.TrafficCongestion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "TrafficCongestion");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "MapRouteRestrictions MapRoute.ViolatedRestrictions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRoute", "ViolatedRestrictions");
 			}
 		}
 #endif

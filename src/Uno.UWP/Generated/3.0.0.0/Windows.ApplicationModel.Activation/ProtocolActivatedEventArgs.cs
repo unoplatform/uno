@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs", "string ProtocolActivatedEventArgs.CallerPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs", "CallerPackageFamilyName");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs", "ValueSet ProtocolActivatedEventArgs.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs", "Data");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs", "User ProtocolActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs", "User");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs", "ActivationViewSwitcher ProtocolActivatedEventArgs.ViewSwitcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs", "ViewSwitcher");
 			}
 		}
 #endif

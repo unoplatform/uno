@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "ActivatedOperation WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "ActivationKind WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "ApplicationExecutionState WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "RemoveAppointmentOperation WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.RemoveAppointmentOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "RemoveAppointmentOperation");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "SplashScreen WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "User WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "User");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "string WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.Verb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs", "Verb");
 			}
 		}
 #endif

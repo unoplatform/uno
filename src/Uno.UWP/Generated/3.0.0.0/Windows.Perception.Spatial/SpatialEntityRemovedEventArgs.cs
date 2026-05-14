@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntityRemovedEventArgs", "SpatialEntity SpatialEntityRemovedEventArgs.Entity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntityRemovedEventArgs", "Entity");
 			}
 		}
 #endif

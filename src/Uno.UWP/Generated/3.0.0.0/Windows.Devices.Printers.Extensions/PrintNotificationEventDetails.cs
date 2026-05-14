@@ -19,11 +19,11 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintNotificationEventDetails", "string PrintNotificationEventDetails.EventData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintNotificationEventDetails", "EventData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.PrintNotificationEventDetails", "string PrintNotificationEventDetails.EventData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.PrintNotificationEventDetails", "EventData");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintNotificationEventDetails", "string PrintNotificationEventDetails.PrinterName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintNotificationEventDetails", "PrinterName");
 			}
 		}
 #endif

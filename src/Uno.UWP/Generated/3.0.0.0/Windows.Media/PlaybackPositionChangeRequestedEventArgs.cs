@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlaybackPositionChangeRequestedEventArgs", "TimeSpan PlaybackPositionChangeRequestedEventArgs.RequestedPlaybackPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlaybackPositionChangeRequestedEventArgs", "RequestedPlaybackPosition");
 			}
 		}
 #endif

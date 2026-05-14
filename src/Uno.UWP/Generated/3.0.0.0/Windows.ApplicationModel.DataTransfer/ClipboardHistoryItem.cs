@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "DataPackageView ClipboardHistoryItem.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "Content");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "string ClipboardHistoryItem.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "DateTimeOffset ClipboardHistoryItem.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "Timestamp");
 			}
 		}
 #endif

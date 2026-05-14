@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastSignInStateChangedEventArgs", "AppBroadcastSignInResult AppBroadcastSignInStateChangedEventArgs.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastSignInStateChangedEventArgs", "Result");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastSignInStateChangedEventArgs", "AppBroadcastSignInState AppBroadcastSignInStateChangedEventArgs.SignInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastSignInStateChangedEventArgs", "SignInState");
 			}
 		}
 #endif

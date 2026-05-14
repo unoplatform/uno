@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactFieldFactory()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactFieldFactory.ContactFieldFactory()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactFieldFactory()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactFieldFactory.ContactFieldFactory()
@@ -20,63 +20,63 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactField CreateField(string value, global::Windows.ApplicationModel.Contacts.ContactFieldType type)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactField ContactFieldFactory.CreateField(string value, ContactFieldType type)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateField(string value, ContactFieldType type)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactField CreateField(string value, global::Windows.ApplicationModel.Contacts.ContactFieldType type, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactField ContactFieldFactory.CreateField(string value, ContactFieldType type, ContactFieldCategory category)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateField(string value, ContactFieldType type, ContactFieldCategory category)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactField CreateField(string name, string value, global::Windows.ApplicationModel.Contacts.ContactFieldType type, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactField ContactFieldFactory.CreateField(string name, string value, ContactFieldType type, ContactFieldCategory category)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateField(string name, string value, ContactFieldType type, ContactFieldCategory category)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactLocationField CreateLocation(string unstructuredAddress)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactLocationField ContactFieldFactory.CreateLocation(string unstructuredAddress)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateLocation(string unstructuredAddress)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactLocationField CreateLocation(string unstructuredAddress, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactLocationField ContactFieldFactory.CreateLocation(string unstructuredAddress, ContactFieldCategory category)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateLocation(string unstructuredAddress, ContactFieldCategory category)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactLocationField CreateLocation(string unstructuredAddress, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category, string street, string city, string region, string country, string postalCode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactLocationField ContactFieldFactory.CreateLocation(string unstructuredAddress, ContactFieldCategory category, string street, string city, string region, string country, string postalCode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateLocation(string unstructuredAddress, ContactFieldCategory category, string street, string city, string region, string country, string postalCode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage(string userName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactInstantMessageField ContactFieldFactory.CreateInstantMessage(string userName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateInstantMessage(string userName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage(string userName, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactInstantMessageField ContactFieldFactory.CreateInstantMessage(string userName, ContactFieldCategory category)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateInstantMessage(string userName, ContactFieldCategory category)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage(string userName, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category, string service, string displayText, global::System.Uri verb)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "ContactInstantMessageField ContactFieldFactory.CreateInstantMessage(string userName, ContactFieldCategory category, string service, string displayText, Uri verb)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactFieldFactory", "CreateInstantMessage(string userName, ContactFieldCategory category, string service, string displayText, Uri verb)");
 		}
 #endif
 		// Processing: Windows.ApplicationModel.Contacts.IContactFieldFactory

@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.Base");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "Base");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.BaseSubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "BaseSubtle");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.Body");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "Body");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.BodySubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "BodySubtle");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.Caption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "Caption");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.CaptionSubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "CaptionSubtle");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.Header");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "Header");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.HeaderNumeral");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "HeaderNumeral");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.HeaderNumeralSubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "HeaderNumeralSubtle");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.HeaderSubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "HeaderSubtle");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.Subheader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "Subheader");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.SubheaderNumeral");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "SubheaderNumeral");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.SubheaderNumeralSubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "SubheaderNumeralSubtle");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.SubheaderSubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "SubheaderSubtle");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.Subtitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "Subtitle");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.SubtitleSubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "SubtitleSubtle");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "Title");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.TitleNumeral");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "TitleNumeral");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "string KnownAdaptiveNotificationTextStyles.TitleSubtle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles", "TitleSubtle");
 			}
 		}
 #endif

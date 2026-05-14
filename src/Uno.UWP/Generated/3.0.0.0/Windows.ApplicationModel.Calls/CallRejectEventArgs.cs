@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.CallRejectEventArgs", "VoipPhoneCallRejectReason CallRejectEventArgs.RejectReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.CallRejectEventArgs", "RejectReason");
 			}
 		}
 #endif

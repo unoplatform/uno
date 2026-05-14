@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "Uri WebAccountProviderSignOutAccountOperation.ApplicationCallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "ApplicationCallbackUri");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "string WebAccountProviderSignOutAccountOperation.ClientId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "ClientId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "WebAccountProviderOperationKind WebAccountProviderSignOutAccountOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "Kind");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "WebAccount WebAccountProviderSignOutAccountOperation.WebAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "WebAccount");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.Security.Authentication.Web.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "void WebAccountProviderSignOutAccountOperation.ReportCompleted()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "ReportCompleted()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportError(global::Windows.Security.Authentication.Web.Core.WebProviderError value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "void WebAccountProviderSignOutAccountOperation.ReportError(WebProviderError value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation", "ReportError(WebProviderError value)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderSignOutAccountOperation.ApplicationCallbackUri.get

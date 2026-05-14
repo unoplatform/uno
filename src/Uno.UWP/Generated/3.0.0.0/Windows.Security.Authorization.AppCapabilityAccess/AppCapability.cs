@@ -19,7 +19,7 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "string AppCapability.CapabilityName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "CapabilityName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "User AppCapability.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "User");
 			}
 		}
 #endif
@@ -37,42 +37,42 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus>> RequestAccessForCapabilitiesAsync(global::System.Collections.Generic.IEnumerable<string> capabilityNames)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "IAsyncOperation<IReadOnlyDictionary<string, AppCapabilityAccessStatus>> AppCapability.RequestAccessForCapabilitiesAsync(IEnumerable<string> capabilityNames)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "RequestAccessForCapabilitiesAsync(IEnumerable<string> capabilityNames)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus>> RequestAccessForCapabilitiesForUserAsync(global::Windows.System.User user, global::System.Collections.Generic.IEnumerable<string> capabilityNames)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "IAsyncOperation<IReadOnlyDictionary<string, AppCapabilityAccessStatus>> AppCapability.RequestAccessForCapabilitiesForUserAsync(User user, IEnumerable<string> capabilityNames)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "RequestAccessForCapabilitiesForUserAsync(User user, IEnumerable<string> capabilityNames)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Authorization.AppCapabilityAccess.AppCapability Create(string capabilityName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "AppCapability AppCapability.Create(string capabilityName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "Create(string capabilityName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Authorization.AppCapabilityAccess.AppCapability CreateWithProcessIdForUser(global::Windows.System.User user, string capabilityName, uint pid)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "AppCapability AppCapability.CreateWithProcessIdForUser(User user, string capabilityName, uint pid)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "CreateWithProcessIdForUser(User user, string capabilityName, uint pid)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "IAsyncOperation<AppCapabilityAccessStatus> AppCapability.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus CheckAccess()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "AppCapabilityAccessStatus AppCapability.CheckAccess()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "CheckAccess()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.AccessChanged.add
@@ -86,12 +86,12 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "event TypedEventHandler<AppCapability, AppCapabilityAccessChangedEventArgs> AppCapability.AccessChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "event AccessChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "event TypedEventHandler<AppCapability, AppCapabilityAccessChangedEventArgs> AppCapability.AccessChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "event AccessChanged");
 			}
 		}
 #endif

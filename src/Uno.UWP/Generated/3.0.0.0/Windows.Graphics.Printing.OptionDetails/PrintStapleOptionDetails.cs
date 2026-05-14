@@ -19,11 +19,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "Description");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "ErrorText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.ErrorText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "ErrorText");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "IReadOnlyList<object> PrintStapleOptionDetails.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "Items");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "OptionId");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "PrintOptionType PrintStapleOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "OptionType");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "PrintOptionStates PrintStapleOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "State");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "PrintOptionStates PrintStapleOptionDetails.State");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "State");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "object PrintStapleOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "Value");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "WarningText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "string PrintStapleOptionDetails.WarningText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "WarningText");
 			}
 		}
 #endif
@@ -113,7 +113,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "bool PrintStapleOptionDetails.TrySetValue(object value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails", "TrySetValue(object value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintStapleOptionDetails.Description.get

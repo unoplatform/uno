@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs", "string TargetApplicationChosenEventArgs.ApplicationName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs", "ApplicationName");
 			}
 		}
 #endif

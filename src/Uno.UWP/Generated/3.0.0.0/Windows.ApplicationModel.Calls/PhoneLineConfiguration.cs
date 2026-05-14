@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineConfiguration", "IReadOnlyDictionary<string, object> PhoneLineConfiguration.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineConfiguration", "ExtendedProperties");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineConfiguration", "bool PhoneLineConfiguration.IsVideoCallingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineConfiguration", "IsVideoCallingEnabled");
 			}
 		}
 #endif

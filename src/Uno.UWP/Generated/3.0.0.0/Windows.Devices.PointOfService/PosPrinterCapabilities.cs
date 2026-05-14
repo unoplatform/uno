@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "bool PosPrinterCapabilities.CanMapCharacterSet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "CanMapCharacterSet");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "uint PosPrinterCapabilities.DefaultCharacterSet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "DefaultCharacterSet");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "bool PosPrinterCapabilities.HasCoverSensor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "HasCoverSensor");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "bool PosPrinterCapabilities.IsStatisticsReportingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "IsStatisticsReportingSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "bool PosPrinterCapabilities.IsStatisticsUpdatingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "IsStatisticsUpdatingSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "bool PosPrinterCapabilities.IsTransactionSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "IsTransactionSupported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "JournalPrinterCapabilities PosPrinterCapabilities.Journal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "Journal");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "UnifiedPosPowerReportingType PosPrinterCapabilities.PowerReportingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "PowerReportingType");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "ReceiptPrinterCapabilities PosPrinterCapabilities.Receipt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "Receipt");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "SlipPrinterCapabilities PosPrinterCapabilities.Slip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "Slip");
 			}
 		}
 #endif

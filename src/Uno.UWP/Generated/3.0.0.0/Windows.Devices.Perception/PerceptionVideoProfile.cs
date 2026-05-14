@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "BitmapAlphaMode PerceptionVideoProfile.BitmapAlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "BitmapAlphaMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "BitmapPixelFormat PerceptionVideoProfile.BitmapPixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "BitmapPixelFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "TimeSpan PerceptionVideoProfile.FrameDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "FrameDuration");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "int PerceptionVideoProfile.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "Height");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "int PerceptionVideoProfile.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "Width");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Devices.Perception.PerceptionVideoProfile other)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "bool PerceptionVideoProfile.IsEqual(PerceptionVideoProfile other)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionVideoProfile", "IsEqual(PerceptionVideoProfile other)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.BitmapAlphaMode.get

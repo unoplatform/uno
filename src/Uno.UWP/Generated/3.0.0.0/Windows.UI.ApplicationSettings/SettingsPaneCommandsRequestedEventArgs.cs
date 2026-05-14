@@ -19,7 +19,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs", "SettingsPaneCommandsRequest SettingsPaneCommandsRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs", "Request");
 			}
 		}
 #endif

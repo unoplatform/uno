@@ -14,7 +14,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "string WebAccountClientView.AccountPairwiseId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "AccountPairwiseId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "Uri WebAccountClientView.ApplicationCallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "ApplicationCallbackUri");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "WebAccountClientViewType WebAccountClientView.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "Type");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebAccountClientView(global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType viewType, global::System.Uri applicationCallbackUri)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "WebAccountClientView.WebAccountClientView(WebAccountClientViewType viewType, Uri applicationCallbackUri)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "WebAccountClientView(WebAccountClientViewType viewType, Uri applicationCallbackUri)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WebAccountClientView(Windows.Security.Authentication.Web.Provider.WebAccountClientViewType, System.Uri)
@@ -50,7 +50,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebAccountClientView(global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType viewType, global::System.Uri applicationCallbackUri, string accountPairwiseId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "WebAccountClientView.WebAccountClientView(WebAccountClientViewType viewType, Uri applicationCallbackUri, string accountPairwiseId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "WebAccountClientView(WebAccountClientViewType viewType, Uri applicationCallbackUri, string accountPairwiseId)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WebAccountClientView(Windows.Security.Authentication.Web.Provider.WebAccountClientViewType, System.Uri, string)

@@ -14,7 +14,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "uint ForegroundEnergyManager.ExcessiveUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "ExcessiveUsageLevel");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "uint ForegroundEnergyManager.LowUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "LowUsageLevel");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "uint ForegroundEnergyManager.MaxAcceptableUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "MaxAcceptableUsageLevel");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "uint ForegroundEnergyManager.NearMaxAcceptableUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "NearMaxAcceptableUsageLevel");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "uint ForegroundEnergyManager.RecentEnergyUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "RecentEnergyUsage");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "uint ForegroundEnergyManager.RecentEnergyUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.ForegroundEnergyManager", "RecentEnergyUsageLevel");
 			}
 		}
 #endif
@@ -85,12 +85,12 @@ namespace Windows.System.Power
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.ForegroundEnergyManager", "event EventHandler<object> ForegroundEnergyManager.RecentEnergyUsageIncreased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.ForegroundEnergyManager", "event RecentEnergyUsageIncreased");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.ForegroundEnergyManager", "event EventHandler<object> ForegroundEnergyManager.RecentEnergyUsageIncreased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.ForegroundEnergyManager", "event RecentEnergyUsageIncreased");
 			}
 		}
 #endif
@@ -101,12 +101,12 @@ namespace Windows.System.Power
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.ForegroundEnergyManager", "event EventHandler<object> ForegroundEnergyManager.RecentEnergyUsageReturnedToLow");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.ForegroundEnergyManager", "event RecentEnergyUsageReturnedToLow");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.ForegroundEnergyManager", "event EventHandler<object> ForegroundEnergyManager.RecentEnergyUsageReturnedToLow");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.ForegroundEnergyManager", "event RecentEnergyUsageReturnedToLow");
 			}
 		}
 #endif

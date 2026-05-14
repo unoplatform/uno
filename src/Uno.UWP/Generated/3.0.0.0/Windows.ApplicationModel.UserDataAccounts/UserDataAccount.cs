@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "bool UserDataAccount.CanShowCreateContactGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "CanShowCreateContactGroup");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "bool UserDataAccount.CanShowCreateContactGroup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "CanShowCreateContactGroup");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.DeviceAccountTypeId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "DeviceAccountTypeId");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "DisplayName");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.EnterpriseId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "EnterpriseId");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IList<string> UserDataAccount.ExplictReadAccessPackageFamilyNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "ExplictReadAccessPackageFamilyNames");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IRandomAccessStreamReference UserDataAccount.Icon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "Icon");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IRandomAccessStreamReference UserDataAccount.Icon");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "Icon");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "Id");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "bool UserDataAccount.IsProtectedUnderLock");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IsProtectedUnderLock");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "bool UserDataAccount.IsProtectedUnderLock");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IsProtectedUnderLock");
 			}
 		}
 #endif
@@ -115,11 +115,11 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "UserDataAccountOtherAppReadAccess UserDataAccount.OtherAppReadAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "OtherAppReadAccess");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "UserDataAccountOtherAppReadAccess UserDataAccount.OtherAppReadAccess");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "OtherAppReadAccess");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.PackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "PackageFamilyName");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IPropertySet UserDataAccount.ProviderProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "ProviderProperties");
 			}
 		}
 #endif
@@ -149,11 +149,11 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.UserDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "UserDisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "string UserDataAccount.UserDisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "UserDisplayName");
 			}
 		}
 #endif
@@ -161,63 +161,63 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncAction UserDataAccount.SaveAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "SaveAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncAction UserDataAccount.DeleteAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "DeleteAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.AppointmentCalendar>> FindAppointmentCalendarsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncOperation<IReadOnlyList<AppointmentCalendar>> UserDataAccount.FindAppointmentCalendarsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "FindAppointmentCalendarsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Email.EmailMailbox>> FindEmailMailboxesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncOperation<IReadOnlyList<EmailMailbox>> UserDataAccount.FindEmailMailboxesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "FindEmailMailboxesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactList>> FindContactListsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncOperation<IReadOnlyList<ContactList>> UserDataAccount.FindContactListsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "FindContactListsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactAnnotationList>> FindContactAnnotationListsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncOperation<IReadOnlyList<ContactAnnotationList>> UserDataAccount.FindContactAnnotationListsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "FindContactAnnotationListsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskList>> FindUserDataTaskListsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncOperation<IReadOnlyList<UserDataTaskList>> UserDataAccount.FindUserDataTaskListsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "FindUserDataTaskListsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactGroup>> FindContactGroupsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncOperation<IReadOnlyList<ContactGroup>> UserDataAccount.FindContactGroupsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "FindContactGroupsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> TryShowCreateContactGroupAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "IAsyncOperation<string> UserDataAccount.TryShowCreateContactGroupAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccount", "TryShowCreateContactGroupAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.CanShowCreateContactGroup.get

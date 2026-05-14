@@ -17,7 +17,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ActivitySensorReadingChangeReport> ReadReports()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorTriggerDetails", "IReadOnlyList<ActivitySensorReadingChangeReport> ActivitySensorTriggerDetails.ReadReports()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorTriggerDetails", "ReadReports()");
 		}
 #endif
 	}

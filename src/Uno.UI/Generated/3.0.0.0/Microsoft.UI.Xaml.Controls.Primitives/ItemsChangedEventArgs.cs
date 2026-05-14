@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "int ItemsChangedEventArgs.Action");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "Action");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "int ItemsChangedEventArgs.ItemCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "ItemCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "int ItemsChangedEventArgs.ItemUICount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "ItemUICount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "GeneratorPosition ItemsChangedEventArgs.OldPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "OldPosition");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "GeneratorPosition ItemsChangedEventArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "Position");
 			}
 		}
 #endif

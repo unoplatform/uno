@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "bool PivotPanel.AreHorizontalSnapPointsRegular");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "AreHorizontalSnapPointsRegular");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "bool PivotPanel.AreVerticalSnapPointsRegular");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "AreVerticalSnapPointsRegular");
 			}
 		}
 #endif
@@ -34,14 +34,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "IReadOnlyList<float> PivotPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float GetRegularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "float PivotPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.PivotPanel.HorizontalSnapPointsChanged.add
@@ -57,12 +57,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "event EventHandler<object> PivotPanel.HorizontalSnapPointsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "event HorizontalSnapPointsChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "event EventHandler<object> PivotPanel.HorizontalSnapPointsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "event HorizontalSnapPointsChanged");
 			}
 		}
 #endif
@@ -73,12 +73,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "event EventHandler<object> PivotPanel.VerticalSnapPointsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "event VerticalSnapPointsChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "event EventHandler<object> PivotPanel.VerticalSnapPointsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.PivotPanel", "event VerticalSnapPointsChanged");
 			}
 		}
 #endif

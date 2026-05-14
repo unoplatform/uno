@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs", "bool CoreWebView2SourceChangedEventArgs.IsNewDocument");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs", "IsNewDocument");
 			}
 		}
 #endif

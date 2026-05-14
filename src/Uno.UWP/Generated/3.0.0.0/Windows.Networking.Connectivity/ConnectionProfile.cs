@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "bool ConnectionProfile.CanDelete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "CanDelete");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "bool ConnectionProfile.IsWlanConnectionProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IsWlanConnectionProfile");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "bool ConnectionProfile.IsWwanConnectionProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IsWwanConnectionProfile");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "NetworkAdapter ConnectionProfile.NetworkAdapter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "NetworkAdapter");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "NetworkSecuritySettings ConnectionProfile.NetworkSecuritySettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "NetworkSecuritySettings");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "string ConnectionProfile.ProfileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "ProfileName");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "Guid? ConnectionProfile.ServiceProviderGuid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "ServiceProviderGuid");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "WlanConnectionProfileDetails ConnectionProfile.WlanConnectionProfileDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "WlanConnectionProfileDetails");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "WwanConnectionProfileDetails ConnectionProfile.WwanConnectionProfileDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "WwanConnectionProfileDetails");
 			}
 		}
 #endif
@@ -107,91 +107,91 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public global::Windows.Networking.Connectivity.NetworkConnectivityLevel GetNetworkConnectivityLevel()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "NetworkConnectivityLevel ConnectionProfile.GetNetworkConnectivityLevel()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetNetworkConnectivityLevel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> GetNetworkNames()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IReadOnlyList<string> ConnectionProfile.GetNetworkNames()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetNetworkNames()");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.ConnectionCost GetConnectionCost()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "ConnectionCost ConnectionProfile.GetConnectionCost()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetConnectionCost()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.DataPlanStatus GetDataPlanStatus()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "DataPlanStatus ConnectionProfile.GetDataPlanStatus()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetDataPlanStatus()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.DataUsage GetLocalUsage(global::System.DateTimeOffset StartTime, global::System.DateTimeOffset EndTime)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "DataUsage ConnectionProfile.GetLocalUsage(DateTimeOffset StartTime, DateTimeOffset EndTime)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetLocalUsage(DateTimeOffset StartTime, DateTimeOffset EndTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.DataUsage GetLocalUsage(global::System.DateTimeOffset StartTime, global::System.DateTimeOffset EndTime, global::Windows.Networking.Connectivity.RoamingStates States)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "DataUsage ConnectionProfile.GetLocalUsage(DateTimeOffset StartTime, DateTimeOffset EndTime, RoamingStates States)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetLocalUsage(DateTimeOffset StartTime, DateTimeOffset EndTime, RoamingStates States)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte? GetSignalBars()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "byte? ConnectionProfile.GetSignalBars()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetSignalBars()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.DomainConnectivityLevel GetDomainConnectivityLevel()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "DomainConnectivityLevel ConnectionProfile.GetDomainConnectivityLevel()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetDomainConnectivityLevel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.NetworkUsage>> GetNetworkUsageAsync(global::System.DateTimeOffset startTime, global::System.DateTimeOffset endTime, global::Windows.Networking.Connectivity.DataUsageGranularity granularity, global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IAsyncOperation<IReadOnlyList<NetworkUsage>> ConnectionProfile.GetNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, DataUsageGranularity granularity, NetworkUsageStates states)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, DataUsageGranularity granularity, NetworkUsageStates states)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectivityInterval>> GetConnectivityIntervalsAsync(global::System.DateTimeOffset startTime, global::System.DateTimeOffset endTime, global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IAsyncOperation<IReadOnlyList<ConnectivityInterval>> ConnectionProfile.GetConnectivityIntervalsAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetConnectivityIntervalsAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.AttributedNetworkUsage>> GetAttributedNetworkUsageAsync(global::System.DateTimeOffset startTime, global::System.DateTimeOffset endTime, global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IAsyncOperation<IReadOnlyList<AttributedNetworkUsage>> ConnectionProfile.GetAttributedNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetAttributedNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ProviderNetworkUsage>> GetProviderNetworkUsageAsync(global::System.DateTimeOffset startTime, global::System.DateTimeOffset endTime, global::Windows.Networking.Connectivity.NetworkUsageStates states)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IAsyncOperation<IReadOnlyList<ProviderNetworkUsage>> ConnectionProfile.GetProviderNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "GetProviderNetworkUsageAsync(DateTimeOffset startTime, DateTimeOffset endTime, NetworkUsageStates states)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionProfileDeleteStatus> TryDeleteAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IAsyncOperation<ConnectionProfileDeleteStatus> ConnectionProfile.TryDeleteAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "TryDeleteAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.CanDelete.get

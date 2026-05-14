@@ -19,11 +19,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.BottomMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "BottomMargin");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.BottomMargin");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "BottomMargin");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "PrintContent HtmlPrintDocumentSource.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "Content");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "PrintContent HtmlPrintDocumentSource.Content");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "Content");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.EnableHeaderFooter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "EnableHeaderFooter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.EnableHeaderFooter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "EnableHeaderFooter");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.LeftMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "LeftMargin");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.LeftMargin");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "LeftMargin");
 			}
 		}
 #endif
@@ -75,7 +75,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "string HtmlPrintDocumentSource.PageRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "PageRange");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.PercentScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "PercentScale");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.PercentScale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "PercentScale");
 			}
 		}
 #endif
@@ -99,11 +99,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.RightMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "RightMargin");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.RightMargin");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "RightMargin");
 			}
 		}
 #endif
@@ -113,11 +113,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.ShrinkToFit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "ShrinkToFit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.ShrinkToFit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "ShrinkToFit");
 			}
 		}
 #endif
@@ -127,11 +127,11 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.TopMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "TopMargin");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.TopMargin");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "TopMargin");
 			}
 		}
 #endif
@@ -139,14 +139,14 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetPageRange(string strPageRange)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.TrySetPageRange(string strPageRange)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "TrySetPageRange(string strPageRange)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "void HtmlPrintDocumentSource.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.HtmlPrintDocumentSource", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.BottomMargin.get

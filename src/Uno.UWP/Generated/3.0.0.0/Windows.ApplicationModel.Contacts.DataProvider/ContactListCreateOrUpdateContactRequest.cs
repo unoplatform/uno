@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "Contact ContactListCreateOrUpdateContactRequest.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "Contact");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "string ContactListCreateOrUpdateContactRequest.ContactListId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "ContactListId");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::Windows.ApplicationModel.Contacts.Contact createdOrUpdatedContact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "IAsyncAction ContactListCreateOrUpdateContactRequest.ReportCompletedAsync(Contact createdOrUpdatedContact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "ReportCompletedAsync(Contact createdOrUpdatedContact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "IAsyncAction ContactListCreateOrUpdateContactRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.Contact.get

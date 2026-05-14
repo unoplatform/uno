@@ -19,7 +19,7 @@ namespace Microsoft.Windows.AppLifecycle
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppActivationArguments", "object AppActivationArguments.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppActivationArguments", "Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Windows.AppLifecycle
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppActivationArguments", "ExtendedActivationKind AppActivationArguments.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppActivationArguments", "Kind");
 			}
 		}
 #endif

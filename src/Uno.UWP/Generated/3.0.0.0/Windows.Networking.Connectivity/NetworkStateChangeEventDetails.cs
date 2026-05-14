@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewConnectionCost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "HasNewConnectionCost");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewDomainConnectivityLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "HasNewDomainConnectivityLevel");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewHostNameList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "HasNewHostNameList");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewInternetConnectionProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "HasNewInternetConnectionProfile");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewNetworkConnectivityLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "HasNewNetworkConnectivityLevel");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewTetheringClientCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "HasNewTetheringClientCount");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewTetheringOperationalState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "HasNewTetheringOperationalState");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewWwanRegistrationState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "HasNewWwanRegistrationState");
 			}
 		}
 #endif

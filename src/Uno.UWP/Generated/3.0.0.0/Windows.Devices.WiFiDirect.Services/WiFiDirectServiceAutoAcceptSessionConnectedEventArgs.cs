@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAutoAcceptSessionConnectedEventArgs", "WiFiDirectServiceSession WiFiDirectServiceAutoAcceptSessionConnectedEventArgs.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAutoAcceptSessionConnectedEventArgs", "Session");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAutoAcceptSessionConnectedEventArgs", "IBuffer WiFiDirectServiceAutoAcceptSessionConnectedEventArgs.SessionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAutoAcceptSessionConnectedEventArgs", "SessionInfo");
 			}
 		}
 #endif

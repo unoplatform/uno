@@ -14,11 +14,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "string QueryOptions.ApplicationSearchFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "ApplicationSearchFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "string QueryOptions.ApplicationSearchFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "ApplicationSearchFilter");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "DateStackOption QueryOptions.DateStackOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "DateStackOption");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "IList<string> QueryOptions.FileTypeFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "FileTypeFilter");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "FolderDepth QueryOptions.FolderDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "FolderDepth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "FolderDepth QueryOptions.FolderDepth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "FolderDepth");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "string QueryOptions.GroupPropertyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "GroupPropertyName");
 			}
 		}
 #endif
@@ -72,11 +72,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "IndexerOption QueryOptions.IndexerOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "IndexerOption");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "IndexerOption QueryOptions.IndexerOption");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "IndexerOption");
 			}
 		}
 #endif
@@ -86,11 +86,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "string QueryOptions.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "string QueryOptions.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "Language");
 			}
 		}
 #endif
@@ -100,7 +100,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "IList<SortEntry> QueryOptions.SortOrder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "SortOrder");
 			}
 		}
 #endif
@@ -110,7 +110,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "IList<string> QueryOptions.StorageProviderIdFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "StorageProviderIdFilter");
 			}
 		}
 #endif
@@ -120,11 +120,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "string QueryOptions.UserSearchFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "UserSearchFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "string QueryOptions.UserSearchFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "UserSearchFilter");
 			}
 		}
 #endif
@@ -132,7 +132,7 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public QueryOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions.QueryOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions()
@@ -140,7 +140,7 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public QueryOptions(global::Windows.Storage.Search.CommonFileQuery query, global::System.Collections.Generic.IEnumerable<string> fileTypeFilter)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions.QueryOptions(CommonFileQuery query, IEnumerable<string> fileTypeFilter)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions(CommonFileQuery query, IEnumerable<string> fileTypeFilter)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions(Windows.Storage.Search.CommonFileQuery, System.Collections.Generic.IEnumerable<string>)
@@ -148,7 +148,7 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public QueryOptions(global::Windows.Storage.Search.CommonFolderQuery query)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions.QueryOptions(CommonFolderQuery query)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions(CommonFolderQuery query)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions(Windows.Storage.Search.CommonFolderQuery)
@@ -156,28 +156,28 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string SaveToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "string QueryOptions.SaveToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "SaveToString()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void LoadFromString(string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "void QueryOptions.LoadFromString(string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "LoadFromString(string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetThumbnailPrefetch(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize, global::Windows.Storage.FileProperties.ThumbnailOptions options)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "void QueryOptions.SetThumbnailPrefetch(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "SetThumbnailPrefetch(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPropertyPrefetch(global::Windows.Storage.FileProperties.PropertyPrefetchOptions options, global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "void QueryOptions.SetPropertyPrefetch(PropertyPrefetchOptions options, IEnumerable<string> propertiesToRetrieve)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "SetPropertyPrefetch(PropertyPrefetchOptions options, IEnumerable<string> propertiesToRetrieve)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.ApplicationSearchFilter.get

@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Markup
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation Write(global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IRandomAccessStream> inputStreams, global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IRandomAccessStream> outputStreams, global::Microsoft.UI.Xaml.Markup.IXamlMetadataProvider xamlMetadataProvider)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Markup.XamlBinaryWriter", "XamlBinaryWriterErrorInformation XamlBinaryWriter.Write(IList<IRandomAccessStream> inputStreams, IList<IRandomAccessStream> outputStreams, IXamlMetadataProvider xamlMetadataProvider)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Markup.XamlBinaryWriter", "Write(IList<IRandomAccessStream> inputStreams, IList<IRandomAccessStream> outputStreams, IXamlMetadataProvider xamlMetadataProvider)");
 		}
 #endif
 	}

@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "string WwanConnectionProfileDetails.AccessPointName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "AccessPointName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "string WwanConnectionProfileDetails.HomeProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "HomeProviderId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "WwanNetworkIPKind WwanConnectionProfileDetails.IPKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "IPKind");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "IReadOnlyList<Guid> WwanConnectionProfileDetails.PurposeGuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "PurposeGuids");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.WwanNetworkRegistrationState GetNetworkRegistrationState()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "WwanNetworkRegistrationState WwanConnectionProfileDetails.GetNetworkRegistrationState()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "GetNetworkRegistrationState()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.WwanDataClass GetCurrentDataClass()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "WwanDataClass WwanConnectionProfileDetails.GetCurrentDataClass()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "GetCurrentDataClass()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.AccessPointName.get

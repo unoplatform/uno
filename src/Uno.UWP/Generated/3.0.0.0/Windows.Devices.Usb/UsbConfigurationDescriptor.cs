@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "byte UsbConfigurationDescriptor.ConfigurationValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "ConfigurationValue");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "uint UsbConfigurationDescriptor.MaxPowerMilliamps");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "MaxPowerMilliamps");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "bool UsbConfigurationDescriptor.RemoteWakeup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "RemoteWakeup");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "bool UsbConfigurationDescriptor.SelfPowered");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "SelfPowered");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbConfigurationDescriptor parsed)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "bool UsbConfigurationDescriptor.TryParse(UsbDescriptor descriptor, out UsbConfigurationDescriptor parsed)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "TryParse(UsbDescriptor descriptor, out UsbConfigurationDescriptor parsed)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Usb.UsbConfigurationDescriptor Parse(global::Windows.Devices.Usb.UsbDescriptor descriptor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "UsbConfigurationDescriptor UsbConfigurationDescriptor.Parse(UsbDescriptor descriptor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfigurationDescriptor", "Parse(UsbDescriptor descriptor)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.ConfigurationValue.get

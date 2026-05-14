@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "SpatialInteractionSourceKind SpatialNavigationStartedEventArgs.InteractionSourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "InteractionSourceKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "bool SpatialNavigationStartedEventArgs.IsNavigatingX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "IsNavigatingX");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "bool SpatialNavigationStartedEventArgs.IsNavigatingY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "IsNavigatingY");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "bool SpatialNavigationStartedEventArgs.IsNavigatingZ");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "IsNavigatingZ");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetPointerPose(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "SpatialPointerPose SpatialNavigationStartedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs", "TryGetPointerPose(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs.InteractionSourceKind.get

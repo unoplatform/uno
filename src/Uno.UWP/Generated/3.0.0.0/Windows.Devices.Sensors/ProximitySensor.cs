@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "string ProximitySensor.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "DeviceId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "uint? ProximitySensor.MaxDistanceInMillimeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "MaxDistanceInMillimeters");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "uint? ProximitySensor.MinDistanceInMillimeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "MinDistanceInMillimeters");
 			}
 		}
 #endif
@@ -43,28 +43,28 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sensors.ProximitySensor FromId(string sensorId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "ProximitySensor ProximitySensor.FromId(string sensorId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "FromId(string sensorId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ProximitySensorReading> GetReadingsFromTriggerDetails(global::Windows.Devices.Sensors.SensorDataThresholdTriggerDetails triggerDetails)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "IReadOnlyList<ProximitySensorReading> ProximitySensor.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.ProximitySensorReading GetCurrentReading()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "ProximitySensorReading ProximitySensor.GetCurrentReading()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "GetCurrentReading()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.ProximitySensorDisplayOnOffController CreateDisplayOnOffController()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "ProximitySensorDisplayOnOffController ProximitySensor.CreateDisplayOnOffController()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "CreateDisplayOnOffController()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.ReadingChanged.add
@@ -79,12 +79,12 @@ namespace Windows.Devices.Sensors
 			[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.ProximitySensor", "event TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs> ProximitySensor.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.ProximitySensor", "event ReadingChanged");
 			}
 			[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.ProximitySensor", "event TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs> ProximitySensor.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.ProximitySensor", "event ReadingChanged");
 			}
 		}
 #endif

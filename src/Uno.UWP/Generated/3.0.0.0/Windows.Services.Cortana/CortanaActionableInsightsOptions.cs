@@ -14,11 +14,11 @@ namespace Windows.Services.Cortana
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaActionableInsightsOptions", "Uri CortanaActionableInsightsOptions.ContentSourceWebLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaActionableInsightsOptions", "ContentSourceWebLink");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Cortana.CortanaActionableInsightsOptions", "Uri CortanaActionableInsightsOptions.ContentSourceWebLink");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Cortana.CortanaActionableInsightsOptions", "ContentSourceWebLink");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Services.Cortana
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaActionableInsightsOptions", "string CortanaActionableInsightsOptions.SurroundingText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaActionableInsightsOptions", "SurroundingText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Cortana.CortanaActionableInsightsOptions", "string CortanaActionableInsightsOptions.SurroundingText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Cortana.CortanaActionableInsightsOptions", "SurroundingText");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Services.Cortana
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CortanaActionableInsightsOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Cortana.CortanaActionableInsightsOptions", "CortanaActionableInsightsOptions.CortanaActionableInsightsOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Cortana.CortanaActionableInsightsOptions", "CortanaActionableInsightsOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.CortanaActionableInsightsOptions()

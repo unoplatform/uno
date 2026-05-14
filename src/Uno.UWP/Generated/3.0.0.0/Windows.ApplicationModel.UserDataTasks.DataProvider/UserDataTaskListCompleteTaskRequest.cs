@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest", "string UserDataTaskListCompleteTaskRequest.TaskId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest", "TaskId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest", "string UserDataTaskListCompleteTaskRequest.TaskListId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest", "TaskListId");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(string completedTaskId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest", "IAsyncAction UserDataTaskListCompleteTaskRequest.ReportCompletedAsync(string completedTaskId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest", "ReportCompletedAsync(string completedTaskId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest", "IAsyncAction UserDataTaskListCompleteTaskRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCompleteTaskRequest.TaskId.get

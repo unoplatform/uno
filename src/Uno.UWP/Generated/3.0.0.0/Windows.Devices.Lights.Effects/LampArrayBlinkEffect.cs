@@ -14,11 +14,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.AttackDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "AttackDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.AttackDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "AttackDuration");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "Color LampArrayBlinkEffect.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "Color LampArrayBlinkEffect.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "Color");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.DecayDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "DecayDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.DecayDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "DecayDuration");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "int LampArrayBlinkEffect.Occurrences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "Occurrences");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "int LampArrayBlinkEffect.Occurrences");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "Occurrences");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.RepetitionDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "RepetitionDelay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.RepetitionDelay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "RepetitionDelay");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "RepetitionMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "RepetitionMode");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.StartDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "StartDelay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.StartDelay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "StartDelay");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.SustainDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "SustainDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.SustainDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "SustainDuration");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "int LampArrayBlinkEffect.ZIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "ZIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "int LampArrayBlinkEffect.ZIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "ZIndex");
 			}
 		}
 #endif
@@ -138,7 +138,7 @@ namespace Windows.Devices.Lights.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LampArrayBlinkEffect(global::Windows.Devices.Lights.LampArray lampArray, int[] lampIndexes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "LampArrayBlinkEffect.LampArrayBlinkEffect(LampArray lampArray, int[] lampIndexes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "LampArrayBlinkEffect(LampArray lampArray, int[] lampIndexes)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.LampArrayBlinkEffect(Windows.Devices.Lights.LampArray, int[])

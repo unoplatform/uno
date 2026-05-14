@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter", "RemoteSystemStatusType RemoteSystemStatusTypeFilter.RemoteSystemStatusType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter", "RemoteSystemStatusType");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RemoteSystemStatusTypeFilter(global::Windows.System.RemoteSystems.RemoteSystemStatusType remoteSystemStatusType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter", "RemoteSystemStatusTypeFilter.RemoteSystemStatusTypeFilter(RemoteSystemStatusType remoteSystemStatusType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter", "RemoteSystemStatusTypeFilter(RemoteSystemStatusType remoteSystemStatusType)");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter.RemoteSystemStatusTypeFilter(Windows.System.RemoteSystems.RemoteSystemStatusType)

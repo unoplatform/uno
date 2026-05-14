@@ -19,11 +19,11 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "IBuffer AdaptiveMediaSourceDownloadResult.Buffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "Buffer");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "IBuffer AdaptiveMediaSourceDownloadResult.Buffer");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "Buffer");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "string AdaptiveMediaSourceDownloadResult.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ContentType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "string AdaptiveMediaSourceDownloadResult.ContentType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ContentType");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "uint AdaptiveMediaSourceDownloadResult.ExtendedStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ExtendedStatus");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "uint AdaptiveMediaSourceDownloadResult.ExtendedStatus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ExtendedStatus");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "IInputStream AdaptiveMediaSourceDownloadResult.InputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "InputStream");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "IInputStream AdaptiveMediaSourceDownloadResult.InputStream");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "InputStream");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ulong? AdaptiveMediaSourceDownloadResult.ResourceByteRangeLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ResourceByteRangeLength");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ulong? AdaptiveMediaSourceDownloadResult.ResourceByteRangeLength");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ResourceByteRangeLength");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ulong? AdaptiveMediaSourceDownloadResult.ResourceByteRangeOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ResourceByteRangeOffset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ulong? AdaptiveMediaSourceDownloadResult.ResourceByteRangeOffset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ResourceByteRangeOffset");
 			}
 		}
 #endif
@@ -103,11 +103,11 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "Uri AdaptiveMediaSourceDownloadResult.ResourceUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ResourceUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "Uri AdaptiveMediaSourceDownloadResult.ResourceUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ResourceUri");
 			}
 		}
 #endif

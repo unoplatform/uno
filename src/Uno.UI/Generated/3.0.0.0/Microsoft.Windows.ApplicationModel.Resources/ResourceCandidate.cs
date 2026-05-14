@@ -14,7 +14,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "ResourceCandidateKind ResourceCandidate.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "Kind");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "IReadOnlyDictionary<string, string> ResourceCandidate.QualifierValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "QualifierValues");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "byte[] ResourceCandidate.ValueAsBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "ValueAsBytes");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "string ResourceCandidate.ValueAsString");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "ValueAsString");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ResourceCandidate(global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind kind, string data)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "ResourceCandidate.ResourceCandidate(ResourceCandidateKind kind, string data)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "ResourceCandidate(ResourceCandidateKind kind, string data)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.ResourceCandidate(Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind, string)
@@ -60,7 +60,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ResourceCandidate(byte[] data)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "ResourceCandidate.ResourceCandidate(byte[] data)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "ResourceCandidate(byte[] data)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.ResourceCandidate(byte[])

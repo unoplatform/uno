@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "IReadOnlyList<AppInstallItem> AppInstallItem.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "Children");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallationToastNotificationMode AppInstallItem.CompletedInstallToastNotificationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "CompletedInstallToastNotificationMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallationToastNotificationMode AppInstallItem.CompletedInstallToastNotificationMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "CompletedInstallToastNotificationMode");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallationToastNotificationMode AppInstallItem.InstallInProgressToastNotificationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "InstallInProgressToastNotificationMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallationToastNotificationMode AppInstallItem.InstallInProgressToastNotificationMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "InstallInProgressToastNotificationMode");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallType AppInstallItem.InstallType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "InstallType");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.IsUserInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "IsUserInitiated");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.ItemOperationsMightAffectOtherItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "ItemOperationsMightAffectOtherItems");
 			}
 		}
 #endif
@@ -87,11 +87,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.LaunchAfterInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "LaunchAfterInstall");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.LaunchAfterInstall");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "LaunchAfterInstall");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "string AppInstallItem.PackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "PackageFamilyName");
 			}
 		}
 #endif
@@ -111,11 +111,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToDesktopAfterInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "PinToDesktopAfterInstall");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToDesktopAfterInstall");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "PinToDesktopAfterInstall");
 			}
 		}
 #endif
@@ -125,11 +125,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToStartAfterInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "PinToStartAfterInstall");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToStartAfterInstall");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "PinToStartAfterInstall");
 			}
 		}
 #endif
@@ -139,11 +139,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToTaskbarAfterInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "PinToTaskbarAfterInstall");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "bool AppInstallItem.PinToTaskbarAfterInstall");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "PinToTaskbarAfterInstall");
 			}
 		}
 #endif
@@ -153,7 +153,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "string AppInstallItem.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "ProductId");
 			}
 		}
 #endif
@@ -161,28 +161,28 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus GetCurrentStatus()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "AppInstallStatus AppInstallItem.GetCurrentStatus()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "GetCurrentStatus()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "void AppInstallItem.Cancel()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "Cancel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Pause()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "void AppInstallItem.Pause()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "Pause()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Restart()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "void AppInstallItem.Restart()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "Restart()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.Completed.add
@@ -193,21 +193,21 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel(string correlationVector)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "void AppInstallItem.Cancel(string correlationVector)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "Cancel(string correlationVector)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Pause(string correlationVector)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "void AppInstallItem.Pause(string correlationVector)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "Pause(string correlationVector)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Restart(string correlationVector)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "void AppInstallItem.Restart(string correlationVector)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "Restart(string correlationVector)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem.Children.get
@@ -235,12 +235,12 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "event TypedEventHandler<AppInstallItem, object> AppInstallItem.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "event Completed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "event TypedEventHandler<AppInstallItem, object> AppInstallItem.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "event Completed");
 			}
 		}
 #endif
@@ -251,12 +251,12 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "event TypedEventHandler<AppInstallItem, object> AppInstallItem.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "event StatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "event TypedEventHandler<AppInstallItem, object> AppInstallItem.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallItem", "event StatusChanged");
 			}
 		}
 #endif

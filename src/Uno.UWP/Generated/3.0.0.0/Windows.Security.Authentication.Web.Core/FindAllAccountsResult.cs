@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "IReadOnlyList<WebAccount> FindAllAccountsResult.Accounts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "Accounts");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "WebProviderError FindAllAccountsResult.ProviderError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "ProviderError");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "FindAllWebAccountsStatus FindAllAccountsResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "Status");
 			}
 		}
 #endif

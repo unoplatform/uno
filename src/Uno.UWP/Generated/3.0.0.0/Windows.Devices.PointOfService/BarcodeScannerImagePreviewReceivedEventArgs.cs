@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs", "IRandomAccessStreamWithContentType BarcodeScannerImagePreviewReceivedEventArgs.Preview");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs", "Preview");
 			}
 		}
 #endif

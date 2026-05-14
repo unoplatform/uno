@@ -13,7 +13,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BitmapSize(uint _Width, uint _Height)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapSize", "BitmapSize.BitmapSize(uint _Width, uint _Height)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapSize", "BitmapSize(uint _Width, uint _Height)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.BitmapSize(uint, uint)

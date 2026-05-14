@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "string BackgroundTransferGroup.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "Name");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "BackgroundTransferBehavior BackgroundTransferGroup.TransferBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "TransferBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "BackgroundTransferBehavior BackgroundTransferGroup.TransferBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "TransferBehavior");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup CreateGroup(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "BackgroundTransferGroup BackgroundTransferGroup.CreateGroup(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "CreateGroup(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.Name.get

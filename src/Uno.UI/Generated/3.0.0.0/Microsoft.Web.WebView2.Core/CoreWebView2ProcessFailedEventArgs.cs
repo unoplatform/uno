@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "int CoreWebView2ProcessFailedEventArgs.ExitCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "ExitCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "string CoreWebView2ProcessFailedEventArgs.FailureSourceModulePath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "FailureSourceModulePath");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "IReadOnlyList<CoreWebView2FrameInfo> CoreWebView2ProcessFailedEventArgs.FrameInfosForFailedProcess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "FrameInfosForFailedProcess");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "string CoreWebView2ProcessFailedEventArgs.ProcessDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "ProcessDescription");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "CoreWebView2ProcessFailedKind CoreWebView2ProcessFailedEventArgs.ProcessFailedKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "ProcessFailedKind");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "CoreWebView2ProcessFailedReason CoreWebView2ProcessFailedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs", "Reason");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "string LauncherOptions.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "ContentType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "string LauncherOptions.ContentType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "ContentType");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "ViewSizePreference LauncherOptions.DesiredRemainingView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "DesiredRemainingView");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "ViewSizePreference LauncherOptions.DesiredRemainingView");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "DesiredRemainingView");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "bool LauncherOptions.DisplayApplicationPicker");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "DisplayApplicationPicker");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "bool LauncherOptions.DisplayApplicationPicker");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "DisplayApplicationPicker");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "Uri LauncherOptions.FallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "FallbackUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "Uri LauncherOptions.FallbackUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "FallbackUri");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "bool LauncherOptions.IgnoreAppUriHandlers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "IgnoreAppUriHandlers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "bool LauncherOptions.IgnoreAppUriHandlers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "IgnoreAppUriHandlers");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "bool LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "LimitPickerToCurrentAppAndAppUriHandlers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "bool LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "LimitPickerToCurrentAppAndAppUriHandlers");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "StorageFileQueryResult LauncherOptions.NeighboringFilesQuery");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "NeighboringFilesQuery");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "StorageFileQueryResult LauncherOptions.NeighboringFilesQuery");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "NeighboringFilesQuery");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "string LauncherOptions.PreferredApplicationDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "PreferredApplicationDisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "string LauncherOptions.PreferredApplicationDisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "PreferredApplicationDisplayName");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "string LauncherOptions.PreferredApplicationPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "PreferredApplicationPackageFamilyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "string LauncherOptions.PreferredApplicationPackageFamilyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "PreferredApplicationPackageFamilyName");
 			}
 		}
 #endif
@@ -140,11 +140,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "string LauncherOptions.TargetApplicationPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "TargetApplicationPackageFamilyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "string LauncherOptions.TargetApplicationPackageFamilyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "TargetApplicationPackageFamilyName");
 			}
 		}
 #endif
@@ -154,11 +154,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "bool LauncherOptions.TreatAsUntrusted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "TreatAsUntrusted");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "bool LauncherOptions.TreatAsUntrusted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "TreatAsUntrusted");
 			}
 		}
 #endif
@@ -168,7 +168,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "LauncherUIOptions LauncherOptions.UI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "UI");
 			}
 		}
 #endif
@@ -176,7 +176,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LauncherOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "LauncherOptions.LauncherOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherOptions", "LauncherOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.System.LauncherOptions.LauncherOptions()

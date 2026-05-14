@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellCdma> MobileBroadbandCellsInfo.NeighboringCellsCdma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsCdma");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellGsm> MobileBroadbandCellsInfo.NeighboringCellsGsm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsGsm");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellLte> MobileBroadbandCellsInfo.NeighboringCellsLte");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsLte");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellTdscdma> MobileBroadbandCellsInfo.NeighboringCellsTdscdma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsTdscdma");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellUmts> MobileBroadbandCellsInfo.NeighboringCellsUmts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsUmts");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellCdma> MobileBroadbandCellsInfo.ServingCellsCdma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsCdma");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellGsm> MobileBroadbandCellsInfo.ServingCellsGsm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsGsm");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellLte> MobileBroadbandCellsInfo.ServingCellsLte");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsLte");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellTdscdma> MobileBroadbandCellsInfo.ServingCellsTdscdma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsTdscdma");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "IReadOnlyList<MobileBroadbandCellUmts> MobileBroadbandCellsInfo.ServingCellsUmts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsUmts");
 			}
 		}
 #endif

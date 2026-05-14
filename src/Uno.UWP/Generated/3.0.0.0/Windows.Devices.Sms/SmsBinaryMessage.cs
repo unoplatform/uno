@@ -14,11 +14,11 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "SmsDataFormat SmsBinaryMessage.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "Format");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsBinaryMessage", "SmsDataFormat SmsBinaryMessage.Format");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsBinaryMessage", "Format");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "uint SmsBinaryMessage.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "Id");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "SmsMessageClass SmsBinaryMessage.MessageClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "MessageClass");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmsBinaryMessage()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsBinaryMessage", "SmsBinaryMessage.SmsBinaryMessage()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsBinaryMessage", "SmsBinaryMessage()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.SmsBinaryMessage()
@@ -54,14 +54,14 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetData()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "byte[] SmsBinaryMessage.GetData()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "GetData()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetData(byte[] value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsBinaryMessage", "void SmsBinaryMessage.SetData(byte[] value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsBinaryMessage", "SetData(byte[] value)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.Format.get

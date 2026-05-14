@@ -19,11 +19,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.PitchInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "PitchInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.PitchInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "PitchInDegrees");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.RollInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "RollInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.RollInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "RollInDegrees");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.YawInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "YawInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.YawInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "YawInDegrees");
 			}
 		}
 #endif

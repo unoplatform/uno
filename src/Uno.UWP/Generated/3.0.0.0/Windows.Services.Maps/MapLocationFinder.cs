@@ -12,28 +12,28 @@ namespace Windows.Services.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapLocationFinderResult> FindLocationsAtAsync(global::Windows.Devices.Geolocation.Geopoint queryPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapLocationFinder", "IAsyncOperation<MapLocationFinderResult> MapLocationFinder.FindLocationsAtAsync(Geopoint queryPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapLocationFinder", "FindLocationsAtAsync(Geopoint queryPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapLocationFinderResult> FindLocationsAsync(string searchText, global::Windows.Devices.Geolocation.Geopoint referencePoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapLocationFinder", "IAsyncOperation<MapLocationFinderResult> MapLocationFinder.FindLocationsAsync(string searchText, Geopoint referencePoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapLocationFinder", "FindLocationsAsync(string searchText, Geopoint referencePoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapLocationFinderResult> FindLocationsAsync(string searchText, global::Windows.Devices.Geolocation.Geopoint referencePoint, uint maxCount)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapLocationFinder", "IAsyncOperation<MapLocationFinderResult> MapLocationFinder.FindLocationsAsync(string searchText, Geopoint referencePoint, uint maxCount)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapLocationFinder", "FindLocationsAsync(string searchText, Geopoint referencePoint, uint maxCount)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapLocationFinderResult> FindLocationsAtAsync(global::Windows.Devices.Geolocation.Geopoint queryPoint, global::Windows.Services.Maps.MapLocationDesiredAccuracy accuracy)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapLocationFinder", "IAsyncOperation<MapLocationFinderResult> MapLocationFinder.FindLocationsAtAsync(Geopoint queryPoint, MapLocationDesiredAccuracy accuracy)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapLocationFinder", "FindLocationsAtAsync(Geopoint queryPoint, MapLocationDesiredAccuracy accuracy)");
 		}
 #endif
 	}

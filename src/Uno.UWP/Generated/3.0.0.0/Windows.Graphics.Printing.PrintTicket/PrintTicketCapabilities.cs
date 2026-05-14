@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.DocumentBindingFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "DocumentBindingFeature");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.DocumentCollateFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "DocumentCollateFeature");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.DocumentDuplexFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "DocumentDuplexFeature");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.DocumentHolePunchFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "DocumentHolePunchFeature");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.DocumentInputBinFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "DocumentInputBinFeature");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.DocumentNUpFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "DocumentNUpFeature");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.DocumentStapleFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "DocumentStapleFeature");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.JobPasscodeFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "JobPasscodeFeature");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "string PrintTicketCapabilities.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "Name");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.PageBorderlessFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PageBorderlessFeature");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.PageMediaSizeFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PageMediaSizeFeature");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.PageMediaTypeFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PageMediaTypeFeature");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.PageOrientationFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PageOrientationFeature");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.PageOutputColorFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PageOutputColorFeature");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.PageOutputQualityFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PageOutputQualityFeature");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.PageResolutionFeature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PageResolutionFeature");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "string PrintTicketCapabilities.XmlNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "XmlNamespace");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "IXmlNode PrintTicketCapabilities.XmlNode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "XmlNode");
 			}
 		}
 #endif
@@ -197,14 +197,14 @@ namespace Windows.Graphics.Printing.PrintTicket
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature GetFeature(string name, string xmlNamespace)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketFeature PrintTicketCapabilities.GetFeature(string name, string xmlNamespace)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "GetFeature(string name, string xmlNamespace)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition GetParameterDefinition(string name, string xmlNamespace)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "PrintTicketParameterDefinition PrintTicketCapabilities.GetParameterDefinition(string name, string xmlNamespace)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities", "GetParameterDefinition(string name, string xmlNamespace)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.DocumentBindingFeature.get

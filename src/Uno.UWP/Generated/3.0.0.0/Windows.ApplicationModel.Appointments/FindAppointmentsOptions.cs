@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.FindAppointmentsOptions", "IList<string> FindAppointmentsOptions.CalendarIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.FindAppointmentsOptions", "CalendarIds");
 			}
 		}
 #endif

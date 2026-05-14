@@ -17,21 +17,21 @@ namespace Windows.Media.Control
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager> RequestAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "IAsyncOperation<GlobalSystemMediaTransportControlsSessionManager> GlobalSystemMediaTransportControlsSessionManager.RequestAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "RequestAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession GetCurrentSession()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "GlobalSystemMediaTransportControlsSession GlobalSystemMediaTransportControlsSessionManager.GetCurrentSession()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "GetCurrentSession()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession> GetSessions()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "IReadOnlyList<GlobalSystemMediaTransportControlsSession> GlobalSystemMediaTransportControlsSessionManager.GetSessions()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "GetSessions()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.CurrentSessionChanged.add
@@ -45,12 +45,12 @@ namespace Windows.Media.Control
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "event TypedEventHandler<GlobalSystemMediaTransportControlsSessionManager, CurrentSessionChangedEventArgs> GlobalSystemMediaTransportControlsSessionManager.CurrentSessionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "event CurrentSessionChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "event TypedEventHandler<GlobalSystemMediaTransportControlsSessionManager, CurrentSessionChangedEventArgs> GlobalSystemMediaTransportControlsSessionManager.CurrentSessionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "event CurrentSessionChanged");
 			}
 		}
 #endif
@@ -61,12 +61,12 @@ namespace Windows.Media.Control
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "event TypedEventHandler<GlobalSystemMediaTransportControlsSessionManager, SessionsChangedEventArgs> GlobalSystemMediaTransportControlsSessionManager.SessionsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "event SessionsChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "event TypedEventHandler<GlobalSystemMediaTransportControlsSessionManager, SessionsChangedEventArgs> GlobalSystemMediaTransportControlsSessionManager.SessionsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "event SessionsChanged");
 			}
 		}
 #endif

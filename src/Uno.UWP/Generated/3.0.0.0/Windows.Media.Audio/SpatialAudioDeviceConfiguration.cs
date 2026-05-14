@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "string SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "ActiveSpatialAudioFormat");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "string SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "DefaultSpatialAudioFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "string SpatialAudioDeviceConfiguration.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "DeviceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "bool SpatialAudioDeviceConfiguration.IsSpatialAudioSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "IsSpatialAudioSupported");
 			}
 		}
 #endif
@@ -57,21 +57,21 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.SpatialAudioDeviceConfiguration GetForDeviceId(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "SpatialAudioDeviceConfiguration SpatialAudioDeviceConfiguration.GetForDeviceId(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "GetForDeviceId(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSpatialAudioFormatSupported(string subtype)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "bool SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported(string subtype)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "IsSpatialAudioFormatSupported(string subtype)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.SetDefaultSpatialAudioFormatResult> SetDefaultSpatialAudioFormatAsync(string subtype)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "IAsyncOperation<SetDefaultSpatialAudioFormatResult> SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync(string subtype)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "SetDefaultSpatialAudioFormatAsync(string subtype)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.ConfigurationChanged.add
@@ -87,12 +87,12 @@ namespace Windows.Media.Audio
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "event TypedEventHandler<SpatialAudioDeviceConfiguration, object> SpatialAudioDeviceConfiguration.ConfigurationChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "event ConfigurationChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "event TypedEventHandler<SpatialAudioDeviceConfiguration, object> SpatialAudioDeviceConfiguration.ConfigurationChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "event ConfigurationChanged");
 			}
 		}
 #endif

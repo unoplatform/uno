@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerButtonPressedEventArgs", "RadialControllerScreenContact RadialControllerButtonPressedEventArgs.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerButtonPressedEventArgs", "Contact");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerButtonPressedEventArgs", "SimpleHapticsController RadialControllerButtonPressedEventArgs.SimpleHapticsController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerButtonPressedEventArgs", "SimpleHapticsController");
 			}
 		}
 #endif

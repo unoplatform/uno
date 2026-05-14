@@ -19,11 +19,11 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "bool WiFiDirectService.PreferGroupOwnerMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "PreferGroupOwnerMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "bool WiFiDirectService.PreferGroupOwnerMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "PreferGroupOwnerMode");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "IBuffer WiFiDirectService.RemoteServiceInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "RemoteServiceInfo");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "WiFiDirectServiceError WiFiDirectService.ServiceError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "ServiceError");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "IBuffer WiFiDirectService.SessionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "SessionInfo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "IBuffer WiFiDirectService.SessionInfo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "SessionInfo");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "IReadOnlyList<WiFiDirectServiceConfigurationMethod> WiFiDirectService.SupportedConfigurationMethods");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "SupportedConfigurationMethods");
 			}
 		}
 #endif
@@ -75,42 +75,42 @@ namespace Windows.Devices.WiFiDirect.Services
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetSelector(string serviceName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "string WiFiDirectService.GetSelector(string serviceName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "GetSelector(string serviceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetSelector(string serviceName, global::Windows.Storage.Streams.IBuffer serviceInfoFilter)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "string WiFiDirectService.GetSelector(string serviceName, IBuffer serviceInfoFilter)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "GetSelector(string serviceName, IBuffer serviceInfoFilter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectService> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "IAsyncOperation<WiFiDirectService> WiFiDirectService.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo> GetProvisioningInfoAsync(global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceConfigurationMethod selectedConfigurationMethod)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "IAsyncOperation<WiFiDirectServiceProvisioningInfo> WiFiDirectService.GetProvisioningInfoAsync(WiFiDirectServiceConfigurationMethod selectedConfigurationMethod)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "GetProvisioningInfoAsync(WiFiDirectServiceConfigurationMethod selectedConfigurationMethod)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession> ConnectAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "IAsyncOperation<WiFiDirectServiceSession> WiFiDirectService.ConnectAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "ConnectAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession> ConnectAsync(string pin)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "IAsyncOperation<WiFiDirectServiceSession> WiFiDirectService.ConnectAsync(string pin)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "ConnectAsync(string pin)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectService.SessionDeferred.add
@@ -129,12 +129,12 @@ namespace Windows.Devices.WiFiDirect.Services
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "event TypedEventHandler<WiFiDirectService, WiFiDirectServiceSessionDeferredEventArgs> WiFiDirectService.SessionDeferred");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "event SessionDeferred");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "event TypedEventHandler<WiFiDirectService, WiFiDirectServiceSessionDeferredEventArgs> WiFiDirectService.SessionDeferred");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectService", "event SessionDeferred");
 			}
 		}
 #endif

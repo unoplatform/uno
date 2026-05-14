@@ -19,11 +19,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "string ImageProperties.CameraManufacturer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "CameraManufacturer");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "string ImageProperties.CameraManufacturer");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "CameraManufacturer");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "string ImageProperties.CameraModel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "CameraModel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "string ImageProperties.CameraModel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "CameraModel");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "DateTimeOffset ImageProperties.DateTaken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "DateTaken");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "DateTimeOffset ImageProperties.DateTaken");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "DateTaken");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "uint ImageProperties.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "Height");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "IList<string> ImageProperties.Keywords");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "Keywords");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "double? ImageProperties.Latitude");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "Latitude");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "double? ImageProperties.Longitude");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "Longitude");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "PhotoOrientation ImageProperties.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "Orientation");
 			}
 		}
 #endif
@@ -111,7 +111,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "IReadOnlyList<string> ImageProperties.PeopleNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "PeopleNames");
 			}
 		}
 #endif
@@ -121,11 +121,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "uint ImageProperties.Rating");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "Rating");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "uint ImageProperties.Rating");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "Rating");
 			}
 		}
 #endif
@@ -135,11 +135,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "string ImageProperties.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "string ImageProperties.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.ImageProperties", "Title");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "uint ImageProperties.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "Width");
 			}
 		}
 #endif
@@ -157,21 +157,21 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync(global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "IAsyncOperation<IDictionary<string, object>> ImageProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SavePropertiesAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>> propertiesToSave)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "IAsyncAction ImageProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SavePropertiesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "IAsyncAction ImageProperties.SavePropertiesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.ImageProperties", "SavePropertiesAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.FileProperties.ImageProperties.CameraManufacturer.get

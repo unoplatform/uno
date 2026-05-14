@@ -19,7 +19,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialApp", "string DialApp.AppName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialApp", "AppName");
 			}
 		}
 #endif
@@ -27,21 +27,21 @@ namespace Windows.Media.DialProtocol
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialAppLaunchResult> RequestLaunchAsync(string appArgument)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialApp", "IAsyncOperation<DialAppLaunchResult> DialApp.RequestLaunchAsync(string appArgument)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialApp", "RequestLaunchAsync(string appArgument)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialAppStopResult> StopAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialApp", "IAsyncOperation<DialAppStopResult> DialApp.StopAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialApp", "StopAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialAppStateDetails> GetAppStateAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialApp", "IAsyncOperation<DialAppStateDetails> DialApp.GetAppStateAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialApp", "GetAppStateAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.DialProtocol.DialApp.AppName.get

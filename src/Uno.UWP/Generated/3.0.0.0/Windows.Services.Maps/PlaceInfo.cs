@@ -19,7 +19,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "bool PlaceInfo.IsShowSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "IsShowSupported");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "string PlaceInfo.DisplayAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "DisplayAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "string PlaceInfo.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "DisplayName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "IGeoshape PlaceInfo.Geoshape");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "Geoshape");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "string PlaceInfo.Identifier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "Identifier");
 			}
 		}
 #endif
@@ -67,49 +67,49 @@ namespace Windows.Services.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo Create(global::Windows.Devices.Geolocation.Geopoint referencePoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "PlaceInfo PlaceInfo.Create(Geopoint referencePoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "Create(Geopoint referencePoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo Create(global::Windows.Devices.Geolocation.Geopoint referencePoint, global::Windows.Services.Maps.PlaceInfoCreateOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "PlaceInfo PlaceInfo.Create(Geopoint referencePoint, PlaceInfoCreateOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "Create(Geopoint referencePoint, PlaceInfoCreateOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo CreateFromIdentifier(string identifier)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "PlaceInfo PlaceInfo.CreateFromIdentifier(string identifier)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "CreateFromIdentifier(string identifier)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo CreateFromIdentifier(string identifier, global::Windows.Devices.Geolocation.Geopoint defaultPoint, global::Windows.Services.Maps.PlaceInfoCreateOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "PlaceInfo PlaceInfo.CreateFromIdentifier(string identifier, Geopoint defaultPoint, PlaceInfoCreateOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "CreateFromIdentifier(string identifier, Geopoint defaultPoint, PlaceInfoCreateOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo CreateFromMapLocation(global::Windows.Services.Maps.MapLocation location)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "PlaceInfo PlaceInfo.CreateFromMapLocation(MapLocation location)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "CreateFromMapLocation(MapLocation location)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo CreateFromAddress(string displayAddress)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "PlaceInfo PlaceInfo.CreateFromAddress(string displayAddress)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "CreateFromAddress(string displayAddress)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo CreateFromAddress(string displayAddress, string displayName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "PlaceInfo PlaceInfo.CreateFromAddress(string displayAddress, string displayName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfo", "CreateFromAddress(string displayAddress, string displayName)");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.PlaceInfo.IsShowSupported.get
@@ -117,14 +117,14 @@ namespace Windows.Services.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.Foundation.Rect selection)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfo", "void PlaceInfo.Show(Rect selection)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfo", "Show(Rect selection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfo", "void PlaceInfo.Show(Rect selection, Placement preferredPlacement)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfo", "Show(Rect selection, Placement preferredPlacement)");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.PlaceInfo.DisplayAddress.get

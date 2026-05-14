@@ -14,7 +14,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoEffects", "string VideoEffects.VideoStabilization");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoEffects", "VideoStabilization");
 			}
 		}
 #endif

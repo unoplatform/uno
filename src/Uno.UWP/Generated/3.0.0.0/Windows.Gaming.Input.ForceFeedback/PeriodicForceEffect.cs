@@ -14,11 +14,11 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "double PeriodicForceEffect.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "Gain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "double PeriodicForceEffect.Gain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "Gain");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "PeriodicForceEffectKind PeriodicForceEffect.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "Kind");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "ForceFeedbackEffectState PeriodicForceEffect.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "State");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PeriodicForceEffect(global::Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind effectKind)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "PeriodicForceEffect.PeriodicForceEffect(PeriodicForceEffectKind effectKind)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "PeriodicForceEffect(PeriodicForceEffectKind effectKind)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.PeriodicForceEffect(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind)
@@ -54,28 +54,28 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "void PeriodicForceEffect.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "void PeriodicForceEffect.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParameters(global::System.Numerics.Vector3 vector, float frequency, float phase, float bias, global::System.TimeSpan duration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "void PeriodicForceEffect.SetParameters(Vector3 vector, float frequency, float phase, float bias, TimeSpan duration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "SetParameters(Vector3 vector, float frequency, float phase, float bias, TimeSpan duration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParametersWithEnvelope(global::System.Numerics.Vector3 vector, float frequency, float phase, float bias, float attackGain, float sustainGain, float releaseGain, global::System.TimeSpan startDelay, global::System.TimeSpan attackDuration, global::System.TimeSpan sustainDuration, global::System.TimeSpan releaseDuration, uint repeatCount)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "void PeriodicForceEffect.SetParametersWithEnvelope(Vector3 vector, float frequency, float phase, float bias, float attackGain, float sustainGain, float releaseGain, TimeSpan startDelay, TimeSpan attackDuration, TimeSpan sustainDuration, TimeSpan releaseDuration, uint repeatCount)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "SetParametersWithEnvelope(Vector3 vector, float frequency, float phase, float bias, float attackGain, float sustainGain, float releaseGain, TimeSpan startDelay, TimeSpan attackDuration, TimeSpan sustainDuration, TimeSpan releaseDuration, uint repeatCount)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Gain.get

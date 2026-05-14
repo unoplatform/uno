@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs", "AudioGraphUnrecoverableError AudioGraphUnrecoverableErrorOccurredEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs", "Error");
 			}
 		}
 #endif

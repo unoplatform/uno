@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRing", "ProgressRingTemplateSettings ProgressRing.TemplateSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRing", "TemplateSettings");
 			}
 		}
 #endif

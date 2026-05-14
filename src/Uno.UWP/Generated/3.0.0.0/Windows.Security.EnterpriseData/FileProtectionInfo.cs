@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "string FileProtectionInfo.Identity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "Identity");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "bool FileProtectionInfo.IsProtectWhileOpenSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "IsProtectWhileOpenSupported");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "bool FileProtectionInfo.IsRoamable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "IsRoamable");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "FileProtectionStatus FileProtectionInfo.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "Status");
 			}
 		}
 #endif

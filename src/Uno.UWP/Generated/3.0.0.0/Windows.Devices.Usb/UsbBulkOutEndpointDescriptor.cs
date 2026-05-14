@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutEndpointDescriptor", "byte UsbBulkOutEndpointDescriptor.EndpointNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutEndpointDescriptor", "EndpointNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutEndpointDescriptor", "uint UsbBulkOutEndpointDescriptor.MaxPacketSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutEndpointDescriptor", "MaxPacketSize");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutEndpointDescriptor", "UsbBulkOutPipe UsbBulkOutEndpointDescriptor.Pipe");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkOutEndpointDescriptor", "Pipe");
 			}
 		}
 #endif

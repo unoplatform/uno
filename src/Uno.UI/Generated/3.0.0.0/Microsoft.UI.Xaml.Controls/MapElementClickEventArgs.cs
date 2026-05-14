@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.MapElementClickEventArgs", "MapElement MapElementClickEventArgs.Element");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.MapElementClickEventArgs", "Element");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.MapElementClickEventArgs", "Geopoint MapElementClickEventArgs.Location");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.MapElementClickEventArgs", "Location");
 			}
 		}
 #endif

@@ -17,14 +17,14 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentPackage()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "PackageCatalog PackageCatalog.OpenForCurrentPackage()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "OpenForCurrentPackage()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentUser()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "PackageCatalog PackageCatalog.OpenForCurrentUser()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "OpenForCurrentUser()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageInstalling.add
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult> AddOptionalPackageAsync(string optionalPackageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "IAsyncOperation<PackageCatalogAddOptionalPackageResult> PackageCatalog.AddOptionalPackageAsync(string optionalPackageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "AddOptionalPackageAsync(string optionalPackageFamilyName)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageContentGroupStaging.add
@@ -50,21 +50,21 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult> RemoveOptionalPackagesAsync(global::System.Collections.Generic.IEnumerable<string> optionalPackageFamilyNames)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "IAsyncOperation<PackageCatalogRemoveOptionalPackagesResult> PackageCatalog.RemoveOptionalPackagesAsync(IEnumerable<string> optionalPackageFamilyNames)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "RemoveOptionalPackagesAsync(IEnumerable<string> optionalPackageFamilyNames)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.ApplicationModel.PackageCatalogAddResourcePackageResult, global::Windows.ApplicationModel.PackageInstallProgress> AddResourcePackageAsync(string resourcePackageFamilyName, string resourceID, global::Windows.ApplicationModel.AddResourcePackageOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "IAsyncOperationWithProgress<PackageCatalogAddResourcePackageResult, PackageInstallProgress> PackageCatalog.AddResourcePackageAsync(string resourcePackageFamilyName, string resourceID, AddResourcePackageOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "AddResourcePackageAsync(string resourcePackageFamilyName, string resourceID, AddResourcePackageOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult> RemoveResourcePackagesAsync(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Package> resourcePackages)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "IAsyncOperation<PackageCatalogRemoveResourcePackagesResult> PackageCatalog.RemoveResourcePackagesAsync(IEnumerable<Package> resourcePackages)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "RemoveResourcePackagesAsync(IEnumerable<Package> resourcePackages)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -74,12 +74,12 @@ namespace Windows.ApplicationModel
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageInstallingEventArgs> PackageCatalog.PackageInstalling");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageInstalling");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageInstallingEventArgs> PackageCatalog.PackageInstalling");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageInstalling");
 			}
 		}
 #endif
@@ -90,12 +90,12 @@ namespace Windows.ApplicationModel
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageStagingEventArgs> PackageCatalog.PackageStaging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageStaging");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageStagingEventArgs> PackageCatalog.PackageStaging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageStaging");
 			}
 		}
 #endif
@@ -106,12 +106,12 @@ namespace Windows.ApplicationModel
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageStatusChangedEventArgs> PackageCatalog.PackageStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageStatusChangedEventArgs> PackageCatalog.PackageStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageStatusChanged");
 			}
 		}
 #endif
@@ -122,12 +122,12 @@ namespace Windows.ApplicationModel
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageUninstallingEventArgs> PackageCatalog.PackageUninstalling");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageUninstalling");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageUninstallingEventArgs> PackageCatalog.PackageUninstalling");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageUninstalling");
 			}
 		}
 #endif
@@ -138,12 +138,12 @@ namespace Windows.ApplicationModel
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageUpdatingEventArgs> PackageCatalog.PackageUpdating");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageUpdating");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageUpdatingEventArgs> PackageCatalog.PackageUpdating");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageUpdating");
 			}
 		}
 #endif
@@ -154,12 +154,12 @@ namespace Windows.ApplicationModel
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageContentGroupStagingEventArgs> PackageCatalog.PackageContentGroupStaging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageContentGroupStaging");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event TypedEventHandler<PackageCatalog, PackageContentGroupStagingEventArgs> PackageCatalog.PackageContentGroupStaging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageCatalog", "event PackageContentGroupStaging");
 			}
 		}
 #endif

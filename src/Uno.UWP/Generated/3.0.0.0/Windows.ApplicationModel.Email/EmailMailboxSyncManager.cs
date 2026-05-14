@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "DateTimeOffset EmailMailboxSyncManager.LastAttemptedSyncTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "LastAttemptedSyncTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "DateTimeOffset EmailMailboxSyncManager.LastAttemptedSyncTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "LastAttemptedSyncTime");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "DateTimeOffset EmailMailboxSyncManager.LastSuccessfulSyncTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "LastSuccessfulSyncTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "DateTimeOffset EmailMailboxSyncManager.LastSuccessfulSyncTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "LastSuccessfulSyncTime");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "EmailMailboxSyncStatus EmailMailboxSyncManager.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "EmailMailboxSyncStatus EmailMailboxSyncManager.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "Status");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "IAsyncOperation<bool> EmailMailboxSyncManager.SyncAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "SyncAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.SyncStatusChanged.add
@@ -77,12 +77,12 @@ namespace Windows.ApplicationModel.Email
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "event TypedEventHandler<EmailMailboxSyncManager, object> EmailMailboxSyncManager.SyncStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "event SyncStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "event TypedEventHandler<EmailMailboxSyncManager, object> EmailMailboxSyncManager.SyncStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxSyncManager", "event SyncStatusChanged");
 			}
 		}
 #endif

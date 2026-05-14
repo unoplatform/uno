@@ -14,7 +14,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "IReadOnlyList<Gamepad> Gamepad.Gamepads");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "Gamepads");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "Headset Gamepad.Headset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "Headset");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "bool Gamepad.IsWireless");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "IsWireless");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "User Gamepad.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "User");
 			}
 		}
 #endif
@@ -54,11 +54,11 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "GamepadVibration Gamepad.Vibration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "Vibration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "GamepadVibration Gamepad.Vibration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "Vibration");
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.Input.Gamepad FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "Gamepad Gamepad.FromGameController(IGameController gameController)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "FromGameController(IGameController gameController)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.Gamepads.get
@@ -78,7 +78,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GamepadReading GetCurrentReading()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "GamepadReading Gamepad.GetCurrentReading()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "GetCurrentReading()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.HeadsetConnected.add
@@ -91,14 +91,14 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.GamepadButtons button)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "GameControllerButtonLabel Gamepad.GetButtonLabel(GamepadButtons button)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "GetButtonLabel(GamepadButtons button)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "BatteryReport Gamepad.TryGetBatteryReport()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Gamepad", "TryGetBatteryReport()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.Headset.get
@@ -113,12 +113,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event GamepadAdded");
 			}
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event GamepadAdded");
 			}
 		}
 #endif
@@ -129,12 +129,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event GamepadRemoved");
 			}
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event EventHandler<Gamepad> Gamepad.GamepadRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event GamepadRemoved");
 			}
 		}
 #endif
@@ -145,12 +145,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event TypedEventHandler<IGameController, Headset> Gamepad.HeadsetConnected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event HeadsetConnected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event TypedEventHandler<IGameController, Headset> Gamepad.HeadsetConnected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event HeadsetConnected");
 			}
 		}
 #endif
@@ -161,12 +161,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event TypedEventHandler<IGameController, Headset> Gamepad.HeadsetDisconnected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event HeadsetDisconnected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event TypedEventHandler<IGameController, Headset> Gamepad.HeadsetDisconnected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event HeadsetDisconnected");
 			}
 		}
 #endif
@@ -177,12 +177,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event TypedEventHandler<IGameController, UserChangedEventArgs> Gamepad.UserChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event UserChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event TypedEventHandler<IGameController, UserChangedEventArgs> Gamepad.UserChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Gamepad", "event UserChanged");
 			}
 		}
 #endif

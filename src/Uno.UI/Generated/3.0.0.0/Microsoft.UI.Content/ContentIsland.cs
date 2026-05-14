@@ -14,7 +14,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "Vector2 ContentIsland.ActualSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ActualSize");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "object ContentIsland.AppData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "AppData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "object ContentIsland.AppData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "AppData");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentAutomationOptions ContentIsland.AutomationOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "AutomationOption");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IEnumerable<ChildSiteLink> ContentIsland.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "Children");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentCoordinateConverter ContentIsland.CoordinateConverter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "CoordinateConverter");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IPropertySet ContentIsland.CustomProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "CustomProperties");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "DispatcherQueue ContentIsland.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "DispatcherQueue");
 			}
 		}
 #endif
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIslandEnvironment ContentIsland.Environment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "Environment");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "object ContentIsland.FragmentRootAutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "FragmentRootAutomationProvider");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ulong ContentIsland.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "Id");
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsClosed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IsClosed");
 			}
 		}
 #endif
@@ -128,7 +128,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IsConnected");
 			}
 		}
 #endif
@@ -138,11 +138,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsHitTestVisibleWhenTransparent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IsHitTestVisibleWhenTransparent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsHitTestVisibleWhenTransparent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "IsHitTestVisibleWhenTransparent");
 			}
 		}
 #endif
@@ -152,11 +152,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsIslandEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IsIslandEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsIslandEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "IsIslandEnabled");
 			}
 		}
 #endif
@@ -166,11 +166,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsIslandVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IsIslandVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsIslandVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "IsIslandVisible");
 			}
 		}
 #endif
@@ -180,7 +180,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.IsSiteEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IsSiteEnabled");
 			}
 		}
 #endif
@@ -191,7 +191,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentLayoutDirection ContentIsland.LayoutDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "LayoutDirection");
 			}
 		}
 #endif
@@ -201,7 +201,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "Matrix4x4 ContentIsland.LocalToClientTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "LocalToClientTransformMatrix");
 			}
 		}
 #endif
@@ -211,7 +211,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "Matrix4x4 ContentIsland.LocalToParentTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "LocalToParentTransformMatrix");
 			}
 		}
 #endif
@@ -221,7 +221,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "object ContentIsland.NextSiblingAutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "NextSiblingAutomationProvider");
 			}
 		}
 #endif
@@ -231,7 +231,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "object ContentIsland.ParentAutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ParentAutomationProvider");
 			}
 		}
 #endif
@@ -241,7 +241,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "IEnumerable<DesktopPopupSiteBridge> ContentIsland.Popups");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "Popups");
 			}
 		}
 #endif
@@ -251,7 +251,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "object ContentIsland.PreviousSiblingAutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "PreviousSiblingAutomationProvider");
 			}
 		}
 #endif
@@ -261,7 +261,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.ProcessesKeyboardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ProcessesKeyboardInput");
 			}
 		}
 #endif
@@ -271,7 +271,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "bool ContentIsland.ProcessesPointerInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ProcessesPointerInput");
 			}
 		}
 #endif
@@ -282,11 +282,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "CompositionBrush ContentIsland.SystemBackdrop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "SystemBackdrop");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "CompositionBrush ContentIsland.SystemBackdrop");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "SystemBackdrop");
 			}
 		}
 #endif
@@ -294,77 +294,77 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland Create(global::Microsoft.UI.Composition.Visual Root)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIsland ContentIsland.Create(Visual Root)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "Create(Visual Root)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland[] FindAllForCompositor(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIsland[] ContentIsland.FindAllForCompositor(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "FindAllForCompositor(Compositor compositor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland[] FindAllForCurrentThread()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIsland[] ContentIsland.FindAllForCurrentThread()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "FindAllForCurrentThread()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland GetByVisual(global::Microsoft.UI.Composition.Visual child)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIsland ContentIsland.GetByVisual(Visual child)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "GetByVisual(Visual child)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland GetFromId(ulong id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIsland ContentIsland.GetFromId(ulong id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "GetFromId(ulong id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland CreateForSystemVisual(global::Microsoft.UI.Dispatching.DispatcherQueue queue, global::Windows.UI.Composition.Visual root)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIsland ContentIsland.CreateForSystemVisual(DispatcherQueue queue, Visual root)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "CreateForSystemVisual(DispatcherQueue queue, Visual root)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland[] FindAllForSystemCompositor(global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIsland[] ContentIsland.FindAllForSystemCompositor(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "FindAllForSystemCompositor(Compositor compositor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland GetBySystemVisual(global::Windows.UI.Composition.Visual child)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentIsland ContentIsland.GetBySystemVisual(Visual child)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "GetBySystemVisual(Visual child)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object GetAutomationHostProvider()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "object ContentIsland.GetAutomationHostProvider()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "GetAutomationHostProvider()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Content.ContentDeferral GetStateChangeDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "ContentDeferral ContentIsland.GetStateChangeDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIsland", "GetStateChangeDeferral()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RequestSize(global::System.Numerics.Vector2 size)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "void ContentIsland.RequestSize(Vector2 size)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "RequestSize(Vector2 size)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AutomationProviderRequested.add
@@ -375,7 +375,7 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "void ContentIsland.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Closed.add
@@ -424,12 +424,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event ClosableNotifierHandler ContentIsland.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event Closed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event ClosableNotifierHandler ContentIsland.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event Closed");
 			}
 		}
 #endif
@@ -440,12 +440,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event ClosableNotifierHandler ContentIsland.FrameworkClosed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event FrameworkClosed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event ClosableNotifierHandler ContentIsland.FrameworkClosed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event FrameworkClosed");
 			}
 		}
 #endif

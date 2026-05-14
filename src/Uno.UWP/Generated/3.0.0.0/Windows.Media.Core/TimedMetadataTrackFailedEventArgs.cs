@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrackFailedEventArgs", "TimedMetadataTrackError TimedMetadataTrackFailedEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrackFailedEventArgs", "Error");
 			}
 		}
 #endif

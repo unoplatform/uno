@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherEvent", "DeviceInformation DeviceWatcherEvent.DeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherEvent", "DeviceInformation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherEvent", "DeviceInformationUpdate DeviceWatcherEvent.DeviceInformationUpdate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherEvent", "DeviceInformationUpdate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherEvent", "DeviceWatcherEventKind DeviceWatcherEvent.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherEvent", "Kind");
 			}
 		}
 #endif

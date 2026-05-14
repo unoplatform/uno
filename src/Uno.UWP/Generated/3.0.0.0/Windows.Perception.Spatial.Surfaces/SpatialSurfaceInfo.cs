@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "Guid SpatialSurfaceInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "DateTimeOffset SpatialSurfaceInfo.UpdateTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "UpdateTime");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.Perception.Spatial.Surfaces
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialBoundingOrientedBox? TryGetBounds(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "SpatialBoundingOrientedBox? SpatialSurfaceInfo.TryGetBounds(SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "TryGetBounds(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh> TryComputeLatestMeshAsync(double maxTrianglesPerCubicMeter)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "IAsyncOperation<SpatialSurfaceMesh> SpatialSurfaceInfo.TryComputeLatestMeshAsync(double maxTrianglesPerCubicMeter)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "TryComputeLatestMeshAsync(double maxTrianglesPerCubicMeter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh> TryComputeLatestMeshAsync(double maxTrianglesPerCubicMeter, global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "IAsyncOperation<SpatialSurfaceMesh> SpatialSurfaceInfo.TryComputeLatestMeshAsync(double maxTrianglesPerCubicMeter, SpatialSurfaceMeshOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo", "TryComputeLatestMeshAsync(double maxTrianglesPerCubicMeter, SpatialSurfaceMeshOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.Id.get

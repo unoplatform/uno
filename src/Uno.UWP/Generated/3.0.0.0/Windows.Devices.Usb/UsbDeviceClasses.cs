@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.ActiveSync");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "ActiveSync");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.CdcControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "CdcControl");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.DeviceFirmwareUpdate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "DeviceFirmwareUpdate");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.Irda");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "Irda");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.Measurement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "Measurement");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.PalmSync");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "PalmSync");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.PersonalHealthcare");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "PersonalHealthcare");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.Physical");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "Physical");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "UsbDeviceClass UsbDeviceClasses.VendorSpecific");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceClasses", "VendorSpecific");
 			}
 		}
 #endif

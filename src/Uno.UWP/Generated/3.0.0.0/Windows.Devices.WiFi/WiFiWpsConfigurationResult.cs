@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiWpsConfigurationResult", "WiFiWpsConfigurationStatus WiFiWpsConfigurationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiWpsConfigurationResult", "Status");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiWpsConfigurationResult", "IReadOnlyList<WiFiWpsKind> WiFiWpsConfigurationResult.SupportedWpsKinds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiWpsConfigurationResult", "SupportedWpsKinds");
 			}
 		}
 #endif

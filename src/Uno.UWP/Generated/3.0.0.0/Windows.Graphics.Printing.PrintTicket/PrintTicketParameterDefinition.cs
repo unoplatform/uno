@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "PrintTicketParameterDataType PrintTicketParameterDefinition.DataType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "DataType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "string PrintTicketParameterDefinition.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "int PrintTicketParameterDefinition.RangeMax");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "RangeMax");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "int PrintTicketParameterDefinition.RangeMin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "RangeMin");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "string PrintTicketParameterDefinition.UnitType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "UnitType");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "string PrintTicketParameterDefinition.XmlNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "XmlNamespace");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "IXmlNode PrintTicketParameterDefinition.XmlNode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "XmlNode");
 			}
 		}
 #endif

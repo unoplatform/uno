@@ -19,7 +19,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialReceiverApp", "DialReceiverApp DialReceiverApp.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialReceiverApp", "Current");
 			}
 		}
 #endif
@@ -28,21 +28,21 @@ namespace Windows.Media.DialProtocol
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, string>> GetAdditionalDataAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialReceiverApp", "IAsyncOperation<IDictionary<string, string>> DialReceiverApp.GetAdditionalDataAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialReceiverApp", "GetAdditionalDataAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetAdditionalDataAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> additionalData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialReceiverApp", "IAsyncAction DialReceiverApp.SetAdditionalDataAsync(IEnumerable<KeyValuePair<string, string>> additionalData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialReceiverApp", "SetAdditionalDataAsync(IEnumerable<KeyValuePair<string, string>> additionalData)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> GetUniqueDeviceNameAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialReceiverApp", "IAsyncOperation<string> DialReceiverApp.GetUniqueDeviceNameAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialReceiverApp", "GetUniqueDeviceNameAsync()");
 		}
 #endif
 	}

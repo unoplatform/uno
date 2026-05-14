@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTriggerResult", "BluetoothError GattServiceProviderTriggerResult.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTriggerResult", "Error");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTriggerResult", "GattServiceProviderTrigger GattServiceProviderTriggerResult.Trigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTriggerResult", "Trigger");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IBuffer SecondaryAuthenticationFactorAuthentication.DeviceConfigurationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "DeviceConfigurationData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IBuffer SecondaryAuthenticationFactorAuthentication.DeviceNonce");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "DeviceNonce");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IBuffer SecondaryAuthenticationFactorAuthentication.ServiceAuthenticationHmac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "ServiceAuthenticationHmac");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IBuffer SecondaryAuthenticationFactorAuthentication.SessionNonce");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "SessionNonce");
 			}
 		}
 #endif
@@ -57,21 +57,21 @@ namespace Windows.Security.Authentication.Identity.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction ShowNotificationMessageAsync(string deviceName, global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationMessage message)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IAsyncAction SecondaryAuthenticationFactorAuthentication.ShowNotificationMessageAsync(string deviceName, SecondaryAuthenticationFactorAuthenticationMessage message)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "ShowNotificationMessageAsync(string deviceName, SecondaryAuthenticationFactorAuthenticationMessage message)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationResult> StartAuthenticationAsync(string deviceId, global::Windows.Storage.Streams.IBuffer serviceAuthenticationNonce)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IAsyncOperation<SecondaryAuthenticationFactorAuthenticationResult> SecondaryAuthenticationFactorAuthentication.StartAuthenticationAsync(string deviceId, IBuffer serviceAuthenticationNonce)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "StartAuthenticationAsync(string deviceId, IBuffer serviceAuthenticationNonce)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo> GetAuthenticationStageInfoAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IAsyncOperation<SecondaryAuthenticationFactorAuthenticationStageInfo> SecondaryAuthenticationFactorAuthentication.GetAuthenticationStageInfoAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "GetAuthenticationStageInfoAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication.AuthenticationStageChanged.add
@@ -80,14 +80,14 @@ namespace Windows.Security.Authentication.Identity.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorFinishAuthenticationStatus> FinishAuthenticationAsync(global::Windows.Storage.Streams.IBuffer deviceHmac, global::Windows.Storage.Streams.IBuffer sessionHmac)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IAsyncOperation<SecondaryAuthenticationFactorFinishAuthenticationStatus> SecondaryAuthenticationFactorAuthentication.FinishAuthenticationAsync(IBuffer deviceHmac, IBuffer sessionHmac)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "FinishAuthenticationAsync(IBuffer deviceHmac, IBuffer sessionHmac)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction AbortAuthenticationAsync(string errorLogMessage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "IAsyncAction SecondaryAuthenticationFactorAuthentication.AbortAuthenticationAsync(string errorLogMessage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "AbortAuthenticationAsync(string errorLogMessage)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication.DeviceConfigurationData.get
@@ -101,12 +101,12 @@ namespace Windows.Security.Authentication.Identity.Provider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "event EventHandler<SecondaryAuthenticationFactorAuthenticationStageChangedEventArgs> SecondaryAuthenticationFactorAuthentication.AuthenticationStageChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "event AuthenticationStageChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "event EventHandler<SecondaryAuthenticationFactorAuthenticationStageChangedEventArgs> SecondaryAuthenticationFactorAuthentication.AuthenticationStageChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication", "event AuthenticationStageChanged");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "Panel MediaCaptureRelativePanelWatcher.RelativePanel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "RelativePanel");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "void MediaCaptureRelativePanelWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "void MediaCaptureRelativePanelWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "Stop()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Changed.add
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "void MediaCaptureRelativePanelWatcher.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.RelativePanel.get
@@ -54,12 +54,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "event TypedEventHandler<MediaCaptureRelativePanelWatcher, object> MediaCaptureRelativePanelWatcher.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "event Changed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "event TypedEventHandler<MediaCaptureRelativePanelWatcher, object> MediaCaptureRelativePanelWatcher.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "event Changed");
 			}
 		}
 #endif

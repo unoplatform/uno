@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "bool PhoneLineCellularDetails.IsModemOn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "IsModemOn");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "int PhoneLineCellularDetails.RegistrationRejectCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "RegistrationRejectCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "int PhoneLineCellularDetails.SimSlotIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "SimSlotIndex");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "PhoneSimState PhoneLineCellularDetails.SimState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "SimState");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetNetworkOperatorDisplayText(global::Windows.ApplicationModel.Calls.PhoneLineNetworkOperatorDisplayTextLocation location)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "string PhoneLineCellularDetails.GetNetworkOperatorDisplayText(PhoneLineNetworkOperatorDisplayTextLocation location)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineCellularDetails", "GetNetworkOperatorDisplayText(PhoneLineNetworkOperatorDisplayTextLocation location)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.IsModemOn.get

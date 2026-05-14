@@ -14,11 +14,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.ContainerNamePrefix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "ContainerNamePrefix");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.ContainerNamePrefix");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "ContainerNamePrefix");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "ExportOption PfxImportParameters.Exportable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "Exportable");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "ExportOption PfxImportParameters.Exportable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "Exportable");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "FriendlyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.FriendlyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "FriendlyName");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "InstallOptions PfxImportParameters.InstallOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "InstallOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "InstallOptions PfxImportParameters.InstallOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "InstallOptions");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "KeyProtectionLevel PfxImportParameters.KeyProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "KeyProtectionLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "KeyProtectionLevel PfxImportParameters.KeyProtectionLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "KeyProtectionLevel");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.KeyStorageProviderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "KeyStorageProviderName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.KeyStorageProviderName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "KeyStorageProviderName");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.ReaderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.PfxImportParameters", "ReaderName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "string PfxImportParameters.ReaderName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "ReaderName");
 			}
 		}
 #endif
@@ -110,7 +110,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PfxImportParameters()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "PfxImportParameters.PfxImportParameters()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.PfxImportParameters", "PfxImportParameters()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.PfxImportParameters()

@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.CanCutPaper");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "CanCutPaper");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "PosPrinterCartridgeSensors ReceiptPrinterCapabilities.CartridgeSensors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "CartridgeSensors");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "PosPrinterColorCapabilities ReceiptPrinterCapabilities.ColorCartridgeCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "ColorCartridgeCapabilities");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.Is180RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "Is180RotationSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsBarcodeSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsBarcodeSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsBitmapSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsBitmapSupported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsBoldSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsBoldSupported");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsDoubleHighDoubleWidePrintSupported");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsDoubleHighPrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsDoubleHighPrintSupported");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsDoubleWidePrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsDoubleWidePrintSupported");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsDualColorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsDualColorSupported");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsItalicSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsItalicSupported");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsLeft90RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsLeft90RotationSupported");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsPaperEmptySensorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsPaperEmptySensorSupported");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsPaperNearEndSensorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsPaperNearEndSensorSupported");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsPrintAreaSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsPrintAreaSupported");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsPrinterPresent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsPrinterPresent");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsReversePaperFeedByLineSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsReversePaperFeedByLineSupported");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsReversePaperFeedByMapModeUnitSupported");
 			}
 		}
 #endif
@@ -209,7 +209,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsReverseVideoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsReverseVideoSupported");
 			}
 		}
 #endif
@@ -219,7 +219,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsRight90RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsRight90RotationSupported");
 			}
 		}
 #endif
@@ -229,7 +229,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsStampSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsStampSupported");
 			}
 		}
 #endif
@@ -239,7 +239,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsStrikethroughSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsStrikethroughSupported");
 			}
 		}
 #endif
@@ -249,7 +249,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsSubscriptSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsSubscriptSupported");
 			}
 		}
 #endif
@@ -259,7 +259,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsSuperscriptSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsSuperscriptSupported");
 			}
 		}
 #endif
@@ -269,7 +269,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "bool ReceiptPrinterCapabilities.IsUnderlineSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IsUnderlineSupported");
 			}
 		}
 #endif
@@ -279,7 +279,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "PosPrinterMarkFeedCapabilities ReceiptPrinterCapabilities.MarkFeedCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "MarkFeedCapabilities");
 			}
 		}
 #endif
@@ -289,7 +289,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "PosPrinterRuledLineCapabilities ReceiptPrinterCapabilities.RuledLineCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "RuledLineCapabilities");
 			}
 		}
 #endif
@@ -299,7 +299,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBarcodeRotations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "SupportedBarcodeRotations");
 			}
 		}
 #endif
@@ -309,7 +309,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBitmapRotations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "SupportedBitmapRotations");
 			}
 		}
 #endif
@@ -319,7 +319,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "IReadOnlyList<uint> ReceiptPrinterCapabilities.SupportedCharactersPerLine");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ReceiptPrinterCapabilities", "SupportedCharactersPerLine");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult", "Exception PackageCatalogRemoveOptionalPackagesResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult", "IReadOnlyList<Package> PackageCatalogRemoveOptionalPackagesResult.PackagesRemoved");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult", "PackagesRemoved");
 			}
 		}
 #endif

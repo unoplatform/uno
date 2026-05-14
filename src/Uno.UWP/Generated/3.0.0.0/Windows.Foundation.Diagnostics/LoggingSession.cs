@@ -14,7 +14,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingSession", "string LoggingSession.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingSession", "Name");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LoggingSession(string name)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "LoggingSession.LoggingSession(string name)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "LoggingSession(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingSession.LoggingSession(string)
@@ -30,35 +30,35 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> SaveToFileAsync(global::Windows.Storage.IStorageFolder folder, string fileName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingSession", "IAsyncOperation<StorageFile> LoggingSession.SaveToFileAsync(IStorageFolder folder, string fileName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingSession", "SaveToFileAsync(IStorageFolder folder, string fileName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddLoggingChannel(global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "void LoggingSession.AddLoggingChannel(ILoggingChannel loggingChannel)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "AddLoggingChannel(ILoggingChannel loggingChannel)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddLoggingChannel(global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel, global::Windows.Foundation.Diagnostics.LoggingLevel maxLevel)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "void LoggingSession.AddLoggingChannel(ILoggingChannel loggingChannel, LoggingLevel maxLevel)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "AddLoggingChannel(ILoggingChannel loggingChannel, LoggingLevel maxLevel)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveLoggingChannel(global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "void LoggingSession.RemoveLoggingChannel(ILoggingChannel loggingChannel)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "RemoveLoggingChannel(ILoggingChannel loggingChannel)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "void LoggingSession.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingSession.Name.get

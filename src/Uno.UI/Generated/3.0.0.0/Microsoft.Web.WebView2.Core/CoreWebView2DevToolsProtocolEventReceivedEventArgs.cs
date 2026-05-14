@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs", "string CoreWebView2DevToolsProtocolEventReceivedEventArgs.ParameterObjectAsJson");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs", "ParameterObjectAsJson");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs", "string CoreWebView2DevToolsProtocolEventReceivedEventArgs.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs", "SessionId");
 			}
 		}
 #endif

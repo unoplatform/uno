@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameAssignment", "IList<VpnDomainNameInfo> VpnDomainNameAssignment.DomainNameList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameAssignment", "DomainNameList");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameAssignment", "Uri VpnDomainNameAssignment.ProxyAutoConfigurationUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameAssignment", "ProxyAutoConfigurationUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameAssignment", "Uri VpnDomainNameAssignment.ProxyAutoConfigurationUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameAssignment", "ProxyAutoConfigurationUri");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnDomainNameAssignment()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameAssignment", "VpnDomainNameAssignment.VpnDomainNameAssignment()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameAssignment", "VpnDomainNameAssignment()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameAssignment.VpnDomainNameAssignment()

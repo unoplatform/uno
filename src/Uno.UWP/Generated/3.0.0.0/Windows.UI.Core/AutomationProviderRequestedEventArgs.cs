@@ -19,11 +19,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AutomationProviderRequestedEventArgs", "object AutomationProviderRequestedEventArgs.AutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AutomationProviderRequestedEventArgs", "AutomationProvider");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AutomationProviderRequestedEventArgs", "object AutomationProviderRequestedEventArgs.AutomationProvider");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AutomationProviderRequestedEventArgs", "AutomationProvider");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AutomationProviderRequestedEventArgs", "bool AutomationProviderRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AutomationProviderRequestedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AutomationProviderRequestedEventArgs", "bool AutomationProviderRequestedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AutomationProviderRequestedEventArgs", "Handled");
 			}
 		}
 #endif

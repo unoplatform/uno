@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "uint FrameFocusCapabilities.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "uint FrameFocusCapabilities.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "uint FrameFocusCapabilities.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "Step");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "bool FrameFocusCapabilities.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "Supported");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeovisitMonitor", "VisitMonitoringScope GeovisitMonitor.MonitoringScope");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeovisitMonitor", "MonitoringScope");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GeovisitMonitor()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "GeovisitMonitor.GeovisitMonitor()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "GeovisitMonitor()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.GeovisitMonitor()
@@ -30,21 +30,21 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeovisitMonitor", "IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeovisitMonitor", "GetLastReportAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start(global::Windows.Devices.Geolocation.VisitMonitoringScope value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "void GeovisitMonitor.Start(VisitMonitoringScope value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "Start(VisitMonitoringScope value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "void GeovisitMonitor.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "Stop()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.add
@@ -57,12 +57,12 @@ namespace Windows.Devices.Geolocation
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "event TypedEventHandler<GeovisitMonitor, GeovisitStateChangedEventArgs> GeovisitMonitor.VisitStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "event VisitStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "event TypedEventHandler<GeovisitMonitor, GeovisitStateChangedEventArgs> GeovisitMonitor.VisitStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "event VisitStateChanged");
 			}
 		}
 #endif

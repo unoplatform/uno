@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs", "PlayToSource PlayToConnectionTransferredEventArgs.CurrentSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs", "CurrentSource");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs", "PlayToSource PlayToConnectionTransferredEventArgs.PreviousSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs", "PreviousSource");
 			}
 		}
 #endif

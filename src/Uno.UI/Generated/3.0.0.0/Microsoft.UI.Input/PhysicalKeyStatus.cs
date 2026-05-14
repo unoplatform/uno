@@ -13,7 +13,7 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.PhysicalKeyStatus", "PhysicalKeyStatus.PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.PhysicalKeyStatus", "PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.PhysicalKeyStatus(uint, uint, bool, bool, bool, bool)

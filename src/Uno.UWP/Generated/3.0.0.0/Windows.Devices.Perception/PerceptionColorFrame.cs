@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionColorFrame", "VideoFrame PerceptionColorFrame.VideoFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionColorFrame", "VideoFrame");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrame", "void PerceptionColorFrame.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrame", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrame.VideoFrame.get

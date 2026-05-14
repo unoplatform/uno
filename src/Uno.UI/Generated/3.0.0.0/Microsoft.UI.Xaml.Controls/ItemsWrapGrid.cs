@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "int ItemsWrapGrid.FirstCacheIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "FirstCacheIndex");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "int ItemsWrapGrid.FirstVisibleIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "FirstVisibleIndex");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "int ItemsWrapGrid.LastCacheIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "LastCacheIndex");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "int ItemsWrapGrid.LastVisibleIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "LastVisibleIndex");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "PanelScrollingDirection ItemsWrapGrid.ScrollingDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "ScrollingDirection");
 			}
 		}
 #endif

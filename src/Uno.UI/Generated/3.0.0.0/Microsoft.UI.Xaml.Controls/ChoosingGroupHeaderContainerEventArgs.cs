@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "object ChoosingGroupHeaderContainerEventArgs.Group");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "Group");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "ListViewBaseHeaderItem ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "GroupHeaderContainer");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "ListViewBaseHeaderItem ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "GroupHeaderContainer");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "int ChoosingGroupHeaderContainerEventArgs.GroupIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "GroupIndex");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChoosingGroupHeaderContainerEventArgs()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "ChoosingGroupHeaderContainerEventArgs.ChoosingGroupHeaderContainerEventArgs()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "ChoosingGroupHeaderContainerEventArgs()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.ChoosingGroupHeaderContainerEventArgs()

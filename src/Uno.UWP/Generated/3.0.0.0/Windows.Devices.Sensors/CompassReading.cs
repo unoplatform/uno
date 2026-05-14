@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "MagnetometerAccuracy CompassReading.HeadingAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "HeadingAccuracy");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "TimeSpan? CompassReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "PerformanceCount");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "IReadOnlyDictionary<string, object> CompassReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "Properties");
 			}
 		}
 #endif

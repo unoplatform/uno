@@ -19,11 +19,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs", "bool MediaPlaybackCommandManagerPositionReceivedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs", "bool MediaPlaybackCommandManagerPositionReceivedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs", "TimeSpan MediaPlaybackCommandManagerPositionReceivedEventArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs", "Position");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs", "Deferral MediaPlaybackCommandManagerPositionReceivedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs.Handled.get

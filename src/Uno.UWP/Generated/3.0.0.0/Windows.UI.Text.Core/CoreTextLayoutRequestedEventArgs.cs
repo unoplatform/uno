@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequestedEventArgs", "CoreTextLayoutRequest CoreTextLayoutRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequestedEventArgs", "Request");
 			}
 		}
 #endif

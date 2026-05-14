@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Desktop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Desktop.DesktopWindowTarget", "bool DesktopWindowTarget.IsTopmost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Desktop.DesktopWindowTarget", "IsTopmost");
 			}
 		}
 #endif

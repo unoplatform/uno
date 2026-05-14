@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "int LinedFlowLayout.RequestedRangeLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "RequestedRangeLength");
 			}
 		}
 #endif
@@ -152,7 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "int LinedFlowLayout.RequestedRangeStartIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "RequestedRangeStartIndex");
 			}
 		}
 #endif
@@ -160,7 +160,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LinedFlowLayout() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "LinedFlowLayout.LinedFlowLayout()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "LinedFlowLayout()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LinedFlowLayout()
@@ -174,14 +174,14 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InvalidateItemsInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "void LinedFlowLayout.InvalidateItemsInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "InvalidateItemsInfo()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int LockItemToLine(int itemIndex)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "int LinedFlowLayout.LockItemToLine(int itemIndex)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "LockItemToLine(int itemIndex)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsInfoRequested.add
@@ -208,12 +208,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event TypedEventHandler<LinedFlowLayout, LinedFlowLayoutItemsInfoRequestedEventArgs> LinedFlowLayout.ItemsInfoRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event ItemsInfoRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event TypedEventHandler<LinedFlowLayout, LinedFlowLayoutItemsInfoRequestedEventArgs> LinedFlowLayout.ItemsInfoRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event ItemsInfoRequested");
 			}
 		}
 #endif
@@ -224,12 +224,12 @@ namespace Microsoft.UI.Xaml.Controls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event TypedEventHandler<LinedFlowLayout, object> LinedFlowLayout.ItemsUnlocked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event ItemsUnlocked");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event TypedEventHandler<LinedFlowLayout, object> LinedFlowLayout.ItemsUnlocked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event ItemsUnlocked");
 			}
 		}
 #endif

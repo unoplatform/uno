@@ -14,11 +14,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "Color InkDrawingAttributes.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "Color InkDrawingAttributes.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "Color");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "bool InkDrawingAttributes.DrawAsHighlighter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "DrawAsHighlighter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "bool InkDrawingAttributes.DrawAsHighlighter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "DrawAsHighlighter");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "bool InkDrawingAttributes.FitToCurve");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "FitToCurve");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "bool InkDrawingAttributes.FitToCurve");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "FitToCurve");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "bool InkDrawingAttributes.IgnorePressure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "IgnorePressure");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "bool InkDrawingAttributes.IgnorePressure");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "IgnorePressure");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "bool InkDrawingAttributes.IgnoreTilt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "IgnoreTilt");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "bool InkDrawingAttributes.IgnoreTilt");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "IgnoreTilt");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "InkDrawingAttributesKind InkDrawingAttributes.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "Kind");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "InkModelerAttributes InkDrawingAttributes.ModelerAttributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "ModelerAttributes");
 			}
 		}
 #endif
@@ -104,11 +104,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "PenTipShape InkDrawingAttributes.PenTip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "PenTip");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "PenTipShape InkDrawingAttributes.PenTip");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "PenTip");
 			}
 		}
 #endif
@@ -118,11 +118,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "Matrix3x2 InkDrawingAttributes.PenTipTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "PenTipTransform");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "Matrix3x2 InkDrawingAttributes.PenTipTransform");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "PenTipTransform");
 			}
 		}
 #endif
@@ -132,7 +132,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "InkDrawingAttributesPencilProperties InkDrawingAttributes.PencilProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "PencilProperties");
 			}
 		}
 #endif
@@ -142,11 +142,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "Size InkDrawingAttributes.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "Size");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "Size InkDrawingAttributes.Size");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "Size");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InkDrawingAttributes()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "InkDrawingAttributes.InkDrawingAttributes()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributes", "InkDrawingAttributes()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.InkDrawingAttributes()
@@ -162,7 +162,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Inking.InkDrawingAttributes CreateForPencil()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "InkDrawingAttributes InkDrawingAttributes.CreateForPencil()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributes", "CreateForPencil()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.Color.get

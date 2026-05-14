@@ -19,7 +19,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest", "DateTimeOffset PrintTaskConfigurationSaveRequest.Deadline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest", "Deadline");
 			}
 		}
 #endif
@@ -27,21 +27,21 @@ namespace Windows.Devices.Printers.Extensions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest", "void PrintTaskConfigurationSaveRequest.Cancel()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest", "Cancel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Save(object printerExtensionContext)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest", "void PrintTaskConfigurationSaveRequest.Save(object printerExtensionContext)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest", "Save(object printerExtensionContext)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest", "PrintTaskConfigurationSaveRequestedDeferral PrintTaskConfigurationSaveRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequest.Deadline.get

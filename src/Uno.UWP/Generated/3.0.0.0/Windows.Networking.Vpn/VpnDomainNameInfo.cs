@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "IList<HostName> VpnDomainNameInfo.DnsServers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "DnsServers");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "HostName VpnDomainNameInfo.DomainName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "DomainName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "HostName VpnDomainNameInfo.DomainName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "DomainName");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "VpnDomainNameType VpnDomainNameInfo.DomainNameType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "DomainNameType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "VpnDomainNameType VpnDomainNameInfo.DomainNameType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "DomainNameType");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "IList<HostName> VpnDomainNameInfo.WebProxyServers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "WebProxyServers");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "IList<Uri> VpnDomainNameInfo.WebProxyUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "WebProxyUris");
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnDomainNameInfo(string name, global::Windows.Networking.Vpn.VpnDomainNameType nameType, global::System.Collections.Generic.IEnumerable<global::Windows.Networking.HostName> dnsServerList, global::System.Collections.Generic.IEnumerable<global::Windows.Networking.HostName> proxyServerList)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "VpnDomainNameInfo.VpnDomainNameInfo(string name, VpnDomainNameType nameType, IEnumerable<HostName> dnsServerList, IEnumerable<HostName> proxyServerList)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "VpnDomainNameInfo(string name, VpnDomainNameType nameType, IEnumerable<HostName> dnsServerList, IEnumerable<HostName> proxyServerList)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.VpnDomainNameInfo(string, Windows.Networking.Vpn.VpnDomainNameType, System.Collections.Generic.IEnumerable<Windows.Networking.HostName>, System.Collections.Generic.IEnumerable<Windows.Networking.HostName>)

@@ -16,11 +16,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.VisualTransition", "EasingFunctionBase VisualTransition.GeneratedEasingFunction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.VisualTransition", "GeneratedEasingFunction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "EasingFunctionBase VisualTransition.GeneratedEasingFunction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "GeneratedEasingFunction");
 			}
 		}
 #endif

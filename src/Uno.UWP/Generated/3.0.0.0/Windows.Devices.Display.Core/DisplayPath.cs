@@ -19,11 +19,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "bool? DisplayPath.IsInterlaced");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "IsInterlaced");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "bool? DisplayPath.IsInterlaced");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "IsInterlaced");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "bool DisplayPath.IsStereo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "IsStereo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "bool DisplayPath.IsStereo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "IsStereo");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayPresentationRate? DisplayPath.PresentationRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "PresentationRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayPresentationRate? DisplayPath.PresentationRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "PresentationRate");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "IDictionary<Guid, object> DisplayPath.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Properties");
 			}
 		}
 #endif
@@ -71,11 +71,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayRotation DisplayPath.Rotation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Rotation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayRotation DisplayPath.Rotation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "Rotation");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayPathScaling DisplayPath.Scaling");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Scaling");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayPathScaling DisplayPath.Scaling");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "Scaling");
 			}
 		}
 #endif
@@ -99,11 +99,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DirectXPixelFormat DisplayPath.SourcePixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "SourcePixelFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DirectXPixelFormat DisplayPath.SourcePixelFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "SourcePixelFormat");
 			}
 		}
 #endif
@@ -113,11 +113,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "SizeInt32? DisplayPath.SourceResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "SourceResolution");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "SizeInt32? DisplayPath.SourceResolution");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "SourceResolution");
 			}
 		}
 #endif
@@ -127,7 +127,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayPathStatus DisplayPath.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Status");
 			}
 		}
 #endif
@@ -137,7 +137,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayTarget DisplayPath.Target");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Target");
 			}
 		}
 #endif
@@ -147,11 +147,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "SizeInt32? DisplayPath.TargetResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "TargetResolution");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "SizeInt32? DisplayPath.TargetResolution");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "TargetResolution");
 			}
 		}
 #endif
@@ -161,7 +161,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayView DisplayPath.View");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "View");
 			}
 		}
 #endif
@@ -171,11 +171,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayWireFormat DisplayPath.WireFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "WireFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayWireFormat DisplayPath.WireFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "WireFormat");
 			}
 		}
 #endif
@@ -183,14 +183,14 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayModeInfo> FindModes(global::Windows.Devices.Display.Core.DisplayModeQueryOptions flags)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "IReadOnlyList<DisplayModeInfo> DisplayPath.FindModes(DisplayModeQueryOptions flags)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "FindModes(DisplayModeQueryOptions flags)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ApplyPropertiesFromMode(global::Windows.Devices.Display.Core.DisplayModeInfo modeResult)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "void DisplayPath.ApplyPropertiesFromMode(DisplayModeInfo modeResult)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "ApplyPropertiesFromMode(DisplayModeInfo modeResult)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsInterlaced.get

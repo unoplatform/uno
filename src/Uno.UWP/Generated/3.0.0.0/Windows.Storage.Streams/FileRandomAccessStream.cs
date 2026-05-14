@@ -16,56 +16,56 @@ namespace Windows.Storage.Streams
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync(string filePath, global::Windows.Storage.FileAccessMode accessMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenAsync(string filePath, FileAccessMode accessMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "OpenAsync(string filePath, FileAccessMode accessMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync(string filePath, global::Windows.Storage.FileAccessMode accessMode, global::Windows.Storage.StorageOpenOptions sharingOptions, global::Windows.Storage.Streams.FileOpenDisposition openDisposition)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenAsync(string filePath, FileAccessMode accessMode, StorageOpenOptions sharingOptions, FileOpenDisposition openDisposition)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "OpenAsync(string filePath, FileAccessMode accessMode, StorageOpenOptions sharingOptions, FileOpenDisposition openDisposition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteAsync(string filePath)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteAsync(string filePath)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "OpenTransactedWriteAsync(string filePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteAsync(string filePath, global::Windows.Storage.StorageOpenOptions openOptions, global::Windows.Storage.Streams.FileOpenDisposition openDisposition)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteAsync(string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "OpenTransactedWriteAsync(string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenForUserAsync(global::Windows.System.User user, string filePath, global::Windows.Storage.FileAccessMode accessMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenForUserAsync(User user, string filePath, FileAccessMode accessMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "OpenForUserAsync(User user, string filePath, FileAccessMode accessMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenForUserAsync(global::Windows.System.User user, string filePath, global::Windows.Storage.FileAccessMode accessMode, global::Windows.Storage.StorageOpenOptions sharingOptions, global::Windows.Storage.Streams.FileOpenDisposition openDisposition)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "IAsyncOperation<IRandomAccessStream> FileRandomAccessStream.OpenForUserAsync(User user, string filePath, FileAccessMode accessMode, StorageOpenOptions sharingOptions, FileOpenDisposition openDisposition)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "OpenForUserAsync(User user, string filePath, FileAccessMode accessMode, StorageOpenOptions sharingOptions, FileOpenDisposition openDisposition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteForUserAsync(global::Windows.System.User user, string filePath)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "OpenTransactedWriteForUserAsync(User user, string filePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteForUserAsync(global::Windows.System.User user, string filePath, global::Windows.Storage.StorageOpenOptions openOptions, global::Windows.Storage.Streams.FileOpenDisposition openDisposition)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.FileRandomAccessStream", "OpenTransactedWriteForUserAsync(User user, string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition)");
 		}
 #endif
 		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.GetInputStreamAt(ulong)

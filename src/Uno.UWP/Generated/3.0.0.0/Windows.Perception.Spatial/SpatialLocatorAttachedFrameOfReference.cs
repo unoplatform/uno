@@ -19,11 +19,11 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "Quaternion SpatialLocatorAttachedFrameOfReference.RelativeOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "RelativeOrientation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "Quaternion SpatialLocatorAttachedFrameOfReference.RelativeOrientation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "RelativeOrientation");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "RelativePosition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "RelativePosition");
 			}
 		}
 #endif
@@ -45,21 +45,21 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AdjustHeading(double headingOffsetInRadians)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "void SpatialLocatorAttachedFrameOfReference.AdjustHeading(double headingOffsetInRadians)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "AdjustHeading(double headingOffsetInRadians)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialCoordinateSystem GetStationaryCoordinateSystemAtTimestamp(global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "SpatialCoordinateSystem SpatialLocatorAttachedFrameOfReference.GetStationaryCoordinateSystemAtTimestamp(PerceptionTimestamp timestamp)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "GetStationaryCoordinateSystemAtTimestamp(PerceptionTimestamp timestamp)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double? TryGetRelativeHeadingAtTimestamp(global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "double? SpatialLocatorAttachedFrameOfReference.TryGetRelativeHeadingAtTimestamp(PerceptionTimestamp timestamp)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "TryGetRelativeHeadingAtTimestamp(PerceptionTimestamp timestamp)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.get

@@ -17,21 +17,21 @@ namespace Windows.Media.Capture.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StartAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "IAsyncAction VariablePhotoSequenceCapture.StartAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "StartAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StopAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "IAsyncAction VariablePhotoSequenceCapture.StopAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "StopAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction FinishAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "IAsyncAction VariablePhotoSequenceCapture.FinishAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "FinishAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.PhotoCaptured.add
@@ -42,7 +42,7 @@ namespace Windows.Media.Capture.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction UpdateSettingsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "IAsyncAction VariablePhotoSequenceCapture.UpdateSettingsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "UpdateSettingsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -52,12 +52,12 @@ namespace Windows.Media.Capture.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "event TypedEventHandler<VariablePhotoSequenceCapture, VariablePhotoCapturedEventArgs> VariablePhotoSequenceCapture.PhotoCaptured");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "event PhotoCaptured");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "event TypedEventHandler<VariablePhotoSequenceCapture, VariablePhotoCapturedEventArgs> VariablePhotoSequenceCapture.PhotoCaptured");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "event PhotoCaptured");
 			}
 		}
 #endif
@@ -68,12 +68,12 @@ namespace Windows.Media.Capture.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "event TypedEventHandler<VariablePhotoSequenceCapture, object> VariablePhotoSequenceCapture.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "event Stopped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "event TypedEventHandler<VariablePhotoSequenceCapture, object> VariablePhotoSequenceCapture.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Core.VariablePhotoSequenceCapture", "event Stopped");
 			}
 		}
 #endif

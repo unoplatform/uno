@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoTemporalDenoisingControl", "VideoTemporalDenoisingMode VideoTemporalDenoisingControl.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoTemporalDenoisingControl", "Mode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoTemporalDenoisingControl", "VideoTemporalDenoisingMode VideoTemporalDenoisingControl.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoTemporalDenoisingControl", "Mode");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoTemporalDenoisingControl", "bool VideoTemporalDenoisingControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoTemporalDenoisingControl", "Supported");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoTemporalDenoisingControl", "IReadOnlyList<VideoTemporalDenoisingMode> VideoTemporalDenoisingControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoTemporalDenoisingControl", "SupportedModes");
 			}
 		}
 #endif

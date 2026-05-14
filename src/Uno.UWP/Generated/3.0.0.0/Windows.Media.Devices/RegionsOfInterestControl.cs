@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "bool RegionsOfInterestControl.AutoExposureSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "AutoExposureSupported");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "bool RegionsOfInterestControl.AutoFocusSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "AutoFocusSupported");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "bool RegionsOfInterestControl.AutoWhiteBalanceSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "AutoWhiteBalanceSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "uint RegionsOfInterestControl.MaxRegions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "MaxRegions");
 			}
 		}
 #endif
@@ -57,21 +57,21 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetRegionsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Devices.RegionOfInterest> regions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "IAsyncAction RegionsOfInterestControl.SetRegionsAsync(IEnumerable<RegionOfInterest> regions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "SetRegionsAsync(IEnumerable<RegionOfInterest> regions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetRegionsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Devices.RegionOfInterest> regions, bool lockValues)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "IAsyncAction RegionsOfInterestControl.SetRegionsAsync(IEnumerable<RegionOfInterest> regions, bool lockValues)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "SetRegionsAsync(IEnumerable<RegionOfInterest> regions, bool lockValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearRegionsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "IAsyncAction RegionsOfInterestControl.ClearRegionsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionsOfInterestControl", "ClearRegionsAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.AutoExposureSupported.get

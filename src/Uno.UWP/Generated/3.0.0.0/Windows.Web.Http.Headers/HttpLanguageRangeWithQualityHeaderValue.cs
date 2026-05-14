@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "string HttpLanguageRangeWithQualityHeaderValue.LanguageRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "LanguageRange");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "double? HttpLanguageRangeWithQualityHeaderValue.Quality");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "Quality");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpLanguageRangeWithQualityHeaderValue(string languageRange)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "HttpLanguageRangeWithQualityHeaderValue.HttpLanguageRangeWithQualityHeaderValue(string languageRange)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "HttpLanguageRangeWithQualityHeaderValue(string languageRange)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.HttpLanguageRangeWithQualityHeaderValue(string)
@@ -40,7 +40,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpLanguageRangeWithQualityHeaderValue(string languageRange, double quality)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "HttpLanguageRangeWithQualityHeaderValue.HttpLanguageRangeWithQualityHeaderValue(string languageRange, double quality)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "HttpLanguageRangeWithQualityHeaderValue(string languageRange, double quality)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.HttpLanguageRangeWithQualityHeaderValue(string, double)
@@ -48,21 +48,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue Parse(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "HttpLanguageRangeWithQualityHeaderValue HttpLanguageRangeWithQualityHeaderValue.Parse(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue languageRangeWithQualityHeaderValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "bool HttpLanguageRangeWithQualityHeaderValue.TryParse(string input, out HttpLanguageRangeWithQualityHeaderValue languageRangeWithQualityHeaderValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "TryParse(string input, out HttpLanguageRangeWithQualityHeaderValue languageRangeWithQualityHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "string HttpLanguageRangeWithQualityHeaderValue.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.LanguageRange.get

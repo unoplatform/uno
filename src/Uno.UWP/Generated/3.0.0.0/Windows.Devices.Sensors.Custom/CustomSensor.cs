@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "string CustomSensor.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "uint CustomSensor.MaxBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "MaxBatchSize");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "uint CustomSensor.MinimumReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "MinimumReportInterval");
 			}
 		}
 #endif
@@ -49,11 +49,11 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "uint CustomSensor.ReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "ReportInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Custom.CustomSensor", "uint CustomSensor.ReportInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Custom.CustomSensor", "ReportInterval");
 			}
 		}
 #endif
@@ -63,11 +63,11 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "uint CustomSensor.ReportLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "ReportLatency");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Custom.CustomSensor", "uint CustomSensor.ReportLatency");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Custom.CustomSensor", "ReportLatency");
 			}
 		}
 #endif
@@ -75,21 +75,21 @@ namespace Windows.Devices.Sensors.Custom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::System.Guid interfaceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "string CustomSensor.GetDeviceSelector(Guid interfaceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "GetDeviceSelector(Guid interfaceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Custom.CustomSensor> FromIdAsync(string sensorId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "IAsyncOperation<CustomSensor> CustomSensor.FromIdAsync(string sensorId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "FromIdAsync(string sensorId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.Custom.CustomSensorReading GetCurrentReading()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "CustomSensorReading CustomSensor.GetCurrentReading()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensor", "GetCurrentReading()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.ReadingChanged.add
@@ -108,12 +108,12 @@ namespace Windows.Devices.Sensors.Custom
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Custom.CustomSensor", "event TypedEventHandler<CustomSensor, CustomSensorReadingChangedEventArgs> CustomSensor.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Custom.CustomSensor", "event ReadingChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Custom.CustomSensor", "event TypedEventHandler<CustomSensor, CustomSensorReadingChangedEventArgs> CustomSensor.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Custom.CustomSensor", "event ReadingChanged");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "string NamedPolicyData.Area");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "Area");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "bool NamedPolicyData.IsManaged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "IsManaged");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "bool NamedPolicyData.IsUserPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "IsUserPolicy");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "NamedPolicyKind NamedPolicyData.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "Kind");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "string NamedPolicyData.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "Name");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Management.Policies
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "User NamedPolicyData.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "User");
 			}
 		}
 #endif
@@ -77,35 +77,35 @@ namespace Windows.Management.Policies
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool GetBoolean()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "bool NamedPolicyData.GetBoolean()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "GetBoolean()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer GetBinary()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "IBuffer NamedPolicyData.GetBinary()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "GetBinary()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetInt32()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "int NamedPolicyData.GetInt32()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "GetInt32()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public long GetInt64()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "long NamedPolicyData.GetInt64()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "GetInt64()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "string NamedPolicyData.GetString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Policies.NamedPolicyData", "GetString()");
 		}
 #endif
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Changed.add
@@ -123,12 +123,12 @@ namespace Windows.Management.Policies
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Policies.NamedPolicyData", "event TypedEventHandler<NamedPolicyData, object> NamedPolicyData.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Policies.NamedPolicyData", "event Changed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Policies.NamedPolicyData", "event TypedEventHandler<NamedPolicyData, object> NamedPolicyData.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Policies.NamedPolicyData", "event Changed");
 			}
 		}
 #endif

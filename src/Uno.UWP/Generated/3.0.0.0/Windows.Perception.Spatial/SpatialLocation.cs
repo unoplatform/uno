@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Quaternion SpatialLocation.AbsoluteAngularAcceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteAngularAcceleration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Vector3 SpatialLocation.AbsoluteAngularAccelerationAxisAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteAngularAccelerationAxisAngle");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Quaternion SpatialLocation.AbsoluteAngularVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteAngularVelocity");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Vector3 SpatialLocation.AbsoluteAngularVelocityAxisAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteAngularVelocityAxisAngle");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Vector3 SpatialLocation.AbsoluteLinearAcceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteLinearAcceleration");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Vector3 SpatialLocation.AbsoluteLinearVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteLinearVelocity");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Quaternion SpatialLocation.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Orientation");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Vector3 SpatialLocation.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Position");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "bool PlatformDiagnosticTraceInfo.IsAutoLogger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "IsAutoLogger");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "bool PlatformDiagnosticTraceInfo.IsExclusive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "IsExclusive");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "long PlatformDiagnosticTraceInfo.MaxTraceDurationFileTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "MaxTraceDurationFileTime");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "PlatformDiagnosticTracePriority PlatformDiagnosticTraceInfo.Priority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "Priority");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "ulong PlatformDiagnosticTraceInfo.ProfileHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "ProfileHash");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "Guid PlatformDiagnosticTraceInfo.ScenarioId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "ScenarioId");
 			}
 		}
 #endif

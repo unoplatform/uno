@@ -14,11 +14,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.AdditionalBrowserArguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "AdditionalBrowserArguments");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.AdditionalBrowserArguments");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "AdditionalBrowserArguments");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.AllowSingleSignOnUsingOSPrimaryAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "AllowSingleSignOnUsingOSPrimaryAccount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.AllowSingleSignOnUsingOSPrimaryAccount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "AllowSingleSignOnUsingOSPrimaryAccount");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "AreBrowserExtensionsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "AreBrowserExtensionsEnabled");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ChannelSearchKind CoreWebView2EnvironmentOptions.ChannelSearchKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ChannelSearchKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ChannelSearchKind CoreWebView2EnvironmentOptions.ChannelSearchKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ChannelSearchKind");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "IList<CoreWebView2CustomSchemeRegistration> CoreWebView2EnvironmentOptions.CustomSchemeRegistrations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CustomSchemeRegistrations");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "IList<CoreWebView2CustomSchemeRegistration> CoreWebView2EnvironmentOptions.CustomSchemeRegistrations");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CustomSchemeRegistrations");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.EnableTrackingPrevention");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "EnableTrackingPrevention");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.EnableTrackingPrevention");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "EnableTrackingPrevention");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.ExclusiveUserDataFolderAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ExclusiveUserDataFolderAccess");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.ExclusiveUserDataFolderAccess");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ExclusiveUserDataFolderAccess");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "IsCustomCrashReportingEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "IsCustomCrashReportingEnabled");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "Language");
 			}
 		}
 #endif
@@ -140,11 +140,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ReleaseChannels CoreWebView2EnvironmentOptions.ReleaseChannels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ReleaseChannels");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ReleaseChannels CoreWebView2EnvironmentOptions.ReleaseChannels");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ReleaseChannels");
 			}
 		}
 #endif
@@ -154,11 +154,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ScrollbarStyle CoreWebView2EnvironmentOptions.ScrollBarStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ScrollBarStyle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ScrollbarStyle CoreWebView2EnvironmentOptions.ScrollBarStyle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "ScrollBarStyle");
 			}
 		}
 #endif
@@ -168,11 +168,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.TargetCompatibleBrowserVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "TargetCompatibleBrowserVersion");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.TargetCompatibleBrowserVersion");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "TargetCompatibleBrowserVersion");
 			}
 		}
 #endif
@@ -180,7 +180,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreWebView2EnvironmentOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2EnvironmentOptions.CoreWebView2EnvironmentOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2EnvironmentOptions()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.CoreWebView2EnvironmentOptions()

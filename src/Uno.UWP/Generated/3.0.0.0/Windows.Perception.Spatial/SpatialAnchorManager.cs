@@ -12,7 +12,7 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialAnchorStore> RequestStoreAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorManager", "IAsyncOperation<SpatialAnchorStore> SpatialAnchorManager.RequestStoreAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorManager", "RequestStoreAsync()");
 		}
 #endif
 	}

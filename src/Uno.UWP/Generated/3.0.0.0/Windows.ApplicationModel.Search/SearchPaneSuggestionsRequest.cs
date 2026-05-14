@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest", "bool SearchPaneSuggestionsRequest.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest", "IsCanceled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest", "SearchSuggestionCollection SearchPaneSuggestionsRequest.SearchSuggestionCollection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest", "SearchSuggestionCollection");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest", "SearchPaneSuggestionsRequestDeferral SearchPaneSuggestionsRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.IsCanceled.get

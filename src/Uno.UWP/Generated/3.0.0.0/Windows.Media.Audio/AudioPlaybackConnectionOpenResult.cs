@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioPlaybackConnectionOpenResult", "Exception AudioPlaybackConnectionOpenResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioPlaybackConnectionOpenResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioPlaybackConnectionOpenResult", "AudioPlaybackConnectionOpenResultStatus AudioPlaybackConnectionOpenResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioPlaybackConnectionOpenResult", "Status");
 			}
 		}
 #endif

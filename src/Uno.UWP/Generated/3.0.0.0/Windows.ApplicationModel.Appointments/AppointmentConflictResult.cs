@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentConflictResult", "DateTimeOffset AppointmentConflictResult.Date");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentConflictResult", "Date");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentConflictResult", "AppointmentConflictType AppointmentConflictResult.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentConflictResult", "Type");
 			}
 		}
 #endif

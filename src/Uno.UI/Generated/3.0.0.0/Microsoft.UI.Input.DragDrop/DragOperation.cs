@@ -14,11 +14,11 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "DataPackageOperation DragOperation.AllowedOperations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "AllowedOperations");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DataPackageOperation DragOperation.AllowedOperations");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "AllowedOperations");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "DataPackage DragOperation.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "Data");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "DragUIContentMode DragOperation.DragUIContentMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "DragUIContentMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DragUIContentMode DragOperation.DragUIContentMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DragUIContentMode");
 			}
 		}
 #endif
@@ -50,7 +50,7 @@ namespace Microsoft.UI.Input.DragDrop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DragOperation()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DragOperation.DragOperation()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DragOperation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragOperation()
@@ -58,28 +58,28 @@ namespace Microsoft.UI.Input.DragDrop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDragUIContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "void DragOperation.SetDragUIContentFromSoftwareBitmap(SoftwareBitmap bitmap)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "SetDragUIContentFromSoftwareBitmap(SoftwareBitmap bitmap)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDragUIContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap, global::Windows.Foundation.Point anchorPoint)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "void DragOperation.SetDragUIContentFromSoftwareBitmap(SoftwareBitmap bitmap, Point anchorPoint)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "SetDragUIContentFromSoftwareBitmap(SoftwareBitmap bitmap, Point anchorPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackageOperation> StartAsync(global::Microsoft.UI.Input.DragDrop.DragDropManager initialTarget, global::Microsoft.UI.Input.PointerPoint initialPointerPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "IAsyncOperation<DataPackageOperation> DragOperation.StartAsync(DragDropManager initialTarget, PointerPoint initialPointerPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "StartAsync(DragDropManager initialTarget, PointerPoint initialPointerPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "void DragOperation.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.get

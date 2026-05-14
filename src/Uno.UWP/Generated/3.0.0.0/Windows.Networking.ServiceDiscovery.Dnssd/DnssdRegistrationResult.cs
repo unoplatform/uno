@@ -14,7 +14,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "bool DnssdRegistrationResult.HasInstanceNameChanged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "HasInstanceNameChanged");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "HostName DnssdRegistrationResult.IPAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "IPAddress");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "DnssdRegistrationStatus DnssdRegistrationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "Status");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DnssdRegistrationResult()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "DnssdRegistrationResult.DnssdRegistrationResult()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "DnssdRegistrationResult()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.DnssdRegistrationResult()
@@ -50,7 +50,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "string DnssdRegistrationResult.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.HasInstanceNameChanged.get

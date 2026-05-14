@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs", "TimeSpan PerceptionDepthFrameArrivedEventArgs.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs", "RelativeTime");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionDepthFrame TryOpenFrame()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs", "PerceptionDepthFrame PerceptionDepthFrameArrivedEventArgs.TryOpenFrame()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs", "TryOpenFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs.RelativeTime.get

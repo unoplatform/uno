@@ -14,11 +14,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "bool SyndicationClient.BypassCacheOnRetrieve");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "BypassCacheOnRetrieve");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "bool SyndicationClient.BypassCacheOnRetrieve");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "BypassCacheOnRetrieve");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "uint SyndicationClient.MaxResponseBufferSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "MaxResponseBufferSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "uint SyndicationClient.MaxResponseBufferSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "MaxResponseBufferSize");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "PasswordCredential SyndicationClient.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "ProxyCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "PasswordCredential SyndicationClient.ProxyCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "ProxyCredential");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "PasswordCredential SyndicationClient.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "ServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "PasswordCredential SyndicationClient.ServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "ServerCredential");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "uint SyndicationClient.Timeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "Timeout");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "uint SyndicationClient.Timeout");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "Timeout");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationClient()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "SyndicationClient.SyndicationClient()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "SyndicationClient()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.SyndicationClient()
@@ -90,7 +90,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationClient(global::Windows.Security.Credentials.PasswordCredential serverCredential)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "SyndicationClient.SyndicationClient(PasswordCredential serverCredential)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "SyndicationClient(PasswordCredential serverCredential)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.SyndicationClient(Windows.Security.Credentials.PasswordCredential)
@@ -98,14 +98,14 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetRequestHeader(string name, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "void SyndicationClient.SetRequestHeader(string name, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "SetRequestHeader(string name, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationFeed, global::Windows.Web.Syndication.RetrievalProgress> RetrieveFeedAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "IAsyncOperationWithProgress<SyndicationFeed, RetrievalProgress> SyndicationClient.RetrieveFeedAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "RetrieveFeedAsync(Uri uri)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.BypassCacheOnRetrieve.get

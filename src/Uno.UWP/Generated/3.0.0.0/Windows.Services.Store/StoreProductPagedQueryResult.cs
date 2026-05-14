@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "Exception StoreProductPagedQueryResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "bool StoreProductPagedQueryResult.HasMoreResults");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "HasMoreResults");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "IReadOnlyDictionary<string, StoreProduct> StoreProductPagedQueryResult.Products");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "Products");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Services.Store
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreProductPagedQueryResult> GetNextAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "IAsyncOperation<StoreProductPagedQueryResult> StoreProductPagedQueryResult.GetNextAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "GetNextAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.ExtendedError.get

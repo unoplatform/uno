@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "string UserIdentity.FirstName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "FirstName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "string UserIdentity.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "bool UserIdentity.IsBetaAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "IsBetaAccount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "bool UserIdentity.IsConfirmedPC");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "IsConfirmedPC");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "string UserIdentity.LastName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "LastName");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "string UserIdentity.SafeCustomerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "SafeCustomerId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "string UserIdentity.SignInName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "SignInName");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "IReadOnlyList<OnlineIdServiceTicket> UserIdentity.Tickets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "Tickets");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs", "bool DisplayManagerEnabledEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs", "bool DisplayManagerEnabledEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs", "Handled");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs", "Deferral DisplayManagerEnabledEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs.Handled.get

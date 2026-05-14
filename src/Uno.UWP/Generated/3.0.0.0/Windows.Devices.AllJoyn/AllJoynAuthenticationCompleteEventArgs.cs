@@ -19,7 +19,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "AllJoynAuthenticationMechanism AllJoynAuthenticationCompleteEventArgs.AuthenticationMechanism");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "AuthenticationMechanism");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "string AllJoynAuthenticationCompleteEventArgs.PeerUniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "PeerUniqueName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "bool AllJoynAuthenticationCompleteEventArgs.Succeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "Succeeded");
 			}
 		}
 #endif

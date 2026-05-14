@@ -14,11 +14,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "IOutputStream ProcessLauncherOptions.StandardError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "StandardError");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "IOutputStream ProcessLauncherOptions.StandardError");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "StandardError");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "IInputStream ProcessLauncherOptions.StandardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "StandardInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "IInputStream ProcessLauncherOptions.StandardInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "StandardInput");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "IOutputStream ProcessLauncherOptions.StandardOutput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "StandardOutput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "IOutputStream ProcessLauncherOptions.StandardOutput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "StandardOutput");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "string ProcessLauncherOptions.WorkingDirectory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "WorkingDirectory");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "string ProcessLauncherOptions.WorkingDirectory");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "WorkingDirectory");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProcessLauncherOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "ProcessLauncherOptions.ProcessLauncherOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProcessLauncherOptions", "ProcessLauncherOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.ProcessLauncherOptions()

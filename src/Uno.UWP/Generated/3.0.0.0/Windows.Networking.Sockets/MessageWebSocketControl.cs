@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "TimeSpan MessageWebSocketControl.ActualUnsolicitedPongInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "ActualUnsolicitedPongInterval");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "Certificate MessageWebSocketControl.ClientCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "ClientCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "Certificate MessageWebSocketControl.ClientCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "ClientCertificate");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "TimeSpan MessageWebSocketControl.DesiredUnsolicitedPongInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "DesiredUnsolicitedPongInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "TimeSpan MessageWebSocketControl.DesiredUnsolicitedPongInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "DesiredUnsolicitedPongInterval");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "IList<ChainValidationResult> MessageWebSocketControl.IgnorableServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "IgnorableServerCertificateErrors");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "uint MessageWebSocketControl.MaxMessageSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "MaxMessageSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "uint MessageWebSocketControl.MaxMessageSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "MaxMessageSize");
 			}
 		}
 #endif
@@ -81,11 +81,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "SocketMessageType MessageWebSocketControl.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "MessageType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "SocketMessageType MessageWebSocketControl.MessageType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "MessageType");
 			}
 		}
 #endif
@@ -95,11 +95,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "uint MessageWebSocketControl.OutboundBufferSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "OutboundBufferSizeInBytes");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "uint MessageWebSocketControl.OutboundBufferSizeInBytes");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "OutboundBufferSizeInBytes");
 			}
 		}
 #endif
@@ -109,11 +109,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "PasswordCredential MessageWebSocketControl.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "ProxyCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "PasswordCredential MessageWebSocketControl.ProxyCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "ProxyCredential");
 			}
 		}
 #endif
@@ -123,11 +123,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "MessageWebSocketReceiveMode MessageWebSocketControl.ReceiveMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "ReceiveMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "MessageWebSocketReceiveMode MessageWebSocketControl.ReceiveMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "ReceiveMode");
 			}
 		}
 #endif
@@ -137,11 +137,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "PasswordCredential MessageWebSocketControl.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "ServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "PasswordCredential MessageWebSocketControl.ServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocketControl", "ServerCredential");
 			}
 		}
 #endif
@@ -151,7 +151,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "IList<string> MessageWebSocketControl.SupportedProtocols");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "SupportedProtocols");
 			}
 		}
 #endif

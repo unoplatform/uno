@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "bool AppUpdateOptions.AllowForcedAppRestart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "AllowForcedAppRestart");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "bool AppUpdateOptions.AllowForcedAppRestart");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "AllowForcedAppRestart");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "bool AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "AutomaticallyDownloadAndInstallUpdateIfFound");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "bool AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "AutomaticallyDownloadAndInstallUpdateIfFound");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "string AppUpdateOptions.CatalogId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "CatalogId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "string AppUpdateOptions.CatalogId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "CatalogId");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AppUpdateOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "AppUpdateOptions.AppUpdateOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "AppUpdateOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.AppUpdateOptions()

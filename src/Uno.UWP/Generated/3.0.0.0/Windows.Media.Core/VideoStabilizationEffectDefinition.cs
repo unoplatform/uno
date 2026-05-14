@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoStabilizationEffectDefinition", "string VideoStabilizationEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoStabilizationEffectDefinition", "ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoStabilizationEffectDefinition", "IPropertySet VideoStabilizationEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoStabilizationEffectDefinition", "Properties");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VideoStabilizationEffectDefinition()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffectDefinition", "VideoStabilizationEffectDefinition.VideoStabilizationEffectDefinition()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffectDefinition", "VideoStabilizationEffectDefinition()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.VideoStabilizationEffectDefinition()

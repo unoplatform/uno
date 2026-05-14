@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Address");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Address");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.BirthDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "BirthDate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.City");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "City");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Class");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Class");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Endorsements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Endorsements");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "ExpirationDate");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.EyeColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "EyeColor");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.FirstName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "FirstName");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Gender");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Gender");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.HairColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "HairColor");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Height");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.LicenseNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "LicenseNumber");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.PostalCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "PostalCode");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "MagneticStripeReaderReport MagneticStripeReaderAamvaCardDataReceivedEventArgs.Report");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Report");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Restrictions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Restrictions");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "State");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Suffix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Suffix");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Surname");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Surname");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Weight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "Weight");
 			}
 		}
 #endif

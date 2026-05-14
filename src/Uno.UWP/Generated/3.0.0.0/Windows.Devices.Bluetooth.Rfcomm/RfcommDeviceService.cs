@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "HostName RfcommDeviceService.ConnectionHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "ConnectionHostName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "string RfcommDeviceService.ConnectionServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "ConnectionServiceName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "BluetoothDevice RfcommDeviceService.Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "Device");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "DeviceAccessInformation RfcommDeviceService.DeviceAccessInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "DeviceAccessInformation");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "SocketProtectionLevel RfcommDeviceService.MaxProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "MaxProtectionLevel");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "SocketProtectionLevel RfcommDeviceService.ProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "ProtectionLevel");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "RfcommServiceId RfcommDeviceService.ServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "ServiceId");
 			}
 		}
 #endif
@@ -87,70 +87,70 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "IAsyncOperation<RfcommDeviceService> RfcommDeviceService.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "string RfcommDeviceService.GetDeviceSelector(RfcommServiceId serviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "GetDeviceSelector(RfcommServiceId serviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelectorForBluetoothDevice(global::Windows.Devices.Bluetooth.BluetoothDevice bluetoothDevice)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "string RfcommDeviceService.GetDeviceSelectorForBluetoothDevice(BluetoothDevice bluetoothDevice)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "GetDeviceSelectorForBluetoothDevice(BluetoothDevice bluetoothDevice)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelectorForBluetoothDevice(global::Windows.Devices.Bluetooth.BluetoothDevice bluetoothDevice, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "string RfcommDeviceService.GetDeviceSelectorForBluetoothDevice(BluetoothDevice bluetoothDevice, BluetoothCacheMode cacheMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "GetDeviceSelectorForBluetoothDevice(BluetoothDevice bluetoothDevice, BluetoothCacheMode cacheMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelectorForBluetoothDeviceAndServiceId(global::Windows.Devices.Bluetooth.BluetoothDevice bluetoothDevice, global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "string RfcommDeviceService.GetDeviceSelectorForBluetoothDeviceAndServiceId(BluetoothDevice bluetoothDevice, RfcommServiceId serviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "GetDeviceSelectorForBluetoothDeviceAndServiceId(BluetoothDevice bluetoothDevice, RfcommServiceId serviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelectorForBluetoothDeviceAndServiceId(global::Windows.Devices.Bluetooth.BluetoothDevice bluetoothDevice, global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "string RfcommDeviceService.GetDeviceSelectorForBluetoothDeviceAndServiceId(BluetoothDevice bluetoothDevice, RfcommServiceId serviceId, BluetoothCacheMode cacheMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "GetDeviceSelectorForBluetoothDeviceAndServiceId(BluetoothDevice bluetoothDevice, RfcommServiceId serviceId, BluetoothCacheMode cacheMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<uint, global::Windows.Storage.Streams.IBuffer>> GetSdpRawAttributesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "IAsyncOperation<IReadOnlyDictionary<uint, IBuffer>> RfcommDeviceService.GetSdpRawAttributesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "GetSdpRawAttributesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<uint, global::Windows.Storage.Streams.IBuffer>> GetSdpRawAttributesAsync(global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "IAsyncOperation<IReadOnlyDictionary<uint, IBuffer>> RfcommDeviceService.GetSdpRawAttributesAsync(BluetoothCacheMode cacheMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "GetSdpRawAttributesAsync(BluetoothCacheMode cacheMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "void RfcommDeviceService.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "IAsyncOperation<DeviceAccessStatus> RfcommDeviceService.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "RequestAccessAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ConnectionHostName.get

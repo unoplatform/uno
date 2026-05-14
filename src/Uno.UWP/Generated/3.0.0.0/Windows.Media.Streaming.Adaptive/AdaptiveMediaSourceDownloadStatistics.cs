@@ -19,7 +19,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics", "ulong AdaptiveMediaSourceDownloadStatistics.ContentBytesReceivedCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics", "ContentBytesReceivedCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics", "TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToFirstByteReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics", "TimeToFirstByteReceived");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics", "TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToHeadersReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics", "TimeToHeadersReceived");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics", "TimeSpan? AdaptiveMediaSourceDownloadStatistics.TimeToLastByteReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics", "TimeToLastByteReceived");
 			}
 		}
 #endif

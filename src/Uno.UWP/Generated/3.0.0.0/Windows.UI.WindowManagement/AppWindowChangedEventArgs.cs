@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "bool AppWindowChangedEventArgs.DidAvailableWindowPresentationsChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidAvailableWindowPresentationsChange");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "bool AppWindowChangedEventArgs.DidDisplayRegionsChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidDisplayRegionsChange");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "bool AppWindowChangedEventArgs.DidFrameChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidFrameChange");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "bool AppWindowChangedEventArgs.DidSizeChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidSizeChange");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "bool AppWindowChangedEventArgs.DidTitleBarChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidTitleBarChange");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "bool AppWindowChangedEventArgs.DidVisibilityChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidVisibilityChange");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "bool AppWindowChangedEventArgs.DidWindowPresentationChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidWindowPresentationChange");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "bool AppWindowChangedEventArgs.DidWindowingEnvironmentChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidWindowingEnvironmentChange");
 			}
 		}
 #endif

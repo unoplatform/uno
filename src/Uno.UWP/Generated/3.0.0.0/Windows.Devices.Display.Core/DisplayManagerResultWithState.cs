@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "DisplayManagerResult DisplayManagerResultWithState.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "Exception DisplayManagerResultWithState.ExtendedErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "ExtendedErrorCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "DisplayState DisplayManagerResultWithState.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "State");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "UserDataAccountContentKinds UserDataAccountProviderAddAccountOperation.ContentKinds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "ContentKinds");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "UserDataAccountProviderOperationKind UserDataAccountProviderAddAccountOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "IReadOnlyList<UserDataAccountPartnerAccountInfo> UserDataAccountProviderAddAccountOperation.PartnerAccountInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "PartnerAccountInfos");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted(string userDataAccountId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "void UserDataAccountProviderAddAccountOperation.ReportCompleted(string userDataAccountId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "ReportCompleted(string userDataAccountId)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.ContentKinds.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterConeProperties", "double AudioNodeEmitterConeProperties.InnerAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterConeProperties", "InnerAngle");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterConeProperties", "double AudioNodeEmitterConeProperties.OuterAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterConeProperties", "OuterAngle");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterConeProperties", "double AudioNodeEmitterConeProperties.OuterAngleGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterConeProperties", "OuterAngleGain");
 			}
 		}
 #endif

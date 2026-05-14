@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "AudioMediaFrame MediaFrameReference.AudioMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "AudioMediaFrame");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "BufferMediaFrame MediaFrameReference.BufferMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "BufferMediaFrame");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "SpatialCoordinateSystem MediaFrameReference.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "CoordinateSystem");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "TimeSpan MediaFrameReference.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "Duration");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "MediaFrameFormat MediaFrameReference.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "Format");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "IReadOnlyDictionary<Guid, object> MediaFrameReference.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "Properties");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "MediaFrameSourceKind MediaFrameReference.SourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "SourceKind");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "TimeSpan? MediaFrameReference.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "SystemRelativeTime");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "VideoMediaFrame MediaFrameReference.VideoMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "VideoMediaFrame");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameReference", "void MediaFrameReference.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameReference", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.AudioMediaFrame.get

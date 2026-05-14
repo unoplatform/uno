@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "IReadOnlyList<string> ContactPickerUI.DesiredFields");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "DesiredFields");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "IList<ContactFieldType> ContactPickerUI.DesiredFieldsWithContactFieldType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "DesiredFieldsWithContactFieldType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "ContactSelectionMode ContactPickerUI.SelectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "SelectionMode");
 			}
 		}
 #endif
@@ -47,21 +47,21 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.Provider.AddContactResult AddContact(string id, global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "AddContactResult ContactPickerUI.AddContact(string id, Contact contact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "AddContact(string id, Contact contact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveContact(string id)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "void ContactPickerUI.RemoveContact(string id)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "RemoveContact(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsContact(string id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "bool ContactPickerUI.ContainsContact(string id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "ContainsContact(string id)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.ContactRemoved.add
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.Provider.AddContactResult AddContact(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "AddContactResult ContactPickerUI.AddContact(Contact contact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "AddContact(Contact contact)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFields.get
@@ -83,12 +83,12 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "event TypedEventHandler<ContactPickerUI, ContactRemovedEventArgs> ContactPickerUI.ContactRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "event ContactRemoved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "event TypedEventHandler<ContactPickerUI, ContactRemovedEventArgs> ContactPickerUI.ContactRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Provider.ContactPickerUI", "event ContactRemoved");
 			}
 		}
 #endif

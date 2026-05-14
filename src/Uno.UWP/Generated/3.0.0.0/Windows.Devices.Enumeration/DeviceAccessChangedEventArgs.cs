@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessChangedEventArgs", "string DeviceAccessChangedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessChangedEventArgs", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessChangedEventArgs", "DeviceAccessStatus DeviceAccessChangedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessChangedEventArgs", "Status");
 			}
 		}
 #endif

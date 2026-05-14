@@ -17,70 +17,70 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Calls.VoipCallCoordinator GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipCallCoordinator VoipCallCoordinator.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync(string taskEntryPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "IAsyncOperation<VoipPhoneCallResourceReservationStatus> VoipCallCoordinator.ReserveCallResourcesAsync(string taskEntryPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "ReserveCallResourcesAsync(string taskEntryPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewIncomingCall(string context, string contactName, string contactNumber, global::System.Uri contactImage, string serviceName, global::System.Uri brandingImage, string callDetails, global::System.Uri ringtone, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media, global::System.TimeSpan ringTimeout)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestNewIncomingCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, VoipPhoneCallMedia media, TimeSpan ringTimeout)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestNewIncomingCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, VoipPhoneCallMedia media, TimeSpan ringTimeout)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewOutgoingCall(string context, string contactName, string serviceName, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestNewOutgoingCall(string context, string contactName, string serviceName, VoipPhoneCallMedia media)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestNewOutgoingCall(string context, string contactName, string serviceName, VoipPhoneCallMedia media)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyMuted()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "void VoipCallCoordinator.NotifyMuted()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "NotifyMuted()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyUnmuted()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "void VoipCallCoordinator.NotifyUnmuted()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "NotifyUnmuted()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestOutgoingUpgradeToVideoCall(global::System.Guid callUpgradeGuid, string context, string contactName, string serviceName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestOutgoingUpgradeToVideoCall(Guid callUpgradeGuid, string context, string contactName, string serviceName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestOutgoingUpgradeToVideoCall(Guid callUpgradeGuid, string context, string contactName, string serviceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestIncomingUpgradeToVideoCall(string context, string contactName, string contactNumber, global::System.Uri contactImage, string serviceName, global::System.Uri brandingImage, string callDetails, global::System.Uri ringtone, global::System.TimeSpan ringTimeout)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestIncomingUpgradeToVideoCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, TimeSpan ringTimeout)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestIncomingUpgradeToVideoCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, TimeSpan ringTimeout)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void TerminateCellularCall(global::System.Guid callUpgradeGuid)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "void VoipCallCoordinator.TerminateCellularCall(Guid callUpgradeGuid)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "TerminateCellularCall(Guid callUpgradeGuid)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CancelUpgrade(global::System.Guid callUpgradeGuid)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "void VoipCallCoordinator.CancelUpgrade(Guid callUpgradeGuid)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "CancelUpgrade(Guid callUpgradeGuid)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.MuteStateChanged.add
@@ -89,28 +89,28 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall SetupNewAcceptedCall(string context, string contactName, string contactNumber, string serviceName, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.SetupNewAcceptedCall(string context, string contactName, string contactNumber, string serviceName, VoipPhoneCallMedia media)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "SetupNewAcceptedCall(string context, string contactName, string contactNumber, string serviceName, VoipPhoneCallMedia media)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewAppInitiatedCall(string context, string contactName, string contactNumber, string serviceName, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestNewAppInitiatedCall(string context, string contactName, string contactNumber, string serviceName, VoipPhoneCallMedia media)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestNewAppInitiatedCall(string context, string contactName, string contactNumber, string serviceName, VoipPhoneCallMedia media)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewIncomingCall(string context, string contactName, string contactNumber, global::System.Uri contactImage, string serviceName, global::System.Uri brandingImage, string callDetails, global::System.Uri ringtone, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media, global::System.TimeSpan ringTimeout, string contactRemoteId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestNewIncomingCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, VoipPhoneCallMedia media, TimeSpan ringTimeout, string contactRemoteId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestNewIncomingCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, VoipPhoneCallMedia media, TimeSpan ringTimeout, string contactRemoteId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "IAsyncOperation<VoipPhoneCallResourceReservationStatus> VoipCallCoordinator.ReserveCallResourcesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "ReserveCallResourcesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -120,12 +120,12 @@ namespace Windows.ApplicationModel.Calls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "event TypedEventHandler<VoipCallCoordinator, MuteChangeEventArgs> VoipCallCoordinator.MuteStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "event MuteStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "event TypedEventHandler<VoipCallCoordinator, MuteChangeEventArgs> VoipCallCoordinator.MuteStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipCallCoordinator", "event MuteStateChanged");
 			}
 		}
 #endif

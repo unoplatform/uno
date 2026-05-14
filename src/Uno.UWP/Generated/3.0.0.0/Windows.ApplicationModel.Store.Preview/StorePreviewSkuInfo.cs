@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.CurrencyCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "CurrencyCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.CustomDeveloperData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "CustomDeveloperData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "Description");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.ExtendedData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "ExtendedData");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.FormattedListPrice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "FormattedListPrice");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "ProductId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.SkuId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "SkuId");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.SkuType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "SkuType");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "string StorePreviewSkuInfo.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "Title");
 			}
 		}
 #endif

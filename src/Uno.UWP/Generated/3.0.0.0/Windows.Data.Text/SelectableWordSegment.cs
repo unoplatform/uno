@@ -19,7 +19,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.SelectableWordSegment", "TextSegment SelectableWordSegment.SourceTextSegment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.SelectableWordSegment", "SourceTextSegment");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.SelectableWordSegment", "string SelectableWordSegment.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.SelectableWordSegment", "Text");
 			}
 		}
 #endif

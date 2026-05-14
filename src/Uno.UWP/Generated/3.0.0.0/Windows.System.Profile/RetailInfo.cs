@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.RetailInfo", "bool RetailInfo.IsDemoModeEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.RetailInfo", "IsDemoModeEnabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.RetailInfo", "IReadOnlyDictionary<string, object> RetailInfo.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.RetailInfo", "Properties");
 			}
 		}
 #endif

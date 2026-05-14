@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "SmartCardAppletIdGroupActivationPolicy SmartCardAppletIdGroupRegistration.ActivationPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "ActivationPolicy");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "SmartCardAppletIdGroup SmartCardAppletIdGroupRegistration.AppletIdGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "AppletIdGroup");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "Guid SmartCardAppletIdGroupRegistration.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "string SmartCardAppletIdGroupRegistration.SmartCardReaderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "SmartCardReaderId");
 			}
 		}
 #endif
@@ -57,21 +57,21 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardActivationPolicyChangeResult> RequestActivationPolicyChangeAsync(global::Windows.Devices.SmartCards.SmartCardAppletIdGroupActivationPolicy policy)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "IAsyncOperation<SmartCardActivationPolicyChangeResult> SmartCardAppletIdGroupRegistration.RequestActivationPolicyChangeAsync(SmartCardAppletIdGroupActivationPolicy policy)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "RequestActivationPolicyChangeAsync(SmartCardAppletIdGroupActivationPolicy policy)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetAutomaticResponseApdusAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu> apdus)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "IAsyncAction SmartCardAppletIdGroupRegistration.SetAutomaticResponseApdusAsync(IEnumerable<SmartCardAutomaticResponseApdu> apdus)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "SetAutomaticResponseApdusAsync(IEnumerable<SmartCardAutomaticResponseApdu> apdus)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetPropertiesAsync(global::Windows.Foundation.Collections.ValueSet props)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "IAsyncAction SmartCardAppletIdGroupRegistration.SetPropertiesAsync(ValueSet props)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration", "SetPropertiesAsync(ValueSet props)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.ActivationPolicy.get

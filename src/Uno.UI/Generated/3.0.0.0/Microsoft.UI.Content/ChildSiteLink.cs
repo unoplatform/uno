@@ -19,11 +19,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "Vector2 ChildSiteLink.ActualSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ActualSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "Vector2 ChildSiteLink.ActualSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "ActualSize");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ContentAutomationOptions ChildSiteLink.AutomationOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "AutomationOption");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "ContentAutomationOptions ChildSiteLink.AutomationOption");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "AutomationOption");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "object ChildSiteLink.AutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "AutomationProvider");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "DispatcherQueue ChildSiteLink.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "DispatcherQueue");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.IsClosed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "IsClosed");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "Matrix4x4 ChildSiteLink.LocalToParentTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "LocalToParentTransformMatrix");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "Matrix4x4 ChildSiteLink.LocalToParentTransformMatrix");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "LocalToParentTransformMatrix");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ContentIsland ChildSiteLink.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "Parent");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.ProcessesKeyboardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ProcessesKeyboardInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.ProcessesKeyboardInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "ProcessesKeyboardInput");
 			}
 		}
 #endif
@@ -115,11 +115,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.ProcessesPointerInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ProcessesPointerInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.ProcessesPointerInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "ProcessesPointerInput");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ContentSiteView ChildSiteLink.SiteView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "SiteView");
 			}
 		}
 #endif
@@ -137,28 +137,28 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ChildSiteLink Create(global::Microsoft.UI.Content.ContentIsland parent, global::Microsoft.UI.Composition.ContainerVisual placementVisual)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ChildSiteLink ChildSiteLink.Create(ContentIsland parent, ContainerVisual placementVisual)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "Create(ContentIsland parent, ContainerVisual placementVisual)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ChildSiteLink CreateForSystemVisual(global::Microsoft.UI.Content.ContentIsland parent, global::Windows.UI.Composition.ContainerVisual placementVisual)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ChildSiteLink ChildSiteLink.CreateForSystemVisual(ContentIsland parent, ContainerVisual placementVisual)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "CreateForSystemVisual(ContentIsland parent, ContainerVisual placementVisual)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Connect(global::Microsoft.UI.Content.ContentIsland content)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "void ChildSiteLink.Connect(ContentIsland content)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "Connect(ContentIsland content)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "void ChildSiteLink.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Closed.add
@@ -195,12 +195,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event ClosableNotifierHandler ChildSiteLink.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event Closed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event ClosableNotifierHandler ChildSiteLink.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event Closed");
 			}
 		}
 #endif
@@ -211,12 +211,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event ClosableNotifierHandler ChildSiteLink.FrameworkClosed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event FrameworkClosed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event ClosableNotifierHandler ChildSiteLink.FrameworkClosed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event FrameworkClosed");
 			}
 		}
 #endif
@@ -227,12 +227,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event TypedEventHandler<IContentSiteAutomation, ContentSiteAutomationProviderRequestedEventArgs> ChildSiteLink.FragmentRootAutomationProviderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event FragmentRootAutomationProviderRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event TypedEventHandler<IContentSiteAutomation, ContentSiteAutomationProviderRequestedEventArgs> ChildSiteLink.FragmentRootAutomationProviderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event FragmentRootAutomationProviderRequested");
 			}
 		}
 #endif
@@ -243,12 +243,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event TypedEventHandler<IContentSiteAutomation, ContentSiteAutomationProviderRequestedEventArgs> ChildSiteLink.NextSiblingAutomationProviderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event NextSiblingAutomationProviderRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event TypedEventHandler<IContentSiteAutomation, ContentSiteAutomationProviderRequestedEventArgs> ChildSiteLink.NextSiblingAutomationProviderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event NextSiblingAutomationProviderRequested");
 			}
 		}
 #endif
@@ -259,12 +259,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event TypedEventHandler<IContentSiteAutomation, ContentSiteAutomationProviderRequestedEventArgs> ChildSiteLink.ParentAutomationProviderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event ParentAutomationProviderRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event TypedEventHandler<IContentSiteAutomation, ContentSiteAutomationProviderRequestedEventArgs> ChildSiteLink.ParentAutomationProviderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event ParentAutomationProviderRequested");
 			}
 		}
 #endif
@@ -275,12 +275,12 @@ namespace Microsoft.UI.Content
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event TypedEventHandler<IContentSiteAutomation, ContentSiteAutomationProviderRequestedEventArgs> ChildSiteLink.PreviousSiblingAutomationProviderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event PreviousSiblingAutomationProviderRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event TypedEventHandler<IContentSiteAutomation, ContentSiteAutomationProviderRequestedEventArgs> ChildSiteLink.PreviousSiblingAutomationProviderRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ChildSiteLink", "event PreviousSiblingAutomationProviderRequested");
 			}
 		}
 #endif

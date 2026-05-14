@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "bool MessageWebSocketMessageReceivedEventArgs.IsMessageComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "IsMessageComplete");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "SocketMessageType MessageWebSocketMessageReceivedEventArgs.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "MessageType");
 			}
 		}
 #endif
@@ -38,14 +38,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.DataReader GetDataReader()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "DataReader MessageWebSocketMessageReceivedEventArgs.GetDataReader()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "GetDataReader()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetDataStream()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "IInputStream MessageWebSocketMessageReceivedEventArgs.GetDataStream()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "GetDataStream()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.IsMessageComplete.get

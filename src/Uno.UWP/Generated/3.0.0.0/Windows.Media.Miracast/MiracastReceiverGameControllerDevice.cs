@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.IsRequestedByTransmitter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "IsRequestedByTransmitter");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.IsTransmittingInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "IsTransmittingInput");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "MiracastReceiverGameControllerDeviceUsageMode MiracastReceiverGameControllerDevice.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "Mode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "MiracastReceiverGameControllerDeviceUsageMode MiracastReceiverGameControllerDevice.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "Mode");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.TransmitInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "TransmitInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.TransmitInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "TransmitInput");
 			}
 		}
 #endif
@@ -76,12 +76,12 @@ namespace Windows.Media.Miracast
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "event TypedEventHandler<MiracastReceiverGameControllerDevice, object> MiracastReceiverGameControllerDevice.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "event Changed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "event TypedEventHandler<MiracastReceiverGameControllerDevice, object> MiracastReceiverGameControllerDevice.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "event Changed");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "Rect InkAnalysisListItem.BoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "BoundingRect");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "IReadOnlyList<IInkAnalysisNode> InkAnalysisListItem.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "Children");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "uint InkAnalysisListItem.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "InkAnalysisNodeKind InkAnalysisListItem.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "Kind");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "IInkAnalysisNode InkAnalysisListItem.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "Parent");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "string InkAnalysisListItem.RecognizedText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "RecognizedText");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "IReadOnlyList<Point> InkAnalysisListItem.RotatedBoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "RotatedBoundingRect");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "IReadOnlyList<uint> InkAnalysisListItem.GetStrokeIds()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisListItem", "GetStrokeIds()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisListItem.BoundingRect.get

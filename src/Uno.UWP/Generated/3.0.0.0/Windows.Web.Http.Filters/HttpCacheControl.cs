@@ -19,11 +19,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheReadBehavior HttpCacheControl.ReadBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpCacheControl", "ReadBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheReadBehavior HttpCacheControl.ReadBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "ReadBehavior");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheWriteBehavior HttpCacheControl.WriteBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpCacheControl", "WriteBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheWriteBehavior HttpCacheControl.WriteBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "WriteBehavior");
 			}
 		}
 #endif

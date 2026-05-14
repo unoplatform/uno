@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFocusChangedEventArgs", "MediaCaptureFocusState MediaCaptureFocusChangedEventArgs.FocusState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFocusChangedEventArgs", "FocusState");
 			}
 		}
 #endif

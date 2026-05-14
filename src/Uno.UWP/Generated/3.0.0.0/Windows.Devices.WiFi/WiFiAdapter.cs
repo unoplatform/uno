@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "NetworkAdapter WiFiAdapter.NetworkAdapter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "NetworkAdapter");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "WiFiNetworkReport WiFiAdapter.NetworkReport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "NetworkReport");
 			}
 		}
 #endif
@@ -37,63 +37,63 @@ namespace Windows.Devices.WiFi
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.WiFi.WiFiAdapter>> FindAllAdaptersAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncOperation<IReadOnlyList<WiFiAdapter>> WiFiAdapter.FindAllAdaptersAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "FindAllAdaptersAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "string WiFiAdapter.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiAdapter> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncOperation<WiFiAdapter> WiFiAdapter.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiAccessStatus> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncOperation<WiFiAccessStatus> WiFiAdapter.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ScanAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncAction WiFiAdapter.ScanAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "ScanAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential, string ssid)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential, string ssid)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential, string ssid)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Disconnect()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFi.WiFiAdapter", "void WiFiAdapter.Disconnect()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFi.WiFiAdapter", "Disconnect()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.AvailableNetworksChanged.add
@@ -102,14 +102,14 @@ namespace Windows.Devices.WiFi
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiWpsConfigurationResult> GetWpsConfigurationAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncOperation<WiFiWpsConfigurationResult> WiFiAdapter.GetWpsConfigurationAsync(WiFiAvailableNetwork availableNetwork)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "GetWpsConfigurationAsync(WiFiAvailableNetwork availableNetwork)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFi.WiFiConnectionResult> ConnectAsync(global::Windows.Devices.WiFi.WiFiAvailableNetwork availableNetwork, global::Windows.Devices.WiFi.WiFiReconnectionKind reconnectionKind, global::Windows.Security.Credentials.PasswordCredential passwordCredential, string ssid, global::Windows.Devices.WiFi.WiFiConnectionMethod connectionMethod)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "IAsyncOperation<WiFiConnectionResult> WiFiAdapter.ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential, string ssid, WiFiConnectionMethod connectionMethod)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAdapter", "ConnectAsync(WiFiAvailableNetwork availableNetwork, WiFiReconnectionKind reconnectionKind, PasswordCredential passwordCredential, string ssid, WiFiConnectionMethod connectionMethod)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.NetworkAdapter.get
@@ -121,12 +121,12 @@ namespace Windows.Devices.WiFi
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFi.WiFiAdapter", "event TypedEventHandler<WiFiAdapter, object> WiFiAdapter.AvailableNetworksChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFi.WiFiAdapter", "event AvailableNetworksChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFi.WiFiAdapter", "event TypedEventHandler<WiFiAdapter, object> WiFiAdapter.AvailableNetworksChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFi.WiFiAdapter", "event AvailableNetworksChanged");
 			}
 		}
 #endif

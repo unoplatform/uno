@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaSourceStateChangedEventArgs", "MediaSourceState MediaSourceStateChangedEventArgs.NewState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaSourceStateChangedEventArgs", "NewState");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaSourceStateChangedEventArgs", "MediaSourceState MediaSourceStateChangedEventArgs.OldState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaSourceStateChangedEventArgs", "OldState");
 			}
 		}
 #endif

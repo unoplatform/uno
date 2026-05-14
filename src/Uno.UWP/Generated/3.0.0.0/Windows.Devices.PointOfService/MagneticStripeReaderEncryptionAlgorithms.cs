@@ -14,7 +14,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "uint MagneticStripeReaderEncryptionAlgorithms.ExtendedBase");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "ExtendedBase");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "uint MagneticStripeReaderEncryptionAlgorithms.None");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "None");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "uint MagneticStripeReaderEncryptionAlgorithms.TripleDesDukpt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "TripleDesDukpt");
 			}
 		}
 #endif

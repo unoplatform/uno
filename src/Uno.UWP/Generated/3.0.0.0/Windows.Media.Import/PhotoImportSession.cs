@@ -19,11 +19,11 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "bool PhotoImportSession.AppendSessionDateToDestinationFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "AppendSessionDateToDestinationFolder");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "bool PhotoImportSession.AppendSessionDateToDestinationFolder");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "AppendSessionDateToDestinationFolder");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "string PhotoImportSession.DestinationFileNamePrefix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "DestinationFileNamePrefix");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "string PhotoImportSession.DestinationFileNamePrefix");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "DestinationFileNamePrefix");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "IStorageFolder PhotoImportSession.DestinationFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "DestinationFolder");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "IStorageFolder PhotoImportSession.DestinationFolder");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "DestinationFolder");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "bool PhotoImportSession.RememberDeselectedItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "RememberDeselectedItems");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "bool PhotoImportSession.RememberDeselectedItems");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "RememberDeselectedItems");
 			}
 		}
 #endif
@@ -75,7 +75,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "Guid PhotoImportSession.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "SessionId");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "PhotoImportSource PhotoImportSession.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "Source");
 			}
 		}
 #endif
@@ -95,11 +95,11 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "PhotoImportSubfolderCreationMode PhotoImportSession.SubfolderCreationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "SubfolderCreationMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "PhotoImportSubfolderCreationMode PhotoImportSession.SubfolderCreationMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "SubfolderCreationMode");
 			}
 		}
 #endif
@@ -109,11 +109,11 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "PhotoImportSubfolderDateFormat PhotoImportSession.SubfolderDateFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "SubfolderDateFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "PhotoImportSubfolderDateFormat PhotoImportSession.SubfolderDateFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "SubfolderDateFormat");
 			}
 		}
 #endif
@@ -121,14 +121,14 @@ namespace Windows.Media.Import
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportFindItemsResult, uint> FindItemsAsync(global::Windows.Media.Import.PhotoImportContentTypeFilter contentTypeFilter, global::Windows.Media.Import.PhotoImportItemSelectionMode itemSelectionMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "IAsyncOperationWithProgress<PhotoImportFindItemsResult, uint> PhotoImportSession.FindItemsAsync(PhotoImportContentTypeFilter contentTypeFilter, PhotoImportItemSelectionMode itemSelectionMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "FindItemsAsync(PhotoImportContentTypeFilter contentTypeFilter, PhotoImportItemSelectionMode itemSelectionMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "void PhotoImportSession.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportSession.AppendSessionDateToDestinationFolder.get

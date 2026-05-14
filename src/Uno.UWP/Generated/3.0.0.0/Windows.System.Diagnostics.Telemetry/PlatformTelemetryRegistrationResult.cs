@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics.Telemetry
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult", "PlatformTelemetryRegistrationStatus PlatformTelemetryRegistrationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult", "Status");
 			}
 		}
 #endif

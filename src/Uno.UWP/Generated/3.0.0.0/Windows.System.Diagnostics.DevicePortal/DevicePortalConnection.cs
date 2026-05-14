@@ -17,7 +17,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnection GetForAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection appServiceConnection)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "DevicePortalConnection DevicePortalConnection.GetForAppServiceConnection(AppServiceConnection appServiceConnection)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "GetForAppServiceConnection(AppServiceConnection appServiceConnection)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.Closed.add
@@ -28,35 +28,35 @@ namespace Windows.System.Diagnostics.DevicePortal
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.ServerMessageWebSocket GetServerMessageWebSocketForRequest(global::Windows.Web.Http.HttpRequestMessage request)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "ServerMessageWebSocket DevicePortalConnection.GetServerMessageWebSocketForRequest(HttpRequestMessage request)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "GetServerMessageWebSocketForRequest(HttpRequestMessage request)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.ServerMessageWebSocket GetServerMessageWebSocketForRequest(global::Windows.Web.Http.HttpRequestMessage request, global::Windows.Networking.Sockets.SocketMessageType messageType, string protocol)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "ServerMessageWebSocket DevicePortalConnection.GetServerMessageWebSocketForRequest(HttpRequestMessage request, SocketMessageType messageType, string protocol)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "GetServerMessageWebSocketForRequest(HttpRequestMessage request, SocketMessageType messageType, string protocol)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.ServerMessageWebSocket GetServerMessageWebSocketForRequest(global::Windows.Web.Http.HttpRequestMessage request, global::Windows.Networking.Sockets.SocketMessageType messageType, string protocol, uint outboundBufferSizeInBytes, uint maxMessageSize, global::Windows.Networking.Sockets.MessageWebSocketReceiveMode receiveMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "ServerMessageWebSocket DevicePortalConnection.GetServerMessageWebSocketForRequest(HttpRequestMessage request, SocketMessageType messageType, string protocol, uint outboundBufferSizeInBytes, uint maxMessageSize, MessageWebSocketReceiveMode receiveMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "GetServerMessageWebSocketForRequest(HttpRequestMessage request, SocketMessageType messageType, string protocol, uint outboundBufferSizeInBytes, uint maxMessageSize, MessageWebSocketReceiveMode receiveMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.ServerStreamWebSocket GetServerStreamWebSocketForRequest(global::Windows.Web.Http.HttpRequestMessage request)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "ServerStreamWebSocket DevicePortalConnection.GetServerStreamWebSocketForRequest(HttpRequestMessage request)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "GetServerStreamWebSocketForRequest(HttpRequestMessage request)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.ServerStreamWebSocket GetServerStreamWebSocketForRequest(global::Windows.Web.Http.HttpRequestMessage request, string protocol, uint outboundBufferSizeInBytes, bool noDelay)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "ServerStreamWebSocket DevicePortalConnection.GetServerStreamWebSocketForRequest(HttpRequestMessage request, string protocol, uint outboundBufferSizeInBytes, bool noDelay)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "GetServerStreamWebSocketForRequest(HttpRequestMessage request, string protocol, uint outboundBufferSizeInBytes, bool noDelay)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -66,12 +66,12 @@ namespace Windows.System.Diagnostics.DevicePortal
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "event TypedEventHandler<DevicePortalConnection, DevicePortalConnectionClosedEventArgs> DevicePortalConnection.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "event Closed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "event TypedEventHandler<DevicePortalConnection, DevicePortalConnectionClosedEventArgs> DevicePortalConnection.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "event Closed");
 			}
 		}
 #endif
@@ -82,12 +82,12 @@ namespace Windows.System.Diagnostics.DevicePortal
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "event TypedEventHandler<DevicePortalConnection, DevicePortalConnectionRequestReceivedEventArgs> DevicePortalConnection.RequestReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "event RequestReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "event TypedEventHandler<DevicePortalConnection, DevicePortalConnectionRequestReceivedEventArgs> DevicePortalConnection.RequestReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.DevicePortal.DevicePortalConnection", "event RequestReceived");
 			}
 		}
 #endif

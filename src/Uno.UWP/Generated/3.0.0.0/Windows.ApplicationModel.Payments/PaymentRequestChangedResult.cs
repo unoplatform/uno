@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "bool PaymentRequestChangedResult.ChangeAcceptedByMerchant");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "ChangeAcceptedByMerchant");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "bool PaymentRequestChangedResult.ChangeAcceptedByMerchant");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "ChangeAcceptedByMerchant");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "string PaymentRequestChangedResult.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "Message");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "string PaymentRequestChangedResult.Message");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "Message");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentDetails PaymentRequestChangedResult.UpdatedPaymentDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "UpdatedPaymentDetails");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentDetails PaymentRequestChangedResult.UpdatedPaymentDetails");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "UpdatedPaymentDetails");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentRequestChangedResult(bool changeAcceptedByMerchant)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentRequestChangedResult.PaymentRequestChangedResult(bool changeAcceptedByMerchant)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentRequestChangedResult(bool changeAcceptedByMerchant)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.PaymentRequestChangedResult(bool)
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentRequestChangedResult(bool changeAcceptedByMerchant, global::Windows.ApplicationModel.Payments.PaymentDetails updatedPaymentDetails)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentRequestChangedResult.PaymentRequestChangedResult(bool changeAcceptedByMerchant, PaymentDetails updatedPaymentDetails)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentRequestChangedResult(bool changeAcceptedByMerchant, PaymentDetails updatedPaymentDetails)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.PaymentRequestChangedResult(bool, Windows.ApplicationModel.Payments.PaymentDetails)

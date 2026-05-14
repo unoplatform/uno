@@ -48,7 +48,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Union(global::Windows.Foundation.Point point)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Rect", "void Rect.Union(Point point)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Rect", "Union(Point point)");
 		}
 #endif
 		// Skipping already declared method Windows.Foundation.Rect.ToString()
@@ -56,7 +56,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ToString(global::System.IFormatProvider provider)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Rect", "string Rect.ToString(IFormatProvider provider)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Rect", "ToString(IFormatProvider provider)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Rect.System.IFormattable.ToString(string, System.IFormatProvider)

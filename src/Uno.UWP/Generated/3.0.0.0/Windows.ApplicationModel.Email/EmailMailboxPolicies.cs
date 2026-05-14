@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.AllowSmimeSoftCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "AllowSmimeSoftCertificates");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.AllowSmimeSoftCertificates");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "AllowSmimeSoftCertificates");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxAllowedSmimeEncryptionAlgorithmNegotiation EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "AllowedSmimeEncryptionAlgorithmNegotiation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxAllowedSmimeEncryptionAlgorithmNegotiation EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "AllowedSmimeEncryptionAlgorithmNegotiation");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.MustEncryptSmimeMessages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "MustEncryptSmimeMessages");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.MustEncryptSmimeMessages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "MustEncryptSmimeMessages");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.MustSignSmimeMessages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "MustSignSmimeMessages");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.MustSignSmimeMessages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "MustSignSmimeMessages");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "RequiredSmimeEncryptionAlgorithm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "RequiredSmimeEncryptionAlgorithm");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "RequiredSmimeSigningAlgorithm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxPolicies", "RequiredSmimeSigningAlgorithm");
 			}
 		}
 #endif

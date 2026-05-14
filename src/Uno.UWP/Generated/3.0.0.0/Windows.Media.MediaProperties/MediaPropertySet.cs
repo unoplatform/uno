@@ -14,7 +14,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "ICollection<Guid> MediaPropertySet.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "Keys");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "ICollection<object> MediaPropertySet.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "Values");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "int MediaPropertySet.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "Count");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "bool MediaPropertySet.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "IsReadOnly");
 			}
 		}
 #endif
@@ -54,11 +54,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "object MediaPropertySet.this[Guid key]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "this[Guid key]");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "object MediaPropertySet.this[Guid key]");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "this[Guid key]");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaPropertySet()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "MediaPropertySet.MediaPropertySet()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "MediaPropertySet()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.MediaPropertySet()
@@ -80,56 +80,56 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::System.Guid key, object value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "void MediaPropertySet.Add(Guid key, object value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "Add(Guid key, object value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(global::System.Guid key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "bool MediaPropertySet.ContainsKey(Guid key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "ContainsKey(Guid key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::System.Guid key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "bool MediaPropertySet.Remove(Guid key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "Remove(Guid key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(global::System.Guid key, out object value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "bool MediaPropertySet.TryGetValue(Guid key, out object value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "TryGetValue(Guid key, out object value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::System.Collections.Generic.KeyValuePair<global::System.Guid, object> item)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "void MediaPropertySet.Add(KeyValuePair<Guid, object> item)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "Add(KeyValuePair<Guid, object> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "void MediaPropertySet.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<global::System.Guid, object> item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "bool MediaPropertySet.Contains(KeyValuePair<Guid, object> item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "Contains(KeyValuePair<Guid, object> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>[] array, int arrayIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "void MediaPropertySet.CopyTo(KeyValuePair<Guid, object>[] array, int arrayIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaPropertySet", "CopyTo(KeyValuePair<Guid, object>[] array, int arrayIndex)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>.Remove(System.Collections.Generic.KeyValuePair<System.Guid, object>)
@@ -137,7 +137,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "IEnumerator<KeyValuePair<Guid, object>> MediaPropertySet.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaPropertySet", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.System.Collections.IEnumerable.GetEnumerator()

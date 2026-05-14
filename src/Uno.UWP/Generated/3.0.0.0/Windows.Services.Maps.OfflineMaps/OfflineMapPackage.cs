@@ -19,7 +19,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "string OfflineMapPackage.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "DisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "string OfflineMapPackage.EnclosingRegionName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "EnclosingRegionName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "ulong OfflineMapPackage.EstimatedSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "EstimatedSizeInBytes");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "OfflineMapPackageStatus OfflineMapPackage.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "Status");
 			}
 		}
 #endif
@@ -57,28 +57,28 @@ namespace Windows.Services.Maps.OfflineMaps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesAsync(global::Windows.Devices.Geolocation.Geopoint queryPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "IAsyncOperation<OfflineMapPackageQueryResult> OfflineMapPackage.FindPackagesAsync(Geopoint queryPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "FindPackagesAsync(Geopoint queryPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesInBoundingBoxAsync(global::Windows.Devices.Geolocation.GeoboundingBox queryBoundingBox)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "IAsyncOperation<OfflineMapPackageQueryResult> OfflineMapPackage.FindPackagesInBoundingBoxAsync(GeoboundingBox queryBoundingBox)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "FindPackagesInBoundingBoxAsync(GeoboundingBox queryBoundingBox)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesInGeocircleAsync(global::Windows.Devices.Geolocation.Geocircle queryCircle)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "IAsyncOperation<OfflineMapPackageQueryResult> OfflineMapPackage.FindPackagesInGeocircleAsync(Geocircle queryCircle)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "FindPackagesInGeocircleAsync(Geocircle queryCircle)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageStartDownloadResult> RequestStartDownloadAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "IAsyncOperation<OfflineMapPackageStartDownloadResult> OfflineMapPackage.RequestStartDownloadAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "RequestStartDownloadAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackage.StatusChanged.add
@@ -94,12 +94,12 @@ namespace Windows.Services.Maps.OfflineMaps
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "event TypedEventHandler<OfflineMapPackage, object> OfflineMapPackage.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "event StatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "event TypedEventHandler<OfflineMapPackage, object> OfflineMapPackage.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.OfflineMaps.OfflineMapPackage", "event StatusChanged");
 			}
 		}
 #endif

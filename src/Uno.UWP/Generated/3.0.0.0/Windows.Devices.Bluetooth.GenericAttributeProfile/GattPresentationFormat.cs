@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "byte GattPresentationFormat.BluetoothSigAssignedNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "BluetoothSigAssignedNumbers");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "ushort GattPresentationFormat.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "Description");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "int GattPresentationFormat.Exponent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "Exponent");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "byte GattPresentationFormat.FormatType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "FormatType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "byte GattPresentationFormat.Namespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "Namespace");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "ushort GattPresentationFormat.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "Unit");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat FromParts(byte formatType, int exponent, ushort unit, byte namespaceId, ushort description)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "GattPresentationFormat GattPresentationFormat.FromParts(byte formatType, int exponent, ushort unit, byte namespaceId, ushort description)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "FromParts(byte formatType, int exponent, ushort unit, byte namespaceId, ushort description)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.BluetoothSigAssignedNumbers.get

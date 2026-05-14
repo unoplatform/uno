@@ -19,7 +19,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.ErrorReceivedEventArgs", "SerialError ErrorReceivedEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.ErrorReceivedEventArgs", "Error");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapAlphaMode BitmapFrame.BitmapAlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapAlphaMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapPixelFormat BitmapFrame.BitmapPixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapPixelFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapPropertiesView BitmapFrame.BitmapProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapProperties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "double BitmapFrame.DpiX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "DpiX");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "double BitmapFrame.DpiY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "DpiY");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "uint BitmapFrame.OrientedPixelHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "OrientedPixelHeight");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "uint BitmapFrame.OrientedPixelWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "OrientedPixelWidth");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "uint BitmapFrame.PixelHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "PixelHeight");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "uint BitmapFrame.PixelWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "PixelWidth");
 			}
 		}
 #endif
@@ -107,42 +107,42 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.ImageStream> GetThumbnailAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<ImageStream> BitmapFrame.GetThumbnailAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "GetThumbnailAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<PixelDataProvider> BitmapFrame.GetPixelDataAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "GetPixelDataAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, global::Windows.Graphics.Imaging.BitmapTransform transform, global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode, global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<PixelDataProvider> BitmapFrame.GetPixelDataAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "GetPixelDataAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "GetSoftwareBitmapAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, global::Windows.Graphics.Imaging.BitmapTransform transform, global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode, global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.BitmapAlphaMode.get

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails", "AppointmentDataProviderConnection AppointmentDataProviderTriggerDetails.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails", "Connection");
 			}
 		}
 #endif

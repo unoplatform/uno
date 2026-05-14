@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "BandwidthStatistics StreamSocketInformation.BandwidthStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "BandwidthStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "HostName StreamSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "LocalAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "string StreamSocketInformation.LocalPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "LocalPort");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "SocketProtectionLevel StreamSocketInformation.ProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ProtectionLevel");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "HostName StreamSocketInformation.RemoteAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RemoteAddress");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "HostName StreamSocketInformation.RemoteHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RemoteHostName");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "string StreamSocketInformation.RemotePort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RemotePort");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "string StreamSocketInformation.RemoteServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RemoteServiceName");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RoundTripTimeStatistics StreamSocketInformation.RoundTripTimeStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RoundTripTimeStatistics");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "Certificate StreamSocketInformation.ServerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ServerCertificate");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "SocketSslErrorSeverity StreamSocketInformation.ServerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ServerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "IReadOnlyList<ChainValidationResult> StreamSocketInformation.ServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ServerCertificateErrors");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "IReadOnlyList<Certificate> StreamSocketInformation.ServerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ServerIntermediateCertificates");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "IBuffer StreamSocketInformation.SessionKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "SessionKey");
 			}
 		}
 #endif

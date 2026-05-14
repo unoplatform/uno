@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedCapabilities", "uint FrameIsoSpeedCapabilities.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedCapabilities", "Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedCapabilities", "uint FrameIsoSpeedCapabilities.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedCapabilities", "Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedCapabilities", "uint FrameIsoSpeedCapabilities.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedCapabilities", "Step");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedCapabilities", "bool FrameIsoSpeedCapabilities.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedCapabilities", "Supported");
 			}
 		}
 #endif

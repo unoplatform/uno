@@ -19,11 +19,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "RadialController RadialControllerConfiguration.AppController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "AppController");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "RadialController RadialControllerConfiguration.AppController");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "AppController");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "bool RadialControllerConfiguration.IsAppControllerEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "IsAppControllerEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "bool RadialControllerConfiguration.IsAppControllerEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "IsAppControllerEnabled");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "RadialController RadialControllerConfiguration.ActiveControllerWhenMenuIsSuppressed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "ActiveControllerWhenMenuIsSuppressed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "RadialController RadialControllerConfiguration.ActiveControllerWhenMenuIsSuppressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "ActiveControllerWhenMenuIsSuppressed");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "bool RadialControllerConfiguration.IsMenuSuppressed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "IsMenuSuppressed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "bool RadialControllerConfiguration.IsMenuSuppressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "IsMenuSuppressed");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.RadialControllerConfiguration GetForCurrentView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "RadialControllerConfiguration RadialControllerConfiguration.GetForCurrentView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "GetForCurrentView()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.AppController.get
@@ -84,21 +84,21 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDefaultMenuItems(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.RadialControllerSystemMenuItemKind> buttons)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "void RadialControllerConfiguration.SetDefaultMenuItems(IEnumerable<RadialControllerSystemMenuItemKind> buttons)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "SetDefaultMenuItems(IEnumerable<RadialControllerSystemMenuItemKind> buttons)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ResetToDefaultMenuItems()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "void RadialControllerConfiguration.ResetToDefaultMenuItems()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "ResetToDefaultMenuItems()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySelectDefaultMenuItem(global::Windows.UI.Input.RadialControllerSystemMenuItemKind type)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "bool RadialControllerConfiguration.TrySelectDefaultMenuItem(RadialControllerSystemMenuItemKind type)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfiguration", "TrySelectDefaultMenuItem(RadialControllerSystemMenuItemKind type)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.ActiveControllerWhenMenuIsSuppressed.get

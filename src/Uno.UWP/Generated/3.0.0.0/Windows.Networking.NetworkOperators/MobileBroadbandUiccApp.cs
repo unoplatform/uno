@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccApp", "IBuffer MobileBroadbandUiccApp.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccApp", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccApp", "UiccAppKind MobileBroadbandUiccApp.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccApp", "Kind");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult> GetRecordDetailsAsync(global::System.Collections.Generic.IEnumerable<uint> uiccFilePath)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccApp", "IAsyncOperation<MobileBroadbandUiccAppRecordDetailsResult> MobileBroadbandUiccApp.GetRecordDetailsAsync(IEnumerable<uint> uiccFilePath)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccApp", "GetRecordDetailsAsync(IEnumerable<uint> uiccFilePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult> ReadRecordAsync(global::System.Collections.Generic.IEnumerable<uint> uiccFilePath, int recordIndex)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccApp", "IAsyncOperation<MobileBroadbandUiccAppReadRecordResult> MobileBroadbandUiccApp.ReadRecordAsync(IEnumerable<uint> uiccFilePath, int recordIndex)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccApp", "ReadRecordAsync(IEnumerable<uint> uiccFilePath, int recordIndex)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccApp.Id.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "HidBooleanControlDescription HidBooleanControl.ControlDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "ControlDescription");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "uint HidBooleanControl.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "Id");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "bool HidBooleanControl.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "IsActive");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "bool HidBooleanControl.IsActive");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "IsActive");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "ushort HidBooleanControl.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "UsageId");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "ushort HidBooleanControl.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "UsagePage");
 			}
 		}
 #endif

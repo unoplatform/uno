@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "uint LowLagPhotoSequenceControl.DesiredThumbnailSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "DesiredThumbnailSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "uint LowLagPhotoSequenceControl.DesiredThumbnailSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "DesiredThumbnailSize");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "uint LowLagPhotoSequenceControl.HardwareAcceleratedThumbnailSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "HardwareAcceleratedThumbnailSupported");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "uint LowLagPhotoSequenceControl.MaxPastPhotos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "MaxPastPhotos");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "float LowLagPhotoSequenceControl.MaxPhotosPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "MaxPhotosPerSecond");
 			}
 		}
 #endif
@@ -63,11 +63,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "uint LowLagPhotoSequenceControl.PastPhotoLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "PastPhotoLimit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "uint LowLagPhotoSequenceControl.PastPhotoLimit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "PastPhotoLimit");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "float LowLagPhotoSequenceControl.PhotosPerSecondLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "PhotosPerSecondLimit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "float LowLagPhotoSequenceControl.PhotosPerSecondLimit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "PhotosPerSecondLimit");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "bool LowLagPhotoSequenceControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "Supported");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "bool LowLagPhotoSequenceControl.ThumbnailEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "ThumbnailEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "bool LowLagPhotoSequenceControl.ThumbnailEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "ThumbnailEnabled");
 			}
 		}
 #endif
@@ -115,11 +115,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "MediaThumbnailFormat LowLagPhotoSequenceControl.ThumbnailFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "ThumbnailFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "MediaThumbnailFormat LowLagPhotoSequenceControl.ThumbnailFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoSequenceControl", "ThumbnailFormat");
 			}
 		}
 #endif
@@ -127,14 +127,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate(global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "MediaRatio LowLagPhotoSequenceControl.GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetCurrentFrameRate()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "MediaRatio LowLagPhotoSequenceControl.GetCurrentFrameRate()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoSequenceControl", "GetCurrentFrameRate()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.DesiredThumbnailSize.get

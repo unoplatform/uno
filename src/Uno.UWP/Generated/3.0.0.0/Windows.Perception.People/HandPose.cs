@@ -17,28 +17,28 @@ namespace Windows.Perception.People
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetJoint(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.People.HandJointKind joint, out global::Windows.Perception.People.JointPose jointPose)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandPose", "bool HandPose.TryGetJoint(SpatialCoordinateSystem coordinateSystem, HandJointKind joint, out JointPose jointPose)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandPose", "TryGetJoint(SpatialCoordinateSystem coordinateSystem, HandJointKind joint, out JointPose jointPose)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetJoints(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.People.HandJointKind[] joints, global::Windows.Perception.People.JointPose[] jointPoses)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandPose", "bool HandPose.TryGetJoints(SpatialCoordinateSystem coordinateSystem, HandJointKind[] joints, JointPose[] jointPoses)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandPose", "TryGetJoints(SpatialCoordinateSystem coordinateSystem, HandJointKind[] joints, JointPose[] jointPoses)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.People.JointPose GetRelativeJoint(global::Windows.Perception.People.HandJointKind joint, global::Windows.Perception.People.HandJointKind referenceJoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandPose", "JointPose HandPose.GetRelativeJoint(HandJointKind joint, HandJointKind referenceJoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandPose", "GetRelativeJoint(HandJointKind joint, HandJointKind referenceJoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetRelativeJoints(global::Windows.Perception.People.HandJointKind[] joints, global::Windows.Perception.People.HandJointKind[] referenceJoints, global::Windows.Perception.People.JointPose[] jointPoses)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandPose", "void HandPose.GetRelativeJoints(HandJointKind[] joints, HandJointKind[] referenceJoints, JointPose[] jointPoses)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandPose", "GetRelativeJoints(HandJointKind[] joints, HandJointKind[] referenceJoints, JointPose[] jointPoses)");
 		}
 #endif
 	}

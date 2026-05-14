@@ -19,7 +19,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "GeoboundingBox MapRouteLeg.BoundingBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "BoundingBox");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "TimeSpan MapRouteLeg.DurationWithoutTraffic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "DurationWithoutTraffic");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "TimeSpan MapRouteLeg.EstimatedDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "EstimatedDuration");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "double MapRouteLeg.LengthInMeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "LengthInMeters");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "IReadOnlyList<MapRouteManeuver> MapRouteLeg.Maneuvers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "Maneuvers");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "Geopath MapRouteLeg.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "Path");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "TrafficCongestion MapRouteLeg.TrafficCongestion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteLeg", "TrafficCongestion");
 			}
 		}
 #endif

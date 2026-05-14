@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "DateTimeOffset? UserActivitySessionHistoryItem.EndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "EndTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "DateTimeOffset UserActivitySessionHistoryItem.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "StartTime");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "UserActivity UserActivitySessionHistoryItem.UserActivity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "UserActivity");
 			}
 		}
 #endif

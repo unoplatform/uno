@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "string PenAndInkSettings.FontFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "FontFamilyName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "HandwritingLineHeight PenAndInkSettings.HandwritingLineHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "HandwritingLineHeight");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "bool PenAndInkSettings.IsHandwritingDirectlyIntoTextFieldEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "IsHandwritingDirectlyIntoTextFieldEnabled");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "bool PenAndInkSettings.IsTouchHandwritingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "IsTouchHandwritingEnabled");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "PenHandedness PenAndInkSettings.PenHandedness");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "PenHandedness");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "bool PenAndInkSettings.UserConsentsToHandwritingTelemetryCollection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "UserConsentsToHandwritingTelemetryCollection");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Inking.PenAndInkSettings GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "PenAndInkSettings PenAndInkSettings.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "GetDefault()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.FontFamilyName.get

@@ -14,7 +14,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "Rect CoreIncrementalInkStroke.BoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "BoundingRect");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "InkDrawingAttributes CoreIncrementalInkStroke.DrawingAttributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "DrawingAttributes");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "Matrix3x2 CoreIncrementalInkStroke.PointTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "PointTransform");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.UI.Input.Inking.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreIncrementalInkStroke(global::Windows.UI.Input.Inking.InkDrawingAttributes drawingAttributes, global::System.Numerics.Matrix3x2 pointTransform)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "CoreIncrementalInkStroke.CoreIncrementalInkStroke(InkDrawingAttributes drawingAttributes, Matrix3x2 pointTransform)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "CoreIncrementalInkStroke(InkDrawingAttributes drawingAttributes, Matrix3x2 pointTransform)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.CoreIncrementalInkStroke(Windows.UI.Input.Inking.InkDrawingAttributes, System.Numerics.Matrix3x2)
@@ -50,14 +50,14 @@ namespace Windows.UI.Input.Inking.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect AppendInkPoints(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.Inking.InkPoint> inkPoints)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "Rect CoreIncrementalInkStroke.AppendInkPoints(IEnumerable<InkPoint> inkPoints)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "AppendInkPoints(IEnumerable<InkPoint> inkPoints)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Inking.InkStroke CreateInkStroke()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "InkStroke CoreIncrementalInkStroke.CreateInkStroke()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "CreateInkStroke()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.BoundingRect.get

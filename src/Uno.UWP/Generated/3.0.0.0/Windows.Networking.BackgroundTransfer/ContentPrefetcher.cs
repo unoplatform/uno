@@ -14,7 +14,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "IList<Uri> ContentPrefetcher.ContentUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "ContentUris");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "Uri ContentPrefetcher.IndirectContentUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "IndirectContentUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "Uri ContentPrefetcher.IndirectContentUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "IndirectContentUri");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "DateTimeOffset? ContentPrefetcher.LastSuccessfulPrefetchTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "LastSuccessfulPrefetchTime");
 			}
 		}
 #endif

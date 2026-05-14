@@ -14,7 +14,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "EnclosureLocation DeviceInformation.EnclosureLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "EnclosureLocation");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "DeviceInformationKind DeviceInformation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "Kind");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "DeviceInformationPairing DeviceInformation.Pairing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "Pairing");
 			}
 		}
 #endif
@@ -47,28 +47,28 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateFromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId, global::System.Collections.Generic.IEnumerable<string> additionalProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "FindAllAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(global::Windows.Devices.Enumeration.DeviceClass deviceClass)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(DeviceClass deviceClass)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "FindAllAsync(DeviceClass deviceClass)");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceInformation.FindAllAsync(string)
@@ -76,21 +76,21 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "DeviceWatcher DeviceInformation.CreateWatcher()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateWatcher()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(global::Windows.Devices.Enumeration.DeviceClass deviceClass)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "DeviceWatcher DeviceInformation.CreateWatcher(DeviceClass deviceClass)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateWatcher(DeviceClass deviceClass)");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceInformation.CreateWatcher(string)
@@ -98,56 +98,56 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetAqsFilterFromDeviceClass(global::Windows.Devices.Enumeration.DeviceClass deviceClass)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "string DeviceInformation.GetAqsFilterFromDeviceClass(DeviceClass deviceClass)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "GetAqsFilterFromDeviceClass(DeviceClass deviceClass)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties, DeviceInformationKind kind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties, DeviceInformationKind kind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Update(global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformation", "void DeviceInformation.Update(DeviceInformationUpdate updateInfo)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformation", "Update(DeviceInformationUpdate updateInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetThumbnailAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceThumbnail> DeviceInformation.GetThumbnailAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "GetThumbnailAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetGlyphThumbnailAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "IAsyncOperation<DeviceThumbnail> DeviceInformation.GetGlyphThumbnailAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "GetGlyphThumbnailAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.EnclosureLocation.get

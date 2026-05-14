@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedContainerImportResult", "StorageFile ProtectedContainerImportResult.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedContainerImportResult", "File");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedContainerImportResult", "ProtectedImportExportStatus ProtectedContainerImportResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedContainerImportResult", "Status");
 			}
 		}
 #endif

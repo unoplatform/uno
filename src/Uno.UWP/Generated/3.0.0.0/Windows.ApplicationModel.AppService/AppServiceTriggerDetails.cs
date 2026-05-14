@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "AppServiceConnection AppServiceTriggerDetails.AppServiceConnection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "AppServiceConnection");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "string AppServiceTriggerDetails.CallerPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "CallerPackageFamilyName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "string AppServiceTriggerDetails.CallerRemoteConnectionToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "CallerRemoteConnectionToken");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "bool AppServiceTriggerDetails.IsRemoteSystemConnection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "IsRemoteSystemConnection");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "string AppServiceTriggerDetails.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "Name");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.AppService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> CheckCallerForCapabilityAsync(string capabilityName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "IAsyncOperation<bool> AppServiceTriggerDetails.CheckCallerForCapabilityAsync(string capabilityName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "CheckCallerForCapabilityAsync(string capabilityName)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.AppServiceConnection.get

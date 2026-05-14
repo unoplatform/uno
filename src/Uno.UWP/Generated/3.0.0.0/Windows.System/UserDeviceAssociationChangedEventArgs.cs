@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserDeviceAssociationChangedEventArgs", "string UserDeviceAssociationChangedEventArgs.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserDeviceAssociationChangedEventArgs", "DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserDeviceAssociationChangedEventArgs", "User UserDeviceAssociationChangedEventArgs.NewUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserDeviceAssociationChangedEventArgs", "NewUser");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserDeviceAssociationChangedEventArgs", "User UserDeviceAssociationChangedEventArgs.OldUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserDeviceAssociationChangedEventArgs", "OldUser");
 			}
 		}
 #endif

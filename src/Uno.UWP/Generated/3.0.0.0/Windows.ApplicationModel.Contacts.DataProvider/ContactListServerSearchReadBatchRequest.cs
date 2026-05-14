@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "string ContactListServerSearchReadBatchRequest.ContactListId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "ContactListId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "ContactQueryOptions ContactListServerSearchReadBatchRequest.Options");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "Options");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "string ContactListServerSearchReadBatchRequest.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "SessionId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "uint ContactListServerSearchReadBatchRequest.SuggestedBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "SuggestedBatchSize");
 			}
 		}
 #endif
@@ -57,21 +57,21 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveContactAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "IAsyncAction ContactListServerSearchReadBatchRequest.SaveContactAsync(Contact contact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "SaveContactAsync(Contact contact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "IAsyncAction ContactListServerSearchReadBatchRequest.ReportCompletedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync(global::Windows.ApplicationModel.Contacts.ContactBatchStatus batchStatus)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "IAsyncAction ContactListServerSearchReadBatchRequest.ReportFailedAsync(ContactBatchStatus batchStatus)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest", "ReportFailedAsync(ContactBatchStatus batchStatus)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.ContactListId.get

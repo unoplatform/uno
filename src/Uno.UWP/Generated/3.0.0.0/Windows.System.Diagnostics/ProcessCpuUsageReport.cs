@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessCpuUsageReport", "TimeSpan ProcessCpuUsageReport.KernelTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessCpuUsageReport", "KernelTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessCpuUsageReport", "TimeSpan ProcessCpuUsageReport.UserTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessCpuUsageReport", "UserTime");
 			}
 		}
 #endif

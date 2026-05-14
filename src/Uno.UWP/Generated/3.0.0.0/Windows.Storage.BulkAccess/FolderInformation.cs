@@ -19,7 +19,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "FileAttributes FolderInformation.Attributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "Attributes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "BasicProperties FolderInformation.BasicProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "BasicProperties");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "DateTimeOffset FolderInformation.DateCreated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "DateCreated");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "string FolderInformation.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "DisplayName");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "string FolderInformation.DisplayType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "DisplayType");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "DocumentProperties FolderInformation.DocumentProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "DocumentProperties");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "string FolderInformation.FolderRelativeId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "FolderRelativeId");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "ImageProperties FolderInformation.ImageProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "ImageProperties");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "MusicProperties FolderInformation.MusicProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "MusicProperties");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "string FolderInformation.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "Name");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "string FolderInformation.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "Path");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageItemContentProperties FolderInformation.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "Properties");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageProvider FolderInformation.Provider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "Provider");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageItemThumbnail FolderInformation.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "Thumbnail");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Storage.BulkAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "VideoProperties FolderInformation.VideoProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "VideoProperties");
 			}
 		}
 #endif
@@ -171,273 +171,273 @@ namespace Windows.Storage.BulkAccess
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync(string desiredName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageFile> FolderInformation.CreateFileAsync(string desiredName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFileAsync(string desiredName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync(string desiredName, global::Windows.Storage.CreationCollisionOption options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageFile> FolderInformation.CreateFileAsync(string desiredName, CreationCollisionOption options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFileAsync(string desiredName, CreationCollisionOption options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync(string desiredName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageFolder> FolderInformation.CreateFolderAsync(string desiredName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFolderAsync(string desiredName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync(string desiredName, global::Windows.Storage.CreationCollisionOption options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageFolder> FolderInformation.CreateFolderAsync(string desiredName, CreationCollisionOption options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFolderAsync(string desiredName, CreationCollisionOption options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileAsync(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageFile> FolderInformation.GetFileAsync(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetFileAsync(string name)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageFolder> FolderInformation.GetFolderAsync(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetFolderAsync(string name)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IStorageItem> FolderInformation.GetItemAsync(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetItemAsync(string name)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IReadOnlyList<StorageFile>> FolderInformation.GetFilesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetFilesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IReadOnlyList<StorageFolder>> FolderInformation.GetFoldersAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetFoldersAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IReadOnlyList<IStorageItem>> FolderInformation.GetItemsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetItemsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RenameAsync(string desiredName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncAction FolderInformation.RenameAsync(string desiredName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "RenameAsync(string desiredName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RenameAsync(string desiredName, global::Windows.Storage.NameCollisionOption option)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncAction FolderInformation.RenameAsync(string desiredName, NameCollisionOption option)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "RenameAsync(string desiredName, NameCollisionOption option)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncAction FolderInformation.DeleteAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "DeleteAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync(global::Windows.Storage.StorageDeleteOption option)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncAction FolderInformation.DeleteAsync(StorageDeleteOption option)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "DeleteAsync(StorageDeleteOption option)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.BasicProperties> GetBasicPropertiesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<BasicProperties> FolderInformation.GetBasicPropertiesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetBasicPropertiesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsOfType(global::Windows.Storage.StorageItemTypes type)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "bool FolderInformation.IsOfType(StorageItemTypes type)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IsOfType(StorageItemTypes type)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageItemThumbnail> FolderInformation.GetThumbnailAsync(ThumbnailMode mode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetThumbnailAsync(ThumbnailMode mode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageItemThumbnail> FolderInformation.GetThumbnailAsync(ThumbnailMode mode, uint requestedSize)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetThumbnailAsync(ThumbnailMode mode, uint requestedSize)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize, global::Windows.Storage.FileProperties.ThumbnailOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageItemThumbnail> FolderInformation.GetThumbnailAsync(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetThumbnailAsync(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Search.IndexedState> GetIndexedStateAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IndexedState> FolderInformation.GetIndexedStateAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetIndexedStateAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageFileQueryResult CreateFileQuery()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageFileQueryResult FolderInformation.CreateFileQuery()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFileQuery()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageFileQueryResult CreateFileQuery(global::Windows.Storage.Search.CommonFileQuery query)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageFileQueryResult FolderInformation.CreateFileQuery(CommonFileQuery query)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFileQuery(CommonFileQuery query)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageFileQueryResult CreateFileQueryWithOptions(global::Windows.Storage.Search.QueryOptions queryOptions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageFileQueryResult FolderInformation.CreateFileQueryWithOptions(QueryOptions queryOptions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFileQueryWithOptions(QueryOptions queryOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageFolderQueryResult CreateFolderQuery()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageFolderQueryResult FolderInformation.CreateFolderQuery()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFolderQuery()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageFolderQueryResult CreateFolderQuery(global::Windows.Storage.Search.CommonFolderQuery query)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageFolderQueryResult FolderInformation.CreateFolderQuery(CommonFolderQuery query)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFolderQuery(CommonFolderQuery query)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageFolderQueryResult CreateFolderQueryWithOptions(global::Windows.Storage.Search.QueryOptions queryOptions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageFolderQueryResult FolderInformation.CreateFolderQueryWithOptions(QueryOptions queryOptions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateFolderQueryWithOptions(QueryOptions queryOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageItemQueryResult CreateItemQuery()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageItemQueryResult FolderInformation.CreateItemQuery()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateItemQuery()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageItemQueryResult CreateItemQueryWithOptions(global::Windows.Storage.Search.QueryOptions queryOptions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "StorageItemQueryResult FolderInformation.CreateItemQueryWithOptions(QueryOptions queryOptions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "CreateItemQueryWithOptions(QueryOptions queryOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync(global::Windows.Storage.Search.CommonFileQuery query, uint startIndex, uint maxItemsToRetrieve)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IReadOnlyList<StorageFile>> FolderInformation.GetFilesAsync(CommonFileQuery query, uint startIndex, uint maxItemsToRetrieve)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetFilesAsync(CommonFileQuery query, uint startIndex, uint maxItemsToRetrieve)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync(global::Windows.Storage.Search.CommonFileQuery query)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IReadOnlyList<StorageFile>> FolderInformation.GetFilesAsync(CommonFileQuery query)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetFilesAsync(CommonFileQuery query)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync(global::Windows.Storage.Search.CommonFolderQuery query, uint startIndex, uint maxItemsToRetrieve)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IReadOnlyList<StorageFolder>> FolderInformation.GetFoldersAsync(CommonFolderQuery query, uint startIndex, uint maxItemsToRetrieve)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetFoldersAsync(CommonFolderQuery query, uint startIndex, uint maxItemsToRetrieve)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync(global::Windows.Storage.Search.CommonFolderQuery query)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IReadOnlyList<StorageFolder>> FolderInformation.GetFoldersAsync(CommonFolderQuery query)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetFoldersAsync(CommonFolderQuery query)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync(uint startIndex, uint maxItemsToRetrieve)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IReadOnlyList<IStorageItem>> FolderInformation.GetItemsAsync(uint startIndex, uint maxItemsToRetrieve)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetItemsAsync(uint startIndex, uint maxItemsToRetrieve)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AreQueryOptionsSupported(global::Windows.Storage.Search.QueryOptions queryOptions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "bool FolderInformation.AreQueryOptionsSupported(QueryOptions queryOptions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "AreQueryOptionsSupported(QueryOptions queryOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsCommonFolderQuerySupported(global::Windows.Storage.Search.CommonFolderQuery query)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "bool FolderInformation.IsCommonFolderQuerySupported(CommonFolderQuery query)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IsCommonFolderQuerySupported(CommonFolderQuery query)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsCommonFileQuerySupported(global::Windows.Storage.Search.CommonFileQuery query)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "bool FolderInformation.IsCommonFileQuerySupported(CommonFileQuery query)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IsCommonFileQuerySupported(CommonFileQuery query)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetParentAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<StorageFolder> FolderInformation.GetParentAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "GetParentAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Storage.IStorageItem item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "bool FolderInformation.IsEqual(IStorageItem item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IsEqual(IStorageItem item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> TryGetItemAsync(string name)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "IAsyncOperation<IStorageItem> FolderInformation.TryGetItemAsync(string name)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.BulkAccess.FolderInformation", "TryGetItemAsync(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Attributes.get
@@ -462,12 +462,12 @@ namespace Windows.Storage.BulkAccess
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FolderInformation", "event TypedEventHandler<IStorageItemInformation, object> FolderInformation.PropertiesUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FolderInformation", "event PropertiesUpdated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FolderInformation", "event TypedEventHandler<IStorageItemInformation, object> FolderInformation.PropertiesUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FolderInformation", "event PropertiesUpdated");
 			}
 		}
 #endif
@@ -478,12 +478,12 @@ namespace Windows.Storage.BulkAccess
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FolderInformation", "event TypedEventHandler<IStorageItemInformation, object> FolderInformation.ThumbnailUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FolderInformation", "event ThumbnailUpdated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FolderInformation", "event TypedEventHandler<IStorageItemInformation, object> FolderInformation.ThumbnailUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FolderInformation", "event ThumbnailUpdated");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "string KeyCredential.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "Name");
 			}
 		}
 #endif
@@ -27,28 +27,28 @@ namespace Windows.Security.Credentials
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer RetrievePublicKey()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "IBuffer KeyCredential.RetrievePublicKey()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "RetrievePublicKey()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer RetrievePublicKey(global::Windows.Security.Cryptography.Core.CryptographicPublicKeyBlobType blobType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "IBuffer KeyCredential.RetrievePublicKey(CryptographicPublicKeyBlobType blobType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "RetrievePublicKey(CryptographicPublicKeyBlobType blobType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.KeyCredentialOperationResult> RequestSignAsync(global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "IAsyncOperation<KeyCredentialOperationResult> KeyCredential.RequestSignAsync(IBuffer data)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "RequestSignAsync(IBuffer data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.KeyCredentialAttestationResult> GetAttestationAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "IAsyncOperation<KeyCredentialAttestationResult> KeyCredential.GetAttestationAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "GetAttestationAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.KeyCredential.Name.get

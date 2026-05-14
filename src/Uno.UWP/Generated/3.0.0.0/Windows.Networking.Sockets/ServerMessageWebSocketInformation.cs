@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "BandwidthStatistics ServerMessageWebSocketInformation.BandwidthStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "BandwidthStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "HostName ServerMessageWebSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "LocalAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "string ServerMessageWebSocketInformation.Protocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "Protocol");
 			}
 		}
 #endif

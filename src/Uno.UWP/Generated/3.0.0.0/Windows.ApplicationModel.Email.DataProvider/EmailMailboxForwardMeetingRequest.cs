@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "Comment");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.EmailMailboxId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "EmailMailboxId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.EmailMessageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "EmailMessageId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.ForwardHeader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "ForwardHeader");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "EmailMessageBodyKind EmailMailboxForwardMeetingRequest.ForwardHeaderType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "ForwardHeaderType");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "IReadOnlyList<EmailRecipient> EmailMailboxForwardMeetingRequest.Recipients");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "Recipients");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "Subject");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "IAsyncAction EmailMailboxForwardMeetingRequest.ReportCompletedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "IAsyncAction EmailMailboxForwardMeetingRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest.Comment.get

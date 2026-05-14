@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Vector3 SceneBoundingBox.Center");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Center");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Vector3 SceneBoundingBox.Extents");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Extents");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Vector3 SceneBoundingBox.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Max");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Vector3 SceneBoundingBox.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Min");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Vector3 SceneBoundingBox.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneBoundingBox", "Size");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.KnownSmartCardAppletIds", "IBuffer KnownSmartCardAppletIds.PaymentSystemEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.KnownSmartCardAppletIds", "PaymentSystemEnvironment");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.KnownSmartCardAppletIds", "IBuffer KnownSmartCardAppletIds.ProximityPaymentSystemEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.KnownSmartCardAppletIds", "ProximityPaymentSystemEnvironment");
 			}
 		}
 #endif

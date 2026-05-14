@@ -17,21 +17,21 @@ namespace Windows.Devices.Printers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> GetDefaultPrintTicketAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.GetDefaultPrintTicketAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "GetDefaultPrintTicketAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> GetCapabilitiesAsync(global::Windows.Storage.Streams.IRandomAccessStreamWithContentType constrainTicket)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.GetCapabilitiesAsync(IRandomAccessStreamWithContentType constrainTicket)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "GetCapabilitiesAsync(IRandomAccessStreamWithContentType constrainTicket)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> MergeAndValidateWithDefaultPrintTicketAsync(global::Windows.Storage.Streams.IRandomAccessStreamWithContentType deltaTicket)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.MergeAndValidateWithDefaultPrintTicketAsync(IRandomAccessStreamWithContentType deltaTicket)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "MergeAndValidateWithDefaultPrintTicketAsync(IRandomAccessStreamWithContentType deltaTicket)");
 		}
 #endif
 	}

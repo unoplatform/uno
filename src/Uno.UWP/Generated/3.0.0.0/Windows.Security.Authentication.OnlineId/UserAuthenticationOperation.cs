@@ -19,11 +19,11 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "AsyncOperationCompletedHandler<UserIdentity> UserAuthenticationOperation.Completed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "Completed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "AsyncOperationCompletedHandler<UserIdentity> UserAuthenticationOperation.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "Completed");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "Exception UserAuthenticationOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "ErrorCode");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "uint UserAuthenticationOperation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "Id");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "AsyncStatus UserAuthenticationOperation.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "Status");
 			}
 		}
 #endif
@@ -61,21 +61,21 @@ namespace Windows.Security.Authentication.OnlineId
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.OnlineId.UserIdentity GetResults()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "UserIdentity UserAuthenticationOperation.GetResults()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "GetResults()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "void UserAuthenticationOperation.Cancel()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "Cancel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "void UserAuthenticationOperation.Close()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "Close()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Completed.get

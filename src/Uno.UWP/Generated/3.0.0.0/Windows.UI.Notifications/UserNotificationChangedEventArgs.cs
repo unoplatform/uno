@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.UserNotificationChangedEventArgs", "UserNotificationChangedKind UserNotificationChangedEventArgs.ChangeKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.UserNotificationChangedEventArgs", "ChangeKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.UserNotificationChangedEventArgs", "uint UserNotificationChangedEventArgs.UserNotificationId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.UserNotificationChangedEventArgs", "UserNotificationId");
 			}
 		}
 #endif

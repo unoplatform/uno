@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.RenderedEventArgs", "TimeSpan RenderedEventArgs.FrameDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.RenderedEventArgs", "FrameDuration");
 			}
 		}
 #endif

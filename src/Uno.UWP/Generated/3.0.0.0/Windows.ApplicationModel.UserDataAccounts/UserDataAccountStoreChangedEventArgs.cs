@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs", "Deferral UserDataAccountStoreChangedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs", "GetDeferral()");
 		}
 #endif
 	}

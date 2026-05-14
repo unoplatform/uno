@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties", "double AudioNodeEmitterNaturalDecayModelProperties.CutoffDistance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties", "CutoffDistance");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties", "double AudioNodeEmitterNaturalDecayModelProperties.UnityGainDistance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties", "UnityGainDistance");
 			}
 		}
 #endif

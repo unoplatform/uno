@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeovisitStateChangedEventArgs", "Geovisit GeovisitStateChangedEventArgs.Visit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeovisitStateChangedEventArgs", "Visit");
 			}
 		}
 #endif

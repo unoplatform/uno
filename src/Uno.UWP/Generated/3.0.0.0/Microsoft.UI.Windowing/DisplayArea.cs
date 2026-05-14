@@ -19,7 +19,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayArea DisplayArea.Primary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "Primary");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayId DisplayArea.DisplayId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "bool DisplayArea.IsPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "IsPrimary");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "RectInt32 DisplayArea.OuterBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "OuterBounds");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "RectInt32 DisplayArea.WorkArea");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "WorkArea");
 			}
 		}
 #endif
@@ -67,42 +67,42 @@ namespace Microsoft.UI.Windowing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayAreaWatcher CreateWatcher()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayAreaWatcher DisplayArea.CreateWatcher()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "CreateWatcher()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Microsoft.UI.Windowing.DisplayArea> FindAll()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "IReadOnlyList<DisplayArea> DisplayArea.FindAll()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "FindAll()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayArea GetFromWindowId(global::Microsoft.UI.WindowId windowId, global::Microsoft.UI.Windowing.DisplayAreaFallback displayAreaFallback)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayArea DisplayArea.GetFromWindowId(WindowId windowId, DisplayAreaFallback displayAreaFallback)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "GetFromWindowId(WindowId windowId, DisplayAreaFallback displayAreaFallback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayArea GetFromPoint(global::Windows.Graphics.PointInt32 point, global::Microsoft.UI.Windowing.DisplayAreaFallback displayAreaFallback)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayArea DisplayArea.GetFromPoint(PointInt32 point, DisplayAreaFallback displayAreaFallback)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "GetFromPoint(PointInt32 point, DisplayAreaFallback displayAreaFallback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayArea GetFromRect(global::Windows.Graphics.RectInt32 rect, global::Microsoft.UI.Windowing.DisplayAreaFallback displayAreaFallback)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayArea DisplayArea.GetFromRect(RectInt32 rect, DisplayAreaFallback displayAreaFallback)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "GetFromRect(RectInt32 rect, DisplayAreaFallback displayAreaFallback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayArea GetFromDisplayId(global::Microsoft.UI.DisplayId displayId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayArea DisplayArea.GetFromDisplayId(DisplayId displayId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "GetFromDisplayId(DisplayId displayId)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Primary.get

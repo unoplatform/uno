@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "uint VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "MaxSupportedVoiceCommandContentTiles");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "string VoiceCommandResponse.AppLaunchArgument");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "AppLaunchArgument");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "string VoiceCommandResponse.AppLaunchArgument");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "AppLaunchArgument");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandUserMessage VoiceCommandResponse.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "Message");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandUserMessage VoiceCommandResponse.Message");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "Message");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandUserMessage VoiceCommandResponse.RepeatMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "RepeatMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandUserMessage VoiceCommandResponse.RepeatMessage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "RepeatMessage");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "IList<VoiceCommandContentTile> VoiceCommandResponse.VoiceCommandContentTiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandContentTiles");
 			}
 		}
 #endif
@@ -79,28 +79,28 @@ namespace Windows.ApplicationModel.VoiceCommands
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponse(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage userMessage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandResponse VoiceCommandResponse.CreateResponse(VoiceCommandUserMessage userMessage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "CreateResponse(VoiceCommandUserMessage userMessage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponse(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> contentTiles)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandResponse VoiceCommandResponse.CreateResponse(VoiceCommandUserMessage message, IEnumerable<VoiceCommandContentTile> contentTiles)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "CreateResponse(VoiceCommandUserMessage message, IEnumerable<VoiceCommandContentTile> contentTiles)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponseForPrompt(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message, global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage repeatMessage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandResponse VoiceCommandResponse.CreateResponseForPrompt(VoiceCommandUserMessage message, VoiceCommandUserMessage repeatMessage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "CreateResponseForPrompt(VoiceCommandUserMessage message, VoiceCommandUserMessage repeatMessage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponseForPrompt(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message, global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage repeatMessage, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> contentTiles)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandResponse VoiceCommandResponse.CreateResponseForPrompt(VoiceCommandUserMessage message, VoiceCommandUserMessage repeatMessage, IEnumerable<VoiceCommandContentTile> contentTiles)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "CreateResponseForPrompt(VoiceCommandUserMessage message, VoiceCommandUserMessage repeatMessage, IEnumerable<VoiceCommandContentTile> contentTiles)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles.get

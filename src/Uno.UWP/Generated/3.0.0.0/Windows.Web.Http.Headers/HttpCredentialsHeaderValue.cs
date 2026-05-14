@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "IList<HttpNameValueHeaderValue> HttpCredentialsHeaderValue.Parameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "Parameters");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "string HttpCredentialsHeaderValue.Scheme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "Scheme");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "string HttpCredentialsHeaderValue.Token");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "Token");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpCredentialsHeaderValue(string scheme)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "HttpCredentialsHeaderValue.HttpCredentialsHeaderValue(string scheme)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "HttpCredentialsHeaderValue(string scheme)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCredentialsHeaderValue.HttpCredentialsHeaderValue(string)
@@ -50,7 +50,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpCredentialsHeaderValue(string scheme, string token)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "HttpCredentialsHeaderValue.HttpCredentialsHeaderValue(string scheme, string token)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "HttpCredentialsHeaderValue(string scheme, string token)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCredentialsHeaderValue.HttpCredentialsHeaderValue(string, string)
@@ -58,21 +58,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Parse(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "HttpCredentialsHeaderValue HttpCredentialsHeaderValue.Parse(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue credentialsHeaderValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "bool HttpCredentialsHeaderValue.TryParse(string input, out HttpCredentialsHeaderValue credentialsHeaderValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "TryParse(string input, out HttpCredentialsHeaderValue credentialsHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "string HttpCredentialsHeaderValue.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCredentialsHeaderValue.Parameters.get

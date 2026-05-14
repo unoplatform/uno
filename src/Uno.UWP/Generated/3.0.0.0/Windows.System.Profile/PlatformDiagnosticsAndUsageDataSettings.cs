@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "PlatformDataCollectionLevel PlatformDiagnosticsAndUsageDataSettings.CollectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "CollectionLevel");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.System.Profile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool CanCollectDiagnostics(global::Windows.System.Profile.PlatformDataCollectionLevel level)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "bool PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics(PlatformDataCollectionLevel level)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "CanCollectDiagnostics(PlatformDataCollectionLevel level)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged.add
@@ -35,12 +35,12 @@ namespace Windows.System.Profile
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "event EventHandler<object> PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "event CollectionLevelChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "event EventHandler<object> PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "event CollectionLevelChanged");
 			}
 		}
 #endif

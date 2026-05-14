@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs", "object PrintTaskOptionChangedEventArgs.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs", "OptionId");
 			}
 		}
 #endif

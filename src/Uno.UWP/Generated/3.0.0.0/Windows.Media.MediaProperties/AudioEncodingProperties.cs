@@ -14,11 +14,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "uint AudioEncodingProperties.Bitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "Bitrate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "uint AudioEncodingProperties.Bitrate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "Bitrate");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "uint AudioEncodingProperties.BitsPerSample");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "BitsPerSample");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "uint AudioEncodingProperties.BitsPerSample");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "BitsPerSample");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "uint AudioEncodingProperties.ChannelCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "ChannelCount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "uint AudioEncodingProperties.ChannelCount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "ChannelCount");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "bool AudioEncodingProperties.IsSpatial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "IsSpatial");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "MediaPropertySet AudioEncodingProperties.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "Properties");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "uint AudioEncodingProperties.SampleRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "SampleRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "uint AudioEncodingProperties.SampleRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "SampleRate");
 			}
 		}
 #endif
@@ -90,11 +90,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "string AudioEncodingProperties.Subtype");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "Subtype");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "string AudioEncodingProperties.Subtype");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "Subtype");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "string AudioEncodingProperties.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "Type");
 			}
 		}
 #endif
@@ -112,7 +112,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioEncodingProperties()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties.AudioEncodingProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.AudioEncodingProperties()
@@ -120,70 +120,70 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.AudioEncodingProperties CreateAac(uint sampleRate, uint channelCount, uint bitrate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties AudioEncodingProperties.CreateAac(uint sampleRate, uint channelCount, uint bitrate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "CreateAac(uint sampleRate, uint channelCount, uint bitrate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.AudioEncodingProperties CreateAacAdts(uint sampleRate, uint channelCount, uint bitrate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties AudioEncodingProperties.CreateAacAdts(uint sampleRate, uint channelCount, uint bitrate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "CreateAacAdts(uint sampleRate, uint channelCount, uint bitrate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.AudioEncodingProperties CreateMp3(uint sampleRate, uint channelCount, uint bitrate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties AudioEncodingProperties.CreateMp3(uint sampleRate, uint channelCount, uint bitrate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "CreateMp3(uint sampleRate, uint channelCount, uint bitrate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.AudioEncodingProperties CreatePcm(uint sampleRate, uint channelCount, uint bitsPerSample)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties AudioEncodingProperties.CreatePcm(uint sampleRate, uint channelCount, uint bitsPerSample)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "CreatePcm(uint sampleRate, uint channelCount, uint bitsPerSample)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.AudioEncodingProperties CreateWma(uint sampleRate, uint channelCount, uint bitrate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties AudioEncodingProperties.CreateWma(uint sampleRate, uint channelCount, uint bitrate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "CreateWma(uint sampleRate, uint channelCount, uint bitrate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.AudioEncodingProperties CreateAlac(uint sampleRate, uint channelCount, uint bitsPerSample)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties AudioEncodingProperties.CreateAlac(uint sampleRate, uint channelCount, uint bitsPerSample)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "CreateAlac(uint sampleRate, uint channelCount, uint bitsPerSample)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.AudioEncodingProperties CreateFlac(uint sampleRate, uint channelCount, uint bitsPerSample)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties AudioEncodingProperties.CreateFlac(uint sampleRate, uint channelCount, uint bitsPerSample)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "CreateFlac(uint sampleRate, uint channelCount, uint bitsPerSample)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetFormatUserData(byte[] value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "void AudioEncodingProperties.SetFormatUserData(byte[] value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.AudioEncodingProperties", "SetFormatUserData(byte[] value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetFormatUserData(out byte[] value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "void AudioEncodingProperties.GetFormatUserData(out byte[] value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "GetFormatUserData(out byte[] value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.AudioEncodingProperties Copy()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "AudioEncodingProperties AudioEncodingProperties.Copy()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.AudioEncodingProperties", "Copy()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.Bitrate.get

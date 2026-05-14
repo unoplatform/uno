@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "int HandMeshObserver.ModelId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "ModelId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "HandPose HandMeshObserver.NeutralPose");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "NeutralPose");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "int HandMeshObserver.NeutralPoseVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "NeutralPoseVersion");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "SpatialInteractionSource HandMeshObserver.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "Source");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "uint HandMeshObserver.TriangleIndexCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "TriangleIndexCount");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "uint HandMeshObserver.VertexCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "VertexCount");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.Perception.People
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetTriangleIndices(ushort[] indices)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshObserver", "void HandMeshObserver.GetTriangleIndices(ushort[] indices)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshObserver", "GetTriangleIndices(ushort[] indices)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.People.HandMeshVertexState GetVertexStateForPose(global::Windows.Perception.People.HandPose handPose)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "HandMeshVertexState HandMeshObserver.GetVertexStateForPose(HandPose handPose)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "GetVertexStateForPose(HandPose handPose)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.HandMeshObserver.ModelId.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptOutPipe", "UsbInterruptOutEndpointDescriptor UsbInterruptOutPipe.EndpointDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptOutPipe", "EndpointDescriptor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptOutPipe", "IOutputStream UsbInterruptOutPipe.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptOutPipe", "OutputStream");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptOutPipe", "UsbWriteOptions UsbInterruptOutPipe.WriteOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptOutPipe", "WriteOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbInterruptOutPipe", "UsbWriteOptions UsbInterruptOutPipe.WriteOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbInterruptOutPipe", "WriteOptions");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearStallAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptOutPipe", "IAsyncAction UsbInterruptOutPipe.ClearStallAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptOutPipe", "ClearStallAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutPipe.EndpointDescriptor.get

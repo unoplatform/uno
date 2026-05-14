@@ -15,11 +15,11 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.InlineUIContainer", "UIElement InlineUIContainer.Child");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.InlineUIContainer", "Child");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.InlineUIContainer", "UIElement InlineUIContainer.Child");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.InlineUIContainer", "Child");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InlineUIContainer() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.InlineUIContainer", "InlineUIContainer.InlineUIContainer()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.InlineUIContainer", "InlineUIContainer()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.InlineUIContainer()

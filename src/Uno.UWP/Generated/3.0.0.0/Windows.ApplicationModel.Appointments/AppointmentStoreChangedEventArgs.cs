@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Appointments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs", "AppointmentStoreChangedDeferral AppointmentStoreChangedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChangedEventArgs", "GetDeferral()");
 		}
 #endif
 	}

@@ -18,7 +18,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerReading", "TimeSpan? MagnetometerReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerReading", "PerformanceCount");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerReading", "IReadOnlyDictionary<string, object> MagnetometerReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerReading", "Properties");
 			}
 		}
 #endif

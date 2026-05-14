@@ -12,7 +12,7 @@ namespace Windows.Media.ContentRestrictions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RatedContentRestrictions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "RatedContentRestrictions.RatedContentRestrictions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "RatedContentRestrictions()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RatedContentRestrictions()
@@ -20,7 +20,7 @@ namespace Windows.Media.ContentRestrictions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RatedContentRestrictions(uint maxAgeRating)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "RatedContentRestrictions.RatedContentRestrictions(uint maxAgeRating)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "RatedContentRestrictions(uint maxAgeRating)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RatedContentRestrictions(uint)
@@ -28,21 +28,21 @@ namespace Windows.Media.ContentRestrictions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy> GetBrowsePolicyAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "IAsyncOperation<ContentRestrictionsBrowsePolicy> RatedContentRestrictions.GetBrowsePolicyAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "GetBrowsePolicyAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.ContentRestrictions.ContentAccessRestrictionLevel> GetRestrictionLevelAsync(global::Windows.Media.ContentRestrictions.RatedContentDescription RatedContentDescription)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "IAsyncOperation<ContentAccessRestrictionLevel> RatedContentRestrictions.GetRestrictionLevelAsync(RatedContentDescription RatedContentDescription)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "GetRestrictionLevelAsync(RatedContentDescription RatedContentDescription)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestContentAccessAsync(global::Windows.Media.ContentRestrictions.RatedContentDescription RatedContentDescription)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "IAsyncOperation<bool> RatedContentRestrictions.RequestContentAccessAsync(RatedContentDescription RatedContentDescription)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "RequestContentAccessAsync(RatedContentDescription RatedContentDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RestrictionsChanged.add
@@ -54,12 +54,12 @@ namespace Windows.Media.ContentRestrictions
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "event EventHandler<object> RatedContentRestrictions.RestrictionsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "event RestrictionsChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "event EventHandler<object> RatedContentRestrictions.RestrictionsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentRestrictions", "event RestrictionsChanged");
 			}
 		}
 #endif

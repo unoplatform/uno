@@ -14,7 +14,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "IList<SyndicationAttribute> SyndicationPerson.AttributeExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "AttributeExtensions");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "Uri SyndicationPerson.BaseUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "BaseUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "Uri SyndicationPerson.BaseUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "BaseUri");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "IList<ISyndicationNode> SyndicationPerson.ElementExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "ElementExtensions");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.Email");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "Email");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.Email");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "Email");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "Language");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "Name");
 			}
 		}
 #endif
@@ -90,11 +90,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.NodeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "NodeName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.NodeName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "NodeName");
 			}
 		}
 #endif
@@ -104,11 +104,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.NodeNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "NodeNamespace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.NodeNamespace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "NodeNamespace");
 			}
 		}
 #endif
@@ -118,11 +118,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.NodeValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "NodeValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "string SyndicationPerson.NodeValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "NodeValue");
 			}
 		}
 #endif
@@ -132,11 +132,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "Uri SyndicationPerson.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "Uri SyndicationPerson.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "Uri");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationPerson()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson.SyndicationPerson()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationPerson.SyndicationPerson()
@@ -152,7 +152,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationPerson(string name)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson.SyndicationPerson(string name)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationPerson.SyndicationPerson(string)
@@ -160,7 +160,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationPerson(string name, string email, global::System.Uri uri)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson.SyndicationPerson(string name, string email, Uri uri)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson(string name, string email, Uri uri)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationPerson.SyndicationPerson(string, string, System.Uri)
@@ -168,7 +168,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "XmlDocument SyndicationPerson.GetXmlDocument(SyndicationFormat format)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationPerson", "GetXmlDocument(SyndicationFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationPerson.AttributeExtensions.get

@@ -12,7 +12,7 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Spatial.SpatialInteractionManager GetForWindow(nint window)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionManagerInterop", "SpatialInteractionManager SpatialInteractionManagerInterop.GetForWindow(nint window)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionManagerInterop", "GetForWindow(nint window)");
 		}
 #endif
 	}

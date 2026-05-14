@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.MaintenanceTrigger", "uint MaintenanceTrigger.FreshnessTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.MaintenanceTrigger", "FreshnessTime");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.MaintenanceTrigger", "bool MaintenanceTrigger.OneShot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.MaintenanceTrigger", "OneShot");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MaintenanceTrigger(uint freshnessTime, bool oneShot)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.MaintenanceTrigger", "MaintenanceTrigger.MaintenanceTrigger(uint freshnessTime, bool oneShot)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.MaintenanceTrigger", "MaintenanceTrigger(uint freshnessTime, bool oneShot)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.MaintenanceTrigger(uint, bool)

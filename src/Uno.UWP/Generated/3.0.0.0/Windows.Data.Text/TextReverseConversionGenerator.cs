@@ -14,7 +14,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextReverseConversionGenerator", "bool TextReverseConversionGenerator.LanguageAvailableButNotInstalled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextReverseConversionGenerator", "LanguageAvailableButNotInstalled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextReverseConversionGenerator", "string TextReverseConversionGenerator.ResolvedLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextReverseConversionGenerator", "ResolvedLanguage");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Data.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TextReverseConversionGenerator(string languageTag)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextReverseConversionGenerator", "TextReverseConversionGenerator.TextReverseConversionGenerator(string languageTag)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextReverseConversionGenerator", "TextReverseConversionGenerator(string languageTag)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.TextReverseConversionGenerator(string)
@@ -40,14 +40,14 @@ namespace Windows.Data.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> ConvertBackAsync(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextReverseConversionGenerator", "IAsyncOperation<string> TextReverseConversionGenerator.ConvertBackAsync(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextReverseConversionGenerator", "ConvertBackAsync(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.TextPhoneme>> GetPhonemesAsync(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextReverseConversionGenerator", "IAsyncOperation<IReadOnlyList<TextPhoneme>> TextReverseConversionGenerator.GetPhonemesAsync(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextReverseConversionGenerator", "GetPhonemesAsync(string input)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.LanguageAvailableButNotInstalled.get

@@ -16,7 +16,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "bool BrightnessOverride.IsSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "IsSupported");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Display.BrightnessOverride GetDefaultForSystem()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "BrightnessOverride BrightnessOverride.GetDefaultForSystem()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "GetDefaultForSystem()");
 		}
 #endif
 		// Skipping already declared method Windows.Graphics.Display.BrightnessOverride.GetForCurrentView()
@@ -32,42 +32,42 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> SaveForSystemAsync(global::Windows.Graphics.Display.BrightnessOverride value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "IAsyncOperation<bool> BrightnessOverride.SaveForSystemAsync(BrightnessOverride value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "SaveForSystemAsync(BrightnessOverride value)");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetBrightnessLevel(double brightnessLevel, global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.SetBrightnessLevel(double brightnessLevel, DisplayBrightnessOverrideOptions options)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "SetBrightnessLevel(double brightnessLevel, DisplayBrightnessOverrideOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetBrightnessScenario(global::Windows.Graphics.Display.DisplayBrightnessScenario scenario, global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.SetBrightnessScenario(DisplayBrightnessScenario scenario, DisplayBrightnessOverrideOptions options)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "SetBrightnessScenario(DisplayBrightnessScenario scenario, DisplayBrightnessOverrideOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double GetLevelForScenario(global::Windows.Graphics.Display.DisplayBrightnessScenario scenario)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "double BrightnessOverride.GetLevelForScenario(DisplayBrightnessScenario scenario)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "GetLevelForScenario(DisplayBrightnessScenario scenario)");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartOverride()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.StartOverride()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "StartOverride()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopOverride()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.StopOverride()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "StopOverride()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevelChanged.add
@@ -86,12 +86,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event TypedEventHandler<BrightnessOverride, object> BrightnessOverride.BrightnessLevelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event BrightnessLevelChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event TypedEventHandler<BrightnessOverride, object> BrightnessOverride.BrightnessLevelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event BrightnessLevelChanged");
 			}
 		}
 #endif
@@ -102,12 +102,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event TypedEventHandler<BrightnessOverride, object> BrightnessOverride.IsOverrideActiveChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event IsOverrideActiveChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event TypedEventHandler<BrightnessOverride, object> BrightnessOverride.IsOverrideActiveChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event IsOverrideActiveChanged");
 			}
 		}
 #endif
@@ -118,12 +118,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event TypedEventHandler<BrightnessOverride, object> BrightnessOverride.IsSupportedChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event IsSupportedChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event TypedEventHandler<BrightnessOverride, object> BrightnessOverride.IsSupportedChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "event IsSupportedChanged");
 			}
 		}
 #endif

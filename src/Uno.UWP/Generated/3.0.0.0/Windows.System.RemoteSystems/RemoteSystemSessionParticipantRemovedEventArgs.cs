@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionParticipantRemovedEventArgs", "RemoteSystemSessionParticipant RemoteSystemSessionParticipantRemovedEventArgs.Participant");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionParticipantRemovedEventArgs", "Participant");
 			}
 		}
 #endif

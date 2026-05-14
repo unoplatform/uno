@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "IReadOnlyList<CoreTextCompositionSegment> CoreTextCompositionCompletedEventArgs.CompositionSegments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "CompositionSegments");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "bool CoreTextCompositionCompletedEventArgs.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "IsCanceled");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "Deferral CoreTextCompositionCompletedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.CompositionSegments.get

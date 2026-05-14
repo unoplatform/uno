@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs", "MiracastReceiverConnection MiracastReceiverDisconnectedEventArgs.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs", "Connection");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamStateChangedEventArgs", "AppBroadcastStreamState AppBroadcastStreamStateChangedEventArgs.StreamState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamStateChangedEventArgs", "StreamState");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "TimeSpan StreamWebSocketControl.ActualUnsolicitedPongInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "ActualUnsolicitedPongInterval");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "Certificate StreamWebSocketControl.ClientCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "ClientCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "Certificate StreamWebSocketControl.ClientCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "ClientCertificate");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "TimeSpan StreamWebSocketControl.DesiredUnsolicitedPongInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "DesiredUnsolicitedPongInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "TimeSpan StreamWebSocketControl.DesiredUnsolicitedPongInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "DesiredUnsolicitedPongInterval");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "IList<ChainValidationResult> StreamWebSocketControl.IgnorableServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "IgnorableServerCertificateErrors");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "bool StreamWebSocketControl.NoDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "NoDelay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "bool StreamWebSocketControl.NoDelay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "NoDelay");
 			}
 		}
 #endif
@@ -81,11 +81,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "uint StreamWebSocketControl.OutboundBufferSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "OutboundBufferSizeInBytes");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "uint StreamWebSocketControl.OutboundBufferSizeInBytes");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "OutboundBufferSizeInBytes");
 			}
 		}
 #endif
@@ -95,11 +95,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "PasswordCredential StreamWebSocketControl.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "ProxyCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "PasswordCredential StreamWebSocketControl.ProxyCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "ProxyCredential");
 			}
 		}
 #endif
@@ -109,11 +109,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "PasswordCredential StreamWebSocketControl.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "ServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "PasswordCredential StreamWebSocketControl.ServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocketControl", "ServerCredential");
 			}
 		}
 #endif
@@ -123,7 +123,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "IList<string> StreamWebSocketControl.SupportedProtocols");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "SupportedProtocols");
 			}
 		}
 #endif

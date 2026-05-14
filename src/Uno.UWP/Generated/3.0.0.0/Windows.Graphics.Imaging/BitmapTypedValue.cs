@@ -14,7 +14,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTypedValue", "PropertyType BitmapTypedValue.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTypedValue", "Type");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTypedValue", "object BitmapTypedValue.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTypedValue", "Value");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BitmapTypedValue(object value, global::Windows.Foundation.PropertyType type)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTypedValue", "BitmapTypedValue.BitmapTypedValue(object value, PropertyType type)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTypedValue", "BitmapTypedValue(object value, PropertyType type)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTypedValue.BitmapTypedValue(object, Windows.Foundation.PropertyType)

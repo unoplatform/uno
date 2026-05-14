@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatAac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatAac");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatAdts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatAdts");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatAlac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatAlac");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatAmrNB");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatAmrNB");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatAmrWB");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatAmrWB");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatAmrWP");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatAmrWP");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatDolbyAC3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatDolbyAC3");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatDolbyAC3Spdif");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatDolbyAC3Spdif");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatDolbyDDPlus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatDolbyDDPlus");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatDrm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatDrm");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatDts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatDts");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatFlac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatFlac");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatFloat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatFloat");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatMP3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatMP3");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatMPeg");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatMPeg");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatMsp1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatMsp1");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatOpus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatOpus");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatPcm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatPcm");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatWMAudioLossless");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatWMAudioLossless");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatWMAudioV8");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatWMAudioV8");
 			}
 		}
 #endif
@@ -214,7 +214,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatWMAudioV9");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatWMAudioV9");
 			}
 		}
 #endif
@@ -224,7 +224,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.AudioFormatWmaSpdif");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "AudioFormatWmaSpdif");
 			}
 		}
 #endif
@@ -234,7 +234,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormat420O");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormat420O");
 			}
 		}
 #endif
@@ -244,7 +244,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatDV25");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatDV25");
 			}
 		}
 #endif
@@ -254,7 +254,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatDV50");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatDV50");
 			}
 		}
 #endif
@@ -264,7 +264,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatDvc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatDvc");
 			}
 		}
 #endif
@@ -274,7 +274,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatDvh1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatDvh1");
 			}
 		}
 #endif
@@ -284,7 +284,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatDvhD");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatDvhD");
 			}
 		}
 #endif
@@ -294,7 +294,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatDvsd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatDvsd");
 			}
 		}
 #endif
@@ -304,7 +304,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatDvsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatDvsl");
 			}
 		}
 #endif
@@ -314,7 +314,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatH263");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatH263");
 			}
 		}
 #endif
@@ -324,7 +324,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatH264");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatH264");
 			}
 		}
 #endif
@@ -334,7 +334,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatH264ES");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatH264ES");
 			}
 		}
 #endif
@@ -344,7 +344,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatH265");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatH265");
 			}
 		}
 #endif
@@ -354,7 +354,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatHevc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatHevc");
 			}
 		}
 #endif
@@ -364,7 +364,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatHevcES");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatHevcES");
 			}
 		}
 #endif
@@ -374,7 +374,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatM4S2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatM4S2");
 			}
 		}
 #endif
@@ -384,7 +384,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatMP43");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatMP43");
 			}
 		}
 #endif
@@ -394,7 +394,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatMP4S");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatMP4S");
 			}
 		}
 #endif
@@ -404,7 +404,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatMP4V");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatMP4V");
 			}
 		}
 #endif
@@ -414,7 +414,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatMjpg");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatMjpg");
 			}
 		}
 #endif
@@ -424,7 +424,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatMpeg2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatMpeg2");
 			}
 		}
 #endif
@@ -434,7 +434,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatMpg1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatMpg1");
 			}
 		}
 #endif
@@ -444,7 +444,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatMss1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatMss1");
 			}
 		}
 #endif
@@ -454,7 +454,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatMss2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatMss2");
 			}
 		}
 #endif
@@ -464,7 +464,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatVP80");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatVP80");
 			}
 		}
 #endif
@@ -474,7 +474,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatVP90");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatVP90");
 			}
 		}
 #endif
@@ -484,7 +484,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatWmv1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatWmv1");
 			}
 		}
 #endif
@@ -494,7 +494,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatWmv2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatWmv2");
 			}
 		}
 #endif
@@ -504,7 +504,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatWmv3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatWmv3");
 			}
 		}
 #endif
@@ -514,7 +514,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "string CodecSubtypes.VideoFormatWvc1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatWvc1");
 			}
 		}
 #endif

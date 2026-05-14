@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "GattCharacteristic GattCharacteristicNotificationTriggerDetails.Characteristic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "Characteristic");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "BluetoothError GattCharacteristicNotificationTriggerDetails.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "Error");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "BluetoothEventTriggeringMode GattCharacteristicNotificationTriggerDetails.EventTriggeringMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "EventTriggeringMode");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "IBuffer GattCharacteristicNotificationTriggerDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "Value");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "IReadOnlyList<GattValueChangedEventArgs> GattCharacteristicNotificationTriggerDetails.ValueChangedEvents");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails", "ValueChangedEvents");
 			}
 		}
 #endif

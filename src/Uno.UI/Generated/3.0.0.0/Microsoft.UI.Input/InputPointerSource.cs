@@ -14,7 +14,7 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputPointerSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputPointerSource", "InputPointerSource InputPointerSource.GetForIsland(ContentIsland island)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputPointerSource", "GetForIsland(ContentIsland island)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerCaptureLost.add

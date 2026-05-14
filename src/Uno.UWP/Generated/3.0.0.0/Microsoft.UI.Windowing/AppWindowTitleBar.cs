@@ -14,11 +14,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "BackgroundColor");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonBackgroundColor");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonForegroundColor");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonHoverBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonHoverBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonHoverBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonHoverBackgroundColor");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonHoverForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonHoverForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonHoverForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonHoverForegroundColor");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonInactiveBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonInactiveBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonInactiveBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonInactiveBackgroundColor");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonInactiveForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonInactiveForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonInactiveForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonInactiveForegroundColor");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonPressedBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonPressedBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonPressedBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonPressedBackgroundColor");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonPressedForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonPressedForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonPressedForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ButtonPressedForegroundColor");
 			}
 		}
 #endif
@@ -141,11 +141,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "ForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "ForegroundColor");
 			}
 		}
 #endif
@@ -156,11 +156,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "IconShowOptions AppWindowTitleBar.IconShowOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "IconShowOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "IconShowOptions AppWindowTitleBar.IconShowOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "IconShowOptions");
 			}
 		}
 #endif
@@ -170,11 +170,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.InactiveBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "InactiveBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.InactiveBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "InactiveBackgroundColor");
 			}
 		}
 #endif
@@ -184,11 +184,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.InactiveForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "InactiveForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.InactiveForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "InactiveForegroundColor");
 			}
 		}
 #endif
@@ -198,7 +198,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "int AppWindowTitleBar.LeftInset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "LeftInset");
 			}
 		}
 #endif
@@ -209,11 +209,11 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "TitleBarTheme AppWindowTitleBar.PreferredTheme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "PreferredTheme");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "TitleBarTheme AppWindowTitleBar.PreferredTheme");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "PreferredTheme");
 			}
 		}
 #endif
@@ -223,7 +223,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "int AppWindowTitleBar.RightInset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "RightInset");
 			}
 		}
 #endif

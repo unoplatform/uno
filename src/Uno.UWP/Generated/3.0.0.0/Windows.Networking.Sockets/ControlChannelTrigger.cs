@@ -14,7 +14,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "string ControlChannelTrigger.ControlChannelTriggerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "ControlChannelTriggerId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "uint ControlChannelTrigger.CurrentKeepAliveIntervalInMinutes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "CurrentKeepAliveIntervalInMinutes");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "bool ControlChannelTrigger.IsWakeFromLowPowerSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "IsWakeFromLowPowerSupported");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "IBackgroundTrigger ControlChannelTrigger.KeepAliveTrigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "KeepAliveTrigger");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "IBackgroundTrigger ControlChannelTrigger.PushNotificationTrigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "PushNotificationTrigger");
 			}
 		}
 #endif
@@ -64,11 +64,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "uint ControlChannelTrigger.ServerKeepAliveIntervalInMinutes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "ServerKeepAliveIntervalInMinutes");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "uint ControlChannelTrigger.ServerKeepAliveIntervalInMinutes");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "ServerKeepAliveIntervalInMinutes");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "object ControlChannelTrigger.TransportObject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "TransportObject");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ControlChannelTrigger(string channelId, uint serverKeepAliveIntervalInMinutes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "ControlChannelTrigger.ControlChannelTrigger(string channelId, uint serverKeepAliveIntervalInMinutes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "ControlChannelTrigger(string channelId, uint serverKeepAliveIntervalInMinutes)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.ControlChannelTrigger(string, uint)
@@ -94,7 +94,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ControlChannelTrigger(string channelId, uint serverKeepAliveIntervalInMinutes, global::Windows.Networking.Sockets.ControlChannelTriggerResourceType resourceRequestType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "ControlChannelTrigger.ControlChannelTrigger(string channelId, uint serverKeepAliveIntervalInMinutes, ControlChannelTriggerResourceType resourceRequestType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "ControlChannelTrigger(string channelId, uint serverKeepAliveIntervalInMinutes, ControlChannelTriggerResourceType resourceRequestType)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.ControlChannelTrigger(string, uint, Windows.Networking.Sockets.ControlChannelTriggerResourceType)
@@ -102,35 +102,35 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UsingTransport(object transport)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "void ControlChannelTrigger.UsingTransport(object transport)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "UsingTransport(object transport)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.ControlChannelTriggerStatus WaitForPushEnabled()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "ControlChannelTriggerStatus ControlChannelTrigger.WaitForPushEnabled()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "WaitForPushEnabled()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DecreaseNetworkKeepAliveInterval()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "void ControlChannelTrigger.DecreaseNetworkKeepAliveInterval()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "DecreaseNetworkKeepAliveInterval()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void FlushTransport()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "void ControlChannelTrigger.FlushTransport()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "FlushTransport()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "void ControlChannelTrigger.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ControlChannelTrigger", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.ControlChannelTriggerId.get

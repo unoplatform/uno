@@ -12,56 +12,56 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync(string desiredName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "IAsyncOperation<StorageFile> DownloadsFolder.CreateFileAsync(string desiredName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "CreateFileAsync(string desiredName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync(string desiredName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "IAsyncOperation<StorageFolder> DownloadsFolder.CreateFolderAsync(string desiredName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "CreateFolderAsync(string desiredName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync(string desiredName, global::Windows.Storage.CreationCollisionOption option)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "IAsyncOperation<StorageFile> DownloadsFolder.CreateFileAsync(string desiredName, CreationCollisionOption option)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "CreateFileAsync(string desiredName, CreationCollisionOption option)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync(string desiredName, global::Windows.Storage.CreationCollisionOption option)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "IAsyncOperation<StorageFolder> DownloadsFolder.CreateFolderAsync(string desiredName, CreationCollisionOption option)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "CreateFolderAsync(string desiredName, CreationCollisionOption option)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileForUserAsync(global::Windows.System.User user, string desiredName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "IAsyncOperation<StorageFile> DownloadsFolder.CreateFileForUserAsync(User user, string desiredName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "CreateFileForUserAsync(User user, string desiredName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderForUserAsync(global::Windows.System.User user, string desiredName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "IAsyncOperation<StorageFolder> DownloadsFolder.CreateFolderForUserAsync(User user, string desiredName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "CreateFolderForUserAsync(User user, string desiredName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileForUserAsync(global::Windows.System.User user, string desiredName, global::Windows.Storage.CreationCollisionOption option)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "IAsyncOperation<StorageFile> DownloadsFolder.CreateFileForUserAsync(User user, string desiredName, CreationCollisionOption option)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "CreateFileForUserAsync(User user, string desiredName, CreationCollisionOption option)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderForUserAsync(global::Windows.System.User user, string desiredName, global::Windows.Storage.CreationCollisionOption option)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "IAsyncOperation<StorageFolder> DownloadsFolder.CreateFolderForUserAsync(User user, string desiredName, CreationCollisionOption option)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.DownloadsFolder", "CreateFolderForUserAsync(User user, string desiredName, CreationCollisionOption option)");
 		}
 #endif
 	}

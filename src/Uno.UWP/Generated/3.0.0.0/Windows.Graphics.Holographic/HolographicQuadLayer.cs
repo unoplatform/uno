@@ -14,7 +14,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicQuadLayer", "DirectXPixelFormat HolographicQuadLayer.PixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicQuadLayer", "PixelFormat");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicQuadLayer", "Size HolographicQuadLayer.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicQuadLayer", "Size");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HolographicQuadLayer(global::Windows.Foundation.Size size)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayer", "HolographicQuadLayer.HolographicQuadLayer(Size size)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayer", "HolographicQuadLayer(Size size)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayer.HolographicQuadLayer(Windows.Foundation.Size)
@@ -40,7 +40,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HolographicQuadLayer(global::Windows.Foundation.Size size, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayer", "HolographicQuadLayer.HolographicQuadLayer(Size size, DirectXPixelFormat pixelFormat)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayer", "HolographicQuadLayer(Size size, DirectXPixelFormat pixelFormat)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayer.HolographicQuadLayer(Windows.Foundation.Size, Windows.Graphics.DirectX.DirectXPixelFormat)
@@ -48,7 +48,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayer", "void HolographicQuadLayer.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayer", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayer.PixelFormat.get

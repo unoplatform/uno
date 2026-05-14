@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.AccountName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "AccountName");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "DisplayName");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.DomainName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "DomainName");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.FirstName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "FirstName");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.GuestHost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "GuestHost");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.LastName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "LastName");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.PrincipalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "PrincipalName");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.ProviderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "ProviderName");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "string KnownUserProperties.SessionInitiationProtocolUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "SessionInitiationProtocolUri");
 			}
 		}
 #endif

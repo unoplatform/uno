@@ -19,11 +19,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CharacterReceivedEventArgs", "bool CharacterReceivedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CharacterReceivedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.CharacterReceivedEventArgs", "bool CharacterReceivedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.CharacterReceivedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CharacterReceivedEventArgs", "uint CharacterReceivedEventArgs.KeyCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CharacterReceivedEventArgs", "KeyCode");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CharacterReceivedEventArgs", "PhysicalKeyStatus CharacterReceivedEventArgs.KeyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.CharacterReceivedEventArgs", "KeyStatus");
 			}
 		}
 #endif

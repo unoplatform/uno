@@ -14,11 +14,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramAlgorithm SmartCardCryptogramPlacementStep.Algorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "Algorithm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramAlgorithm SmartCardCryptogramPlacementStep.Algorithm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "Algorithm");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementStep SmartCardCryptogramPlacementStep.ChainedOutputStep");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "ChainedOutputStep");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementStep SmartCardCryptogramPlacementStep.ChainedOutputStep");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "ChainedOutputStep");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.CryptogramLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramLength");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.CryptogramLength");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramLength");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "string SmartCardCryptogramPlacementStep.CryptogramMaterialName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramMaterialName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "string SmartCardCryptogramPlacementStep.CryptogramMaterialName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramMaterialName");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "string SmartCardCryptogramPlacementStep.CryptogramMaterialPackageName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramMaterialPackageName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "string SmartCardCryptogramPlacementStep.CryptogramMaterialPackageName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramMaterialPackageName");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.CryptogramOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramOffset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.CryptogramOffset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramOffset");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementOptions SmartCardCryptogramPlacementStep.CryptogramPlacementOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramPlacementOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementOptions SmartCardCryptogramPlacementStep.CryptogramPlacementOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramPlacementOptions");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "IBuffer SmartCardCryptogramPlacementStep.SourceData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SourceData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "IBuffer SmartCardCryptogramPlacementStep.SourceData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SourceData");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.TemplateOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "TemplateOffset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.TemplateOffset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "TemplateOffset");
 			}
 		}
 #endif
@@ -138,7 +138,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardCryptogramPlacementStep()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementStep.SmartCardCryptogramPlacementStep()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementStep()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.SmartCardCryptogramPlacementStep()

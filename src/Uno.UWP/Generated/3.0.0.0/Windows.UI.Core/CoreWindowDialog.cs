@@ -14,11 +14,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "UICommandInvokedHandler CoreWindowDialog.BackButtonCommand");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "BackButtonCommand");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "UICommandInvokedHandler CoreWindowDialog.BackButtonCommand");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "BackButtonCommand");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "uint CoreWindowDialog.CancelCommandIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "CancelCommandIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "uint CoreWindowDialog.CancelCommandIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "CancelCommandIndex");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "IList<IUICommand> CoreWindowDialog.Commands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "Commands");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "uint CoreWindowDialog.DefaultCommandIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "DefaultCommandIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "uint CoreWindowDialog.DefaultCommandIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "DefaultCommandIndex");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "int CoreWindowDialog.IsInteractionDelayed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "IsInteractionDelayed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "int CoreWindowDialog.IsInteractionDelayed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "IsInteractionDelayed");
 			}
 		}
 #endif
@@ -80,7 +80,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "Size CoreWindowDialog.MaxSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "MaxSize");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "Size CoreWindowDialog.MinSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "MinSize");
 			}
 		}
 #endif
@@ -100,11 +100,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "string CoreWindowDialog.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "string CoreWindowDialog.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "Title");
 			}
 		}
 #endif
@@ -112,7 +112,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreWindowDialog()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "CoreWindowDialog.CoreWindowDialog()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "CoreWindowDialog()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.CoreWindowDialog()
@@ -120,7 +120,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreWindowDialog(string title)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "CoreWindowDialog.CoreWindowDialog(string title)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "CoreWindowDialog(string title)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.CoreWindowDialog(string)
@@ -128,7 +128,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "IAsyncOperation<IUICommand> CoreWindowDialog.ShowAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "ShowAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.Showing.add
@@ -153,12 +153,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "event TypedEventHandler<CoreWindow, CoreWindowPopupShowingEventArgs> CoreWindowDialog.Showing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "event Showing");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "event TypedEventHandler<CoreWindow, CoreWindowPopupShowingEventArgs> CoreWindowDialog.Showing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowDialog", "event Showing");
 			}
 		}
 #endif

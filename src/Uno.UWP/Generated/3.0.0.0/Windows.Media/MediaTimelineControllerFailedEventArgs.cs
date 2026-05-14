@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaTimelineControllerFailedEventArgs", "Exception MediaTimelineControllerFailedEventArgs.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaTimelineControllerFailedEventArgs", "ExtendedError");
 			}
 		}
 #endif

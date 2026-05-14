@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs", "MediaPlaybackItem MediaPlaybackItemOpenedEventArgs.Item");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs", "Item");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "bool WindowsIntegrityPolicy.CanDisable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "CanDisable");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "bool WindowsIntegrityPolicy.IsDisableSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "IsDisableSupported");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "bool WindowsIntegrityPolicy.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "IsEnabled");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "bool WindowsIntegrityPolicy.IsEnabledForTrial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "IsEnabledForTrial");
 			}
 		}
 #endif
@@ -61,12 +61,12 @@ namespace Windows.System.Profile
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.WindowsIntegrityPolicy", "event EventHandler<object> WindowsIntegrityPolicy.PolicyChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.WindowsIntegrityPolicy", "event PolicyChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.WindowsIntegrityPolicy", "event EventHandler<object> WindowsIntegrityPolicy.PolicyChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.WindowsIntegrityPolicy", "event PolicyChanged");
 			}
 		}
 #endif

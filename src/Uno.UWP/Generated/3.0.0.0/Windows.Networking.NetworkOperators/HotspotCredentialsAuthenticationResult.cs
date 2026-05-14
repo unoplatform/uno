@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "XmlDocument HotspotCredentialsAuthenticationResult.AuthenticationReplyXml");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "AuthenticationReplyXml");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "bool HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "HasNetworkErrorOccurred");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "Uri HotspotCredentialsAuthenticationResult.LogoffUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "LogoffUrl");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "HotspotAuthenticationResponseCode HotspotCredentialsAuthenticationResult.ResponseCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "ResponseCode");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Globalization.PhoneNumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "int PhoneNumberInfo.CountryCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "CountryCode");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization.PhoneNumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "string PhoneNumberInfo.PhoneNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PhoneNumber");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Globalization.PhoneNumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PhoneNumberInfo(string number)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PhoneNumberInfo.PhoneNumberInfo(string number)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PhoneNumberInfo(string number)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo.PhoneNumberInfo(string)
@@ -40,63 +40,63 @@ namespace Windows.Globalization.PhoneNumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse(string input, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PhoneNumberParseResult PhoneNumberInfo.TryParse(string input, out PhoneNumberInfo phoneNumber)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "TryParse(string input, out PhoneNumberInfo phoneNumber)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse(string input, string regionCode, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PhoneNumberParseResult PhoneNumberInfo.TryParse(string input, string regionCode, out PhoneNumberInfo phoneNumber)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "TryParse(string input, string regionCode, out PhoneNumberInfo phoneNumber)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetLengthOfGeographicalAreaCode()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "int PhoneNumberInfo.GetLengthOfGeographicalAreaCode()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "GetLengthOfGeographicalAreaCode()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetNationalSignificantNumber()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "string PhoneNumberInfo.GetNationalSignificantNumber()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "GetNationalSignificantNumber()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetLengthOfNationalDestinationCode()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "int PhoneNumberInfo.GetLengthOfNationalDestinationCode()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "GetLengthOfNationalDestinationCode()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Globalization.PhoneNumberFormatting.PredictedPhoneNumberKind PredictNumberKind()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PredictedPhoneNumberKind PhoneNumberInfo.PredictNumberKind()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PredictNumberKind()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetGeographicRegionCode()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "string PhoneNumberInfo.GetGeographicRegionCode()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "GetGeographicRegionCode()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberMatchResult CheckNumberMatch(global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo otherNumber)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PhoneNumberMatchResult PhoneNumberInfo.CheckNumberMatch(PhoneNumberInfo otherNumber)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "CheckNumberMatch(PhoneNumberInfo otherNumber)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "string PhoneNumberInfo.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo.CountryCode.get

@@ -19,7 +19,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPhoneme", "string TextPhoneme.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPhoneme", "DisplayText");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPhoneme", "string TextPhoneme.ReadingText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPhoneme", "ReadingText");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerFastForwardReceivedEventArgs", "bool MediaPlaybackCommandManagerFastForwardReceivedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerFastForwardReceivedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerFastForwardReceivedEventArgs", "bool MediaPlaybackCommandManagerFastForwardReceivedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerFastForwardReceivedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerFastForwardReceivedEventArgs", "Deferral MediaPlaybackCommandManagerFastForwardReceivedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerFastForwardReceivedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerFastForwardReceivedEventArgs.Handled.get

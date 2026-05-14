@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandConfirmationResult", "bool VoiceCommandConfirmationResult.Confirmed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandConfirmationResult", "Confirmed");
 			}
 		}
 #endif

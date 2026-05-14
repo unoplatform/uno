@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "IMemoryBuffer PerceptionFrame.FrameData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "FrameData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "ValueSet PerceptionFrame.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "Properties");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "TimeSpan PerceptionFrame.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "RelativeTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrame", "TimeSpan PerceptionFrame.RelativeTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrame", "RelativeTime");
 			}
 		}
 #endif

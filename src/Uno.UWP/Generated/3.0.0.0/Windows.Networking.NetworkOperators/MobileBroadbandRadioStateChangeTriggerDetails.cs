@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails", "IReadOnlyList<MobileBroadbandRadioStateChange> MobileBroadbandRadioStateChangeTriggerDetails.RadioStateChanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails", "RadioStateChanges");
 			}
 		}
 #endif

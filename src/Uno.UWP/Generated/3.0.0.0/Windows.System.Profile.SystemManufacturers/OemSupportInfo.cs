@@ -19,7 +19,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "Uri OemSupportInfo.SupportAppLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "SupportAppLink");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "Uri OemSupportInfo.SupportLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "SupportLink");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "string OemSupportInfo.SupportProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "SupportProvider");
 			}
 		}
 #endif

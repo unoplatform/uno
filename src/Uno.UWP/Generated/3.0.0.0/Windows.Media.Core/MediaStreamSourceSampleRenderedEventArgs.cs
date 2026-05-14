@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSampleRenderedEventArgs", "TimeSpan MediaStreamSourceSampleRenderedEventArgs.SampleLag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSampleRenderedEventArgs", "SampleLag");
 			}
 		}
 #endif

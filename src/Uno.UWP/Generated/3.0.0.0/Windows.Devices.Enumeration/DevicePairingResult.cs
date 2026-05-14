@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingResult", "DevicePairingProtectionLevel DevicePairingResult.ProtectionLevelUsed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingResult", "ProtectionLevelUsed");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingResult", "DevicePairingResultStatus DevicePairingResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingResult", "Status");
 			}
 		}
 #endif

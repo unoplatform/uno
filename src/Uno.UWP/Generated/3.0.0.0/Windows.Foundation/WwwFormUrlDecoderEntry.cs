@@ -19,7 +19,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoderEntry", "string WwwFormUrlDecoderEntry.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoderEntry", "Name");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoderEntry", "string WwwFormUrlDecoderEntry.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoderEntry", "Value");
 			}
 		}
 #endif

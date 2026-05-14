@@ -12,14 +12,14 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.ProcessLauncherResult> RunToCompletionAsync(string fileName, string args)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncher", "IAsyncOperation<ProcessLauncherResult> ProcessLauncher.RunToCompletionAsync(string fileName, string args)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncher", "RunToCompletionAsync(string fileName, string args)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.ProcessLauncherResult> RunToCompletionAsync(string fileName, string args, global::Windows.System.ProcessLauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncher", "IAsyncOperation<ProcessLauncherResult> ProcessLauncher.RunToCompletionAsync(string fileName, string args, ProcessLauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncher", "RunToCompletionAsync(string fileName, string args, ProcessLauncherOptions options)");
 		}
 #endif
 	}

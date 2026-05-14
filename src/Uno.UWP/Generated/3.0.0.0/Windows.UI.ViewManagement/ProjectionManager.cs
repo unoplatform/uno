@@ -14,7 +14,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "bool ProjectionManager.ProjectionDisplayAvailable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "ProjectionDisplayAvailable");
 			}
 		}
 #endif
@@ -22,21 +22,21 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync(int projectionViewId, int anchorViewId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "IAsyncAction ProjectionManager.StartProjectingAsync(int projectionViewId, int anchorViewId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "StartProjectingAsync(int projectionViewId, int anchorViewId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "IAsyncAction ProjectionManager.SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction StopProjectingAsync(int projectionViewId, int anchorViewId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "IAsyncAction ProjectionManager.StopProjectingAsync(int projectionViewId, int anchorViewId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "StopProjectingAsync(int projectionViewId, int anchorViewId)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ProjectionManager.ProjectionDisplayAvailableChanged.add
@@ -45,28 +45,28 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync(int projectionViewId, int anchorViewId, global::Windows.Devices.Enumeration.DeviceInformation displayDeviceInfo)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "IAsyncAction ProjectionManager.StartProjectingAsync(int projectionViewId, int anchorViewId, DeviceInformation displayDeviceInfo)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "StartProjectingAsync(int projectionViewId, int anchorViewId, DeviceInformation displayDeviceInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> RequestStartProjectingAsync(int projectionViewId, int anchorViewId, global::Windows.Foundation.Rect selection)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "IAsyncOperation<bool> ProjectionManager.RequestStartProjectingAsync(int projectionViewId, int anchorViewId, Rect selection)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "RequestStartProjectingAsync(int projectionViewId, int anchorViewId, Rect selection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> RequestStartProjectingAsync(int projectionViewId, int anchorViewId, global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement prefferedPlacement)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "IAsyncOperation<bool> ProjectionManager.RequestStartProjectingAsync(int projectionViewId, int anchorViewId, Rect selection, Placement prefferedPlacement)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "RequestStartProjectingAsync(int projectionViewId, int anchorViewId, Rect selection, Placement prefferedPlacement)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "string ProjectionManager.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ProjectionManager", "GetDeviceSelector()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ProjectionManager.ProjectionDisplayAvailable.get
@@ -77,12 +77,12 @@ namespace Windows.UI.ViewManagement
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ProjectionManager", "event EventHandler<object> ProjectionManager.ProjectionDisplayAvailableChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ProjectionManager", "event ProjectionDisplayAvailableChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ProjectionManager", "event EventHandler<object> ProjectionManager.ProjectionDisplayAvailableChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ProjectionManager", "event ProjectionDisplayAvailableChanged");
 			}
 		}
 #endif

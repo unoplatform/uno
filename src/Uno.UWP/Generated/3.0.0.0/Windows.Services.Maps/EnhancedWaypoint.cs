@@ -14,7 +14,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.EnhancedWaypoint", "WaypointKind EnhancedWaypoint.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.EnhancedWaypoint", "Kind");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.EnhancedWaypoint", "Geopoint EnhancedWaypoint.Point");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.EnhancedWaypoint", "Point");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Services.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EnhancedWaypoint(global::Windows.Devices.Geolocation.Geopoint point, global::Windows.Services.Maps.WaypointKind kind)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.EnhancedWaypoint", "EnhancedWaypoint.EnhancedWaypoint(Geopoint point, WaypointKind kind)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.EnhancedWaypoint", "EnhancedWaypoint(Geopoint point, WaypointKind kind)");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.EnhancedWaypoint.EnhancedWaypoint(Windows.Devices.Geolocation.Geopoint, Windows.Services.Maps.WaypointKind)

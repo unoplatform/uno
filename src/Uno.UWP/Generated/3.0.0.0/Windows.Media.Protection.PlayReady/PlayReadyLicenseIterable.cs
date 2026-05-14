@@ -12,7 +12,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyLicenseIterable()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable", "PlayReadyLicenseIterable.PlayReadyLicenseIterable()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable", "PlayReadyLicenseIterable()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable.PlayReadyLicenseIterable()
@@ -20,7 +20,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyLicenseIterable(global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader, bool fullyEvaluated)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable", "PlayReadyLicenseIterable.PlayReadyLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable", "PlayReadyLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable.PlayReadyLicenseIterable(Windows.Media.Protection.PlayReady.PlayReadyContentHeader, bool)
@@ -28,7 +28,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadyLicense> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable", "IEnumerator<IPlayReadyLicense> PlayReadyLicenseIterable.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable.System.Collections.IEnumerable.GetEnumerator()

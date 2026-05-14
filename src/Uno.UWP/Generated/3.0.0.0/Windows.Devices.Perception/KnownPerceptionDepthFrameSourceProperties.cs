@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionDepthFrameSourceProperties", "string KnownPerceptionDepthFrameSourceProperties.MaxDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionDepthFrameSourceProperties", "MaxDepth");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionDepthFrameSourceProperties", "string KnownPerceptionDepthFrameSourceProperties.MinDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionDepthFrameSourceProperties", "MinDepth");
 			}
 		}
 #endif

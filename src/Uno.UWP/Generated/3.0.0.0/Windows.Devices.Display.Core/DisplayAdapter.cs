@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "string DisplayAdapter.DeviceInterfacePath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "DeviceInterfacePath");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "DisplayAdapterId DisplayAdapter.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "uint DisplayAdapter.PciDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "PciDeviceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "uint DisplayAdapter.PciRevision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "PciRevision");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "uint DisplayAdapter.PciSubSystemId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "PciSubSystemId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "uint DisplayAdapter.PciVendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "PciVendorId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "IReadOnlyDictionary<Guid, object> DisplayAdapter.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "Properties");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "uint DisplayAdapter.SourceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "SourceCount");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Display.Core.DisplayAdapter FromId(global::Windows.Graphics.DisplayAdapterId id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "DisplayAdapter DisplayAdapter.FromId(DisplayAdapterId id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "FromId(DisplayAdapterId id)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.DeviceInterfacePath.get

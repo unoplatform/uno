@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "ConversationalAgentDetectorManager ConversationalAgentDetectorManager.Default");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "Default");
 			}
 		}
 #endif
@@ -28,28 +28,28 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector> GetAllActivationSignalDetectors()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "IReadOnlyList<ActivationSignalDetector> ConversationalAgentDetectorManager.GetAllActivationSignalDetectors()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "GetAllActivationSignalDetectors()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector>> GetAllActivationSignalDetectorsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "IAsyncOperation<IReadOnlyList<ActivationSignalDetector>> ConversationalAgentDetectorManager.GetAllActivationSignalDetectorsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "GetAllActivationSignalDetectorsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector> GetActivationSignalDetectors(global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectorKind kind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "IReadOnlyList<ActivationSignalDetector> ConversationalAgentDetectorManager.GetActivationSignalDetectors(ActivationSignalDetectorKind kind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "GetActivationSignalDetectors(ActivationSignalDetectorKind kind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector>> GetActivationSignalDetectorsAsync(global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectorKind kind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "IAsyncOperation<IReadOnlyList<ActivationSignalDetector>> ConversationalAgentDetectorManager.GetActivationSignalDetectorsAsync(ActivationSignalDetectorKind kind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager", "GetActivationSignalDetectorsAsync(ActivationSignalDetectorKind kind)");
 		}
 #endif
 	}

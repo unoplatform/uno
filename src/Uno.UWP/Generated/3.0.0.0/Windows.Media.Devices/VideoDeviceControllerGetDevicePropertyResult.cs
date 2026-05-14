@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceControllerGetDevicePropertyResult", "VideoDeviceControllerGetDevicePropertyStatus VideoDeviceControllerGetDevicePropertyResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceControllerGetDevicePropertyResult", "Status");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceControllerGetDevicePropertyResult", "object VideoDeviceControllerGetDevicePropertyResult.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceControllerGetDevicePropertyResult", "Value");
 			}
 		}
 #endif

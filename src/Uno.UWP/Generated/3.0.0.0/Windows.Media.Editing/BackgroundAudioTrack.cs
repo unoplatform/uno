@@ -19,7 +19,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "IList<IAudioEffectDefinition> BackgroundAudioTrack.AudioEffectDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "AudioEffectDefinitions");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.Delay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "Delay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.Delay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "Delay");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.OriginalDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "OriginalDuration");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimTimeFromEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "TrimTimeFromEnd");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimTimeFromEnd");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TrimTimeFromEnd");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimTimeFromStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "TrimTimeFromStart");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimTimeFromStart");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "TrimTimeFromStart");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "TimeSpan BackgroundAudioTrack.TrimmedDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "TrimmedDuration");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "IDictionary<string, string> BackgroundAudioTrack.UserData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "UserData");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "double BackgroundAudioTrack.Volume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "Volume");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "double BackgroundAudioTrack.Volume");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.BackgroundAudioTrack", "Volume");
 			}
 		}
 #endif
@@ -113,14 +113,14 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Editing.BackgroundAudioTrack CreateFromEmbeddedAudioTrack(global::Windows.Media.Editing.EmbeddedAudioTrack embeddedAudioTrack)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "BackgroundAudioTrack BackgroundAudioTrack.CreateFromEmbeddedAudioTrack(EmbeddedAudioTrack embeddedAudioTrack)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "CreateFromEmbeddedAudioTrack(EmbeddedAudioTrack embeddedAudioTrack)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.BackgroundAudioTrack> CreateFromFileAsync(global::Windows.Storage.IStorageFile file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "IAsyncOperation<BackgroundAudioTrack> BackgroundAudioTrack.CreateFromFileAsync(IStorageFile file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "CreateFromFileAsync(IStorageFile file)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.~BackgroundAudioTrack()
@@ -128,14 +128,14 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.BackgroundAudioTrack Clone()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "BackgroundAudioTrack BackgroundAudioTrack.Clone()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "Clone()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.AudioEncodingProperties GetAudioEncodingProperties()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "AudioEncodingProperties BackgroundAudioTrack.GetAudioEncodingProperties()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.BackgroundAudioTrack", "GetAudioEncodingProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.AudioEffectDefinitions.get

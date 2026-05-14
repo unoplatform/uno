@@ -19,7 +19,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceServicingDetails", "string DeviceServicingDetails.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceServicingDetails", "Arguments");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceServicingDetails", "string DeviceServicingDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceServicingDetails", "DeviceId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceServicingDetails", "TimeSpan DeviceServicingDetails.ExpectedDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceServicingDetails", "ExpectedDuration");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ActivitySensorTrigger", "uint ActivitySensorTrigger.MinimumReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ActivitySensorTrigger", "MinimumReportInterval");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ActivitySensorTrigger", "uint ActivitySensorTrigger.ReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ActivitySensorTrigger", "ReportInterval");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ActivitySensorTrigger", "IList<ActivityType> ActivitySensorTrigger.SubscribedActivities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ActivitySensorTrigger", "SubscribedActivities");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ActivitySensorTrigger", "IReadOnlyList<ActivityType> ActivitySensorTrigger.SupportedActivities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ActivitySensorTrigger", "SupportedActivities");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ActivitySensorTrigger(uint reportIntervalInMilliseconds)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ActivitySensorTrigger", "ActivitySensorTrigger.ActivitySensorTrigger(uint reportIntervalInMilliseconds)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ActivitySensorTrigger", "ActivitySensorTrigger(uint reportIntervalInMilliseconds)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.ActivitySensorTrigger(uint)

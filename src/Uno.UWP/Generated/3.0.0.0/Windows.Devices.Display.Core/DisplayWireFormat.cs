@@ -14,7 +14,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "int DisplayWireFormat.BitsPerChannel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "BitsPerChannel");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "DisplayWireFormatColorSpace DisplayWireFormat.ColorSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "ColorSpace");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "DisplayWireFormatEotf DisplayWireFormat.Eotf");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "Eotf");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "DisplayWireFormatHdrMetadata DisplayWireFormat.HdrMetadata");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "HdrMetadata");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "DisplayWireFormatPixelEncoding DisplayWireFormat.PixelEncoding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "PixelEncoding");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "IReadOnlyDictionary<Guid, object> DisplayWireFormat.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "Properties");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DisplayWireFormat(global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, global::Windows.Devices.Display.Core.DisplayWireFormatColorSpace colorSpace, global::Windows.Devices.Display.Core.DisplayWireFormatEotf eotf, global::Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata hdrMetadata)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayWireFormat", "DisplayWireFormat.DisplayWireFormat(DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, DisplayWireFormatColorSpace colorSpace, DisplayWireFormatEotf eotf, DisplayWireFormatHdrMetadata hdrMetadata)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayWireFormat", "DisplayWireFormat(DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, DisplayWireFormatColorSpace colorSpace, DisplayWireFormatEotf eotf, DisplayWireFormatHdrMetadata hdrMetadata)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.DisplayWireFormat(Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding, int, Windows.Devices.Display.Core.DisplayWireFormatColorSpace, Windows.Devices.Display.Core.DisplayWireFormatEotf, Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata)
@@ -80,7 +80,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Display.Core.DisplayWireFormat CreateWithProperties(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> extraProperties, global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, global::Windows.Devices.Display.Core.DisplayWireFormatColorSpace colorSpace, global::Windows.Devices.Display.Core.DisplayWireFormatEotf eotf, global::Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata hdrMetadata)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "DisplayWireFormat DisplayWireFormat.CreateWithProperties(IEnumerable<KeyValuePair<Guid, object>> extraProperties, DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, DisplayWireFormatColorSpace colorSpace, DisplayWireFormatEotf eotf, DisplayWireFormatHdrMetadata hdrMetadata)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayWireFormat", "CreateWithProperties(IEnumerable<KeyValuePair<Guid, object>> extraProperties, DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, DisplayWireFormatColorSpace colorSpace, DisplayWireFormatEotf eotf, DisplayWireFormatHdrMetadata hdrMetadata)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayWireFormat.BitsPerChannel.get

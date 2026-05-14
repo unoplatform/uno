@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvidersRequestedEventArgs", "DataPackageView ShareProvidersRequestedEventArgs.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvidersRequestedEventArgs", "Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvidersRequestedEventArgs", "IList<ShareProvider> ShareProvidersRequestedEventArgs.Providers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvidersRequestedEventArgs", "Providers");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvidersRequestedEventArgs", "Deferral ShareProvidersRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvidersRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvidersRequestedEventArgs.Data.get

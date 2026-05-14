@@ -14,7 +14,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "uint PosPrinterCharacterSetIds.Ansi");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "Ansi");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "uint PosPrinterCharacterSetIds.Ascii");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "Ascii");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "uint PosPrinterCharacterSetIds.Utf16LE");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "Utf16LE");
 			}
 		}
 #endif

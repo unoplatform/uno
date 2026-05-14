@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSourceResolveResultEventArgs", "TimedMetadataTrackError TimedTextSourceResolveResultEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSourceResolveResultEventArgs", "Error");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSourceResolveResultEventArgs", "IReadOnlyList<TimedMetadataTrack> TimedTextSourceResolveResultEventArgs.Tracks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSourceResolveResultEventArgs", "Tracks");
 			}
 		}
 #endif

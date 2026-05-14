@@ -19,7 +19,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "TimeSpan? AdaptiveMediaSourceDownloadRequestedEventArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "Position");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "int AdaptiveMediaSourceDownloadRequestedEventArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "RequestId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "ulong? AdaptiveMediaSourceDownloadRequestedEventArgs.ResourceByteRangeLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "ResourceByteRangeLength");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "ulong? AdaptiveMediaSourceDownloadRequestedEventArgs.ResourceByteRangeOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "ResourceByteRangeOffset");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "string AdaptiveMediaSourceDownloadRequestedEventArgs.ResourceContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "ResourceContentType");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "TimeSpan? AdaptiveMediaSourceDownloadRequestedEventArgs.ResourceDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "ResourceDuration");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "AdaptiveMediaSourceResourceType AdaptiveMediaSourceDownloadRequestedEventArgs.ResourceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "ResourceType");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "Uri AdaptiveMediaSourceDownloadRequestedEventArgs.ResourceUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "ResourceUri");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "AdaptiveMediaSourceDownloadResult AdaptiveMediaSourceDownloadRequestedEventArgs.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "Result");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.Media.Streaming.Adaptive
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "AdaptiveMediaSourceDownloadRequestedDeferral AdaptiveMediaSourceDownloadRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedEventArgs.Position.get

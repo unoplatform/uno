@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "IReadOnlyList<Certificate> EmailRecipientResolutionResult.PublicKeys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "PublicKeys");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "EmailRecipientResolutionStatus EmailRecipientResolutionResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "EmailRecipientResolutionStatus EmailRecipientResolutionResult.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "Status");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailRecipientResolutionResult()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "EmailRecipientResolutionResult.EmailRecipientResolutionResult()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "EmailRecipientResolutionResult()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.EmailRecipientResolutionResult()
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPublicKeys(global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "void EmailRecipientResolutionResult.SetPublicKeys(IEnumerable<Certificate> value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailRecipientResolutionResult", "SetPublicKeys(IEnumerable<Certificate> value)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.PublicKeys.get

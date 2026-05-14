@@ -19,7 +19,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidCollection", "uint HidCollection.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidCollection", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidCollection", "HidCollectionType HidCollection.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidCollection", "Type");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidCollection", "uint HidCollection.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidCollection", "UsageId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidCollection", "uint HidCollection.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidCollection", "UsagePage");
 			}
 		}
 #endif

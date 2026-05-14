@@ -19,7 +19,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageUserInformation", "PackageInstallState PackageUserInformation.InstallState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageUserInformation", "InstallState");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageUserInformation", "string PackageUserInformation.UserSecurityId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageUserInformation", "UserSecurityId");
 			}
 		}
 #endif

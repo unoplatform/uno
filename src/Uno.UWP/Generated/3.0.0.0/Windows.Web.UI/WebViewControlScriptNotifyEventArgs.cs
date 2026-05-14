@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlScriptNotifyEventArgs", "Uri WebViewControlScriptNotifyEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlScriptNotifyEventArgs", "Uri");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlScriptNotifyEventArgs", "string WebViewControlScriptNotifyEventArgs.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlScriptNotifyEventArgs", "Value");
 			}
 		}
 #endif

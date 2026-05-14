@@ -19,7 +19,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "Arguments");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "Description");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "DisplayName");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.GroupName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "GroupName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.GroupName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "GroupName");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "JumpListItemKind JumpListItem.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "Kind");
 			}
 		}
 #endif
@@ -81,11 +81,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "Uri JumpListItem.Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "Uri JumpListItem.Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "Logo");
 			}
 		}
 #endif
@@ -95,7 +95,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "bool JumpListItem.RemovedByUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "RemovedByUser");
 			}
 		}
 #endif
@@ -103,14 +103,14 @@ namespace Windows.UI.StartScreen
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateWithArguments(string arguments, string displayName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "JumpListItem JumpListItem.CreateWithArguments(string arguments, string displayName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "CreateWithArguments(string arguments, string displayName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateSeparator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "JumpListItem JumpListItem.CreateSeparator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpListItem", "CreateSeparator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Arguments.get

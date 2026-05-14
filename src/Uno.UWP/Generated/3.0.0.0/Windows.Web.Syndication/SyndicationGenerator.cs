@@ -14,7 +14,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "IList<SyndicationAttribute> SyndicationGenerator.AttributeExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "AttributeExtensions");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "Uri SyndicationGenerator.BaseUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "BaseUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "Uri SyndicationGenerator.BaseUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "BaseUri");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "IList<ISyndicationNode> SyndicationGenerator.ElementExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "ElementExtensions");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "Language");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "NodeName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "NodeName");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "NodeNamespace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeNamespace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "NodeNamespace");
 			}
 		}
 #endif
@@ -90,11 +90,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "NodeValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "NodeValue");
 			}
 		}
 #endif
@@ -104,11 +104,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "Text");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Text");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "Text");
 			}
 		}
 #endif
@@ -118,11 +118,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "Uri SyndicationGenerator.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "Uri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "Uri SyndicationGenerator.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "Uri");
 			}
 		}
 #endif
@@ -132,11 +132,11 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Version");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "Version");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Version");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "Version");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationGenerator()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "SyndicationGenerator.SyndicationGenerator()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "SyndicationGenerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationGenerator.SyndicationGenerator()
@@ -152,7 +152,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationGenerator(string text)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "SyndicationGenerator.SyndicationGenerator(string text)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationGenerator", "SyndicationGenerator(string text)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationGenerator.SyndicationGenerator(string)
@@ -160,7 +160,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "XmlDocument SyndicationGenerator.GetXmlDocument(SyndicationFormat format)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "GetXmlDocument(SyndicationFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationGenerator.AttributeExtensions.get

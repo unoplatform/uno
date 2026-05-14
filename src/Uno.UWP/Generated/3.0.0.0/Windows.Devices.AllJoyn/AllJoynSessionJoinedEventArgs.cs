@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSessionJoinedEventArgs", "AllJoynSession AllJoynSessionJoinedEventArgs.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSessionJoinedEventArgs", "Session");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AllJoynSessionJoinedEventArgs(global::Windows.Devices.AllJoyn.AllJoynSession session)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynSessionJoinedEventArgs", "AllJoynSessionJoinedEventArgs.AllJoynSessionJoinedEventArgs(AllJoynSession session)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynSessionJoinedEventArgs", "AllJoynSessionJoinedEventArgs(AllJoynSession session)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionJoinedEventArgs.AllJoynSessionJoinedEventArgs(Windows.Devices.AllJoyn.AllJoynSession)

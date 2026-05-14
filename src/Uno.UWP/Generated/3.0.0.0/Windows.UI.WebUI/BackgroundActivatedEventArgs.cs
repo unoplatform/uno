@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.BackgroundActivatedEventArgs", "IBackgroundTaskInstance BackgroundActivatedEventArgs.TaskInstance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.BackgroundActivatedEventArgs", "TaskInstance");
 			}
 		}
 #endif

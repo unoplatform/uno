@@ -14,7 +14,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresentationConfiguration", "AppWindowPresentationKind AppWindowPresentationConfiguration.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresentationConfiguration", "Kind");
 			}
 		}
 #endif

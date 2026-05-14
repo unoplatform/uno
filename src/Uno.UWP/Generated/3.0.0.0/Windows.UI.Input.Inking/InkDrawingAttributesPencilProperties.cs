@@ -19,11 +19,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties", "double InkDrawingAttributesPencilProperties.Opacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties", "Opacity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties", "double InkDrawingAttributesPencilProperties.Opacity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties", "Opacity");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "string EnterpriseKeyCredentialRegistrationInfo.KeyId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "KeyId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "string EnterpriseKeyCredentialRegistrationInfo.KeyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "KeyName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "string EnterpriseKeyCredentialRegistrationInfo.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "Subject");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "string EnterpriseKeyCredentialRegistrationInfo.TenantId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "TenantId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "string EnterpriseKeyCredentialRegistrationInfo.TenantName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "TenantName");
 			}
 		}
 #endif

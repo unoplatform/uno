@@ -12,7 +12,7 @@ namespace Windows.Media.Protection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProtectionCapabilities()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.ProtectionCapabilities", "ProtectionCapabilities.ProtectionCapabilities()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.ProtectionCapabilities", "ProtectionCapabilities()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.ProtectionCapabilities()
@@ -20,7 +20,7 @@ namespace Windows.Media.Protection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.ProtectionCapabilityResult IsTypeSupported(string type, string keySystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ProtectionCapabilities", "ProtectionCapabilityResult ProtectionCapabilities.IsTypeSupported(string type, string keySystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ProtectionCapabilities", "IsTypeSupported(string type, string keySystem)");
 		}
 #endif
 	}

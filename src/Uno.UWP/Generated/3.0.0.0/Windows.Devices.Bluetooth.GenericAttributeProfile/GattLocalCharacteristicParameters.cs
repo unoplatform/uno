@@ -14,11 +14,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattCharacteristicProperties GattLocalCharacteristicParameters.CharacteristicProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "CharacteristicProperties");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattCharacteristicProperties GattLocalCharacteristicParameters.CharacteristicProperties");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "CharacteristicProperties");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "IList<GattPresentationFormat> GattLocalCharacteristicParameters.PresentationFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "PresentationFormats");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattProtectionLevel GattLocalCharacteristicParameters.ReadProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "ReadProtectionLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattProtectionLevel GattLocalCharacteristicParameters.ReadProtectionLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "ReadProtectionLevel");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "IBuffer GattLocalCharacteristicParameters.StaticValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "StaticValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "IBuffer GattLocalCharacteristicParameters.StaticValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "StaticValue");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "string GattLocalCharacteristicParameters.UserDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "UserDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "string GattLocalCharacteristicParameters.UserDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "UserDescription");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattProtectionLevel GattLocalCharacteristicParameters.WriteProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "WriteProtectionLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattProtectionLevel GattLocalCharacteristicParameters.WriteProtectionLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "WriteProtectionLevel");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GattLocalCharacteristicParameters()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattLocalCharacteristicParameters.GattLocalCharacteristicParameters()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattLocalCharacteristicParameters()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.GattLocalCharacteristicParameters()

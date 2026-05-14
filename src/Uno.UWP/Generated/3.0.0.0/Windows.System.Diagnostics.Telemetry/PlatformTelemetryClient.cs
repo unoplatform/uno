@@ -12,14 +12,14 @@ namespace Windows.System.Diagnostics.Telemetry
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult Register(string id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryClient", "PlatformTelemetryRegistrationResult PlatformTelemetryClient.Register(string id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryClient", "Register(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult Register(string id, global::Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings settings)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryClient", "PlatformTelemetryRegistrationResult PlatformTelemetryClient.Register(string id, PlatformTelemetryRegistrationSettings settings)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryClient", "Register(string id, PlatformTelemetryRegistrationSettings settings)");
 		}
 #endif
 	}

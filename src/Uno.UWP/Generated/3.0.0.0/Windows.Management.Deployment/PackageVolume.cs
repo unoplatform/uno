@@ -19,7 +19,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "bool PackageVolume.IsAppxInstallSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IsAppxInstallSupported");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "bool PackageVolume.IsFullTrustPackageSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IsFullTrustPackageSupported");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "bool PackageVolume.IsOffline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IsOffline");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "bool PackageVolume.IsSystemVolume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IsSystemVolume");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "string PackageVolume.MountPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "MountPoint");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "string PackageVolume.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "Name");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "string PackageVolume.PackageStorePath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "PackageStorePath");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "bool PackageVolume.SupportsHardLinks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "SupportsHardLinks");
 			}
 		}
 #endif
@@ -97,105 +97,105 @@ namespace Windows.Management.Deployment
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackages()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackages()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackages()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackages(string packageName, string packagePublisher)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackages(string packageName, string packagePublisher)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackages(string packageName, string packagePublisher)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackages(string packageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackages(string packageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackages(string packageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesWithPackageTypes(global::Windows.Management.Deployment.PackageTypes packageTypes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesWithPackageTypes(PackageTypes packageTypes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesWithPackageTypes(PackageTypes packageTypes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesWithPackageTypes(global::Windows.Management.Deployment.PackageTypes packageTypes, string packageName, string packagePublisher)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesWithPackageTypes(PackageTypes packageTypes, string packageName, string packagePublisher)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesWithPackageTypes(PackageTypes packageTypes, string packageName, string packagePublisher)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesWithPackageTypes(global::Windows.Management.Deployment.PackageTypes packageTypes, string packageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesWithPackageTypes(PackageTypes packageTypes, string packageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesWithPackageTypes(PackageTypes packageTypes, string packageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackage(string packageFullName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackage(string packageFullName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackage(string packageFullName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesForUser(string userSecurityId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesForUser(string userSecurityId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesForUser(string userSecurityId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesForUser(string userSecurityId, string packageName, string packagePublisher)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesForUser(string userSecurityId, string packageName, string packagePublisher)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesForUser(string userSecurityId, string packageName, string packagePublisher)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesForUser(string userSecurityId, string packageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesForUser(string userSecurityId, string packageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesForUser(string userSecurityId, string packageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesForUserWithPackageTypes(string userSecurityId, global::Windows.Management.Deployment.PackageTypes packageTypes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesForUserWithPackageTypes(string userSecurityId, PackageTypes packageTypes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesForUserWithPackageTypes(string userSecurityId, PackageTypes packageTypes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesForUserWithPackageTypes(string userSecurityId, global::Windows.Management.Deployment.PackageTypes packageTypes, string packageName, string packagePublisher)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesForUserWithPackageTypes(string userSecurityId, PackageTypes packageTypes, string packageName, string packagePublisher)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesForUserWithPackageTypes(string userSecurityId, PackageTypes packageTypes, string packageName, string packagePublisher)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackagesForUserWithPackageTypes(string userSecurityId, global::Windows.Management.Deployment.PackageTypes packageTypes, string packageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackagesForUserWithPackageTypes(string userSecurityId, PackageTypes packageTypes, string packageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackagesForUserWithPackageTypes(string userSecurityId, PackageTypes packageTypes, string packageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackageForUser(string userSecurityId, string packageFullName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IList<Package> PackageVolume.FindPackageForUser(string userSecurityId, string packageFullName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "FindPackageForUser(string userSecurityId, string packageFullName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<ulong> GetAvailableSpaceAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "IAsyncOperation<ulong> PackageVolume.GetAvailableSpaceAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageVolume", "GetAvailableSpaceAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsAppxInstallSupported.get

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "string AppointmentCalendarCancelMeetingRequest.AppointmentCalendarLocalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "AppointmentCalendarLocalId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "string AppointmentCalendarCancelMeetingRequest.AppointmentLocalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "AppointmentLocalId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "DateTimeOffset? AppointmentCalendarCancelMeetingRequest.AppointmentOriginalStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "AppointmentOriginalStartTime");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "string AppointmentCalendarCancelMeetingRequest.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "Comment");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "bool AppointmentCalendarCancelMeetingRequest.NotifyInvitees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "NotifyInvitees");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "string AppointmentCalendarCancelMeetingRequest.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "Subject");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "IAsyncAction AppointmentCalendarCancelMeetingRequest.ReportCompletedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "IAsyncAction AppointmentCalendarCancelMeetingRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.AppointmentCalendarLocalId.get

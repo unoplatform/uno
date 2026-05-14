@@ -12,7 +12,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.RadialControllerConfiguration GetForWindow(nint hwnd)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfigurationInterop", "RadialControllerConfiguration RadialControllerConfigurationInterop.GetForWindow(nint hwnd)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerConfigurationInterop", "GetForWindow(nint hwnd)");
 		}
 #endif
 	}

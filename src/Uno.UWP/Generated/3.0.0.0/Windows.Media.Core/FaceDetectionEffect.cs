@@ -19,11 +19,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffect", "TimeSpan FaceDetectionEffect.DesiredDetectionInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffect", "DesiredDetectionInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "TimeSpan FaceDetectionEffect.DesiredDetectionInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "DesiredDetectionInterval");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffect", "bool FaceDetectionEffect.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffect", "Enabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "bool FaceDetectionEffect.Enabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "Enabled");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetProperties(global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "void FaceDetectionEffect.SetProperties(IPropertySet configuration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "SetProperties(IPropertySet configuration)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.DesiredDetectionInterval.get
@@ -61,12 +61,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "event TypedEventHandler<FaceDetectionEffect, FaceDetectedEventArgs> FaceDetectionEffect.FaceDetected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "event FaceDetected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "event TypedEventHandler<FaceDetectionEffect, FaceDetectedEventArgs> FaceDetectionEffect.FaceDetected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "event FaceDetected");
 			}
 		}
 #endif

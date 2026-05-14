@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AltimeterReading", "double AltimeterReading.AltitudeChangeInMeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AltimeterReading", "AltitudeChangeInMeters");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AltimeterReading", "TimeSpan? AltimeterReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AltimeterReading", "PerformanceCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AltimeterReading", "IReadOnlyDictionary<string, object> AltimeterReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AltimeterReading", "Properties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AltimeterReading", "DateTimeOffset AltimeterReading.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AltimeterReading", "Timestamp");
 			}
 		}
 #endif

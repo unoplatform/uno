@@ -14,7 +14,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameBar", "bool GameBar.IsInputRedirected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameBar", "IsInputRedirected");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameBar", "bool GameBar.Visible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameBar", "Visible");
 			}
 		}
 #endif
@@ -41,12 +41,12 @@ namespace Windows.Gaming.UI
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameBar", "event EventHandler<object> GameBar.IsInputRedirectedChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameBar", "event IsInputRedirectedChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameBar", "event EventHandler<object> GameBar.IsInputRedirectedChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameBar", "event IsInputRedirectedChanged");
 			}
 		}
 #endif
@@ -57,12 +57,12 @@ namespace Windows.Gaming.UI
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameBar", "event EventHandler<object> GameBar.VisibilityChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameBar", "event VisibilityChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameBar", "event EventHandler<object> GameBar.VisibilityChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameBar", "event VisibilityChanged");
 			}
 		}
 #endif

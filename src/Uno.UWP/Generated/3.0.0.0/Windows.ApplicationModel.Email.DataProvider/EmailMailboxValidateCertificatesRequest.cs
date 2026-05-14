@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest", "IReadOnlyList<Certificate> EmailMailboxValidateCertificatesRequest.Certificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest", "Certificates");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest", "string EmailMailboxValidateCertificatesRequest.EmailMailboxId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest", "EmailMailboxId");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Email.EmailCertificateValidationStatus> validationStatuses)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest", "IAsyncAction EmailMailboxValidateCertificatesRequest.ReportCompletedAsync(IEnumerable<EmailCertificateValidationStatus> validationStatuses)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest", "ReportCompletedAsync(IEnumerable<EmailCertificateValidationStatus> validationStatuses)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest", "IAsyncAction EmailMailboxValidateCertificatesRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.Certificates.get

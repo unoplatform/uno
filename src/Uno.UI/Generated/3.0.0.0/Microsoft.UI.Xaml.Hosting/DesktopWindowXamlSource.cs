@@ -16,11 +16,11 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "bool DesktopWindowXamlSource.ShouldConstrainPopupsToWorkArea");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "ShouldConstrainPopupsToWorkArea");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "bool DesktopWindowXamlSource.ShouldConstrainPopupsToWorkArea");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "ShouldConstrainPopupsToWorkArea");
 			}
 		}
 #endif
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "DesktopChildSiteBridge DesktopWindowXamlSource.SiteBridge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "SiteBridge");
 			}
 		}
 #endif
@@ -40,11 +40,11 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "SystemBackdrop DesktopWindowXamlSource.SystemBackdrop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "SystemBackdrop");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "SystemBackdrop DesktopWindowXamlSource.SystemBackdrop");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "SystemBackdrop");
 			}
 		}
 #endif
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Initialize(global::Microsoft.UI.WindowId parentWindowId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "void DesktopWindowXamlSource.Initialize(WindowId parentWindowId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "Initialize(WindowId parentWindowId)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.GotFocus.add

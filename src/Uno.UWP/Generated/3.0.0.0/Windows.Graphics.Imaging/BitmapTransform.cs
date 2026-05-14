@@ -14,11 +14,11 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "BitmapBounds BitmapTransform.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "Bounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "BitmapBounds BitmapTransform.Bounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "Bounds");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "BitmapFlip BitmapTransform.Flip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "Flip");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "BitmapFlip BitmapTransform.Flip");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "Flip");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "BitmapInterpolationMode BitmapTransform.InterpolationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "InterpolationMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "BitmapInterpolationMode BitmapTransform.InterpolationMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "InterpolationMode");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "BitmapRotation BitmapTransform.Rotation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "Rotation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "BitmapRotation BitmapTransform.Rotation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "Rotation");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "uint BitmapTransform.ScaledHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "ScaledHeight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "uint BitmapTransform.ScaledHeight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "ScaledHeight");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "uint BitmapTransform.ScaledWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "ScaledWidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "uint BitmapTransform.ScaledWidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "ScaledWidth");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BitmapTransform()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "BitmapTransform.BitmapTransform()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTransform", "BitmapTransform()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.BitmapTransform()

@@ -14,7 +14,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "Uri LockScreen.OriginalImageFile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "OriginalImageFile");
 			}
 		}
 #endif
@@ -22,35 +22,35 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.UserProfile.SetImageFeedResult> RequestSetImageFeedAsync(global::System.Uri syndicationFeedUri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "IAsyncOperation<SetImageFeedResult> LockScreen.RequestSetImageFeedAsync(Uri syndicationFeedUri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "RequestSetImageFeedAsync(Uri syndicationFeedUri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryRemoveImageFeed()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "bool LockScreen.TryRemoveImageFeed()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "TryRemoveImageFeed()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Streams.IRandomAccessStream GetImageStream()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "IRandomAccessStream LockScreen.GetImageStream()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "GetImageStream()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SetImageFileAsync(global::Windows.Storage.IStorageFile value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "IAsyncAction LockScreen.SetImageFileAsync(IStorageFile value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "SetImageFileAsync(IStorageFile value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SetImageStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "IAsyncAction LockScreen.SetImageStreamAsync(IRandomAccessStream value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "SetImageStreamAsync(IRandomAccessStream value)");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.LockScreen.OriginalImageFile.get

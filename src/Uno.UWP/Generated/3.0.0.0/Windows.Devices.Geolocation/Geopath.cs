@@ -14,7 +14,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "AltitudeReferenceSystem Geopath.AltitudeReferenceSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "AltitudeReferenceSystem");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "GeoshapeType Geopath.GeoshapeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "GeoshapeType");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "IReadOnlyList<BasicGeoposition> Geopath.Positions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "Positions");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "uint Geopath.SpatialReferenceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "SpatialReferenceId");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Geopath(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath.Geopath(IEnumerable<BasicGeoposition> positions)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath(IEnumerable<BasicGeoposition> positions)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.Geopath(System.Collections.Generic.IEnumerable<Windows.Devices.Geolocation.BasicGeoposition>)
@@ -60,7 +60,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Geopath(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath.Geopath(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeReferenceSystem)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeReferenceSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.Geopath(System.Collections.Generic.IEnumerable<Windows.Devices.Geolocation.BasicGeoposition>, Windows.Devices.Geolocation.AltitudeReferenceSystem)
@@ -68,7 +68,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Geopath(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath.Geopath(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.Geopath(System.Collections.Generic.IEnumerable<Windows.Devices.Geolocation.BasicGeoposition>, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)

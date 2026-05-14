@@ -19,7 +19,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceContext", "IDictionary<string, string> ResourceContext.QualifierValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceContext", "QualifierValues");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintBinding PrintTaskOptions.Binding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "Binding");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintBinding PrintTaskOptions.Binding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "Binding");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintBordering PrintTaskOptions.Bordering");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "Bordering");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintBordering PrintTaskOptions.Bordering");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "Bordering");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintCollation PrintTaskOptions.Collation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "Collation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintCollation PrintTaskOptions.Collation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "Collation");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintColorMode PrintTaskOptions.ColorMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "ColorMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintColorMode PrintTaskOptions.ColorMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "ColorMode");
 			}
 		}
 #endif
@@ -75,7 +75,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "IList<PrintPageRange> PrintTaskOptions.CustomPageRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "CustomPageRanges");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "IList<string> PrintTaskOptions.DisplayedOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "DisplayedOptions");
 			}
 		}
 #endif
@@ -95,11 +95,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintDuplex PrintTaskOptions.Duplex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "Duplex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintDuplex PrintTaskOptions.Duplex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "Duplex");
 			}
 		}
 #endif
@@ -109,11 +109,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintHolePunch PrintTaskOptions.HolePunch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "HolePunch");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintHolePunch PrintTaskOptions.HolePunch");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "HolePunch");
 			}
 		}
 #endif
@@ -123,7 +123,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "uint PrintTaskOptions.MaxCopies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "MaxCopies");
 			}
 		}
 #endif
@@ -133,11 +133,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintMediaSize PrintTaskOptions.MediaSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "MediaSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintMediaSize PrintTaskOptions.MediaSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "MediaSize");
 			}
 		}
 #endif
@@ -147,11 +147,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintMediaType PrintTaskOptions.MediaType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "MediaType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintMediaType PrintTaskOptions.MediaType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "MediaType");
 			}
 		}
 #endif
@@ -161,7 +161,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "uint PrintTaskOptions.MinCopies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "MinCopies");
 			}
 		}
 #endif
@@ -171,11 +171,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "uint PrintTaskOptions.NumberOfCopies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "NumberOfCopies");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "uint PrintTaskOptions.NumberOfCopies");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "NumberOfCopies");
 			}
 		}
 #endif
@@ -185,11 +185,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintOrientation PrintTaskOptions.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "Orientation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintOrientation PrintTaskOptions.Orientation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "Orientation");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintPageRangeOptions PrintTaskOptions.PageRangeOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PageRangeOptions");
 			}
 		}
 #endif
@@ -209,11 +209,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintQuality PrintTaskOptions.PrintQuality");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintQuality");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintQuality PrintTaskOptions.PrintQuality");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintQuality");
 			}
 		}
 #endif
@@ -223,11 +223,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintStaple PrintTaskOptions.Staple");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "Staple");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "PrintStaple PrintTaskOptions.Staple");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTaskOptions", "Staple");
 			}
 		}
 #endif
@@ -235,14 +235,14 @@ namespace Windows.Graphics.Printing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription(uint jobPageNumber)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "PrintPageDescription PrintTaskOptions.GetPageDescription(uint jobPageNumber)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "GetPageDescription(uint jobPageNumber)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream GetPagePrintTicket(global::Windows.Graphics.Printing.PrintPageInfo printPageInfo)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "IRandomAccessStream PrintTaskOptions.GetPagePrintTicket(PrintPageInfo printPageInfo)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskOptions", "GetPagePrintTicket(PrintPageInfo printPageInfo)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Binding.get

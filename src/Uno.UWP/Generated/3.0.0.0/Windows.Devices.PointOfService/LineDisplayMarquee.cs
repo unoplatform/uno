@@ -19,11 +19,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "LineDisplayMarqueeFormat LineDisplayMarquee.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "Format");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "LineDisplayMarqueeFormat LineDisplayMarquee.Format");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "Format");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "TimeSpan LineDisplayMarquee.RepeatWaitInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "RepeatWaitInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "TimeSpan LineDisplayMarquee.RepeatWaitInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "RepeatWaitInterval");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "TimeSpan LineDisplayMarquee.ScrollWaitInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "ScrollWaitInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "TimeSpan LineDisplayMarquee.ScrollWaitInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "ScrollWaitInterval");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryStartScrollingAsync(global::Windows.Devices.PointOfService.LineDisplayScrollDirection direction)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "IAsyncOperation<bool> LineDisplayMarquee.TryStartScrollingAsync(LineDisplayScrollDirection direction)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "TryStartScrollingAsync(LineDisplayScrollDirection direction)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryStopScrollingAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "IAsyncOperation<bool> LineDisplayMarquee.TryStopScrollingAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayMarquee", "TryStopScrollingAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Format.get

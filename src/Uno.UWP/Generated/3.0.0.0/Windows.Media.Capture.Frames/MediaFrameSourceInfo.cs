@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "SpatialCoordinateSystem MediaFrameSourceInfo.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "CoordinateSystem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "DeviceInformation MediaFrameSourceInfo.DeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "DeviceInformation");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "string MediaFrameSourceInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "MediaStreamType MediaFrameSourceInfo.MediaStreamType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "MediaStreamType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "string MediaFrameSourceInfo.ProfileId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "ProfileId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "IReadOnlyDictionary<Guid, object> MediaFrameSourceInfo.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "Properties");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "MediaFrameSourceGroup MediaFrameSourceInfo.SourceGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "SourceGroup");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "MediaFrameSourceKind MediaFrameSourceInfo.SourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "SourceKind");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaFrameSourceInfo.VideoProfileMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "VideoProfileMediaDescription");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.Panel GetRelativePanel(global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "Panel MediaFrameSourceInfo.GetRelativePanel(DisplayRegion displayRegion)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "GetRelativePanel(DisplayRegion displayRegion)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.CoordinateSystem.get

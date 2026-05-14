@@ -17,7 +17,7 @@ namespace Windows.UI.Core.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetIdFromWindow(global::Windows.UI.WindowManagement.AppWindow window)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.Preview.CoreAppWindowPreview", "int CoreAppWindowPreview.GetIdFromWindow(AppWindow window)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.Preview.CoreAppWindowPreview", "GetIdFromWindow(AppWindow window)");
 		}
 #endif
 	}

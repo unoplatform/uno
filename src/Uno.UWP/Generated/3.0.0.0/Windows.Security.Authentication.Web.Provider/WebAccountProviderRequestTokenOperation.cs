@@ -19,11 +19,11 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "DateTimeOffset WebAccountProviderRequestTokenOperation.CacheExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "CacheExpirationTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "DateTimeOffset WebAccountProviderRequestTokenOperation.CacheExpirationTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "CacheExpirationTime");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "WebAccountProviderOperationKind WebAccountProviderRequestTokenOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "Kind");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "WebProviderTokenRequest WebAccountProviderRequestTokenOperation.ProviderRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "ProviderRequest");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "IList<WebProviderTokenResponse> WebAccountProviderRequestTokenOperation.ProviderResponses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "ProviderResponses");
 			}
 		}
 #endif
@@ -61,21 +61,21 @@ namespace Windows.Security.Authentication.Web.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportUserCanceled()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "void WebAccountProviderRequestTokenOperation.ReportUserCanceled()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "ReportUserCanceled()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "void WebAccountProviderRequestTokenOperation.ReportCompleted()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "ReportCompleted()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportError(global::Windows.Security.Authentication.Web.Core.WebProviderError value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "void WebAccountProviderRequestTokenOperation.ReportError(WebProviderError value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "ReportError(WebProviderError value)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.CacheExpirationTime.get

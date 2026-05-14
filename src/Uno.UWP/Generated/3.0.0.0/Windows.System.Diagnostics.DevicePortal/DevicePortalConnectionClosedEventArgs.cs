@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs", "DevicePortalConnectionClosedReason DevicePortalConnectionClosedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs", "Reason");
 			}
 		}
 #endif

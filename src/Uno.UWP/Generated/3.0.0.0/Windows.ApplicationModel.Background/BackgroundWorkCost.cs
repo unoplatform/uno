@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundWorkCost", "BackgroundWorkCostValue BackgroundWorkCost.CurrentBackgroundWorkCost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundWorkCost", "CurrentBackgroundWorkCost");
 			}
 		}
 #endif

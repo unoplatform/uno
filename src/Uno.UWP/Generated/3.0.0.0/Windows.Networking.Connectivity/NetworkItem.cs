@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkItem", "Guid NetworkItem.NetworkId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkItem", "NetworkId");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.NetworkTypes GetNetworkTypes()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkItem", "NetworkTypes NetworkItem.GetNetworkTypes()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkItem", "GetNetworkTypes()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.NetworkId.get

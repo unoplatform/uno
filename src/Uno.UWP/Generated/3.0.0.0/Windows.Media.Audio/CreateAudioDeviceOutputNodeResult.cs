@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioDeviceOutputNodeResult", "AudioDeviceOutputNode CreateAudioDeviceOutputNodeResult.DeviceOutputNode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioDeviceOutputNodeResult", "DeviceOutputNode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioDeviceOutputNodeResult", "Exception CreateAudioDeviceOutputNodeResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioDeviceOutputNodeResult", "ExtendedError");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioDeviceOutputNodeResult", "AudioDeviceNodeCreationStatus CreateAudioDeviceOutputNodeResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioDeviceOutputNodeResult", "Status");
 			}
 		}
 #endif

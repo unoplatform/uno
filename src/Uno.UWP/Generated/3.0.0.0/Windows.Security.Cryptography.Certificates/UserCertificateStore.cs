@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.UserCertificateStore", "string UserCertificateStore.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.UserCertificateStore", "Name");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestAddAsync(global::Windows.Security.Cryptography.Certificates.Certificate certificate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.UserCertificateStore", "IAsyncOperation<bool> UserCertificateStore.RequestAddAsync(Certificate certificate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.UserCertificateStore", "RequestAddAsync(Certificate certificate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestDeleteAsync(global::Windows.Security.Cryptography.Certificates.Certificate certificate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.UserCertificateStore", "IAsyncOperation<bool> UserCertificateStore.RequestDeleteAsync(Certificate certificate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.UserCertificateStore", "RequestDeleteAsync(Certificate certificate)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateStore.Name.get

@@ -14,11 +14,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3? Vector3NaturalMotionAnimation.FinalValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "FinalValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3? Vector3NaturalMotionAnimation.FinalValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "FinalValue");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3? Vector3NaturalMotionAnimation.InitialValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "InitialValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3? Vector3NaturalMotionAnimation.InitialValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "InitialValue");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3 Vector3NaturalMotionAnimation.InitialVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "InitialVelocity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "Vector3 Vector3NaturalMotionAnimation.InitialVelocity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector3NaturalMotionAnimation", "InitialVelocity");
 			}
 		}
 #endif

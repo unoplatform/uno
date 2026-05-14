@@ -14,11 +14,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "AudioEncodingProperties MediaEncodingProfile.Audio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "Audio");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "AudioEncodingProperties MediaEncodingProfile.Audio");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "Audio");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "ContainerEncodingProperties MediaEncodingProfile.Container");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "Container");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "ContainerEncodingProperties MediaEncodingProfile.Container");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "Container");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "VideoEncodingProperties MediaEncodingProfile.Video");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "Video");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "VideoEncodingProperties MediaEncodingProfile.Video");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "Video");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaEncodingProfile()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile.MediaEncodingProfile()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.MediaEncodingProfile()
@@ -62,126 +62,126 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateM4a(global::Windows.Media.MediaProperties.AudioEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateM4a(AudioEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateM4a(AudioEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateMp3(global::Windows.Media.MediaProperties.AudioEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateMp3(AudioEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateMp3(AudioEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateWma(global::Windows.Media.MediaProperties.AudioEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateWma(AudioEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateWma(AudioEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateMp4(global::Windows.Media.MediaProperties.VideoEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateMp4(VideoEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateMp4(VideoEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateWmv(global::Windows.Media.MediaProperties.VideoEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateWmv(VideoEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateWmv(VideoEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.MediaProperties.MediaEncodingProfile> CreateFromFileAsync(global::Windows.Storage.IStorageFile file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "IAsyncOperation<MediaEncodingProfile> MediaEncodingProfile.CreateFromFileAsync(IStorageFile file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateFromFileAsync(IStorageFile file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.MediaProperties.MediaEncodingProfile> CreateFromStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "IAsyncOperation<MediaEncodingProfile> MediaEncodingProfile.CreateFromStreamAsync(IRandomAccessStream stream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateFromStreamAsync(IRandomAccessStream stream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateWav(global::Windows.Media.MediaProperties.AudioEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateWav(AudioEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateWav(AudioEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateAvi(global::Windows.Media.MediaProperties.VideoEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateAvi(VideoEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateAvi(VideoEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateAlac(global::Windows.Media.MediaProperties.AudioEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateAlac(AudioEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateAlac(AudioEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateFlac(global::Windows.Media.MediaProperties.AudioEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateFlac(AudioEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateFlac(AudioEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateHevc(global::Windows.Media.MediaProperties.VideoEncodingQuality quality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "MediaEncodingProfile MediaEncodingProfile.CreateHevc(VideoEncodingQuality quality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateHevc(VideoEncodingQuality quality)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetAudioTracks(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.AudioStreamDescriptor> value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "void MediaEncodingProfile.SetAudioTracks(IEnumerable<AudioStreamDescriptor> value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "SetAudioTracks(IEnumerable<AudioStreamDescriptor> value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Media.Core.AudioStreamDescriptor> GetAudioTracks()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "IList<AudioStreamDescriptor> MediaEncodingProfile.GetAudioTracks()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "GetAudioTracks()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetVideoTracks(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.VideoStreamDescriptor> value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "void MediaEncodingProfile.SetVideoTracks(IEnumerable<VideoStreamDescriptor> value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "SetVideoTracks(IEnumerable<VideoStreamDescriptor> value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Media.Core.VideoStreamDescriptor> GetVideoTracks()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "IList<VideoStreamDescriptor> MediaEncodingProfile.GetVideoTracks()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "GetVideoTracks()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetTimedMetadataTracks(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.TimedMetadataStreamDescriptor> value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "void MediaEncodingProfile.SetTimedMetadataTracks(IEnumerable<TimedMetadataStreamDescriptor> value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "SetTimedMetadataTracks(IEnumerable<TimedMetadataStreamDescriptor> value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Media.Core.TimedMetadataStreamDescriptor> GetTimedMetadataTracks()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "IList<TimedMetadataStreamDescriptor> MediaEncodingProfile.GetTimedMetadataTracks()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "GetTimedMetadataTracks()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.Audio.get

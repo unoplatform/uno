@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "string KnownAdaptiveNotificationHints.Align");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "Align");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "string KnownAdaptiveNotificationHints.MaxLines");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "MaxLines");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "string KnownAdaptiveNotificationHints.MinLines");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "MinLines");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "string KnownAdaptiveNotificationHints.Style");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "Style");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "string KnownAdaptiveNotificationHints.TextStacking");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "TextStacking");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "string KnownAdaptiveNotificationHints.Wrap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "Wrap");
 			}
 		}
 #endif

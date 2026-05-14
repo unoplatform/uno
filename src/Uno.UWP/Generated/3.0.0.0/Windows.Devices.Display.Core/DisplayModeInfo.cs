@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "bool DisplayModeInfo.IsInterlaced");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "IsInterlaced");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "bool DisplayModeInfo.IsStereo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "IsStereo");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "DisplayPresentationRate DisplayModeInfo.PresentationRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "PresentationRate");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "IReadOnlyDictionary<Guid, object> DisplayModeInfo.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "Properties");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "DirectXPixelFormat DisplayModeInfo.SourcePixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "SourcePixelFormat");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "SizeInt32 DisplayModeInfo.SourceResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "SourceResolution");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "SizeInt32 DisplayModeInfo.TargetResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "TargetResolution");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayBitsPerChannel GetWireFormatSupportedBitsPerChannel(global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding encoding)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "DisplayBitsPerChannel DisplayModeInfo.GetWireFormatSupportedBitsPerChannel(DisplayWireFormatPixelEncoding encoding)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "GetWireFormatSupportedBitsPerChannel(DisplayWireFormatPixelEncoding encoding)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsWireFormatSupported(global::Windows.Devices.Display.Core.DisplayWireFormat wireFormat)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "bool DisplayModeInfo.IsWireFormatSupported(DisplayWireFormat wireFormat)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "IsWireFormatSupported(DisplayWireFormat wireFormat)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsInterlaced.get

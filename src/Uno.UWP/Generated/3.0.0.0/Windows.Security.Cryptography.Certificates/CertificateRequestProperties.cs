@@ -14,11 +14,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Certificate CertificateRequestProperties.AttestationCredentialCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "AttestationCredentialCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Certificate CertificateRequestProperties.AttestationCredentialCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "AttestationCredentialCertificate");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.ContainerName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "ContainerName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.ContainerName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "ContainerName");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.ContainerNamePrefix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "ContainerNamePrefix");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.ContainerNamePrefix");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "ContainerNamePrefix");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.CurveName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "CurveName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.CurveName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "CurveName");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "byte[] CertificateRequestProperties.CurveParameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "CurveParameters");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "byte[] CertificateRequestProperties.CurveParameters");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "CurveParameters");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "ExportOption CertificateRequestProperties.Exportable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Exportable");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "ExportOption CertificateRequestProperties.Exportable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Exportable");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "IList<CertificateExtension> CertificateRequestProperties.Extensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Extensions");
 			}
 		}
 #endif
@@ -108,11 +108,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "FriendlyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.FriendlyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "FriendlyName");
 			}
 		}
 #endif
@@ -122,11 +122,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.HashAlgorithmName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "HashAlgorithmName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.HashAlgorithmName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "HashAlgorithmName");
 			}
 		}
 #endif
@@ -136,11 +136,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.KeyAlgorithmName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyAlgorithmName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.KeyAlgorithmName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyAlgorithmName");
 			}
 		}
 #endif
@@ -150,11 +150,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyProtectionLevel CertificateRequestProperties.KeyProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyProtectionLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyProtectionLevel CertificateRequestProperties.KeyProtectionLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyProtectionLevel");
 			}
 		}
 #endif
@@ -164,11 +164,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "uint CertificateRequestProperties.KeySize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeySize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "uint CertificateRequestProperties.KeySize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeySize");
 			}
 		}
 #endif
@@ -178,11 +178,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.KeyStorageProviderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyStorageProviderName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.KeyStorageProviderName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyStorageProviderName");
 			}
 		}
 #endif
@@ -192,11 +192,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "EnrollKeyUsages CertificateRequestProperties.KeyUsages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyUsages");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "EnrollKeyUsages CertificateRequestProperties.KeyUsages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyUsages");
 			}
 		}
 #endif
@@ -206,11 +206,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Certificate CertificateRequestProperties.SigningCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "SigningCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Certificate CertificateRequestProperties.SigningCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "SigningCertificate");
 			}
 		}
 #endif
@@ -220,11 +220,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.SmartcardReaderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "SmartcardReaderName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.SmartcardReaderName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "SmartcardReaderName");
 			}
 		}
 #endif
@@ -234,11 +234,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Subject");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.Subject");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Subject");
 			}
 		}
 #endif
@@ -248,7 +248,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "SubjectAlternativeNameInfo CertificateRequestProperties.SubjectAlternativeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "SubjectAlternativeName");
 			}
 		}
 #endif
@@ -258,7 +258,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "IList<string> CertificateRequestProperties.SuppressedDefaults");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "SuppressedDefaults");
 			}
 		}
 #endif
@@ -268,11 +268,11 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "bool CertificateRequestProperties.UseExistingKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "UseExistingKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "bool CertificateRequestProperties.UseExistingKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "UseExistingKey");
 			}
 		}
 #endif
@@ -280,7 +280,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CertificateRequestProperties()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "CertificateRequestProperties.CertificateRequestProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "CertificateRequestProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.CertificateRequestProperties()

@@ -12,14 +12,14 @@ namespace Windows.ApplicationModel.UserActivities.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserActivities.UserActivitySession CreateUserActivitySessionInBackground(global::Windows.ApplicationModel.UserActivities.UserActivity activity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.Core.CoreUserActivityManager", "UserActivitySession CoreUserActivityManager.CreateUserActivitySessionInBackground(UserActivity activity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.Core.CoreUserActivityManager", "CreateUserActivitySessionInBackground(UserActivity activity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction DeleteUserActivitySessionsInTimeRangeAsync(global::Windows.ApplicationModel.UserActivities.UserActivityChannel channel, global::System.DateTimeOffset startTime, global::System.DateTimeOffset endTime)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.Core.CoreUserActivityManager", "IAsyncAction CoreUserActivityManager.DeleteUserActivitySessionsInTimeRangeAsync(UserActivityChannel channel, DateTimeOffset startTime, DateTimeOffset endTime)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.Core.CoreUserActivityManager", "DeleteUserActivitySessionsInTimeRangeAsync(UserActivityChannel channel, DateTimeOffset startTime, DateTimeOffset endTime)");
 		}
 #endif
 	}

@@ -14,7 +14,7 @@ namespace Windows.Media.Core.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.Preview.SoundLevelBroker", "SoundLevel SoundLevelBroker.SoundLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.Preview.SoundLevelBroker", "SoundLevel");
 			}
 		}
 #endif
@@ -28,12 +28,12 @@ namespace Windows.Media.Core.Preview
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.Preview.SoundLevelBroker", "event EventHandler<object> SoundLevelBroker.SoundLevelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.Preview.SoundLevelBroker", "event SoundLevelChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.Preview.SoundLevelBroker", "event EventHandler<object> SoundLevelBroker.SoundLevelChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.Preview.SoundLevelBroker", "event SoundLevelChanged");
 			}
 		}
 #endif

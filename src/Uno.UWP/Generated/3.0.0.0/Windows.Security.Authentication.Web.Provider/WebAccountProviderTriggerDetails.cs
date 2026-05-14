@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails", "IWebAccountProviderOperation WebAccountProviderTriggerDetails.Operation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails", "Operation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails", "User WebAccountProviderTriggerDetails.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails", "User");
 			}
 		}
 #endif

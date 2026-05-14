@@ -19,11 +19,11 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "Completed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "Completed");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "Exception DataReaderLoadOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "ErrorCode");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "uint DataReaderLoadOperation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "Id");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "AsyncStatus DataReaderLoadOperation.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "Status");
 			}
 		}
 #endif
@@ -61,21 +61,21 @@ namespace Windows.Storage.Streams
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint GetResults()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "uint DataReaderLoadOperation.GetResults()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "GetResults()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "void DataReaderLoadOperation.Cancel()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "Cancel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "void DataReaderLoadOperation.Close()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "Close()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.LowLightFusionResult", "SoftwareBitmap LowLightFusionResult.Frame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.LowLightFusionResult", "Frame");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.LowLightFusionResult", "void LowLightFusionResult.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.LowLightFusionResult", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.Frame.get

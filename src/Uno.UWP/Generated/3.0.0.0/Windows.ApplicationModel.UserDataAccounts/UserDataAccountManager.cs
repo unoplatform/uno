@@ -12,35 +12,35 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreAccessType storeAccessType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "IAsyncOperation<UserDataAccountStore> UserDataAccountManager.RequestStoreAsync(UserDataAccountStoreAccessType storeAccessType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "RequestStoreAsync(UserDataAccountStoreAccessType storeAccessType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> ShowAddAccountAsync(global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountContentKinds contentKinds)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "IAsyncOperation<string> UserDataAccountManager.ShowAddAccountAsync(UserDataAccountContentKinds contentKinds)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "ShowAddAccountAsync(UserDataAccountContentKinds contentKinds)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction ShowAccountSettingsAsync(string id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "IAsyncAction UserDataAccountManager.ShowAccountSettingsAsync(string id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "ShowAccountSettingsAsync(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction ShowAccountErrorResolverAsync(string id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "IAsyncAction UserDataAccountManager.ShowAccountErrorResolverAsync(string id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "ShowAccountErrorResolverAsync(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser GetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "UserDataAccountManagerForUser UserDataAccountManager.GetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager", "GetForUser(User user)");
 		}
 #endif
 	}

@@ -19,7 +19,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.ProcessVideoFrameContext", "VideoFrame ProcessVideoFrameContext.InputFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.ProcessVideoFrameContext", "InputFrame");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.ProcessVideoFrameContext", "VideoFrame ProcessVideoFrameContext.OutputFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.ProcessVideoFrameContext", "OutputFrame");
 			}
 		}
 #endif

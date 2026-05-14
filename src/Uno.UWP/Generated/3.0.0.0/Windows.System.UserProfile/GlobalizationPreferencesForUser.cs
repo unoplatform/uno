@@ -19,7 +19,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "IReadOnlyList<string> GlobalizationPreferencesForUser.Calendars");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "Calendars");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "IReadOnlyList<string> GlobalizationPreferencesForUser.Clocks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "Clocks");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "IReadOnlyList<string> GlobalizationPreferencesForUser.Currencies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "Currencies");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "string GlobalizationPreferencesForUser.HomeGeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "HomeGeographicRegion");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "IReadOnlyList<string> GlobalizationPreferencesForUser.Languages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "Languages");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "User GlobalizationPreferencesForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "User");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "DayOfWeek GlobalizationPreferencesForUser.WeekStartsOn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "WeekStartsOn");
 			}
 		}
 #endif

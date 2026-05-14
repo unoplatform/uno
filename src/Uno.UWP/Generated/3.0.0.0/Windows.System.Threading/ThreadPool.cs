@@ -12,21 +12,21 @@ namespace Windows.System.Threading
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction RunAsync(global::Windows.System.Threading.WorkItemHandler handler)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "IAsyncAction ThreadPool.RunAsync(WorkItemHandler handler)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "RunAsync(WorkItemHandler handler)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction RunAsync(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "IAsyncAction ThreadPool.RunAsync(WorkItemHandler handler, WorkItemPriority priority)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "RunAsync(WorkItemHandler handler, WorkItemPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction RunAsync(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority, global::Windows.System.Threading.WorkItemOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "IAsyncAction ThreadPool.RunAsync(WorkItemHandler handler, WorkItemPriority priority, WorkItemOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "RunAsync(WorkItemHandler handler, WorkItemPriority priority, WorkItemOptions options)");
 		}
 #endif
 	}

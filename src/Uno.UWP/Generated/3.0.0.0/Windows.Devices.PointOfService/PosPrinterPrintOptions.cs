@@ -14,11 +14,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "PosPrinterAlignment PosPrinterPrintOptions.Alignment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Alignment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "PosPrinterAlignment PosPrinterPrintOptions.Alignment");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Alignment");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Bold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Bold");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Bold");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Bold");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "uint PosPrinterPrintOptions.CharacterHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "CharacterHeight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "uint PosPrinterPrintOptions.CharacterHeight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "CharacterHeight");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "uint PosPrinterPrintOptions.CharacterSet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "CharacterSet");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "uint PosPrinterPrintOptions.CharacterSet");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "CharacterSet");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.DoubleHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "DoubleHigh");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.DoubleHigh");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "DoubleHigh");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.DoubleWide");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "DoubleWide");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.DoubleWide");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "DoubleWide");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Italic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Italic");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Italic");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Italic");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.ReverseVideo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "ReverseVideo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.ReverseVideo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "ReverseVideo");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Strikethrough");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Strikethrough");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Strikethrough");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Strikethrough");
 			}
 		}
 #endif
@@ -140,11 +140,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Subscript");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Subscript");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Subscript");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Subscript");
 			}
 		}
 #endif
@@ -154,11 +154,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Superscript");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Superscript");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Superscript");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Superscript");
 			}
 		}
 #endif
@@ -168,11 +168,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "string PosPrinterPrintOptions.TypeFace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "TypeFace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "string PosPrinterPrintOptions.TypeFace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "TypeFace");
 			}
 		}
 #endif
@@ -182,11 +182,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Underline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Underline");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "bool PosPrinterPrintOptions.Underline");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "Underline");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PosPrinterPrintOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "PosPrinterPrintOptions.PosPrinterPrintOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinterPrintOptions", "PosPrinterPrintOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterPrintOptions.PosPrinterPrintOptions()

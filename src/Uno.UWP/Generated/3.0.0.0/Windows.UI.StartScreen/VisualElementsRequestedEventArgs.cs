@@ -19,7 +19,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequestedEventArgs", "VisualElementsRequest VisualElementsRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequestedEventArgs", "Request");
 			}
 		}
 #endif

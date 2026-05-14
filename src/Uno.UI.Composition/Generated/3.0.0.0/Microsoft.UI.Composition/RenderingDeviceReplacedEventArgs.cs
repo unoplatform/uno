@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs", "CompositionGraphicsDevice RenderingDeviceReplacedEventArgs.GraphicsDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs", "GraphicsDevice");
 			}
 		}
 #endif

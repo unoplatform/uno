@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskProgressingEventArgs", "uint PrintTaskProgressingEventArgs.DocumentPageCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskProgressingEventArgs", "DocumentPageCount");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "AudioEncodingProperties AudioStreamDescriptor.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "EncodingProperties");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "bool AudioStreamDescriptor.IsSelected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "IsSelected");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "Label");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "Language");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "uint? AudioStreamDescriptor.LeadingEncoderPadding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "LeadingEncoderPadding");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "uint? AudioStreamDescriptor.LeadingEncoderPadding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "LeadingEncoderPadding");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "Name");
 			}
 		}
 #endif
@@ -90,11 +90,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "uint? AudioStreamDescriptor.TrailingEncoderPadding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "TrailingEncoderPadding");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "uint? AudioStreamDescriptor.TrailingEncoderPadding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "TrailingEncoderPadding");
 			}
 		}
 #endif
@@ -102,7 +102,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioStreamDescriptor(global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "AudioStreamDescriptor.AudioStreamDescriptor(AudioEncodingProperties encodingProperties)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.AudioStreamDescriptor", "AudioStreamDescriptor(AudioEncodingProperties encodingProperties)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.AudioStreamDescriptor(Windows.Media.MediaProperties.AudioEncodingProperties)
@@ -110,7 +110,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.AudioStreamDescriptor Copy()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "AudioStreamDescriptor AudioStreamDescriptor.Copy()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "Copy()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.EncodingProperties.get

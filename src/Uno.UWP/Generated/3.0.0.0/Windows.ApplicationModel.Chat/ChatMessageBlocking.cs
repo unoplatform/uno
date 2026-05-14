@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction MarkMessageAsBlockedAsync(string localChatMessageId, bool blocked)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageBlocking", "IAsyncAction ChatMessageBlocking.MarkMessageAsBlockedAsync(string localChatMessageId, bool blocked)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageBlocking", "MarkMessageAsBlockedAsync(string localChatMessageId, bool blocked)");
 		}
 #endif
 	}

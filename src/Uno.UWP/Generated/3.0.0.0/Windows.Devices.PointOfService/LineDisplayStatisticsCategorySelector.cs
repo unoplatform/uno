@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "string LineDisplayStatisticsCategorySelector.AllStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "AllStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "string LineDisplayStatisticsCategorySelector.ManufacturerStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "ManufacturerStatistics");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "string LineDisplayStatisticsCategorySelector.UnifiedPosStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "UnifiedPosStatistics");
 			}
 		}
 #endif

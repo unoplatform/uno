@@ -17,35 +17,35 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.Contact>> FindRawContactsAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "IAsyncOperation<IReadOnlyList<Contact>> AggregateContactManager.FindRawContactsAsync(Contact contact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "FindRawContactsAsync(Contact contact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> TryLinkContactsAsync(global::Windows.ApplicationModel.Contacts.Contact primaryContact, global::Windows.ApplicationModel.Contacts.Contact secondaryContact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "IAsyncOperation<Contact> AggregateContactManager.TryLinkContactsAsync(Contact primaryContact, Contact secondaryContact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "TryLinkContactsAsync(Contact primaryContact, Contact secondaryContact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction UnlinkRawContactAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "IAsyncAction AggregateContactManager.UnlinkRawContactAsync(Contact contact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "UnlinkRawContactAsync(Contact contact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TrySetPreferredSourceForPictureAsync(global::Windows.ApplicationModel.Contacts.Contact aggregateContact, global::Windows.ApplicationModel.Contacts.Contact rawContact)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "IAsyncOperation<bool> AggregateContactManager.TrySetPreferredSourceForPictureAsync(Contact aggregateContact, Contact rawContact)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "TrySetPreferredSourceForPictureAsync(Contact aggregateContact, Contact rawContact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetRemoteIdentificationInformationAsync(string contactListId, string remoteSourceId, string accountId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "IAsyncAction AggregateContactManager.SetRemoteIdentificationInformationAsync(string contactListId, string remoteSourceId, string accountId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.AggregateContactManager", "SetRemoteIdentificationInformationAsync(string contactListId, string remoteSourceId, string accountId)");
 		}
 #endif
 	}

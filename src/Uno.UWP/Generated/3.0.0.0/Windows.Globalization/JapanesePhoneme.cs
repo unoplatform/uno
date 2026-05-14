@@ -19,7 +19,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "string JapanesePhoneme.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "DisplayText");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "bool JapanesePhoneme.IsPhraseStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "IsPhraseStart");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "string JapanesePhoneme.YomiText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "YomiText");
 			}
 		}
 #endif

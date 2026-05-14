@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "HolographicDisplay HolographicViewConfiguration.Display");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "Display");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "bool HolographicViewConfiguration.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicViewConfiguration", "bool HolographicViewConfiguration.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicViewConfiguration", "IsEnabled");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "bool HolographicViewConfiguration.IsStereo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "IsStereo");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "HolographicViewConfigurationKind HolographicViewConfiguration.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "Kind");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "Size HolographicViewConfiguration.NativeRenderTargetSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "NativeRenderTargetSize");
 			}
 		}
 #endif
@@ -73,11 +73,11 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "DirectXPixelFormat HolographicViewConfiguration.PixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "PixelFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicViewConfiguration", "DirectXPixelFormat HolographicViewConfiguration.PixelFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicViewConfiguration", "PixelFormat");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "double HolographicViewConfiguration.RefreshRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "RefreshRate");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "Size HolographicViewConfiguration.RenderTargetSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "RenderTargetSize");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "IReadOnlyList<DirectXPixelFormat> HolographicViewConfiguration.SupportedPixelFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "SupportedPixelFormats");
 			}
 		}
 #endif
@@ -115,7 +115,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Size RequestRenderTargetSize(global::Windows.Foundation.Size size)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "Size HolographicViewConfiguration.RequestRenderTargetSize(Size size)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "RequestRenderTargetSize(Size size)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Display.get

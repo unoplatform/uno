@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.StatelessAppServiceResponse", "ValueSet StatelessAppServiceResponse.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.StatelessAppServiceResponse", "Message");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.StatelessAppServiceResponse", "StatelessAppServiceResponseStatus StatelessAppServiceResponse.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.StatelessAppServiceResponse", "Status");
 			}
 		}
 #endif

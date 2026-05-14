@@ -19,7 +19,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "Rect PdfPageDimensions.ArtBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "ArtBox");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "Rect PdfPageDimensions.BleedBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "BleedBox");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "Rect PdfPageDimensions.CropBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "CropBox");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "Rect PdfPageDimensions.MediaBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "MediaBox");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "Rect PdfPageDimensions.TrimBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "TrimBox");
 			}
 		}
 #endif

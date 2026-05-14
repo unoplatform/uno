@@ -19,11 +19,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkModelerAttributes", "TimeSpan InkModelerAttributes.PredictionTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkModelerAttributes", "PredictionTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "TimeSpan InkModelerAttributes.PredictionTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "PredictionTime");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkModelerAttributes", "float InkModelerAttributes.ScalingFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkModelerAttributes", "ScalingFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "float InkModelerAttributes.ScalingFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "ScalingFactor");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkModelerAttributes", "bool InkModelerAttributes.UseVelocityBasedPressure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkModelerAttributes", "UseVelocityBasedPressure");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "bool InkModelerAttributes.UseVelocityBasedPressure");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "UseVelocityBasedPressure");
 			}
 		}
 #endif

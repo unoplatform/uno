@@ -13,7 +13,7 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MouseDelta(int _X, int _Y)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.MouseDelta", "MouseDelta.MouseDelta(int _X, int _Y)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.MouseDelta", "MouseDelta(int _X, int _Y)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.MouseDelta.MouseDelta(int, int)

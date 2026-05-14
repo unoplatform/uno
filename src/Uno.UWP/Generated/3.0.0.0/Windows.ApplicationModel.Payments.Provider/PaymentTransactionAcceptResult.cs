@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Payments.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransactionAcceptResult", "PaymentRequestCompletionStatus PaymentTransactionAcceptResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransactionAcceptResult", "Status");
 			}
 		}
 #endif

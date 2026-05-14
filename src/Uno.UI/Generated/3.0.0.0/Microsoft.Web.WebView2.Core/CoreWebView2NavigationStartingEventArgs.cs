@@ -14,11 +14,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "string CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "AdditionalAllowedFrameAncestors");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "string CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "AdditionalAllowedFrameAncestors");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "CoreWebView2NavigationKind CoreWebView2NavigationStartingEventArgs.NavigationKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "NavigationKind");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "CoreWebView2HttpRequestHeaders CoreWebView2NavigationStartingEventArgs.RequestHeaders");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "RequestHeaders");
 			}
 		}
 #endif

@@ -17,7 +17,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionRequest GetSessionRequest()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionRequestedEventArgs", "WiFiDirectServiceSessionRequest WiFiDirectServiceSessionRequestedEventArgs.GetSessionRequest()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionRequestedEventArgs", "GetSessionRequest()");
 		}
 #endif
 	}

@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "SmartCardCryptogramStorageKeyAlgorithm SmartCardCryptogramStorageKeyCharacteristics.Algorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "Algorithm");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "SmartCardCryptogramStorageKeyCapabilities SmartCardCryptogramStorageKeyCharacteristics.Capabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "Capabilities");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "DateTimeOffset SmartCardCryptogramStorageKeyCharacteristics.DateCreated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "DateCreated");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "string SmartCardCryptogramStorageKeyCharacteristics.StorageKeyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "StorageKeyName");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardCryptogramStorageKeyCharacteristics()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "SmartCardCryptogramStorageKeyCharacteristics.SmartCardCryptogramStorageKeyCharacteristics()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics", "SmartCardCryptogramStorageKeyCharacteristics()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.SmartCardCryptogramStorageKeyCharacteristics()

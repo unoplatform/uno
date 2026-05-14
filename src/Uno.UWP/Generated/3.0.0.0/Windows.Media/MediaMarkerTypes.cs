@@ -14,7 +14,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaMarkerTypes", "string MediaMarkerTypes.Bookmark");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaMarkerTypes", "Bookmark");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "string PrintWorkflowConfiguration.JobTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "JobTitle");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "string PrintWorkflowConfiguration.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "SessionId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "string PrintWorkflowConfiguration.SourceAppDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "SourceAppDisplayName");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "string CoreWebView2Environment.BrowserVersionString");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "BrowserVersionString");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "string CoreWebView2Environment.FailureReportFolderPath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "FailureReportFolderPath");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "string CoreWebView2Environment.UserDataFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "UserDataFolder");
 			}
 		}
 #endif
@@ -47,105 +47,105 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Environment> CreateAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "IAsyncOperation<CoreWebView2Environment> CoreWebView2Environment.CreateAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Environment> CreateWithOptionsAsync(string browserExecutableFolder, string userDataFolder, global::Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "IAsyncOperation<CoreWebView2Environment> CoreWebView2Environment.CreateWithOptionsAsync(string browserExecutableFolder, string userDataFolder, CoreWebView2EnvironmentOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateWithOptionsAsync(string browserExecutableFolder, string userDataFolder, CoreWebView2EnvironmentOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetAvailableBrowserVersionString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "string CoreWebView2Environment.GetAvailableBrowserVersionString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetAvailableBrowserVersionString()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetAvailableBrowserVersionString(string browserExecutableFolder)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "string CoreWebView2Environment.GetAvailableBrowserVersionString(string browserExecutableFolder)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetAvailableBrowserVersionString(string browserExecutableFolder)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int CompareBrowserVersionString(string browserVersionString1, string browserVersionString2)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "int CoreWebView2Environment.CompareBrowserVersionString(string browserVersionString1, string browserVersionString2)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CompareBrowserVersionString(string browserVersionString1, string browserVersionString2)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetAvailableBrowserVersionString(string browserExecutableFolder, global::Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "string CoreWebView2Environment.GetAvailableBrowserVersionString(string browserExecutableFolder, CoreWebView2EnvironmentOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetAvailableBrowserVersionString(string browserExecutableFolder, CoreWebView2EnvironmentOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions CreateCoreWebView2ControllerOptions()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2ControllerOptions CoreWebView2Environment.CreateCoreWebView2ControllerOptions()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateCoreWebView2ControllerOptions()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer CreateSharedBuffer(ulong Size)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2SharedBuffer CoreWebView2Environment.CreateSharedBuffer(ulong Size)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateSharedBuffer(ulong Size)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo>> GetProcessExtendedInfosAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "IAsyncOperation<IReadOnlyList<CoreWebView2ProcessExtendedInfo>> CoreWebView2Environment.GetProcessExtendedInfosAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetProcessExtendedInfosAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle CreateWebFileSystemFileHandle(string Path, global::Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandlePermission Permission)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2FileSystemHandle CoreWebView2Environment.CreateWebFileSystemFileHandle(string Path, CoreWebView2FileSystemHandlePermission Permission)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateWebFileSystemFileHandle(string Path, CoreWebView2FileSystemHandlePermission Permission)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle CreateWebFileSystemDirectoryHandle(string Path, global::Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandlePermission Permission)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2FileSystemHandle CoreWebView2Environment.CreateWebFileSystemDirectoryHandle(string Path, CoreWebView2FileSystemHandlePermission Permission)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateWebFileSystemDirectoryHandle(string Path, CoreWebView2FileSystemHandlePermission Permission)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2FindOptions CreateFindOptions()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2FindOptions CoreWebView2Environment.CreateFindOptions()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateFindOptions()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest CreateWebResourceRequest(string uri, string Method, global::Windows.Storage.Streams.IRandomAccessStream postData, string Headers)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2WebResourceRequest CoreWebView2Environment.CreateWebResourceRequest(string uri, string Method, IRandomAccessStream postData, string Headers)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateWebResourceRequest(string uri, string Method, IRandomAccessStream postData, string Headers)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2CompositionController> CreateCoreWebView2CompositionControllerAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "IAsyncOperation<CoreWebView2CompositionController> CoreWebView2Environment.CreateCoreWebView2CompositionControllerAsync(CoreWebView2ControllerWindowReference ParentWindow)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateCoreWebView2CompositionControllerAsync(CoreWebView2ControllerWindowReference ParentWindow)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo CreateCoreWebView2PointerInfo()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2PointerInfo CoreWebView2Environment.CreateCoreWebView2PointerInfo()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateCoreWebView2PointerInfo()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.BrowserProcessExited.add
@@ -154,14 +154,14 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings CreatePrintSettings()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2PrintSettings CoreWebView2Environment.CreatePrintSettings()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreatePrintSettings()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo> GetProcessInfos()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "IReadOnlyList<CoreWebView2ProcessInfo> CoreWebView2Environment.GetProcessInfos()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetProcessInfos()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.ProcessInfosChanged.add
@@ -170,35 +170,35 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem CreateContextMenuItem(string Label, global::Windows.Storage.Streams.IRandomAccessStream iconStream, global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItemKind Kind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2ContextMenuItem CoreWebView2Environment.CreateContextMenuItem(string Label, IRandomAccessStream iconStream, CoreWebView2ContextMenuItemKind Kind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateContextMenuItem(string Label, IRandomAccessStream iconStream, CoreWebView2ContextMenuItemKind Kind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller> CreateCoreWebView2ControllerAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow, global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "IAsyncOperation<CoreWebView2Controller> CoreWebView2Environment.CreateCoreWebView2ControllerAsync(CoreWebView2ControllerWindowReference ParentWindow, CoreWebView2ControllerOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateCoreWebView2ControllerAsync(CoreWebView2ControllerWindowReference ParentWindow, CoreWebView2ControllerOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2CompositionController> CreateCoreWebView2CompositionControllerAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow, global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "IAsyncOperation<CoreWebView2CompositionController> CoreWebView2Environment.CreateCoreWebView2CompositionControllerAsync(CoreWebView2ControllerWindowReference ParentWindow, CoreWebView2ControllerOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateCoreWebView2CompositionControllerAsync(CoreWebView2ControllerWindowReference ParentWindow, CoreWebView2ControllerOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller> CreateCoreWebView2ControllerAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "IAsyncOperation<CoreWebView2Controller> CoreWebView2Environment.CreateCoreWebView2ControllerAsync(CoreWebView2ControllerWindowReference ParentWindow)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateCoreWebView2ControllerAsync(CoreWebView2ControllerWindowReference ParentWindow)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse CreateWebResourceResponse(global::Windows.Storage.Streams.IRandomAccessStream Content, int StatusCode, string ReasonPhrase, string Headers)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CoreWebView2WebResourceResponse CoreWebView2Environment.CreateWebResourceResponse(IRandomAccessStream Content, int StatusCode, string ReasonPhrase, string Headers)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateWebResourceResponse(IRandomAccessStream Content, int StatusCode, string ReasonPhrase, string Headers)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.NewBrowserVersionAvailable.add
@@ -213,12 +213,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event TypedEventHandler<CoreWebView2Environment, CoreWebView2BrowserProcessExitedEventArgs> CoreWebView2Environment.BrowserProcessExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event BrowserProcessExited");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event TypedEventHandler<CoreWebView2Environment, CoreWebView2BrowserProcessExitedEventArgs> CoreWebView2Environment.BrowserProcessExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event BrowserProcessExited");
 			}
 		}
 #endif
@@ -229,12 +229,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event TypedEventHandler<CoreWebView2Environment, object> CoreWebView2Environment.ProcessInfosChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event ProcessInfosChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event TypedEventHandler<CoreWebView2Environment, object> CoreWebView2Environment.ProcessInfosChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event ProcessInfosChanged");
 			}
 		}
 #endif
@@ -245,12 +245,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event TypedEventHandler<CoreWebView2Environment, object> CoreWebView2Environment.NewBrowserVersionAvailable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event NewBrowserVersionAvailable");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event TypedEventHandler<CoreWebView2Environment, object> CoreWebView2Environment.NewBrowserVersionAvailable");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "event NewBrowserVersionAvailable");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.CardRemovedEventArgs", "SmartCard CardRemovedEventArgs.SmartCard");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.CardRemovedEventArgs", "SmartCard");
 			}
 		}
 #endif

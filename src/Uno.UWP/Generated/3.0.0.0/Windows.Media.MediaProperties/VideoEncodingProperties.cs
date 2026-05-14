@@ -14,11 +14,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Bitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "Bitrate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Bitrate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "Bitrate");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "MediaRatio VideoEncodingProperties.FrameRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "FrameRate");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "Height");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Height");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "Height");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "MediaRatio VideoEncodingProperties.PixelAspectRatio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "PixelAspectRatio");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "int VideoEncodingProperties.ProfileId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "ProfileId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "int VideoEncodingProperties.ProfileId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "ProfileId");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "MediaPropertySet VideoEncodingProperties.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "Properties");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "SphericalVideoFrameFormat VideoEncodingProperties.SphericalVideoFrameFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "SphericalVideoFrameFormat");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "StereoscopicVideoPackingMode VideoEncodingProperties.StereoscopicVideoPackingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "StereoscopicVideoPackingMode");
 			}
 		}
 #endif
@@ -106,11 +106,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "string VideoEncodingProperties.Subtype");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "Subtype");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "string VideoEncodingProperties.Subtype");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "Subtype");
 			}
 		}
 #endif
@@ -120,7 +120,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "string VideoEncodingProperties.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "Type");
 			}
 		}
 #endif
@@ -130,11 +130,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "Width");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Width");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "Width");
 			}
 		}
 #endif
@@ -142,7 +142,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VideoEncodingProperties()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties.VideoEncodingProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.VideoEncodingProperties()
@@ -150,49 +150,49 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateH264()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.CreateH264()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "CreateH264()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateMpeg2()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.CreateMpeg2()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "CreateMpeg2()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateUncompressed(string subtype, uint width, uint height)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.CreateUncompressed(string subtype, uint width, uint height)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "CreateUncompressed(string subtype, uint width, uint height)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateHevc()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.CreateHevc()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "CreateHevc()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetFormatUserData(byte[] value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "void VideoEncodingProperties.SetFormatUserData(byte[] value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "SetFormatUserData(byte[] value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetFormatUserData(out byte[] value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "void VideoEncodingProperties.GetFormatUserData(out byte[] value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "GetFormatUserData(out byte[] value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.VideoEncodingProperties Copy()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.Copy()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "Copy()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.Bitrate.get

@@ -19,7 +19,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "bool StorageItemThumbnail.CanRead");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "CanRead");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "bool StorageItemThumbnail.CanWrite");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "CanWrite");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "string StorageItemThumbnail.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ContentType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "uint StorageItemThumbnail.OriginalHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "OriginalHeight");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "uint StorageItemThumbnail.OriginalWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "OriginalWidth");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ulong StorageItemThumbnail.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "Position");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "bool StorageItemThumbnail.ReturnedSmallerCachedSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ReturnedSmallerCachedSize");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ulong StorageItemThumbnail.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "Size");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.StorageItemThumbnail", "ulong StorageItemThumbnail.Size");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.StorageItemThumbnail", "Size");
 			}
 		}
 #endif
@@ -103,7 +103,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ThumbnailType StorageItemThumbnail.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "Type");
 			}
 		}
 #endif
@@ -111,56 +111,56 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IInputStream StorageItemThumbnail.GetInputStreamAt(ulong position)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "GetInputStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt(ulong position)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IOutputStream StorageItemThumbnail.GetOutputStreamAt(ulong position)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "GetOutputStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Seek(ulong position)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.StorageItemThumbnail", "void StorageItemThumbnail.Seek(ulong position)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.StorageItemThumbnail", "Seek(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IRandomAccessStream StorageItemThumbnail.CloneStream()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "CloneStream()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IAsyncOperationWithProgress<uint, uint> StorageItemThumbnail.WriteAsync(IBuffer buffer)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "WriteAsync(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> FlushAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IAsyncOperation<bool> StorageItemThumbnail.FlushAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "FlushAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.StorageItemThumbnail", "void StorageItemThumbnail.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.FileProperties.StorageItemThumbnail", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync(global::Windows.Storage.Streams.IBuffer buffer, uint count, global::Windows.Storage.Streams.InputStreamOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IAsyncOperationWithProgress<IBuffer, uint> StorageItemThumbnail.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.CanRead.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails", "GattServiceProviderConnection GattServiceProviderTriggerDetails.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderTriggerDetails", "Connection");
 			}
 		}
 #endif

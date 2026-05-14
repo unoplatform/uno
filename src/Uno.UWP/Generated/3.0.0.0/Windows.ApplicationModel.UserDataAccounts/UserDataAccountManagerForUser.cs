@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser", "User UserDataAccountManagerForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser", "User");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreAccessType storeAccessType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser", "IAsyncOperation<UserDataAccountStore> UserDataAccountManagerForUser.RequestStoreAsync(UserDataAccountStoreAccessType storeAccessType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser", "RequestStoreAsync(UserDataAccountStoreAccessType storeAccessType)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.User.get

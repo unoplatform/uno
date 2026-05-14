@@ -19,7 +19,7 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "DeviceInformation MidiSynthesizer.AudioDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "AudioDevice");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "string MidiSynthesizer.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "DeviceId");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "double MidiSynthesizer.Volume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "Volume");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "double MidiSynthesizer.Volume");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "Volume");
 			}
 		}
 #endif
@@ -51,42 +51,42 @@ namespace Windows.Devices.Midi
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiSynthesizer> CreateAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "IAsyncOperation<MidiSynthesizer> MidiSynthesizer.CreateAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "CreateAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiSynthesizer> CreateAsync(global::Windows.Devices.Enumeration.DeviceInformation audioDevice)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "IAsyncOperation<MidiSynthesizer> MidiSynthesizer.CreateAsync(DeviceInformation audioDevice)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "CreateAsync(DeviceInformation audioDevice)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSynthesizer(global::Windows.Devices.Enumeration.DeviceInformation midiDevice)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "bool MidiSynthesizer.IsSynthesizer(DeviceInformation midiDevice)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiSynthesizer", "IsSynthesizer(DeviceInformation midiDevice)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.SendMessage(IMidiMessage midiMessage)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "SendMessage(IMidiMessage midiMessage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendBuffer(global::Windows.Storage.Streams.IBuffer midiData)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.SendBuffer(IBuffer midiData)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "SendBuffer(IBuffer midiData)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.AudioDevice.get

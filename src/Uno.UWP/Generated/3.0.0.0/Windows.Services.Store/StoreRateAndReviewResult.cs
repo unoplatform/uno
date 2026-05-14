@@ -15,7 +15,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreRateAndReviewResult", "string StoreRateAndReviewResult.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreRateAndReviewResult", "ExtendedJsonData");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreRateAndReviewResult", "bool StoreRateAndReviewResult.WasUpdated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreRateAndReviewResult", "WasUpdated");
 			}
 		}
 #endif

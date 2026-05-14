@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.CompletedDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "CompletedDate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.CompletedDate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "CompletedDate");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.Details");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Details");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.Details");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Details");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskDetailsKind UserDataTask.DetailsKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DetailsKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskDetailsKind UserDataTask.DetailsKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DetailsKind");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.DueDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DueDate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.DueDate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DueDate");
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Id");
 			}
 		}
 #endif
@@ -80,7 +80,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskKind UserDataTask.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Kind");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.ListId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "ListId");
 			}
 		}
 #endif
@@ -100,11 +100,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskPriority UserDataTask.Priority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Priority");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskPriority UserDataTask.Priority");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Priority");
 			}
 		}
 #endif
@@ -114,11 +114,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskRecurrenceProperties UserDataTask.RecurrenceProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "RecurrenceProperties");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskRecurrenceProperties UserDataTask.RecurrenceProperties");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "RecurrenceProperties");
 			}
 		}
 #endif
@@ -128,11 +128,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskRegenerationProperties UserDataTask.RegenerationProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "RegenerationProperties");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskRegenerationProperties UserDataTask.RegenerationProperties");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "RegenerationProperties");
 			}
 		}
 #endif
@@ -142,11 +142,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.Reminder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Reminder");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.Reminder");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Reminder");
 			}
 		}
 #endif
@@ -156,11 +156,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.RemoteId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "RemoteId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.RemoteId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "RemoteId");
 			}
 		}
 #endif
@@ -170,11 +170,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskSensitivity UserDataTask.Sensitivity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Sensitivity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskSensitivity UserDataTask.Sensitivity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Sensitivity");
 			}
 		}
 #endif
@@ -184,11 +184,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.StartDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "StartDate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.StartDate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "StartDate");
 			}
 		}
 #endif
@@ -198,11 +198,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Subject");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.Subject");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "Subject");
 			}
 		}
 #endif
@@ -210,7 +210,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UserDataTask()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTask.UserDataTask()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTask()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.UserDataTask()

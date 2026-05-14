@@ -18,7 +18,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "string XmlDocument.DocumentUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "DocumentUri");
 			}
 		}
 #endif
@@ -42,14 +42,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "LoadFromUriAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri, XmlLoadSettings loadSettings)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "LoadFromUriAsync(Uri uri, XmlLoadSettings loadSettings)");
 		}
 #endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.LoadFromFileAsync(Windows.Storage.IStorageFile)
@@ -57,7 +57,7 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromFileAsync(global::Windows.Storage.IStorageFile file, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "IAsyncOperation<XmlDocument> XmlDocument.LoadFromFileAsync(IStorageFile file, XmlLoadSettings loadSettings)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "LoadFromFileAsync(IStorageFile file, XmlLoadSettings loadSettings)");
 		}
 #endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateElement(string)
@@ -87,14 +87,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS(string xpath, object namespaces)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "IXmlNode XmlDocument.SelectSingleNodeNS(string xpath, object namespaces)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "SelectSingleNodeNS(string xpath, object namespaces)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS(string xpath, object namespaces)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "XmlNodeList XmlDocument.SelectNodesNS(string xpath, object namespaces)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "SelectNodesNS(string xpath, object namespaces)");
 		}
 #endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.LoadXml(string)
@@ -102,7 +102,7 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void LoadXml(string xml, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "void XmlDocument.LoadXml(string xml, XmlLoadSettings loadSettings)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "LoadXml(string xml, XmlLoadSettings loadSettings)");
 		}
 #endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.SaveToFileAsync(Windows.Storage.IStorageFile)
@@ -110,14 +110,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void LoadXmlFromBuffer(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "void XmlDocument.LoadXmlFromBuffer(IBuffer buffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "LoadXmlFromBuffer(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void LoadXmlFromBuffer(global::Windows.Storage.Streams.IBuffer buffer, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "void XmlDocument.LoadXmlFromBuffer(IBuffer buffer, XmlLoadSettings loadSettings)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "LoadXmlFromBuffer(IBuffer buffer, XmlLoadSettings loadSettings)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Attributes.get

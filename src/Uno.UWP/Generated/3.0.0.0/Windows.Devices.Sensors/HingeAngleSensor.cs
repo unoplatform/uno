@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "string HingeAngleSensor.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "DeviceId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "double HingeAngleSensor.MinReportThresholdInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "MinReportThresholdInDegrees");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "double HingeAngleSensor.ReportThresholdInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "ReportThresholdInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.HingeAngleSensor", "double HingeAngleSensor.ReportThresholdInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.HingeAngleSensor", "ReportThresholdInDegrees");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "string HingeAngleSensor.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "GetDeviceSelector()");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Sensors.HingeAngleSensor.GetDefaultAsync()
@@ -54,21 +54,21 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> GetRelatedToAdjacentPanelsAsync(string firstPanelId, string secondPanelId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "IAsyncOperation<HingeAngleSensor> HingeAngleSensor.GetRelatedToAdjacentPanelsAsync(string firstPanelId, string secondPanelId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "GetRelatedToAdjacentPanelsAsync(string firstPanelId, string secondPanelId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "IAsyncOperation<HingeAngleSensor> HingeAngleSensor.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleReading> GetCurrentReadingAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "IAsyncOperation<HingeAngleReading> HingeAngleSensor.GetCurrentReadingAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.HingeAngleSensor", "GetCurrentReadingAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensor.ReadingChanged.add
@@ -84,12 +84,12 @@ namespace Windows.Devices.Sensors
 			[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.HingeAngleSensor", "event TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> HingeAngleSensor.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.HingeAngleSensor", "event ReadingChanged");
 			}
 			[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.HingeAngleSensor", "event TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> HingeAngleSensor.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.HingeAngleSensor", "event ReadingChanged");
 			}
 		}
 #endif

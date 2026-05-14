@@ -16,84 +16,84 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction CompletedAction()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncAction AsyncInfo.CompletedAction()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "CompletedAction()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncActionWithProgress<TProgress> CompletedActionWithProgress<TProgress>()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncActionWithProgress<TProgress> AsyncInfo.CompletedActionWithProgress<TProgress>()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "CompletedActionWithProgress<TProgress>()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<TResult> FromResult<TResult>(TResult synchronousResult)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncOperation<TResult> AsyncInfo.FromResult<TResult>(TResult synchronousResult)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "FromResult<TResult>(TResult synchronousResult)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> FromResultWithProgress<TResult, TProgress>(TResult synchronousResult)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncOperationWithProgress<TResult, TProgress> AsyncInfo.FromResultWithProgress<TResult, TProgress>(TResult synchronousResult)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "FromResultWithProgress<TResult, TProgress>(TResult synchronousResult)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction FromException(global::System.Exception error)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncAction AsyncInfo.FromException(Exception error)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "FromException(Exception error)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncActionWithProgress<TProgress> FromExceptionWithProgress<TProgress>(global::System.Exception error)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncActionWithProgress<TProgress> AsyncInfo.FromExceptionWithProgress<TProgress>(Exception error)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "FromExceptionWithProgress<TProgress>(Exception error)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<TResult> FromException<TResult>(global::System.Exception error)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncOperation<TResult> AsyncInfo.FromException<TResult>(Exception error)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "FromException<TResult>(Exception error)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> FromExceptionWithProgress<TResult, TProgress>(global::System.Exception error)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncOperationWithProgress<TResult, TProgress> AsyncInfo.FromExceptionWithProgress<TResult, TProgress>(Exception error)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "FromExceptionWithProgress<TResult, TProgress>(Exception error)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction CanceledAction()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncAction AsyncInfo.CanceledAction()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "CanceledAction()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncActionWithProgress<TProgress> CanceledActionWithProgress<TProgress>()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncActionWithProgress<TProgress> AsyncInfo.CanceledActionWithProgress<TProgress>()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "CanceledActionWithProgress<TProgress>()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<TResult> CanceledOperation<TResult>()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncOperation<TResult> AsyncInfo.CanceledOperation<TResult>()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "CanceledOperation<TResult>()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> CanceledOperationWithProgress<TResult, TProgress>()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "IAsyncOperationWithProgress<TResult, TProgress> AsyncInfo.CanceledOperationWithProgress<TResult, TProgress>()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.AsyncInfo", "CanceledOperationWithProgress<TResult, TProgress>()");
 		}
 #endif
 	}

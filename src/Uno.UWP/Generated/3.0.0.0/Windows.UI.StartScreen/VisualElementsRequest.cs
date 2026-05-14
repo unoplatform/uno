@@ -19,7 +19,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequest", "IReadOnlyList<SecondaryTileVisualElements> VisualElementsRequest.AlternateVisualElements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequest", "AlternateVisualElements");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequest", "DateTimeOffset VisualElementsRequest.Deadline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequest", "Deadline");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequest", "SecondaryTileVisualElements VisualElementsRequest.VisualElements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequest", "VisualElements");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.UI.StartScreen
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.StartScreen.VisualElementsRequestDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequest", "VisualElementsRequestDeferral VisualElementsRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.AlternateVisualElements.get

@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "DispatcherQueue DispatcherQueueController.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "DispatcherQueue");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.DispatcherQueueController CreateOnDedicatedThread()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "DispatcherQueueController DispatcherQueueController.CreateOnDedicatedThread()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "CreateOnDedicatedThread()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ShutdownQueueAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "IAsyncAction DispatcherQueueController.ShutdownQueueAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "ShutdownQueueAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.System.DispatcherQueueController.DispatcherQueue.get

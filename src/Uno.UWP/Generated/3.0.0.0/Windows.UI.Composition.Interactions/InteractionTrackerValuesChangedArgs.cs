@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "Vector3 InteractionTrackerValuesChangedArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "Position");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "int InteractionTrackerValuesChangedArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "RequestId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "float InteractionTrackerValuesChangedArgs.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "Scale");
 			}
 		}
 #endif

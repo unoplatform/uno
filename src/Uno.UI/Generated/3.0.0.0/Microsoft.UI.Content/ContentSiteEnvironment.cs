@@ -14,11 +14,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "WindowId ContentSiteEnvironment.AppWindowId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "AppWindowId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "WindowId ContentSiteEnvironment.AppWindowId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "AppWindowId");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayId ContentSiteEnvironment.DisplayId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayId ContentSiteEnvironment.DisplayId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayId");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "float ContentSiteEnvironment.DisplayScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayScale");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "float ContentSiteEnvironment.DisplayScale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayScale");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "ContentSiteEnvironmentView ContentSiteEnvironment.View");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "View");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifySettingChanged(string setting)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "void ContentSiteEnvironment.NotifySettingChanged(string setting)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "NotifySettingChanged(string setting)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.AppWindowId.get

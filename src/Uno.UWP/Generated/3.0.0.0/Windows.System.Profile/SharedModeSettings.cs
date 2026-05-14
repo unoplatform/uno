@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SharedModeSettings", "bool SharedModeSettings.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SharedModeSettings", "IsEnabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SharedModeSettings", "bool SharedModeSettings.ShouldAvoidLocalStorage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SharedModeSettings", "ShouldAvoidLocalStorage");
 			}
 		}
 #endif

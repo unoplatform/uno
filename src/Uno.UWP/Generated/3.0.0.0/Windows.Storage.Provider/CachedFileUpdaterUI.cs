@@ -19,11 +19,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "string CachedFileUpdaterUI.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "string CachedFileUpdaterUI.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "Title");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "UIStatus CachedFileUpdaterUI.UIStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "UIStatus");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "FileUpdateRequest CachedFileUpdaterUI.UpdateRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "UpdateRequest");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "CachedFileTarget CachedFileUpdaterUI.UpdateTarget");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "UpdateTarget");
 			}
 		}
 #endif
@@ -65,7 +65,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "FileUpdateRequestDeferral CachedFileUpdaterUI.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Title.get
@@ -80,12 +80,12 @@ namespace Windows.Storage.Provider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event TypedEventHandler<CachedFileUpdaterUI, FileUpdateRequestedEventArgs> CachedFileUpdaterUI.FileUpdateRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event FileUpdateRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event TypedEventHandler<CachedFileUpdaterUI, FileUpdateRequestedEventArgs> CachedFileUpdaterUI.FileUpdateRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event FileUpdateRequested");
 			}
 		}
 #endif
@@ -96,12 +96,12 @@ namespace Windows.Storage.Provider
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event TypedEventHandler<CachedFileUpdaterUI, object> CachedFileUpdaterUI.UIRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event UIRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event TypedEventHandler<CachedFileUpdaterUI, object> CachedFileUpdaterUI.UIRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event UIRequested");
 			}
 		}
 #endif

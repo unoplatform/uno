@@ -19,7 +19,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "PdfPageDimensions PdfPage.Dimensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "Dimensions");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "uint PdfPage.Index");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "Index");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "float PdfPage.PreferredZoom");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "PreferredZoom");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "PdfPageRotation PdfPage.Rotation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "Rotation");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "Size PdfPage.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "Size");
 			}
 		}
 #endif
@@ -67,28 +67,28 @@ namespace Windows.Data.Pdf
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RenderToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream outputStream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "IAsyncAction PdfPage.RenderToStreamAsync(IRandomAccessStream outputStream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "RenderToStreamAsync(IRandomAccessStream outputStream)");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RenderToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream outputStream, global::Windows.Data.Pdf.PdfPageRenderOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "IAsyncAction PdfPage.RenderToStreamAsync(IRandomAccessStream outputStream, PdfPageRenderOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "RenderToStreamAsync(IRandomAccessStream outputStream, PdfPageRenderOptions options)");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction PreparePageAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "IAsyncAction PdfPage.PreparePageAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPage", "PreparePageAsync()");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPage", "void PdfPage.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPage", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Pdf.PdfPage.Dimensions.get

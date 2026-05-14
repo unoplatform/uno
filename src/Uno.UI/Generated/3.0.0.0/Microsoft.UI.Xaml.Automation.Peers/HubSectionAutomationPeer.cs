@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HubSectionAutomationPeer(global::Microsoft.UI.Xaml.Controls.HubSection owner) : base(owner)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.HubSectionAutomationPeer", "HubSectionAutomationPeer.HubSectionAutomationPeer(HubSection owner)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.HubSectionAutomationPeer", "HubSectionAutomationPeer(HubSection owner)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HubSectionAutomationPeer.HubSectionAutomationPeer(Microsoft.UI.Xaml.Controls.HubSection)
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ScrollIntoView()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.HubSectionAutomationPeer", "void HubSectionAutomationPeer.ScrollIntoView()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.HubSectionAutomationPeer", "ScrollIntoView()");
 		}
 #endif
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider

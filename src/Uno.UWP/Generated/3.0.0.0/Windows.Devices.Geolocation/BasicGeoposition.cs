@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BasicGeoposition(double _Latitude, double _Longitude, double _Altitude)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.BasicGeoposition", "BasicGeoposition.BasicGeoposition(double _Latitude, double _Longitude, double _Altitude)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.BasicGeoposition", "BasicGeoposition(double _Latitude, double _Longitude, double _Altitude)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.BasicGeoposition(double, double, double)

@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.TileFlyoutUpdater", "NotificationSetting TileFlyoutUpdater.Setting");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.TileFlyoutUpdater", "Setting");
 			}
 		}
 #endif
@@ -27,35 +27,35 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Update(global::Windows.UI.Notifications.TileFlyoutNotification notification)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "void TileFlyoutUpdater.Update(TileFlyoutNotification notification)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "Update(TileFlyoutNotification notification)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "void TileFlyoutUpdater.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartPeriodicUpdate(global::System.Uri tileFlyoutContent, global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "void TileFlyoutUpdater.StartPeriodicUpdate(Uri tileFlyoutContent, PeriodicUpdateRecurrence requestedInterval)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "StartPeriodicUpdate(Uri tileFlyoutContent, PeriodicUpdateRecurrence requestedInterval)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartPeriodicUpdate(global::System.Uri tileFlyoutContent, global::System.DateTimeOffset startTime, global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "void TileFlyoutUpdater.StartPeriodicUpdate(Uri tileFlyoutContent, DateTimeOffset startTime, PeriodicUpdateRecurrence requestedInterval)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "StartPeriodicUpdate(Uri tileFlyoutContent, DateTimeOffset startTime, PeriodicUpdateRecurrence requestedInterval)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopPeriodicUpdate()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "void TileFlyoutUpdater.StopPeriodicUpdate()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "StopPeriodicUpdate()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutUpdater.Setting.get

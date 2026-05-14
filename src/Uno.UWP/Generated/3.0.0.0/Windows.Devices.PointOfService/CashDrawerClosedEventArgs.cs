@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerClosedEventArgs", "CashDrawer CashDrawerClosedEventArgs.CashDrawer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerClosedEventArgs", "CashDrawer");
 			}
 		}
 #endif

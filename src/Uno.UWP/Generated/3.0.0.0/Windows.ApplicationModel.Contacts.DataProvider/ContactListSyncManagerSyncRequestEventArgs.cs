@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequestEventArgs", "ContactListSyncManagerSyncRequest ContactListSyncManagerSyncRequestEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequestEventArgs", "Request");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequestEventArgs", "Deferral ContactListSyncManagerSyncRequestEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequestEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequestEventArgs.Request.get

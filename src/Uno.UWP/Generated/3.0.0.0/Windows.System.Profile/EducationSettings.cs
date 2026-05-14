@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.EducationSettings", "bool EducationSettings.IsEducationEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.EducationSettings", "IsEducationEnvironment");
 			}
 		}
 #endif

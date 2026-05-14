@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePrediction", "IReadOnlyList<HolographicCameraPose> HolographicFramePrediction.CameraPoses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePrediction", "CameraPoses");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePrediction", "PerceptionTimestamp HolographicFramePrediction.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePrediction", "Timestamp");
 			}
 		}
 #endif

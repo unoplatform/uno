@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "IReadOnlyDictionary<string, SocketActivityInformation> SocketActivityInformation.AllSockets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "AllSockets");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "SocketActivityContext SocketActivityInformation.Context");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "Context");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "DatagramSocket SocketActivityInformation.DatagramSocket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "DatagramSocket");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "string SocketActivityInformation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "Id");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "SocketActivityKind SocketActivityInformation.SocketKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "SocketKind");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "StreamSocket SocketActivityInformation.StreamSocket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "StreamSocket");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "StreamSocketListener SocketActivityInformation.StreamSocketListener");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "StreamSocketListener");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "Guid SocketActivityInformation.TaskId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityInformation", "TaskId");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs", "string DefaultAudioCaptureDeviceChangedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs", "AudioDeviceRole DefaultAudioCaptureDeviceChangedEventArgs.Role");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs", "Role");
 			}
 		}
 #endif

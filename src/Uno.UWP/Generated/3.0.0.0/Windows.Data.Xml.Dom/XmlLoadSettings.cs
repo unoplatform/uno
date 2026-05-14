@@ -14,11 +14,11 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ElementContentWhiteSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "ElementContentWhiteSpace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ElementContentWhiteSpace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "ElementContentWhiteSpace");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "uint XmlLoadSettings.MaxElementDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "MaxElementDepth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "uint XmlLoadSettings.MaxElementDepth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "MaxElementDepth");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ProhibitDtd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "ProhibitDtd");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ProhibitDtd");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "ProhibitDtd");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ResolveExternals");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "ResolveExternals");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ResolveExternals");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "ResolveExternals");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ValidateOnParse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "ValidateOnParse");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ValidateOnParse");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "ValidateOnParse");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public XmlLoadSettings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "XmlLoadSettings.XmlLoadSettings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlLoadSettings", "XmlLoadSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.XmlLoadSettings()

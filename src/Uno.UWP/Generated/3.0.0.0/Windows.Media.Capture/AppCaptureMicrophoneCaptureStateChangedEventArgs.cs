@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs", "uint AppCaptureMicrophoneCaptureStateChangedEventArgs.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs", "ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs", "AppCaptureMicrophoneCaptureState AppCaptureMicrophoneCaptureStateChangedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs", "State");
 			}
 		}
 #endif

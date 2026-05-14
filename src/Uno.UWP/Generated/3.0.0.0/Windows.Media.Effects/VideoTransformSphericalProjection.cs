@@ -19,11 +19,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "SphericalVideoFrameFormat VideoTransformSphericalProjection.FrameFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "FrameFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "SphericalVideoFrameFormat VideoTransformSphericalProjection.FrameFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "FrameFormat");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "double VideoTransformSphericalProjection.HorizontalFieldOfViewInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "HorizontalFieldOfViewInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "double VideoTransformSphericalProjection.HorizontalFieldOfViewInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "HorizontalFieldOfViewInDegrees");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "bool VideoTransformSphericalProjection.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "bool VideoTransformSphericalProjection.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "IsEnabled");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "SphericalVideoProjectionMode VideoTransformSphericalProjection.ProjectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "ProjectionMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "SphericalVideoProjectionMode VideoTransformSphericalProjection.ProjectionMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "ProjectionMode");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "Quaternion VideoTransformSphericalProjection.ViewOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "ViewOrientation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "Quaternion VideoTransformSphericalProjection.ViewOrientation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformSphericalProjection", "ViewOrientation");
 			}
 		}
 #endif

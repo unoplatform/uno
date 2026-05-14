@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "InfraredTorchMode InfraredTorchControl.CurrentMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "CurrentMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "InfraredTorchMode InfraredTorchControl.CurrentMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "CurrentMode");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "bool InfraredTorchControl.IsSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "IsSupported");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "int InfraredTorchControl.MaxPower");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "MaxPower");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "int InfraredTorchControl.MinPower");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "MinPower");
 			}
 		}
 #endif
@@ -63,11 +63,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "int InfraredTorchControl.Power");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "Power");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "int InfraredTorchControl.Power");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "Power");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "int InfraredTorchControl.PowerStep");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "PowerStep");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "IReadOnlyList<InfraredTorchMode> InfraredTorchControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "SupportedModes");
 			}
 		}
 #endif

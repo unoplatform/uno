@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedEventArgs", "SmsBinaryMessage SmsMessageReceivedEventArgs.BinaryMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedEventArgs", "BinaryMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedEventArgs", "SmsTextMessage SmsMessageReceivedEventArgs.TextMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedEventArgs", "TextMessage");
 			}
 		}
 #endif

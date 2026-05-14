@@ -14,11 +14,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "bool MediaBreak.CanStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "CanStart");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreak", "bool MediaBreak.CanStart");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreak", "CanStart");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "ValueSet MediaBreak.CustomProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "CustomProperties");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "MediaBreakInsertionMethod MediaBreak.InsertionMethod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "InsertionMethod");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "MediaPlaybackList MediaBreak.PlaybackList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "PlaybackList");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "TimeSpan? MediaBreak.PresentationPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreak", "PresentationPosition");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaBreak(global::Windows.Media.Playback.MediaBreakInsertionMethod insertionMethod)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreak", "MediaBreak.MediaBreak(MediaBreakInsertionMethod insertionMethod)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreak", "MediaBreak(MediaBreakInsertionMethod insertionMethod)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.MediaBreak(Windows.Media.Playback.MediaBreakInsertionMethod)
@@ -74,7 +74,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaBreak(global::Windows.Media.Playback.MediaBreakInsertionMethod insertionMethod, global::System.TimeSpan presentationPosition)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreak", "MediaBreak.MediaBreak(MediaBreakInsertionMethod insertionMethod, TimeSpan presentationPosition)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreak", "MediaBreak(MediaBreakInsertionMethod insertionMethod, TimeSpan presentationPosition)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.MediaBreak(Windows.Media.Playback.MediaBreakInsertionMethod, System.TimeSpan)

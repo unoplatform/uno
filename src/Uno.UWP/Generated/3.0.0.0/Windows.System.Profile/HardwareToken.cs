@@ -19,7 +19,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "IBuffer HardwareToken.Certificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "Certificate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "IBuffer HardwareToken.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "IBuffer HardwareToken.Signature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "Signature");
 			}
 		}
 #endif

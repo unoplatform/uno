@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceClosedEventArgs", "AppServiceClosedStatus AppServiceClosedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceClosedEventArgs", "Status");
 			}
 		}
 #endif

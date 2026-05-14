@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult", "SecondaryAuthenticationFactorRegistration SecondaryAuthenticationFactorRegistrationResult.Registration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult", "Registration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult", "SecondaryAuthenticationFactorRegistrationStatus SecondaryAuthenticationFactorRegistrationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult", "Status");
 			}
 		}
 #endif

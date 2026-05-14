@@ -19,11 +19,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputConfiguration", "bool InkInputConfiguration.IsEraserInputEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputConfiguration", "IsEraserInputEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputConfiguration", "bool InkInputConfiguration.IsEraserInputEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputConfiguration", "IsEraserInputEnabled");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputConfiguration", "bool InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputConfiguration", "IsPrimaryBarrelButtonInputEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputConfiguration", "bool InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputConfiguration", "IsPrimaryBarrelButtonInputEnabled");
 			}
 		}
 #endif

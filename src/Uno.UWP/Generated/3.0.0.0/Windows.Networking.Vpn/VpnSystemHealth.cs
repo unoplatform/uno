@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnSystemHealth", "Buffer VpnSystemHealth.StatementOfHealth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnSystemHealth", "StatementOfHealth");
 			}
 		}
 #endif

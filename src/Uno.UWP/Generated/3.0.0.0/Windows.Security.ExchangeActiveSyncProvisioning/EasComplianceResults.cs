@@ -19,7 +19,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "bool EasComplianceResults.Compliant");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "Compliant");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasDisallowConvenienceLogonResult EasComplianceResults.DisallowConvenienceLogonResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "DisallowConvenienceLogonResult");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasEncryptionProviderType EasComplianceResults.EncryptionProviderType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EncryptionProviderType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasMaxInactivityTimeLockResult EasComplianceResults.MaxInactivityTimeLockResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "MaxInactivityTimeLockResult");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasMaxPasswordFailedAttemptsResult EasComplianceResults.MaxPasswordFailedAttemptsResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "MaxPasswordFailedAttemptsResult");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasMinPasswordComplexCharactersResult EasComplianceResults.MinPasswordComplexCharactersResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "MinPasswordComplexCharactersResult");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasMinPasswordLengthResult EasComplianceResults.MinPasswordLengthResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "MinPasswordLengthResult");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasPasswordExpirationResult EasComplianceResults.PasswordExpirationResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "PasswordExpirationResult");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasPasswordHistoryResult EasComplianceResults.PasswordHistoryResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "PasswordHistoryResult");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasRequireEncryptionResult EasComplianceResults.RequireEncryptionResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "RequireEncryptionResult");
 			}
 		}
 #endif

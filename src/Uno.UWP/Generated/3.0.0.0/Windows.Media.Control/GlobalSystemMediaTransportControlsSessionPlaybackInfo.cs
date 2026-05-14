@@ -19,7 +19,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "MediaPlaybackAutoRepeatMode? GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "AutoRepeatMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "GlobalSystemMediaTransportControlsSessionPlaybackControls GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "Controls");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "bool? GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "IsShuffleActive");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "double? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "PlaybackRate");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "GlobalSystemMediaTransportControlsSessionPlaybackStatus GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "PlaybackStatus");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "MediaPlaybackType? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "PlaybackType");
 			}
 		}
 #endif

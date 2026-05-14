@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails", "string HotspotAuthenticationEventDetails.EventToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails", "EventToken");
 			}
 		}
 #endif

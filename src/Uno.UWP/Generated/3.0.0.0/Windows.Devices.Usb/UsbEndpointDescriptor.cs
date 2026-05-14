@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "UsbBulkInEndpointDescriptor UsbEndpointDescriptor.AsBulkInEndpointDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "AsBulkInEndpointDescriptor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "UsbBulkOutEndpointDescriptor UsbEndpointDescriptor.AsBulkOutEndpointDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "AsBulkOutEndpointDescriptor");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "UsbInterruptInEndpointDescriptor UsbEndpointDescriptor.AsInterruptInEndpointDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "AsInterruptInEndpointDescriptor");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "UsbInterruptOutEndpointDescriptor UsbEndpointDescriptor.AsInterruptOutEndpointDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "AsInterruptOutEndpointDescriptor");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "UsbTransferDirection UsbEndpointDescriptor.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "Direction");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "byte UsbEndpointDescriptor.EndpointNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "EndpointNumber");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "UsbEndpointType UsbEndpointDescriptor.EndpointType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "EndpointType");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbEndpointDescriptor parsed)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "bool UsbEndpointDescriptor.TryParse(UsbDescriptor descriptor, out UsbEndpointDescriptor parsed)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "TryParse(UsbDescriptor descriptor, out UsbEndpointDescriptor parsed)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Usb.UsbEndpointDescriptor Parse(global::Windows.Devices.Usb.UsbDescriptor descriptor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "UsbEndpointDescriptor UsbEndpointDescriptor.Parse(UsbDescriptor descriptor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbEndpointDescriptor", "Parse(UsbDescriptor descriptor)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.AsBulkInEndpointDescriptor.get

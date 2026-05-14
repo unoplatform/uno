@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "IList<FrameController> VariablePhotoSequenceController.DesiredFrameControllers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "DesiredFrameControllers");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "FrameControlCapabilities VariablePhotoSequenceController.FrameCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "FrameCapabilities");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "float VariablePhotoSequenceController.MaxPhotosPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "MaxPhotosPerSecond");
 			}
 		}
 #endif
@@ -49,11 +49,11 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "float VariablePhotoSequenceController.PhotosPerSecondLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "PhotosPerSecondLimit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.VariablePhotoSequenceController", "float VariablePhotoSequenceController.PhotosPerSecondLimit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.VariablePhotoSequenceController", "PhotosPerSecondLimit");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "bool VariablePhotoSequenceController.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "Supported");
 			}
 		}
 #endif
@@ -71,14 +71,14 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate(global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "MediaRatio VariablePhotoSequenceController.GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetCurrentFrameRate()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "MediaRatio VariablePhotoSequenceController.GetCurrentFrameRate()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "GetCurrentFrameRate()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.DesiredFrameControllers.get

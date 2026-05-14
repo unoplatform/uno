@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails", "NetworkOperatorDataUsageNotificationKind NetworkOperatorDataUsageTriggerDetails.NotificationKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails", "NotificationKind");
 			}
 		}
 #endif

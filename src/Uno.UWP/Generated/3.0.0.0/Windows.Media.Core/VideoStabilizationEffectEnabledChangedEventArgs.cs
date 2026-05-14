@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs", "VideoStabilizationEffectEnabledChangedReason VideoStabilizationEffectEnabledChangedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs", "Reason");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountInvokedArgs", "WebAccountAction WebAccountInvokedArgs.Action");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountInvokedArgs", "Action");
 			}
 		}
 #endif

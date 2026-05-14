@@ -14,7 +14,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Vector2 CameraIntrinsics.FocalLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "FocalLength");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "uint CameraIntrinsics.ImageHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "ImageHeight");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "uint CameraIntrinsics.ImageWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "ImageWidth");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Vector2 CameraIntrinsics.PrincipalPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "PrincipalPoint");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Vector3 CameraIntrinsics.RadialDistortion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "RadialDistortion");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Vector2 CameraIntrinsics.TangentialDistortion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "TangentialDistortion");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Matrix4x4 CameraIntrinsics.UndistortedProjectionTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "UndistortedProjectionTransform");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CameraIntrinsics(global::System.Numerics.Vector2 focalLength, global::System.Numerics.Vector2 principalPoint, global::System.Numerics.Vector3 radialDistortion, global::System.Numerics.Vector2 tangentialDistortion, uint imageWidth, uint imageHeight)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "CameraIntrinsics.CameraIntrinsics(Vector2 focalLength, Vector2 principalPoint, Vector3 radialDistortion, Vector2 tangentialDistortion, uint imageWidth, uint imageHeight)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "CameraIntrinsics(Vector2 focalLength, Vector2 principalPoint, Vector3 radialDistortion, Vector2 tangentialDistortion, uint imageWidth, uint imageHeight)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.CameraIntrinsics(System.Numerics.Vector2, System.Numerics.Vector2, System.Numerics.Vector3, System.Numerics.Vector2, uint, uint)
@@ -90,56 +90,56 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point ProjectOntoFrame(global::System.Numerics.Vector3 coordinate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Point CameraIntrinsics.ProjectOntoFrame(Vector3 coordinate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "ProjectOntoFrame(Vector3 coordinate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector2 UnprojectAtUnitDepth(global::Windows.Foundation.Point pixelCoordinate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Vector2 CameraIntrinsics.UnprojectAtUnitDepth(Point pixelCoordinate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "UnprojectAtUnitDepth(Point pixelCoordinate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ProjectManyOntoFrame(global::System.Numerics.Vector3[] coordinates, global::Windows.Foundation.Point[] results)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "void CameraIntrinsics.ProjectManyOntoFrame(Vector3[] coordinates, Point[] results)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "ProjectManyOntoFrame(Vector3[] coordinates, Point[] results)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UnprojectPixelsAtUnitDepth(global::Windows.Foundation.Point[] pixelCoordinates, global::System.Numerics.Vector2[] results)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "void CameraIntrinsics.UnprojectPixelsAtUnitDepth(Point[] pixelCoordinates, Vector2[] results)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "UnprojectPixelsAtUnitDepth(Point[] pixelCoordinates, Vector2[] results)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point DistortPoint(global::Windows.Foundation.Point input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Point CameraIntrinsics.DistortPoint(Point input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "DistortPoint(Point input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DistortPoints(global::Windows.Foundation.Point[] inputs, global::Windows.Foundation.Point[] results)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "void CameraIntrinsics.DistortPoints(Point[] inputs, Point[] results)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "DistortPoints(Point[] inputs, Point[] results)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point UndistortPoint(global::Windows.Foundation.Point input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "Point CameraIntrinsics.UndistortPoint(Point input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.CameraIntrinsics", "UndistortPoint(Point input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UndistortPoints(global::Windows.Foundation.Point[] inputs, global::Windows.Foundation.Point[] results)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "void CameraIntrinsics.UndistortPoints(Point[] inputs, Point[] results)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "UndistortPoints(Point[] inputs, Point[] results)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.FocalLength.get

@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProcessingTriggerDetails", "ValueSet MediaProcessingTriggerDetails.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProcessingTriggerDetails", "Arguments");
 			}
 		}
 #endif

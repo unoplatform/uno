@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "RadialControllerScreenContact RadialControllerRotationChangedEventArgs.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "Contact");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "bool RadialControllerRotationChangedEventArgs.IsButtonPressed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "IsButtonPressed");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "double RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "RotationDeltaInDegrees");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "SimpleHapticsController RadialControllerRotationChangedEventArgs.SimpleHapticsController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "SimpleHapticsController");
 			}
 		}
 #endif

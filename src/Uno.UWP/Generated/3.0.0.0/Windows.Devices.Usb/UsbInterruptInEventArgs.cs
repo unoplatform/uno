@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEventArgs", "IBuffer UsbInterruptInEventArgs.InterruptData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEventArgs", "InterruptData");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "ulong AppInstallStatus.BytesDownloaded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "BytesDownloaded");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "ulong AppInstallStatus.DownloadSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "DownloadSizeInBytes");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "Exception AppInstallStatus.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "ErrorCode");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "AppInstallState AppInstallStatus.InstallState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "InstallState");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "bool AppInstallStatus.IsStaged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "IsStaged");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "double AppInstallStatus.PercentComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "PercentComplete");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "bool AppInstallStatus.ReadyForLaunch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "ReadyForLaunch");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "User AppInstallStatus.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "User");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "DataPackageOperation DragInfo.AllowedOperations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "AllowedOperations");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "DataPackageView DragInfo.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "Data");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "DragDropModifiers DragInfo.Modifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "Modifiers");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "Point DragInfo.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "Position");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "PrintWorkflowConfiguration PrintWorkflowForegroundSetupRequestedEventArgs.Configuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "Configuration");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Graphics.Printing.Workflow
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket> GetUserPrintTicketAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "IAsyncOperation<WorkflowPrintTicket> PrintWorkflowForegroundSetupRequestedEventArgs.GetUserPrintTicketAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "GetUserPrintTicketAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "Deferral PrintWorkflowForegroundSetupRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs.Configuration.get

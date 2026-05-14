@@ -19,11 +19,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.BarometerDataThreshold", "double BarometerDataThreshold.Hectopascals");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.BarometerDataThreshold", "Hectopascals");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.BarometerDataThreshold", "double BarometerDataThreshold.Hectopascals");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.BarometerDataThreshold", "Hectopascals");
 			}
 		}
 #endif

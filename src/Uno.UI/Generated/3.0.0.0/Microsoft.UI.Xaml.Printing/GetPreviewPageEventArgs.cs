@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs", "int GetPreviewPageEventArgs.PageNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs", "PageNumber");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Printing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GetPreviewPageEventArgs()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs", "GetPreviewPageEventArgs.GetPreviewPageEventArgs()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs", "GetPreviewPageEventArgs()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.GetPreviewPageEventArgs()

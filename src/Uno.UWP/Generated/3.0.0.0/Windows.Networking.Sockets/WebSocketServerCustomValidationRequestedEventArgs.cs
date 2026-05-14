@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "Certificate WebSocketServerCustomValidationRequestedEventArgs.ServerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "ServerCertificate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "SocketSslErrorSeverity WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "ServerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "IReadOnlyList<ChainValidationResult> WebSocketServerCustomValidationRequestedEventArgs.ServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "ServerCertificateErrors");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "IReadOnlyList<Certificate> WebSocketServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "ServerIntermediateCertificates");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Reject()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "void WebSocketServerCustomValidationRequestedEventArgs.Reject()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "Reject()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "Deferral WebSocketServerCustomValidationRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.ServerCertificate.get

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.CallAnswerEventArgs", "VoipPhoneCallMedia CallAnswerEventArgs.AcceptedMedia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.CallAnswerEventArgs", "AcceptedMedia");
 			}
 		}
 #endif

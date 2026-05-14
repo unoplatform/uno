@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "ushort SmartCardAppletIdGroup.MaxAppletIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "MaxAppletIds");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "IList<IBuffer> SmartCardAppletIdGroup.AppletIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "AppletIds");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "bool SmartCardAppletIdGroup.AutomaticEnablement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "AutomaticEnablement");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "bool SmartCardAppletIdGroup.AutomaticEnablement");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "AutomaticEnablement");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "string SmartCardAppletIdGroup.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "string SmartCardAppletIdGroup.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "Description");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "string SmartCardAppletIdGroup.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "string SmartCardAppletIdGroup.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "DisplayName");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "IRandomAccessStreamReference SmartCardAppletIdGroup.Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "IRandomAccessStreamReference SmartCardAppletIdGroup.Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "Logo");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "ValueSet SmartCardAppletIdGroup.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "Properties");
 			}
 		}
 #endif
@@ -100,11 +100,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "bool SmartCardAppletIdGroup.SecureUserAuthenticationRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SecureUserAuthenticationRequired");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "bool SmartCardAppletIdGroup.SecureUserAuthenticationRequired");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SecureUserAuthenticationRequired");
 			}
 		}
 #endif
@@ -114,11 +114,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationCategory SmartCardAppletIdGroup.SmartCardEmulationCategory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationCategory");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationCategory SmartCardAppletIdGroup.SmartCardEmulationCategory");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationCategory");
 			}
 		}
 #endif
@@ -128,11 +128,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationType SmartCardAppletIdGroup.SmartCardEmulationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationType SmartCardAppletIdGroup.SmartCardEmulationType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationType");
 			}
 		}
 #endif
@@ -140,7 +140,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardAppletIdGroup()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardAppletIdGroup.SmartCardAppletIdGroup()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardAppletIdGroup()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroup.SmartCardAppletIdGroup()
@@ -148,7 +148,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardAppletIdGroup(string displayName, global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IBuffer> appletIds, global::Windows.Devices.SmartCards.SmartCardEmulationCategory emulationCategory, global::Windows.Devices.SmartCards.SmartCardEmulationType emulationType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardAppletIdGroup.SmartCardAppletIdGroup(string displayName, IList<IBuffer> appletIds, SmartCardEmulationCategory emulationCategory, SmartCardEmulationType emulationType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardAppletIdGroup(string displayName, IList<IBuffer> appletIds, SmartCardEmulationCategory emulationCategory, SmartCardEmulationType emulationType)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroup.SmartCardAppletIdGroup(string, System.Collections.Generic.IList<Windows.Storage.Streams.IBuffer>, Windows.Devices.SmartCards.SmartCardEmulationCategory, Windows.Devices.SmartCards.SmartCardEmulationType)

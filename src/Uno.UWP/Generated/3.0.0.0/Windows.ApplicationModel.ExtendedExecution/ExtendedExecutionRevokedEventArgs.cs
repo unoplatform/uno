@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs", "ExtendedExecutionRevokedReason ExtendedExecutionRevokedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs", "Reason");
 			}
 		}
 #endif

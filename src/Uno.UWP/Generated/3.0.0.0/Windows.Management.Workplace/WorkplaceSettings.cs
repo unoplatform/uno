@@ -14,7 +14,7 @@ namespace Windows.Management.Workplace
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Workplace.WorkplaceSettings", "bool WorkplaceSettings.IsMicrosoftAccountOptional");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Workplace.WorkplaceSettings", "IsMicrosoftAccountOptional");
 			}
 		}
 #endif

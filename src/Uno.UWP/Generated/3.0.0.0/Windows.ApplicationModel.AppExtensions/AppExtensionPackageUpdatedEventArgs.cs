@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs", "string AppExtensionPackageUpdatedEventArgs.AppExtensionName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs", "AppExtensionName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs", "IReadOnlyList<AppExtension> AppExtensionPackageUpdatedEventArgs.Extensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs", "Extensions");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs", "Package AppExtensionPackageUpdatedEventArgs.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs", "Package");
 			}
 		}
 #endif

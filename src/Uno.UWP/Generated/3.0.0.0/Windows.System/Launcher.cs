@@ -12,14 +12,14 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync(global::Windows.Storage.IStorageFile file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFileAsync(IStorageFile file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync(global::Windows.Storage.IStorageFile file, global::Windows.System.LauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file, LauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFileAsync(IStorageFile file, LauncherOptions options)");
 		}
 #endif
 		// Skipping already declared method Windows.System.Launcher.LaunchUriAsync(System.Uri)
@@ -27,175 +27,175 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchUriAsync(global::System.Uri uri, global::Windows.System.LauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchUriAsync(Uri uri, LauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriAsync(Uri uri, LauncherOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchUriResult> LaunchUriForResultsAsync(global::System.Uri uri, global::Windows.System.LauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchUriResult> Launcher.LaunchUriForResultsAsync(Uri uri, LauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriForResultsAsync(Uri uri, LauncherOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchUriResult> LaunchUriForResultsAsync(global::System.Uri uri, global::Windows.System.LauncherOptions options, global::Windows.Foundation.Collections.ValueSet inputData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchUriResult> Launcher.LaunchUriForResultsAsync(Uri uri, LauncherOptions options, ValueSet inputData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriForResultsAsync(Uri uri, LauncherOptions options, ValueSet inputData)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchUriAsync(global::System.Uri uri, global::Windows.System.LauncherOptions options, global::Windows.Foundation.Collections.ValueSet inputData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchUriAsync(Uri uri, LauncherOptions options, ValueSet inputData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriAsync(Uri uri, LauncherOptions options, ValueSet inputData)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchQuerySupportStatus> QueryUriSupportAsync(global::System.Uri uri, global::Windows.System.LaunchQuerySupportType launchQuerySupportType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchQuerySupportStatus> Launcher.QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchQuerySupportStatus> QueryUriSupportAsync(global::System.Uri uri, global::Windows.System.LaunchQuerySupportType launchQuerySupportType, string packageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchQuerySupportStatus> Launcher.QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType, string packageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType, string packageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchQuerySupportStatus> QueryFileSupportAsync(global::Windows.Storage.StorageFile file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchQuerySupportStatus> Launcher.QueryFileSupportAsync(StorageFile file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "QueryFileSupportAsync(StorageFile file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchQuerySupportStatus> QueryFileSupportAsync(global::Windows.Storage.StorageFile file, string packageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchQuerySupportStatus> Launcher.QueryFileSupportAsync(StorageFile file, string packageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "QueryFileSupportAsync(StorageFile file, string packageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppInfo>> FindUriSchemeHandlersAsync(string scheme)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<IReadOnlyList<AppInfo>> Launcher.FindUriSchemeHandlersAsync(string scheme)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "FindUriSchemeHandlersAsync(string scheme)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppInfo>> FindUriSchemeHandlersAsync(string scheme, global::Windows.System.LaunchQuerySupportType launchQuerySupportType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<IReadOnlyList<AppInfo>> Launcher.FindUriSchemeHandlersAsync(string scheme, LaunchQuerySupportType launchQuerySupportType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "FindUriSchemeHandlersAsync(string scheme, LaunchQuerySupportType launchQuerySupportType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppInfo>> FindFileHandlersAsync(string extension)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<IReadOnlyList<AppInfo>> Launcher.FindFileHandlersAsync(string extension)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "FindFileHandlersAsync(string extension)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderAsync(global::Windows.Storage.IStorageFolder folder)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchFolderAsync(IStorageFolder folder)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFolderAsync(IStorageFolder folder)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderAsync(global::Windows.Storage.IStorageFolder folder, global::Windows.System.FolderLauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchFolderAsync(IStorageFolder folder, FolderLauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFolderAsync(IStorageFolder folder, FolderLauncherOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchQuerySupportStatus> QueryAppUriSupportAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchQuerySupportStatus> Launcher.QueryAppUriSupportAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "QueryAppUriSupportAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchQuerySupportStatus> QueryAppUriSupportAsync(global::System.Uri uri, string packageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchQuerySupportStatus> Launcher.QueryAppUriSupportAsync(Uri uri, string packageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "QueryAppUriSupportAsync(Uri uri, string packageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppInfo>> FindAppUriHandlersAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<IReadOnlyList<AppInfo>> Launcher.FindAppUriHandlersAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "FindAppUriHandlersAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchUriStatus> LaunchUriForUserAsync(global::Windows.System.User user, global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchUriStatus> Launcher.LaunchUriForUserAsync(User user, Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriForUserAsync(User user, Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchUriStatus> LaunchUriForUserAsync(global::Windows.System.User user, global::System.Uri uri, global::Windows.System.LauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchUriStatus> Launcher.LaunchUriForUserAsync(User user, Uri uri, LauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriForUserAsync(User user, Uri uri, LauncherOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchUriStatus> LaunchUriForUserAsync(global::Windows.System.User user, global::System.Uri uri, global::Windows.System.LauncherOptions options, global::Windows.Foundation.Collections.ValueSet inputData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchUriStatus> Launcher.LaunchUriForUserAsync(User user, Uri uri, LauncherOptions options, ValueSet inputData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriForUserAsync(User user, Uri uri, LauncherOptions options, ValueSet inputData)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchUriResult> LaunchUriForResultsForUserAsync(global::Windows.System.User user, global::System.Uri uri, global::Windows.System.LauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchUriResult> Launcher.LaunchUriForResultsForUserAsync(User user, Uri uri, LauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriForResultsForUserAsync(User user, Uri uri, LauncherOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.LaunchUriResult> LaunchUriForResultsForUserAsync(global::Windows.System.User user, global::System.Uri uri, global::Windows.System.LauncherOptions options, global::Windows.Foundation.Collections.ValueSet inputData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<LaunchUriResult> Launcher.LaunchUriForResultsForUserAsync(User user, Uri uri, LauncherOptions options, ValueSet inputData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchUriForResultsForUserAsync(User user, Uri uri, LauncherOptions options, ValueSet inputData)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathAsync(string path)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchFolderPathAsync(string path)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFolderPathAsync(string path)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathAsync(string path, global::Windows.System.FolderLauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchFolderPathAsync(string path, FolderLauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFolderPathAsync(string path, FolderLauncherOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathForUserAsync(global::Windows.System.User user, string path)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchFolderPathForUserAsync(User user, string path)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFolderPathForUserAsync(User user, string path)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathForUserAsync(global::Windows.System.User user, string path, global::Windows.System.FolderLauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "IAsyncOperation<bool> Launcher.LaunchFolderPathForUserAsync(User user, string path, FolderLauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFolderPathForUserAsync(User user, string path, FolderLauncherOptions options)");
 		}
 #endif
 	}

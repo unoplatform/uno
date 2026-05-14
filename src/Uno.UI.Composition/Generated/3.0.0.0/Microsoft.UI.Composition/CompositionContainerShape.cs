@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionContainerShape", "CompositionShapeCollection CompositionContainerShape.Shapes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionContainerShape", "Shapes");
 			}
 		}
 #endif

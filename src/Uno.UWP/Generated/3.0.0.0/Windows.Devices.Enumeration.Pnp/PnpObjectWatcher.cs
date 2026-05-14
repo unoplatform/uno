@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "DeviceWatcherStatus PnpObjectWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "Status");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Devices.Enumeration.Pnp
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "void PnpObjectWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "void PnpObjectWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "Stop()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Added.add
@@ -55,12 +55,12 @@ namespace Windows.Devices.Enumeration.Pnp
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, PnpObject> PnpObjectWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event Added");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, PnpObject> PnpObjectWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event Added");
 			}
 		}
 #endif
@@ -71,12 +71,12 @@ namespace Windows.Devices.Enumeration.Pnp
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, object> PnpObjectWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event EnumerationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, object> PnpObjectWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event EnumerationCompleted");
 			}
 		}
 #endif
@@ -87,12 +87,12 @@ namespace Windows.Devices.Enumeration.Pnp
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, PnpObjectUpdate> PnpObjectWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event Removed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, PnpObjectUpdate> PnpObjectWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event Removed");
 			}
 		}
 #endif
@@ -103,12 +103,12 @@ namespace Windows.Devices.Enumeration.Pnp
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, object> PnpObjectWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event Stopped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, object> PnpObjectWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event Stopped");
 			}
 		}
 #endif
@@ -119,12 +119,12 @@ namespace Windows.Devices.Enumeration.Pnp
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, PnpObjectUpdate> PnpObjectWatcher.Updated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event Updated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event TypedEventHandler<PnpObjectWatcher, PnpObjectUpdate> PnpObjectWatcher.Updated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "event Updated");
 			}
 		}
 #endif

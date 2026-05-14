@@ -12,7 +12,7 @@ namespace Windows.Security.Credentials.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.UI.UserConsentVerificationResult> RequestVerificationForWindowAsync(nint appWindow, string message)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.UserConsentVerifierInterop", "IAsyncOperation<UserConsentVerificationResult> UserConsentVerifierInterop.RequestVerificationForWindowAsync(nint appWindow, string message)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.UserConsentVerifierInterop", "RequestVerificationForWindowAsync(nint appWindow, string message)");
 		}
 #endif
 	}

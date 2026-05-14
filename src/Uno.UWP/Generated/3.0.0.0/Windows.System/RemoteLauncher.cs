@@ -12,21 +12,21 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteLaunchUriStatus> LaunchUriAsync(global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest remoteSystemConnectionRequest, global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncher", "IAsyncOperation<RemoteLaunchUriStatus> RemoteLauncher.LaunchUriAsync(RemoteSystemConnectionRequest remoteSystemConnectionRequest, Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncher", "LaunchUriAsync(RemoteSystemConnectionRequest remoteSystemConnectionRequest, Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteLaunchUriStatus> LaunchUriAsync(global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest remoteSystemConnectionRequest, global::System.Uri uri, global::Windows.System.RemoteLauncherOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncher", "IAsyncOperation<RemoteLaunchUriStatus> RemoteLauncher.LaunchUriAsync(RemoteSystemConnectionRequest remoteSystemConnectionRequest, Uri uri, RemoteLauncherOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncher", "LaunchUriAsync(RemoteSystemConnectionRequest remoteSystemConnectionRequest, Uri uri, RemoteLauncherOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteLaunchUriStatus> LaunchUriAsync(global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest remoteSystemConnectionRequest, global::System.Uri uri, global::Windows.System.RemoteLauncherOptions options, global::Windows.Foundation.Collections.ValueSet inputData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncher", "IAsyncOperation<RemoteLaunchUriStatus> RemoteLauncher.LaunchUriAsync(RemoteSystemConnectionRequest remoteSystemConnectionRequest, Uri uri, RemoteLauncherOptions options, ValueSet inputData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteLauncher", "LaunchUriAsync(RemoteSystemConnectionRequest remoteSystemConnectionRequest, Uri uri, RemoteLauncherOptions options, ValueSet inputData)");
 		}
 #endif
 	}

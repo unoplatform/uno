@@ -12,21 +12,21 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Perception.Spatial.SpatialAnchor>> TryImportAnchorsAsync(global::Windows.Storage.Streams.IInputStream stream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorTransferManager", "IAsyncOperation<IReadOnlyDictionary<string, SpatialAnchor>> SpatialAnchorTransferManager.TryImportAnchorsAsync(IInputStream stream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorTransferManager", "TryImportAnchorsAsync(IInputStream stream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> TryExportAnchorsAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Perception.Spatial.SpatialAnchor>> anchors, global::Windows.Storage.Streams.IOutputStream stream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorTransferManager", "IAsyncOperation<bool> SpatialAnchorTransferManager.TryExportAnchorsAsync(IEnumerable<KeyValuePair<string, SpatialAnchor>> anchors, IOutputStream stream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorTransferManager", "TryExportAnchorsAsync(IEnumerable<KeyValuePair<string, SpatialAnchor>> anchors, IOutputStream stream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialPerceptionAccessStatus> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorTransferManager", "IAsyncOperation<SpatialPerceptionAccessStatus> SpatialAnchorTransferManager.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorTransferManager", "RequestAccessAsync()");
 		}
 #endif
 	}

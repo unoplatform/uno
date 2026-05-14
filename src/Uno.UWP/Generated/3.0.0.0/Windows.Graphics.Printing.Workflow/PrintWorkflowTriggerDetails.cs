@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails", "PrintWorkflowBackgroundSession PrintWorkflowTriggerDetails.PrintWorkflowSession");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowTriggerDetails", "PrintWorkflowSession");
 			}
 		}
 #endif

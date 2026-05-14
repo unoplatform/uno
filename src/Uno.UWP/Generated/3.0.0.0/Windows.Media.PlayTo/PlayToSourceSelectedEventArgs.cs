@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "string PlayToSourceSelectedEventArgs.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "FriendlyName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "IRandomAccessStreamWithContentType PlayToSourceSelectedEventArgs.Icon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "Icon");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "bool PlayToSourceSelectedEventArgs.SupportsAudio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "SupportsAudio");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "bool PlayToSourceSelectedEventArgs.SupportsImage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "SupportsImage");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "bool PlayToSourceSelectedEventArgs.SupportsVideo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "SupportsVideo");
 			}
 		}
 #endif

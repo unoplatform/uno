@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserAuthenticationStatusChangingEventArgs", "UserAuthenticationStatus UserAuthenticationStatusChangingEventArgs.CurrentStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserAuthenticationStatusChangingEventArgs", "CurrentStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserAuthenticationStatusChangingEventArgs", "UserAuthenticationStatus UserAuthenticationStatusChangingEventArgs.NewStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserAuthenticationStatusChangingEventArgs", "NewStatus");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserAuthenticationStatusChangingEventArgs", "User UserAuthenticationStatusChangingEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserAuthenticationStatusChangingEventArgs", "User");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.UserAuthenticationStatusChangeDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserAuthenticationStatusChangingEventArgs", "UserAuthenticationStatusChangeDeferral UserAuthenticationStatusChangingEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserAuthenticationStatusChangingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.CurrentStatus.get

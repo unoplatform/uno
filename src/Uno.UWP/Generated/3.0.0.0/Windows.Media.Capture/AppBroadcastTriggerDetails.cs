@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastTriggerDetails", "AppBroadcastBackgroundService AppBroadcastTriggerDetails.BackgroundService");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastTriggerDetails", "BackgroundService");
 			}
 		}
 #endif

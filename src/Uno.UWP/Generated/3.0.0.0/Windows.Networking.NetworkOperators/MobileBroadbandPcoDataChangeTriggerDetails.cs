@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPcoDataChangeTriggerDetails", "MobileBroadbandPco MobileBroadbandPcoDataChangeTriggerDetails.UpdatedData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPcoDataChangeTriggerDetails", "UpdatedData");
 			}
 		}
 #endif

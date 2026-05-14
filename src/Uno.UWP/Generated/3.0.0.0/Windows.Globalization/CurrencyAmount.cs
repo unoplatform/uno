@@ -14,7 +14,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.CurrencyAmount", "string CurrencyAmount.Amount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.CurrencyAmount", "Amount");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.CurrencyAmount", "string CurrencyAmount.Currency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.CurrencyAmount", "Currency");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Globalization
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CurrencyAmount(string amount, string currency)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.CurrencyAmount", "CurrencyAmount.CurrencyAmount(string amount, string currency)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.CurrencyAmount", "CurrencyAmount(string amount, string currency)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.CurrencyAmount.CurrencyAmount(string, string)

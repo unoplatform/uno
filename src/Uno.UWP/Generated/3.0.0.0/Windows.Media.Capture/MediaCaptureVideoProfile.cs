@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "IReadOnlyList<MediaFrameSourceInfo> MediaCaptureVideoProfile.FrameSourceInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "FrameSourceInfos");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "string MediaCaptureVideoProfile.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "IReadOnlyDictionary<Guid, object> MediaCaptureVideoProfile.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "Properties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaCaptureVideoProfile.SupportedPhotoMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "SupportedPhotoMediaDescription");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaCaptureVideoProfile.SupportedPreviewMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "SupportedPreviewMediaDescription");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaCaptureVideoProfile.SupportedRecordMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "SupportedRecordMediaDescription");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "string MediaCaptureVideoProfile.VideoDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "VideoDeviceId");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> GetConcurrency()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "IReadOnlyList<MediaCaptureVideoProfile> MediaCaptureVideoProfile.GetConcurrency()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "GetConcurrency()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.FrameSourceInfos.get

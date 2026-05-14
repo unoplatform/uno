@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "Buffer MediaStreamSample.Buffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "Buffer");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "TimeSpan MediaStreamSample.DecodeTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "DecodeTimestamp");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "TimeSpan MediaStreamSample.DecodeTimestamp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "DecodeTimestamp");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "IDirect3DSurface MediaStreamSample.Direct3D11Surface");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "Direct3D11Surface");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "bool MediaStreamSample.Discontinuous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "Discontinuous");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "bool MediaStreamSample.Discontinuous");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "Discontinuous");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "TimeSpan MediaStreamSample.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "TimeSpan MediaStreamSample.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "Duration");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "MediaStreamSamplePropertySet MediaStreamSample.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "ExtendedProperties");
 			}
 		}
 #endif
@@ -91,11 +91,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "bool MediaStreamSample.KeyFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "KeyFrame");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "bool MediaStreamSample.KeyFrame");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "KeyFrame");
 			}
 		}
 #endif
@@ -105,7 +105,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "MediaStreamSampleProtectionProperties MediaStreamSample.Protection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "Protection");
 			}
 		}
 #endif
@@ -115,7 +115,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "TimeSpan MediaStreamSample.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "Timestamp");
 			}
 		}
 #endif
@@ -123,21 +123,21 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.MediaStreamSample CreateFromBuffer(global::Windows.Storage.Streams.IBuffer buffer, global::System.TimeSpan timestamp)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "MediaStreamSample MediaStreamSample.CreateFromBuffer(IBuffer buffer, TimeSpan timestamp)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "CreateFromBuffer(IBuffer buffer, TimeSpan timestamp)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Core.MediaStreamSample> CreateFromStreamAsync(global::Windows.Storage.Streams.IInputStream stream, uint count, global::System.TimeSpan timestamp)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "IAsyncOperation<MediaStreamSample> MediaStreamSample.CreateFromStreamAsync(IInputStream stream, uint count, TimeSpan timestamp)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "CreateFromStreamAsync(IInputStream stream, uint count, TimeSpan timestamp)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.MediaStreamSample CreateFromDirect3D11Surface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface, global::System.TimeSpan timestamp)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "MediaStreamSample MediaStreamSample.CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSample", "CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.add
@@ -162,12 +162,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "event TypedEventHandler<MediaStreamSample, object> MediaStreamSample.Processed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "event Processed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "event TypedEventHandler<MediaStreamSample, object> MediaStreamSample.Processed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSample", "event Processed");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "bool AudioDeviceController.Muted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "Muted");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceController", "bool AudioDeviceController.Muted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceController", "Muted");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "float AudioDeviceController.VolumePercent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "VolumePercent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceController", "float AudioDeviceController.VolumePercent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceController", "VolumePercent");
 			}
 		}
 #endif
@@ -45,21 +45,21 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaProperties.IMediaEncodingProperties> GetAvailableMediaStreamProperties(global::Windows.Media.Capture.MediaStreamType mediaStreamType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "IReadOnlyList<IMediaEncodingProperties> AudioDeviceController.GetAvailableMediaStreamProperties(MediaStreamType mediaStreamType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "GetAvailableMediaStreamProperties(MediaStreamType mediaStreamType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.IMediaEncodingProperties GetMediaStreamProperties(global::Windows.Media.Capture.MediaStreamType mediaStreamType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "IMediaEncodingProperties AudioDeviceController.GetMediaStreamProperties(MediaStreamType mediaStreamType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "GetMediaStreamProperties(MediaStreamType mediaStreamType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetMediaStreamPropertiesAsync(global::Windows.Media.Capture.MediaStreamType mediaStreamType, global::Windows.Media.MediaProperties.IMediaEncodingProperties mediaEncodingProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "IAsyncAction AudioDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType mediaStreamType, IMediaEncodingProperties mediaEncodingProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceController", "SetMediaStreamPropertiesAsync(MediaStreamType mediaStreamType, IMediaEncodingProperties mediaEncodingProperties)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceController.Muted.get

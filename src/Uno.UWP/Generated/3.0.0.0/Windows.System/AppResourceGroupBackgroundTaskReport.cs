@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupBackgroundTaskReport", "string AppResourceGroupBackgroundTaskReport.EntryPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupBackgroundTaskReport", "EntryPoint");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupBackgroundTaskReport", "string AppResourceGroupBackgroundTaskReport.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupBackgroundTaskReport", "Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupBackgroundTaskReport", "Guid AppResourceGroupBackgroundTaskReport.TaskId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupBackgroundTaskReport", "TaskId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupBackgroundTaskReport", "string AppResourceGroupBackgroundTaskReport.Trigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupBackgroundTaskReport", "Trigger");
 			}
 		}
 #endif

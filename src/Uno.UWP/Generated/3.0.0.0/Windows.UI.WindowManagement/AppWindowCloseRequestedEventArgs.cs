@@ -19,11 +19,11 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs", "bool AppWindowCloseRequestedEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs", "bool AppWindowCloseRequestedEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs", "Deferral AppWindowCloseRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.Cancel.get

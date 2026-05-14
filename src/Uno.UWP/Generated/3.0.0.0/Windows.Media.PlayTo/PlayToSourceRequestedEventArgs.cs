@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceRequestedEventArgs", "PlayToSourceRequest PlayToSourceRequestedEventArgs.SourceRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceRequestedEventArgs", "SourceRequest");
 			}
 		}
 #endif

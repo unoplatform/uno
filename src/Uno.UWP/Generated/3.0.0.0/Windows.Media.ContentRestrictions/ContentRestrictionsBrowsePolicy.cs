@@ -19,7 +19,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy", "string ContentRestrictionsBrowsePolicy.GeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy", "GeographicRegion");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy", "uint? ContentRestrictionsBrowsePolicy.MaxBrowsableAgeRating");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy", "MaxBrowsableAgeRating");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy", "uint? ContentRestrictionsBrowsePolicy.PreferredAgeRating");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy", "PreferredAgeRating");
 			}
 		}
 #endif

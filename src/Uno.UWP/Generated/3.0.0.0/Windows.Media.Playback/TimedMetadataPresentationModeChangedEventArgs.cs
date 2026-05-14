@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.NewPresentationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "NewPresentationMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "OldPresentationMode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "TimedMetadataTrack TimedMetadataPresentationModeChangedEventArgs.Track");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "Track");
 			}
 		}
 #endif

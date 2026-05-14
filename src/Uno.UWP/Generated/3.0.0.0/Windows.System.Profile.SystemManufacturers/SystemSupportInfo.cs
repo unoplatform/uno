@@ -14,7 +14,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "SystemSupportDeviceInfo SystemSupportInfo.LocalDeviceInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "LocalDeviceInfo");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "string SystemSupportInfo.LocalSystemEdition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "LocalSystemEdition");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "OemSupportInfo SystemSupportInfo.OemSupportInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "OemSupportInfo");
 			}
 		}
 #endif

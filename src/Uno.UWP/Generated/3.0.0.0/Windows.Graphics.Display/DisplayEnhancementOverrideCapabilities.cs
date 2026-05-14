@@ -19,7 +19,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities", "bool DisplayEnhancementOverrideCapabilities.IsBrightnessControlSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities", "IsBrightnessControlSupported");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities", "bool DisplayEnhancementOverrideCapabilities.IsBrightnessNitsControlSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities", "IsBrightnessNitsControlSupported");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Display.NitRange> GetSupportedNitRanges()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities", "IReadOnlyList<NitRange> DisplayEnhancementOverrideCapabilities.GetSupportedNitRanges()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities", "GetSupportedNitRanges()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.IsBrightnessControlSupported.get

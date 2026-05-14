@@ -14,7 +14,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRange", "int PrintPageRange.FirstPageNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRange", "FirstPageNumber");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRange", "int PrintPageRange.LastPageNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRange", "LastPageNumber");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Graphics.Printing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PrintPageRange(int firstPage, int lastPage)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRange", "PrintPageRange.PrintPageRange(int firstPage, int lastPage)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRange", "PrintPageRange(int firstPage, int lastPage)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRange.PrintPageRange(int, int)
@@ -40,7 +40,7 @@ namespace Windows.Graphics.Printing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PrintPageRange(int page)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRange", "PrintPageRange.PrintPageRange(int page)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRange", "PrintPageRange(int page)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRange.PrintPageRange(int)

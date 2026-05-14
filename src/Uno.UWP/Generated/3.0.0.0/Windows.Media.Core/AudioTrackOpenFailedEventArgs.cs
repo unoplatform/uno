@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackOpenFailedEventArgs", "Exception AudioTrackOpenFailedEventArgs.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackOpenFailedEventArgs", "ExtendedError");
 			}
 		}
 #endif

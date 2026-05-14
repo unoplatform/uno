@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.TimeZoneSettings", "bool TimeZoneSettings.CanChangeTimeZone");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.TimeZoneSettings", "CanChangeTimeZone");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.TimeZoneSettings", "string TimeZoneSettings.CurrentTimeZoneDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.TimeZoneSettings", "CurrentTimeZoneDisplayName");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.TimeZoneSettings", "IReadOnlyList<string> TimeZoneSettings.SupportedTimeZoneDisplayNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.TimeZoneSettings", "SupportedTimeZoneDisplayNames");
 			}
 		}
 #endif
@@ -42,14 +42,14 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ChangeTimeZoneByDisplayName(string timeZoneDisplayName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.TimeZoneSettings", "void TimeZoneSettings.ChangeTimeZoneByDisplayName(string timeZoneDisplayName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.TimeZoneSettings", "ChangeTimeZoneByDisplayName(string timeZoneDisplayName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.AutoUpdateTimeZoneStatus> AutoUpdateTimeZoneAsync(global::System.TimeSpan timeout)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.TimeZoneSettings", "IAsyncOperation<AutoUpdateTimeZoneStatus> TimeZoneSettings.AutoUpdateTimeZoneAsync(TimeSpan timeout)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.TimeZoneSettings", "AutoUpdateTimeZoneAsync(TimeSpan timeout)");
 		}
 #endif
 		// Forced skipping of method Windows.System.TimeZoneSettings.CanChangeTimeZone.get

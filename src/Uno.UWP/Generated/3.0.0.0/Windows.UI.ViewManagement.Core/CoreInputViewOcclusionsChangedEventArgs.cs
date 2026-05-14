@@ -19,11 +19,11 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs", "bool CoreInputViewOcclusionsChangedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs", "bool CoreInputViewOcclusionsChangedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs", "IReadOnlyList<CoreInputViewOcclusion> CoreInputViewOcclusionsChangedEventArgs.Occlusions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs", "Occlusions");
 			}
 		}
 #endif

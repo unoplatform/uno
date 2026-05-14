@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "string PerceptionPropertyChangeRequest.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "Name");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "PerceptionFrameSourcePropertyChangeStatus PerceptionPropertyChangeRequest.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "PerceptionFrameSourcePropertyChangeStatus PerceptionPropertyChangeRequest.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "Status");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "object PerceptionPropertyChangeRequest.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "Value");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "Deferral PerceptionPropertyChangeRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Name.get

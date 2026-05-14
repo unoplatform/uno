@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "GameControllerVersionInfo HidGameControllerProvider.FirmwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "FirmwareVersionInfo");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "ushort HidGameControllerProvider.HardwareProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "HardwareProductId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "ushort HidGameControllerProvider.HardwareVendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "HardwareVendorId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "GameControllerVersionInfo HidGameControllerProvider.HardwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "HardwareVersionInfo");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "bool HidGameControllerProvider.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "IsConnected");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "ushort HidGameControllerProvider.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "UsageId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "ushort HidGameControllerProvider.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "UsagePage");
 			}
 		}
 #endif
@@ -87,21 +87,21 @@ namespace Windows.Gaming.Input.Custom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetFeatureReport(byte reportId, byte[] reportBuffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "void HidGameControllerProvider.GetFeatureReport(byte reportId, byte[] reportBuffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "GetFeatureReport(byte reportId, byte[] reportBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendFeatureReport(byte reportId, byte[] reportBuffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "void HidGameControllerProvider.SendFeatureReport(byte reportId, byte[] reportBuffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "SendFeatureReport(byte reportId, byte[] reportBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendOutputReport(byte reportId, byte[] reportBuffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "void HidGameControllerProvider.SendOutputReport(byte reportId, byte[] reportBuffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "SendOutputReport(byte reportId, byte[] reportBuffer)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.FirmwareVersionInfo.get

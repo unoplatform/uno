@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "bool WebViewControlNavigationCompletedEventArgs.IsSuccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "IsSuccess");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "Uri WebViewControlNavigationCompletedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "Uri");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "WebErrorStatus WebViewControlNavigationCompletedEventArgs.WebErrorStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "WebErrorStatus");
 			}
 		}
 #endif

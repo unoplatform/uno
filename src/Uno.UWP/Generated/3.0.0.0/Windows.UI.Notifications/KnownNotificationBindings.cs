@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownNotificationBindings", "string KnownNotificationBindings.ToastGeneric");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownNotificationBindings", "ToastGeneric");
 			}
 		}
 #endif

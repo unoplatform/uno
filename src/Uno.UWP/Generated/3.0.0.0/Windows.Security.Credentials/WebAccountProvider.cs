@@ -14,7 +14,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "string WebAccountProvider.Authority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "Authority");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "string WebAccountProvider.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "DisplayName");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "string WebAccountProvider.DisplayPurpose");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "DisplayPurpose");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "Uri WebAccountProvider.IconUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "IconUri");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "string WebAccountProvider.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "Id");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "bool WebAccountProvider.IsSystemProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "IsSystemProvider");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "User WebAccountProvider.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "User");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Security.Credentials
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebAccountProvider(string id, string displayName, global::System.Uri iconUri)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.WebAccountProvider", "WebAccountProvider.WebAccountProvider(string id, string displayName, Uri iconUri)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.WebAccountProvider", "WebAccountProvider(string id, string displayName, Uri iconUri)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WebAccountProvider(string, string, System.Uri)

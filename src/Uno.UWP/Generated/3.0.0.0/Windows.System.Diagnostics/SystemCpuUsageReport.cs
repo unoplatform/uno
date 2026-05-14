@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "TimeSpan SystemCpuUsageReport.IdleTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "IdleTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "TimeSpan SystemCpuUsageReport.KernelTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "KernelTime");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "TimeSpan SystemCpuUsageReport.UserTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "UserTime");
 			}
 		}
 #endif

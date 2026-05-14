@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ComponentLoadFailedEventArgs", "MediaProtectionServiceCompletion ComponentLoadFailedEventArgs.Completion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ComponentLoadFailedEventArgs", "Completion");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ComponentLoadFailedEventArgs", "RevocationAndRenewalInformation ComponentLoadFailedEventArgs.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ComponentLoadFailedEventArgs", "Information");
 			}
 		}
 #endif

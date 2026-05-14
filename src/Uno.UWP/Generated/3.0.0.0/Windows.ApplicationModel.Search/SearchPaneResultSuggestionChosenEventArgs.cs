@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneResultSuggestionChosenEventArgs", "string SearchPaneResultSuggestionChosenEventArgs.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneResultSuggestionChosenEventArgs", "Tag");
 			}
 		}
 #endif

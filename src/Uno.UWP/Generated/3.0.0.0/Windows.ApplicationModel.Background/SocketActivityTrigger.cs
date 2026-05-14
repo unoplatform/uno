@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.SocketActivityTrigger", "bool SocketActivityTrigger.IsWakeFromLowPowerSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.SocketActivityTrigger", "IsWakeFromLowPowerSupported");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SocketActivityTrigger()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.SocketActivityTrigger", "SocketActivityTrigger.SocketActivityTrigger()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.SocketActivityTrigger", "SocketActivityTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.SocketActivityTrigger()

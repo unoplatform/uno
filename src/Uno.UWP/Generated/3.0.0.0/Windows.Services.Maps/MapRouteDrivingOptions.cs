@@ -14,11 +14,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "DateTimeOffset? MapRouteDrivingOptions.DepartureTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "DepartureTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "DateTimeOffset? MapRouteDrivingOptions.DepartureTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "DepartureTime");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "double? MapRouteDrivingOptions.InitialHeading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "InitialHeading");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "double? MapRouteDrivingOptions.InitialHeading");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "InitialHeading");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "uint MapRouteDrivingOptions.MaxAlternateRouteCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "MaxAlternateRouteCount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "uint MapRouteDrivingOptions.MaxAlternateRouteCount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "MaxAlternateRouteCount");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "MapRouteOptimization MapRouteDrivingOptions.RouteOptimization");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "RouteOptimization");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "MapRouteOptimization MapRouteDrivingOptions.RouteOptimization");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "RouteOptimization");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "MapRouteRestrictions MapRouteDrivingOptions.RouteRestrictions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "RouteRestrictions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "MapRouteRestrictions MapRouteDrivingOptions.RouteRestrictions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "RouteRestrictions");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Services.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MapRouteDrivingOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "MapRouteDrivingOptions.MapRouteDrivingOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.MapRouteDrivingOptions", "MapRouteDrivingOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.MapRouteDrivingOptions()

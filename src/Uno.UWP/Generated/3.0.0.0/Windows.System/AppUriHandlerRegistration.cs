@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "string AppUriHandlerRegistration.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "Name");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "User AppUriHandlerRegistration.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "User");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost>> GetAppAddedHostsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "IAsyncOperation<IList<AppUriHandlerHost>> AppUriHandlerRegistration.GetAppAddedHostsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "GetAppAddedHostsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetAppAddedHostsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.System.AppUriHandlerHost> hosts)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "IAsyncAction AppUriHandlerRegistration.SetAppAddedHostsAsync(IEnumerable<AppUriHandlerHost> hosts)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "SetAppAddedHostsAsync(IEnumerable<AppUriHandlerHost> hosts)");
 		}
 #endif
 		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Name.get

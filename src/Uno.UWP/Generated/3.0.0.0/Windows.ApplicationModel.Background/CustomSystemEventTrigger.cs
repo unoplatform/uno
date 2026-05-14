@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "CustomSystemEventTriggerRecurrence CustomSystemEventTrigger.Recurrence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "Recurrence");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "string CustomSystemEventTrigger.TriggerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "TriggerId");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CustomSystemEventTrigger(string triggerId, global::Windows.ApplicationModel.Background.CustomSystemEventTriggerRecurrence recurrence)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "CustomSystemEventTrigger.CustomSystemEventTrigger(string triggerId, CustomSystemEventTriggerRecurrence recurrence)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "CustomSystemEventTrigger(string triggerId, CustomSystemEventTriggerRecurrence recurrence)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.CustomSystemEventTrigger(string, Windows.ApplicationModel.Background.CustomSystemEventTriggerRecurrence)

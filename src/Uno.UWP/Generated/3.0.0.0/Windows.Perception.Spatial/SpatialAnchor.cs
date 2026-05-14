@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "SpatialCoordinateSystem SpatialAnchor.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "CoordinateSystem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "SpatialCoordinateSystem SpatialAnchor.RawCoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "RawCoordinateSystem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "bool SpatialAnchor.RemovedByUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "RemovedByUser");
 			}
 		}
 #endif
@@ -47,21 +47,21 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialAnchor TryCreateRelativeTo(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialAnchor TryCreateRelativeTo(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::System.Numerics.Vector3 position)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialAnchor TryCreateRelativeTo(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::System.Numerics.Vector3 position, global::System.Numerics.Quaternion orientation)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position, Quaternion orientation)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchor", "TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position, Quaternion orientation)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.RawCoordinateSystemAdjusted.add
@@ -76,12 +76,12 @@ namespace Windows.Perception.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialAnchor", "event TypedEventHandler<SpatialAnchor, SpatialAnchorRawCoordinateSystemAdjustedEventArgs> SpatialAnchor.RawCoordinateSystemAdjusted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialAnchor", "event RawCoordinateSystemAdjusted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialAnchor", "event TypedEventHandler<SpatialAnchor, SpatialAnchorRawCoordinateSystemAdjustedEventArgs> SpatialAnchor.RawCoordinateSystemAdjusted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialAnchor", "event RawCoordinateSystemAdjusted");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "bool CoreWebView2BasicAuthenticationRequestedEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "bool CoreWebView2BasicAuthenticationRequestedEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "string CoreWebView2BasicAuthenticationRequestedEventArgs.Challenge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "Challenge");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "CoreWebView2BasicAuthenticationResponse CoreWebView2BasicAuthenticationRequestedEventArgs.Response");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "Response");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "string CoreWebView2BasicAuthenticationRequestedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "Uri");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "Deferral CoreWebView2BasicAuthenticationRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Cancel.get

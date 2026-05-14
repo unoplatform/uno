@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Dsa");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Dsa");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Ecdh");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdh256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Ecdh256");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdh384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Ecdh384");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdh521");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Ecdh521");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdsa");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Ecdsa");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdsa256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Ecdsa256");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdsa384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Ecdsa384");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdsa521");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Ecdsa521");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Rsa");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "Rsa");
 			}
 		}
 #endif

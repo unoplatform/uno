@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "DepthMediaFrameFormat VideoMediaFrameFormat.DepthFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "DepthFormat");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "uint VideoMediaFrameFormat.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "Height");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "MediaFrameFormat VideoMediaFrameFormat.MediaFrameFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "MediaFrameFormat");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "uint VideoMediaFrameFormat.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "Width");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownRuimFilePaths", "IReadOnlyList<uint> KnownRuimFilePaths.EFSpn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownRuimFilePaths", "EFSpn");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownRuimFilePaths", "IReadOnlyList<uint> KnownRuimFilePaths.Gid1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownRuimFilePaths", "Gid1");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownRuimFilePaths", "IReadOnlyList<uint> KnownRuimFilePaths.Gid2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownRuimFilePaths", "Gid2");
 			}
 		}
 #endif

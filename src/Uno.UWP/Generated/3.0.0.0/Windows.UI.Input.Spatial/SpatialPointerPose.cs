@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "EyesPose SpatialPointerPose.Eyes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "Eyes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "HeadPose SpatialPointerPose.Head");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "Head");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "bool SpatialPointerPose.IsHeadCapturedBySystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "IsHeadCapturedBySystem");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "PerceptionTimestamp SpatialPointerPose.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "Timestamp");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetAtTimestamp(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "SpatialPointerPose SpatialPointerPose.TryGetAtTimestamp(SpatialCoordinateSystem coordinateSystem, PerceptionTimestamp timestamp)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "TryGetAtTimestamp(SpatialCoordinateSystem coordinateSystem, PerceptionTimestamp timestamp)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose TryGetInteractionSourcePose(global::Windows.UI.Input.Spatial.SpatialInteractionSource source)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "SpatialPointerInteractionSourcePose SpatialPointerPose.TryGetInteractionSourcePose(SpatialInteractionSource source)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerPose", "TryGetInteractionSourcePose(SpatialInteractionSource source)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.Eyes.get

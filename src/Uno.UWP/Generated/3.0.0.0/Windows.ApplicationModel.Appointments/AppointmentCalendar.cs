@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanCancelMeetings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanCancelMeetings");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanCancelMeetings");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanCancelMeetings");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanCreateOrUpdateAppointments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanCreateOrUpdateAppointments");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanCreateOrUpdateAppointments");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanCreateOrUpdateAppointments");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanForwardMeetings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanForwardMeetings");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanForwardMeetings");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanForwardMeetings");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanNotifyInvitees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanNotifyInvitees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanNotifyInvitees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanNotifyInvitees");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanProposeNewTimeForMeetings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanProposeNewTimeForMeetings");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanProposeNewTimeForMeetings");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanProposeNewTimeForMeetings");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanUpdateMeetingResponses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanUpdateMeetingResponses");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanUpdateMeetingResponses");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanUpdateMeetingResponses");
 			}
 		}
 #endif
@@ -103,11 +103,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "Color AppointmentCalendar.DisplayColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DisplayColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "Color AppointmentCalendar.DisplayColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DisplayColor");
 			}
 		}
 #endif
@@ -117,11 +117,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DisplayName");
 			}
 		}
 #endif
@@ -131,11 +131,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.IsHidden");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IsHidden");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.IsHidden");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IsHidden");
 			}
 		}
 #endif
@@ -145,7 +145,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.LocalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "LocalId");
 			}
 		}
 #endif
@@ -155,11 +155,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.MustNofityInvitees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "MustNofityInvitees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.MustNofityInvitees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "MustNofityInvitees");
 			}
 		}
 #endif
@@ -169,11 +169,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "OtherAppReadAccess");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "OtherAppReadAccess");
 			}
 		}
 #endif
@@ -183,11 +183,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "OtherAppWriteAccess");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "OtherAppWriteAccess");
 			}
 		}
 #endif
@@ -197,11 +197,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.RemoteId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "RemoteId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.RemoteId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "RemoteId");
 			}
 		}
 #endif
@@ -211,7 +211,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.SourceDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SourceDisplayName");
 			}
 		}
 #endif
@@ -221,11 +221,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentSummaryCardView AppointmentCalendar.SummaryCardView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SummaryCardView");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentSummaryCardView AppointmentCalendar.SummaryCardView");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SummaryCardView");
 			}
 		}
 #endif
@@ -235,7 +235,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarSyncManager AppointmentCalendar.SyncManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SyncManager");
 			}
 		}
 #endif
@@ -245,7 +245,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.UserDataAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "UserDataAccountId");
 			}
 		}
 #endif
@@ -253,140 +253,140 @@ namespace Windows.ApplicationModel.Appointments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAppointmentsAsync(global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAppointmentsAsync(global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength, global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.AppointmentException>> FindExceptionsFromMasterAsync(string masterLocalId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<IReadOnlyList<AppointmentException>> AppointmentCalendar.FindExceptionsFromMasterAsync(string masterLocalId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindExceptionsFromMasterAsync(string masterLocalId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAllInstancesAsync(string masterLocalId, global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAllInstancesAsync(string masterLocalId, global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength, global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions pOptions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions pOptions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions pOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Appointments.Appointment> GetAppointmentAsync(string localId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<Appointment> AppointmentCalendar.GetAppointmentAsync(string localId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "GetAppointmentAsync(string localId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Appointments.Appointment> GetAppointmentInstanceAsync(string localId, global::System.DateTimeOffset instanceStartTime)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<Appointment> AppointmentCalendar.GetAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "GetAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindUnexpandedAppointmentsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindUnexpandedAppointmentsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindUnexpandedAppointmentsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindUnexpandedAppointmentsAsync(global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindUnexpandedAppointmentsAsync(FindAppointmentsOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindUnexpandedAppointmentsAsync(FindAppointmentsOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncAction AppointmentCalendar.DeleteAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DeleteAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncAction AppointmentCalendar.SaveAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SaveAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAppointmentAsync(string localId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncAction AppointmentCalendar.DeleteAppointmentAsync(string localId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DeleteAppointmentAsync(string localId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAppointmentInstanceAsync(string localId, global::System.DateTimeOffset instanceStartTime)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncAction AppointmentCalendar.DeleteAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DeleteAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAppointmentAsync(global::Windows.ApplicationModel.Appointments.Appointment pAppointment)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncAction AppointmentCalendar.SaveAppointmentAsync(Appointment pAppointment)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SaveAppointmentAsync(Appointment pAppointment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryCreateOrUpdateAppointmentAsync(global::Windows.ApplicationModel.Appointments.Appointment appointment, bool notifyInvitees)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<bool> AppointmentCalendar.TryCreateOrUpdateAppointmentAsync(Appointment appointment, bool notifyInvitees)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryCreateOrUpdateAppointmentAsync(Appointment appointment, bool notifyInvitees)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryCancelMeetingAsync(global::Windows.ApplicationModel.Appointments.Appointment meeting, string subject, string comment, bool notifyInvitees)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<bool> AppointmentCalendar.TryCancelMeetingAsync(Appointment meeting, string subject, string comment, bool notifyInvitees)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryCancelMeetingAsync(Appointment meeting, string subject, string comment, bool notifyInvitees)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryForwardMeetingAsync(global::Windows.ApplicationModel.Appointments.Appointment meeting, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Appointments.AppointmentInvitee> invitees, string subject, string forwardHeader, string comment)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<bool> AppointmentCalendar.TryForwardMeetingAsync(Appointment meeting, IEnumerable<AppointmentInvitee> invitees, string subject, string forwardHeader, string comment)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryForwardMeetingAsync(Appointment meeting, IEnumerable<AppointmentInvitee> invitees, string subject, string forwardHeader, string comment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryProposeNewTimeForMeetingAsync(global::Windows.ApplicationModel.Appointments.Appointment meeting, global::System.DateTimeOffset newStartTime, global::System.TimeSpan newDuration, string subject, string comment)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<bool> AppointmentCalendar.TryProposeNewTimeForMeetingAsync(Appointment meeting, DateTimeOffset newStartTime, TimeSpan newDuration, string subject, string comment)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryProposeNewTimeForMeetingAsync(Appointment meeting, DateTimeOffset newStartTime, TimeSpan newDuration, string subject, string comment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryUpdateMeetingResponseAsync(global::Windows.ApplicationModel.Appointments.Appointment meeting, global::Windows.ApplicationModel.Appointments.AppointmentParticipantResponse response, string subject, string comment, bool sendUpdate)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncOperation<bool> AppointmentCalendar.TryUpdateMeetingResponseAsync(Appointment meeting, AppointmentParticipantResponse response, string subject, string comment, bool sendUpdate)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryUpdateMeetingResponseAsync(Appointment meeting, AppointmentParticipantResponse response, string subject, string comment, bool sendUpdate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RegisterSyncManagerAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IAsyncAction AppointmentCalendar.RegisterSyncManagerAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "RegisterSyncManagerAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCancelMeetings.get

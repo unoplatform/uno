@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "Quaternion PerceptionCorrelation.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "Orientation");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "Vector3 PerceptionCorrelation.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "Position");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "string PerceptionCorrelation.TargetId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "TargetId");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PerceptionCorrelation(string targetId, global::System.Numerics.Vector3 position, global::System.Numerics.Quaternion orientation)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionCorrelation", "PerceptionCorrelation.PerceptionCorrelation(string targetId, Vector3 position, Quaternion orientation)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionCorrelation", "PerceptionCorrelation(string targetId, Vector3 position, Quaternion orientation)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.PerceptionCorrelation(string, System.Numerics.Vector3, System.Numerics.Quaternion)

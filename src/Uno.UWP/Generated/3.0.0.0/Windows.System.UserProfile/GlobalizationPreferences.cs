@@ -14,7 +14,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "IReadOnlyList<string> GlobalizationPreferences.Calendars");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "Calendars");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "IReadOnlyList<string> GlobalizationPreferences.Clocks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "Clocks");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "IReadOnlyList<string> GlobalizationPreferences.Currencies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "Currencies");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "string GlobalizationPreferences.HomeGeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "HomeGeographicRegion");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "IReadOnlyList<string> GlobalizationPreferences.Languages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "Languages");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "DayOfWeek GlobalizationPreferences.WeekStartsOn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "WeekStartsOn");
 			}
 		}
 #endif
@@ -72,21 +72,21 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetHomeGeographicRegion(string region)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "bool GlobalizationPreferences.TrySetHomeGeographicRegion(string region)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "TrySetHomeGeographicRegion(string region)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetLanguages(global::System.Collections.Generic.IEnumerable<string> languageTags)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "bool GlobalizationPreferences.TrySetLanguages(IEnumerable<string> languageTags)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "TrySetLanguages(IEnumerable<string> languageTags)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserProfile.GlobalizationPreferencesForUser GetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "GlobalizationPreferencesForUser GlobalizationPreferences.GetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "GetForUser(User user)");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.Calendars.get

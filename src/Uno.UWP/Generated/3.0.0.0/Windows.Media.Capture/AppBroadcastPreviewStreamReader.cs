@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "BitmapAlphaMode AppBroadcastPreviewStreamReader.VideoBitmapAlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "VideoBitmapAlphaMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "BitmapPixelFormat AppBroadcastPreviewStreamReader.VideoBitmapPixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "VideoBitmapPixelFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "uint AppBroadcastPreviewStreamReader.VideoHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "VideoHeight");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "uint AppBroadcastPreviewStreamReader.VideoStride");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "VideoStride");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "uint AppBroadcastPreviewStreamReader.VideoWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "VideoWidth");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.AppBroadcastPreviewStreamVideoFrame TryGetNextVideoFrame()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "AppBroadcastPreviewStreamVideoFrame AppBroadcastPreviewStreamReader.TryGetNextVideoFrame()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "TryGetNextVideoFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPreviewStreamReader.VideoFrameArrived.add
@@ -84,12 +84,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "event TypedEventHandler<AppBroadcastPreviewStreamReader, object> AppBroadcastPreviewStreamReader.VideoFrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "event VideoFrameArrived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "event TypedEventHandler<AppBroadcastPreviewStreamReader, object> AppBroadcastPreviewStreamReader.VideoFrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "event VideoFrameArrived");
 			}
 		}
 #endif

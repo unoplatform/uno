@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "string AppointmentCalendarForwardMeetingRequest.AppointmentCalendarLocalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "AppointmentCalendarLocalId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "string AppointmentCalendarForwardMeetingRequest.AppointmentLocalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "AppointmentLocalId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "DateTimeOffset? AppointmentCalendarForwardMeetingRequest.AppointmentOriginalStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "AppointmentOriginalStartTime");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "string AppointmentCalendarForwardMeetingRequest.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "Comment");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "string AppointmentCalendarForwardMeetingRequest.ForwardHeader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "ForwardHeader");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "IReadOnlyList<AppointmentInvitee> AppointmentCalendarForwardMeetingRequest.Invitees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "Invitees");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "string AppointmentCalendarForwardMeetingRequest.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "Subject");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "IAsyncAction AppointmentCalendarForwardMeetingRequest.ReportCompletedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "IAsyncAction AppointmentCalendarForwardMeetingRequest.ReportFailedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest", "ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.AppointmentCalendarLocalId.get

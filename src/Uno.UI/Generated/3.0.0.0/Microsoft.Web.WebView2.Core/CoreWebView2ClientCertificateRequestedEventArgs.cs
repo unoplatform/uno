@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "IReadOnlyList<string> CoreWebView2ClientCertificateRequestedEventArgs.AllowedCertificateAuthorities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "AllowedCertificateAuthorities");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "bool CoreWebView2ClientCertificateRequestedEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "bool CoreWebView2ClientCertificateRequestedEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "bool CoreWebView2ClientCertificateRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "bool CoreWebView2ClientCertificateRequestedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "string CoreWebView2ClientCertificateRequestedEventArgs.Host");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "Host");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "bool CoreWebView2ClientCertificateRequestedEventArgs.IsProxy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "IsProxy");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "IReadOnlyList<CoreWebView2ClientCertificate> CoreWebView2ClientCertificateRequestedEventArgs.MutuallyTrustedCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "MutuallyTrustedCertificates");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "int CoreWebView2ClientCertificateRequestedEventArgs.Port");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "Port");
 			}
 		}
 #endif
@@ -97,11 +97,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "CoreWebView2ClientCertificate CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "SelectedCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "CoreWebView2ClientCertificate CoreWebView2ClientCertificateRequestedEventArgs.SelectedCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "SelectedCertificate");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "Deferral CoreWebView2ClientCertificateRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs.AllowedCertificateAuthorities.get

@@ -17,28 +17,28 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialBoundingVolume FromBox(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.Spatial.SpatialBoundingBox box)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialBoundingVolume", "SpatialBoundingVolume SpatialBoundingVolume.FromBox(SpatialCoordinateSystem coordinateSystem, SpatialBoundingBox box)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialBoundingVolume", "FromBox(SpatialCoordinateSystem coordinateSystem, SpatialBoundingBox box)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialBoundingVolume FromOrientedBox(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.Spatial.SpatialBoundingOrientedBox box)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialBoundingVolume", "SpatialBoundingVolume SpatialBoundingVolume.FromOrientedBox(SpatialCoordinateSystem coordinateSystem, SpatialBoundingOrientedBox box)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialBoundingVolume", "FromOrientedBox(SpatialCoordinateSystem coordinateSystem, SpatialBoundingOrientedBox box)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialBoundingVolume FromSphere(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.Spatial.SpatialBoundingSphere sphere)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialBoundingVolume", "SpatialBoundingVolume SpatialBoundingVolume.FromSphere(SpatialCoordinateSystem coordinateSystem, SpatialBoundingSphere sphere)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialBoundingVolume", "FromSphere(SpatialCoordinateSystem coordinateSystem, SpatialBoundingSphere sphere)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialBoundingVolume FromFrustum(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.Spatial.SpatialBoundingFrustum frustum)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialBoundingVolume", "SpatialBoundingVolume SpatialBoundingVolume.FromFrustum(SpatialCoordinateSystem coordinateSystem, SpatialBoundingFrustum frustum)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialBoundingVolume", "FromFrustum(SpatialCoordinateSystem coordinateSystem, SpatialBoundingFrustum frustum)");
 		}
 #endif
 	}

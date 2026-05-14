@@ -12,56 +12,56 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentCoordinateConverter CreateForWindowId(global::Microsoft.UI.WindowId windowId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "ContentCoordinateConverter ContentCoordinateConverter.CreateForWindowId(WindowId windowId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "CreateForWindowId(WindowId windowId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.PointInt32 ConvertLocalToScreen(global::Windows.Foundation.Point localPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "PointInt32 ContentCoordinateConverter.ConvertLocalToScreen(Point localPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "ConvertLocalToScreen(Point localPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.PointInt32[] ConvertLocalToScreen(global::Windows.Foundation.Point[] localPoints)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "PointInt32[] ContentCoordinateConverter.ConvertLocalToScreen(Point[] localPoints)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "ConvertLocalToScreen(Point[] localPoints)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.PointInt32[] ConvertLocalToScreen(global::Windows.Foundation.Point[] localPoints, global::Microsoft.UI.Content.ContentCoordinateRoundingMode roundingMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "PointInt32[] ContentCoordinateConverter.ConvertLocalToScreen(Point[] localPoints, ContentCoordinateRoundingMode roundingMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "ConvertLocalToScreen(Point[] localPoints, ContentCoordinateRoundingMode roundingMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.RectInt32 ConvertLocalToScreen(global::Windows.Foundation.Rect localRect)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "RectInt32 ContentCoordinateConverter.ConvertLocalToScreen(Rect localRect)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "ConvertLocalToScreen(Rect localRect)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point ConvertScreenToLocal(global::Windows.Graphics.PointInt32 screenPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "Point ContentCoordinateConverter.ConvertScreenToLocal(PointInt32 screenPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "ConvertScreenToLocal(PointInt32 screenPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point[] ConvertScreenToLocal(global::Windows.Graphics.PointInt32[] screenPoints)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "Point[] ContentCoordinateConverter.ConvertScreenToLocal(PointInt32[] screenPoints)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "ConvertScreenToLocal(PointInt32[] screenPoints)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect ConvertScreenToLocal(global::Windows.Graphics.RectInt32 screenRect)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "Rect ContentCoordinateConverter.ConvertScreenToLocal(RectInt32 screenRect)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentCoordinateConverter", "ConvertScreenToLocal(RectInt32 screenRect)");
 		}
 #endif
 	}

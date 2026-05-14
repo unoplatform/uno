@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.KeypadPressedEventArgs", "TelephonyKey KeypadPressedEventArgs.TelephonyKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.KeypadPressedEventArgs", "TelephonyKey");
 			}
 		}
 #endif

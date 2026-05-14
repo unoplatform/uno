@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "string HashAlgorithmProvider.AlgorithmName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "AlgorithmName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "uint HashAlgorithmProvider.HashLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "HashLength");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.Security.Cryptography.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.HashAlgorithmProvider OpenAlgorithm(string algorithm)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "HashAlgorithmProvider HashAlgorithmProvider.OpenAlgorithm(string algorithm)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "OpenAlgorithm(string algorithm)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer HashData(global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "IBuffer HashAlgorithmProvider.HashData(IBuffer data)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "HashData(IBuffer data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicHash CreateHash()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "CryptographicHash HashAlgorithmProvider.CreateHash()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "CreateHash()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.AlgorithmName.get

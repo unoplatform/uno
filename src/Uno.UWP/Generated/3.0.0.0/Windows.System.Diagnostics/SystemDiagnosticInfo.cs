@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "SystemCpuUsage SystemDiagnosticInfo.CpuUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "CpuUsage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "SystemMemoryUsage SystemDiagnosticInfo.MemoryUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "MemoryUsage");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.SystemDiagnosticInfo GetForCurrentSystem()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "SystemDiagnosticInfo SystemDiagnosticInfo.GetForCurrentSystem()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "GetForCurrentSystem()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.CpuUsage.get

@@ -14,7 +14,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "string EqualizerEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "IReadOnlyList<EqualizerBand> EqualizerEffectDefinition.Bands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "Bands");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "IPropertySet EqualizerEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "Properties");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EqualizerEffectDefinition(global::Windows.Media.Audio.AudioGraph audioGraph)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerEffectDefinition", "EqualizerEffectDefinition.EqualizerEffectDefinition(AudioGraph audioGraph)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerEffectDefinition", "EqualizerEffectDefinition(AudioGraph audioGraph)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.EqualizerEffectDefinition(Windows.Media.Audio.AudioGraph)

@@ -15,11 +15,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "bool DebugSettings.FailFastOnErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "FailFastOnErrors");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "bool DebugSettings.FailFastOnErrors");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "FailFastOnErrors");
 			}
 		}
 #endif
@@ -31,11 +31,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "bool DebugSettings.IsXamlResourceReferenceTracingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "IsXamlResourceReferenceTracingEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "bool DebugSettings.IsXamlResourceReferenceTracingEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "IsXamlResourceReferenceTracingEnabled");
 			}
 		}
 #endif
@@ -45,11 +45,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "LayoutCycleDebugBreakLevel DebugSettings.LayoutCycleDebugBreakLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "LayoutCycleDebugBreakLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "LayoutCycleDebugBreakLevel DebugSettings.LayoutCycleDebugBreakLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "LayoutCycleDebugBreakLevel");
 			}
 		}
 #endif
@@ -80,12 +80,12 @@ namespace Microsoft.UI.Xaml
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "event TypedEventHandler<DebugSettings, XamlResourceReferenceFailedEventArgs> DebugSettings.XamlResourceReferenceFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "event XamlResourceReferenceFailed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "event TypedEventHandler<DebugSettings, XamlResourceReferenceFailedEventArgs> DebugSettings.XamlResourceReferenceFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "event XamlResourceReferenceFailed");
 			}
 		}
 #endif

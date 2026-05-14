@@ -14,11 +14,11 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "bool MediaOverlay.AudioEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "AudioEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "bool MediaOverlay.AudioEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "AudioEnabled");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "MediaClip MediaOverlay.Clip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "Clip");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "TimeSpan MediaOverlay.Delay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "Delay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "TimeSpan MediaOverlay.Delay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "Delay");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "double MediaOverlay.Opacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "Opacity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "double MediaOverlay.Opacity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "Opacity");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "Rect MediaOverlay.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "Position");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "Rect MediaOverlay.Position");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "Position");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaOverlay(global::Windows.Media.Editing.MediaClip clip)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "MediaOverlay.MediaOverlay(MediaClip clip)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "MediaOverlay(MediaClip clip)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.MediaOverlay(Windows.Media.Editing.MediaClip)
@@ -86,7 +86,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaOverlay(global::Windows.Media.Editing.MediaClip clip, global::Windows.Foundation.Rect position, double opacity)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "MediaOverlay.MediaOverlay(MediaClip clip, Rect position, double opacity)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "MediaOverlay(MediaClip clip, Rect position, double opacity)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.MediaOverlay(Windows.Media.Editing.MediaClip, Windows.Foundation.Rect, double)
@@ -95,7 +95,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaOverlay Clone()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "MediaOverlay MediaOverlay.Clone()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlay", "Clone()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.AudioEnabled.get

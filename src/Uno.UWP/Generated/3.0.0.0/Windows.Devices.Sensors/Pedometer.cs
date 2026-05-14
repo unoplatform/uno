@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "string Pedometer.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "DeviceId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "uint Pedometer.MinimumReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "MinimumReportInterval");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "double Pedometer.PowerInMilliwatts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "PowerInMilliwatts");
 			}
 		}
 #endif
@@ -44,11 +44,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "uint Pedometer.ReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "ReportInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Pedometer", "uint Pedometer.ReportInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Pedometer", "ReportInterval");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Pedometer> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "IAsyncOperation<Pedometer> Pedometer.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "FromIdAsync(string deviceId)");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Sensors.Pedometer.GetDefaultAsync()
@@ -64,28 +64,28 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "string Pedometer.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.PedometerReading>> GetSystemHistoryAsync(global::System.DateTimeOffset fromTime)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "IAsyncOperation<IReadOnlyList<PedometerReading>> Pedometer.GetSystemHistoryAsync(DateTimeOffset fromTime)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "GetSystemHistoryAsync(DateTimeOffset fromTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.PedometerReading>> GetSystemHistoryAsync(global::System.DateTimeOffset fromTime, global::System.TimeSpan duration)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "IAsyncOperation<IReadOnlyList<PedometerReading>> Pedometer.GetSystemHistoryAsync(DateTimeOffset fromTime, TimeSpan duration)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "GetSystemHistoryAsync(DateTimeOffset fromTime, TimeSpan duration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.PedometerReading> GetReadingsFromTriggerDetails(global::Windows.Devices.Sensors.SensorDataThresholdTriggerDetails triggerDetails)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "IReadOnlyList<PedometerReading> Pedometer.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.Pedometer.ReadingChanged.add
@@ -94,7 +94,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyDictionary<global::Windows.Devices.Sensors.PedometerStepKind, global::Windows.Devices.Sensors.PedometerReading> GetCurrentReadings()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "IReadOnlyDictionary<PedometerStepKind, PedometerReading> Pedometer.GetCurrentReadings()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Pedometer", "GetCurrentReadings()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.Pedometer.DeviceId.get
@@ -109,12 +109,12 @@ namespace Windows.Devices.Sensors
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Pedometer", "event TypedEventHandler<Pedometer, PedometerReadingChangedEventArgs> Pedometer.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Pedometer", "event ReadingChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Pedometer", "event TypedEventHandler<Pedometer, PedometerReadingChangedEventArgs> Pedometer.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Pedometer", "event ReadingChanged");
 			}
 		}
 #endif

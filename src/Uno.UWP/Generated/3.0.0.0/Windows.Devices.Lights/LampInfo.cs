@@ -19,7 +19,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "int LampInfo.BlueLevelCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "BlueLevelCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "Color? LampInfo.FixedColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "FixedColor");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "int LampInfo.GainLevelCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "GainLevelCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "int LampInfo.GreenLevelCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "GreenLevelCount");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "int LampInfo.Index");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "Index");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "Vector3 LampInfo.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "Position");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "LampPurposes LampInfo.Purposes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "Purposes");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "int LampInfo.RedLevelCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "RedLevelCount");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "TimeSpan LampInfo.UpdateLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "UpdateLatency");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.Devices.Lights
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Color GetNearestSupportedColor(global::Windows.UI.Color desiredColor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "Color LampInfo.GetNearestSupportedColor(Color desiredColor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampInfo", "GetNearestSupportedColor(Color desiredColor)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.LampInfo.BlueLevelCount.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs", "MediaPlaybackAutoRepeatMode MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.AutoRepeatMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs", "AutoRepeatMode");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs", "bool MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs", "bool MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs", "Deferral MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.AutoRepeatMode.get

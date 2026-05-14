@@ -19,7 +19,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs", "WebViewControlMoveFocusReason WebViewControlMoveFocusRequestedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs", "Reason");
 			}
 		}
 #endif

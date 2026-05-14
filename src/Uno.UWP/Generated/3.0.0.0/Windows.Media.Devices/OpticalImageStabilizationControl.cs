@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "OpticalImageStabilizationMode OpticalImageStabilizationControl.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "Mode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.OpticalImageStabilizationControl", "OpticalImageStabilizationMode OpticalImageStabilizationControl.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.OpticalImageStabilizationControl", "Mode");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "bool OpticalImageStabilizationControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "Supported");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "IReadOnlyList<OpticalImageStabilizationMode> OpticalImageStabilizationControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "SupportedModes");
 			}
 		}
 #endif

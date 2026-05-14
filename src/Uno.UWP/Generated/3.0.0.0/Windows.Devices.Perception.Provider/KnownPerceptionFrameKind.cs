@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.KnownPerceptionFrameKind", "string KnownPerceptionFrameKind.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.KnownPerceptionFrameKind", "Color");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.KnownPerceptionFrameKind", "string KnownPerceptionFrameKind.Depth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.KnownPerceptionFrameKind", "Depth");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.KnownPerceptionFrameKind", "string KnownPerceptionFrameKind.Infrared");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.KnownPerceptionFrameKind", "Infrared");
 			}
 		}
 #endif

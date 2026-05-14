@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "IList<BackgroundTransferFileRange> BackgroundTransferRangesDownloadedEventArgs.AddedRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "AddedRanges");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "bool BackgroundTransferRangesDownloadedEventArgs.WasDownloadRestarted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "WasDownloadRestarted");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "Deferral BackgroundTransferRangesDownloadedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs.AddedRanges.get

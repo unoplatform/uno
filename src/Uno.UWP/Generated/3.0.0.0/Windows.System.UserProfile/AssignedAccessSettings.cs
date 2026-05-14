@@ -19,7 +19,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "bool AssignedAccessSettings.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "IsEnabled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "bool AssignedAccessSettings.IsSingleAppKioskMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "IsSingleAppKioskMode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "User AssignedAccessSettings.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "User");
 			}
 		}
 #endif
@@ -47,14 +47,14 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserProfile.AssignedAccessSettings GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "AssignedAccessSettings AssignedAccessSettings.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserProfile.AssignedAccessSettings GetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "AssignedAccessSettings AssignedAccessSettings.GetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.AssignedAccessSettings", "GetForUser(User user)");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.IsEnabled.get

@@ -14,7 +14,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "BitmapAlphaMode SoftwareBitmap.BitmapAlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "BitmapAlphaMode");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "BitmapPixelFormat SoftwareBitmap.BitmapPixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "BitmapPixelFormat");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "double SoftwareBitmap.DpiX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "DpiX");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "double SoftwareBitmap.DpiX");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "DpiX");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "double SoftwareBitmap.DpiY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "DpiY");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "double SoftwareBitmap.DpiY");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "DpiY");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "bool SoftwareBitmap.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "IsReadOnly");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "int SoftwareBitmap.PixelHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "PixelHeight");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "int SoftwareBitmap.PixelWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "PixelWidth");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap.SoftwareBitmap(BitmapPixelFormat format, int width, int height)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap(BitmapPixelFormat format, int width, int height)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.SoftwareBitmap(Windows.Graphics.Imaging.BitmapPixelFormat, int, int)
@@ -98,7 +98,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap.SoftwareBitmap(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.SoftwareBitmap(Windows.Graphics.Imaging.BitmapPixelFormat, int, int, Windows.Graphics.Imaging.BitmapAlphaMode)
@@ -106,49 +106,49 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Copy(global::Windows.Graphics.Imaging.SoftwareBitmap source)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap SoftwareBitmap.Copy(SoftwareBitmap source)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "Copy(SoftwareBitmap source)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Convert(global::Windows.Graphics.Imaging.SoftwareBitmap source, global::Windows.Graphics.Imaging.BitmapPixelFormat format)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap SoftwareBitmap.Convert(SoftwareBitmap source, BitmapPixelFormat format)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "Convert(SoftwareBitmap source, BitmapPixelFormat format)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Convert(global::Windows.Graphics.Imaging.SoftwareBitmap source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap SoftwareBitmap.Convert(SoftwareBitmap source, BitmapPixelFormat format, BitmapAlphaMode alpha)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "Convert(SoftwareBitmap source, BitmapPixelFormat format, BitmapAlphaMode alpha)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap SoftwareBitmap.CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap SoftwareBitmap.CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> CreateCopyFromSurfaceAsync(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "IAsyncOperation<SoftwareBitmap> SoftwareBitmap.CreateCopyFromSurfaceAsync(IDirect3DSurface surface)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "CreateCopyFromSurfaceAsync(IDirect3DSurface surface)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> CreateCopyFromSurfaceAsync(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "IAsyncOperation<SoftwareBitmap> SoftwareBitmap.CreateCopyFromSurfaceAsync(IDirect3DSurface surface, BitmapAlphaMode alpha)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "CreateCopyFromSurfaceAsync(IDirect3DSurface surface, BitmapAlphaMode alpha)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.~SoftwareBitmap()
@@ -156,42 +156,42 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Imaging.BitmapBuffer LockBuffer(global::Windows.Graphics.Imaging.BitmapBufferAccessMode mode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "BitmapBuffer SoftwareBitmap.LockBuffer(BitmapBufferAccessMode mode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "LockBuffer(BitmapBufferAccessMode mode)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyTo(SoftwareBitmap bitmap)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "CopyTo(SoftwareBitmap bitmap)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyFromBuffer(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyFromBuffer(IBuffer buffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "CopyFromBuffer(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyToBuffer(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyToBuffer(IBuffer buffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "CopyToBuffer(IBuffer buffer)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Imaging.SoftwareBitmap GetReadOnlyView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap SoftwareBitmap.GetReadOnlyView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.SoftwareBitmap", "GetReadOnlyView()");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.BitmapAlphaMode.get

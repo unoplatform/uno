@@ -19,7 +19,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs", "bool ContentSiteRequestedStateChangedEventArgs.DidRequestedSizeChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs", "DidRequestedSizeChange");
 			}
 		}
 #endif

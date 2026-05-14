@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LaunchUriResult", "ValueSet LaunchUriResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LaunchUriResult", "Result");
 			}
 		}
 #endif

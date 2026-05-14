@@ -19,11 +19,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "bool StreamSocketListenerControl.KeepAlive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "KeepAlive");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "bool StreamSocketListenerControl.KeepAlive");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "KeepAlive");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "bool StreamSocketListenerControl.NoDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "NoDelay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "bool StreamSocketListenerControl.NoDelay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "NoDelay");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "uint StreamSocketListenerControl.OutboundBufferSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "OutboundBufferSizeInBytes");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "uint StreamSocketListenerControl.OutboundBufferSizeInBytes");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "OutboundBufferSizeInBytes");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "byte StreamSocketListenerControl.OutboundUnicastHopLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "OutboundUnicastHopLimit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "byte StreamSocketListenerControl.OutboundUnicastHopLimit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "OutboundUnicastHopLimit");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "SocketQualityOfService StreamSocketListenerControl.QualityOfService");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerControl", "QualityOfService");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "SocketQualityOfService StreamSocketListenerControl.QualityOfService");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamSocketListenerControl", "QualityOfService");
 			}
 		}
 #endif

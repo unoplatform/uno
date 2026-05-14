@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase", "bool FlyoutBase.IsConstrainedToRootBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase", "IsConstrainedToRootBounds");
 			}
 		}
 #endif

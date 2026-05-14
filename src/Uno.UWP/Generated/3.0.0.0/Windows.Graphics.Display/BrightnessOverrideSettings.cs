@@ -19,7 +19,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "double BrightnessOverrideSettings.DesiredLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "DesiredLevel");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "float BrightnessOverrideSettings.DesiredNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "DesiredNits");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromLevel(double level)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "BrightnessOverrideSettings BrightnessOverrideSettings.CreateFromLevel(double level)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "CreateFromLevel(double level)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromNits(float nits)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "BrightnessOverrideSettings BrightnessOverrideSettings.CreateFromNits(float nits)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "CreateFromNits(float nits)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromDisplayBrightnessOverrideScenario(global::Windows.Graphics.Display.DisplayBrightnessOverrideScenario overrideScenario)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "BrightnessOverrideSettings BrightnessOverrideSettings.CreateFromDisplayBrightnessOverrideScenario(DisplayBrightnessOverrideScenario overrideScenario)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverrideSettings", "CreateFromDisplayBrightnessOverrideScenario(DisplayBrightnessOverrideScenario overrideScenario)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.DesiredLevel.get

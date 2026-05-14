@@ -14,11 +14,11 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "RatedContentCategory RatedContentDescription.Category");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "Category");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "RatedContentCategory RatedContentDescription.Category");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "Category");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "string RatedContentDescription.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "string RatedContentDescription.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "Id");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "IRandomAccessStreamReference RatedContentDescription.Image");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "Image");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "IRandomAccessStreamReference RatedContentDescription.Image");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "Image");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "IList<string> RatedContentDescription.Ratings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "Ratings");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "IList<string> RatedContentDescription.Ratings");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "Ratings");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "string RatedContentDescription.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "string RatedContentDescription.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "Title");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Media.ContentRestrictions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RatedContentDescription(string id, string title, global::Windows.Media.ContentRestrictions.RatedContentCategory category)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "RatedContentDescription.RatedContentDescription(string id, string title, RatedContentCategory category)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "RatedContentDescription(string id, string title, RatedContentCategory category)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.RatedContentDescription(string, string, Windows.Media.ContentRestrictions.RatedContentCategory)

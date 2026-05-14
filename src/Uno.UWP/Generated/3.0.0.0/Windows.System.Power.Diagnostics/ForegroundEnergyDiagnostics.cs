@@ -14,7 +14,7 @@ namespace Windows.System.Power.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics", "double ForegroundEnergyDiagnostics.DeviceSpecificConversionFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics", "DeviceSpecificConversionFactor");
 			}
 		}
 #endif
@@ -22,14 +22,14 @@ namespace Windows.System.Power.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static ulong ComputeTotalEnergyUsage()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics", "ulong ForegroundEnergyDiagnostics.ComputeTotalEnergyUsage()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics", "ComputeTotalEnergyUsage()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ResetTotalEnergyUsage()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics", "void ForegroundEnergyDiagnostics.ResetTotalEnergyUsage()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics", "ResetTotalEnergyUsage()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics.DeviceSpecificConversionFactor.get

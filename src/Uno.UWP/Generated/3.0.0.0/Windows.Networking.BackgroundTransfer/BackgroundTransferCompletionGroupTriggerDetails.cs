@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails", "IReadOnlyList<DownloadOperation> BackgroundTransferCompletionGroupTriggerDetails.Downloads");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails", "Downloads");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails", "IReadOnlyList<UploadOperation> BackgroundTransferCompletionGroupTriggerDetails.Uploads");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroupTriggerDetails", "Uploads");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialOperationResult", "IBuffer KeyCredentialOperationResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialOperationResult", "Result");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialOperationResult", "KeyCredentialStatus KeyCredentialOperationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialOperationResult", "Status");
 			}
 		}
 #endif

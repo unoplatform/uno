@@ -14,11 +14,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoExposureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "AutoExposureEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoExposureEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "AutoExposureEnabled");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoFocusEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "AutoFocusEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoFocusEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "AutoFocusEnabled");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoWhiteBalanceEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "AutoWhiteBalanceEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoWhiteBalanceEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "AutoWhiteBalanceEnabled");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "Rect RegionOfInterest.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "Bounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "Rect RegionOfInterest.Bounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "Bounds");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.BoundsNormalized");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "BoundsNormalized");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.BoundsNormalized");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "BoundsNormalized");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "RegionOfInterestType RegionOfInterest.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "Type");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "RegionOfInterestType RegionOfInterest.Type");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "Type");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "uint RegionOfInterest.Weight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "Weight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "uint RegionOfInterest.Weight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "Weight");
 			}
 		}
 #endif
@@ -110,7 +110,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RegionOfInterest()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "RegionOfInterest.RegionOfInterest()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "RegionOfInterest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.RegionOfInterest()

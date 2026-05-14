@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "DisplayName");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "Id");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListLimitedWriteOperations UserDataTaskList.LimitedWriteOperations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "LimitedWriteOperations");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppReadAccess UserDataTaskList.OtherAppReadAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "OtherAppReadAccess");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppReadAccess UserDataTaskList.OtherAppReadAccess");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "OtherAppReadAccess");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppWriteAccess UserDataTaskList.OtherAppWriteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "OtherAppWriteAccess");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppWriteAccess UserDataTaskList.OtherAppWriteAccess");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "OtherAppWriteAccess");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.SourceDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "SourceDisplayName");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListSyncManager UserDataTaskList.SyncManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "SyncManager");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.UserDataAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataAccountId");
 			}
 		}
 #endif
@@ -109,56 +109,56 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RegisterSyncManagerAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.RegisterSyncManagerAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "RegisterSyncManagerAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskReader GetTaskReader()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskReader UserDataTaskList.GetTaskReader()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "GetTaskReader()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskReader GetTaskReader(global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskReader UserDataTaskList.GetTaskReader(UserDataTaskQueryOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "GetTaskReader(UserDataTaskQueryOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTask> GetTaskAsync(string userDataTask)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncOperation<UserDataTask> UserDataTaskList.GetTaskAsync(string userDataTask)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "GetTaskAsync(string userDataTask)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveTaskAsync(global::Windows.ApplicationModel.UserDataTasks.UserDataTask userDataTask)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.SaveTaskAsync(UserDataTask userDataTask)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "SaveTaskAsync(UserDataTask userDataTask)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteTaskAsync(string userDataTaskId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.DeleteTaskAsync(string userDataTaskId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "DeleteTaskAsync(string userDataTaskId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.DeleteAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "DeleteAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.SaveAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "SaveAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.DisplayName.get

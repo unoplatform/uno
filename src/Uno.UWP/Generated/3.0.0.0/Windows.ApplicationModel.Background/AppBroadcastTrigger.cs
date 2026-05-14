@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTrigger", "AppBroadcastTriggerProviderInfo AppBroadcastTrigger.ProviderInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTrigger", "ProviderInfo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTrigger", "AppBroadcastTriggerProviderInfo AppBroadcastTrigger.ProviderInfo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTrigger", "ProviderInfo");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AppBroadcastTrigger(string providerKey)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTrigger", "AppBroadcastTrigger.AppBroadcastTrigger(string providerKey)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTrigger", "AppBroadcastTrigger(string providerKey)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTrigger.AppBroadcastTrigger(string)

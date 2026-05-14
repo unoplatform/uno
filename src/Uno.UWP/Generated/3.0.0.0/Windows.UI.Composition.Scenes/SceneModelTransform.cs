@@ -19,11 +19,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Quaternion SceneModelTransform.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Orientation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "Quaternion SceneModelTransform.Orientation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "Orientation");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "float SceneModelTransform.RotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "RotationAngle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "float SceneModelTransform.RotationAngle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "RotationAngle");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "float SceneModelTransform.RotationAngleInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "RotationAngleInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "float SceneModelTransform.RotationAngleInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "RotationAngleInDegrees");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.RotationAxis");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "RotationAxis");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.RotationAxis");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "RotationAxis");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Scale");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Scale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "Scale");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Translation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Translation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Translation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneModelTransform", "Translation");
 			}
 		}
 #endif

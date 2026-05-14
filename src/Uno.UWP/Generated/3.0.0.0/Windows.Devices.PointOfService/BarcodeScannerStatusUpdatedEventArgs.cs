@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerStatusUpdatedEventArgs", "uint BarcodeScannerStatusUpdatedEventArgs.ExtendedStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerStatusUpdatedEventArgs", "ExtendedStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerStatusUpdatedEventArgs", "BarcodeScannerStatus BarcodeScannerStatusUpdatedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerStatusUpdatedEventArgs", "Status");
 			}
 		}
 #endif

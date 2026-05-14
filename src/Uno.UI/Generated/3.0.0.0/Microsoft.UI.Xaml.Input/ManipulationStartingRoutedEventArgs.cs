@@ -17,11 +17,11 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "ManipulationPivot ManipulationStartingRoutedEventArgs.Pivot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "Pivot");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "ManipulationPivot ManipulationStartingRoutedEventArgs.Pivot");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "Pivot");
 			}
 		}
 #endif

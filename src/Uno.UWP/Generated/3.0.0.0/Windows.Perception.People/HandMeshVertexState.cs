@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshVertexState", "SpatialCoordinateSystem HandMeshVertexState.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshVertexState", "CoordinateSystem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshVertexState", "PerceptionTimestamp HandMeshVertexState.UpdateTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshVertexState", "UpdateTimestamp");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Perception.People
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetVertices(global::Windows.Perception.People.HandMeshVertex[] vertices)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertexState", "void HandMeshVertexState.GetVertices(HandMeshVertex[] vertices)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertexState", "GetVertices(HandMeshVertex[] vertices)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.CoordinateSystem.get

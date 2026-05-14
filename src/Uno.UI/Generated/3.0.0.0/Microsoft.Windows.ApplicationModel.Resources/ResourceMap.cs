@@ -19,7 +19,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "uint ResourceMap.ResourceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "ResourceCount");
 			}
 		}
 #endif
@@ -27,56 +27,56 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceMap GetSubtree(string reference)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "ResourceMap ResourceMap.GetSubtree(string reference)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "GetSubtree(string reference)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceMap TryGetSubtree(string reference)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "ResourceMap ResourceMap.TryGetSubtree(string reference)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "TryGetSubtree(string reference)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate GetValue(string resource)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "ResourceCandidate ResourceMap.GetValue(string resource)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "GetValue(string resource)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate GetValue(string resource, global::Microsoft.Windows.ApplicationModel.Resources.ResourceContext context)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "ResourceCandidate ResourceMap.GetValue(string resource, ResourceContext context)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "GetValue(string resource, ResourceContext context)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate> GetValueByIndex(uint index)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "KeyValuePair<string, ResourceCandidate> ResourceMap.GetValueByIndex(uint index)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "GetValueByIndex(uint index)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate> GetValueByIndex(uint index, global::Microsoft.Windows.ApplicationModel.Resources.ResourceContext context)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "KeyValuePair<string, ResourceCandidate> ResourceMap.GetValueByIndex(uint index, ResourceContext context)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "GetValueByIndex(uint index, ResourceContext context)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate TryGetValue(string resource)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "ResourceCandidate ResourceMap.TryGetValue(string resource)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "TryGetValue(string resource)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate TryGetValue(string resource, global::Microsoft.Windows.ApplicationModel.Resources.ResourceContext context)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "ResourceCandidate ResourceMap.TryGetValue(string resource, ResourceContext context)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceMap", "TryGetValue(string resource, ResourceContext context)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceMap.ResourceCount.get

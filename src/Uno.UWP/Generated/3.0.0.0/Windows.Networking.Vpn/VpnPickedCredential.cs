@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "string VpnPickedCredential.AdditionalPin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "AdditionalPin");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "PasswordCredential VpnPickedCredential.OldPasswordCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "OldPasswordCredential");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "PasswordCredential VpnPickedCredential.PasskeyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "PasskeyCredential");
 			}
 		}
 #endif

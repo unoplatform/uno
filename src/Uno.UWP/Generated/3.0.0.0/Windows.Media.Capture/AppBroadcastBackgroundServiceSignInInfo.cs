@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "WebAuthenticationResult AppBroadcastBackgroundServiceSignInInfo.AuthenticationResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "AuthenticationResult");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "Uri AppBroadcastBackgroundServiceSignInInfo.OAuthCallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "OAuthCallbackUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "Uri AppBroadcastBackgroundServiceSignInInfo.OAuthCallbackUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "OAuthCallbackUri");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "Uri AppBroadcastBackgroundServiceSignInInfo.OAuthRequestUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "OAuthRequestUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "Uri AppBroadcastBackgroundServiceSignInInfo.OAuthRequestUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "OAuthRequestUri");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "AppBroadcastSignInState AppBroadcastBackgroundServiceSignInInfo.SignInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "SignInState");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "string AppBroadcastBackgroundServiceSignInInfo.UserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "UserName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "string AppBroadcastBackgroundServiceSignInInfo.UserName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "UserName");
 			}
 		}
 #endif
@@ -94,12 +94,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "event TypedEventHandler<AppBroadcastBackgroundServiceSignInInfo, AppBroadcastSignInStateChangedEventArgs> AppBroadcastBackgroundServiceSignInInfo.SignInStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "event SignInStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "event TypedEventHandler<AppBroadcastBackgroundServiceSignInInfo, AppBroadcastSignInStateChangedEventArgs> AppBroadcastBackgroundServiceSignInInfo.SignInStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "event SignInStateChanged");
 			}
 		}
 #endif
@@ -110,12 +110,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "event TypedEventHandler<AppBroadcastBackgroundServiceSignInInfo, object> AppBroadcastBackgroundServiceSignInInfo.UserNameChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "event UserNameChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "event TypedEventHandler<AppBroadcastBackgroundServiceSignInInfo, object> AppBroadcastBackgroundServiceSignInInfo.UserNameChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "event UserNameChanged");
 			}
 		}
 #endif

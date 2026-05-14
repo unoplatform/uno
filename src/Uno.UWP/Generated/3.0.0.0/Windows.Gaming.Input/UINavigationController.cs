@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "IReadOnlyList<UINavigationController> UINavigationController.UINavigationControllers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "UINavigationControllers");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "Headset UINavigationController.Headset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "Headset");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "bool UINavigationController.IsWireless");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "IsWireless");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "User UINavigationController.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "User");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.Input.UINavigationController FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "UINavigationController UINavigationController.FromGameController(IGameController gameController)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "FromGameController(IGameController gameController)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllers.get
@@ -69,21 +69,21 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.UINavigationReading GetCurrentReading()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "UINavigationReading UINavigationController.GetCurrentReading()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "GetCurrentReading()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetOptionalButtonLabel(global::Windows.Gaming.Input.OptionalUINavigationButtons button)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "GameControllerButtonLabel UINavigationController.GetOptionalButtonLabel(OptionalUINavigationButtons button)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "GetOptionalButtonLabel(OptionalUINavigationButtons button)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetRequiredButtonLabel(global::Windows.Gaming.Input.RequiredUINavigationButtons button)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "GameControllerButtonLabel UINavigationController.GetRequiredButtonLabel(RequiredUINavigationButtons button)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "GetRequiredButtonLabel(RequiredUINavigationButtons button)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.HeadsetConnected.add
@@ -96,7 +96,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "BatteryReport UINavigationController.TryGetBatteryReport()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.UINavigationController", "TryGetBatteryReport()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.Headset.get
@@ -109,12 +109,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event EventHandler<UINavigationController> UINavigationController.UINavigationControllerAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event UINavigationControllerAdded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event EventHandler<UINavigationController> UINavigationController.UINavigationControllerAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event UINavigationControllerAdded");
 			}
 		}
 #endif
@@ -125,12 +125,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event EventHandler<UINavigationController> UINavigationController.UINavigationControllerRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event UINavigationControllerRemoved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event EventHandler<UINavigationController> UINavigationController.UINavigationControllerRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event UINavigationControllerRemoved");
 			}
 		}
 #endif
@@ -141,12 +141,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event TypedEventHandler<IGameController, Headset> UINavigationController.HeadsetConnected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event HeadsetConnected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event TypedEventHandler<IGameController, Headset> UINavigationController.HeadsetConnected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event HeadsetConnected");
 			}
 		}
 #endif
@@ -157,12 +157,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event TypedEventHandler<IGameController, Headset> UINavigationController.HeadsetDisconnected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event HeadsetDisconnected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event TypedEventHandler<IGameController, Headset> UINavigationController.HeadsetDisconnected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event HeadsetDisconnected");
 			}
 		}
 #endif
@@ -173,12 +173,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event TypedEventHandler<IGameController, UserChangedEventArgs> UINavigationController.UserChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event UserChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event TypedEventHandler<IGameController, UserChangedEventArgs> UINavigationController.UserChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationController", "event UserChanged");
 			}
 		}
 #endif

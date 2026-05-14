@@ -12,7 +12,7 @@ namespace Windows.Graphics.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GraphicsCapturePicker()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCapturePicker", "GraphicsCapturePicker.GraphicsCapturePicker()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCapturePicker", "GraphicsCapturePicker()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.GraphicsCapturePicker()
@@ -20,7 +20,7 @@ namespace Windows.Graphics.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Capture.GraphicsCaptureItem> PickSingleItemAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCapturePicker", "IAsyncOperation<GraphicsCaptureItem> GraphicsCapturePicker.PickSingleItemAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCapturePicker", "PickSingleItemAsync()");
 		}
 #endif
 	}

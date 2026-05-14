@@ -14,7 +14,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.DomainJoinServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "DomainJoinServiceRequestType");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.DomainLeaveServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "DomainLeaveServiceRequestType");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "DateTimeOffset? PlayReadyStatics.HardwareDRMDisabledAtTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "HardwareDRMDisabledAtTime");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "DateTimeOffset? PlayReadyStatics.HardwareDRMDisabledUntilTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "HardwareDRMDisabledUntilTime");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.IndividualizationServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "IndividualizationServiceRequestType");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "string PlayReadyStatics.InputTrustAuthorityToCreate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "InputTrustAuthorityToCreate");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.LicenseAcquirerServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "LicenseAcquirerServiceRequestType");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.MediaProtectionSystemId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "MediaProtectionSystemId");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.MeteringReportServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "MeteringReportServiceRequestType");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "uint PlayReadyStatics.PlayReadyCertificateSecurityLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "PlayReadyCertificateSecurityLevel");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "uint PlayReadyStatics.PlayReadySecurityVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "PlayReadySecurityVersion");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.ProtectionSystemId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "ProtectionSystemId");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.RevocationServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "RevocationServiceRequestType");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "Guid PlayReadyStatics.SecureStopServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "SecureStopServiceRequestType");
 			}
 		}
 #endif
@@ -152,14 +152,14 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool CheckSupportedHardware(global::Windows.Media.Protection.PlayReady.PlayReadyHardwareDRMFeatures hwdrmFeature)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "bool PlayReadyStatics.CheckSupportedHardware(PlayReadyHardwareDRMFeatures hwdrmFeature)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "CheckSupportedHardware(PlayReadyHardwareDRMFeatures hwdrmFeature)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ResetHardwareDRMDisabled()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyStatics", "void PlayReadyStatics.ResetHardwareDRMDisabled()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyStatics", "ResetHardwareDRMDisabled()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyStatics.DomainJoinServiceRequestType.get

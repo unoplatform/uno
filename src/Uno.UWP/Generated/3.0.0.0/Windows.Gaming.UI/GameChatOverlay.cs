@@ -19,11 +19,11 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatOverlay", "GameChatOverlayPosition GameChatOverlay.DesiredPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatOverlay", "DesiredPosition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlay", "GameChatOverlayPosition GameChatOverlay.DesiredPosition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlay", "DesiredPosition");
 			}
 		}
 #endif
@@ -31,14 +31,14 @@ namespace Windows.Gaming.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.UI.GameChatOverlay GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatOverlay", "GameChatOverlay GameChatOverlay.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatOverlay", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddMessage(string sender, string message, global::Windows.Gaming.UI.GameChatMessageOrigin origin)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlay", "void GameChatOverlay.AddMessage(string sender, string message, GameChatMessageOrigin origin)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlay", "AddMessage(string sender, string message, GameChatMessageOrigin origin)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.UI.GameChatOverlay.DesiredPosition.get

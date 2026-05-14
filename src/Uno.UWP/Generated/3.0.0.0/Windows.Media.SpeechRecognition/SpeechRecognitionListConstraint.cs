@@ -14,7 +14,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "IList<string> SpeechRecognitionListConstraint.Commands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "Commands");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "bool SpeechRecognitionListConstraint.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "bool SpeechRecognitionListConstraint.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "IsEnabled");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "Probability");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "Probability");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "string SpeechRecognitionListConstraint.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "Tag");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "string SpeechRecognitionListConstraint.Tag");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "Tag");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionConstraintType SpeechRecognitionListConstraint.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "Type");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognitionListConstraint(global::System.Collections.Generic.IEnumerable<string> commands)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionListConstraint.SpeechRecognitionListConstraint(IEnumerable<string> commands)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionListConstraint(IEnumerable<string> commands)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.SpeechRecognitionListConstraint(System.Collections.Generic.IEnumerable<string>)
@@ -82,7 +82,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognitionListConstraint(global::System.Collections.Generic.IEnumerable<string> commands, string tag)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionListConstraint.SpeechRecognitionListConstraint(IEnumerable<string> commands, string tag)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionListConstraint(IEnumerable<string> commands, string tag)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.SpeechRecognitionListConstraint(System.Collections.Generic.IEnumerable<string>, string)

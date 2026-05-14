@@ -12,14 +12,14 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallHistoryStore> RequestStoreAsync(global::Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType accessType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager", "IAsyncOperation<PhoneCallHistoryStore> PhoneCallHistoryManager.RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager", "RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser GetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager", "PhoneCallHistoryManagerForUser PhoneCallHistoryManager.GetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager", "GetForUser(User user)");
 		}
 #endif
 	}

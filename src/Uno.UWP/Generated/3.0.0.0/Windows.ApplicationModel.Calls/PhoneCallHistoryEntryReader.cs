@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Calls.PhoneCallHistoryEntry>> ReadBatchAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader", "IAsyncOperation<IReadOnlyList<PhoneCallHistoryEntry>> PhoneCallHistoryEntryReader.ReadBatchAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader", "ReadBatchAsync()");
 		}
 #endif
 	}

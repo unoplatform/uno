@@ -19,7 +19,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.DeploymentResult", "Guid DeploymentResult.ActivityId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.DeploymentResult", "ActivityId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.DeploymentResult", "string DeploymentResult.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.DeploymentResult", "ErrorText");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.DeploymentResult", "Exception DeploymentResult.ExtendedErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.DeploymentResult", "ExtendedErrorCode");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.DeploymentResult", "bool DeploymentResult.IsRegistered");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.DeploymentResult", "IsRegistered");
 			}
 		}
 #endif

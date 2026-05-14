@@ -12,91 +12,91 @@ namespace Windows.Services.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint, global::Windows.Services.Maps.MapRouteOptimization optimization)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteOptimization optimization)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteOptimization optimization)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint, global::Windows.Services.Maps.MapRouteOptimization optimization, global::Windows.Services.Maps.MapRouteRestrictions restrictions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteOptimization optimization, MapRouteRestrictions restrictions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteOptimization optimization, MapRouteRestrictions restrictions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint, global::Windows.Services.Maps.MapRouteOptimization optimization, global::Windows.Services.Maps.MapRouteRestrictions restrictions, double headingInDegrees)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteOptimization optimization, MapRouteRestrictions restrictions, double headingInDegrees)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteOptimization optimization, MapRouteRestrictions restrictions, double headingInDegrees)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.Geopoint> wayPoints)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.Geopoint> wayPoints, global::Windows.Services.Maps.MapRouteOptimization optimization)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints, MapRouteOptimization optimization)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints, MapRouteOptimization optimization)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.Geopoint> wayPoints, global::Windows.Services.Maps.MapRouteOptimization optimization, global::Windows.Services.Maps.MapRouteRestrictions restrictions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints, MapRouteOptimization optimization, MapRouteRestrictions restrictions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints, MapRouteOptimization optimization, MapRouteRestrictions restrictions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.Geopoint> wayPoints, global::Windows.Services.Maps.MapRouteOptimization optimization, global::Windows.Services.Maps.MapRouteRestrictions restrictions, double headingInDegrees)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints, MapRouteOptimization optimization, MapRouteRestrictions restrictions, double headingInDegrees)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints, MapRouteOptimization optimization, MapRouteRestrictions restrictions, double headingInDegrees)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetWalkingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetWalkingRouteAsync(Geopoint startPoint, Geopoint endPoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetWalkingRouteAsync(Geopoint startPoint, Geopoint endPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetWalkingRouteFromWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.Geopoint> wayPoints)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetWalkingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetWalkingRouteFromWaypointsAsync(IEnumerable<Geopoint> wayPoints)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint, global::Windows.Services.Maps.MapRouteDrivingOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteDrivingOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteAsync(Geopoint startPoint, Geopoint endPoint, MapRouteDrivingOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromEnhancedWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Services.Maps.EnhancedWaypoint> waypoints)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync(IEnumerable<EnhancedWaypoint> waypoints)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteFromEnhancedWaypointsAsync(IEnumerable<EnhancedWaypoint> waypoints)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteFromEnhancedWaypointsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Services.Maps.EnhancedWaypoint> waypoints, global::Windows.Services.Maps.MapRouteDrivingOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "IAsyncOperation<MapRouteFinderResult> MapRouteFinder.GetDrivingRouteFromEnhancedWaypointsAsync(IEnumerable<EnhancedWaypoint> waypoints, MapRouteDrivingOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinder", "GetDrivingRouteFromEnhancedWaypointsAsync(IEnumerable<EnhancedWaypoint> waypoints, MapRouteDrivingOptions options)");
 		}
 #endif
 	}

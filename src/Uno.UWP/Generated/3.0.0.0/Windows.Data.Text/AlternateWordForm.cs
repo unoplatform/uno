@@ -19,7 +19,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.AlternateWordForm", "string AlternateWordForm.AlternateText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.AlternateWordForm", "AlternateText");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.AlternateWordForm", "AlternateNormalizationFormat AlternateWordForm.NormalizationFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.AlternateWordForm", "NormalizationFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.AlternateWordForm", "TextSegment AlternateWordForm.SourceTextSegment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.AlternateWordForm", "SourceTextSegment");
 			}
 		}
 #endif

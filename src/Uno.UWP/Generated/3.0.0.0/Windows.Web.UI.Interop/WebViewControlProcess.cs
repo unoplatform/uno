@@ -14,7 +14,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "string WebViewControlProcess.EnterpriseId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "EnterpriseId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "bool WebViewControlProcess.IsPrivateNetworkClientServerCapabilityEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "IsPrivateNetworkClientServerCapabilityEnabled");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "uint WebViewControlProcess.ProcessId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "ProcessId");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Web.UI.Interop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebViewControlProcess()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "WebViewControlProcess.WebViewControlProcess()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "WebViewControlProcess()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.WebViewControlProcess()
@@ -50,7 +50,7 @@ namespace Windows.Web.UI.Interop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebViewControlProcess(global::Windows.Web.UI.Interop.WebViewControlProcessOptions processOptions)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "WebViewControlProcess.WebViewControlProcess(WebViewControlProcessOptions processOptions)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "WebViewControlProcess(WebViewControlProcessOptions processOptions)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.WebViewControlProcess(Windows.Web.UI.Interop.WebViewControlProcessOptions)
@@ -58,21 +58,21 @@ namespace Windows.Web.UI.Interop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Web.UI.Interop.WebViewControl> CreateWebViewControlAsync(long hostWindowHandle, global::Windows.Foundation.Rect bounds)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "IAsyncOperation<WebViewControl> WebViewControlProcess.CreateWebViewControlAsync(long hostWindowHandle, Rect bounds)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "CreateWebViewControlAsync(long hostWindowHandle, Rect bounds)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.UI.Interop.WebViewControl> GetWebViewControls()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "IReadOnlyList<WebViewControl> WebViewControlProcess.GetWebViewControls()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcess", "GetWebViewControls()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Terminate()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "void WebViewControlProcess.Terminate()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "Terminate()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.ProcessExited.add
@@ -87,12 +87,12 @@ namespace Windows.Web.UI.Interop
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "event TypedEventHandler<WebViewControlProcess, object> WebViewControlProcess.ProcessExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "event ProcessExited");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "event TypedEventHandler<WebViewControlProcess, object> WebViewControlProcess.ProcessExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "event ProcessExited");
 			}
 		}
 #endif

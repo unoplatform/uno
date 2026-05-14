@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult", "object PerceptionFrameSourcePropertyChangeResult.NewValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult", "NewValue");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult", "PerceptionFrameSourcePropertyChangeStatus PerceptionFrameSourcePropertyChangeResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult", "Status");
 			}
 		}
 #endif

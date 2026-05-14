@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "IReadOnlyList<BluetoothLEAdvertisementReceivedEventArgs> BluetoothLEAdvertisementWatcherTriggerDetails.Advertisements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "Advertisements");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "BluetoothError BluetoothLEAdvertisementWatcherTriggerDetails.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "Error");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTriggerDetails.SignalStrengthFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "SignalStrengthFilter");
 			}
 		}
 #endif

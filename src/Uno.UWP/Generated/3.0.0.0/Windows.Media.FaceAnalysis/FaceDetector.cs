@@ -19,7 +19,7 @@ namespace Windows.Media.FaceAnalysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "bool FaceDetector.IsSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "IsSupported");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.FaceAnalysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "BitmapSize FaceDetector.MaxDetectableFaceSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "MaxDetectableFaceSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.FaceAnalysis.FaceDetector", "BitmapSize FaceDetector.MaxDetectableFaceSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.FaceAnalysis.FaceDetector", "MaxDetectableFaceSize");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media.FaceAnalysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "BitmapSize FaceDetector.MinDetectableFaceSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "MinDetectableFaceSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.FaceAnalysis.FaceDetector", "BitmapSize FaceDetector.MinDetectableFaceSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.FaceAnalysis.FaceDetector", "MinDetectableFaceSize");
 			}
 		}
 #endif
@@ -55,21 +55,21 @@ namespace Windows.Media.FaceAnalysis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.FaceAnalysis.FaceDetector> CreateAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "IAsyncOperation<FaceDetector> FaceDetector.CreateAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "CreateAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Imaging.BitmapPixelFormat> GetSupportedBitmapPixelFormats()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "IReadOnlyList<BitmapPixelFormat> FaceDetector.GetSupportedBitmapPixelFormats()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "GetSupportedBitmapPixelFormats()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsBitmapPixelFormatSupported(global::Windows.Graphics.Imaging.BitmapPixelFormat bitmapPixelFormat)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "bool FaceDetector.IsBitmapPixelFormatSupported(BitmapPixelFormat bitmapPixelFormat)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "IsBitmapPixelFormatSupported(BitmapPixelFormat bitmapPixelFormat)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.IsSupported.get
@@ -77,14 +77,14 @@ namespace Windows.Media.FaceAnalysis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.Media.FaceAnalysis.DetectedFace>> DetectFacesAsync(global::Windows.Graphics.Imaging.SoftwareBitmap image)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "IAsyncOperation<IList<DetectedFace>> FaceDetector.DetectFacesAsync(SoftwareBitmap image)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "DetectFacesAsync(SoftwareBitmap image)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.Media.FaceAnalysis.DetectedFace>> DetectFacesAsync(global::Windows.Graphics.Imaging.SoftwareBitmap image, global::Windows.Graphics.Imaging.BitmapBounds searchArea)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "IAsyncOperation<IList<DetectedFace>> FaceDetector.DetectFacesAsync(SoftwareBitmap image, BitmapBounds searchArea)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.FaceDetector", "DetectFacesAsync(SoftwareBitmap image, BitmapBounds searchArea)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.MaxDetectableFaceSize.get

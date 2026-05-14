@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "StorePackageUpdateState StorePackageUpdateResult.OverallState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "OverallState");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "IReadOnlyList<StorePackageUpdateStatus> StorePackageUpdateResult.StorePackageUpdateStatuses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "StorePackageUpdateStatuses");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "IReadOnlyList<StoreQueueItem> StorePackageUpdateResult.StoreQueueItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "StoreQueueItems");
 			}
 		}
 #endif

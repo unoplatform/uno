@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "BitmapPixelFormat BarcodeScannerVideoFrame.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "Format");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "uint BarcodeScannerVideoFrame.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "Height");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "IBuffer BarcodeScannerVideoFrame.PixelData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "PixelData");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "uint BarcodeScannerVideoFrame.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "Width");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Devices.PointOfService.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "void BarcodeScannerVideoFrame.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Format.get

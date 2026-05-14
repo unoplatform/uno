@@ -12,7 +12,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetSystemDateTime(global::System.DateTimeOffset utcDateTime)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DateTimeSettings", "void DateTimeSettings.SetSystemDateTime(DateTimeOffset utcDateTime)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DateTimeSettings", "SetSystemDateTime(DateTimeOffset utcDateTime)");
 		}
 #endif
 	}

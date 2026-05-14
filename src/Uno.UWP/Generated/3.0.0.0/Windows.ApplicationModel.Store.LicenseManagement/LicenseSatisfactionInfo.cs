@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "bool LicenseSatisfactionInfo.IsSatisfied");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "IsSatisfied");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "bool LicenseSatisfactionInfo.SatisfiedByDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByDevice");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "bool LicenseSatisfactionInfo.SatisfiedByInstallMedia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByInstallMedia");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "bool LicenseSatisfactionInfo.SatisfiedByOpenLicense");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByOpenLicense");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "bool LicenseSatisfactionInfo.SatisfiedByPass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByPass");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "bool LicenseSatisfactionInfo.SatisfiedBySignedInUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedBySignedInUser");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "bool LicenseSatisfactionInfo.SatisfiedByTrial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByTrial");
 			}
 		}
 #endif

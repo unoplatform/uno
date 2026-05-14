@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport", "Geofence GeofenceStateChangeReport.Geofence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport", "Geofence");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport", "Geoposition GeofenceStateChangeReport.Geoposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport", "Geoposition");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport", "GeofenceState GeofenceStateChangeReport.NewState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport", "NewState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport", "GeofenceRemovalReason GeofenceStateChangeReport.RemovalReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport", "RemovalReason");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampAvailabilityChangedEventArgs", "bool LampAvailabilityChangedEventArgs.IsAvailable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampAvailabilityChangedEventArgs", "IsAvailable");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo", "bool WiFiDirectServiceProvisioningInfo.IsGroupFormationNeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo", "IsGroupFormationNeeded");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo", "WiFiDirectServiceConfigurationMethod WiFiDirectServiceProvisioningInfo.SelectedConfigurationMethod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo", "SelectedConfigurationMethod");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "Certificate HttpTransportInformation.ServerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "ServerCertificate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "SocketSslErrorSeverity HttpTransportInformation.ServerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "ServerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "IReadOnlyList<ChainValidationResult> HttpTransportInformation.ServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "ServerCertificateErrors");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "IReadOnlyList<Certificate> HttpTransportInformation.ServerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "ServerIntermediateCertificates");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "string HttpTransportInformation.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.ServerCertificate.get

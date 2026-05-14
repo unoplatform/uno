@@ -15,7 +15,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensorReading", "TimeSpan? LightSensorReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensorReading", "PerformanceCount");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensorReading", "IReadOnlyDictionary<string, object> LightSensorReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensorReading", "Properties");
 			}
 		}
 #endif

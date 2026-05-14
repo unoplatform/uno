@@ -17,21 +17,21 @@ namespace Windows.ApplicationModel.AppExtensions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog Open(string appExtensionName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "AppExtensionCatalog AppExtensionCatalog.Open(string appExtensionName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "Open(string appExtensionName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppExtensions.AppExtension>> FindAllAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "IAsyncOperation<IReadOnlyList<AppExtension>> AppExtensionCatalog.FindAllAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "FindAllAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestRemovePackageAsync(string packageFullName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "IAsyncOperation<bool> AppExtensionCatalog.RequestRemovePackageAsync(string packageFullName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "RequestRemovePackageAsync(string packageFullName)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageInstalled.add
@@ -51,12 +51,12 @@ namespace Windows.ApplicationModel.AppExtensions
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageInstalledEventArgs> AppExtensionCatalog.PackageInstalled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageInstalled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageInstalledEventArgs> AppExtensionCatalog.PackageInstalled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageInstalled");
 			}
 		}
 #endif
@@ -67,12 +67,12 @@ namespace Windows.ApplicationModel.AppExtensions
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageStatusChangedEventArgs> AppExtensionCatalog.PackageStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageStatusChangedEventArgs> AppExtensionCatalog.PackageStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageStatusChanged");
 			}
 		}
 #endif
@@ -83,12 +83,12 @@ namespace Windows.ApplicationModel.AppExtensions
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageUninstallingEventArgs> AppExtensionCatalog.PackageUninstalling");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageUninstalling");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageUninstallingEventArgs> AppExtensionCatalog.PackageUninstalling");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageUninstalling");
 			}
 		}
 #endif
@@ -99,12 +99,12 @@ namespace Windows.ApplicationModel.AppExtensions
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageUpdatedEventArgs> AppExtensionCatalog.PackageUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageUpdated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageUpdatedEventArgs> AppExtensionCatalog.PackageUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageUpdated");
 			}
 		}
 #endif
@@ -115,12 +115,12 @@ namespace Windows.ApplicationModel.AppExtensions
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageUpdatingEventArgs> AppExtensionCatalog.PackageUpdating");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageUpdating");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event TypedEventHandler<AppExtensionCatalog, AppExtensionPackageUpdatingEventArgs> AppExtensionCatalog.PackageUpdating");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppExtensions.AppExtensionCatalog", "event PackageUpdating");
 			}
 		}
 #endif

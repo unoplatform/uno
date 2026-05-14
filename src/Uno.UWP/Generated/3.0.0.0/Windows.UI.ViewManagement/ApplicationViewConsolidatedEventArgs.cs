@@ -19,7 +19,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs", "bool ApplicationViewConsolidatedEventArgs.IsAppInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs", "IsAppInitiated");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs", "bool ApplicationViewConsolidatedEventArgs.IsUserInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs", "IsUserInitiated");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails", "StorageLibraryChangeTracker StorageLibraryChangeTrackerTriggerDetails.ChangeTracker");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails", "ChangeTracker");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails", "StorageFolder StorageLibraryChangeTrackerTriggerDetails.Folder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails", "Folder");
 			}
 		}
 #endif

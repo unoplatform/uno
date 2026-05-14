@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "string PrintTicketParameterInitializer.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "Name");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "PrintTicketValue PrintTicketParameterInitializer.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "PrintTicketValue PrintTicketParameterInitializer.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "Value");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "string PrintTicketParameterInitializer.XmlNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "XmlNamespace");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "IXmlNode PrintTicketParameterInitializer.XmlNode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer", "XmlNode");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "BluetoothLEAdvertisement BluetoothLEAdvertisementFilter.Advertisement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "Advertisement");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "BluetoothLEAdvertisement BluetoothLEAdvertisementFilter.Advertisement");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "Advertisement");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "IList<BluetoothLEAdvertisementBytePattern> BluetoothLEAdvertisementFilter.BytePatterns");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "BytePatterns");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BluetoothLEAdvertisementFilter()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "BluetoothLEAdvertisementFilter.BluetoothLEAdvertisementFilter()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "BluetoothLEAdvertisementFilter()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter.BluetoothLEAdvertisementFilter()

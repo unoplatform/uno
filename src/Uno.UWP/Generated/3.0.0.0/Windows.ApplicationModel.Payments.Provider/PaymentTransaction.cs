@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Payments.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerEmail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "PayerEmail");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerEmail");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "PayerEmail");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Payments.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "PayerName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "PayerName");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.ApplicationModel.Payments.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerPhoneNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "PayerPhoneNumber");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "string PaymentTransaction.PayerPhoneNumber");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "PayerPhoneNumber");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.Payments.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "PaymentRequest PaymentTransaction.PaymentRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "PaymentRequest");
 			}
 		}
 #endif
@@ -69,35 +69,35 @@ namespace Windows.ApplicationModel.Payments.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransaction> FromIdAsync(string id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "IAsyncOperation<PaymentTransaction> PaymentTransaction.FromIdAsync(string id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "FromIdAsync(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult> UpdateShippingAddressAsync(global::Windows.ApplicationModel.Payments.PaymentAddress shippingAddress)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "IAsyncOperation<PaymentRequestChangedResult> PaymentTransaction.UpdateShippingAddressAsync(PaymentAddress shippingAddress)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "UpdateShippingAddressAsync(PaymentAddress shippingAddress)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult> UpdateSelectedShippingOptionAsync(global::Windows.ApplicationModel.Payments.PaymentShippingOption selectedShippingOption)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "IAsyncOperation<PaymentRequestChangedResult> PaymentTransaction.UpdateSelectedShippingOptionAsync(PaymentShippingOption selectedShippingOption)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "UpdateSelectedShippingOptionAsync(PaymentShippingOption selectedShippingOption)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransactionAcceptResult> AcceptAsync(global::Windows.ApplicationModel.Payments.PaymentToken paymentToken)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "IAsyncOperation<PaymentTransactionAcceptResult> PaymentTransaction.AcceptAsync(PaymentToken paymentToken)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "AcceptAsync(PaymentToken paymentToken)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Reject()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "void PaymentTransaction.Reject()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.Provider.PaymentTransaction", "Reject()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerEmail.get

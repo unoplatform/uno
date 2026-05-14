@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUINavigatedEventArgs", "WebUINavigatedOperation WebUINavigatedEventArgs.NavigatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUINavigatedEventArgs", "NavigatedOperation");
 			}
 		}
 #endif

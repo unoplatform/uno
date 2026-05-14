@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "ExpressionAnimation InteractionTrackerInertiaRestingValue.Condition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "Condition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "ExpressionAnimation InteractionTrackerInertiaRestingValue.Condition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "Condition");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "ExpressionAnimation InteractionTrackerInertiaRestingValue.RestingValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "RestingValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "ExpressionAnimation InteractionTrackerInertiaRestingValue.RestingValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "RestingValue");
 			}
 		}
 #endif
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "InteractionTrackerInertiaRestingValue InteractionTrackerInertiaRestingValue.Create(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue", "Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.Condition.get

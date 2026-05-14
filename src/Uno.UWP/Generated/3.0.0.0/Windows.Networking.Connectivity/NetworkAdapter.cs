@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "uint NetworkAdapter.IanaInterfaceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "IanaInterfaceType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "ulong NetworkAdapter.InboundMaxBitsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "InboundMaxBitsPerSecond");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "Guid NetworkAdapter.NetworkAdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "NetworkAdapterId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "NetworkItem NetworkAdapter.NetworkItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "NetworkItem");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "ulong NetworkAdapter.OutboundMaxBitsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "OutboundMaxBitsPerSecond");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectedProfileAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "IAsyncOperation<ConnectionProfile> NetworkAdapter.GetConnectedProfileAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "GetConnectedProfileAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.IanaInterfaceType.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "int? BatteryReport.ChargeRateInMilliwatts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "ChargeRateInMilliwatts");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "int? BatteryReport.DesignCapacityInMilliwattHours");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "DesignCapacityInMilliwattHours");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "int? BatteryReport.FullChargeCapacityInMilliwattHours");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "FullChargeCapacityInMilliwattHours");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "int? BatteryReport.RemainingCapacityInMilliwattHours");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "RemainingCapacityInMilliwattHours");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "BatteryStatus BatteryReport.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "Status");
 			}
 		}
 #endif

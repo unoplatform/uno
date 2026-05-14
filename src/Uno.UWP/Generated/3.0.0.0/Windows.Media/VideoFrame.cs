@@ -14,7 +14,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "IDirect3DSurface VideoFrame.Direct3DSurface");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "Direct3DSurface");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "Duration");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "IPropertySet VideoFrame.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "ExtendedProperties");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "bool VideoFrame.IsDiscontinuous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "IsDiscontinuous");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "bool VideoFrame.IsDiscontinuous");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "IsDiscontinuous");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "bool VideoFrame.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "IsReadOnly");
 			}
 		}
 #endif
@@ -72,11 +72,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "RelativeTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.RelativeTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "RelativeTime");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "SoftwareBitmap VideoFrame.SoftwareBitmap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "SoftwareBitmap");
 			}
 		}
 #endif
@@ -96,11 +96,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "SystemRelativeTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.SystemRelativeTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "SystemRelativeTime");
 			}
 		}
 #endif
@@ -110,7 +110,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "string VideoFrame.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "Type");
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VideoFrame(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "VideoFrame.VideoFrame(BitmapPixelFormat format, int width, int height)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "VideoFrame(BitmapPixelFormat format, int width, int height)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.VideoFrame.VideoFrame(Windows.Graphics.Imaging.BitmapPixelFormat, int, int)
@@ -126,7 +126,7 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VideoFrame(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "VideoFrame.VideoFrame(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "VideoFrame(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.VideoFrame.VideoFrame(Windows.Graphics.Imaging.BitmapPixelFormat, int, int, Windows.Graphics.Imaging.BitmapAlphaMode)
@@ -134,28 +134,28 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.VideoFrame CreateAsDirect3D11SurfaceBacked(global::Windows.Graphics.DirectX.DirectXPixelFormat format, int width, int height)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "VideoFrame VideoFrame.CreateAsDirect3D11SurfaceBacked(DirectXPixelFormat format, int width, int height)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "CreateAsDirect3D11SurfaceBacked(DirectXPixelFormat format, int width, int height)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.VideoFrame CreateAsDirect3D11SurfaceBacked(global::Windows.Graphics.DirectX.DirectXPixelFormat format, int width, int height, global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "VideoFrame VideoFrame.CreateAsDirect3D11SurfaceBacked(DirectXPixelFormat format, int width, int height, IDirect3DDevice device)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "CreateAsDirect3D11SurfaceBacked(DirectXPixelFormat format, int width, int height, IDirect3DDevice device)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.VideoFrame CreateWithSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "VideoFrame VideoFrame.CreateWithSoftwareBitmap(SoftwareBitmap bitmap)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "CreateWithSoftwareBitmap(SoftwareBitmap bitmap)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.VideoFrame CreateWithDirect3D11Surface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "VideoFrame VideoFrame.CreateWithDirect3D11Surface(IDirect3DSurface surface)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "CreateWithDirect3D11Surface(IDirect3DSurface surface)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.VideoFrame.~VideoFrame()
@@ -163,21 +163,21 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "CopyToAsync(VideoFrame frame)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "void VideoFrame.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame, global::Windows.Graphics.Imaging.BitmapBounds? sourceBounds, global::Windows.Graphics.Imaging.BitmapBounds? destinationBounds)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame, BitmapBounds? sourceBounds, BitmapBounds? destinationBounds)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoFrame", "CopyToAsync(VideoFrame frame, BitmapBounds? sourceBounds, BitmapBounds? destinationBounds)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.VideoFrame.Direct3DSurface.get

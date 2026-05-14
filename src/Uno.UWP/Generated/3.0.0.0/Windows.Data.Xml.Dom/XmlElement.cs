@@ -35,35 +35,35 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetAttributeNS(object namespaceUri, string qualifiedName, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlElement", "void XmlElement.SetAttributeNS(object namespaceUri, string qualifiedName, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlElement", "SetAttributeNS(object namespaceUri, string qualifiedName, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetAttributeNS(object namespaceUri, string localName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "string XmlElement.GetAttributeNS(object namespaceUri, string localName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "GetAttributeNS(object namespaceUri, string localName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveAttributeNS(object namespaceUri, string localName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlElement", "void XmlElement.RemoveAttributeNS(object namespaceUri, string localName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlElement", "RemoveAttributeNS(object namespaceUri, string localName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlAttribute SetAttributeNodeNS(global::Windows.Data.Xml.Dom.XmlAttribute newAttribute)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "XmlAttribute XmlElement.SetAttributeNodeNS(XmlAttribute newAttribute)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "SetAttributeNodeNS(XmlAttribute newAttribute)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlAttribute GetAttributeNodeNS(object namespaceUri, string localName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "XmlAttribute XmlElement.GetAttributeNodeNS(object namespaceUri, string localName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "GetAttributeNodeNS(object namespaceUri, string localName)");
 		}
 #endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.HasChildNodes()
@@ -80,14 +80,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS(string xpath, object namespaces)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "IXmlNode XmlElement.SelectSingleNodeNS(string xpath, object namespaces)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "SelectSingleNodeNS(string xpath, object namespaces)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS(string xpath, object namespaces)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "XmlNodeList XmlElement.SelectNodesNS(string xpath, object namespaces)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlElement", "SelectNodesNS(string xpath, object namespaces)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Attributes.get

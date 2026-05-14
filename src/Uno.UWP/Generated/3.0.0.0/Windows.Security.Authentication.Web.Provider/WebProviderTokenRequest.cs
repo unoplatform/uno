@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "Uri WebProviderTokenRequest.ApplicationCallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "ApplicationCallbackUri");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "string WebProviderTokenRequest.ApplicationPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "ApplicationPackageFamilyName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "string WebProviderTokenRequest.ApplicationProcessName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "ApplicationProcessName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "WebTokenRequest WebProviderTokenRequest.ClientRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "ClientRequest");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "WebAccountSelectionOptions WebProviderTokenRequest.WebAccountSelectionOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "WebAccountSelectionOptions");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "IReadOnlyList<WebAccount> WebProviderTokenRequest.WebAccounts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "WebAccounts");
 			}
 		}
 #endif
@@ -77,21 +77,21 @@ namespace Windows.Security.Authentication.Web.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Core.CryptographicKey> GetApplicationTokenBindingKeyAsync(global::Windows.Security.Authentication.Web.TokenBindingKeyType keyType, global::System.Uri target)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "IAsyncOperation<CryptographicKey> WebProviderTokenRequest.GetApplicationTokenBindingKeyAsync(TokenBindingKeyType keyType, Uri target)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "GetApplicationTokenBindingKeyAsync(TokenBindingKeyType keyType, Uri target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GetApplicationTokenBindingKeyIdAsync(global::Windows.Security.Authentication.Web.TokenBindingKeyType keyType, global::System.Uri target)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "IAsyncOperation<IBuffer> WebProviderTokenRequest.GetApplicationTokenBindingKeyIdAsync(TokenBindingKeyType keyType, Uri target)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "GetApplicationTokenBindingKeyIdAsync(TokenBindingKeyType keyType, Uri target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> CheckApplicationForCapabilityAsync(string capabilityName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "IAsyncOperation<bool> WebProviderTokenRequest.CheckApplicationForCapabilityAsync(string capabilityName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest", "CheckApplicationForCapabilityAsync(string capabilityName)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationCallbackUri.get

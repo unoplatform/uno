@@ -19,11 +19,11 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "RfcommServiceId RfcommInboundConnectionInformation.LocalServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "LocalServiceId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "RfcommServiceId RfcommInboundConnectionInformation.LocalServiceId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "LocalServiceId");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "IBuffer RfcommInboundConnectionInformation.SdpRecord");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "SdpRecord");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "IBuffer RfcommInboundConnectionInformation.SdpRecord");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "SdpRecord");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "BluetoothServiceCapabilities RfcommInboundConnectionInformation.ServiceCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "ServiceCapabilities");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "BluetoothServiceCapabilities RfcommInboundConnectionInformation.ServiceCapabilities");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "ServiceCapabilities");
 			}
 		}
 #endif

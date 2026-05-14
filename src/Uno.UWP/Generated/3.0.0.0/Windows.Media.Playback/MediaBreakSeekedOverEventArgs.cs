@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "TimeSpan MediaBreakSeekedOverEventArgs.NewPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "NewPosition");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "TimeSpan MediaBreakSeekedOverEventArgs.OldPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "OldPosition");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "IReadOnlyList<MediaBreak> MediaBreakSeekedOverEventArgs.SeekedOverBreaks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "SeekedOverBreaks");
 			}
 		}
 #endif

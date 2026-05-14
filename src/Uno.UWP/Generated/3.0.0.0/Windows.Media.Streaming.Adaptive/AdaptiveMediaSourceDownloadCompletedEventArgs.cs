@@ -19,7 +19,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "HttpResponseMessage AdaptiveMediaSourceDownloadCompletedEventArgs.HttpResponseMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "HttpResponseMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "TimeSpan? AdaptiveMediaSourceDownloadCompletedEventArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "Position");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "int AdaptiveMediaSourceDownloadCompletedEventArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "RequestId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "ulong? AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceByteRangeLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "ResourceByteRangeLength");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "ulong? AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceByteRangeOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "ResourceByteRangeOffset");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "string AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "ResourceContentType");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "TimeSpan? AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "ResourceDuration");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "AdaptiveMediaSourceResourceType AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "ResourceType");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "Uri AdaptiveMediaSourceDownloadCompletedEventArgs.ResourceUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "ResourceUri");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "AdaptiveMediaSourceDownloadStatistics AdaptiveMediaSourceDownloadCompletedEventArgs.Statistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadCompletedEventArgs", "Statistics");
 			}
 		}
 #endif

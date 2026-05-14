@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.BatteryLifeDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "BatteryLifeDescription");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.DisplayDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "DisplayDescription");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.DisplayModelName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "DisplayModelName");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.FormFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "FormFactor");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.FrontCameraDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "FrontCameraDescription");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.GraphicsDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "GraphicsDescription");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.HasNfc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "HasNfc");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.HasOpticalDrive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "HasOpticalDrive");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.HasSdSlot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "HasSdSlot");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.IsFeatured");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "IsFeatured");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.IsOfficeInstalled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "IsOfficeInstalled");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.ManufacturerName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "ManufacturerName");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.Memory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "Memory");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.ModelName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "ModelName");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.Price");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "Price");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.ProcessorDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "ProcessorDescription");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.RearCameraDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "RearCameraDescription");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.RetailAccessCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "RetailAccessCode");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.ScreenSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "ScreenSize");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.StorageDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "StorageDescription");
 			}
 		}
 #endif
@@ -214,7 +214,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.Weight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "Weight");
 			}
 		}
 #endif
@@ -224,7 +224,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.WindowsEdition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "WindowsEdition");
 			}
 		}
 #endif

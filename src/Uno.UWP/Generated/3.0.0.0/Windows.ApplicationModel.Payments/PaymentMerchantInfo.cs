@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "string PaymentMerchantInfo.PackageFullName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PackageFullName");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "Uri PaymentMerchantInfo.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "Uri");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentMerchantInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo()
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentMerchantInfo(global::System.Uri uri)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo(Uri uri)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo(Uri uri)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo(System.Uri)

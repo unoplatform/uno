@@ -12,7 +12,7 @@ namespace Windows.Services.Store
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreSendRequestResult> SendRequestAsync(global::Windows.Services.Store.StoreContext context, uint requestKind, string parametersAsJson)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreRequestHelper", "IAsyncOperation<StoreSendRequestResult> StoreRequestHelper.SendRequestAsync(StoreContext context, uint requestKind, string parametersAsJson)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreRequestHelper", "SendRequestAsync(StoreContext context, uint requestKind, string parametersAsJson)");
 		}
 #endif
 	}

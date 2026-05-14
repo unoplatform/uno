@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "string HttpContentCodingWithQualityHeaderValue.ContentCoding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "ContentCoding");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "double? HttpContentCodingWithQualityHeaderValue.Quality");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "Quality");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpContentCodingWithQualityHeaderValue(string contentCoding)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string contentCoding)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue(string contentCoding)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string)
@@ -40,7 +40,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpContentCodingWithQualityHeaderValue(string contentCoding, double quality)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string contentCoding, double quality)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue(string contentCoding, double quality)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string, double)
@@ -48,21 +48,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue Parse(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue HttpContentCodingWithQualityHeaderValue.Parse(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue contentCodingWithQualityHeaderValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "bool HttpContentCodingWithQualityHeaderValue.TryParse(string input, out HttpContentCodingWithQualityHeaderValue contentCodingWithQualityHeaderValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "TryParse(string input, out HttpContentCodingWithQualityHeaderValue contentCodingWithQualityHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "string HttpContentCodingWithQualityHeaderValue.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue.ContentCoding.get

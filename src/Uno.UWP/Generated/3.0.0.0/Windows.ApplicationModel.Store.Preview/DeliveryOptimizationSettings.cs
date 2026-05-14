@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings", "DeliveryOptimizationDownloadMode DeliveryOptimizationSettings.DownloadMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings", "DownloadMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings", "DeliveryOptimizationDownloadModeSource DeliveryOptimizationSettings.DownloadModeSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings", "DownloadModeSource");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings GetCurrentSettings()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings", "DeliveryOptimizationSettings DeliveryOptimizationSettings.GetCurrentSettings()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings", "GetCurrentSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings.DownloadMode.get

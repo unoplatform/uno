@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ApplicationTriggerDetails", "ValueSet ApplicationTriggerDetails.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.ApplicationTriggerDetails", "Arguments");
 			}
 		}
 #endif

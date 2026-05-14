@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisResult", "InkAnalysisStatus InkAnalysisResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisResult", "Status");
 			}
 		}
 #endif

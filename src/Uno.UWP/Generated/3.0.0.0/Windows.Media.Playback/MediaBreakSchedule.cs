@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "IReadOnlyList<MediaBreak> MediaBreakSchedule.MidrollBreaks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "MidrollBreaks");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "MediaPlaybackItem MediaBreakSchedule.PlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "PlaybackItem");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "MediaBreak MediaBreakSchedule.PostrollBreak");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "PostrollBreak");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "MediaBreak MediaBreakSchedule.PostrollBreak");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "PostrollBreak");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "MediaBreak MediaBreakSchedule.PrerollBreak");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "PrerollBreak");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "MediaBreak MediaBreakSchedule.PrerollBreak");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "PrerollBreak");
 			}
 		}
 #endif
@@ -65,14 +65,14 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertMidrollBreak(global::Windows.Media.Playback.MediaBreak mediaBreak)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "void MediaBreakSchedule.InsertMidrollBreak(MediaBreak mediaBreak)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "InsertMidrollBreak(MediaBreak mediaBreak)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveMidrollBreak(global::Windows.Media.Playback.MediaBreak mediaBreak)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "void MediaBreakSchedule.RemoveMidrollBreak(MediaBreak mediaBreak)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "RemoveMidrollBreak(MediaBreak mediaBreak)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaBreakSchedule.ScheduleChanged.add
@@ -90,12 +90,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "event TypedEventHandler<MediaBreakSchedule, object> MediaBreakSchedule.ScheduleChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "event ScheduleChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "event TypedEventHandler<MediaBreakSchedule, object> MediaBreakSchedule.ScheduleChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "event ScheduleChanged");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.TileFlyoutNotification", "XmlDocument TileFlyoutNotification.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.TileFlyoutNotification", "Content");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.TileFlyoutNotification", "DateTimeOffset? TileFlyoutNotification.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.TileFlyoutNotification", "ExpirationTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutNotification", "DateTimeOffset? TileFlyoutNotification.ExpirationTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutNotification", "ExpirationTime");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TileFlyoutNotification(global::Windows.Data.Xml.Dom.XmlDocument content)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutNotification", "TileFlyoutNotification.TileFlyoutNotification(XmlDocument content)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutNotification", "TileFlyoutNotification(XmlDocument content)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.TileFlyoutNotification(Windows.Data.Xml.Dom.XmlDocument)

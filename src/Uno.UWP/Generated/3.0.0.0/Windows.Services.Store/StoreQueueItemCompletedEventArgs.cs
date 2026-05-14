@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItemCompletedEventArgs", "StoreQueueItemStatus StoreQueueItemCompletedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItemCompletedEventArgs", "Status");
 			}
 		}
 #endif

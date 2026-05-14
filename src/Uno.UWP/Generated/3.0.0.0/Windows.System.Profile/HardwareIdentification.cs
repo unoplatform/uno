@@ -12,7 +12,7 @@ namespace Windows.System.Profile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Profile.HardwareToken GetPackageSpecificToken(global::Windows.Storage.Streams.IBuffer nonce)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareIdentification", "HardwareToken HardwareIdentification.GetPackageSpecificToken(IBuffer nonce)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareIdentification", "GetPackageSpecificToken(IBuffer nonce)");
 		}
 #endif
 	}

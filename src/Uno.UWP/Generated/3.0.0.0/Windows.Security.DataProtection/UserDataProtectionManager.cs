@@ -17,49 +17,49 @@ namespace Windows.Security.DataProtection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.DataProtection.UserDataProtectionManager TryGetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "UserDataProtectionManager UserDataProtectionManager.TryGetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "TryGetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.DataProtection.UserDataProtectionManager TryGetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "UserDataProtectionManager UserDataProtectionManager.TryGetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "TryGetForUser(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.DataProtection.UserDataStorageItemProtectionStatus> ProtectStorageItemAsync(global::Windows.Storage.IStorageItem storageItem, global::Windows.Security.DataProtection.UserDataAvailability availability)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "IAsyncOperation<UserDataStorageItemProtectionStatus> UserDataProtectionManager.ProtectStorageItemAsync(IStorageItem storageItem, UserDataAvailability availability)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "ProtectStorageItemAsync(IStorageItem storageItem, UserDataAvailability availability)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.DataProtection.UserDataStorageItemProtectionInfo> GetStorageItemProtectionInfoAsync(global::Windows.Storage.IStorageItem storageItem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "IAsyncOperation<UserDataStorageItemProtectionInfo> UserDataProtectionManager.GetStorageItemProtectionInfoAsync(IStorageItem storageItem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "GetStorageItemProtectionInfoAsync(IStorageItem storageItem)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> ProtectBufferAsync(global::Windows.Storage.Streams.IBuffer unprotectedBuffer, global::Windows.Security.DataProtection.UserDataAvailability availability)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "IAsyncOperation<IBuffer> UserDataProtectionManager.ProtectBufferAsync(IBuffer unprotectedBuffer, UserDataAvailability availability)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "ProtectBufferAsync(IBuffer unprotectedBuffer, UserDataAvailability availability)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.DataProtection.UserDataBufferUnprotectResult> UnprotectBufferAsync(global::Windows.Storage.Streams.IBuffer protectedBuffer)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "IAsyncOperation<UserDataBufferUnprotectResult> UserDataProtectionManager.UnprotectBufferAsync(IBuffer protectedBuffer)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "UnprotectBufferAsync(IBuffer protectedBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsContinuedDataAvailabilityExpected(global::Windows.Security.DataProtection.UserDataAvailability availability)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "bool UserDataProtectionManager.IsContinuedDataAvailabilityExpected(UserDataAvailability availability)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataProtectionManager", "IsContinuedDataAvailabilityExpected(UserDataAvailability availability)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.DataAvailabilityStateChanged.add
@@ -71,12 +71,12 @@ namespace Windows.Security.DataProtection
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.DataProtection.UserDataProtectionManager", "event TypedEventHandler<UserDataProtectionManager, UserDataAvailabilityStateChangedEventArgs> UserDataProtectionManager.DataAvailabilityStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.DataProtection.UserDataProtectionManager", "event DataAvailabilityStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.DataProtection.UserDataProtectionManager", "event TypedEventHandler<UserDataProtectionManager, UserDataAvailabilityStateChangedEventArgs> UserDataProtectionManager.DataAvailabilityStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.DataProtection.UserDataProtectionManager", "event DataAvailabilityStateChanged");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageInstallOptions", "bool StorePackageInstallOptions.AllowForcedAppRestart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageInstallOptions", "AllowForcedAppRestart");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageInstallOptions", "bool StorePackageInstallOptions.AllowForcedAppRestart");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageInstallOptions", "AllowForcedAppRestart");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.Services.Store
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public StorePackageInstallOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageInstallOptions", "StorePackageInstallOptions.StorePackageInstallOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageInstallOptions", "StorePackageInstallOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StorePackageInstallOptions.StorePackageInstallOptions()

@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlaybackRateChangeRequestedEventArgs", "double PlaybackRateChangeRequestedEventArgs.RequestedPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlaybackRateChangeRequestedEventArgs", "RequestedPlaybackRate");
 			}
 		}
 #endif

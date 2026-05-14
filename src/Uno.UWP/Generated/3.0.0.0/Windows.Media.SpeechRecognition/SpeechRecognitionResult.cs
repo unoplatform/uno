@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "SpeechRecognitionConfidence SpeechRecognitionResult.Confidence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "Confidence");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "ISpeechRecognitionConstraint SpeechRecognitionResult.Constraint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "Constraint");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "TimeSpan SpeechRecognitionResult.PhraseDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "PhraseDuration");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "DateTimeOffset SpeechRecognitionResult.PhraseStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "PhraseStartTime");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "double SpeechRecognitionResult.RawConfidence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "RawConfidence");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "IReadOnlyList<string> SpeechRecognitionResult.RulePath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "RulePath");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "SpeechRecognitionSemanticInterpretation SpeechRecognitionResult.SemanticInterpretation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "SemanticInterpretation");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "SpeechRecognitionResultStatus SpeechRecognitionResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "Status");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "string SpeechRecognitionResult.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "Text");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> GetAlternates(uint maxAlternates)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "IReadOnlyList<SpeechRecognitionResult> SpeechRecognitionResult.GetAlternates(uint maxAlternates)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "GetAlternates(uint maxAlternates)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Confidence.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Point DisplayMonitor.BluePrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "BluePrimary");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayMonitorConnectionKind DisplayMonitor.ConnectionKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "ConnectionKind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "string DisplayMonitor.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DeviceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "string DisplayMonitor.DisplayAdapterDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayAdapterDeviceId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayAdapterId DisplayMonitor.DisplayAdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayAdapterId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "uint DisplayMonitor.DisplayAdapterTargetId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayAdapterTargetId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "string DisplayMonitor.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayName");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Point DisplayMonitor.GreenPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "GreenPrimary");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "bool DisplayMonitor.IsDolbyVisionSupportedInHdrMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "IsDolbyVisionSupportedInHdrMode");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.MaxAverageFullFrameLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "MaxAverageFullFrameLuminanceInNits");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.MaxLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "MaxLuminanceInNits");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.MinLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "MinLuminanceInNits");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "SizeInt32 DisplayMonitor.NativeResolutionInRawPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "NativeResolutionInRawPixels");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayMonitorPhysicalConnectorKind DisplayMonitor.PhysicalConnector");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "PhysicalConnector");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Size? DisplayMonitor.PhysicalSizeInInches");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "PhysicalSizeInInches");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.RawDpiX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "RawDpiX");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.RawDpiY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "RawDpiY");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Point DisplayMonitor.RedPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "RedPrimary");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayMonitorUsageKind DisplayMonitor.UsageKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "UsageKind");
 			}
 		}
 #endif
@@ -209,7 +209,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Point DisplayMonitor.WhitePoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "WhitePoint");
 			}
 		}
 #endif
@@ -217,28 +217,28 @@ namespace Windows.Devices.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "string DisplayMonitor.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Display.DisplayMonitor> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "IAsyncOperation<DisplayMonitor> DisplayMonitor.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Display.DisplayMonitor> FromInterfaceIdAsync(string deviceInterfaceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "IAsyncOperation<DisplayMonitor> DisplayMonitor.FromInterfaceIdAsync(string deviceInterfaceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "FromInterfaceIdAsync(string deviceInterfaceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetDescriptor(global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "byte[] DisplayMonitor.GetDescriptor(DisplayMonitorDescriptorKind descriptorKind)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "GetDescriptor(DisplayMonitorDescriptorKind descriptorKind)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.BluePrimary.get

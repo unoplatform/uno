@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs", "bool MediaPlaybackSessionBufferingStartedEventArgs.IsPlaybackInterruption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSessionBufferingStartedEventArgs", "IsPlaybackInterruption");
 			}
 		}
 #endif

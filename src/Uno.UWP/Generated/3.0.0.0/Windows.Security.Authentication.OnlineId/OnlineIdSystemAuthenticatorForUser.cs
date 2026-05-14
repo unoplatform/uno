@@ -19,11 +19,11 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser", "Guid OnlineIdSystemAuthenticatorForUser.ApplicationId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser", "ApplicationId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser", "Guid OnlineIdSystemAuthenticatorForUser.ApplicationId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser", "ApplicationId");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser", "User OnlineIdSystemAuthenticatorForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser", "User");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Security.Authentication.OnlineId
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult> GetTicketAsync(global::Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest request)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser", "IAsyncOperation<OnlineIdSystemTicketResult> OnlineIdSystemAuthenticatorForUser.GetTicketAsync(OnlineIdServiceTicketRequest request)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser", "GetTicketAsync(OnlineIdServiceTicketRequest request)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser.ApplicationId.get

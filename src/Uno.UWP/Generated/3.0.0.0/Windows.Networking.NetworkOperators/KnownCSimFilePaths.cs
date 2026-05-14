@@ -14,7 +14,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "IReadOnlyList<uint> KnownCSimFilePaths.EFSpn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "EFSpn");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "IReadOnlyList<uint> KnownCSimFilePaths.Gid1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "Gid1");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "IReadOnlyList<uint> KnownCSimFilePaths.Gid2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "Gid2");
 			}
 		}
 #endif

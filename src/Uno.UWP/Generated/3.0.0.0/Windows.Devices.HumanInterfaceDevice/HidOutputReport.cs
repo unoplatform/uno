@@ -19,11 +19,11 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "IBuffer HidOutputReport.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "Data");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "IBuffer HidOutputReport.Data");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "Data");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "ushort HidOutputReport.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "Id");
 			}
 		}
 #endif
@@ -41,28 +41,28 @@ namespace Windows.Devices.HumanInterfaceDevice
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControl GetBooleanControl(ushort usagePage, ushort usageId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "HidBooleanControl HidOutputReport.GetBooleanControl(ushort usagePage, ushort usageId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "GetBooleanControl(ushort usagePage, ushort usageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControl GetBooleanControlByDescription(global::Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription controlDescription)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "HidBooleanControl HidOutputReport.GetBooleanControlByDescription(HidBooleanControlDescription controlDescription)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "GetBooleanControlByDescription(HidBooleanControlDescription controlDescription)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidNumericControl GetNumericControl(ushort usagePage, ushort usageId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "HidNumericControl HidOutputReport.GetNumericControl(ushort usagePage, ushort usageId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "GetNumericControl(ushort usagePage, ushort usageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidNumericControl GetNumericControlByDescription(global::Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription controlDescription)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "HidNumericControl HidOutputReport.GetNumericControlByDescription(HidNumericControlDescription controlDescription)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "GetNumericControlByDescription(HidNumericControlDescription controlDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Data.get

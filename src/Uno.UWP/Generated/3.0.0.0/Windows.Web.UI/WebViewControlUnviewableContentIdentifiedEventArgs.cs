@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "string WebViewControlUnviewableContentIdentifiedEventArgs.MediaType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "MediaType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "Uri WebViewControlUnviewableContentIdentifiedEventArgs.Referrer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "Referrer");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "Uri WebViewControlUnviewableContentIdentifiedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "Uri");
 			}
 		}
 #endif

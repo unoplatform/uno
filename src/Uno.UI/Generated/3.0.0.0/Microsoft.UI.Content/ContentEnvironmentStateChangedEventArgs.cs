@@ -19,7 +19,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "bool ContentEnvironmentStateChangedEventArgs.DidAppWindowIdChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "DidAppWindowIdChange");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "bool ContentEnvironmentStateChangedEventArgs.DidDisplayIdChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "DidDisplayIdChange");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "bool ContentEnvironmentStateChangedEventArgs.DidDisplayScaleChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "DidDisplayScaleChange");
 			}
 		}
 #endif

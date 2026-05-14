@@ -16,14 +16,14 @@ namespace Windows.Storage.Streams
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Streams.Buffer CreateCopyFromMemoryBuffer(global::Windows.Foundation.IMemoryBuffer input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.Buffer", "Buffer Buffer.CreateCopyFromMemoryBuffer(IMemoryBuffer input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.Buffer", "CreateCopyFromMemoryBuffer(IMemoryBuffer input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.MemoryBuffer CreateMemoryBufferOverIBuffer(global::Windows.Storage.Streams.IBuffer input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.Buffer", "MemoryBuffer Buffer.CreateMemoryBufferOverIBuffer(IBuffer input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.Buffer", "CreateMemoryBufferOverIBuffer(IBuffer input)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Streams.Buffer.Capacity.get

@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "ulong? HttpContentRangeHeaderValue.FirstBytePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "FirstBytePosition");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "ulong? HttpContentRangeHeaderValue.LastBytePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "LastBytePosition");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "ulong? HttpContentRangeHeaderValue.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "Length");
 			}
 		}
 #endif
@@ -44,11 +44,11 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "string HttpContentRangeHeaderValue.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "Unit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "string HttpContentRangeHeaderValue.Unit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "Unit");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpContentRangeHeaderValue(ulong length)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong length)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue(ulong length)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong)
@@ -64,7 +64,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpContentRangeHeaderValue(ulong from, ulong to)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong from, ulong to)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue(ulong from, ulong to)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong, ulong)
@@ -72,7 +72,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpContentRangeHeaderValue(ulong from, ulong to, ulong length)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong from, ulong to, ulong length)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue(ulong from, ulong to, ulong length)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong, ulong, ulong)
@@ -80,21 +80,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue Parse(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue HttpContentRangeHeaderValue.Parse(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue contentRangeHeaderValue)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "bool HttpContentRangeHeaderValue.TryParse(string input, out HttpContentRangeHeaderValue contentRangeHeaderValue)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "TryParse(string input, out HttpContentRangeHeaderValue contentRangeHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "string HttpContentRangeHeaderValue.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.FirstBytePosition.get

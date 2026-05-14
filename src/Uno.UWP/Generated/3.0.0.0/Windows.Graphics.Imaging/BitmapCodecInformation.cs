@@ -19,7 +19,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "Guid BitmapCodecInformation.CodecId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "CodecId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "IReadOnlyList<string> BitmapCodecInformation.FileExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "FileExtensions");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "string BitmapCodecInformation.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "FriendlyName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "IReadOnlyList<string> BitmapCodecInformation.MimeTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "MimeTypes");
 			}
 		}
 #endif

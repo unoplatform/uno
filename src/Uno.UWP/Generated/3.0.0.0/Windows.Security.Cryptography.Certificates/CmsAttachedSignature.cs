@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "IReadOnlyList<Certificate> CmsAttachedSignature.Certificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "Certificates");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "byte[] CmsAttachedSignature.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "Content");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "IReadOnlyList<CmsSignerInfo> CmsAttachedSignature.Signers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "Signers");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CmsAttachedSignature(global::Windows.Storage.Streams.IBuffer inputBlob)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "CmsAttachedSignature.CmsAttachedSignature(IBuffer inputBlob)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "CmsAttachedSignature(IBuffer inputBlob)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.CmsAttachedSignature(Windows.Storage.Streams.IBuffer)
@@ -50,14 +50,14 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GenerateSignatureAsync(global::Windows.Storage.Streams.IBuffer data, global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.CmsSignerInfo> signers, global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "IAsyncOperation<IBuffer> CmsAttachedSignature.GenerateSignatureAsync(IBuffer data, IEnumerable<CmsSignerInfo> signers, IEnumerable<Certificate> certificates)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "GenerateSignatureAsync(IBuffer data, IEnumerable<CmsSignerInfo> signers, IEnumerable<Certificate> certificates)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.SignatureValidationResult VerifySignature()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "SignatureValidationResult CmsAttachedSignature.VerifySignature()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "VerifySignature()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Certificates.get

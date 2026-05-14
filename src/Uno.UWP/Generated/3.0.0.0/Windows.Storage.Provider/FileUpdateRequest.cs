@@ -19,7 +19,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "string FileUpdateRequest.ContentId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "ContentId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "StorageFile FileUpdateRequest.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "File");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "FileUpdateStatus FileUpdateRequest.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "FileUpdateStatus FileUpdateRequest.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "Status");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "string FileUpdateRequest.UserInputNeededMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "UserInputNeededMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "string FileUpdateRequest.UserInputNeededMessage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "UserInputNeededMessage");
 			}
 		}
 #endif
@@ -65,14 +65,14 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "FileUpdateRequestDeferral FileUpdateRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "GetDeferral()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UpdateLocalFile(global::Windows.Storage.IStorageFile value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "void FileUpdateRequest.UpdateLocalFile(IStorageFile value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "UpdateLocalFile(IStorageFile value)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.ContentId.get

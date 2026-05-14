@@ -14,7 +14,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "IReadOnlyList<Language> SpeechRecognizer.SupportedGrammarLanguages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "SupportedGrammarLanguages");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "IReadOnlyList<Language> SpeechRecognizer.SupportedTopicLanguages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "SupportedTopicLanguages");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "Language SpeechRecognizer.SystemSpeechLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "SystemSpeechLanguage");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "IList<ISpeechRecognitionConstraint> SpeechRecognizer.Constraints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "Constraints");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechContinuousRecognitionSession SpeechRecognizer.ContinuousRecognitionSession");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "ContinuousRecognitionSession");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "Language SpeechRecognizer.CurrentLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "CurrentLanguage");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizerState SpeechRecognizer.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "State");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizerTimeouts SpeechRecognizer.Timeouts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "Timeouts");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizerUIOptions SpeechRecognizer.UIOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "UIOptions");
 			}
 		}
 #endif
@@ -102,7 +102,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognizer()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizer.SpeechRecognizer()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizer()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SpeechRecognizer()
@@ -110,7 +110,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognizer(global::Windows.Globalization.Language language)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizer.SpeechRecognizer(Language language)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizer(Language language)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SpeechRecognizer(Windows.Globalization.Language)
@@ -118,7 +118,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> TrySetSystemSpeechLanguageAsync(global::Windows.Globalization.Language speechLanguage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "IAsyncOperation<bool> SpeechRecognizer.TrySetSystemSpeechLanguageAsync(Language speechLanguage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "TrySetSystemSpeechLanguageAsync(Language speechLanguage)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SupportedGrammarLanguages.get
@@ -128,21 +128,21 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionCompilationResult> CompileConstraintsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "IAsyncOperation<SpeechRecognitionCompilationResult> SpeechRecognizer.CompileConstraintsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "CompileConstraintsAsync()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> RecognizeAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "IAsyncOperation<SpeechRecognitionResult> SpeechRecognizer.RecognizeAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "RecognizeAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> RecognizeWithUIAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "IAsyncOperation<SpeechRecognitionResult> SpeechRecognizer.RecognizeWithUIAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "RecognizeWithUIAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.RecognitionQualityDegrading.add
@@ -153,14 +153,14 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "void SpeechRecognizer.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "Dispose()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StopRecognitionAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "IAsyncAction SpeechRecognizer.StopRecognitionAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "StopRecognitionAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.HypothesisGenerated.add
@@ -178,12 +178,12 @@ namespace Windows.Media.SpeechRecognition
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognitionQualityDegradingEventArgs> SpeechRecognizer.RecognitionQualityDegrading");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event RecognitionQualityDegrading");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognitionQualityDegradingEventArgs> SpeechRecognizer.RecognitionQualityDegrading");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event RecognitionQualityDegrading");
 			}
 		}
 #endif
@@ -194,12 +194,12 @@ namespace Windows.Media.SpeechRecognition
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognizerStateChangedEventArgs> SpeechRecognizer.StateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event StateChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognizerStateChangedEventArgs> SpeechRecognizer.StateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event StateChanged");
 			}
 		}
 #endif
@@ -210,12 +210,12 @@ namespace Windows.Media.SpeechRecognition
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognitionHypothesisGeneratedEventArgs> SpeechRecognizer.HypothesisGenerated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event HypothesisGenerated");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event TypedEventHandler<SpeechRecognizer, SpeechRecognitionHypothesisGeneratedEventArgs> SpeechRecognizer.HypothesisGenerated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event HypothesisGenerated");
 			}
 		}
 #endif

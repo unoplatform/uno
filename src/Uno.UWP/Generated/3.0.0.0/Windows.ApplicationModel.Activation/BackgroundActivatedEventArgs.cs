@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs", "IBackgroundTaskInstance BackgroundActivatedEventArgs.TaskInstance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.BackgroundActivatedEventArgs", "TaskInstance");
 			}
 		}
 #endif

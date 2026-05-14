@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectDefinition", "string SceneAnalysisEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectDefinition", "ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectDefinition", "IPropertySet SceneAnalysisEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectDefinition", "Properties");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SceneAnalysisEffectDefinition()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectDefinition", "SceneAnalysisEffectDefinition.SceneAnalysisEffectDefinition()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffectDefinition", "SceneAnalysisEffectDefinition()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.SceneAnalysisEffectDefinition()

@@ -19,7 +19,7 @@ namespace Windows.Storage.AccessCache
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "AccessListEntryView StorageItemMostRecentlyUsedList.Entries");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "Entries");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.AccessCache
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "uint StorageItemMostRecentlyUsedList.MaximumItemsAllowed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "MaximumItemsAllowed");
 			}
 		}
 #endif
@@ -39,112 +39,112 @@ namespace Windows.Storage.AccessCache
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Add(global::Windows.Storage.IStorageItem file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "string StorageItemMostRecentlyUsedList.Add(IStorageItem file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "Add(IStorageItem file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Add(global::Windows.Storage.IStorageItem file, string metadata)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "string StorageItemMostRecentlyUsedList.Add(IStorageItem file, string metadata)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "Add(IStorageItem file, string metadata)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddOrReplace(string token, global::Windows.Storage.IStorageItem file)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "void StorageItemMostRecentlyUsedList.AddOrReplace(string token, IStorageItem file)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "AddOrReplace(string token, IStorageItem file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddOrReplace(string token, global::Windows.Storage.IStorageItem file, string metadata)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "void StorageItemMostRecentlyUsedList.AddOrReplace(string token, IStorageItem file, string metadata)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "AddOrReplace(string token, IStorageItem file, string metadata)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync(string token)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "IAsyncOperation<IStorageItem> StorageItemMostRecentlyUsedList.GetItemAsync(string token)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "GetItemAsync(string token)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileAsync(string token)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "IAsyncOperation<StorageFile> StorageItemMostRecentlyUsedList.GetFileAsync(string token)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "GetFileAsync(string token)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync(string token)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "IAsyncOperation<StorageFolder> StorageItemMostRecentlyUsedList.GetFolderAsync(string token)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "GetFolderAsync(string token)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync(string token, global::Windows.Storage.AccessCache.AccessCacheOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "IAsyncOperation<IStorageItem> StorageItemMostRecentlyUsedList.GetItemAsync(string token, AccessCacheOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "GetItemAsync(string token, AccessCacheOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileAsync(string token, global::Windows.Storage.AccessCache.AccessCacheOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "IAsyncOperation<StorageFile> StorageItemMostRecentlyUsedList.GetFileAsync(string token, AccessCacheOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "GetFileAsync(string token, AccessCacheOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync(string token, global::Windows.Storage.AccessCache.AccessCacheOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "IAsyncOperation<StorageFolder> StorageItemMostRecentlyUsedList.GetFolderAsync(string token, AccessCacheOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "GetFolderAsync(string token, AccessCacheOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Remove(string token)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "void StorageItemMostRecentlyUsedList.Remove(string token)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "Remove(string token)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsItem(string token)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "bool StorageItemMostRecentlyUsedList.ContainsItem(string token)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "ContainsItem(string token)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "void StorageItemMostRecentlyUsedList.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CheckAccess(global::Windows.Storage.IStorageItem file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "bool StorageItemMostRecentlyUsedList.CheckAccess(IStorageItem file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "CheckAccess(IStorageItem file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Add(global::Windows.Storage.IStorageItem file, string metadata, global::Windows.Storage.AccessCache.RecentStorageItemVisibility visibility)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "string StorageItemMostRecentlyUsedList.Add(IStorageItem file, string metadata, RecentStorageItemVisibility visibility)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "Add(IStorageItem file, string metadata, RecentStorageItemVisibility visibility)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddOrReplace(string token, global::Windows.Storage.IStorageItem file, string metadata, global::Windows.Storage.AccessCache.RecentStorageItemVisibility visibility)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "void StorageItemMostRecentlyUsedList.AddOrReplace(string token, IStorageItem file, string metadata, RecentStorageItemVisibility visibility)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "AddOrReplace(string token, IStorageItem file, string metadata, RecentStorageItemVisibility visibility)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.Entries.get
@@ -156,12 +156,12 @@ namespace Windows.Storage.AccessCache
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "event TypedEventHandler<StorageItemMostRecentlyUsedList, ItemRemovedEventArgs> StorageItemMostRecentlyUsedList.ItemRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "event ItemRemoved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "event TypedEventHandler<StorageItemMostRecentlyUsedList, ItemRemovedEventArgs> StorageItemMostRecentlyUsedList.ItemRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "event ItemRemoved");
 			}
 		}
 #endif

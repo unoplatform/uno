@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameSourceAddedEventArgs", "PerceptionDepthFrameSource PerceptionDepthFrameSourceAddedEventArgs.FrameSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameSourceAddedEventArgs", "FrameSource");
 			}
 		}
 #endif

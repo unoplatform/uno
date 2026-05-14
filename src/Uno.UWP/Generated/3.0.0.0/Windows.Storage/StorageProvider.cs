@@ -14,7 +14,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> IsPropertySupportedForPartialFileAsync(string propertyCanonicalName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageProvider", "IAsyncOperation<bool> StorageProvider.IsPropertySupportedForPartialFileAsync(string propertyCanonicalName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.StorageProvider", "IsPropertySupportedForPartialFileAsync(string propertyCanonicalName)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.StorageProvider.DisplayName.get

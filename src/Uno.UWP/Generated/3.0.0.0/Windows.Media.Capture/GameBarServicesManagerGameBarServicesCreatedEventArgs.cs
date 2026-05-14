@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs", "GameBarServices GameBarServicesManagerGameBarServicesCreatedEventArgs.GameBarServices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs", "GameBarServices");
 			}
 		}
 #endif

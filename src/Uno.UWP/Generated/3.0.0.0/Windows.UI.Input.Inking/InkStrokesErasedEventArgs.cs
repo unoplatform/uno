@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokesErasedEventArgs", "IReadOnlyList<InkStroke> InkStrokesErasedEventArgs.Strokes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokesErasedEventArgs", "Strokes");
 			}
 		}
 #endif

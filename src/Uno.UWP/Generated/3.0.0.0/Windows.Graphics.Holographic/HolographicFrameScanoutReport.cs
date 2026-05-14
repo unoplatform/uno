@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "uint HolographicFrameScanoutReport.MissedScanoutCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "MissedScanoutCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "HolographicFrameRenderingReport HolographicFrameScanoutReport.RenderingReport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "RenderingReport");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "TimeSpan HolographicFrameScanoutReport.SystemRelativeLatchTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "SystemRelativeLatchTime");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "TimeSpan HolographicFrameScanoutReport.SystemRelativePhotonTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "SystemRelativePhotonTime");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "TimeSpan HolographicFrameScanoutReport.SystemRelativeScanoutStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "SystemRelativeScanoutStartTime");
 			}
 		}
 #endif

@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ToolTip", "ToolTipTemplateSettings ToolTip.TemplateSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ToolTip", "TemplateSettings");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionControlGroup", "IReadOnlyList<string> PerceptionControlGroup.FrameProviderIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionControlGroup", "FrameProviderIds");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PerceptionControlGroup(global::System.Collections.Generic.IEnumerable<string> ids)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionControlGroup", "PerceptionControlGroup.PerceptionControlGroup(IEnumerable<string> ids)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionControlGroup", "PerceptionControlGroup(IEnumerable<string> ids)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.PerceptionControlGroup(System.Collections.Generic.IEnumerable<string>)

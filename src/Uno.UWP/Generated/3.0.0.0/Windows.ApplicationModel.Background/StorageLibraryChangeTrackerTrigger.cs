@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public StorageLibraryChangeTrackerTrigger(global::Windows.Storage.StorageLibraryChangeTracker tracker)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger", "StorageLibraryChangeTrackerTrigger.StorageLibraryChangeTrackerTrigger(StorageLibraryChangeTracker tracker)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger", "StorageLibraryChangeTrackerTrigger(StorageLibraryChangeTracker tracker)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.StorageLibraryChangeTrackerTrigger(Windows.Storage.StorageLibraryChangeTracker)

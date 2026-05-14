@@ -19,7 +19,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs", "StorageFile LogFileGeneratedEventArgs.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs", "File");
 			}
 		}
 #endif

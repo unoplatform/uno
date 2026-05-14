@@ -14,7 +14,7 @@ namespace Windows.System.RemoteDesktop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteDesktop.InteractiveSession", "bool InteractiveSession.IsRemote");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteDesktop.InteractiveSession", "IsRemote");
 			}
 		}
 #endif

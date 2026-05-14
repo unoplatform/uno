@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusNavigationHost", "bool InputFocusNavigationHost.ContainsFocus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusNavigationHost", "ContainsFocus");
 			}
 		}
 #endif
@@ -27,21 +27,21 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputFocusNavigationHost GetForSiteBridge(global::Microsoft.UI.Content.IContentSiteBridge site)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusNavigationHost", "InputFocusNavigationHost InputFocusNavigationHost.GetForSiteBridge(IContentSiteBridge site)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusNavigationHost", "GetForSiteBridge(IContentSiteBridge site)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputFocusNavigationHost GetForSiteLink(global::Microsoft.UI.Content.IContentSiteLink contentSiteLink)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusNavigationHost", "InputFocusNavigationHost InputFocusNavigationHost.GetForSiteLink(IContentSiteLink contentSiteLink)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusNavigationHost", "GetForSiteLink(IContentSiteLink contentSiteLink)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.FocusNavigationResult NavigateFocus(global::Microsoft.UI.Input.FocusNavigationRequest request)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusNavigationHost", "FocusNavigationResult InputFocusNavigationHost.NavigateFocus(FocusNavigationRequest request)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusNavigationHost", "NavigateFocus(FocusNavigationRequest request)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.add
@@ -54,12 +54,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusNavigationHost", "event TypedEventHandler<InputFocusNavigationHost, FocusNavigationRequestEventArgs> InputFocusNavigationHost.DepartFocusRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusNavigationHost", "event DepartFocusRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusNavigationHost", "event TypedEventHandler<InputFocusNavigationHost, FocusNavigationRequestEventArgs> InputFocusNavigationHost.DepartFocusRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusNavigationHost", "event DepartFocusRequested");
 			}
 		}
 #endif

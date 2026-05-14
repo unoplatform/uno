@@ -19,7 +19,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "string GameChatMessageReceivedEventArgs.AppDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "AppDisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "string GameChatMessageReceivedEventArgs.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "AppId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "string GameChatMessageReceivedEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "Message");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "GameChatMessageOrigin GameChatMessageReceivedEventArgs.Origin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "Origin");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "string GameChatMessageReceivedEventArgs.SenderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "SenderName");
 			}
 		}
 #endif

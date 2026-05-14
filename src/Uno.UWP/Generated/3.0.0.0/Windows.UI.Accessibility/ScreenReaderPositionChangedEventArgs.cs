@@ -19,7 +19,7 @@ namespace Windows.UI.Accessibility
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs", "bool ScreenReaderPositionChangedEventArgs.IsReadingText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs", "IsReadingText");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Accessibility
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs", "Rect ScreenReaderPositionChangedEventArgs.ScreenPositionInRawPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs", "ScreenPositionInRawPixels");
 			}
 		}
 #endif

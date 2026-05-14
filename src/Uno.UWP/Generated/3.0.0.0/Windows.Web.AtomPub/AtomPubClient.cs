@@ -14,11 +14,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "bool AtomPubClient.BypassCacheOnRetrieve");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "BypassCacheOnRetrieve");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "bool AtomPubClient.BypassCacheOnRetrieve");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "BypassCacheOnRetrieve");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "uint AtomPubClient.MaxResponseBufferSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "MaxResponseBufferSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "uint AtomPubClient.MaxResponseBufferSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "MaxResponseBufferSize");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "PasswordCredential AtomPubClient.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "ProxyCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "PasswordCredential AtomPubClient.ProxyCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "ProxyCredential");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "PasswordCredential AtomPubClient.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "ServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "PasswordCredential AtomPubClient.ServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "ServerCredential");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "uint AtomPubClient.Timeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "Timeout");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "uint AtomPubClient.Timeout");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "Timeout");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Web.AtomPub
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AtomPubClient()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "AtomPubClient.AtomPubClient()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "AtomPubClient()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.AtomPubClient()
@@ -90,7 +90,7 @@ namespace Windows.Web.AtomPub
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AtomPubClient(global::Windows.Security.Credentials.PasswordCredential serverCredential)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "AtomPubClient.AtomPubClient(PasswordCredential serverCredential)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "AtomPubClient(PasswordCredential serverCredential)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.AtomPubClient(Windows.Security.Credentials.PasswordCredential)
@@ -98,91 +98,91 @@ namespace Windows.Web.AtomPub
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.AtomPub.ServiceDocument, global::Windows.Web.Syndication.RetrievalProgress> RetrieveServiceDocumentAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncOperationWithProgress<ServiceDocument, RetrievalProgress> AtomPubClient.RetrieveServiceDocumentAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "RetrieveServiceDocumentAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IInputStream, global::Windows.Web.Syndication.RetrievalProgress> RetrieveMediaResourceAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncOperationWithProgress<IInputStream, RetrievalProgress> AtomPubClient.RetrieveMediaResourceAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "RetrieveMediaResourceAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationItem, global::Windows.Web.Syndication.RetrievalProgress> RetrieveResourceAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncOperationWithProgress<SyndicationItem, RetrievalProgress> AtomPubClient.RetrieveResourceAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "RetrieveResourceAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationItem, global::Windows.Web.Syndication.TransferProgress> CreateResourceAsync(global::System.Uri uri, string description, global::Windows.Web.Syndication.SyndicationItem item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncOperationWithProgress<SyndicationItem, TransferProgress> AtomPubClient.CreateResourceAsync(Uri uri, string description, SyndicationItem item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "CreateResourceAsync(Uri uri, string description, SyndicationItem item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationItem, global::Windows.Web.Syndication.TransferProgress> CreateMediaResourceAsync(global::System.Uri uri, string mediaType, string description, global::Windows.Storage.Streams.IInputStream mediaStream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncOperationWithProgress<SyndicationItem, TransferProgress> AtomPubClient.CreateMediaResourceAsync(Uri uri, string mediaType, string description, IInputStream mediaStream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "CreateMediaResourceAsync(Uri uri, string mediaType, string description, IInputStream mediaStream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncActionWithProgress<global::Windows.Web.Syndication.TransferProgress> UpdateMediaResourceAsync(global::System.Uri uri, string mediaType, global::Windows.Storage.Streams.IInputStream mediaStream)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncActionWithProgress<TransferProgress> AtomPubClient.UpdateMediaResourceAsync(Uri uri, string mediaType, IInputStream mediaStream)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "UpdateMediaResourceAsync(Uri uri, string mediaType, IInputStream mediaStream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncActionWithProgress<global::Windows.Web.Syndication.TransferProgress> UpdateResourceAsync(global::System.Uri uri, global::Windows.Web.Syndication.SyndicationItem item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncActionWithProgress<TransferProgress> AtomPubClient.UpdateResourceAsync(Uri uri, SyndicationItem item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "UpdateResourceAsync(Uri uri, SyndicationItem item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncActionWithProgress<global::Windows.Web.Syndication.TransferProgress> UpdateResourceItemAsync(global::Windows.Web.Syndication.SyndicationItem item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncActionWithProgress<TransferProgress> AtomPubClient.UpdateResourceItemAsync(SyndicationItem item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "UpdateResourceItemAsync(SyndicationItem item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncActionWithProgress<global::Windows.Web.Syndication.TransferProgress> DeleteResourceAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncActionWithProgress<TransferProgress> AtomPubClient.DeleteResourceAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "DeleteResourceAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncActionWithProgress<global::Windows.Web.Syndication.TransferProgress> DeleteResourceItemAsync(global::Windows.Web.Syndication.SyndicationItem item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncActionWithProgress<TransferProgress> AtomPubClient.DeleteResourceItemAsync(SyndicationItem item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "DeleteResourceItemAsync(SyndicationItem item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CancelAsyncOperations()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "void AtomPubClient.CancelAsyncOperations()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "CancelAsyncOperations()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetRequestHeader(string name, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "void AtomPubClient.SetRequestHeader(string name, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "SetRequestHeader(string name, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationFeed, global::Windows.Web.Syndication.RetrievalProgress> RetrieveFeedAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "IAsyncOperationWithProgress<SyndicationFeed, RetrievalProgress> AtomPubClient.RetrieveFeedAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.AtomPubClient", "RetrieveFeedAsync(Uri uri)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.BypassCacheOnRetrieve.get

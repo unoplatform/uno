@@ -13,21 +13,21 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputKeyboardSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "InputKeyboardSource InputKeyboardSource.GetForIsland(ContentIsland island)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "GetForIsland(ContentIsland island)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.VirtualKeyStates GetCurrentKeyState(global::Windows.System.VirtualKey virtualKey)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "VirtualKeyStates InputKeyboardSource.GetCurrentKeyState(VirtualKey virtualKey)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "GetCurrentKeyState(VirtualKey virtualKey)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.VirtualKeyStates GetKeyState(global::Windows.System.VirtualKey virtualKey)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "VirtualKeyStates InputKeyboardSource.GetKeyState(VirtualKey virtualKey)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "GetKeyState(VirtualKey virtualKey)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.CharacterReceived.add
@@ -49,12 +49,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, CharacterReceivedEventArgs> InputKeyboardSource.CharacterReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event CharacterReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, CharacterReceivedEventArgs> InputKeyboardSource.CharacterReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event CharacterReceived");
 			}
 		}
 #endif
@@ -65,12 +65,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, ContextMenuKeyEventArgs> InputKeyboardSource.ContextMenuKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event ContextMenuKey");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, ContextMenuKeyEventArgs> InputKeyboardSource.ContextMenuKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event ContextMenuKey");
 			}
 		}
 #endif
@@ -81,12 +81,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, KeyEventArgs> InputKeyboardSource.KeyDown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event KeyDown");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, KeyEventArgs> InputKeyboardSource.KeyDown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event KeyDown");
 			}
 		}
 #endif
@@ -97,12 +97,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, KeyEventArgs> InputKeyboardSource.KeyUp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event KeyUp");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, KeyEventArgs> InputKeyboardSource.KeyUp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event KeyUp");
 			}
 		}
 #endif
@@ -113,12 +113,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, KeyEventArgs> InputKeyboardSource.SystemKeyDown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event SystemKeyDown");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, KeyEventArgs> InputKeyboardSource.SystemKeyDown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event SystemKeyDown");
 			}
 		}
 #endif
@@ -129,12 +129,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, KeyEventArgs> InputKeyboardSource.SystemKeyUp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event SystemKeyUp");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event TypedEventHandler<InputKeyboardSource, KeyEventArgs> InputKeyboardSource.SystemKeyUp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputKeyboardSource", "event SystemKeyUp");
 			}
 		}
 #endif

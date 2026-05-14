@@ -19,7 +19,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "GazePointPreview GazeMovedPreviewEventArgs.CurrentPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "CurrentPoint");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "bool GazeMovedPreviewEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "bool GazeMovedPreviewEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "Handled");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Devices.Input.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Devices.Input.Preview.GazePointPreview> GetIntermediatePoints()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "IList<GazePointPreview> GazeMovedPreviewEventArgs.GetIntermediatePoints()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "GetIntermediatePoints()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.CurrentPoint.get

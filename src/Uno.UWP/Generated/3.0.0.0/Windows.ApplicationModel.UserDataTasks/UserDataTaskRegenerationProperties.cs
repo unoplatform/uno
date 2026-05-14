@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "int UserDataTaskRegenerationProperties.Interval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "Interval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "int UserDataTaskRegenerationProperties.Interval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "Interval");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "int? UserDataTaskRegenerationProperties.Occurrences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "Occurrences");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "int? UserDataTaskRegenerationProperties.Occurrences");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "Occurrences");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "Unit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "Unit");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "DateTimeOffset? UserDataTaskRegenerationProperties.Until");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "Until");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "DateTimeOffset? UserDataTaskRegenerationProperties.Until");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "Until");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UserDataTaskRegenerationProperties()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "UserDataTaskRegenerationProperties.UserDataTaskRegenerationProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "UserDataTaskRegenerationProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.UserDataTaskRegenerationProperties()

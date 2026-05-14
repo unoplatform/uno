@@ -14,7 +14,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "bool PointerDevice.IsIntegrated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "IsIntegrated");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "uint PointerDevice.MaxContacts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "MaxContacts");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "uint PointerDevice.MaxPointersWithZDistance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "MaxPointersWithZDistance");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "Rect PointerDevice.PhysicalDeviceRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "PhysicalDeviceRect");
 			}
 		}
 #endif
@@ -55,7 +55,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "Rect PointerDevice.ScreenRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "ScreenRect");
 			}
 		}
 #endif
@@ -65,7 +65,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "IReadOnlyList<PointerDeviceUsage> PointerDevice.SupportedUsages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "SupportedUsages");
 			}
 		}
 #endif
@@ -73,14 +73,14 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PointerDevice GetPointerDevice(uint pointerId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "PointerDevice PointerDevice.GetPointerDevice(uint pointerId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "GetPointerDevice(uint pointerId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Input.PointerDevice> GetPointerDevices()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "IReadOnlyList<PointerDevice> PointerDevice.GetPointerDevices()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "GetPointerDevices()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.IsIntegrated.get

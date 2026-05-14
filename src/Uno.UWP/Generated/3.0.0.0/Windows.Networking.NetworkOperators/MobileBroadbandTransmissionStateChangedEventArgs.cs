@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandTransmissionStateChangedEventArgs", "bool MobileBroadbandTransmissionStateChangedEventArgs.IsTransmitting");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandTransmissionStateChangedEventArgs", "IsTransmitting");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "string LanguageFont.FontFamily");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontFamily");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontStretch LanguageFont.FontStretch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontStretch");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontStyle LanguageFont.FontStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontStyle");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontWeight LanguageFont.FontWeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontWeight");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "double LanguageFont.ScaleFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "ScaleFactor");
 			}
 		}
 #endif

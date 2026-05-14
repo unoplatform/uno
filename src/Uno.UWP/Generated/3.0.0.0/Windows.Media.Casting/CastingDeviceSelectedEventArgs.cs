@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDeviceSelectedEventArgs", "CastingDevice CastingDeviceSelectedEventArgs.SelectedCastingDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDeviceSelectedEventArgs", "SelectedCastingDevice");
 			}
 		}
 #endif

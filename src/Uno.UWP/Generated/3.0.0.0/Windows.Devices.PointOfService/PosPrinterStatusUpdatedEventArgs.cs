@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterStatusUpdatedEventArgs", "PosPrinterStatus PosPrinterStatusUpdatedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterStatusUpdatedEventArgs", "Status");
 			}
 		}
 #endif

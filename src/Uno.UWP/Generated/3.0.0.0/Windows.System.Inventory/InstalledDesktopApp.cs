@@ -19,7 +19,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "DisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.DisplayVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "DisplayVersion");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.Publisher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "Publisher");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.System.Inventory
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Inventory.InstalledDesktopApp>> GetInventoryAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "IAsyncOperation<IReadOnlyList<InstalledDesktopApp>> InstalledDesktopApp.GetInventoryAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "GetInventoryAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.DisplayName.get

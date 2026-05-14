@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChangeTriggerDetails", "IReadOnlyList<MobileBroadbandPinLockStateChange> MobileBroadbandPinLockStateChangeTriggerDetails.PinLockStateChanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChangeTriggerDetails", "PinLockStateChanges");
 			}
 		}
 #endif

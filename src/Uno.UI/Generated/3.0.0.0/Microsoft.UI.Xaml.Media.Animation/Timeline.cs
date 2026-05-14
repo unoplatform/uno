@@ -14,11 +14,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.Timeline", "bool Timeline.AllowDependentAnimations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.Timeline", "AllowDependentAnimations");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.Timeline", "bool Timeline.AllowDependentAnimations");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.Timeline", "AllowDependentAnimations");
 			}
 		}
 #endif

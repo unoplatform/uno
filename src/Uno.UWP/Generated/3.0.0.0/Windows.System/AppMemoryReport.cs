@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "ulong AppMemoryReport.ExpectedTotalCommitLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "ExpectedTotalCommitLimit");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "ulong AppMemoryReport.PeakPrivateCommitUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "PeakPrivateCommitUsage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "ulong AppMemoryReport.PrivateCommitUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "PrivateCommitUsage");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "ulong AppMemoryReport.TotalCommitLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "TotalCommitLimit");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "ulong AppMemoryReport.TotalCommitUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryReport", "TotalCommitUsage");
 			}
 		}
 #endif

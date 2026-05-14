@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest", "RemoteSystemSessionParticipant RemoteSystemSessionJoinRequest.Participant");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest", "Participant");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Accept()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest", "void RemoteSystemSessionJoinRequest.Accept()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest", "Accept()");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.Participant.get

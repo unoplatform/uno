@@ -12,7 +12,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public NDTCPMessenger(string remoteHostName, uint remoteHostPort)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDTCPMessenger", "NDTCPMessenger.NDTCPMessenger(string remoteHostName, uint remoteHostPort)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDTCPMessenger", "NDTCPMessenger(string remoteHostName, uint remoteHostPort)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.NDTCPMessenger(string, uint)
@@ -20,28 +20,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendRegistrationRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDTCPMessenger", "IAsyncOperation<INDSendResult> NDTCPMessenger.SendRegistrationRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDTCPMessenger", "SendRegistrationRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendProximityDetectionStartAsync(global::Windows.Media.Protection.PlayReady.NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] challengeDataBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDTCPMessenger", "IAsyncOperation<INDSendResult> NDTCPMessenger.SendProximityDetectionStartAsync(NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] challengeDataBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDTCPMessenger", "SendProximityDetectionStartAsync(NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] challengeDataBytes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendProximityDetectionResponseAsync(global::Windows.Media.Protection.PlayReady.NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] responseDataBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDTCPMessenger", "IAsyncOperation<INDSendResult> NDTCPMessenger.SendProximityDetectionResponseAsync(NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] responseDataBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDTCPMessenger", "SendProximityDetectionResponseAsync(NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] responseDataBytes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendLicenseFetchRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDTCPMessenger", "IAsyncOperation<INDSendResult> NDTCPMessenger.SendLicenseFetchRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDTCPMessenger", "SendLicenseFetchRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes)");
 		}
 #endif
 		// Processing: Windows.Media.Protection.PlayReady.INDMessenger

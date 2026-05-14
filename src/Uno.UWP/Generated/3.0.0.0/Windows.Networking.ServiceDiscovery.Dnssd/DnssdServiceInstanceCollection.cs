@@ -19,7 +19,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "int DnssdServiceInstanceCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "DnssdServiceInstance DnssdServiceInstanceCollection.this[int index]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "this[int index]");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "IEnumerator<DnssdServiceInstance> DnssdServiceInstanceCollection.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection.System.Collections.IEnumerable.GetEnumerator()

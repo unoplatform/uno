@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "TimeSpan ConnectedAnimationService.DefaultDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "DefaultDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "TimeSpan ConnectedAnimationService.DefaultDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "DefaultDuration");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "CompositionEasingFunction ConnectedAnimationService.DefaultEasingFunction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "DefaultEasingFunction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "CompositionEasingFunction ConnectedAnimationService.DefaultEasingFunction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "DefaultEasingFunction");
 			}
 		}
 #endif
@@ -45,21 +45,21 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService GetForCurrentView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "ConnectedAnimationService ConnectedAnimationService.GetForCurrentView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation PrepareToAnimate(string key, global::Microsoft.UI.Xaml.UIElement source)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "ConnectedAnimation ConnectedAnimationService.PrepareToAnimate(string key, UIElement source)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "PrepareToAnimate(string key, UIElement source)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation GetAnimation(string key)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "ConnectedAnimation ConnectedAnimationService.GetAnimation(string key)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "GetAnimation(string key)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultDuration.get

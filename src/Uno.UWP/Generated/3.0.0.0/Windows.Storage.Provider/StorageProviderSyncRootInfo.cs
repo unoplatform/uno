@@ -14,11 +14,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "bool StorageProviderSyncRootInfo.AllowPinning");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "AllowPinning");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "bool StorageProviderSyncRootInfo.AllowPinning");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "AllowPinning");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IBuffer StorageProviderSyncRootInfo.Context");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Context");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IBuffer StorageProviderSyncRootInfo.Context");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Context");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.DisplayNameResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "DisplayNameResource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.DisplayNameResource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "DisplayNameResource");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IList<StorageProviderFileTypeInfo> StorageProviderSyncRootInfo.FallbackFileTypeInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "FallbackFileTypeInfo");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHardlinkPolicy StorageProviderSyncRootInfo.HardlinkPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "HardlinkPolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHardlinkPolicy StorageProviderSyncRootInfo.HardlinkPolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "HardlinkPolicy");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHydrationPolicy StorageProviderSyncRootInfo.HydrationPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "HydrationPolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHydrationPolicy StorageProviderSyncRootInfo.HydrationPolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "HydrationPolicy");
 			}
 		}
 #endif
@@ -94,11 +94,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHydrationPolicyModifier StorageProviderSyncRootInfo.HydrationPolicyModifier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "HydrationPolicyModifier");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHydrationPolicyModifier StorageProviderSyncRootInfo.HydrationPolicyModifier");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "HydrationPolicyModifier");
 			}
 		}
 #endif
@@ -108,11 +108,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.IconResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IconResource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.IconResource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IconResource");
 			}
 		}
 #endif
@@ -122,11 +122,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Id");
 			}
 		}
 #endif
@@ -136,11 +136,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderInSyncPolicy StorageProviderSyncRootInfo.InSyncPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "InSyncPolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderInSyncPolicy StorageProviderSyncRootInfo.InSyncPolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "InSyncPolicy");
 			}
 		}
 #endif
@@ -150,11 +150,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IStorageFolder StorageProviderSyncRootInfo.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Path");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IStorageFolder StorageProviderSyncRootInfo.Path");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Path");
 			}
 		}
 #endif
@@ -164,11 +164,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderPopulationPolicy StorageProviderSyncRootInfo.PopulationPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "PopulationPolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderPopulationPolicy StorageProviderSyncRootInfo.PopulationPolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "PopulationPolicy");
 			}
 		}
 #endif
@@ -178,11 +178,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderProtectionMode StorageProviderSyncRootInfo.ProtectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "ProtectionMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderProtectionMode StorageProviderSyncRootInfo.ProtectionMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "ProtectionMode");
 			}
 		}
 #endif
@@ -192,11 +192,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Guid StorageProviderSyncRootInfo.ProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "ProviderId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Guid StorageProviderSyncRootInfo.ProviderId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "ProviderId");
 			}
 		}
 #endif
@@ -206,11 +206,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Uri StorageProviderSyncRootInfo.RecycleBinUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "RecycleBinUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Uri StorageProviderSyncRootInfo.RecycleBinUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "RecycleBinUri");
 			}
 		}
 #endif
@@ -220,11 +220,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "bool StorageProviderSyncRootInfo.ShowSiblingsAsGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "ShowSiblingsAsGroup");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "bool StorageProviderSyncRootInfo.ShowSiblingsAsGroup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "ShowSiblingsAsGroup");
 			}
 		}
 #endif
@@ -234,7 +234,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IList<StorageProviderItemPropertyDefinition> StorageProviderSyncRootInfo.StorageProviderItemPropertyDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderItemPropertyDefinitions");
 			}
 		}
 #endif
@@ -244,11 +244,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.Version");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Version");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.Version");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Version");
 			}
 		}
 #endif
@@ -256,7 +256,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public StorageProviderSyncRootInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderSyncRootInfo.StorageProviderSyncRootInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderSyncRootInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.StorageProviderSyncRootInfo()

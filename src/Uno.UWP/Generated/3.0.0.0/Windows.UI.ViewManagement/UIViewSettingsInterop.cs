@@ -12,7 +12,7 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.ViewManagement.UIViewSettings GetForWindow(nint hwnd)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.UIViewSettingsInterop", "UIViewSettings UIViewSettingsInterop.GetForWindow(nint hwnd)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.UIViewSettingsInterop", "GetForWindow(nint hwnd)");
 		}
 #endif
 	}

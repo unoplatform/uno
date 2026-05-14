@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewPurchaseResults", "StorePreviewProductPurchaseStatus StorePreviewPurchaseResults.ProductPurchaseStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewPurchaseResults", "ProductPurchaseStatus");
 			}
 		}
 #endif

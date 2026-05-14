@@ -14,11 +14,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "AnimationDelayBehavior KeyFrameAnimation.DelayBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "DelayBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationDelayBehavior KeyFrameAnimation.DelayBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "DelayBehavior");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.DelayTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "DelayTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.DelayTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "DelayTime");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "AnimationDirection KeyFrameAnimation.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "Direction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationDirection KeyFrameAnimation.Direction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "Direction");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "Duration");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "AnimationIterationBehavior KeyFrameAnimation.IterationBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "IterationBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationIterationBehavior KeyFrameAnimation.IterationBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "IterationBehavior");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "int KeyFrameAnimation.IterationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "IterationCount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "int KeyFrameAnimation.IterationCount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "IterationCount");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "int KeyFrameAnimation.KeyFrameCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "KeyFrameCount");
 			}
 		}
 #endif
@@ -108,11 +108,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "AnimationStopBehavior KeyFrameAnimation.StopBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "StopBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationStopBehavior KeyFrameAnimation.StopBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "StopBehavior");
 			}
 		}
 #endif
@@ -120,14 +120,14 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "void KeyFrameAnimation.InsertExpressionKeyFrame(float normalizedProgressKey, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "InsertExpressionKeyFrame(float normalizedProgressKey, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value, global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "void KeyFrameAnimation.InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.DelayBehavior.get

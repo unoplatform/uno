@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "string QuickLink.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "string QuickLink.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Id");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "IList<string> QuickLink.SupportedDataFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "SupportedDataFormats");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "IList<string> QuickLink.SupportedFileTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "SupportedFileTypes");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "RandomAccessStreamReference QuickLink.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Thumbnail");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "RandomAccessStreamReference QuickLink.Thumbnail");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Thumbnail");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "string QuickLink.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Title");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "string QuickLink.Title");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Title");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public QuickLink()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "QuickLink.QuickLink()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "QuickLink()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.QuickLink()

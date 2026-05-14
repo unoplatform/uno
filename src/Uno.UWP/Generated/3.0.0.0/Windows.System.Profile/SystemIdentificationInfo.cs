@@ -19,7 +19,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentificationInfo", "IBuffer SystemIdentificationInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentificationInfo", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentificationInfo", "SystemIdentificationSource SystemIdentificationInfo.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentificationInfo", "Source");
 			}
 		}
 #endif

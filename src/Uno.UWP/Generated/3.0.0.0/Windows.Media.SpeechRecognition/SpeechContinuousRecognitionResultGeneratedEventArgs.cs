@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechContinuousRecognitionResultGeneratedEventArgs", "SpeechRecognitionResult SpeechContinuousRecognitionResultGeneratedEventArgs.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechContinuousRecognitionResultGeneratedEventArgs", "Result");
 			}
 		}
 #endif

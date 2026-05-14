@@ -19,7 +19,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs", "TwoPanelHingedDevicePosturePreviewReading TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs", "Reading");
 			}
 		}
 #endif

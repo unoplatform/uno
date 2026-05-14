@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "string PnpObject.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "IReadOnlyDictionary<string, object> PnpObject.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "Properties");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "PnpObjectType PnpObject.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "Type");
 			}
 		}
 #endif
@@ -47,42 +47,42 @@ namespace Windows.Devices.Enumeration.Pnp
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObject> CreateFromIdAsync(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, string id, global::System.Collections.Generic.IEnumerable<string> requestedProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "IAsyncOperation<PnpObject> PnpObject.CreateFromIdAsync(PnpObjectType type, string id, IEnumerable<string> requestedProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "CreateFromIdAsync(PnpObjectType type, string id, IEnumerable<string> requestedProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObjectCollection> FindAllAsync(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, global::System.Collections.Generic.IEnumerable<string> requestedProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "IAsyncOperation<PnpObjectCollection> PnpObject.FindAllAsync(PnpObjectType type, IEnumerable<string> requestedProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "FindAllAsync(PnpObjectType type, IEnumerable<string> requestedProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObjectCollection> FindAllAsync(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, global::System.Collections.Generic.IEnumerable<string> requestedProperties, string aqsFilter)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "IAsyncOperation<PnpObjectCollection> PnpObject.FindAllAsync(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "FindAllAsync(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher CreateWatcher(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, global::System.Collections.Generic.IEnumerable<string> requestedProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "PnpObjectWatcher PnpObject.CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher CreateWatcher(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, global::System.Collections.Generic.IEnumerable<string> requestedProperties, string aqsFilter)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "PnpObjectWatcher PnpObject.CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObject", "CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Update(global::Windows.Devices.Enumeration.Pnp.PnpObjectUpdate updateInfo)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObject", "void PnpObject.Update(PnpObjectUpdate updateInfo)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObject", "Update(PnpObjectUpdate updateInfo)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Id.get

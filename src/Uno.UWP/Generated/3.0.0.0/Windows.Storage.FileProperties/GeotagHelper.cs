@@ -12,21 +12,21 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geopoint> GetGeotagAsync(global::Windows.Storage.IStorageFile file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.GeotagHelper", "IAsyncOperation<Geopoint> GeotagHelper.GetGeotagAsync(IStorageFile file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.GeotagHelper", "GetGeotagAsync(IStorageFile file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SetGeotagFromGeolocatorAsync(global::Windows.Storage.IStorageFile file, global::Windows.Devices.Geolocation.Geolocator geolocator)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.GeotagHelper", "IAsyncAction GeotagHelper.SetGeotagFromGeolocatorAsync(IStorageFile file, Geolocator geolocator)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.GeotagHelper", "SetGeotagFromGeolocatorAsync(IStorageFile file, Geolocator geolocator)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SetGeotagAsync(global::Windows.Storage.IStorageFile file, global::Windows.Devices.Geolocation.Geopoint geopoint)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.GeotagHelper", "IAsyncAction GeotagHelper.SetGeotagAsync(IStorageFile file, Geopoint geopoint)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.GeotagHelper", "SetGeotagAsync(IStorageFile file, Geopoint geopoint)");
 		}
 #endif
 	}

@@ -14,7 +14,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IList<BackgroundAudioTrack> MediaComposition.BackgroundAudioTracks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "BackgroundAudioTracks");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IList<MediaClip> MediaComposition.Clips");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "Clips");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "TimeSpan MediaComposition.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "Duration");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IList<MediaOverlayLayer> MediaComposition.OverlayLayers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "OverlayLayers");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IDictionary<string, string> MediaComposition.UserData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "UserData");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaComposition()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaComposition", "MediaComposition.MediaComposition()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaComposition", "MediaComposition()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.MediaComposition()
@@ -70,7 +70,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.MediaComposition> LoadAsync(global::Windows.Storage.StorageFile file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IAsyncOperation<MediaComposition> MediaComposition.LoadAsync(StorageFile file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "LoadAsync(StorageFile file)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.~MediaComposition()
@@ -78,77 +78,77 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaComposition Clone()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "MediaComposition MediaComposition.Clone()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "Clone()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync(global::Windows.Storage.IStorageFile file)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IAsyncAction MediaComposition.SaveAsync(IStorageFile file)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "SaveAsync(IStorageFile file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.ImageStream> GetThumbnailAsync(global::System.TimeSpan timeFromStart, int scaledWidth, int scaledHeight, global::Windows.Media.Editing.VideoFramePrecision framePrecision)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IAsyncOperation<ImageStream> MediaComposition.GetThumbnailAsync(TimeSpan timeFromStart, int scaledWidth, int scaledHeight, VideoFramePrecision framePrecision)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "GetThumbnailAsync(TimeSpan timeFromStart, int scaledWidth, int scaledHeight, VideoFramePrecision framePrecision)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Imaging.ImageStream>> GetThumbnailsAsync(global::System.Collections.Generic.IEnumerable<global::System.TimeSpan> timesFromStart, int scaledWidth, int scaledHeight, global::Windows.Media.Editing.VideoFramePrecision framePrecision)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IAsyncOperation<IReadOnlyList<ImageStream>> MediaComposition.GetThumbnailsAsync(IEnumerable<TimeSpan> timesFromStart, int scaledWidth, int scaledHeight, VideoFramePrecision framePrecision)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "GetThumbnailsAsync(IEnumerable<TimeSpan> timesFromStart, int scaledWidth, int scaledHeight, VideoFramePrecision framePrecision)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Transcoding.TranscodeFailureReason, double> RenderToFileAsync(global::Windows.Storage.IStorageFile destination)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IAsyncOperationWithProgress<TranscodeFailureReason, double> MediaComposition.RenderToFileAsync(IStorageFile destination)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "RenderToFileAsync(IStorageFile destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Transcoding.TranscodeFailureReason, double> RenderToFileAsync(global::Windows.Storage.IStorageFile destination, global::Windows.Media.Editing.MediaTrimmingPreference trimmingPreference)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IAsyncOperationWithProgress<TranscodeFailureReason, double> MediaComposition.RenderToFileAsync(IStorageFile destination, MediaTrimmingPreference trimmingPreference)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "RenderToFileAsync(IStorageFile destination, MediaTrimmingPreference trimmingPreference)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Transcoding.TranscodeFailureReason, double> RenderToFileAsync(global::Windows.Storage.IStorageFile destination, global::Windows.Media.Editing.MediaTrimmingPreference trimmingPreference, global::Windows.Media.MediaProperties.MediaEncodingProfile encodingProfile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "IAsyncOperationWithProgress<TranscodeFailureReason, double> MediaComposition.RenderToFileAsync(IStorageFile destination, MediaTrimmingPreference trimmingPreference, MediaEncodingProfile encodingProfile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "RenderToFileAsync(IStorageFile destination, MediaTrimmingPreference trimmingPreference, MediaEncodingProfile encodingProfile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaEncodingProfile CreateDefaultEncodingProfile()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "MediaEncodingProfile MediaComposition.CreateDefaultEncodingProfile()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "CreateDefaultEncodingProfile()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSource GenerateMediaStreamSource()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "MediaStreamSource MediaComposition.GenerateMediaStreamSource()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "GenerateMediaStreamSource()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSource GenerateMediaStreamSource(global::Windows.Media.MediaProperties.MediaEncodingProfile encodingProfile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "MediaStreamSource MediaComposition.GenerateMediaStreamSource(MediaEncodingProfile encodingProfile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "GenerateMediaStreamSource(MediaEncodingProfile encodingProfile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSource GeneratePreviewMediaStreamSource(int scaledWidth, int scaledHeight)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "MediaStreamSource MediaComposition.GeneratePreviewMediaStreamSource(int scaledWidth, int scaledHeight)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaComposition", "GeneratePreviewMediaStreamSource(int scaledWidth, int scaledHeight)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.BackgroundAudioTracks.get

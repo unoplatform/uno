@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult", "GetEntitlementStatus GetEntitlementResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult", "Status");
 			}
 		}
 #endif

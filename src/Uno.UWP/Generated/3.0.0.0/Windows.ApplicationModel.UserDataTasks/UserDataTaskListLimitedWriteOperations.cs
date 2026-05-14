@@ -17,28 +17,28 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> TryCompleteTaskAsync(string userDataTaskId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations", "IAsyncOperation<string> UserDataTaskListLimitedWriteOperations.TryCompleteTaskAsync(string userDataTaskId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations", "TryCompleteTaskAsync(string userDataTaskId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryCreateOrUpdateTaskAsync(global::Windows.ApplicationModel.UserDataTasks.UserDataTask userDataTask)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations", "IAsyncOperation<bool> UserDataTaskListLimitedWriteOperations.TryCreateOrUpdateTaskAsync(UserDataTask userDataTask)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations", "TryCreateOrUpdateTaskAsync(UserDataTask userDataTask)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryDeleteTaskAsync(string userDataTaskId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations", "IAsyncOperation<bool> UserDataTaskListLimitedWriteOperations.TryDeleteTaskAsync(string userDataTaskId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations", "TryDeleteTaskAsync(string userDataTaskId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TrySkipOccurrenceAsync(string userDataTaskId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations", "IAsyncOperation<bool> UserDataTaskListLimitedWriteOperations.TrySkipOccurrenceAsync(string userDataTaskId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations", "TrySkipOccurrenceAsync(string userDataTaskId)");
 		}
 #endif
 	}

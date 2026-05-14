@@ -19,7 +19,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "IReadOnlyList<AlternateWordForm> WordSegment.AlternateForms");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "AlternateForms");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "TextSegment WordSegment.SourceTextSegment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "SourceTextSegment");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "string WordSegment.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "Text");
 			}
 		}
 #endif

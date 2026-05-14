@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "BandwidthStatistics StreamWebSocketInformation.BandwidthStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "BandwidthStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "HostName StreamWebSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "LocalAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "string StreamWebSocketInformation.Protocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "Protocol");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "Certificate StreamWebSocketInformation.ServerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "ServerCertificate");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "SocketSslErrorSeverity StreamWebSocketInformation.ServerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "ServerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "IReadOnlyList<ChainValidationResult> StreamWebSocketInformation.ServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "ServerCertificateErrors");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "IReadOnlyList<Certificate> StreamWebSocketInformation.ServerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketInformation", "ServerIntermediateCertificates");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowAllPages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowAllPages");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowAllPages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowAllPages");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowCurrentPage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowCurrentPage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowCurrentPage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowCurrentPage");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowCustomSetOfPages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowCustomSetOfPages");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowCustomSetOfPages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowCustomSetOfPages");
 			}
 		}
 #endif

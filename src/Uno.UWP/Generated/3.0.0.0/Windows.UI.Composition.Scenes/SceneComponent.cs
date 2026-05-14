@@ -14,7 +14,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneComponent", "SceneComponentType SceneComponent.ComponentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneComponent", "ComponentType");
 			}
 		}
 #endif

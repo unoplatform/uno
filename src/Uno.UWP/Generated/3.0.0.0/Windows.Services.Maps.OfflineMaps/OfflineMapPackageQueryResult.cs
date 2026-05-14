@@ -19,7 +19,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult", "IReadOnlyList<OfflineMapPackage> OfflineMapPackageQueryResult.Packages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult", "Packages");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult", "OfflineMapPackageQueryStatus OfflineMapPackageQueryResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult", "Status");
 			}
 		}
 #endif

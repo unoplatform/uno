@@ -25,7 +25,7 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Background.DeviceWatcherTrigger GetBackgroundTrigger(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.DeviceWatcherEventKind> requestedEventKinds)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcher", "DeviceWatcherTrigger DeviceWatcher.GetBackgroundTrigger(IEnumerable<DeviceWatcherEventKind> requestedEventKinds)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcher", "GetBackgroundTrigger(IEnumerable<DeviceWatcherEventKind> requestedEventKinds)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Status.get

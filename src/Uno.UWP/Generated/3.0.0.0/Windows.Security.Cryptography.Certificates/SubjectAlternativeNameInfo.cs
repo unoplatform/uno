@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.DistinguishedName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "DistinguishedName");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.DistinguishedNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "DistinguishedNames");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.DnsName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "DnsName");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.DnsNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "DnsNames");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.EmailName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "EmailName");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.EmailNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "EmailNames");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "CertificateExtension SubjectAlternativeNameInfo.Extension");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "Extension");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.IPAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IPAddress");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.IPAddresses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IPAddresses");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.PrincipalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "PrincipalName");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.PrincipalNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "PrincipalNames");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.Url");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "Url");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.Urls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "Urls");
 			}
 		}
 #endif
@@ -142,7 +142,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SubjectAlternativeNameInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "SubjectAlternativeNameInfo.SubjectAlternativeNameInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "SubjectAlternativeNameInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.SubjectAlternativeNameInfo()

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.PointerPoint GetTransformedPoint(global::Microsoft.UI.Input.IPointerPointTransform transform)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.PointerPoint", "PointerPoint PointerPoint.GetTransformedPoint(IPointerPointTransform transform)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.PointerPoint", "GetTransformedPoint(IPointerPointTransform transform)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FrameId.get

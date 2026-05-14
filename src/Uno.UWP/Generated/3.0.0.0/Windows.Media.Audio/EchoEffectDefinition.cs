@@ -14,7 +14,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "string EchoEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "ActivatableClassId");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.Delay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "Delay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.Delay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "Delay");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.Feedback");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "Feedback");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.Feedback");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "Feedback");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "IPropertySet EchoEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "Properties");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.WetDryMix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "WetDryMix");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.WetDryMix");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "WetDryMix");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EchoEffectDefinition(global::Windows.Media.Audio.AudioGraph audioGraph)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "EchoEffectDefinition.EchoEffectDefinition(AudioGraph audioGraph)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EchoEffectDefinition", "EchoEffectDefinition(AudioGraph audioGraph)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.EchoEffectDefinition(Windows.Media.Audio.AudioGraph)

@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.SceneModeControl", "IReadOnlyList<CaptureSceneMode> SceneModeControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.SceneModeControl", "SupportedModes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.SceneModeControl", "CaptureSceneMode SceneModeControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.SceneModeControl", "Value");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(global::Windows.Media.Devices.CaptureSceneMode sceneMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.SceneModeControl", "IAsyncAction SceneModeControl.SetValueAsync(CaptureSceneMode sceneMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.SceneModeControl", "SetValueAsync(CaptureSceneMode sceneMode)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.SceneModeControl.SupportedModes.get

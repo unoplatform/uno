@@ -19,11 +19,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "bool SystemFunctionLockIndicatorChangedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "bool SystemFunctionLockIndicatorChangedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "bool SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "IsIndicatorOn");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "ulong SystemFunctionLockIndicatorChangedEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "Timestamp");
 			}
 		}
 #endif

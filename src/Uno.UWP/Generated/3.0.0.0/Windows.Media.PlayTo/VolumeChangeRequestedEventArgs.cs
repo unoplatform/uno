@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.VolumeChangeRequestedEventArgs", "double VolumeChangeRequestedEventArgs.Volume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.VolumeChangeRequestedEventArgs", "Volume");
 			}
 		}
 #endif

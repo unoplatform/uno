@@ -15,7 +15,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "Rect PointerPointProperties.ContactRectRaw");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "ContactRectRaw");
 			}
 		}
 #endif
@@ -45,7 +45,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "float? PointerPointProperties.ZDistance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "ZDistance");
 			}
 		}
 #endif
@@ -53,14 +53,14 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool HasUsage(uint usagePage, uint usageId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "bool PointerPointProperties.HasUsage(uint usagePage, uint usageId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "HasUsage(uint usagePage, uint usageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetUsageValue(uint usagePage, uint usageId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "int PointerPointProperties.GetUsageValue(uint usagePage, uint usageId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "GetUsageValue(uint usagePage, uint usageId)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRect.get

@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "IReadOnlyList<WebTokenResponse> WebTokenRequestResult.ResponseData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "ResponseData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "WebProviderError WebTokenRequestResult.ResponseError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "ResponseError");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "WebTokenRequestStatus WebTokenRequestResult.ResponseStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "ResponseStatus");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction InvalidateCacheAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "IAsyncAction WebTokenRequestResult.InvalidateCacheAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "InvalidateCacheAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseData.get

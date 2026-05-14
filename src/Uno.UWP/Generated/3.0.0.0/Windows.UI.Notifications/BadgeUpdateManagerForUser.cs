@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeUpdateManagerForUser", "User BadgeUpdateManagerForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeUpdateManagerForUser", "User");
 			}
 		}
 #endif
@@ -27,21 +27,21 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Notifications.BadgeUpdater CreateBadgeUpdaterForApplication()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeUpdateManagerForUser", "BadgeUpdater BadgeUpdateManagerForUser.CreateBadgeUpdaterForApplication()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeUpdateManagerForUser", "CreateBadgeUpdaterForApplication()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Notifications.BadgeUpdater CreateBadgeUpdaterForApplication(string applicationId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeUpdateManagerForUser", "BadgeUpdater BadgeUpdateManagerForUser.CreateBadgeUpdaterForApplication(string applicationId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeUpdateManagerForUser", "CreateBadgeUpdaterForApplication(string applicationId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Notifications.BadgeUpdater CreateBadgeUpdaterForSecondaryTile(string tileId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeUpdateManagerForUser", "BadgeUpdater BadgeUpdateManagerForUser.CreateBadgeUpdaterForSecondaryTile(string tileId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeUpdateManagerForUser", "CreateBadgeUpdaterForSecondaryTile(string tileId)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.User.get

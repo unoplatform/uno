@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.UnhandledErrorDetectedEventArgs", "UnhandledError UnhandledErrorDetectedEventArgs.UnhandledError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.UnhandledErrorDetectedEventArgs", "UnhandledError");
 			}
 		}
 #endif

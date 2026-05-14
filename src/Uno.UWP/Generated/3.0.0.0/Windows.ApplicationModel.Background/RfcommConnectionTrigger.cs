@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "bool RfcommConnectionTrigger.AllowMultipleConnections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "AllowMultipleConnections");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "bool RfcommConnectionTrigger.AllowMultipleConnections");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "AllowMultipleConnections");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "RfcommInboundConnectionInformation RfcommConnectionTrigger.InboundConnection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "InboundConnection");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "RfcommOutboundConnectionInformation RfcommConnectionTrigger.OutboundConnection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "OutboundConnection");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "SocketProtectionLevel RfcommConnectionTrigger.ProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "ProtectionLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "SocketProtectionLevel RfcommConnectionTrigger.ProtectionLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "ProtectionLevel");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "HostName RfcommConnectionTrigger.RemoteHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "RemoteHostName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "HostName RfcommConnectionTrigger.RemoteHostName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "RemoteHostName");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RfcommConnectionTrigger()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "RfcommConnectionTrigger.RfcommConnectionTrigger()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "RfcommConnectionTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.RfcommConnectionTrigger()

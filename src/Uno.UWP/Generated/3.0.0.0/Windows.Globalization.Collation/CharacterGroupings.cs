@@ -14,7 +14,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "int CharacterGroupings.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "Count");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "CharacterGrouping CharacterGroupings.this[int index]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "this[int index]");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Globalization.Collation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CharacterGroupings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings.CharacterGroupings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings()");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings()
@@ -40,7 +40,7 @@ namespace Windows.Globalization.Collation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CharacterGroupings(string language)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings.CharacterGroupings(string language)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings(string language)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings(string)
@@ -48,7 +48,7 @@ namespace Windows.Globalization.Collation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Lookup(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "string CharacterGroupings.Lookup(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "Lookup(string text)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.Count.get
@@ -57,7 +57,7 @@ namespace Windows.Globalization.Collation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Globalization.Collation.CharacterGrouping> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "IEnumerator<CharacterGrouping> CharacterGroupings.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.System.Collections.IEnumerable.GetEnumerator()

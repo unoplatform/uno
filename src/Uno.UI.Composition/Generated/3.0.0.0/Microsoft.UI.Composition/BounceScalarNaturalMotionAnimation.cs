@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation", "float BounceScalarNaturalMotionAnimation.Acceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation", "Acceleration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation", "float BounceScalarNaturalMotionAnimation.Acceleration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation", "Acceleration");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation", "float BounceScalarNaturalMotionAnimation.Restitution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation", "Restitution");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation", "float BounceScalarNaturalMotionAnimation.Restitution");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation", "Restitution");
 			}
 		}
 #endif

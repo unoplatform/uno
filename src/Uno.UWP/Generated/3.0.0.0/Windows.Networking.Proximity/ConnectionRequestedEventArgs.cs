@@ -19,7 +19,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ConnectionRequestedEventArgs", "PeerInformation ConnectionRequestedEventArgs.PeerInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ConnectionRequestedEventArgs", "PeerInformation");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs", "StreamSocket StreamSocketListenerConnectionReceivedEventArgs.Socket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs", "Socket");
 			}
 		}
 #endif

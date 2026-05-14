@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrackSupportInfo", "MediaDecoderStatus VideoTrackSupportInfo.DecoderStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrackSupportInfo", "DecoderStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrackSupportInfo", "MediaSourceStatus VideoTrackSupportInfo.MediaSourceStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrackSupportInfo", "MediaSourceStatus");
 			}
 		}
 #endif

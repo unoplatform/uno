@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "string PnpObjectUpdate.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "IReadOnlyDictionary<string, object> PnpObjectUpdate.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "Properties");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "PnpObjectType PnpObjectUpdate.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "Type");
 			}
 		}
 #endif

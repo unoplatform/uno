@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDeviceId", "string BluetoothDeviceId.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDeviceId", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDeviceId", "bool BluetoothDeviceId.IsClassicDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDeviceId", "IsClassicDevice");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDeviceId", "bool BluetoothDeviceId.IsLowEnergyDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDeviceId", "IsLowEnergyDevice");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Bluetooth.BluetoothDeviceId FromId(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDeviceId", "BluetoothDeviceId BluetoothDeviceId.FromId(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDeviceId", "FromId(string deviceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDeviceId.Id.get

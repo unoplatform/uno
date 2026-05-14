@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs", "PrintWorkflowSubmittedOperation PrintWorkflowXpsDataAvailableEventArgs.Operation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs", "Operation");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing.Workflow
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs", "Deferral PrintWorkflowXpsDataAvailableEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.Operation.get

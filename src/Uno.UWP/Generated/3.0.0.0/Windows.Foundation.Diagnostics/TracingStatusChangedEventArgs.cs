@@ -19,7 +19,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs", "bool TracingStatusChangedEventArgs.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs", "Enabled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs", "CausalityTraceLevel TracingStatusChangedEventArgs.TraceLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.TracingStatusChangedEventArgs", "TraceLevel");
 			}
 		}
 #endif

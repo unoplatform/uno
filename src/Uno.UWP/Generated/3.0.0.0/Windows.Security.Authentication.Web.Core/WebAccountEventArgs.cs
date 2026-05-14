@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAccountEventArgs", "WebAccount WebAccountEventArgs.Account");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAccountEventArgs", "Account");
 			}
 		}
 #endif

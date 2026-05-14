@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "TimedMetadataEncodingProperties TimedMetadataStreamDescriptor.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "EncodingProperties");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "bool TimedMetadataStreamDescriptor.IsSelected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "IsSelected");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "string TimedMetadataStreamDescriptor.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "string TimedMetadataStreamDescriptor.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "Label");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "string TimedMetadataStreamDescriptor.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "string TimedMetadataStreamDescriptor.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "Language");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "string TimedMetadataStreamDescriptor.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "string TimedMetadataStreamDescriptor.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "Name");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TimedMetadataStreamDescriptor(global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties encodingProperties)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "TimedMetadataStreamDescriptor.TimedMetadataStreamDescriptor(TimedMetadataEncodingProperties encodingProperties)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "TimedMetadataStreamDescriptor(TimedMetadataEncodingProperties encodingProperties)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedMetadataStreamDescriptor.TimedMetadataStreamDescriptor(Windows.Media.MediaProperties.TimedMetadataEncodingProperties)
@@ -82,7 +82,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.TimedMetadataStreamDescriptor Copy()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "TimedMetadataStreamDescriptor TimedMetadataStreamDescriptor.Copy()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataStreamDescriptor", "Copy()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedMetadataStreamDescriptor.EncodingProperties.get

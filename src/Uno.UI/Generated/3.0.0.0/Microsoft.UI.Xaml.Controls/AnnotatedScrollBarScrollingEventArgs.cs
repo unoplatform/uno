@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "bool AnnotatedScrollBarScrollingEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "bool AnnotatedScrollBarScrollingEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "double AnnotatedScrollBarScrollingEventArgs.ScrollOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "ScrollOffset");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "AnnotatedScrollBarScrollingEventKind AnnotatedScrollBarScrollingEventArgs.ScrollingEventKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "ScrollingEventKind");
 			}
 		}
 #endif

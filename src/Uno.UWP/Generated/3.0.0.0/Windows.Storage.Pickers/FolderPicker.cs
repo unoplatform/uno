@@ -15,7 +15,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "ValueSet FolderPicker.ContinuationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "ContinuationData");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "User FolderPicker.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "User");
 			}
 		}
 #endif
@@ -39,21 +39,21 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Pickers.FolderPicker CreateForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "FolderPicker FolderPicker.CreateForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "CreateForUser(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void PickFolderAndContinue()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "void FolderPicker.PickFolderAndContinue()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "PickFolderAndContinue()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> PickSingleFolderAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "IAsyncOperation<StorageFolder> FolderPicker.PickSingleFolderAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "PickSingleFolderAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.CommitButtonText.get

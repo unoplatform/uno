@@ -19,7 +19,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "string ErrorDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "Description");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "Uri ErrorDetails.HelpUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "HelpUri");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "string ErrorDetails.LongDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "LongDescription");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Foundation.Diagnostics.ErrorDetails> CreateFromHResultAsync(int errorCode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "IAsyncOperation<ErrorDetails> ErrorDetails.CreateFromHResultAsync(int errorCode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "CreateFromHResultAsync(int errorCode)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.Description.get

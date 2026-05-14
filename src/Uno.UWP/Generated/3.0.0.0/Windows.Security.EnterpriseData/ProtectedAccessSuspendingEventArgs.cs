@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessSuspendingEventArgs", "DateTimeOffset ProtectedAccessSuspendingEventArgs.Deadline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessSuspendingEventArgs", "Deadline");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessSuspendingEventArgs", "IReadOnlyList<string> ProtectedAccessSuspendingEventArgs.Identities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessSuspendingEventArgs", "Identities");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Security.EnterpriseData
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessSuspendingEventArgs", "Deferral ProtectedAccessSuspendingEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessSuspendingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessSuspendingEventArgs.Deadline.get

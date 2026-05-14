@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureAlternateShortcutKeys AppCaptureSettings.AlternateShortcutKeys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AlternateShortcutKeys");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "StorageFolder AppCaptureSettings.AppCaptureDestinationFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureDestinationFolder");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "StorageFolder AppCaptureSettings.AppCaptureDestinationFolder");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "AppCaptureDestinationFolder");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.AudioEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AudioEncodingBitrate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.AudioEncodingBitrate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "AudioEncodingBitrate");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "CustomVideoEncodingBitrate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingBitrate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "CustomVideoEncodingBitrate");
 			}
 		}
 #endif
@@ -71,11 +71,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "CustomVideoEncodingHeight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingHeight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "CustomVideoEncodingHeight");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "CustomVideoEncodingWidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingWidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "CustomVideoEncodingWidth");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.HasHardwareEncoder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "HasHardwareEncoder");
 			}
 		}
 #endif
@@ -109,11 +109,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.HistoricalBufferLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "HistoricalBufferLength");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.HistoricalBufferLength");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "HistoricalBufferLength");
 			}
 		}
 #endif
@@ -123,11 +123,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureHistoricalBufferLengthUnit AppCaptureSettings.HistoricalBufferLengthUnit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "HistoricalBufferLengthUnit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "AppCaptureHistoricalBufferLengthUnit AppCaptureSettings.HistoricalBufferLengthUnit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "HistoricalBufferLengthUnit");
 			}
 		}
 #endif
@@ -137,11 +137,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsAppCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsAppCaptureEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsAppCaptureEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsAppCaptureEnabled");
 			}
 		}
 #endif
@@ -151,11 +151,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsAudioCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsAudioCaptureEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsAudioCaptureEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsAudioCaptureEnabled");
 			}
 		}
 #endif
@@ -165,7 +165,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsCpuConstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsCpuConstrained");
 			}
 		}
 #endif
@@ -175,11 +175,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsCursorImageCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsCursorImageCaptureEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsCursorImageCaptureEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsCursorImageCaptureEnabled");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsDisabledByPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsDisabledByPolicy");
 			}
 		}
 #endif
@@ -199,11 +199,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsEchoCancellationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsEchoCancellationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsEchoCancellationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsEchoCancellationEnabled");
 			}
 		}
 #endif
@@ -213,7 +213,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsGpuConstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsGpuConstrained");
 			}
 		}
 #endif
@@ -223,11 +223,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsHistoricalCaptureEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsHistoricalCaptureEnabled");
 			}
 		}
 #endif
@@ -237,11 +237,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureOnBatteryAllowed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsHistoricalCaptureOnBatteryAllowed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureOnBatteryAllowed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsHistoricalCaptureOnBatteryAllowed");
 			}
 		}
 #endif
@@ -251,11 +251,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureOnWirelessDisplayAllowed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsHistoricalCaptureOnWirelessDisplayAllowed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureOnWirelessDisplayAllowed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsHistoricalCaptureOnWirelessDisplayAllowed");
 			}
 		}
 #endif
@@ -265,7 +265,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsMemoryConstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsMemoryConstrained");
 			}
 		}
 #endif
@@ -275,11 +275,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsMicrophoneCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsMicrophoneCaptureEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsMicrophoneCaptureEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsMicrophoneCaptureEnabled");
 			}
 		}
 #endif
@@ -289,11 +289,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsMicrophoneCaptureEnabledByDefault");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "IsMicrophoneCaptureEnabledByDefault");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsMicrophoneCaptureEnabledByDefault");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "IsMicrophoneCaptureEnabledByDefault");
 			}
 		}
 #endif
@@ -303,11 +303,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "TimeSpan AppCaptureSettings.MaximumRecordLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "MaximumRecordLength");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "TimeSpan AppCaptureSettings.MaximumRecordLength");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "MaximumRecordLength");
 			}
 		}
 #endif
@@ -317,11 +317,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "double AppCaptureSettings.MicrophoneGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "MicrophoneGain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "double AppCaptureSettings.MicrophoneGain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "MicrophoneGain");
 			}
 		}
 #endif
@@ -331,11 +331,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "StorageFolder AppCaptureSettings.ScreenshotDestinationFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "ScreenshotDestinationFolder");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "StorageFolder AppCaptureSettings.ScreenshotDestinationFolder");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "ScreenshotDestinationFolder");
 			}
 		}
 #endif
@@ -345,11 +345,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "double AppCaptureSettings.SystemAudioGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "SystemAudioGain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "double AppCaptureSettings.SystemAudioGain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "SystemAudioGain");
 			}
 		}
 #endif
@@ -359,11 +359,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingBitrateMode AppCaptureSettings.VideoEncodingBitrateMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "VideoEncodingBitrateMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingBitrateMode AppCaptureSettings.VideoEncodingBitrateMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "VideoEncodingBitrateMode");
 			}
 		}
 #endif
@@ -373,11 +373,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingFrameRateMode AppCaptureSettings.VideoEncodingFrameRateMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "VideoEncodingFrameRateMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingFrameRateMode AppCaptureSettings.VideoEncodingFrameRateMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "VideoEncodingFrameRateMode");
 			}
 		}
 #endif
@@ -387,11 +387,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingResolutionMode AppCaptureSettings.VideoEncodingResolutionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "VideoEncodingResolutionMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingResolutionMode AppCaptureSettings.VideoEncodingResolutionMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureSettings", "VideoEncodingResolutionMode");
 			}
 		}
 #endif

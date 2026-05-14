@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "PosPrinterCartridgeSensors SlipPrinterCapabilities.CartridgeSensors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "CartridgeSensors");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "PosPrinterColorCapabilities SlipPrinterCapabilities.ColorCartridgeCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "ColorCartridgeCapabilities");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.Is180RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "Is180RotationSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsBarcodeSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsBarcodeSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsBitmapSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsBitmapSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsBoldSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsBoldSupported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsBothSidesPrintingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsBothSidesPrintingSupported");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsDoubleHighDoubleWidePrintSupported");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsDoubleHighPrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsDoubleHighPrintSupported");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsDoubleWidePrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsDoubleWidePrintSupported");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsDualColorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsDualColorSupported");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsFullLengthSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsFullLengthSupported");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsItalicSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsItalicSupported");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsLeft90RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsLeft90RotationSupported");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsPaperEmptySensorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsPaperEmptySensorSupported");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsPaperNearEndSensorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsPaperNearEndSensorSupported");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsPrintAreaSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsPrintAreaSupported");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsPrinterPresent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsPrinterPresent");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsReversePaperFeedByLineSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsReversePaperFeedByLineSupported");
 			}
 		}
 #endif
@@ -209,7 +209,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsReversePaperFeedByMapModeUnitSupported");
 			}
 		}
 #endif
@@ -219,7 +219,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsReverseVideoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsReverseVideoSupported");
 			}
 		}
 #endif
@@ -229,7 +229,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsRight90RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsRight90RotationSupported");
 			}
 		}
 #endif
@@ -239,7 +239,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsStrikethroughSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsStrikethroughSupported");
 			}
 		}
 #endif
@@ -249,7 +249,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsSubscriptSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsSubscriptSupported");
 			}
 		}
 #endif
@@ -259,7 +259,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsSuperscriptSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsSuperscriptSupported");
 			}
 		}
 #endif
@@ -269,7 +269,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsUnderlineSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IsUnderlineSupported");
 			}
 		}
 #endif
@@ -279,7 +279,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "PosPrinterRuledLineCapabilities SlipPrinterCapabilities.RuledLineCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "RuledLineCapabilities");
 			}
 		}
 #endif
@@ -289,7 +289,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBarcodeRotations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "SupportedBarcodeRotations");
 			}
 		}
 #endif
@@ -299,7 +299,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBitmapRotations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "SupportedBitmapRotations");
 			}
 		}
 #endif
@@ -309,7 +309,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IReadOnlyList<uint> SlipPrinterCapabilities.SupportedCharactersPerLine");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "SupportedCharactersPerLine");
 			}
 		}
 #endif

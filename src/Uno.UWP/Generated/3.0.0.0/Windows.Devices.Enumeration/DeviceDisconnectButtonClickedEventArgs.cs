@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs", "DeviceInformation DeviceDisconnectButtonClickedEventArgs.Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs", "Device");
 			}
 		}
 #endif

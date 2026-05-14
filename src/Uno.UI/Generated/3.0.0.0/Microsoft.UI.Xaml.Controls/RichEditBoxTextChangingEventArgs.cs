@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs", "bool RichEditBoxTextChangingEventArgs.IsContentChanging");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs", "IsContentChanging");
 			}
 		}
 #endif

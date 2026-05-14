@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs", "IBuffer MobileBroadbandDeviceServiceDataReceivedEventArgs.ReceivedData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs", "ReceivedData");
 			}
 		}
 #endif

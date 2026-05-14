@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AdvancedPhotoControl", "AdvancedPhotoMode AdvancedPhotoControl.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AdvancedPhotoControl", "Mode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AdvancedPhotoControl", "bool AdvancedPhotoControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AdvancedPhotoControl", "Supported");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AdvancedPhotoControl", "IReadOnlyList<AdvancedPhotoMode> AdvancedPhotoControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AdvancedPhotoControl", "SupportedModes");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Configure(global::Windows.Media.Devices.AdvancedPhotoCaptureSettings settings)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AdvancedPhotoControl", "void AdvancedPhotoControl.Configure(AdvancedPhotoCaptureSettings settings)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AdvancedPhotoControl", "Configure(AdvancedPhotoCaptureSettings settings)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Mode.get

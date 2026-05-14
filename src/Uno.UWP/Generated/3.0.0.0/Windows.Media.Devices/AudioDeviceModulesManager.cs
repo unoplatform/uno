@@ -12,7 +12,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioDeviceModulesManager(string deviceId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceModulesManager", "AudioDeviceModulesManager.AudioDeviceModulesManager(string deviceId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceModulesManager", "AudioDeviceModulesManager(string deviceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModulesManager.AudioDeviceModulesManager(string)
@@ -20,14 +20,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.AudioDeviceModule> FindAllById(string moduleId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModulesManager", "IReadOnlyList<AudioDeviceModule> AudioDeviceModulesManager.FindAllById(string moduleId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModulesManager", "FindAllById(string moduleId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.AudioDeviceModule> FindAll()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModulesManager", "IReadOnlyList<AudioDeviceModule> AudioDeviceModulesManager.FindAll()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModulesManager", "FindAll()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModulesManager.ModuleNotificationReceived.add
@@ -39,12 +39,12 @@ namespace Windows.Media.Devices
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceModulesManager", "event TypedEventHandler<AudioDeviceModulesManager, AudioDeviceModuleNotificationEventArgs> AudioDeviceModulesManager.ModuleNotificationReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceModulesManager", "event ModuleNotificationReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceModulesManager", "event TypedEventHandler<AudioDeviceModulesManager, AudioDeviceModuleNotificationEventArgs> AudioDeviceModulesManager.ModuleNotificationReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AudioDeviceModulesManager", "event ModuleNotificationReceived");
 			}
 		}
 #endif

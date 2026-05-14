@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackSupportInfo", "MediaDecoderStatus AudioTrackSupportInfo.DecoderStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackSupportInfo", "DecoderStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackSupportInfo", "AudioDecoderDegradation AudioTrackSupportInfo.Degradation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackSupportInfo", "Degradation");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackSupportInfo", "AudioDecoderDegradationReason AudioTrackSupportInfo.DegradationReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackSupportInfo", "DegradationReason");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackSupportInfo", "MediaSourceStatus AudioTrackSupportInfo.MediaSourceStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrackSupportInfo", "MediaSourceStatus");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundRevokedEventArgs", "ExtendedExecutionForegroundRevokedReason ExtendedExecutionForegroundRevokedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundRevokedEventArgs", "Reason");
 			}
 		}
 #endif

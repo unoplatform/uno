@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.SearchActivatedEventArgs", "SearchPaneQueryLinguisticDetails SearchActivatedEventArgs.LinguisticDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.SearchActivatedEventArgs", "LinguisticDetails");
 			}
 		}
 #endif
@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.SearchActivatedEventArgs", "User SearchActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.SearchActivatedEventArgs", "User");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.SearchActivatedEventArgs", "ActivationViewSwitcher SearchActivatedEventArgs.ViewSwitcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.SearchActivatedEventArgs", "ViewSwitcher");
 			}
 		}
 #endif

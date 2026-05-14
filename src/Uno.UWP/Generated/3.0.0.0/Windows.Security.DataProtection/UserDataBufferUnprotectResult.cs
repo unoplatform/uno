@@ -19,7 +19,7 @@ namespace Windows.Security.DataProtection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataBufferUnprotectResult", "UserDataBufferUnprotectStatus UserDataBufferUnprotectResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataBufferUnprotectResult", "Status");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.DataProtection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataBufferUnprotectResult", "IBuffer UserDataBufferUnprotectResult.UnprotectedBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataBufferUnprotectResult", "UnprotectedBuffer");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs", "IBuffer WiFiDirectServiceSessionDeferredEventArgs.DeferredSessionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs", "DeferredSessionInfo");
 			}
 		}
 #endif

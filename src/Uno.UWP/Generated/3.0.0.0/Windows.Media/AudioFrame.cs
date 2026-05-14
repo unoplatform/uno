@@ -14,11 +14,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "Duration");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "IPropertySet AudioFrame.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "ExtendedProperties");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "bool AudioFrame.IsDiscontinuous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "IsDiscontinuous");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "bool AudioFrame.IsDiscontinuous");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "IsDiscontinuous");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "bool AudioFrame.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "IsReadOnly");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "RelativeTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.RelativeTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "RelativeTime");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "SystemRelativeTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.SystemRelativeTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "SystemRelativeTime");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "string AudioFrame.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "Type");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioFrame(uint capacity)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "AudioFrame.AudioFrame(uint capacity)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "AudioFrame(uint capacity)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.AudioFrame.AudioFrame(uint)
@@ -106,14 +106,14 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.AudioBuffer LockBuffer(global::Windows.Media.AudioBufferAccessMode mode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "AudioBuffer AudioFrame.LockBuffer(AudioBufferAccessMode mode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "LockBuffer(AudioBufferAccessMode mode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "void AudioFrame.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.AudioFrame.Duration.get

@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference", "CoreWindow CoreWebView2ControllerWindowReference.CoreWindow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference", "CoreWindow");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference", "ulong CoreWebView2ControllerWindowReference.WindowHandle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference", "WindowHandle");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference CreateFromWindowHandle(ulong windowHandle)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference", "CoreWebView2ControllerWindowReference CoreWebView2ControllerWindowReference.CreateFromWindowHandle(ulong windowHandle)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference", "CreateFromWindowHandle(ulong windowHandle)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference CreateFromCoreWindow(global::Windows.UI.Core.CoreWindow coreWindow)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference", "CoreWebView2ControllerWindowReference CoreWebView2ControllerWindowReference.CreateFromCoreWindow(CoreWindow coreWindow)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference", "CreateFromCoreWindow(CoreWindow coreWindow)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.CoreWindow.get

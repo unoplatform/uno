@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "ICollection<string> HttpRequestHeaderCollection.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Keys");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "ICollection<string> HttpRequestHeaderCollection.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Values");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpMediaTypeWithQualityHeaderValueCollection HttpRequestHeaderCollection.Accept");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Accept");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpContentCodingWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptEncoding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "AcceptEncoding");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpLanguageRangeWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "AcceptLanguage");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Authorization");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Authorization");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCacheDirectiveHeaderValueCollection HttpRequestHeaderCollection.CacheControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "CacheControl");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpConnectionOptionHeaderValueCollection HttpRequestHeaderCollection.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Connection");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCookiePairHeaderValueCollection HttpRequestHeaderCollection.Cookie");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Cookie");
 			}
 		}
 #endif
@@ -112,7 +112,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpExpectationHeaderValueCollection HttpRequestHeaderCollection.Expect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Expect");
 			}
 		}
 #endif
@@ -123,11 +123,11 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HostName HttpRequestHeaderCollection.Host");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Host");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HostName HttpRequestHeaderCollection.Host");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Host");
 			}
 		}
 #endif
@@ -140,11 +140,11 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "ProxyAuthorization");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "ProxyAuthorization");
 			}
 		}
 #endif
@@ -155,7 +155,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpTransferCodingHeaderValueCollection HttpRequestHeaderCollection.TransferEncoding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "TransferEncoding");
 			}
 		}
 #endif
@@ -165,7 +165,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpProductInfoHeaderValueCollection HttpRequestHeaderCollection.UserAgent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "UserAgent");
 			}
 		}
 #endif
@@ -173,14 +173,14 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Append(string name, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "void HttpRequestHeaderCollection.Append(string name, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Append(string name, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryAppendWithoutValidation(string name, string value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "TryAppendWithoutValidation(string name, string value)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Keys.get
@@ -199,14 +199,14 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "bool HttpRequestHeaderCollection.Contains(KeyValuePair<string, string> item)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Contains(KeyValuePair<string, string> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, string>[] array, int arrayIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "void HttpRequestHeaderCollection.CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.Remove(System.Collections.Generic.KeyValuePair<string, string>)

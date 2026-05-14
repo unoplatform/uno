@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "string MacAlgorithmNames.AesCmac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "AesCmac");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "string MacAlgorithmNames.HmacMd5");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacMd5");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "string MacAlgorithmNames.HmacSha1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacSha1");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "string MacAlgorithmNames.HmacSha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacSha256");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "string MacAlgorithmNames.HmacSha384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacSha384");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "string MacAlgorithmNames.HmacSha512");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacSha512");
 			}
 		}
 #endif

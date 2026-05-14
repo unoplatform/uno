@@ -14,7 +14,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstance", "IWebUIBackgroundTaskInstance WebUIBackgroundTaskInstance.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstance", "Current");
 			}
 		}
 #endif

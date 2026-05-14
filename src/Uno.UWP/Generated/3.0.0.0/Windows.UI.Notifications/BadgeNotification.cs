@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeNotification", "XmlDocument BadgeNotification.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeNotification", "Content");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeNotification", "DateTimeOffset? BadgeNotification.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeNotification", "ExpirationTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.BadgeNotification", "DateTimeOffset? BadgeNotification.ExpirationTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.BadgeNotification", "ExpirationTime");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__")]
 		public BadgeNotification(global::Windows.Data.Xml.Dom.XmlDocument content)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.BadgeNotification", "BadgeNotification.BadgeNotification(XmlDocument content)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.BadgeNotification", "BadgeNotification(XmlDocument content)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.BadgeNotification(Windows.Data.Xml.Dom.XmlDocument)

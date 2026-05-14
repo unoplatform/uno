@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "string AppointmentRecurrence.CalendarIdentifier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "CalendarIdentifier");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Day");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Day");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Day");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Day");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentDaysOfWeek AppointmentRecurrence.DaysOfWeek");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "DaysOfWeek");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentDaysOfWeek AppointmentRecurrence.DaysOfWeek");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "DaysOfWeek");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Interval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Interval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Interval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Interval");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Month");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Month");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Month");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Month");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint? AppointmentRecurrence.Occurrences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Occurrences");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint? AppointmentRecurrence.Occurrences");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Occurrences");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "RecurrenceType AppointmentRecurrence.RecurrenceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "RecurrenceType");
 			}
 		}
 #endif
@@ -104,11 +104,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "string AppointmentRecurrence.TimeZone");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "TimeZone");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "string AppointmentRecurrence.TimeZone");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "TimeZone");
 			}
 		}
 #endif
@@ -118,11 +118,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentRecurrenceUnit AppointmentRecurrence.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Unit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentRecurrenceUnit AppointmentRecurrence.Unit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Unit");
 			}
 		}
 #endif
@@ -132,11 +132,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "DateTimeOffset? AppointmentRecurrence.Until");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Until");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "DateTimeOffset? AppointmentRecurrence.Until");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "Until");
 			}
 		}
 #endif
@@ -146,11 +146,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentWeekOfMonth AppointmentRecurrence.WeekOfMonth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "WeekOfMonth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentWeekOfMonth AppointmentRecurrence.WeekOfMonth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "WeekOfMonth");
 			}
 		}
 #endif
@@ -158,7 +158,7 @@ namespace Windows.ApplicationModel.Appointments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AppointmentRecurrence()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentRecurrence.AppointmentRecurrence()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentRecurrence()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.AppointmentRecurrence()

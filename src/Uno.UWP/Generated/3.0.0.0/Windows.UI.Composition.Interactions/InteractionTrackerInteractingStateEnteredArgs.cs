@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs", "bool InteractionTrackerInteractingStateEnteredArgs.IsFromBinding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs", "IsFromBinding");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs", "int InteractionTrackerInteractingStateEnteredArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs", "RequestId");
 			}
 		}
 #endif

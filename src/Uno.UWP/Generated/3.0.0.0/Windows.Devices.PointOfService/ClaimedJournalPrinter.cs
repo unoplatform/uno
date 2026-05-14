@@ -19,11 +19,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.CharactersPerLine");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "CharactersPerLine");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.CharactersPerLine");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "CharactersPerLine");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "PosPrinterColorCartridge ClaimedJournalPrinter.ColorCartridge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "ColorCartridge");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "PosPrinterColorCartridge ClaimedJournalPrinter.ColorCartridge");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "ColorCartridge");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsCartridgeEmpty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsCartridgeEmpty");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsCartridgeRemoved");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsCartridgeRemoved");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsCoverOpen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsCoverOpen");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsHeadCleaning");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsHeadCleaning");
 			}
 		}
 #endif
@@ -87,11 +87,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsLetterQuality");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsLetterQuality");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsLetterQuality");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsLetterQuality");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsPaperEmpty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsPaperEmpty");
 			}
 		}
 #endif
@@ -111,7 +111,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsPaperNearEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsPaperNearEnd");
 			}
 		}
 #endif
@@ -121,7 +121,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.IsReadyToPrint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "IsReadyToPrint");
 			}
 		}
 #endif
@@ -131,11 +131,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "LineHeight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineHeight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "LineHeight");
 			}
 		}
 #endif
@@ -145,11 +145,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineSpacing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "LineSpacing");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineSpacing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "LineSpacing");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "LineWidth");
 			}
 		}
 #endif
@@ -167,14 +167,14 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.JournalPrintJob CreateJob()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "JournalPrintJob ClaimedJournalPrinter.CreateJob()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "CreateJob()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ValidateData(string data)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "bool ClaimedJournalPrinter.ValidateData(string data)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.ClaimedJournalPrinter", "ValidateData(string data)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedJournalPrinter.CharactersPerLine.get

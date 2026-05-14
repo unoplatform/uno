@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "bool RemoteParticipantComposingChangedEventArgs.IsComposing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "IsComposing");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "string RemoteParticipantComposingChangedEventArgs.ParticipantAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "ParticipantAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "string RemoteParticipantComposingChangedEventArgs.TransportId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "TransportId");
 			}
 		}
 #endif

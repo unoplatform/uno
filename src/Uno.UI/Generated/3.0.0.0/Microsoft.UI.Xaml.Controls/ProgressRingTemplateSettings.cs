@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "double ProgressRingTemplateSettings.EllipseDiameter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "EllipseDiameter");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "Thickness ProgressRingTemplateSettings.EllipseOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "EllipseOffset");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "double ProgressRingTemplateSettings.MaxSideLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "MaxSideLength");
 			}
 		}
 #endif

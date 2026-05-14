@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "BandwidthStatistics MessageWebSocketInformation.BandwidthStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "BandwidthStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "HostName MessageWebSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "LocalAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "string MessageWebSocketInformation.Protocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "Protocol");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "Certificate MessageWebSocketInformation.ServerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "ServerCertificate");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "SocketSslErrorSeverity MessageWebSocketInformation.ServerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "ServerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "IReadOnlyList<ChainValidationResult> MessageWebSocketInformation.ServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "ServerCertificateErrors");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "IReadOnlyList<Certificate> MessageWebSocketInformation.ServerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "ServerIntermediateCertificates");
 			}
 		}
 #endif

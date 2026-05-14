@@ -14,7 +14,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.UnifiedPosErrorData", "uint UnifiedPosErrorData.ExtendedReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.UnifiedPosErrorData", "ExtendedReason");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.UnifiedPosErrorData", "string UnifiedPosErrorData.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.UnifiedPosErrorData", "Message");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.UnifiedPosErrorData", "UnifiedPosErrorReason UnifiedPosErrorData.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.UnifiedPosErrorData", "Reason");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.UnifiedPosErrorData", "UnifiedPosErrorSeverity UnifiedPosErrorData.Severity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.UnifiedPosErrorData", "Severity");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UnifiedPosErrorData(string message, global::Windows.Devices.PointOfService.UnifiedPosErrorSeverity severity, global::Windows.Devices.PointOfService.UnifiedPosErrorReason reason, uint extendedReason)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.UnifiedPosErrorData", "UnifiedPosErrorData.UnifiedPosErrorData(string message, UnifiedPosErrorSeverity severity, UnifiedPosErrorReason reason, uint extendedReason)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.UnifiedPosErrorData", "UnifiedPosErrorData(string message, UnifiedPosErrorSeverity severity, UnifiedPosErrorReason reason, uint extendedReason)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.UnifiedPosErrorData(string, Windows.Devices.PointOfService.UnifiedPosErrorSeverity, Windows.Devices.PointOfService.UnifiedPosErrorReason, uint)

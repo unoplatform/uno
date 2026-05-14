@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionErrorEventArgs", "PlayToConnectionError PlayToConnectionErrorEventArgs.Code");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionErrorEventArgs", "Code");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionErrorEventArgs", "string PlayToConnectionErrorEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionErrorEventArgs", "Message");
 			}
 		}
 #endif

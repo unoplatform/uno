@@ -19,7 +19,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.Print3DWorkflowPrinterChangedEventArgs", "string Print3DWorkflowPrinterChangedEventArgs.NewDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.Print3DWorkflowPrinterChangedEventArgs", "NewDeviceId");
 			}
 		}
 #endif

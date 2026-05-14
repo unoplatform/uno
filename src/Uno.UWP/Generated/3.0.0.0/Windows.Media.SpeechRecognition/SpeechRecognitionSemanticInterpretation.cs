@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation", "IReadOnlyDictionary<string, IReadOnlyList<string>> SpeechRecognitionSemanticInterpretation.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionSemanticInterpretation", "Properties");
 			}
 		}
 #endif

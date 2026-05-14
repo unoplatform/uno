@@ -14,7 +14,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "int MobileBroadbandAntennaSar.AntennaIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "AntennaIndex");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "int MobileBroadbandAntennaSar.SarBackoffIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "SarBackoffIndex");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MobileBroadbandAntennaSar(int antennaIndex, int sarBackoffIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "MobileBroadbandAntennaSar.MobileBroadbandAntennaSar(int antennaIndex, int sarBackoffIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "MobileBroadbandAntennaSar(int antennaIndex, int sarBackoffIndex)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar.MobileBroadbandAntennaSar(int, int)

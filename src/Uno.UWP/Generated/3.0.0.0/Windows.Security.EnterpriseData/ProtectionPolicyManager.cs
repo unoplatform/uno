@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.IsProtectionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IsProtectionEnabled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "string ProtectionPolicyManager.PrimaryManagedIdentity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "PrimaryManagedIdentity");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "string ProtectionPolicyManager.Identity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "Identity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "string ProtectionPolicyManager.Identity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "Identity");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.ShowEnterpriseIndicator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "ShowEnterpriseIndicator");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.ShowEnterpriseIndicator");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "ShowEnterpriseIndicator");
 			}
 		}
 #endif
@@ -65,63 +65,63 @@ namespace Windows.Security.EnterpriseData
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsIdentityManaged(string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.IsIdentityManaged(string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IsIdentityManaged(string identity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryApplyProcessUIPolicy(string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.TryApplyProcessUIPolicy(string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "TryApplyProcessUIPolicy(string identity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ClearProcessUIPolicy()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "void ProtectionPolicyManager.ClearProcessUIPolicy()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "ClearProcessUIPolicy()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.EnterpriseData.ThreadNetworkContext CreateCurrentThreadNetworkContext(string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "ThreadNetworkContext ProtectionPolicyManager.CreateCurrentThreadNetworkContext(string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "CreateCurrentThreadNetworkContext(string identity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetPrimaryManagedIdentityForNetworkEndpointAsync(global::Windows.Networking.HostName endpointHost)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<string> ProtectionPolicyManager.GetPrimaryManagedIdentityForNetworkEndpointAsync(HostName endpointHost)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "GetPrimaryManagedIdentityForNetworkEndpointAsync(HostName endpointHost)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void RevokeContent(string identity)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "void ProtectionPolicyManager.RevokeContent(string identity)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RevokeContent(string identity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.EnterpriseData.ProtectionPolicyManager GetForCurrentView()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "ProtectionPolicyManager ProtectionPolicyManager.GetForCurrentView()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult CheckAccess(string sourceIdentity, string targetIdentity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "ProtectionPolicyEvaluationResult ProtectionPolicyManager.CheckAccess(string sourceIdentity, string targetIdentity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "CheckAccess(string sourceIdentity, string targetIdentity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync(string sourceIdentity, string targetIdentity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessAsync(string sourceIdentity, string targetIdentity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessAsync(string sourceIdentity, string targetIdentity)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.ProtectedAccessResumed.add
@@ -134,42 +134,42 @@ namespace Windows.Security.EnterpriseData
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool HasContentBeenRevokedSince(string identity, global::System.DateTimeOffset since)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.HasContentBeenRevokedSince(string identity, DateTimeOffset since)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "HasContentBeenRevokedSince(string identity, DateTimeOffset since)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult CheckAccessForApp(string sourceIdentity, string appPackageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "ProtectionPolicyEvaluationResult ProtectionPolicyManager.CheckAccessForApp(string sourceIdentity, string appPackageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "CheckAccessForApp(string sourceIdentity, string appPackageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.EnterpriseData.EnforcementLevel GetEnforcementLevel(string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "EnforcementLevel ProtectionPolicyManager.GetEnforcementLevel(string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "GetEnforcementLevel(string identity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsUserDecryptionAllowed(string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.IsUserDecryptionAllowed(string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IsUserDecryptionAllowed(string identity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsProtectionUnderLockRequired(string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.IsProtectionUnderLockRequired(string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IsProtectionUnderLockRequired(string identity)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.PolicyChanged.add
@@ -178,105 +178,105 @@ namespace Windows.Security.EnterpriseData
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync(string sourceIdentity, string targetIdentity, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessAsync(string sourceIdentity, string targetIdentity, ProtectionPolicyAuditInfo auditInfo)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessAsync(string sourceIdentity, string targetIdentity, ProtectionPolicyAuditInfo auditInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync(string sourceIdentity, string targetIdentity, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo, string messageFromApp)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessAsync(string sourceIdentity, string targetIdentity, ProtectionPolicyAuditInfo auditInfo, string messageFromApp)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessAsync(string sourceIdentity, string targetIdentity, ProtectionPolicyAuditInfo auditInfo, string messageFromApp)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo, string messageFromApp)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo, string messageFromApp)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo, string messageFromApp)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void LogAuditEvent(string sourceIdentity, string targetIdentity, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "void ProtectionPolicyManager.LogAuditEvent(string sourceIdentity, string targetIdentity, ProtectionPolicyAuditInfo auditInfo)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "LogAuditEvent(string sourceIdentity, string targetIdentity, ProtectionPolicyAuditInfo auditInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsRoamableProtectionEnabled(string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "bool ProtectionPolicyManager.IsRoamableProtectionEnabled(string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IsRoamableProtectionEnabled(string identity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync(string sourceIdentity, string targetIdentity, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo, string messageFromApp, global::Windows.Security.EnterpriseData.ProtectionPolicyRequestAccessBehavior behavior)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessAsync(string sourceIdentity, string targetIdentity, ProtectionPolicyAuditInfo auditInfo, string messageFromApp, ProtectionPolicyRequestAccessBehavior behavior)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessAsync(string sourceIdentity, string targetIdentity, ProtectionPolicyAuditInfo auditInfo, string messageFromApp, ProtectionPolicyRequestAccessBehavior behavior)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo, string messageFromApp, global::Windows.Security.EnterpriseData.ProtectionPolicyRequestAccessBehavior behavior)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo, string messageFromApp, ProtectionPolicyRequestAccessBehavior behavior)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessForAppAsync(string sourceIdentity, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo, string messageFromApp, ProtectionPolicyRequestAccessBehavior behavior)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessToFilesForAppAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Storage.IStorageItem> sourceItemList, string appPackageFamilyName, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessToFilesForAppAsync(IEnumerable<IStorageItem> sourceItemList, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessToFilesForAppAsync(IEnumerable<IStorageItem> sourceItemList, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessToFilesForAppAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Storage.IStorageItem> sourceItemList, string appPackageFamilyName, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo, string messageFromApp, global::Windows.Security.EnterpriseData.ProtectionPolicyRequestAccessBehavior behavior)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessToFilesForAppAsync(IEnumerable<IStorageItem> sourceItemList, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo, string messageFromApp, ProtectionPolicyRequestAccessBehavior behavior)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessToFilesForAppAsync(IEnumerable<IStorageItem> sourceItemList, string appPackageFamilyName, ProtectionPolicyAuditInfo auditInfo, string messageFromApp, ProtectionPolicyRequestAccessBehavior behavior)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessToFilesForProcessAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Storage.IStorageItem> sourceItemList, uint processId, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessToFilesForProcessAsync(IEnumerable<IStorageItem> sourceItemList, uint processId, ProtectionPolicyAuditInfo auditInfo)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessToFilesForProcessAsync(IEnumerable<IStorageItem> sourceItemList, uint processId, ProtectionPolicyAuditInfo auditInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessToFilesForProcessAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Storage.IStorageItem> sourceItemList, uint processId, global::Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo auditInfo, string messageFromApp, global::Windows.Security.EnterpriseData.ProtectionPolicyRequestAccessBehavior behavior)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<ProtectionPolicyEvaluationResult> ProtectionPolicyManager.RequestAccessToFilesForProcessAsync(IEnumerable<IStorageItem> sourceItemList, uint processId, ProtectionPolicyAuditInfo auditInfo, string messageFromApp, ProtectionPolicyRequestAccessBehavior behavior)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "RequestAccessToFilesForProcessAsync(IEnumerable<IStorageItem> sourceItemList, uint processId, ProtectionPolicyAuditInfo auditInfo, string messageFromApp, ProtectionPolicyRequestAccessBehavior behavior)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> IsFileProtectionRequiredAsync(global::Windows.Storage.IStorageItem target, string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<bool> ProtectionPolicyManager.IsFileProtectionRequiredAsync(IStorageItem target, string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IsFileProtectionRequiredAsync(IStorageItem target, string identity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> IsFileProtectionRequiredForNewFileAsync(global::Windows.Storage.IStorageFolder parentFolder, string identity, string desiredName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IAsyncOperation<bool> ProtectionPolicyManager.IsFileProtectionRequiredForNewFileAsync(IStorageFolder parentFolder, string identity, string desiredName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "IsFileProtectionRequiredForNewFileAsync(IStorageFolder parentFolder, string identity, string desiredName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetPrimaryManagedIdentityForIdentity(string identity)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "string ProtectionPolicyManager.GetPrimaryManagedIdentityForIdentity(string identity)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyManager", "GetPrimaryManagedIdentityForIdentity(string identity)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.IsProtectionEnabled.get
@@ -292,12 +292,12 @@ namespace Windows.Security.EnterpriseData
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event EventHandler<ProtectedAccessResumedEventArgs> ProtectionPolicyManager.ProtectedAccessResumed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event ProtectedAccessResumed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event EventHandler<ProtectedAccessResumedEventArgs> ProtectionPolicyManager.ProtectedAccessResumed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event ProtectedAccessResumed");
 			}
 		}
 #endif
@@ -308,12 +308,12 @@ namespace Windows.Security.EnterpriseData
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event EventHandler<ProtectedAccessSuspendingEventArgs> ProtectionPolicyManager.ProtectedAccessSuspending");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event ProtectedAccessSuspending");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event EventHandler<ProtectedAccessSuspendingEventArgs> ProtectionPolicyManager.ProtectedAccessSuspending");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event ProtectedAccessSuspending");
 			}
 		}
 #endif
@@ -324,12 +324,12 @@ namespace Windows.Security.EnterpriseData
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event EventHandler<ProtectedContentRevokedEventArgs> ProtectionPolicyManager.ProtectedContentRevoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event ProtectedContentRevoked");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event EventHandler<ProtectedContentRevokedEventArgs> ProtectionPolicyManager.ProtectedContentRevoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event ProtectedContentRevoked");
 			}
 		}
 #endif
@@ -340,12 +340,12 @@ namespace Windows.Security.EnterpriseData
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event EventHandler<object> ProtectionPolicyManager.PolicyChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event PolicyChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event EventHandler<object> ProtectionPolicyManager.PolicyChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyManager", "event PolicyChanged");
 			}
 		}
 #endif

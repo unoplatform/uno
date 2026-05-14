@@ -19,11 +19,11 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "string DragUIOverride.Caption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "Caption");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "string DragUIOverride.Caption");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "Caption");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsCaptionVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "IsCaptionVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsCaptionVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "IsCaptionVisible");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsContentVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "IsContentVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsContentVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "IsContentVisible");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsGlyphVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "IsGlyphVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsGlyphVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "IsGlyphVisible");
 			}
 		}
 #endif
@@ -73,21 +73,21 @@ namespace Microsoft.UI.Input.DragDrop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "void DragUIOverride.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "void DragUIOverride.SetContentFromSoftwareBitmap(SoftwareBitmap bitmap)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "SetContentFromSoftwareBitmap(SoftwareBitmap bitmap)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap, global::Windows.Foundation.Point anchorPoint)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "void DragUIOverride.SetContentFromSoftwareBitmap(SoftwareBitmap bitmap, Point anchorPoint)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragUIOverride", "SetContentFromSoftwareBitmap(SoftwareBitmap bitmap, Point anchorPoint)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Caption.get

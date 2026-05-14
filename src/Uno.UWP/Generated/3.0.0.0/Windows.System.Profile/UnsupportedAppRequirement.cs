@@ -19,7 +19,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.UnsupportedAppRequirement", "UnsupportedAppRequirementReasons UnsupportedAppRequirement.Reasons");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.UnsupportedAppRequirement", "Reasons");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.UnsupportedAppRequirement", "string UnsupportedAppRequirement.Requirement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.UnsupportedAppRequirement", "Requirement");
 			}
 		}
 #endif

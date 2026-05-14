@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallVideoCapabilities> GetCapabilitiesAsync(string phoneNumber)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallVideoCapabilitiesManager", "IAsyncOperation<PhoneCallVideoCapabilities> PhoneCallVideoCapabilitiesManager.GetCapabilitiesAsync(string phoneNumber)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallVideoCapabilitiesManager", "GetCapabilitiesAsync(string phoneNumber)");
 		}
 #endif
 	}

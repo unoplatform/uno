@@ -14,7 +14,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpList", "IList<JumpListItem> JumpList.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpList", "Items");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpList", "JumpListSystemGroupKind JumpList.SystemGroupKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpList", "SystemGroupKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpList", "JumpListSystemGroupKind JumpList.SystemGroupKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpList", "SystemGroupKind");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.UI.StartScreen
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.StartScreen.JumpList> LoadCurrentAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpList", "IAsyncOperation<JumpList> JumpList.LoadCurrentAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpList", "LoadCurrentAsync()");
 		}
 #endif
 		// Skipping already declared method Windows.UI.StartScreen.JumpList.IsSupported()
@@ -44,7 +44,7 @@ namespace Windows.UI.StartScreen
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpList", "IAsyncAction JumpList.SaveAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.JumpList", "SaveAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.StartScreen.JumpList.Items.get

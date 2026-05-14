@@ -14,11 +14,11 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.AmbientAmount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "AmbientAmount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.AmbientAmount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "AmbientAmount");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.DiffuseAmount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "DiffuseAmount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.DiffuseAmount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "DiffuseAmount");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "string SceneLightingEffect.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "string SceneLightingEffect.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "Name");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "IGraphicsEffectSource SceneLightingEffect.NormalMapSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "NormalMapSource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "IGraphicsEffectSource SceneLightingEffect.NormalMapSource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "NormalMapSource");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "SceneLightingEffectReflectanceModel SceneLightingEffect.ReflectanceModel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "ReflectanceModel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "SceneLightingEffectReflectanceModel SceneLightingEffect.ReflectanceModel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "ReflectanceModel");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.SpecularAmount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "SpecularAmount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.SpecularAmount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "SpecularAmount");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.SpecularShine");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Effects.SceneLightingEffect", "SpecularShine");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "float SceneLightingEffect.SpecularShine");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "SpecularShine");
 			}
 		}
 #endif
@@ -110,7 +110,7 @@ namespace Windows.UI.Composition.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SceneLightingEffect()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "SceneLightingEffect.SceneLightingEffect()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Effects.SceneLightingEffect", "SceneLightingEffect()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SceneLightingEffect()

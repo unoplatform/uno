@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "CameraIntrinsics VideoMediaFrame.CameraIntrinsics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "CameraIntrinsics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "DepthMediaFrame VideoMediaFrame.DepthMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "DepthMediaFrame");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "IDirect3DSurface VideoMediaFrame.Direct3DSurface");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "Direct3DSurface");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "MediaFrameReference VideoMediaFrame.FrameReference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "FrameReference");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "InfraredMediaFrame VideoMediaFrame.InfraredMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "InfraredMediaFrame");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "SoftwareBitmap VideoMediaFrame.SoftwareBitmap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "SoftwareBitmap");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "VideoMediaFrameFormat VideoMediaFrame.VideoFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "VideoFormat");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.VideoFrame GetVideoFrame()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "VideoFrame VideoMediaFrame.GetVideoFrame()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrame", "GetVideoFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrame.CameraIntrinsics.get

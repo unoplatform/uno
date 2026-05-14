@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneVisibilityChangedEventArgs", "bool SearchPaneVisibilityChangedEventArgs.Visible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneVisibilityChangedEventArgs", "Visible");
 			}
 		}
 #endif

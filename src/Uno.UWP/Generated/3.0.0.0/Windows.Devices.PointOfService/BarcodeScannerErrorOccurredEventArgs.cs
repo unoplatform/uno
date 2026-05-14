@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs", "UnifiedPosErrorData BarcodeScannerErrorOccurredEventArgs.ErrorData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs", "ErrorData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs", "bool BarcodeScannerErrorOccurredEventArgs.IsRetriable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs", "IsRetriable");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs", "BarcodeScannerReport BarcodeScannerErrorOccurredEventArgs.PartialInputData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs", "PartialInputData");
 			}
 		}
 #endif

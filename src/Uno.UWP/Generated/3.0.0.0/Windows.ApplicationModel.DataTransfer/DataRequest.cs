@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void FailWithDisplayText(string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataRequest", "void DataRequest.FailWithDisplayText(string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataRequest", "FailWithDisplayText(string value)");
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataRequest.GetDeferral()

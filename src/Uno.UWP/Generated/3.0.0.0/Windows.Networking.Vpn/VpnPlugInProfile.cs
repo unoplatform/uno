@@ -14,11 +14,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.AlwaysOn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "AlwaysOn");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.AlwaysOn");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "AlwaysOn");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<VpnAppId> VpnPlugInProfile.AppTriggers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "AppTriggers");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "VpnManagementConnectionStatus VpnPlugInProfile.ConnectionStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "ConnectionStatus");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.CustomConfiguration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "CustomConfiguration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.CustomConfiguration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "CustomConfiguration");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<VpnDomainNameInfo> VpnPlugInProfile.DomainNameInfoList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "DomainNameInfoList");
 			}
 		}
 #endif
@@ -72,11 +72,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.ProfileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "ProfileName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.ProfileName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "ProfileName");
 			}
 		}
 #endif
@@ -86,11 +86,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.RememberCredentials");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "RememberCredentials");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.RememberCredentials");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "RememberCredentials");
 			}
 		}
 #endif
@@ -100,11 +100,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.RequireVpnClientAppUI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "RequireVpnClientAppUI");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.RequireVpnClientAppUI");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "RequireVpnClientAppUI");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<VpnRoute> VpnPlugInProfile.Routes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "Routes");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<Uri> VpnPlugInProfile.ServerUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "ServerUris");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<VpnTrafficFilter> VpnPlugInProfile.TrafficFilters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "TrafficFilters");
 			}
 		}
 #endif
@@ -144,11 +144,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.VpnPluginPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "VpnPluginPackageFamilyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.VpnPluginPackageFamilyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "VpnPluginPackageFamilyName");
 			}
 		}
 #endif
@@ -156,7 +156,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnPlugInProfile()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "VpnPlugInProfile.VpnPlugInProfile()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "VpnPlugInProfile()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.VpnPlugInProfile()

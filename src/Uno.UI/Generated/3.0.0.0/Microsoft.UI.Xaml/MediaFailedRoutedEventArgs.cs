@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.MediaFailedRoutedEventArgs", "string MediaFailedRoutedEventArgs.ErrorTrace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.MediaFailedRoutedEventArgs", "ErrorTrace");
 			}
 		}
 #endif

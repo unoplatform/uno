@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "UIElementType? CoreTextFormatUpdatingEventArgs.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "BackgroundColor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "bool CoreTextFormatUpdatingEventArgs.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "IsCanceled");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "CoreTextRange CoreTextFormatUpdatingEventArgs.Range");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "Range");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "CoreTextFormatUpdatingReason CoreTextFormatUpdatingEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "Reason");
 			}
 		}
 #endif
@@ -59,11 +59,11 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "CoreTextFormatUpdatingResult CoreTextFormatUpdatingEventArgs.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "Result");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "CoreTextFormatUpdatingResult CoreTextFormatUpdatingEventArgs.Result");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "Result");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "UIElementType? CoreTextFormatUpdatingEventArgs.TextColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "TextColor");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "UIElementType? CoreTextFormatUpdatingEventArgs.UnderlineColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "UnderlineColor");
 			}
 		}
 #endif
@@ -93,7 +93,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "UnderlineType? CoreTextFormatUpdatingEventArgs.UnderlineType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "UnderlineType");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "Deferral CoreTextFormatUpdatingEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs.BackgroundColor.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerProviderTriggerDetails", "BarcodeScannerProviderConnection BarcodeScannerProviderTriggerDetails.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerProviderTriggerDetails", "Connection");
 			}
 		}
 #endif

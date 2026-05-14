@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "ScrollViewerView ScrollViewerViewChangingEventArgs.FinalView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "FinalView");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "bool ScrollViewerViewChangingEventArgs.IsInertial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "IsInertial");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "ScrollViewerView ScrollViewerViewChangingEventArgs.NextView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "NextView");
 			}
 		}
 #endif

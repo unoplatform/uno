@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs", "MediaSourceError MediaSourceOpenOperationCompletedEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs", "Error");
 			}
 		}
 #endif

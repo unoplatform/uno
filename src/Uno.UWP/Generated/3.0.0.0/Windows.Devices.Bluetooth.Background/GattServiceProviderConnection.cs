@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "IReadOnlyDictionary<string, GattServiceProviderConnection> GattServiceProviderConnection.AllServices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "AllServices");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "GattLocalService GattServiceProviderConnection.Service");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "Service");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "string GattServiceProviderConnection.TriggerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "TriggerId");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Devices.Bluetooth.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "void GattServiceProviderConnection.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "Start()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.Service.get

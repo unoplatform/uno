@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "uint LowLagPhotoControl.DesiredThumbnailSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "DesiredThumbnailSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoControl", "uint LowLagPhotoControl.DesiredThumbnailSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoControl", "DesiredThumbnailSize");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "uint LowLagPhotoControl.HardwareAcceleratedThumbnailSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "HardwareAcceleratedThumbnailSupported");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "bool LowLagPhotoControl.ThumbnailEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "ThumbnailEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoControl", "bool LowLagPhotoControl.ThumbnailEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoControl", "ThumbnailEnabled");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "MediaThumbnailFormat LowLagPhotoControl.ThumbnailFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "ThumbnailFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoControl", "MediaThumbnailFormat LowLagPhotoControl.ThumbnailFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.LowLagPhotoControl", "ThumbnailFormat");
 			}
 		}
 #endif
@@ -69,14 +69,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate(global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "MediaRatio LowLagPhotoControl.GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetCurrentFrameRate()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "MediaRatio LowLagPhotoControl.GetCurrentFrameRate()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.LowLagPhotoControl", "GetCurrentFrameRate()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoControl.DesiredThumbnailSize.get

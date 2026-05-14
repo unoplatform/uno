@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "string VpnChannelConfiguration.CustomField");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "CustomField");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "IReadOnlyList<HostName> VpnChannelConfiguration.ServerHostNameList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "ServerHostNameList");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "string VpnChannelConfiguration.ServerServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "ServerServiceName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "IReadOnlyList<Uri> VpnChannelConfiguration.ServerUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "ServerUris");
 			}
 		}
 #endif

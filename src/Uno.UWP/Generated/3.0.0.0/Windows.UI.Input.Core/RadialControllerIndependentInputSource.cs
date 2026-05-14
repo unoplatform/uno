@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "RadialController RadialControllerIndependentInputSource.Controller");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "Controller");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "CoreDispatcher RadialControllerIndependentInputSource.Dispatcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "Dispatcher");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "DispatcherQueue RadialControllerIndependentInputSource.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "DispatcherQueue");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Input.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Core.RadialControllerIndependentInputSource CreateForView(global::Windows.ApplicationModel.Core.CoreApplicationView view)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "RadialControllerIndependentInputSource RadialControllerIndependentInputSource.CreateForView(CoreApplicationView view)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "CreateForView(CoreApplicationView view)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Controller.get

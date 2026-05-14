@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "ActivatedOperation WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "TimeSpan WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "Duration");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "ActivationKind WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "ApplicationExecutionState WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "SplashScreen WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "DateTimeOffset WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "TimeToShow");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "User WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "User");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "string WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Verb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs", "Verb");
 			}
 		}
 #endif

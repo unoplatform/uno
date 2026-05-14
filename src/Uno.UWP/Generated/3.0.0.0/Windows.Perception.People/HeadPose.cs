@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HeadPose", "Vector3 HeadPose.ForwardDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HeadPose", "ForwardDirection");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HeadPose", "Vector3 HeadPose.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HeadPose", "Position");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HeadPose", "Vector3 HeadPose.UpDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HeadPose", "UpDirection");
 			}
 		}
 #endif

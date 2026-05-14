@@ -14,7 +14,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "Point InkPoint.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "Position");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "float InkPoint.Pressure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "Pressure");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "float InkPoint.TiltX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "TiltX");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "float InkPoint.TiltY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "TiltY");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "ulong InkPoint.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "Timestamp");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InkPoint(global::Windows.Foundation.Point position, float pressure)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPoint", "InkPoint.InkPoint(Point position, float pressure)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPoint", "InkPoint(Point position, float pressure)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.InkPoint(Windows.Foundation.Point, float)
@@ -70,7 +70,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InkPoint(global::Windows.Foundation.Point position, float pressure, float tiltX, float tiltY, ulong timestamp)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPoint", "InkPoint.InkPoint(Point position, float pressure, float tiltX, float tiltY, ulong timestamp)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPoint", "InkPoint(Point position, float pressure, float tiltX, float tiltY, ulong timestamp)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.InkPoint(Windows.Foundation.Point, float, float, float, ulong)

@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult", "BluetoothError RfcommDeviceServicesResult.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult", "Error");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult", "IReadOnlyList<RfcommDeviceService> RfcommDeviceServicesResult.Services");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult", "Services");
 			}
 		}
 #endif

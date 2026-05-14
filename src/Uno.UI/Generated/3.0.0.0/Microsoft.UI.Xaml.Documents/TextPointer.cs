@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "LogicalDirection TextPointer.LogicalDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "LogicalDirection");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "int TextPointer.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "Offset");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "DependencyObject TextPointer.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "Parent");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "FrameworkElement TextPointer.VisualParent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "VisualParent");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Microsoft.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect GetCharacterRect(global::Microsoft.UI.Xaml.Documents.LogicalDirection direction)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "Rect TextPointer.GetCharacterRect(LogicalDirection direction)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "GetCharacterRect(LogicalDirection direction)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Documents.TextPointer GetPositionAtOffset(int offset, global::Microsoft.UI.Xaml.Documents.LogicalDirection direction)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "TextPointer TextPointer.GetPositionAtOffset(int offset, LogicalDirection direction)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextPointer", "GetPositionAtOffset(int offset, LogicalDirection direction)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.LogicalDirection.get

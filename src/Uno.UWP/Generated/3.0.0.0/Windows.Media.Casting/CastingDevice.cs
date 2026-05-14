@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "string CastingDevice.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "FriendlyName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "IRandomAccessStreamWithContentType CastingDevice.Icon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "Icon");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "string CastingDevice.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "Id");
 			}
 		}
 #endif
@@ -47,42 +47,42 @@ namespace Windows.Media.Casting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::Windows.Media.Casting.CastingPlaybackTypes type)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "string CastingDevice.GetDeviceSelector(CastingPlaybackTypes type)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "GetDeviceSelector(CastingPlaybackTypes type)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetDeviceSelectorFromCastingSourceAsync(global::Windows.Media.Casting.CastingSource castingSource)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "IAsyncOperation<string> CastingDevice.GetDeviceSelectorFromCastingSourceAsync(CastingSource castingSource)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "GetDeviceSelectorFromCastingSourceAsync(CastingSource castingSource)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingDevice> FromIdAsync(string value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "IAsyncOperation<CastingDevice> CastingDevice.FromIdAsync(string value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "FromIdAsync(string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> DeviceInfoSupportsCastingAsync(global::Windows.Devices.Enumeration.DeviceInformation device)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "IAsyncOperation<bool> CastingDevice.DeviceInfoSupportsCastingAsync(DeviceInformation device)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "DeviceInfoSupportsCastingAsync(DeviceInformation device)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingPlaybackTypes> GetSupportedCastingPlaybackTypesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "IAsyncOperation<CastingPlaybackTypes> CastingDevice.GetSupportedCastingPlaybackTypesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "GetSupportedCastingPlaybackTypesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Casting.CastingConnection CreateCastingConnection()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "CastingConnection CastingDevice.CreateCastingConnection()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevice", "CreateCastingConnection()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Casting.CastingDevice.FriendlyName.get

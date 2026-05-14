@@ -14,7 +14,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedTriangleIndexFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "SupportedTriangleIndexFormats");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedVertexNormalFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "SupportedVertexNormalFormats");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedVertexPositionFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "SupportedVertexPositionFormats");
 			}
 		}
 #endif
@@ -44,11 +44,11 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "bool SpatialSurfaceMeshOptions.IncludeVertexNormals");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "IncludeVertexNormals");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "bool SpatialSurfaceMeshOptions.IncludeVertexNormals");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "IncludeVertexNormals");
 			}
 		}
 #endif
@@ -58,11 +58,11 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.TriangleIndexFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "TriangleIndexFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.TriangleIndexFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "TriangleIndexFormat");
 			}
 		}
 #endif
@@ -72,11 +72,11 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.VertexNormalFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "VertexNormalFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.VertexNormalFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "VertexNormalFormat");
 			}
 		}
 #endif
@@ -86,11 +86,11 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.VertexPositionFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "VertexPositionFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "DirectXPixelFormat SpatialSurfaceMeshOptions.VertexPositionFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "VertexPositionFormat");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpatialSurfaceMeshOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "SpatialSurfaceMeshOptions.SpatialSurfaceMeshOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions", "SpatialSurfaceMeshOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SpatialSurfaceMeshOptions()

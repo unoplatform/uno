@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "ContentIsland XamlRoot.ContentIsland");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "ContentIsland");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "ContentIslandEnvironment XamlRoot.ContentIslandEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "ContentIslandEnvironment");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "ContentCoordinateConverter XamlRoot.CoordinateConverter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "CoordinateConverter");
 			}
 		}
 #endif

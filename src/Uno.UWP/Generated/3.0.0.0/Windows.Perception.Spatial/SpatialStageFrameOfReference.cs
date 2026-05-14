@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "SpatialStageFrameOfReference SpatialStageFrameOfReference.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "Current");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "SpatialCoordinateSystem SpatialStageFrameOfReference.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "CoordinateSystem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "SpatialLookDirectionRange SpatialStageFrameOfReference.LookDirectionRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "LookDirectionRange");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "SpatialMovementRange SpatialStageFrameOfReference.MovementRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "MovementRange");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialStageFrameOfReference> RequestNewStageAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "IAsyncOperation<SpatialStageFrameOfReference> SpatialStageFrameOfReference.RequestNewStageAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "RequestNewStageAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.add
@@ -67,14 +67,14 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialCoordinateSystem GetCoordinateSystemAtCurrentLocation(global::Windows.Perception.Spatial.SpatialLocator locator)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "SpatialCoordinateSystem SpatialStageFrameOfReference.GetCoordinateSystemAtCurrentLocation(SpatialLocator locator)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "GetCoordinateSystemAtCurrentLocation(SpatialLocator locator)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3[] TryGetMovementBounds(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "Vector3[] SpatialStageFrameOfReference.TryGetMovementBounds(SpatialCoordinateSystem coordinateSystem)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStageFrameOfReference", "TryGetMovementBounds(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CoordinateSystem.get
@@ -87,12 +87,12 @@ namespace Windows.Perception.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialStageFrameOfReference", "event EventHandler<object> SpatialStageFrameOfReference.CurrentChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialStageFrameOfReference", "event CurrentChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialStageFrameOfReference", "event EventHandler<object> SpatialStageFrameOfReference.CurrentChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialStageFrameOfReference", "event CurrentChanged");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterShape", "AudioNodeEmitterConeProperties AudioNodeEmitterShape.ConeProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterShape", "ConeProperties");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterShape", "AudioNodeEmitterShapeKind AudioNodeEmitterShape.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterShape", "Kind");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.AudioNodeEmitterShape CreateCone(double innerAngle, double outerAngle, double outerAngleGain)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterShape", "AudioNodeEmitterShape AudioNodeEmitterShape.CreateCone(double innerAngle, double outerAngle, double outerAngleGain)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterShape", "CreateCone(double innerAngle, double outerAngle, double outerAngleGain)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.AudioNodeEmitterShape CreateOmnidirectional()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterShape", "AudioNodeEmitterShape AudioNodeEmitterShape.CreateOmnidirectional()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitterShape", "CreateOmnidirectional()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.ConeProperties.get

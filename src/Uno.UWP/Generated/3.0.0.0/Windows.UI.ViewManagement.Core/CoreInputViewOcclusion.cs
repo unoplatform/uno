@@ -19,7 +19,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewOcclusion", "Rect CoreInputViewOcclusion.OccludingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewOcclusion", "OccludingRect");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewOcclusion", "CoreInputViewOcclusionKind CoreInputViewOcclusion.OcclusionKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewOcclusion", "OcclusionKind");
 			}
 		}
 #endif

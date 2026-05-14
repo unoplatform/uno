@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSelectionChangedEventArgs", "bool PhotoImportSelectionChangedEventArgs.IsSelectionEmpty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSelectionChangedEventArgs", "IsSelectionEmpty");
 			}
 		}
 #endif

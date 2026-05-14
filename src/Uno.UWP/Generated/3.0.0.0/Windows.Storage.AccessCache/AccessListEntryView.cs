@@ -19,7 +19,7 @@ namespace Windows.Storage.AccessCache
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "int AccessListEntryView.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.AccessCache
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "AccessListEntry AccessListEntryView.this[int index]");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "this[int index]");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.AccessCache
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Storage.AccessCache.AccessListEntry> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "IEnumerator<AccessListEntry> AccessListEntryView.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.System.Collections.IEnumerable.GetEnumerator()

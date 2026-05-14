@@ -14,11 +14,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.EndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "EndTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.EndTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "EndTime");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.MaxSeekTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "MaxSeekTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.MaxSeekTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "MaxSeekTime");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.MinSeekTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "MinSeekTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.MinSeekTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "MinSeekTime");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "Position");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.Position");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "Position");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "StartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.StartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "StartTime");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SystemMediaTransportControlsTimelineProperties()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "SystemMediaTransportControlsTimelineProperties.SystemMediaTransportControlsTimelineProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "SystemMediaTransportControlsTimelineProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.SystemMediaTransportControlsTimelineProperties()

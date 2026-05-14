@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "IBuffer KeyCredentialAttestationResult.AttestationBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "AttestationBuffer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "IBuffer KeyCredentialAttestationResult.CertificateChainBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "CertificateChainBuffer");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "KeyCredentialAttestationStatus KeyCredentialAttestationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "Status");
 			}
 		}
 #endif

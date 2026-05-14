@@ -14,7 +14,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextServicesConstants", "char CoreTextServicesConstants.HiddenCharacter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextServicesConstants", "HiddenCharacter");
 			}
 		}
 #endif

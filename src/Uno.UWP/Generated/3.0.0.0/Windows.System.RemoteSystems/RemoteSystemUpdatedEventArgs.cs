@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemUpdatedEventArgs", "RemoteSystem RemoteSystemUpdatedEventArgs.RemoteSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemUpdatedEventArgs", "RemoteSystem");
 			}
 		}
 #endif

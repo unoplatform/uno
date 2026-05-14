@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "bool RfcommConnectionTriggerDetails.Incoming");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "Incoming");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "BluetoothDevice RfcommConnectionTriggerDetails.RemoteDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "RemoteDevice");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "StreamSocket RfcommConnectionTriggerDetails.Socket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "Socket");
 			}
 		}
 #endif

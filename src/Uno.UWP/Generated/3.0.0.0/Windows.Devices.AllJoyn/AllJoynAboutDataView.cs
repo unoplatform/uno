@@ -19,7 +19,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.AJSoftwareVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "AJSoftwareVersion");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "Guid AllJoynAboutDataView.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "AppId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.AppName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "AppName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "DateTimeOffset? AllJoynAboutDataView.DateOfManufacture");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "DateOfManufacture");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "Language AllJoynAboutDataView.DefaultLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "DefaultLanguage");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "Description");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "DeviceId");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.DeviceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "DeviceName");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.HardwareVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "HardwareVersion");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.Manufacturer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "Manufacturer");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.ModelNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "ModelNumber");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "IReadOnlyDictionary<string, object> AllJoynAboutDataView.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "Properties");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "string AllJoynAboutDataView.SoftwareVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "SoftwareVersion");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "int AllJoynAboutDataView.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "Status");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "Uri AllJoynAboutDataView.SupportUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "SupportUrl");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "IReadOnlyList<Language> AllJoynAboutDataView.SupportedLanguages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "SupportedLanguages");
 			}
 		}
 #endif
@@ -177,14 +177,14 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetDataBySessionPortAsync(string uniqueName, global::Windows.Devices.AllJoyn.AllJoynBusAttachment busAttachment, ushort sessionPort)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "IAsyncOperation<AllJoynAboutDataView> AllJoynAboutDataView.GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetDataBySessionPortAsync(string uniqueName, global::Windows.Devices.AllJoyn.AllJoynBusAttachment busAttachment, ushort sessionPort, global::Windows.Globalization.Language language)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "IAsyncOperation<AllJoynAboutDataView> AllJoynAboutDataView.GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort, Language language)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAboutDataView", "GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort, Language language)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.AJSoftwareVersion.get

@@ -14,7 +14,7 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "string MidiInPort.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "DeviceId");
 			}
 		}
 #endif
@@ -22,14 +22,14 @@ namespace Windows.Devices.Midi
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiInPort> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "IAsyncOperation<MidiInPort> MidiInPort.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "string MidiInPort.GetDeviceSelector()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "GetDeviceSelector()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Midi.MidiInPort.MessageReceived.add
@@ -38,7 +38,7 @@ namespace Windows.Devices.Midi
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "void MidiInPort.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Midi.MidiInPort.DeviceId.get
@@ -49,12 +49,12 @@ namespace Windows.Devices.Midi
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "event TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> MidiInPort.MessageReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "event MessageReceived");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "event TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> MidiInPort.MessageReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "event MessageReceived");
 			}
 		}
 #endif

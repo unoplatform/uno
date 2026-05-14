@@ -14,11 +14,11 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "BasicGeoposition? Geolocator.DefaultGeoposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "DefaultGeoposition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "BasicGeoposition? Geolocator.DefaultGeoposition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "DefaultGeoposition");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "bool Geolocator.IsDefaultGeopositionRecommended");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "IsDefaultGeopositionRecommended");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "PositionAccuracy Geolocator.DesiredAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "DesiredAccuracy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "PositionAccuracy Geolocator.DesiredAccuracy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "DesiredAccuracy");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "uint? Geolocator.DesiredAccuracyInMeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "DesiredAccuracyInMeters");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "uint? Geolocator.DesiredAccuracyInMeters");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "DesiredAccuracyInMeters");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "PositionStatus Geolocator.LocationStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "LocationStatus");
 			}
 		}
 #endif
@@ -76,11 +76,11 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "double Geolocator.MovementThreshold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "MovementThreshold");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "double Geolocator.MovementThreshold");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "MovementThreshold");
 			}
 		}
 #endif
@@ -90,11 +90,11 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "uint Geolocator.ReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "ReportInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "uint Geolocator.ReportInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "ReportInterval");
 			}
 		}
 #endif
@@ -102,7 +102,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Geolocator()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "Geolocator.Geolocator()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "Geolocator()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.Geolocator()
@@ -110,21 +110,21 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.GeolocationAccessStatus> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "IAsyncOperation<GeolocationAccessStatus> Geolocator.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geoposition>> GetGeopositionHistoryAsync(global::System.DateTimeOffset startTime)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "GetGeopositionHistoryAsync(DateTimeOffset startTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geoposition>> GetGeopositionHistoryAsync(global::System.DateTimeOffset startTime, global::System.TimeSpan duration)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime, TimeSpan duration)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "GetGeopositionHistoryAsync(DateTimeOffset startTime, TimeSpan duration)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.get
@@ -134,14 +134,14 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "GetGeopositionAsync()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(global::System.TimeSpan maximumAge, global::System.TimeSpan timeout)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geolocator", "GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.PositionChanged.add
@@ -152,7 +152,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AllowFallbackToConsentlessPositions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "void Geolocator.AllowFallbackToConsentlessPositions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "AllowFallbackToConsentlessPositions()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracy.get
@@ -171,12 +171,12 @@ namespace Windows.Devices.Geolocation
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "event TypedEventHandler<Geolocator, PositionChangedEventArgs> Geolocator.PositionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "event PositionChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "event TypedEventHandler<Geolocator, PositionChangedEventArgs> Geolocator.PositionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "event PositionChanged");
 			}
 		}
 #endif
@@ -187,12 +187,12 @@ namespace Windows.Devices.Geolocation
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "event TypedEventHandler<Geolocator, StatusChangedEventArgs> Geolocator.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "event StatusChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "event TypedEventHandler<Geolocator, StatusChangedEventArgs> Geolocator.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "event StatusChanged");
 			}
 		}
 #endif

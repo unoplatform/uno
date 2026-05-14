@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesCommandEventArgs", "GameBarCommand GameBarServicesCommandEventArgs.Command");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesCommandEventArgs", "Command");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesCommandEventArgs", "GameBarCommandOrigin GameBarServicesCommandEventArgs.Origin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesCommandEventArgs", "Origin");
 			}
 		}
 #endif

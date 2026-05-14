@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.NonPagedPoolSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "NonPagedPoolSizeInBytes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "uint ProcessMemoryUsageReport.PageFaultCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PageFaultCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PageFileSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PageFileSizeInBytes");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PagedPoolSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PagedPoolSizeInBytes");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakNonPagedPoolSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PeakNonPagedPoolSizeInBytes");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakPageFileSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PeakPageFileSizeInBytes");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakPagedPoolSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PeakPagedPoolSizeInBytes");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakVirtualMemorySizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PeakVirtualMemorySizeInBytes");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakWorkingSetSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PeakWorkingSetSizeInBytes");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PrivatePageCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "PrivatePageCount");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.VirtualMemorySizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "VirtualMemorySizeInBytes");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.WorkingSetSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "WorkingSetSizeInBytes");
 			}
 		}
 #endif

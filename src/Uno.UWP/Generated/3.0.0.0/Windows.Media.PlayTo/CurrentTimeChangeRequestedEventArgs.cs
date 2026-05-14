@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs", "TimeSpan CurrentTimeChangeRequestedEventArgs.Time");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs", "Time");
 			}
 		}
 #endif

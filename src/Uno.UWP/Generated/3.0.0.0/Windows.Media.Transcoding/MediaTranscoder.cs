@@ -14,11 +14,11 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "bool MediaTranscoder.AlwaysReencode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "AlwaysReencode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "bool MediaTranscoder.AlwaysReencode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "AlwaysReencode");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "bool MediaTranscoder.HardwareAccelerationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "HardwareAccelerationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "bool MediaTranscoder.HardwareAccelerationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "HardwareAccelerationEnabled");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "TrimStartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "TrimStartTime");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStopTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "TrimStopTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStopTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "TrimStopTime");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "MediaVideoProcessingAlgorithm MediaTranscoder.VideoProcessingAlgorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "VideoProcessingAlgorithm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "MediaVideoProcessingAlgorithm MediaTranscoder.VideoProcessingAlgorithm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "VideoProcessingAlgorithm");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Media.Transcoding
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaTranscoder()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "MediaTranscoder.MediaTranscoder()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "MediaTranscoder()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.MediaTranscoder()
@@ -90,56 +90,56 @@ namespace Windows.Media.Transcoding
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddAudioEffect(string activatableClassId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "void MediaTranscoder.AddAudioEffect(string activatableClassId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "AddAudioEffect(string activatableClassId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddAudioEffect(string activatableClassId, bool effectRequired, global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "void MediaTranscoder.AddAudioEffect(string activatableClassId, bool effectRequired, IPropertySet configuration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "AddAudioEffect(string activatableClassId, bool effectRequired, IPropertySet configuration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddVideoEffect(string activatableClassId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "void MediaTranscoder.AddVideoEffect(string activatableClassId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "AddVideoEffect(string activatableClassId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddVideoEffect(string activatableClassId, bool effectRequired, global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "void MediaTranscoder.AddVideoEffect(string activatableClassId, bool effectRequired, IPropertySet configuration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "AddVideoEffect(string activatableClassId, bool effectRequired, IPropertySet configuration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearEffects()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "void MediaTranscoder.ClearEffects()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Transcoding.MediaTranscoder", "ClearEffects()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.PrepareTranscodeResult> PrepareFileTranscodeAsync(global::Windows.Storage.IStorageFile source, global::Windows.Storage.IStorageFile destination, global::Windows.Media.MediaProperties.MediaEncodingProfile profile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareFileTranscodeAsync(IStorageFile source, IStorageFile destination, MediaEncodingProfile profile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "PrepareFileTranscodeAsync(IStorageFile source, IStorageFile destination, MediaEncodingProfile profile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.PrepareTranscodeResult> PrepareStreamTranscodeAsync(global::Windows.Storage.Streams.IRandomAccessStream source, global::Windows.Storage.Streams.IRandomAccessStream destination, global::Windows.Media.MediaProperties.MediaEncodingProfile profile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareStreamTranscodeAsync(IRandomAccessStream source, IRandomAccessStream destination, MediaEncodingProfile profile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "PrepareStreamTranscodeAsync(IRandomAccessStream source, IRandomAccessStream destination, MediaEncodingProfile profile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.PrepareTranscodeResult> PrepareMediaStreamSourceTranscodeAsync(global::Windows.Media.Core.IMediaSource source, global::Windows.Storage.Streams.IRandomAccessStream destination, global::Windows.Media.MediaProperties.MediaEncodingProfile profile)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareMediaStreamSourceTranscodeAsync(IMediaSource source, IRandomAccessStream destination, MediaEncodingProfile profile)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "PrepareMediaStreamSourceTranscodeAsync(IMediaSource source, IRandomAccessStream destination, MediaEncodingProfile profile)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.AlwaysReencode.get

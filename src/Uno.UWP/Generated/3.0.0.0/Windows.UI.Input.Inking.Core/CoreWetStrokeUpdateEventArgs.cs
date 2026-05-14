@@ -19,11 +19,11 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "CoreWetStrokeDisposition CoreWetStrokeUpdateEventArgs.Disposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "Disposition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "CoreWetStrokeDisposition CoreWetStrokeUpdateEventArgs.Disposition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "Disposition");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "IList<InkPoint> CoreWetStrokeUpdateEventArgs.NewInkPoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "NewInkPoints");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "uint CoreWetStrokeUpdateEventArgs.PointerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "PointerId");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.PhotoConfirmationCapturedEventArgs", "TimeSpan PhotoConfirmationCapturedEventArgs.CaptureTimeOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.PhotoConfirmationCapturedEventArgs", "CaptureTimeOffset");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.PhotoConfirmationCapturedEventArgs", "CapturedFrame PhotoConfirmationCapturedEventArgs.Frame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.PhotoConfirmationCapturedEventArgs", "Frame");
 			}
 		}
 #endif

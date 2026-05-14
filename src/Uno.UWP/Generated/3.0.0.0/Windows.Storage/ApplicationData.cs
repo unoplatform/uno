@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ApplicationData ApplicationData.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "Current");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "StorageFolder ApplicationData.LocalCacheFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "LocalCacheFolder");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "StorageFolder ApplicationData.LocalFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "LocalFolder");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ApplicationDataContainer ApplicationData.LocalSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "LocalSettings");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "StorageFolder ApplicationData.RoamingFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "RoamingFolder");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ApplicationDataContainer ApplicationData.RoamingSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "RoamingSettings");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ulong ApplicationData.RoamingStorageQuota");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "RoamingStorageQuota");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "StorageFolder ApplicationData.SharedLocalFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "SharedLocalFolder");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "StorageFolder ApplicationData.TemporaryFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "TemporaryFolder");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "uint ApplicationData.Version");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "Version");
 			}
 		}
 #endif
@@ -117,7 +117,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.ApplicationData> GetForUserAsync(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "IAsyncOperation<ApplicationData> ApplicationData.GetForUserAsync(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "GetForUserAsync(User user)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.ApplicationData.Current.get
@@ -125,28 +125,28 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetVersionAsync(uint desiredVersion, global::Windows.Storage.ApplicationDataSetVersionHandler handler)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "IAsyncAction ApplicationData.ClearAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ClearAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearAsync(global::Windows.Storage.ApplicationDataLocality locality)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "IAsyncAction ApplicationData.ClearAsync(ApplicationDataLocality locality)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ClearAsync(ApplicationDataLocality locality)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public void SignalDataChanged()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "void ApplicationData.SignalDataChanged()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "SignalDataChanged()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.ApplicationData.DataChanged.add
@@ -155,14 +155,14 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public global::Windows.Storage.StorageFolder GetPublisherCacheFolder(string folderName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "StorageFolder ApplicationData.GetPublisherCacheFolder(string folderName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "GetPublisherCacheFolder(string folderName)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public global::Windows.Foundation.IAsyncAction ClearPublisherCacheFolderAsync(string folderName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "IAsyncAction ApplicationData.ClearPublisherCacheFolderAsync(string folderName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ClearPublisherCacheFolderAsync(string folderName)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.ApplicationData.LocalCacheFolder.get
@@ -181,12 +181,12 @@ namespace Windows.Storage
 			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "event TypedEventHandler<ApplicationData, object> ApplicationData.DataChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "event DataChanged");
 			}
 			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "event TypedEventHandler<ApplicationData, object> ApplicationData.DataChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "event DataChanged");
 			}
 		}
 #endif

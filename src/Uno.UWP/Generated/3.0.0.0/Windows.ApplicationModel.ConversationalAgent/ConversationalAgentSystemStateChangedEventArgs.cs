@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs", "ConversationalAgentSystemStateChangeType ConversationalAgentSystemStateChangedEventArgs.SystemStateChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs", "SystemStateChangeType");
 			}
 		}
 #endif

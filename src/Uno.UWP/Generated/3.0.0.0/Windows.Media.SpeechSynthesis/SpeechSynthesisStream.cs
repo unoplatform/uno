@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "bool SpeechSynthesisStream.CanRead");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "CanRead");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "bool SpeechSynthesisStream.CanWrite");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "CanWrite");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "string SpeechSynthesisStream.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "ContentType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "IReadOnlyList<IMediaMarker> SpeechSynthesisStream.Markers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "Markers");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "ulong SpeechSynthesisStream.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "Position");
 			}
 		}
 #endif
@@ -69,11 +69,11 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "ulong SpeechSynthesisStream.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "Size");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "ulong SpeechSynthesisStream.Size");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "Size");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "IReadOnlyList<TimedMetadataTrack> SpeechSynthesisStream.TimedMetadataTracks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "TimedMetadataTracks");
 			}
 		}
 #endif
@@ -91,56 +91,56 @@ namespace Windows.Media.SpeechSynthesis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "IInputStream SpeechSynthesisStream.GetInputStreamAt(ulong position)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "GetInputStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt(ulong position)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "IOutputStream SpeechSynthesisStream.GetOutputStreamAt(ulong position)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "GetOutputStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Seek(ulong position)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "void SpeechSynthesisStream.Seek(ulong position)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "Seek(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "IRandomAccessStream SpeechSynthesisStream.CloneStream()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "CloneStream()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "IAsyncOperationWithProgress<uint, uint> SpeechSynthesisStream.WriteAsync(IBuffer buffer)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "WriteAsync(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> FlushAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "IAsyncOperation<bool> SpeechSynthesisStream.FlushAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "FlushAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "void SpeechSynthesisStream.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync(global::Windows.Storage.Streams.IBuffer buffer, uint count, global::Windows.Storage.Streams.InputStreamOptions options)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "IAsyncOperationWithProgress<IBuffer, uint> SpeechSynthesisStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesisStream", "ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.CanRead.get

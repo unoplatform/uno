@@ -12,7 +12,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public NDClient(global::Windows.Media.Protection.PlayReady.INDDownloadEngine downloadEngine, global::Windows.Media.Protection.PlayReady.INDStreamParser streamParser, global::Windows.Media.Protection.PlayReady.INDMessenger pMessenger)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "NDClient.NDClient(INDDownloadEngine downloadEngine, INDStreamParser streamParser, INDMessenger pMessenger)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "NDClient(INDDownloadEngine downloadEngine, INDStreamParser streamParser, INDMessenger pMessenger)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.NDClient(Windows.Media.Protection.PlayReady.INDDownloadEngine, Windows.Media.Protection.PlayReady.INDStreamParser, Windows.Media.Protection.PlayReady.INDMessenger)
@@ -20,28 +20,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDStartResult> StartAsync(global::System.Uri contentUrl, uint startAsyncOptions, global::Windows.Media.Protection.PlayReady.INDCustomData registrationCustomData, global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDClient", "IAsyncOperation<INDStartResult> NDClient.StartAsync(Uri contentUrl, uint startAsyncOptions, INDCustomData registrationCustomData, INDLicenseFetchDescriptor licenseFetchDescriptor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDClient", "StartAsync(Uri contentUrl, uint startAsyncOptions, INDCustomData registrationCustomData, INDLicenseFetchDescriptor licenseFetchDescriptor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDLicenseFetchResult> LicenseFetchAsync(global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDClient", "IAsyncOperation<INDLicenseFetchResult> NDClient.LicenseFetchAsync(INDLicenseFetchDescriptor licenseFetchDescriptor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDClient", "LicenseFetchAsync(INDLicenseFetchDescriptor licenseFetchDescriptor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReRegistrationAsync(global::Windows.Media.Protection.PlayReady.INDCustomData registrationCustomData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDClient", "IAsyncAction NDClient.ReRegistrationAsync(INDCustomData registrationCustomData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDClient", "ReRegistrationAsync(INDCustomData registrationCustomData)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "void NDClient.Close()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "Close()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.ClosedCaptionDataReceived.add
@@ -61,12 +61,12 @@ namespace Windows.Media.Protection.PlayReady
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, INDClosedCaptionDataReceivedEventArgs> NDClient.ClosedCaptionDataReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event ClosedCaptionDataReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, INDClosedCaptionDataReceivedEventArgs> NDClient.ClosedCaptionDataReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event ClosedCaptionDataReceived");
 			}
 		}
 #endif
@@ -77,12 +77,12 @@ namespace Windows.Media.Protection.PlayReady
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, INDLicenseFetchCompletedEventArgs> NDClient.LicenseFetchCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event LicenseFetchCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, INDLicenseFetchCompletedEventArgs> NDClient.LicenseFetchCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event LicenseFetchCompleted");
 			}
 		}
 #endif
@@ -93,12 +93,12 @@ namespace Windows.Media.Protection.PlayReady
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, INDProximityDetectionCompletedEventArgs> NDClient.ProximityDetectionCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event ProximityDetectionCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, INDProximityDetectionCompletedEventArgs> NDClient.ProximityDetectionCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event ProximityDetectionCompleted");
 			}
 		}
 #endif
@@ -109,12 +109,12 @@ namespace Windows.Media.Protection.PlayReady
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, object> NDClient.ReRegistrationNeeded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event ReRegistrationNeeded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, object> NDClient.ReRegistrationNeeded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event ReRegistrationNeeded");
 			}
 		}
 #endif
@@ -125,12 +125,12 @@ namespace Windows.Media.Protection.PlayReady
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, INDRegistrationCompletedEventArgs> NDClient.RegistrationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event RegistrationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event TypedEventHandler<NDClient, INDRegistrationCompletedEventArgs> NDClient.RegistrationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDClient", "event RegistrationCompleted");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "uint GipFirmwareUpdateResult.ExtendedErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "ExtendedErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "uint GipFirmwareUpdateResult.FinalComponentId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "FinalComponentId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "GipFirmwareUpdateStatus GipFirmwareUpdateResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "Status");
 			}
 		}
 #endif

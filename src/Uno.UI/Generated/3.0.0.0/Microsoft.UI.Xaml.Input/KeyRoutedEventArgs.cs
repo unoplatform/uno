@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.KeyRoutedEventArgs", "string KeyRoutedEventArgs.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.KeyRoutedEventArgs", "DeviceId");
 			}
 		}
 #endif

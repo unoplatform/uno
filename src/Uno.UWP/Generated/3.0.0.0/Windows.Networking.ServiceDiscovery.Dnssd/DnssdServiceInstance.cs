@@ -14,11 +14,11 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "string DnssdServiceInstance.DnssdServiceInstanceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "DnssdServiceInstanceName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "string DnssdServiceInstance.DnssdServiceInstanceName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "DnssdServiceInstanceName");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "HostName DnssdServiceInstance.HostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "HostName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "HostName DnssdServiceInstance.HostName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "HostName");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Port");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "Port");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Port");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "Port");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Priority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "Priority");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Priority");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "Priority");
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IDictionary<string, string> DnssdServiceInstance.TextAttributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "TextAttributes");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Weight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "Weight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Weight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "Weight");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DnssdServiceInstance(string dnssdServiceInstanceName, global::Windows.Networking.HostName hostName, ushort port)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "DnssdServiceInstance.DnssdServiceInstance(string dnssdServiceInstanceName, HostName hostName, ushort port)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "DnssdServiceInstance(string dnssdServiceInstanceName, HostName hostName, ushort port)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.DnssdServiceInstance(string, Windows.Networking.HostName, ushort)
@@ -100,35 +100,35 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync(global::Windows.Networking.Sockets.StreamSocketListener socket)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterStreamSocketListenerAsync(StreamSocketListener socket)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "RegisterStreamSocketListenerAsync(StreamSocketListener socket)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync(global::Windows.Networking.Sockets.StreamSocketListener socket, global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterStreamSocketListenerAsync(StreamSocketListener socket, NetworkAdapter adapter)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "RegisterStreamSocketListenerAsync(StreamSocketListener socket, NetworkAdapter adapter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterDatagramSocketAsync(global::Windows.Networking.Sockets.DatagramSocket socket)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterDatagramSocketAsync(DatagramSocket socket)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "RegisterDatagramSocketAsync(DatagramSocket socket)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterDatagramSocketAsync(global::Windows.Networking.Sockets.DatagramSocket socket, global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterDatagramSocketAsync(DatagramSocket socket, NetworkAdapter adapter)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "RegisterDatagramSocketAsync(DatagramSocket socket, NetworkAdapter adapter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "string DnssdServiceInstance.ToString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.DnssdServiceInstanceName.get

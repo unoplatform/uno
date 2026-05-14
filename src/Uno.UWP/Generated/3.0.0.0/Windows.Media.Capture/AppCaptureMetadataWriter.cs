@@ -14,7 +14,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureMetadataWriter", "ulong AppCaptureMetadataWriter.RemainingStorageBytesAvailable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureMetadataWriter", "RemainingStorageBytesAvailable");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AppCaptureMetadataWriter()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "AppCaptureMetadataWriter.AppCaptureMetadataWriter()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "AppCaptureMetadataWriter()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.AppCaptureMetadataWriter()
@@ -30,56 +30,56 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddStringEvent(string name, string value, global::Windows.Media.Capture.AppCaptureMetadataPriority priority)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.AddStringEvent(string name, string value, AppCaptureMetadataPriority priority)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "AddStringEvent(string name, string value, AppCaptureMetadataPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddInt32Event(string name, int value, global::Windows.Media.Capture.AppCaptureMetadataPriority priority)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.AddInt32Event(string name, int value, AppCaptureMetadataPriority priority)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "AddInt32Event(string name, int value, AppCaptureMetadataPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddDoubleEvent(string name, double value, global::Windows.Media.Capture.AppCaptureMetadataPriority priority)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.AddDoubleEvent(string name, double value, AppCaptureMetadataPriority priority)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "AddDoubleEvent(string name, double value, AppCaptureMetadataPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartStringState(string name, string value, global::Windows.Media.Capture.AppCaptureMetadataPriority priority)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.StartStringState(string name, string value, AppCaptureMetadataPriority priority)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "StartStringState(string name, string value, AppCaptureMetadataPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartInt32State(string name, int value, global::Windows.Media.Capture.AppCaptureMetadataPriority priority)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.StartInt32State(string name, int value, AppCaptureMetadataPriority priority)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "StartInt32State(string name, int value, AppCaptureMetadataPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartDoubleState(string name, double value, global::Windows.Media.Capture.AppCaptureMetadataPriority priority)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.StartDoubleState(string name, double value, AppCaptureMetadataPriority priority)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "StartDoubleState(string name, double value, AppCaptureMetadataPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopState(string name)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.StopState(string name)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "StopState(string name)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopAllStates()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.StopAllStates()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "StopAllStates()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.MetadataPurged.add
@@ -88,7 +88,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "void AppCaptureMetadataWriter.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.RemainingStorageBytesAvailable.get
@@ -99,12 +99,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "event TypedEventHandler<AppCaptureMetadataWriter, object> AppCaptureMetadataWriter.MetadataPurged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "event MetadataPurged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "event TypedEventHandler<AppCaptureMetadataWriter, object> AppCaptureMetadataWriter.MetadataPurged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureMetadataWriter", "event MetadataPurged");
 			}
 		}
 #endif

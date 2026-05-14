@@ -19,11 +19,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "InteractionSourceRedirectionMode InteractionSourceConfiguration.PositionXSourceMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "PositionXSourceMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "InteractionSourceRedirectionMode InteractionSourceConfiguration.PositionXSourceMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "PositionXSourceMode");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "InteractionSourceRedirectionMode InteractionSourceConfiguration.PositionYSourceMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "PositionYSourceMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "InteractionSourceRedirectionMode InteractionSourceConfiguration.PositionYSourceMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "PositionYSourceMode");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "InteractionSourceRedirectionMode InteractionSourceConfiguration.ScaleSourceMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "ScaleSourceMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "InteractionSourceRedirectionMode InteractionSourceConfiguration.ScaleSourceMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionSourceConfiguration", "ScaleSourceMode");
 			}
 		}
 #endif

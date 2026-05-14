@@ -12,7 +12,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnInterfaceId(byte[] address)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnInterfaceId", "VpnInterfaceId.VpnInterfaceId(byte[] address)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnInterfaceId", "VpnInterfaceId(byte[] address)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnInterfaceId.VpnInterfaceId(byte[])
@@ -20,7 +20,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetAddressInfo(out byte[] id)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnInterfaceId", "void VpnInterfaceId.GetAddressInfo(out byte[] id)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnInterfaceId", "GetAddressInfo(out byte[] id)");
 		}
 #endif
 	}

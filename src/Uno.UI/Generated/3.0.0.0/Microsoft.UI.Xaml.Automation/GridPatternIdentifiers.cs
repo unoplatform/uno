@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Automation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.GridPatternIdentifiers", "AutomationProperty GridPatternIdentifiers.ColumnCountProperty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.GridPatternIdentifiers", "ColumnCountProperty");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Automation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.GridPatternIdentifiers", "AutomationProperty GridPatternIdentifiers.RowCountProperty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.GridPatternIdentifiers", "RowCountProperty");
 			}
 		}
 #endif

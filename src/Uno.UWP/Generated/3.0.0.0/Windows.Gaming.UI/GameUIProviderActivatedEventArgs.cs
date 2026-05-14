@@ -19,7 +19,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "ValueSet GameUIProviderActivatedEventArgs.GameUIArgs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "GameUIArgs");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "ActivationKind GameUIProviderActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "ApplicationExecutionState GameUIProviderActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "SplashScreen GameUIProviderActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Gaming.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted(global::Windows.Foundation.Collections.ValueSet results)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "void GameUIProviderActivatedEventArgs.ReportCompleted(ValueSet results)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "ReportCompleted(ValueSet results)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.GameUIArgs.get

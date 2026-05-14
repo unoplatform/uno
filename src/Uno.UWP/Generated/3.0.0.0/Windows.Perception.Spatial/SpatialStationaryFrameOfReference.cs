@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStationaryFrameOfReference", "SpatialCoordinateSystem SpatialStationaryFrameOfReference.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStationaryFrameOfReference", "CoordinateSystem");
 			}
 		}
 #endif

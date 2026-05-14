@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult", "IReadOnlyList<ClipboardHistoryItem> ClipboardHistoryItemsResult.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult", "Items");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult", "ClipboardHistoryItemsResultStatus ClipboardHistoryItemsResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult", "Status");
 			}
 		}
 #endif

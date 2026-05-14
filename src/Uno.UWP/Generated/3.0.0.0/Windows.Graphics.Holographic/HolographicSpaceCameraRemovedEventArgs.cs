@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs", "HolographicCamera HolographicSpaceCameraRemovedEventArgs.Camera");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs", "Camera");
 			}
 		}
 #endif

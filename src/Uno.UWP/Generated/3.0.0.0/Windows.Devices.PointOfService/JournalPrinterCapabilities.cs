@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "PosPrinterCartridgeSensors JournalPrinterCapabilities.CartridgeSensors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "CartridgeSensors");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "PosPrinterColorCapabilities JournalPrinterCapabilities.ColorCartridgeCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "ColorCartridgeCapabilities");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsBoldSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsBoldSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsDoubleHighDoubleWidePrintSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsDoubleHighPrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsDoubleHighPrintSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsDoubleWidePrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsDoubleWidePrintSupported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsDualColorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsDualColorSupported");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsItalicSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsItalicSupported");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsPaperEmptySensorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsPaperEmptySensorSupported");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsPaperNearEndSensorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsPaperNearEndSensorSupported");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsPrinterPresent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsPrinterPresent");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsReversePaperFeedByLineSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsReversePaperFeedByLineSupported");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsReversePaperFeedByMapModeUnitSupported");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsReverseVideoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsReverseVideoSupported");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsStrikethroughSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsStrikethroughSupported");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsSubscriptSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsSubscriptSupported");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsSuperscriptSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsSuperscriptSupported");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "bool JournalPrinterCapabilities.IsUnderlineSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IsUnderlineSupported");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "IReadOnlyList<uint> JournalPrinterCapabilities.SupportedCharactersPerLine");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.JournalPrinterCapabilities", "SupportedCharactersPerLine");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "HingeState TwoPanelHingedDevicePosturePreviewReading.HingeState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "HingeState");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "string TwoPanelHingedDevicePosturePreviewReading.Panel1Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "Panel1Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "SimpleOrientation TwoPanelHingedDevicePosturePreviewReading.Panel1Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "Panel1Orientation");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "string TwoPanelHingedDevicePosturePreviewReading.Panel2Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "Panel2Id");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "SimpleOrientation TwoPanelHingedDevicePosturePreviewReading.Panel2Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "Panel2Orientation");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "DateTimeOffset TwoPanelHingedDevicePosturePreviewReading.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading", "Timestamp");
 			}
 		}
 #endif

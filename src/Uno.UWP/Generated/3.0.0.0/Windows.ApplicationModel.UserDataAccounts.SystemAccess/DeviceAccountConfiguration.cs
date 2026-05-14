@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountIconId DeviceAccountConfiguration.AccountIconId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AccountIconId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountIconId DeviceAccountConfiguration.AccountIconId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AccountIconId");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.AccountName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AccountName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.AccountName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AccountName");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AlwaysDownloadFullMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AlwaysDownloadFullMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AlwaysDownloadFullMessage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AlwaysDownloadFullMessage");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.AuthenticationCertificateId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AuthenticationCertificateId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.AuthenticationCertificateId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AuthenticationCertificateId");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AuthenticationType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AuthenticationType");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AutoSelectAuthenticationCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AutoSelectAuthenticationCertificate");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalDavRequiresSsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalDavRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavRequiresSsl");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CalDavServerUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavServerUrl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CalDavServerUrl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavServerUrl");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CalDavSyncScheduleKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavSyncScheduleKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CalDavSyncScheduleKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavSyncScheduleKind");
 			}
 		}
 #endif
@@ -140,11 +140,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalendarSyncEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalendarSyncEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalendarSyncEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalendarSyncEnabled");
 			}
 		}
 #endif
@@ -154,11 +154,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CardDavRequiresSsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CardDavRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavRequiresSsl");
 			}
 		}
 #endif
@@ -168,11 +168,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CardDavServerUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavServerUrl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CardDavServerUrl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavServerUrl");
 			}
 		}
 #endif
@@ -182,11 +182,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavSyncScheduleKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavSyncScheduleKind");
 			}
 		}
 #endif
@@ -196,11 +196,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.ContactsSyncEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "ContactsSyncEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.ContactsSyncEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "ContactsSyncEnabled");
 			}
 		}
 #endif
@@ -210,11 +210,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.DeviceAccountTypeId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountTypeId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.DeviceAccountTypeId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountTypeId");
 			}
 		}
 #endif
@@ -224,7 +224,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.DoesPolicyAllowMailSync");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DoesPolicyAllowMailSync");
 			}
 		}
 #endif
@@ -234,11 +234,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.Domain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Domain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.Domain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Domain");
 			}
 		}
 #endif
@@ -248,11 +248,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.EmailAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "EmailAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.EmailAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "EmailAddress");
 			}
 		}
 #endif
@@ -262,11 +262,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.EmailSyncEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "EmailSyncEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.EmailSyncEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "EmailSyncEnabled");
 			}
 		}
 #endif
@@ -276,11 +276,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerAddress");
 			}
 		}
 #endif
@@ -290,11 +290,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerCertificateHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerCertificateHash");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerCertificateHash");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerCertificateHash");
 			}
 		}
 #endif
@@ -304,11 +304,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "PasswordCredential DeviceAccountConfiguration.IncomingServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "PasswordCredential DeviceAccountConfiguration.IncomingServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerCredential");
 			}
 		}
 #endif
@@ -318,11 +318,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.IncomingServerPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerPort");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.IncomingServerPort");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerPort");
 			}
 		}
 #endif
@@ -332,11 +332,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IncomingServerRequiresSsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IncomingServerRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerRequiresSsl");
 			}
 		}
 #endif
@@ -346,11 +346,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerUsername");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerUsername");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerUsername");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerUsername");
 			}
 		}
 #endif
@@ -360,11 +360,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsClientAuthenticationCertificateRequired");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsClientAuthenticationCertificateRequired");
 			}
 		}
 #endif
@@ -374,11 +374,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsExternallyManaged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsExternallyManaged");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsExternallyManaged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsExternallyManaged");
 			}
 		}
 #endif
@@ -388,11 +388,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsOutgoingServerAuthenticationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsOutgoingServerAuthenticationEnabled");
 			}
 		}
 #endif
@@ -402,11 +402,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsOutgoingServerAuthenticationRequired");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsOutgoingServerAuthenticationRequired");
 			}
 		}
 #endif
@@ -416,7 +416,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsSsoAuthenticationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsSsoAuthenticationSupported");
 			}
 		}
 #endif
@@ -426,11 +426,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsSyncScheduleManagedBySystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsSyncScheduleManagedBySystem");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsSyncScheduleManagedBySystem");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsSyncScheduleManagedBySystem");
 			}
 		}
 #endif
@@ -440,11 +440,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "MailAgeFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "MailAgeFilter");
 			}
 		}
 #endif
@@ -454,11 +454,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OAuthRefreshToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OAuthRefreshToken");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OAuthRefreshToken");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OAuthRefreshToken");
 			}
 		}
 #endif
@@ -468,11 +468,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerAddress");
 			}
 		}
 #endif
@@ -482,11 +482,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerCertificateHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerCertificateHash");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerCertificateHash");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerCertificateHash");
 			}
 		}
 #endif
@@ -496,11 +496,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "PasswordCredential DeviceAccountConfiguration.OutgoingServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "PasswordCredential DeviceAccountConfiguration.OutgoingServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerCredential");
 			}
 		}
 #endif
@@ -510,11 +510,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.OutgoingServerPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerPort");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.OutgoingServerPort");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerPort");
 			}
 		}
 #endif
@@ -524,11 +524,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.OutgoingServerRequiresSsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.OutgoingServerRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerRequiresSsl");
 			}
 		}
 #endif
@@ -538,11 +538,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerUsername");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerUsername");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerUsername");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerUsername");
 			}
 		}
 #endif
@@ -552,11 +552,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountServerType DeviceAccountConfiguration.ServerType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "ServerType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountServerType DeviceAccountConfiguration.ServerType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "ServerType");
 			}
 		}
 #endif
@@ -566,11 +566,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.SsoAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "SsoAccountId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.SsoAccountId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "SsoAccountId");
 			}
 		}
 #endif
@@ -580,11 +580,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "SyncScheduleKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "SyncScheduleKind");
 			}
 		}
 #endif
@@ -594,11 +594,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasIncomingServerCertificateHashConfirmed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasIncomingServerCertificateHashConfirmed");
 			}
 		}
 #endif
@@ -608,11 +608,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasModifiedByUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasModifiedByUser");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasModifiedByUser");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasModifiedByUser");
 			}
 		}
 #endif
@@ -622,11 +622,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasOutgoingServerCertificateHashConfirmed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasOutgoingServerCertificateHashConfirmed");
 			}
 		}
 #endif
@@ -634,7 +634,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DeviceAccountConfiguration()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountConfiguration.DeviceAccountConfiguration()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountConfiguration()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountConfiguration()

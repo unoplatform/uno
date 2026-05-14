@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "ExpressionAnimation InteractionTrackerVector2InertiaNaturalMotion.Condition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "Condition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "ExpressionAnimation InteractionTrackerVector2InertiaNaturalMotion.Condition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "Condition");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "Vector2NaturalMotionAnimation InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "NaturalMotion");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "Vector2NaturalMotionAnimation InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "NaturalMotion");
 			}
 		}
 #endif
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "InteractionTrackerVector2InertiaNaturalMotion InteractionTrackerVector2InertiaNaturalMotion.Create(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion", "Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Condition.get

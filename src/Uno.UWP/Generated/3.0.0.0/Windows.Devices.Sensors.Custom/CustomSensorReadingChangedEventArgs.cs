@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensorReadingChangedEventArgs", "CustomSensorReading CustomSensorReadingChangedEventArgs.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensorReadingChangedEventArgs", "Reading");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.WindowingEnvironmentAddedEventArgs", "WindowingEnvironment WindowingEnvironmentAddedEventArgs.WindowingEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.WindowingEnvironmentAddedEventArgs", "WindowingEnvironment");
 			}
 		}
 #endif

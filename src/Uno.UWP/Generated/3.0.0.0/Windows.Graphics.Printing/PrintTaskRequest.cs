@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskRequest", "DateTimeOffset PrintTaskRequest.Deadline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskRequest", "Deadline");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Graphics.Printing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTask CreatePrintTask(string title, global::Windows.Graphics.Printing.PrintTaskSourceRequestedHandler handler)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskRequest", "PrintTask PrintTaskRequest.CreatePrintTask(string title, PrintTaskSourceRequestedHandler handler)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskRequest", "CreatePrintTask(string title, PrintTaskSourceRequestedHandler handler)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTaskRequestedDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskRequest", "PrintTaskRequestedDeferral PrintTaskRequest.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.Deadline.get

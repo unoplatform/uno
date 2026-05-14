@@ -14,7 +14,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "SpatialAnchor SpatialEntity.Anchor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "Anchor");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "string SpatialEntity.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "Id");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "ValueSet SpatialEntity.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "Properties");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpatialEntity(global::Windows.Perception.Spatial.SpatialAnchor spatialAnchor)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntity", "SpatialEntity.SpatialEntity(SpatialAnchor spatialAnchor)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntity", "SpatialEntity(SpatialAnchor spatialAnchor)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.SpatialEntity(Windows.Perception.Spatial.SpatialAnchor)
@@ -50,7 +50,7 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpatialEntity(global::Windows.Perception.Spatial.SpatialAnchor spatialAnchor, global::Windows.Foundation.Collections.ValueSet propertySet)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntity", "SpatialEntity.SpatialEntity(SpatialAnchor spatialAnchor, ValueSet propertySet)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntity", "SpatialEntity(SpatialAnchor spatialAnchor, ValueSet propertySet)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.SpatialEntity(Windows.Perception.Spatial.SpatialAnchor, Windows.Foundation.Collections.ValueSet)

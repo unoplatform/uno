@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemWebAccountFilter", "WebAccount RemoteSystemWebAccountFilter.Account");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemWebAccountFilter", "Account");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RemoteSystemWebAccountFilter(global::Windows.Security.Credentials.WebAccount account)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemWebAccountFilter", "RemoteSystemWebAccountFilter.RemoteSystemWebAccountFilter(WebAccount account)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemWebAccountFilter", "RemoteSystemWebAccountFilter(WebAccount account)");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWebAccountFilter.RemoteSystemWebAccountFilter(Windows.Security.Credentials.WebAccount)

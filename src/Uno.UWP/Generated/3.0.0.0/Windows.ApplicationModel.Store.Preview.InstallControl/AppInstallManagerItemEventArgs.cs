@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs", "AppInstallItem AppInstallManagerItemEventArgs.Item");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallManagerItemEventArgs", "Item");
 			}
 		}
 #endif

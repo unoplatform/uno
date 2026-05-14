@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs", "Matrix4x4 SpatialAnchorRawCoordinateSystemAdjustedEventArgs.OldRawCoordinateSystemToNewRawCoordinateSystemTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs", "OldRawCoordinateSystemToNewRawCoordinateSystemTransform");
 			}
 		}
 #endif

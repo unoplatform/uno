@@ -14,7 +14,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "Vector3 VisualInteractionSource.DeltaPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "DeltaPosition");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "float VisualInteractionSource.DeltaScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "DeltaScale");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "bool VisualInteractionSource.IsPositionXRailsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "IsPositionXRailsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "bool VisualInteractionSource.IsPositionXRailsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "IsPositionXRailsEnabled");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "bool VisualInteractionSource.IsPositionYRailsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "IsPositionYRailsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "bool VisualInteractionSource.IsPositionYRailsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "IsPositionYRailsEnabled");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "VisualInteractionSourceRedirectionMode VisualInteractionSource.ManipulationRedirectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "ManipulationRedirectionMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "VisualInteractionSourceRedirectionMode VisualInteractionSource.ManipulationRedirectionMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "ManipulationRedirectionMode");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceConfiguration VisualInteractionSource.PointerWheelConfig");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "PointerWheelConfig");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "Vector3 VisualInteractionSource.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "Position");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "Vector3 VisualInteractionSource.PositionVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionVelocity");
 			}
 		}
 #endif
@@ -106,11 +106,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.PositionXChainingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionXChainingMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.PositionXChainingMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionXChainingMode");
 			}
 		}
 #endif
@@ -120,11 +120,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.PositionXSourceMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionXSourceMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.PositionXSourceMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionXSourceMode");
 			}
 		}
 #endif
@@ -134,11 +134,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.PositionYChainingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionYChainingMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.PositionYChainingMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionYChainingMode");
 			}
 		}
 #endif
@@ -148,11 +148,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.PositionYSourceMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionYSourceMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.PositionYSourceMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "PositionYSourceMode");
 			}
 		}
 #endif
@@ -162,7 +162,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "float VisualInteractionSource.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "Scale");
 			}
 		}
 #endif
@@ -172,11 +172,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.ScaleChainingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "ScaleChainingMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.ScaleChainingMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "ScaleChainingMode");
 			}
 		}
 #endif
@@ -186,11 +186,11 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.ScaleSourceMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "ScaleSourceMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.ScaleSourceMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "ScaleSourceMode");
 			}
 		}
 #endif
@@ -200,7 +200,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "float VisualInteractionSource.ScaleVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "ScaleVelocity");
 			}
 		}
 #endif
@@ -210,7 +210,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "Visual VisualInteractionSource.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "Source");
 			}
 		}
 #endif
@@ -218,14 +218,14 @@ namespace Windows.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Interactions.VisualInteractionSource Create(global::Windows.UI.Composition.Visual source)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "VisualInteractionSource VisualInteractionSource.Create(Visual source)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "Create(Visual source)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Interactions.VisualInteractionSource CreateFromIVisualElement(global::Windows.UI.Composition.IVisualElement source)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "VisualInteractionSource VisualInteractionSource.CreateFromIVisualElement(IVisualElement source)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.VisualInteractionSource", "CreateFromIVisualElement(IVisualElement source)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Windows.UI.Input.PointerPoint)
@@ -233,35 +233,35 @@ namespace Windows.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ConfigureCenterPointXModifiers(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureCenterPointXModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "ConfigureCenterPointXModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ConfigureCenterPointYModifiers(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureCenterPointYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "ConfigureCenterPointYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ConfigureDeltaPositionXModifiers(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaPositionXModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "ConfigureDeltaPositionXModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ConfigureDeltaPositionYModifiers(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaPositionYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "ConfigureDeltaPositionYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ConfigureDeltaScaleModifiers(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaScaleModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "ConfigureDeltaScaleModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.DeltaPosition.get

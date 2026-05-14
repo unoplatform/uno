@@ -19,11 +19,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Color SecondaryTileVisualElements.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Color SecondaryTileVisualElements.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "BackgroundColor");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "ForegroundText SecondaryTileVisualElements.ForegroundText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "ForegroundText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "ForegroundText SecondaryTileVisualElements.ForegroundText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "ForegroundText");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "TileMixedRealityModel SecondaryTileVisualElements.MixedRealityModel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "MixedRealityModel");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnSquare150x150Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "ShowNameOnSquare150x150Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnSquare150x150Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "ShowNameOnSquare150x150Logo");
 			}
 		}
 #endif
@@ -71,11 +71,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnSquare310x310Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "ShowNameOnSquare310x310Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnSquare310x310Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "ShowNameOnSquare310x310Logo");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnWide310x150Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "ShowNameOnWide310x150Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "bool SecondaryTileVisualElements.ShowNameOnWide310x150Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "ShowNameOnWide310x150Logo");
 			}
 		}
 #endif
@@ -99,11 +99,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square150x150Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square150x150Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square150x150Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square150x150Logo");
 			}
 		}
 #endif
@@ -113,11 +113,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square30x30Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square30x30Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square30x30Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square30x30Logo");
 			}
 		}
 #endif
@@ -127,11 +127,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square310x310Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square310x310Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square310x310Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square310x310Logo");
 			}
 		}
 #endif
@@ -141,11 +141,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square44x44Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square44x44Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square44x44Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square44x44Logo");
 			}
 		}
 #endif
@@ -155,11 +155,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square70x70Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square70x70Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square70x70Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square70x70Logo");
 			}
 		}
 #endif
@@ -169,11 +169,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square71x71Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square71x71Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Square71x71Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Square71x71Logo");
 			}
 		}
 #endif
@@ -183,11 +183,11 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Wide310x150Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.SecondaryTileVisualElements", "Wide310x150Logo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Uri SecondaryTileVisualElements.Wide310x150Logo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTileVisualElements", "Wide310x150Logo");
 			}
 		}
 #endif

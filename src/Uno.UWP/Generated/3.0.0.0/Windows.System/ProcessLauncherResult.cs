@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherResult", "uint ProcessLauncherResult.ExitCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherResult", "ExitCode");
 			}
 		}
 #endif

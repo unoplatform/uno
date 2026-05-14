@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs", "UserActivityRequest UserActivityRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs", "Request");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserActivities
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs", "Deferral UserActivityRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.Request.get

@@ -19,7 +19,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "CoreAcceleratorKeyEventType WebViewControlAcceleratorKeyPressedEventArgs.EventType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "EventType");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "bool WebViewControlAcceleratorKeyPressedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "bool WebViewControlAcceleratorKeyPressedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "CorePhysicalKeyStatus WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "KeyStatus");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "WebViewControlAcceleratorKeyRoutingStage WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "RoutingStage");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "VirtualKey WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "VirtualKey");
 			}
 		}
 #endif

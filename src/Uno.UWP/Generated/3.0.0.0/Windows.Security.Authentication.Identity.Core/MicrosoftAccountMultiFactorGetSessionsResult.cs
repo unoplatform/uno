@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult", "MicrosoftAccountMultiFactorServiceResponse MicrosoftAccountMultiFactorGetSessionsResult.ServiceResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult", "ServiceResponse");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult", "IReadOnlyList<MicrosoftAccountMultiFactorSessionInfo> MicrosoftAccountMultiFactorGetSessionsResult.Sessions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult", "Sessions");
 			}
 		}
 #endif

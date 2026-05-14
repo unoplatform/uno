@@ -15,11 +15,11 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "ApplicationViewWindowingMode ApplicationView.PreferredLaunchWindowingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "PreferredLaunchWindowingMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "ApplicationViewWindowingMode ApplicationView.PreferredLaunchWindowingMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "PreferredLaunchWindowingMode");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TerminateAppOnFinalViewClose");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "TerminateAppOnFinalViewClose");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TerminateAppOnFinalViewClose");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "TerminateAppOnFinalViewClose");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "ApplicationViewState ApplicationView.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "Value");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.AdjacentToLeftDisplayEdge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "AdjacentToLeftDisplayEdge");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.AdjacentToRightDisplayEdge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "AdjacentToRightDisplayEdge");
 			}
 		}
 #endif
@@ -74,11 +74,11 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "FullScreenSystemOverlayMode ApplicationView.FullScreenSystemOverlayMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "FullScreenSystemOverlayMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "FullScreenSystemOverlayMode ApplicationView.FullScreenSystemOverlayMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "FullScreenSystemOverlayMode");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsFullScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "IsFullScreen");
 			}
 		}
 #endif
@@ -100,7 +100,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsOnLockScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "IsOnLockScreen");
 			}
 		}
 #endif
@@ -110,11 +110,11 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsScreenCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "IsScreenCaptureEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsScreenCaptureEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "IsScreenCaptureEnabled");
 			}
 		}
 #endif
@@ -125,11 +125,11 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "string ApplicationView.PersistedStateId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "PersistedStateId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "string ApplicationView.PersistedStateId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "PersistedStateId");
 			}
 		}
 #endif
@@ -139,11 +139,11 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.SuppressSystemOverlays");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "SuppressSystemOverlays");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.SuppressSystemOverlays");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "SuppressSystemOverlays");
 			}
 		}
 #endif
@@ -155,7 +155,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "UIContext ApplicationView.UIContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "UIContext");
 			}
 		}
 #endif
@@ -167,7 +167,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "WindowingEnvironment ApplicationView.WindowingEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "WindowingEnvironment");
 			}
 		}
 #endif
@@ -175,21 +175,21 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryUnsnapToFullscreen()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TryUnsnapToFullscreen()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "TryUnsnapToFullscreen()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetApplicationViewIdForWindow(global::Windows.UI.Core.ICoreWindow window)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "int ApplicationView.GetApplicationViewIdForWindow(ICoreWindow window)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "GetApplicationViewIdForWindow(ICoreWindow window)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryUnsnap()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TryUnsnap()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "TryUnsnap()");
 		}
 #endif
 		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.GetForCurrentView()
@@ -197,14 +197,14 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ClearAllPersistedState()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ClearAllPersistedState()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "ClearAllPersistedState()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ClearPersistedState(string key)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ClearPersistedState(string key)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "ClearPersistedState(string key)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.PreferredLaunchViewSize.get
@@ -225,21 +225,21 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ShowStandardSystemOverlays()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ShowStandardSystemOverlays()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "ShowStandardSystemOverlays()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public bool TryResizeView(global::Windows.Foundation.Size value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TryResizeView(Size value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "TryResizeView(Size value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void SetPreferredMinSize(global::Windows.Foundation.Size minSize)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.SetPreferredMinSize(Size minSize)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "SetPreferredMinSize(Size minSize)");
 		}
 #endif
 		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.IsViewModeSupported(Windows.UI.ViewManagement.ApplicationViewMode)
@@ -249,14 +249,14 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryConsolidateAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "IAsyncOperation<bool> ApplicationView.TryConsolidateAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "TryConsolidateAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.DisplayRegion> GetDisplayRegions()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "IReadOnlyList<DisplayRegion> ApplicationView.GetDisplayRegions()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "GetDisplayRegions()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.AdjacentToLeftDisplayEdge.get

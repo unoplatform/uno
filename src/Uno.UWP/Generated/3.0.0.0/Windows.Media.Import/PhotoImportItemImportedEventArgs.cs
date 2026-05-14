@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItemImportedEventArgs", "PhotoImportItem PhotoImportItemImportedEventArgs.ImportedItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItemImportedEventArgs", "ImportedItem");
 			}
 		}
 #endif

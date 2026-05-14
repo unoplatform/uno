@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "string RevocationAndRenewalItem.HeaderHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "HeaderHash");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "string RevocationAndRenewalItem.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "string RevocationAndRenewalItem.PublicKeyHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "PublicKeyHash");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "RevocationAndRenewalReasons RevocationAndRenewalItem.Reasons");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "Reasons");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "string RevocationAndRenewalItem.RenewalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "RenewalId");
 			}
 		}
 #endif

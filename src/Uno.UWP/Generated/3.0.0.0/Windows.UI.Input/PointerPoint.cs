@@ -20,28 +20,28 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.PointerPoint GetCurrentPoint(uint pointerId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "PointerPoint PointerPoint.GetCurrentPoint(uint pointerId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "GetCurrentPoint(uint pointerId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> GetIntermediatePoints(uint pointerId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "IList<PointerPoint> PointerPoint.GetIntermediatePoints(uint pointerId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "GetIntermediatePoints(uint pointerId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.PointerPoint GetCurrentPoint(uint pointerId, global::Windows.UI.Input.IPointerPointTransform transform)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "PointerPoint PointerPoint.GetCurrentPoint(uint pointerId, IPointerPointTransform transform)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "GetCurrentPoint(uint pointerId, IPointerPointTransform transform)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> GetIntermediatePoints(uint pointerId, global::Windows.UI.Input.IPointerPointTransform transform)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "IList<PointerPoint> PointerPoint.GetIntermediatePoints(uint pointerId, IPointerPointTransform transform)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "GetIntermediatePoints(uint pointerId, IPointerPointTransform transform)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.PointerPoint.FrameId.get

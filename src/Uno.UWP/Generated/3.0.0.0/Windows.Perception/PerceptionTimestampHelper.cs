@@ -12,14 +12,14 @@ namespace Windows.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.PerceptionTimestamp FromHistoricalTargetTime(global::System.DateTimeOffset targetTime)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestampHelper", "PerceptionTimestamp PerceptionTimestampHelper.FromHistoricalTargetTime(DateTimeOffset targetTime)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestampHelper", "FromHistoricalTargetTime(DateTimeOffset targetTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.PerceptionTimestamp FromSystemRelativeTargetTime(global::System.TimeSpan targetTime)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestampHelper", "PerceptionTimestamp PerceptionTimestampHelper.FromSystemRelativeTargetTime(TimeSpan targetTime)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestampHelper", "FromSystemRelativeTargetTime(TimeSpan targetTime)");
 		}
 #endif
 	}

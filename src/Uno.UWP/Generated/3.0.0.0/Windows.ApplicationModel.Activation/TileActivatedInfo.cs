@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.TileActivatedInfo", "IReadOnlyList<ShownTileNotification> TileActivatedInfo.RecentlyShownNotifications");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.TileActivatedInfo", "RecentlyShownNotifications");
 			}
 		}
 #endif

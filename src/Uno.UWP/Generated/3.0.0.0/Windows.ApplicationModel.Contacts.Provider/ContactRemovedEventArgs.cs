@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs", "string ContactRemovedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs", "Id");
 			}
 		}
 #endif

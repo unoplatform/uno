@@ -14,11 +14,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AllowAutoRedirect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AllowAutoRedirect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AllowAutoRedirect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AllowAutoRedirect");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AllowUI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AllowUI");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AllowUI");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AllowUI");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AutomaticDecompression");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AutomaticDecompression");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AutomaticDecompression");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AutomaticDecompression");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpCacheControl HttpBaseProtocolFilter.CacheControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CacheControl");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "Certificate HttpBaseProtocolFilter.ClientCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ClientCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "Certificate HttpBaseProtocolFilter.ClientCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ClientCertificate");
 			}
 		}
 #endif
@@ -80,7 +80,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpCookieManager HttpBaseProtocolFilter.CookieManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CookieManager");
 			}
 		}
 #endif
@@ -90,11 +90,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpCookieUsageBehavior HttpBaseProtocolFilter.CookieUsageBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CookieUsageBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpCookieUsageBehavior HttpBaseProtocolFilter.CookieUsageBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CookieUsageBehavior");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "IList<ChainValidationResult> HttpBaseProtocolFilter.IgnorableServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "IgnorableServerCertificateErrors");
 			}
 		}
 #endif
@@ -114,11 +114,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "uint HttpBaseProtocolFilter.MaxConnectionsPerServer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "MaxConnectionsPerServer");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "uint HttpBaseProtocolFilter.MaxConnectionsPerServer");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "MaxConnectionsPerServer");
 			}
 		}
 #endif
@@ -128,11 +128,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpVersion HttpBaseProtocolFilter.MaxVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "MaxVersion");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpVersion HttpBaseProtocolFilter.MaxVersion");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "MaxVersion");
 			}
 		}
 #endif
@@ -142,11 +142,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "PasswordCredential HttpBaseProtocolFilter.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ProxyCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "PasswordCredential HttpBaseProtocolFilter.ProxyCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ProxyCredential");
 			}
 		}
 #endif
@@ -156,11 +156,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "PasswordCredential HttpBaseProtocolFilter.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "PasswordCredential HttpBaseProtocolFilter.ServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ServerCredential");
 			}
 		}
 #endif
@@ -170,11 +170,11 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.UseProxy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "UseProxy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.UseProxy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "UseProxy");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "User HttpBaseProtocolFilter.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "User");
 			}
 		}
 #endif
@@ -192,7 +192,7 @@ namespace Windows.Web.Http.Filters
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpBaseProtocolFilter()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpBaseProtocolFilter.HttpBaseProtocolFilter()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpBaseProtocolFilter()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.HttpBaseProtocolFilter()
@@ -200,14 +200,14 @@ namespace Windows.Web.Http.Filters
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Filters.HttpBaseProtocolFilter CreateForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpBaseProtocolFilter HttpBaseProtocolFilter.CreateForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CreateForUser(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearAuthenticationCache()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "void HttpBaseProtocolFilter.ClearAuthenticationCache()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ClearAuthenticationCache()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCustomValidationRequested.add
@@ -216,14 +216,14 @@ namespace Windows.Web.Http.Filters
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync(global::Windows.Web.Http.HttpRequestMessage request)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> HttpBaseProtocolFilter.SendRequestAsync(HttpRequestMessage request)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "SendRequestAsync(HttpRequestMessage request)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "void HttpBaseProtocolFilter.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.AllowAutoRedirect.get
@@ -257,12 +257,12 @@ namespace Windows.Web.Http.Filters
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "event TypedEventHandler<HttpBaseProtocolFilter, HttpServerCustomValidationRequestedEventArgs> HttpBaseProtocolFilter.ServerCustomValidationRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "event ServerCustomValidationRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "event TypedEventHandler<HttpBaseProtocolFilter, HttpServerCustomValidationRequestedEventArgs> HttpBaseProtocolFilter.ServerCustomValidationRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "event ServerCustomValidationRequested");
 			}
 		}
 #endif

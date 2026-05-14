@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "PaymentRequestChangeKind PaymentRequestChangedArgs.ChangeKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "ChangeKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "PaymentShippingOption PaymentRequestChangedArgs.SelectedShippingOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "SelectedShippingOption");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "PaymentAddress PaymentRequestChangedArgs.ShippingAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "ShippingAddress");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Acknowledge(global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult changeResult)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "void PaymentRequestChangedArgs.Acknowledge(PaymentRequestChangedResult changeResult)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "Acknowledge(PaymentRequestChangedResult changeResult)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ChangeKind.get

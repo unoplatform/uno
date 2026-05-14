@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "RfcommServiceId RfcommServiceId.GenericFileTransfer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "GenericFileTransfer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "RfcommServiceId RfcommServiceId.ObexFileTransfer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "ObexFileTransfer");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "RfcommServiceId RfcommServiceId.ObexObjectPush");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "ObexObjectPush");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "RfcommServiceId RfcommServiceId.PhoneBookAccessPce");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "PhoneBookAccessPce");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "RfcommServiceId RfcommServiceId.PhoneBookAccessPse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "PhoneBookAccessPse");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "RfcommServiceId RfcommServiceId.SerialPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "SerialPort");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "Guid RfcommServiceId.Uuid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "Uuid");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId FromUuid(global::System.Guid uuid)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "RfcommServiceId RfcommServiceId.FromUuid(Guid uuid)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "FromUuid(Guid uuid)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId FromShortId(uint shortId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "RfcommServiceId RfcommServiceId.FromShortId(uint shortId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "FromShortId(uint shortId)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.GenericFileTransfer.get
@@ -107,14 +107,14 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint AsShortId()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "uint RfcommServiceId.AsShortId()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "AsShortId()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AsString()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "string RfcommServiceId.AsString()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId", "AsString()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.Uuid.get

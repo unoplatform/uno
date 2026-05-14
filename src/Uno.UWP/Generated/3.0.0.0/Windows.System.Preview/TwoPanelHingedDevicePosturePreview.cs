@@ -17,14 +17,14 @@ namespace Windows.System.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.Preview.TwoPanelHingedDevicePosturePreview> GetDefaultAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreview", "IAsyncOperation<TwoPanelHingedDevicePosturePreview> TwoPanelHingedDevicePosturePreview.GetDefaultAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreview", "GetDefaultAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading> GetCurrentPostureAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreview", "IAsyncOperation<TwoPanelHingedDevicePosturePreviewReading> TwoPanelHingedDevicePosturePreview.GetCurrentPostureAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreview", "GetCurrentPostureAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreview.PostureChanged.add
@@ -36,12 +36,12 @@ namespace Windows.System.Preview
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Preview.TwoPanelHingedDevicePosturePreview", "event TypedEventHandler<TwoPanelHingedDevicePosturePreview, TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs> TwoPanelHingedDevicePosturePreview.PostureChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Preview.TwoPanelHingedDevicePosturePreview", "event PostureChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Preview.TwoPanelHingedDevicePosturePreview", "event TypedEventHandler<TwoPanelHingedDevicePosturePreview, TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs> TwoPanelHingedDevicePosturePreview.PostureChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Preview.TwoPanelHingedDevicePosturePreview", "event PostureChanged");
 			}
 		}
 #endif

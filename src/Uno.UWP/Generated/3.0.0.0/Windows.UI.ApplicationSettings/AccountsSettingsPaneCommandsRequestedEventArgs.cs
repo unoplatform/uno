@@ -19,7 +19,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "IList<SettingsCommand> AccountsSettingsPaneCommandsRequestedEventArgs.Commands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "Commands");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "IList<CredentialCommand> AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "CredentialCommands");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "string AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "HeaderText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "string AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "HeaderText");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "User AccountsSettingsPaneCommandsRequestedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "User");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "IList<WebAccountCommand> AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountCommands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "WebAccountCommands");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "IList<WebAccountProviderCommand> AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountProviderCommands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "WebAccountProviderCommands");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.UI.ApplicationSettings
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "AccountsSettingsPaneEventDeferral AccountsSettingsPaneCommandsRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Commands.get

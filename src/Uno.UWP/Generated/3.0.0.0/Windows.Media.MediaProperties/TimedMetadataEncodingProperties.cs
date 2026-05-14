@@ -14,7 +14,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "MediaPropertySet TimedMetadataEncodingProperties.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "Properties");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "string TimedMetadataEncodingProperties.Subtype");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "Subtype");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "string TimedMetadataEncodingProperties.Subtype");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "Subtype");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "string TimedMetadataEncodingProperties.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "Type");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TimedMetadataEncodingProperties()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "TimedMetadataEncodingProperties.TimedMetadataEncodingProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "TimedMetadataEncodingProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.TimedMetadataEncodingProperties()
@@ -54,49 +54,49 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreatePgs()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreatePgs()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "CreatePgs()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateSrt()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSrt()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "CreateSrt()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateSsa(byte[] formatUserData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSsa(byte[] formatUserData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "CreateSsa(byte[] formatUserData)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateVobSub(byte[] formatUserData)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateVobSub(byte[] formatUserData)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "CreateVobSub(byte[] formatUserData)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetFormatUserData(byte[] value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "void TimedMetadataEncodingProperties.SetFormatUserData(byte[] value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "SetFormatUserData(byte[] value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetFormatUserData(out byte[] value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "void TimedMetadataEncodingProperties.GetFormatUserData(out byte[] value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "GetFormatUserData(out byte[] value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties Copy()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "TimedMetadataEncodingProperties TimedMetadataEncodingProperties.Copy()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "Copy()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Properties.get

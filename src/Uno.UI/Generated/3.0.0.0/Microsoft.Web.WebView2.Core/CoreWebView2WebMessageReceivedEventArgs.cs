@@ -14,7 +14,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs", "IReadOnlyList<object> CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs", "AdditionalObjects");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs", "string CoreWebView2WebMessageReceivedEventArgs.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs", "Source");
 			}
 		}
 #endif

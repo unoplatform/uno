@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "MediaProtectionServiceCompletion ServiceRequestedEventArgs.Completion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "Completion");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "MediaPlaybackItem ServiceRequestedEventArgs.MediaPlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "MediaPlaybackItem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "IMediaProtectionServiceRequest ServiceRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "Request");
 			}
 		}
 #endif

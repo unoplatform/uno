@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessCpuUsage ProcessDiagnosticInfo.CpuUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "CpuUsage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessDiskUsage ProcessDiagnosticInfo.DiskUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "DiskUsage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "string ProcessDiagnosticInfo.ExecutableFileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ExecutableFileName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "bool ProcessDiagnosticInfo.IsPackaged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "IsPackaged");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessMemoryUsage ProcessDiagnosticInfo.MemoryUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "MemoryUsage");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessDiagnosticInfo ProcessDiagnosticInfo.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "Parent");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "uint ProcessDiagnosticInfo.ProcessId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessId");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "DateTimeOffset ProcessDiagnosticInfo.ProcessStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessStartTime");
 			}
 		}
 #endif
@@ -97,28 +97,28 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetForProcesses()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "IReadOnlyList<ProcessDiagnosticInfo> ProcessDiagnosticInfo.GetForProcesses()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "GetForProcesses()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo GetForCurrentProcess()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessDiagnosticInfo ProcessDiagnosticInfo.GetForCurrentProcess()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "GetForCurrentProcess()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo TryGetForProcessId(uint processId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "TryGetForProcessId(uint processId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo> GetAppDiagnosticInfos()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "IList<AppDiagnosticInfo> ProcessDiagnosticInfo.GetAppDiagnosticInfos()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "GetAppDiagnosticInfos()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.CpuUsage.get

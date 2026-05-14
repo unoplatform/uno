@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "TileActivatedInfo LaunchActivatedEventArgs.TileActivatedInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "TileActivatedInfo");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "User LaunchActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "User");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "ActivationViewSwitcher LaunchActivatedEventArgs.ViewSwitcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "ViewSwitcher");
 			}
 		}
 #endif

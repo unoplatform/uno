@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "BluetoothDeviceId BluetoothLEDevice.BluetoothDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "BluetoothDeviceId");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "DeviceAccessInformation BluetoothLEDevice.DeviceAccessInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "DeviceAccessInformation");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "string BluetoothLEDevice.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "DeviceId");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "DeviceInformation BluetoothLEDevice.DeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "DeviceInformation");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IReadOnlyList<GattDeviceService> BluetoothLEDevice.GattServices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "GattServices");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "bool BluetoothLEDevice.WasSecureConnectionUsedForPairing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "WasSecureConnectionUsedForPairing");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothLEDevice> FromIdAsync(string deviceId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IAsyncOperation<BluetoothLEDevice> BluetoothLEDevice.FromIdAsync(string deviceId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothLEDevice> FromBluetoothAddressAsync(ulong bluetoothAddress)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IAsyncOperation<BluetoothLEDevice> BluetoothLEDevice.FromBluetoothAddressAsync(ulong bluetoothAddress)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "FromBluetoothAddressAsync(ulong bluetoothAddress)");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothLEDevice.GetDeviceSelector()
@@ -98,14 +98,14 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothLEDevice> FromBluetoothAddressAsync(ulong bluetoothAddress, global::Windows.Devices.Bluetooth.BluetoothAddressType bluetoothAddressType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IAsyncOperation<BluetoothLEDevice> BluetoothLEDevice.FromBluetoothAddressAsync(ulong bluetoothAddress, BluetoothAddressType bluetoothAddressType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "FromBluetoothAddressAsync(ulong bluetoothAddress, BluetoothAddressType bluetoothAddressType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService GetGattService(global::System.Guid serviceUuid)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "GattDeviceService BluetoothLEDevice.GetGattService(Guid serviceUuid)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "GetGattService(Guid serviceUuid)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.ConnectionStatusChanged.add
@@ -118,42 +118,42 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "void BluetoothLEDevice.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IAsyncOperation<DeviceAccessStatus> BluetoothLEDevice.RequestAccessAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult> GetGattServicesAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IAsyncOperation<GattDeviceServicesResult> BluetoothLEDevice.GetGattServicesAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "GetGattServicesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult> GetGattServicesAsync(global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IAsyncOperation<GattDeviceServicesResult> BluetoothLEDevice.GetGattServicesAsync(BluetoothCacheMode cacheMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "GetGattServicesAsync(BluetoothCacheMode cacheMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult> GetGattServicesForUuidAsync(global::System.Guid serviceUuid)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IAsyncOperation<GattDeviceServicesResult> BluetoothLEDevice.GetGattServicesForUuidAsync(Guid serviceUuid)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "GetGattServicesForUuidAsync(Guid serviceUuid)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult> GetGattServicesForUuidAsync(global::System.Guid serviceUuid, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "IAsyncOperation<GattDeviceServicesResult> BluetoothLEDevice.GetGattServicesForUuidAsync(Guid serviceUuid, BluetoothCacheMode cacheMode)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothLEDevice", "GetGattServicesForUuidAsync(Guid serviceUuid, BluetoothCacheMode cacheMode)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.Appearance.get
@@ -174,12 +174,12 @@ namespace Windows.Devices.Bluetooth
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event TypedEventHandler<BluetoothLEDevice, object> BluetoothLEDevice.ConnectionStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event ConnectionStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event TypedEventHandler<BluetoothLEDevice, object> BluetoothLEDevice.ConnectionStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event ConnectionStatusChanged");
 			}
 		}
 #endif
@@ -190,12 +190,12 @@ namespace Windows.Devices.Bluetooth
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event TypedEventHandler<BluetoothLEDevice, object> BluetoothLEDevice.GattServicesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event GattServicesChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event TypedEventHandler<BluetoothLEDevice, object> BluetoothLEDevice.GattServicesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event GattServicesChanged");
 			}
 		}
 #endif
@@ -206,12 +206,12 @@ namespace Windows.Devices.Bluetooth
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event TypedEventHandler<BluetoothLEDevice, object> BluetoothLEDevice.NameChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event NameChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event TypedEventHandler<BluetoothLEDevice, object> BluetoothLEDevice.NameChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothLEDevice", "event NameChanged");
 			}
 		}
 #endif

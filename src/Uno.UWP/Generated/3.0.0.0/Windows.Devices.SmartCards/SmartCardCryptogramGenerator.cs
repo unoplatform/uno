@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IReadOnlyList<SmartCardCryptogramAlgorithm> SmartCardCryptogramGenerator.SupportedCryptogramAlgorithms");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "SupportedCryptogramAlgorithms");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IReadOnlyList<SmartCardCryptogramMaterialPackageConfirmationResponseFormat> SmartCardCryptogramGenerator.SupportedCryptogramMaterialPackageConfirmationResponseFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "SupportedCryptogramMaterialPackageConfirmationResponseFormats");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IReadOnlyList<SmartCardCryptogramMaterialPackageFormat> SmartCardCryptogramGenerator.SupportedCryptogramMaterialPackageFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "SupportedCryptogramMaterialPackageFormats");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IReadOnlyList<SmartCardCryptogramMaterialType> SmartCardCryptogramGenerator.SupportedCryptogramMaterialTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "SupportedCryptogramMaterialTypes");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IReadOnlyList<SmartCardCryptogramStorageKeyCapabilities> SmartCardCryptogramGenerator.SupportedSmartCardCryptogramStorageKeyCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "SupportedSmartCardCryptogramStorageKeyCapabilities");
 			}
 		}
 #endif
@@ -67,98 +67,98 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGenerator> GetSmartCardCryptogramGeneratorAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGenerator> SmartCardCryptogramGenerator.GetSmartCardCryptogramGeneratorAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "GetSmartCardCryptogramGeneratorAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "bool SmartCardCryptogramGenerator.IsSupported()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGeneratorOperationStatus> DeleteCryptogramMaterialStorageKeyAsync(string storageKeyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGeneratorOperationStatus> SmartCardCryptogramGenerator.DeleteCryptogramMaterialStorageKeyAsync(string storageKeyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "DeleteCryptogramMaterialStorageKeyAsync(string storageKeyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGeneratorOperationStatus> CreateCryptogramMaterialStorageKeyAsync(global::Windows.Devices.SmartCards.SmartCardUnlockPromptingBehavior promptingBehavior, string storageKeyName, global::Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyAlgorithm algorithm, global::Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCapabilities capabilities)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGeneratorOperationStatus> SmartCardCryptogramGenerator.CreateCryptogramMaterialStorageKeyAsync(SmartCardUnlockPromptingBehavior promptingBehavior, string storageKeyName, SmartCardCryptogramStorageKeyAlgorithm algorithm, SmartCardCryptogramStorageKeyCapabilities capabilities)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "CreateCryptogramMaterialStorageKeyAsync(SmartCardUnlockPromptingBehavior promptingBehavior, string storageKeyName, SmartCardCryptogramStorageKeyAlgorithm algorithm, SmartCardCryptogramStorageKeyCapabilities capabilities)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo> RequestCryptogramMaterialStorageKeyInfoAsync(global::Windows.Devices.SmartCards.SmartCardUnlockPromptingBehavior promptingBehavior, string storageKeyName, global::Windows.Security.Cryptography.Core.CryptographicPublicKeyBlobType format)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramStorageKeyInfo> SmartCardCryptogramGenerator.RequestCryptogramMaterialStorageKeyInfoAsync(SmartCardUnlockPromptingBehavior promptingBehavior, string storageKeyName, CryptographicPublicKeyBlobType format)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "RequestCryptogramMaterialStorageKeyInfoAsync(SmartCardUnlockPromptingBehavior promptingBehavior, string storageKeyName, CryptographicPublicKeyBlobType format)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGeneratorOperationStatus> ImportCryptogramMaterialPackageAsync(global::Windows.Devices.SmartCards.SmartCardCryptogramMaterialPackageFormat format, string storageKeyName, string materialPackageName, global::Windows.Storage.Streams.IBuffer cryptogramMaterialPackage)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGeneratorOperationStatus> SmartCardCryptogramGenerator.ImportCryptogramMaterialPackageAsync(SmartCardCryptogramMaterialPackageFormat format, string storageKeyName, string materialPackageName, IBuffer cryptogramMaterialPackage)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "ImportCryptogramMaterialPackageAsync(SmartCardCryptogramMaterialPackageFormat format, string storageKeyName, string materialPackageName, IBuffer cryptogramMaterialPackage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramMaterialPossessionProof> TryProvePossessionOfCryptogramMaterialPackageAsync(global::Windows.Devices.SmartCards.SmartCardUnlockPromptingBehavior promptingBehavior, global::Windows.Devices.SmartCards.SmartCardCryptogramMaterialPackageConfirmationResponseFormat responseFormat, string materialPackageName, string materialName, global::Windows.Storage.Streams.IBuffer challenge)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramMaterialPossessionProof> SmartCardCryptogramGenerator.TryProvePossessionOfCryptogramMaterialPackageAsync(SmartCardUnlockPromptingBehavior promptingBehavior, SmartCardCryptogramMaterialPackageConfirmationResponseFormat responseFormat, string materialPackageName, string materialName, IBuffer challenge)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "TryProvePossessionOfCryptogramMaterialPackageAsync(SmartCardUnlockPromptingBehavior promptingBehavior, SmartCardCryptogramMaterialPackageConfirmationResponseFormat responseFormat, string materialPackageName, string materialName, IBuffer challenge)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGeneratorOperationStatus> RequestUnlockCryptogramMaterialForUseAsync(global::Windows.Devices.SmartCards.SmartCardUnlockPromptingBehavior promptingBehavior)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGeneratorOperationStatus> SmartCardCryptogramGenerator.RequestUnlockCryptogramMaterialForUseAsync(SmartCardUnlockPromptingBehavior promptingBehavior)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "RequestUnlockCryptogramMaterialForUseAsync(SmartCardUnlockPromptingBehavior promptingBehavior)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGeneratorOperationStatus> DeleteCryptogramMaterialPackageAsync(string materialPackageName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGeneratorOperationStatus> SmartCardCryptogramGenerator.DeleteCryptogramMaterialPackageAsync(string materialPackageName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "DeleteCryptogramMaterialPackageAsync(string materialPackageName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGeneratorOperationStatus> ValidateRequestApduAsync(global::Windows.Devices.SmartCards.SmartCardUnlockPromptingBehavior promptingBehavior, global::Windows.Storage.Streams.IBuffer apduToValidate, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep> cryptogramPlacementSteps)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGeneratorOperationStatus> SmartCardCryptogramGenerator.ValidateRequestApduAsync(SmartCardUnlockPromptingBehavior promptingBehavior, IBuffer apduToValidate, IEnumerable<SmartCardCryptogramPlacementStep> cryptogramPlacementSteps)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "ValidateRequestApduAsync(SmartCardUnlockPromptingBehavior promptingBehavior, IBuffer apduToValidate, IEnumerable<SmartCardCryptogramPlacementStep> cryptogramPlacementSteps)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult> GetAllCryptogramStorageKeyCharacteristicsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult> SmartCardCryptogramGenerator.GetAllCryptogramStorageKeyCharacteristicsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "GetAllCryptogramStorageKeyCharacteristicsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialPackageCharacteristicsResult> GetAllCryptogramMaterialPackageCharacteristicsAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGetAllCryptogramMaterialPackageCharacteristicsResult> SmartCardCryptogramGenerator.GetAllCryptogramMaterialPackageCharacteristicsAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "GetAllCryptogramMaterialPackageCharacteristicsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialPackageCharacteristicsResult> GetAllCryptogramMaterialPackageCharacteristicsAsync(string storageKeyName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGetAllCryptogramMaterialPackageCharacteristicsResult> SmartCardCryptogramGenerator.GetAllCryptogramMaterialPackageCharacteristicsAsync(string storageKeyName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "GetAllCryptogramMaterialPackageCharacteristicsAsync(string storageKeyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult> GetAllCryptogramMaterialCharacteristicsAsync(global::Windows.Devices.SmartCards.SmartCardUnlockPromptingBehavior promptingBehavior, string materialPackageName)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "IAsyncOperation<SmartCardCryptogramGetAllCryptogramMaterialCharacteristicsResult> SmartCardCryptogramGenerator.GetAllCryptogramMaterialCharacteristicsAsync(SmartCardUnlockPromptingBehavior promptingBehavior, string materialPackageName)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGenerator", "GetAllCryptogramMaterialCharacteristicsAsync(SmartCardUnlockPromptingBehavior promptingBehavior, string materialPackageName)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.SupportedCryptogramAlgorithms.get

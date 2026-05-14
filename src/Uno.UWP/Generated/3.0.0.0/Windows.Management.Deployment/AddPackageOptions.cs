@@ -14,11 +14,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.AllowUnsigned");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "AllowUnsigned");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.AllowUnsigned");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "AllowUnsigned");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.DeferRegistrationWhenPackagesAreInUse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "DeferRegistrationWhenPackagesAreInUse");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.DeferRegistrationWhenPackagesAreInUse");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "DeferRegistrationWhenPackagesAreInUse");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "IList<Uri> AddPackageOptions.DependencyPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "DependencyPackageUris");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.DeveloperMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "DeveloperMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.DeveloperMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "DeveloperMode");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "Uri AddPackageOptions.ExternalLocationUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "ExternalLocationUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "Uri AddPackageOptions.ExternalLocationUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "ExternalLocationUri");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceAppShutdown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "ForceAppShutdown");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceAppShutdown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "ForceAppShutdown");
 			}
 		}
 #endif
@@ -94,11 +94,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceTargetAppShutdown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "ForceTargetAppShutdown");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceTargetAppShutdown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "ForceTargetAppShutdown");
 			}
 		}
 #endif
@@ -108,11 +108,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceUpdateFromAnyVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "ForceUpdateFromAnyVersion");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceUpdateFromAnyVersion");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "ForceUpdateFromAnyVersion");
 			}
 		}
 #endif
@@ -122,11 +122,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.InstallAllResources");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "InstallAllResources");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.InstallAllResources");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "InstallAllResources");
 			}
 		}
 #endif
@@ -136,7 +136,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "IList<string> AddPackageOptions.OptionalPackageFamilyNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "OptionalPackageFamilyNames");
 			}
 		}
 #endif
@@ -146,7 +146,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "IList<Uri> AddPackageOptions.OptionalPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "OptionalPackageUris");
 			}
 		}
 #endif
@@ -156,7 +156,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "IList<Uri> AddPackageOptions.RelatedPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "RelatedPackageUris");
 			}
 		}
 #endif
@@ -166,11 +166,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RequiredContentGroupOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "RequiredContentGroupOnly");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RequiredContentGroupOnly");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "RequiredContentGroupOnly");
 			}
 		}
 #endif
@@ -180,11 +180,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RetainFilesOnFailure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "RetainFilesOnFailure");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RetainFilesOnFailure");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "RetainFilesOnFailure");
 			}
 		}
 #endif
@@ -194,11 +194,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.StageInPlace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "StageInPlace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.StageInPlace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "StageInPlace");
 			}
 		}
 #endif
@@ -208,11 +208,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "StubPackageOption AddPackageOptions.StubPackageOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "StubPackageOption");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "StubPackageOption AddPackageOptions.StubPackageOption");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "StubPackageOption");
 			}
 		}
 #endif
@@ -222,11 +222,11 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "PackageVolume AddPackageOptions.TargetVolume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "TargetVolume");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "PackageVolume AddPackageOptions.TargetVolume");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "TargetVolume");
 			}
 		}
 #endif
@@ -234,7 +234,7 @@ namespace Windows.Management.Deployment
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AddPackageOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "AddPackageOptions.AddPackageOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "AddPackageOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.AddPackageOptions()

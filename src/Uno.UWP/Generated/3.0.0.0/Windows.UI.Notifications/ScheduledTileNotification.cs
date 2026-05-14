@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "XmlDocument ScheduledTileNotification.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "Content");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "DateTimeOffset ScheduledTileNotification.DeliveryTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "DeliveryTime");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "DateTimeOffset? ScheduledTileNotification.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "ExpirationTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "DateTimeOffset? ScheduledTileNotification.ExpirationTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "ExpirationTime");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "Id");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "Tag");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Tag");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "Tag");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ScheduledTileNotification(global::Windows.Data.Xml.Dom.XmlDocument content, global::System.DateTimeOffset deliveryTime)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "ScheduledTileNotification.ScheduledTileNotification(XmlDocument content, DateTimeOffset deliveryTime)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "ScheduledTileNotification(XmlDocument content, DateTimeOffset deliveryTime)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.ScheduledTileNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset)

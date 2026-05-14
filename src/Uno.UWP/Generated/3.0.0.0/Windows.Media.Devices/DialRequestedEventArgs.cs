@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.DialRequestedEventArgs", "object DialRequestedEventArgs.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.DialRequestedEventArgs", "Contact");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Handled()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.DialRequestedEventArgs", "void DialRequestedEventArgs.Handled()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.DialRequestedEventArgs", "Handled()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.Contact.get

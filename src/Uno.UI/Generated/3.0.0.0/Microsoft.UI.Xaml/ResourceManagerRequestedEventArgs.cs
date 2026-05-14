@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs", "IResourceManager ResourceManagerRequestedEventArgs.CustomResourceManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs", "CustomResourceManager");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs", "IResourceManager ResourceManagerRequestedEventArgs.CustomResourceManager");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs", "CustomResourceManager");
 			}
 		}
 #endif

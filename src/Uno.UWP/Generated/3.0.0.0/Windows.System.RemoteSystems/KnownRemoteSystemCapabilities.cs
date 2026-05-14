@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "string KnownRemoteSystemCapabilities.AppService");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "AppService");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "string KnownRemoteSystemCapabilities.LaunchUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "LaunchUri");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "string KnownRemoteSystemCapabilities.RemoteSession");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "RemoteSession");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "string KnownRemoteSystemCapabilities.SpatialEntity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "SpatialEntity");
 			}
 		}
 #endif

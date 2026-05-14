@@ -14,7 +14,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebProviderError", "uint WebProviderError.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebProviderError", "ErrorCode");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebProviderError", "string WebProviderError.ErrorMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebProviderError", "ErrorMessage");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebProviderError", "IDictionary<string, string> WebProviderError.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebProviderError", "Properties");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebProviderError(uint errorCode, string errorMessage)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebProviderError", "WebProviderError.WebProviderError(uint errorCode, string errorMessage)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebProviderError", "WebProviderError(uint errorCode, string errorMessage)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebProviderError.WebProviderError(uint, string)

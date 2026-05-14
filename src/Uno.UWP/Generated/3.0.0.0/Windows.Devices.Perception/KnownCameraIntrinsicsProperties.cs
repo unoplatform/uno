@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "string KnownCameraIntrinsicsProperties.FocalLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "FocalLength");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "string KnownCameraIntrinsicsProperties.PrincipalPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "PrincipalPoint");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "string KnownCameraIntrinsicsProperties.RadialDistortion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "RadialDistortion");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "string KnownCameraIntrinsicsProperties.TangentialDistortion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "TangentialDistortion");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Microsoft.UI.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.System.ThemeSettings", "bool ThemeSettings.HighContrast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.System.ThemeSettings", "HighContrast");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.System.ThemeSettings", "string ThemeSettings.HighContrastScheme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.System.ThemeSettings", "HighContrastScheme");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Microsoft.UI.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.System.ThemeSettings CreateForWindowId(global::Microsoft.UI.WindowId windowId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.System.ThemeSettings", "ThemeSettings ThemeSettings.CreateForWindowId(WindowId windowId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.System.ThemeSettings", "CreateForWindowId(WindowId windowId)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.System.ThemeSettings.Changed.add
@@ -51,12 +51,12 @@ namespace Microsoft.UI.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.System.ThemeSettings", "event TypedEventHandler<ThemeSettings, object> ThemeSettings.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.System.ThemeSettings", "event Changed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.System.ThemeSettings", "event TypedEventHandler<ThemeSettings, object> ThemeSettings.Changed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.System.ThemeSettings", "event Changed");
 			}
 		}
 #endif

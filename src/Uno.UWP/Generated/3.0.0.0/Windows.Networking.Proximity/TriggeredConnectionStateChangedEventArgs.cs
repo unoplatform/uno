@@ -19,7 +19,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "uint TriggeredConnectionStateChangedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "StreamSocket TriggeredConnectionStateChangedEventArgs.Socket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "Socket");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "TriggeredConnectState TriggeredConnectionStateChangedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "State");
 			}
 		}
 #endif

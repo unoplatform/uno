@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Shapes.Shape", "Transform Shape.GeometryTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Shapes.Shape", "GeometryTransform");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionBrush GetAlphaMask()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Shapes.Shape", "CompositionBrush Shape.GetAlphaMask()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Shapes.Shape", "GetAlphaMask()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Fill.get

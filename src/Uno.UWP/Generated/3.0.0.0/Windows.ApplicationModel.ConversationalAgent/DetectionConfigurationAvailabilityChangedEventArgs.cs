@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs", "DetectionConfigurationAvailabilityChangeKind DetectionConfigurationAvailabilityChangedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs", "Kind");
 			}
 		}
 #endif

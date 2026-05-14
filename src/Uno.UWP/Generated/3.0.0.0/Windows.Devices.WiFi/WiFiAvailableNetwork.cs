@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "TimeSpan WiFiAvailableNetwork.BeaconInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "BeaconInterval");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "string WiFiAvailableNetwork.Bssid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "Bssid");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "int WiFiAvailableNetwork.ChannelCenterFrequencyInKilohertz");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "ChannelCenterFrequencyInKilohertz");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "bool WiFiAvailableNetwork.IsWiFiDirect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "IsWiFiDirect");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "WiFiNetworkKind WiFiAvailableNetwork.NetworkKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "NetworkKind");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "double WiFiAvailableNetwork.NetworkRssiInDecibelMilliwatts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "NetworkRssiInDecibelMilliwatts");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "WiFiPhyKind WiFiAvailableNetwork.PhyKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "PhyKind");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "NetworkSecuritySettings WiFiAvailableNetwork.SecuritySettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "SecuritySettings");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "byte WiFiAvailableNetwork.SignalBars");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "SignalBars");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "string WiFiAvailableNetwork.Ssid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "Ssid");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "TimeSpan WiFiAvailableNetwork.Uptime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "Uptime");
 			}
 		}
 #endif

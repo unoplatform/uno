@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.HighDynamicRangeOutput", "double HighDynamicRangeOutput.Certainty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.HighDynamicRangeOutput", "Certainty");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.HighDynamicRangeOutput", "IReadOnlyList<FrameController> HighDynamicRangeOutput.FrameControllers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.HighDynamicRangeOutput", "FrameControllers");
 			}
 		}
 #endif

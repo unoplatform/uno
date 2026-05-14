@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs", "CollectionChange PerceptionFrameSourcePropertiesChangedEventArgs.CollectionChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs", "CollectionChange");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs", "string PerceptionFrameSourcePropertiesChangedEventArgs.Key");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs", "Key");
 			}
 		}
 #endif

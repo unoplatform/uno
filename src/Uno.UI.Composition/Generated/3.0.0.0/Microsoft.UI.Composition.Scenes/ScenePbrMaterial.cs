@@ -14,11 +14,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.AlphaCutoff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "AlphaCutoff");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.AlphaCutoff");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "AlphaCutoff");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneAlphaMode ScenePbrMaterial.AlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "AlphaMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneAlphaMode ScenePbrMaterial.AlphaMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "AlphaMode");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "Vector3 ScenePbrMaterial.EmissiveFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "EmissiveFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "Vector3 ScenePbrMaterial.EmissiveFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "EmissiveFactor");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.EmissiveInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "EmissiveInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.EmissiveInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "EmissiveInput");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "bool ScenePbrMaterial.IsDoubleSided");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "IsDoubleSided");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "bool ScenePbrMaterial.IsDoubleSided");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "IsDoubleSided");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.NormalInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "NormalInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.NormalInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "NormalInput");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.NormalScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "NormalScale");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.NormalScale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "NormalScale");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.OcclusionInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "OcclusionInput");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.OcclusionInput");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "OcclusionInput");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.OcclusionStrength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "OcclusionStrength");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.OcclusionStrength");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "OcclusionStrength");
 			}
 		}
 #endif

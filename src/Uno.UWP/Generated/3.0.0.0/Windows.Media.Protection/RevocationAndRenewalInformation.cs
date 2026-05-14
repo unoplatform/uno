@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalInformation", "IList<RevocationAndRenewalItem> RevocationAndRenewalInformation.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalInformation", "Items");
 			}
 		}
 #endif

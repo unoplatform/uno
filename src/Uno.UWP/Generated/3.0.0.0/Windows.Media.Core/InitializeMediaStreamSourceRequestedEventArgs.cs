@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs", "IRandomAccessStream InitializeMediaStreamSourceRequestedEventArgs.RandomAccessStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs", "RandomAccessStream");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs", "MediaStreamSource InitializeMediaStreamSourceRequestedEventArgs.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs", "Source");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs", "Deferral InitializeMediaStreamSourceRequestedEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.RandomAccessStream.get

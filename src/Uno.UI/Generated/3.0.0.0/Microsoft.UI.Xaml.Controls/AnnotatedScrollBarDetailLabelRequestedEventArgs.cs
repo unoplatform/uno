@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs", "object AnnotatedScrollBarDetailLabelRequestedEventArgs.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs", "Content");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs", "object AnnotatedScrollBarDetailLabelRequestedEventArgs.Content");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs", "Content");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs", "double AnnotatedScrollBarDetailLabelRequestedEventArgs.ScrollOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs", "ScrollOffset");
 			}
 		}
 #endif

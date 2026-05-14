@@ -19,11 +19,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "ContentSizePolicy DesktopChildSiteBridge.ResizePolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "ResizePolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopChildSiteBridge", "ContentSizePolicy DesktopChildSiteBridge.ResizePolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopChildSiteBridge", "ResizePolicy");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "ContentSiteView DesktopChildSiteBridge.SiteView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "SiteView");
 			}
 		}
 #endif
@@ -41,14 +41,14 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.DesktopChildSiteBridge Create(global::Microsoft.UI.Composition.Compositor compositor, global::Microsoft.UI.WindowId parentWindowId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "DesktopChildSiteBridge DesktopChildSiteBridge.Create(Compositor compositor, WindowId parentWindowId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "Create(Compositor compositor, WindowId parentWindowId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.DesktopChildSiteBridge CreateWithDispatcherQueue(global::Microsoft.UI.Dispatching.DispatcherQueue queue, global::Microsoft.UI.WindowId parentWindowId)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "DesktopChildSiteBridge DesktopChildSiteBridge.CreateWithDispatcherQueue(DispatcherQueue queue, WindowId parentWindowId)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "CreateWithDispatcherQueue(DispatcherQueue queue, WindowId parentWindowId)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.get

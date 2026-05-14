@@ -19,7 +19,7 @@ namespace Windows.Storage.AccessCache
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.ItemRemovedEventArgs", "AccessListEntry ItemRemovedEventArgs.RemovedEntry");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.ItemRemovedEventArgs", "RemovedEntry");
 			}
 		}
 #endif

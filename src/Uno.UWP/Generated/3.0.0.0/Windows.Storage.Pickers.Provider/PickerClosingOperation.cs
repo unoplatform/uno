@@ -19,7 +19,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.PickerClosingOperation", "DateTimeOffset PickerClosingOperation.Deadline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.PickerClosingOperation", "Deadline");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Storage.Pickers.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Pickers.Provider.PickerClosingDeferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.PickerClosingOperation", "PickerClosingDeferral PickerClosingOperation.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.PickerClosingOperation", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingOperation.Deadline.get

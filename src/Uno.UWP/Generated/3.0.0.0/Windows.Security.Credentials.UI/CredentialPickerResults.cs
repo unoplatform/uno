@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "IBuffer CredentialPickerResults.Credential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "Credential");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "string CredentialPickerResults.CredentialDomainName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "CredentialDomainName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "string CredentialPickerResults.CredentialPassword");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "CredentialPassword");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "CredentialSaveOption CredentialPickerResults.CredentialSaveOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "CredentialSaveOption");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "bool CredentialPickerResults.CredentialSaved");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "CredentialSaved");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "string CredentialPickerResults.CredentialUserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "CredentialUserName");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "uint CredentialPickerResults.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerResults", "ErrorCode");
 			}
 		}
 #endif

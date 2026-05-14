@@ -19,7 +19,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "BadgeNotification PushNotificationReceivedEventArgs.BadgeNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "BadgeNotification");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "bool PushNotificationReceivedEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "bool PushNotificationReceivedEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "PushNotificationType PushNotificationReceivedEventArgs.NotificationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "NotificationType");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "RawNotification PushNotificationReceivedEventArgs.RawNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "RawNotification");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "TileNotification PushNotificationReceivedEventArgs.TileNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "TileNotification");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "ToastNotification PushNotificationReceivedEventArgs.ToastNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "ToastNotification");
 			}
 		}
 #endif

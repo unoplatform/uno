@@ -14,11 +14,11 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "Guid OnlineIdAuthenticator.ApplicationId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "ApplicationId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "Guid OnlineIdAuthenticator.ApplicationId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "ApplicationId");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "string OnlineIdAuthenticator.AuthenticatedSafeCustomerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "AuthenticatedSafeCustomerId");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "bool OnlineIdAuthenticator.CanSignOut");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "CanSignOut");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.Security.Authentication.OnlineId
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public OnlineIdAuthenticator()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "OnlineIdAuthenticator.OnlineIdAuthenticator()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "OnlineIdAuthenticator()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.OnlineIdAuthenticator()
@@ -54,21 +54,21 @@ namespace Windows.Security.Authentication.OnlineId
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.OnlineId.UserAuthenticationOperation AuthenticateUserAsync(global::Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest request)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "UserAuthenticationOperation OnlineIdAuthenticator.AuthenticateUserAsync(OnlineIdServiceTicketRequest request)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "AuthenticateUserAsync(OnlineIdServiceTicketRequest request)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.OnlineId.UserAuthenticationOperation AuthenticateUserAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest> requests, global::Windows.Security.Authentication.OnlineId.CredentialPromptType credentialPromptType)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "UserAuthenticationOperation OnlineIdAuthenticator.AuthenticateUserAsync(IEnumerable<OnlineIdServiceTicketRequest> requests, CredentialPromptType credentialPromptType)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "AuthenticateUserAsync(IEnumerable<OnlineIdServiceTicketRequest> requests, CredentialPromptType credentialPromptType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.OnlineId.SignOutUserOperation SignOutUserAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "SignOutUserOperation OnlineIdAuthenticator.SignOutUserAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator", "SignOutUserAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.ApplicationId.get

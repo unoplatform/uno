@@ -14,7 +14,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ProcessEvents(global::Windows.UI.Core.CoreProcessEventsOption options)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "void CoreDispatcher.ProcessEvents(CoreProcessEventsOption options)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "ProcessEvents(CoreProcessEventsOption options)");
 		}
 #endif
 		// Skipping already declared method Windows.UI.Core.CoreDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority, Windows.UI.Core.DispatchedHandler)
@@ -25,35 +25,35 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ShouldYield()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "bool CoreDispatcher.ShouldYield()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "ShouldYield()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ShouldYield(global::Windows.UI.Core.CoreDispatcherPriority priority)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "bool CoreDispatcher.ShouldYield(CoreDispatcherPriority priority)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "ShouldYield(CoreDispatcherPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopProcessEvents()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "void CoreDispatcher.StopProcessEvents()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "StopProcessEvents()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRunAsync(global::Windows.UI.Core.CoreDispatcherPriority priority, global::Windows.UI.Core.DispatchedHandler agileCallback)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "IAsyncOperation<bool> CoreDispatcher.TryRunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "TryRunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRunIdleAsync(global::Windows.UI.Core.IdleDispatchedHandler agileCallback)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "IAsyncOperation<bool> CoreDispatcher.TryRunIdleAsync(IdleDispatchedHandler agileCallback)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "TryRunIdleAsync(IdleDispatchedHandler agileCallback)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.get
@@ -66,12 +66,12 @@ namespace Windows.UI.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "event TypedEventHandler<CoreDispatcher, AcceleratorKeyEventArgs> CoreDispatcher.AcceleratorKeyActivated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "event AcceleratorKeyActivated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "event TypedEventHandler<CoreDispatcher, AcceleratorKeyEventArgs> CoreDispatcher.AcceleratorKeyActivated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "event AcceleratorKeyActivated");
 			}
 		}
 #endif

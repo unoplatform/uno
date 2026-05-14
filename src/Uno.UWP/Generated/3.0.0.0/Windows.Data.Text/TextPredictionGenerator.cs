@@ -14,11 +14,11 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "CoreTextInputScope TextPredictionGenerator.InputScope");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "InputScope");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "CoreTextInputScope TextPredictionGenerator.InputScope");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "InputScope");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "bool TextPredictionGenerator.LanguageAvailableButNotInstalled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "LanguageAvailableButNotInstalled");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "string TextPredictionGenerator.ResolvedLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "ResolvedLanguage");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.Data.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TextPredictionGenerator(string languageTag)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "TextPredictionGenerator.TextPredictionGenerator(string languageTag)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "TextPredictionGenerator(string languageTag)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.TextPredictionGenerator(string)
@@ -54,28 +54,28 @@ namespace Windows.Data.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync(string input)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "IAsyncOperation<IReadOnlyList<string>> TextPredictionGenerator.GetCandidatesAsync(string input)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "GetCandidatesAsync(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync(string input, uint maxCandidates)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "IAsyncOperation<IReadOnlyList<string>> TextPredictionGenerator.GetCandidatesAsync(string input, uint maxCandidates)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "GetCandidatesAsync(string input, uint maxCandidates)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync(string input, uint maxCandidates, global::Windows.Data.Text.TextPredictionOptions predictionOptions, global::System.Collections.Generic.IEnumerable<string> previousStrings)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "IAsyncOperation<IReadOnlyList<string>> TextPredictionGenerator.GetCandidatesAsync(string input, uint maxCandidates, TextPredictionOptions predictionOptions, IEnumerable<string> previousStrings)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "GetCandidatesAsync(string input, uint maxCandidates, TextPredictionOptions predictionOptions, IEnumerable<string> previousStrings)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetNextWordCandidatesAsync(uint maxCandidates, global::System.Collections.Generic.IEnumerable<string> previousStrings)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "IAsyncOperation<IReadOnlyList<string>> TextPredictionGenerator.GetNextWordCandidatesAsync(uint maxCandidates, IEnumerable<string> previousStrings)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPredictionGenerator", "GetNextWordCandidatesAsync(uint maxCandidates, IEnumerable<string> previousStrings)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.InputScope.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.PinChangedEventArgs", "SerialPinChange PinChangedEventArgs.PinChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.PinChangedEventArgs", "PinChange");
 			}
 		}
 #endif

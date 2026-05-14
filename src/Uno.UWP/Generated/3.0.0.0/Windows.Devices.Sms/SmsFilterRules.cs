@@ -14,7 +14,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRules", "SmsFilterActionType SmsFilterRules.ActionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRules", "ActionType");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRules", "IList<SmsFilterRule> SmsFilterRules.Rules");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRules", "Rules");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmsFilterRules(global::Windows.Devices.Sms.SmsFilterActionType actionType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRules", "SmsFilterRules.SmsFilterRules(SmsFilterActionType actionType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRules", "SmsFilterRules(SmsFilterActionType actionType)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRules.SmsFilterRules(Windows.Devices.Sms.SmsFilterActionType)

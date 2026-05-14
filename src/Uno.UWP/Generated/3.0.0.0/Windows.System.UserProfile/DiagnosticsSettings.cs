@@ -19,7 +19,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.DiagnosticsSettings", "bool DiagnosticsSettings.CanUseDiagnosticsToTailorExperiences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.DiagnosticsSettings", "CanUseDiagnosticsToTailorExperiences");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.DiagnosticsSettings", "User DiagnosticsSettings.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.DiagnosticsSettings", "User");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserProfile.DiagnosticsSettings GetDefault()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.DiagnosticsSettings", "DiagnosticsSettings DiagnosticsSettings.GetDefault()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.DiagnosticsSettings", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserProfile.DiagnosticsSettings GetForUser(global::Windows.System.User user)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.DiagnosticsSettings", "DiagnosticsSettings DiagnosticsSettings.GetForUser(User user)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.DiagnosticsSettings", "GetForUser(User user)");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.DiagnosticsSettings.CanUseDiagnosticsToTailorExperiences.get

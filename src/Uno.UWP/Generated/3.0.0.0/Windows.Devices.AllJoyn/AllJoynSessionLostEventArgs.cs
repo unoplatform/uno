@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs", "AllJoynSessionLostReason AllJoynSessionLostEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs", "Reason");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AllJoynSessionLostEventArgs(global::Windows.Devices.AllJoyn.AllJoynSessionLostReason reason)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs", "AllJoynSessionLostEventArgs.AllJoynSessionLostEventArgs(AllJoynSessionLostReason reason)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs", "AllJoynSessionLostEventArgs(AllJoynSessionLostReason reason)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.AllJoynSessionLostEventArgs(Windows.Devices.AllJoyn.AllJoynSessionLostReason)

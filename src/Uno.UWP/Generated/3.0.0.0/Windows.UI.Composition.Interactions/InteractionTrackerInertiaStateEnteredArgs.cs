@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "bool InteractionTrackerInertiaStateEnteredArgs.IsFromBinding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "IsFromBinding");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "bool InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "IsInertiaFromImpulse");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "Vector3? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "ModifiedRestingPosition");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "float? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "ModifiedRestingScale");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "Vector3 InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "NaturalRestingPosition");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "float InteractionTrackerInertiaStateEnteredArgs.NaturalRestingScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "NaturalRestingScale");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "Vector3 InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "PositionVelocityInPixelsPerSecond");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "int InteractionTrackerInertiaStateEnteredArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "RequestId");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "float InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "ScaleVelocityInPercentPerSecond");
 			}
 		}
 #endif

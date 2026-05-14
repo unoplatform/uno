@@ -12,42 +12,42 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectionProfiles()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IReadOnlyList<ConnectionProfile> NetworkInformation.GetConnectionProfiles()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "GetConnectionProfiles()");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::Windows.Networking.Connectivity.ConnectionProfile GetInternetConnectionProfile()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "ConnectionProfile NetworkInformation.GetInternetConnectionProfile()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "GetInternetConnectionProfile()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.LanIdentifier> GetLanIdentifiers()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IReadOnlyList<LanIdentifier> NetworkInformation.GetLanIdentifiers()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "GetLanIdentifiers()");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.HostName> GetHostNames()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IReadOnlyList<HostName> NetworkInformation.GetHostNames()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "GetHostNames()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ProxyConfiguration> GetProxyConfigurationAsync(global::System.Uri uri)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IAsyncOperation<ProxyConfiguration> NetworkInformation.GetProxyConfigurationAsync(Uri uri)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "GetProxyConfigurationAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetSortedEndpointPairs(global::System.Collections.Generic.IEnumerable<global::Windows.Networking.EndpointPair> destinationList, global::Windows.Networking.HostNameSortOptions sortOptions)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IReadOnlyList<EndpointPair> NetworkInformation.GetSortedEndpointPairs(IEnumerable<EndpointPair> destinationList, HostNameSortOptions sortOptions)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "GetSortedEndpointPairs(IEnumerable<EndpointPair> destinationList, HostNameSortOptions sortOptions)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkInformation.NetworkStatusChanged.add
@@ -56,7 +56,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile>> FindConnectionProfilesAsync(global::Windows.Networking.Connectivity.ConnectionProfileFilter pProfileFilter)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IAsyncOperation<IReadOnlyList<ConnectionProfile>> NetworkInformation.FindConnectionProfilesAsync(ConnectionProfileFilter pProfileFilter)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "FindConnectionProfilesAsync(ConnectionProfileFilter pProfileFilter)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || false || false
@@ -66,12 +66,12 @@ namespace Windows.Networking.Connectivity
 			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.NetworkInformation", "event NetworkStatusChangedEventHandler NetworkInformation.NetworkStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.NetworkInformation", "event NetworkStatusChanged");
 			}
 			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.NetworkInformation", "event NetworkStatusChangedEventHandler NetworkInformation.NetworkStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.NetworkInformation", "event NetworkStatusChanged");
 			}
 		}
 #endif

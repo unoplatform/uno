@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.UnconstrainedTransferRequestResult", "bool UnconstrainedTransferRequestResult.IsUnconstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.UnconstrainedTransferRequestResult", "IsUnconstrained");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentSettingChangedEventArgs", "string ContentEnvironmentSettingChangedEventArgs.SettingName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentSettingChangedEventArgs", "SettingName");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionInfo", "bool RemoteSystemConnectionInfo.IsProximal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionInfo", "IsProximal");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionInfo TryCreateFromAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection connection)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionInfo", "RemoteSystemConnectionInfo RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection(AppServiceConnection connection)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionInfo", "TryCreateFromAppServiceConnection(AppServiceConnection connection)");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.IsProximal.get

@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "ExpressionAnimation InteractionTrackerInertiaNaturalMotion.Condition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "Condition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "ExpressionAnimation InteractionTrackerInertiaNaturalMotion.Condition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "Condition");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "ScalarNaturalMotionAnimation InteractionTrackerInertiaNaturalMotion.NaturalMotion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "NaturalMotion");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "ScalarNaturalMotionAnimation InteractionTrackerInertiaNaturalMotion.NaturalMotion");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "NaturalMotion");
 			}
 		}
 #endif
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "InteractionTrackerInertiaNaturalMotion InteractionTrackerInertiaNaturalMotion.Create(Compositor compositor)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion", "Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion.Condition.get

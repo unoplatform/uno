@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Payments.Provider
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentAppManager", "PaymentAppManager PaymentAppManager.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentAppManager", "Current");
 			}
 		}
 #endif
@@ -28,14 +28,14 @@ namespace Windows.ApplicationModel.Payments.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RegisterAsync(global::System.Collections.Generic.IEnumerable<string> supportedPaymentMethodIds)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentAppManager", "IAsyncAction PaymentAppManager.RegisterAsync(IEnumerable<string> supportedPaymentMethodIds)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentAppManager", "RegisterAsync(IEnumerable<string> supportedPaymentMethodIds)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction UnregisterAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentAppManager", "IAsyncAction PaymentAppManager.UnregisterAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.Provider.PaymentAppManager", "UnregisterAsync()");
 		}
 #endif
 	}

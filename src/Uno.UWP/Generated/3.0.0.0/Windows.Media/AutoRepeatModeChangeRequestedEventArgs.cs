@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AutoRepeatModeChangeRequestedEventArgs", "MediaPlaybackAutoRepeatMode AutoRepeatModeChangeRequestedEventArgs.RequestedAutoRepeatMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AutoRepeatModeChangeRequestedEventArgs", "RequestedAutoRepeatMode");
 			}
 		}
 #endif

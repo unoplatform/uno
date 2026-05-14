@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "string CommandLineActivationOperation.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "Arguments");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "string CommandLineActivationOperation.CurrentDirectoryPath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "CurrentDirectoryPath");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "int CommandLineActivationOperation.ExitCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "ExitCode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "int CommandLineActivationOperation.ExitCode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "ExitCode");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.Activation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "Deferral CommandLineActivationOperation.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Arguments.get

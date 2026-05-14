@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Core.CompositorController", "Compositor CompositorController.Compositor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Core.CompositorController", "Compositor");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Composition.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CompositorController()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "CompositorController.CompositorController()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "CompositorController()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CompositorController()
@@ -30,14 +30,14 @@ namespace Microsoft.UI.Composition.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Commit()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "void CompositorController.Commit()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "Commit()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction EnsurePreviousCommitCompletedAsync()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Core.CompositorController", "IAsyncAction CompositorController.EnsurePreviousCommitCompletedAsync()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Core.CompositorController", "EnsurePreviousCommitCompletedAsync()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CommitNeeded.add
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Composition.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "void CompositorController.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.Compositor.get
@@ -57,12 +57,12 @@ namespace Microsoft.UI.Composition.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "event TypedEventHandler<CompositorController, object> CompositorController.CommitNeeded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "event CommitNeeded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "event TypedEventHandler<CompositorController, object> CompositorController.CommitNeeded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "event CommitNeeded");
 			}
 		}
 #endif

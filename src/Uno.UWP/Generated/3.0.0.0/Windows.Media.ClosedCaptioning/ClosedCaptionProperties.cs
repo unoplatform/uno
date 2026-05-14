@@ -14,7 +14,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionColor ClosedCaptionProperties.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "BackgroundColor");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionOpacity ClosedCaptionProperties.BackgroundOpacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "BackgroundOpacity");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "Color ClosedCaptionProperties.ComputedBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ComputedBackgroundColor");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "Color ClosedCaptionProperties.ComputedFontColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ComputedFontColor");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "Color ClosedCaptionProperties.ComputedRegionColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ComputedRegionColor");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionColor ClosedCaptionProperties.FontColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "FontColor");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionEdgeEffect ClosedCaptionProperties.FontEffect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "FontEffect");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionOpacity ClosedCaptionProperties.FontOpacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "FontOpacity");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionSize ClosedCaptionProperties.FontSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "FontSize");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionStyle ClosedCaptionProperties.FontStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "FontStyle");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionColor ClosedCaptionProperties.RegionColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "RegionColor");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Media.ClosedCaptioning
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "ClosedCaptionOpacity ClosedCaptionProperties.RegionOpacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "RegionOpacity");
 			}
 		}
 #endif

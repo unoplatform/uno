@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties", "string KnownPerceptionColorFrameSourceProperties.AutoExposureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties", "AutoExposureEnabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties", "string KnownPerceptionColorFrameSourceProperties.Exposure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties", "Exposure");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties", "string KnownPerceptionColorFrameSourceProperties.ExposureCompensation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties", "ExposureCompensation");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SetDefaultSpatialAudioFormatResult", "SetDefaultSpatialAudioFormatStatus SetDefaultSpatialAudioFormatResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SetDefaultSpatialAudioFormatResult", "Status");
 			}
 		}
 #endif

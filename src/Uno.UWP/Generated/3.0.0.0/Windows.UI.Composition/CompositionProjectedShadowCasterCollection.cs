@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "int CompositionProjectedShadowCasterCollection.MaxRespectedCasters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "MaxRespectedCasters");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "int CompositionProjectedShadowCasterCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "Count");
 			}
 		}
 #endif
@@ -38,49 +38,49 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertAbove(global::Windows.UI.Composition.CompositionProjectedShadowCaster newCaster, global::Windows.UI.Composition.CompositionProjectedShadowCaster reference)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "void CompositionProjectedShadowCasterCollection.InsertAbove(CompositionProjectedShadowCaster newCaster, CompositionProjectedShadowCaster reference)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "InsertAbove(CompositionProjectedShadowCaster newCaster, CompositionProjectedShadowCaster reference)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertAtBottom(global::Windows.UI.Composition.CompositionProjectedShadowCaster newCaster)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "void CompositionProjectedShadowCasterCollection.InsertAtBottom(CompositionProjectedShadowCaster newCaster)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "InsertAtBottom(CompositionProjectedShadowCaster newCaster)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertAtTop(global::Windows.UI.Composition.CompositionProjectedShadowCaster newCaster)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "void CompositionProjectedShadowCasterCollection.InsertAtTop(CompositionProjectedShadowCaster newCaster)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "InsertAtTop(CompositionProjectedShadowCaster newCaster)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertBelow(global::Windows.UI.Composition.CompositionProjectedShadowCaster newCaster, global::Windows.UI.Composition.CompositionProjectedShadowCaster reference)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "void CompositionProjectedShadowCasterCollection.InsertBelow(CompositionProjectedShadowCaster newCaster, CompositionProjectedShadowCaster reference)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "InsertBelow(CompositionProjectedShadowCaster newCaster, CompositionProjectedShadowCaster reference)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Remove(global::Windows.UI.Composition.CompositionProjectedShadowCaster caster)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "void CompositionProjectedShadowCasterCollection.Remove(CompositionProjectedShadowCaster caster)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "Remove(CompositionProjectedShadowCaster caster)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveAll()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "void CompositionProjectedShadowCasterCollection.RemoveAll()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "RemoveAll()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.CompositionProjectedShadowCaster> GetEnumerator()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "IEnumerator<CompositionProjectedShadowCaster> CompositionProjectedShadowCasterCollection.GetEnumerator()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCasterCollection.System.Collections.IEnumerable.GetEnumerator()

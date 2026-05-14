@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "bool CoreTextSelectionUpdatingEventArgs.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "IsCanceled");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "CoreTextSelectionUpdatingResult CoreTextSelectionUpdatingEventArgs.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "Result");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "CoreTextSelectionUpdatingResult CoreTextSelectionUpdatingEventArgs.Result");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "Result");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "CoreTextRange CoreTextSelectionUpdatingEventArgs.Selection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "Selection");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "Deferral CoreTextSelectionUpdatingEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs.IsCanceled.get

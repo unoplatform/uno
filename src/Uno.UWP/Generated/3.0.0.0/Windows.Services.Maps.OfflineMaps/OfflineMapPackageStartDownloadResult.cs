@@ -19,7 +19,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackageStartDownloadResult", "OfflineMapPackageStartDownloadStatus OfflineMapPackageStartDownloadResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackageStartDownloadResult", "Status");
 			}
 		}
 #endif

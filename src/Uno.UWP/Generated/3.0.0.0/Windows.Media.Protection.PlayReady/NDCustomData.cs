@@ -14,7 +14,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDCustomData", "byte[] NDCustomData.CustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDCustomData", "CustomData");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDCustomData", "byte[] NDCustomData.CustomDataTypeID");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDCustomData", "CustomDataTypeID");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public NDCustomData(byte[] customDataTypeIDBytes, byte[] customDataBytes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDCustomData", "NDCustomData.NDCustomData(byte[] customDataTypeIDBytes, byte[] customDataBytes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDCustomData", "NDCustomData(byte[] customDataTypeIDBytes, byte[] customDataBytes)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.NDCustomData(byte[], byte[])

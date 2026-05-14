@@ -14,7 +14,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "SettingsCommand SettingsCommand.AccountsCommand");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "AccountsCommand");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "object SettingsCommand.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "object SettingsCommand.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "Id");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "UICommandInvokedHandler SettingsCommand.Invoked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "Invoked");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "UICommandInvokedHandler SettingsCommand.Invoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "Invoked");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "string SettingsCommand.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "string SettingsCommand.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "Label");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.UI.ApplicationSettings
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SettingsCommand(object settingsCommandId, string label, global::Windows.UI.Popups.UICommandInvokedHandler handler)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "SettingsCommand.SettingsCommand(object settingsCommandId, string label, UICommandInvokedHandler handler)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "SettingsCommand(object settingsCommandId, string label, UICommandInvokedHandler handler)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.SettingsCommand(object, string, Windows.UI.Popups.UICommandInvokedHandler)

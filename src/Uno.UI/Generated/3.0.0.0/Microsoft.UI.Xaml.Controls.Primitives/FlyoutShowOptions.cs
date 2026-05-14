@@ -14,11 +14,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "Rect? FlyoutShowOptions.ExclusionRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "ExclusionRect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "Rect? FlyoutShowOptions.ExclusionRect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "ExclusionRect");
 			}
 		}
 #endif

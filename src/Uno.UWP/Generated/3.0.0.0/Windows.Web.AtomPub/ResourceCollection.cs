@@ -19,7 +19,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "IReadOnlyList<string> ResourceCollection.Accepts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "Accepts");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "IList<SyndicationAttribute> ResourceCollection.AttributeExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "AttributeExtensions");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "Uri ResourceCollection.BaseUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "BaseUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "Uri ResourceCollection.BaseUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "BaseUri");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "IReadOnlyList<SyndicationCategory> ResourceCollection.Categories");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "Categories");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "IList<ISyndicationNode> ResourceCollection.ElementExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "ElementExtensions");
 			}
 		}
 #endif
@@ -73,11 +73,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "string ResourceCollection.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "string ResourceCollection.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "Language");
 			}
 		}
 #endif
@@ -87,11 +87,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "string ResourceCollection.NodeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "NodeName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "string ResourceCollection.NodeName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "NodeName");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "string ResourceCollection.NodeNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "NodeNamespace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "string ResourceCollection.NodeNamespace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "NodeNamespace");
 			}
 		}
 #endif
@@ -115,11 +115,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "string ResourceCollection.NodeValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "NodeValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "string ResourceCollection.NodeValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ResourceCollection", "NodeValue");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "ISyndicationText ResourceCollection.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "Title");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "Uri ResourceCollection.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "Uri");
 			}
 		}
 #endif
@@ -147,7 +147,7 @@ namespace Windows.Web.AtomPub
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "XmlDocument ResourceCollection.GetXmlDocument(SyndicationFormat format)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ResourceCollection", "GetXmlDocument(SyndicationFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.Accepts.get

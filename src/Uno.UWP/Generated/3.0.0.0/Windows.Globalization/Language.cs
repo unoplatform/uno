@@ -14,7 +14,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "string Language.CurrentInputMethodLanguageTag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "CurrentInputMethodLanguageTag");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "string Language.AbbreviatedName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "AbbreviatedName");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "LanguageLayoutDirection Language.LayoutDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "LayoutDirection");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "string Language.Script");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "Script");
 			}
 		}
 #endif
@@ -57,21 +57,21 @@ namespace Windows.Globalization
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsWellFormed(string languageTag)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "bool Language.IsWellFormed(string languageTag)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "IsWellFormed(string languageTag)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetInputMethodLanguageTag(string languageTag)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "bool Language.TrySetInputMethodLanguageTag(string languageTag)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "TrySetInputMethodLanguageTag(string languageTag)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IList<string> GetMuiCompatibleLanguageListFromLanguageTags(global::System.Collections.Generic.IEnumerable<string> languageTags)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "IList<string> Language.GetMuiCompatibleLanguageListFromLanguageTags(IEnumerable<string> languageTags)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "GetMuiCompatibleLanguageListFromLanguageTags(IEnumerable<string> languageTags)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Language.CurrentInputMethodLanguageTag.get
@@ -79,7 +79,7 @@ namespace Windows.Globalization
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> GetExtensionSubtags(string singleton)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "IReadOnlyList<string> Language.GetExtensionSubtags(string singleton)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "GetExtensionSubtags(string singleton)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Language.AbbreviatedName.get

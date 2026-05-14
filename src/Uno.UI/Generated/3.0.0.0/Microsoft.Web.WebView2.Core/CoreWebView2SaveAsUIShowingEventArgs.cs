@@ -19,11 +19,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.AllowReplace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "AllowReplace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.AllowReplace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "AllowReplace");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "string CoreWebView2SaveAsUIShowingEventArgs.ContentMimeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "ContentMimeType");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "CoreWebView2SaveAsKind CoreWebView2SaveAsUIShowingEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "Kind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "CoreWebView2SaveAsKind CoreWebView2SaveAsUIShowingEventArgs.Kind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "Kind");
 			}
 		}
 #endif
@@ -71,11 +71,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "string CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "SaveAsFilePath");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "string CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "SaveAsFilePath");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "SuppressDefaultDialog");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "SuppressDefaultDialog");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "Deferral CoreWebView2SaveAsUIShowingEventArgs.GetDeferral()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.AllowReplace.get

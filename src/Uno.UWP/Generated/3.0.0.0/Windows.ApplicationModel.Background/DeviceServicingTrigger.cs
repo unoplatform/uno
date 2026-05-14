@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DeviceServicingTrigger()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.DeviceServicingTrigger", "DeviceServicingTrigger.DeviceServicingTrigger()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.DeviceServicingTrigger", "DeviceServicingTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.DeviceServicingTrigger()
@@ -20,14 +20,14 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceTriggerResult> RequestAsync(string deviceId, global::System.TimeSpan expectedDuration)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.DeviceServicingTrigger", "IAsyncOperation<DeviceTriggerResult> DeviceServicingTrigger.RequestAsync(string deviceId, TimeSpan expectedDuration)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.DeviceServicingTrigger", "RequestAsync(string deviceId, TimeSpan expectedDuration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceTriggerResult> RequestAsync(string deviceId, global::System.TimeSpan expectedDuration, string arguments)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.DeviceServicingTrigger", "IAsyncOperation<DeviceTriggerResult> DeviceServicingTrigger.RequestAsync(string deviceId, TimeSpan expectedDuration, string arguments)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.DeviceServicingTrigger", "RequestAsync(string deviceId, TimeSpan expectedDuration, string arguments)");
 		}
 #endif
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger

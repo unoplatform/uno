@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionApiInformation", "ulong CompositionApiInformation.ApiVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionApiInformation", "ApiVersion");
 			}
 		}
 #endif

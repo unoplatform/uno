@@ -19,7 +19,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "AlbumArtist");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "AlbumTitle");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "int GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "AlbumTrackCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.Artist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "Artist");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "IReadOnlyList<string> GlobalSystemMediaTransportControlsSessionMediaProperties.Genres");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "Genres");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "MediaPlaybackType? GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "PlaybackType");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "Subtitle");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "IRandomAccessStreamReference GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "Thumbnail");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "Title");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "int GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "TrackNumber");
 			}
 		}
 #endif

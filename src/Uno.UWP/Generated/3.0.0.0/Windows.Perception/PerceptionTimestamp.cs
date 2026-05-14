@@ -19,7 +19,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "TimeSpan PerceptionTimestamp.PredictionAmount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "PredictionAmount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "TimeSpan PerceptionTimestamp.SystemRelativeTargetTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "SystemRelativeTargetTime");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "DateTimeOffset PerceptionTimestamp.TargetTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "TargetTime");
 			}
 		}
 #endif

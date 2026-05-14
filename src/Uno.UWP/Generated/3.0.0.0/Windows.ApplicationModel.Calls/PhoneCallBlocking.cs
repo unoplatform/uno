@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallBlocking", "bool PhoneCallBlocking.BlockPrivateNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallBlocking", "BlockPrivateNumbers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallBlocking", "bool PhoneCallBlocking.BlockPrivateNumbers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallBlocking", "BlockPrivateNumbers");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallBlocking", "bool PhoneCallBlocking.BlockUnknownNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallBlocking", "BlockUnknownNumbers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallBlocking", "bool PhoneCallBlocking.BlockUnknownNumbers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallBlocking", "BlockUnknownNumbers");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> SetCallBlockingListAsync(global::System.Collections.Generic.IEnumerable<string> phoneNumberList)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallBlocking", "IAsyncOperation<bool> PhoneCallBlocking.SetCallBlockingListAsync(IEnumerable<string> phoneNumberList)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallBlocking", "SetCallBlockingListAsync(IEnumerable<string> phoneNumberList)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallBlocking.BlockPrivateNumbers.get

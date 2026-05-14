@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs", "bool HasValidationErrorsChangedEventArgs.NewValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs", "NewValue");
 			}
 		}
 #endif

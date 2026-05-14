@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs", "PerceptionColorFrameSource PerceptionColorFrameSourceRemovedEventArgs.FrameSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs", "FrameSource");
 			}
 		}
 #endif

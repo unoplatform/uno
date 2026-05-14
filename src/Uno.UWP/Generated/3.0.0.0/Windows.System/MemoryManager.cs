@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ulong MemoryManager.AppMemoryUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "AppMemoryUsage");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ulong MemoryManager.AppMemoryUsageLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "AppMemoryUsageLimit");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ulong MemoryManager.ExpectedAppMemoryUsageLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ExpectedAppMemoryUsageLimit");
 			}
 		}
 #endif
@@ -49,21 +49,21 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.AppMemoryReport GetAppMemoryReport()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "AppMemoryReport MemoryManager.GetAppMemoryReport()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "GetAppMemoryReport()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.ProcessMemoryReport GetProcessMemoryReport()
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ProcessMemoryReport MemoryManager.GetProcessMemoryReport()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "GetProcessMemoryReport()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetAppMemoryUsageLimit(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "bool MemoryManager.TrySetAppMemoryUsageLimit(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "TrySetAppMemoryUsageLimit(ulong value)");
 		}
 #endif
 		// Forced skipping of method Windows.System.MemoryManager.AppMemoryUsage.get
@@ -77,12 +77,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event EventHandler<object> MemoryManager.AppMemoryUsageDecreased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event AppMemoryUsageDecreased");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event EventHandler<object> MemoryManager.AppMemoryUsageDecreased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event AppMemoryUsageDecreased");
 			}
 		}
 #endif
@@ -93,12 +93,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event EventHandler<object> MemoryManager.AppMemoryUsageIncreased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event AppMemoryUsageIncreased");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event EventHandler<object> MemoryManager.AppMemoryUsageIncreased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event AppMemoryUsageIncreased");
 			}
 		}
 #endif
@@ -109,12 +109,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event EventHandler<AppMemoryUsageLimitChangingEventArgs> MemoryManager.AppMemoryUsageLimitChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event AppMemoryUsageLimitChanging");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event EventHandler<AppMemoryUsageLimitChangingEventArgs> MemoryManager.AppMemoryUsageLimitChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.MemoryManager", "event AppMemoryUsageLimitChanging");
 			}
 		}
 #endif

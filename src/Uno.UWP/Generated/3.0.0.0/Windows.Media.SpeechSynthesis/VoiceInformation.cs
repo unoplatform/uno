@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "string VoiceInformation.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "Description");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "string VoiceInformation.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "VoiceGender VoiceInformation.Gender");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "Gender");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "string VoiceInformation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "Id");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "string VoiceInformation.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "Language");
 			}
 		}
 #endif

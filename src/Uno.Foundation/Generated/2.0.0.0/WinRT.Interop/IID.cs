@@ -14,7 +14,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IUnknown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IUnknown");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IInspectable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IInspectable");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IActivationFactory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IActivationFactory");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IAgileObject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IAgileObject");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IMarshal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IMarshal");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IBuffer");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IBufferByteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IBufferByteAccess");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IMemoryBufferByteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IMemoryBufferByteAccess");
 			}
 		}
 #endif

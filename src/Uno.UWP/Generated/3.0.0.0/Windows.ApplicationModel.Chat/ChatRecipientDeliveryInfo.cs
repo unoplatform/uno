@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DateTimeOffset? ChatRecipientDeliveryInfo.DeliveryTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DeliveryTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DateTimeOffset? ChatRecipientDeliveryInfo.DeliveryTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DeliveryTime");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "bool ChatRecipientDeliveryInfo.IsErrorPermanent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "IsErrorPermanent");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DateTimeOffset? ChatRecipientDeliveryInfo.ReadTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ReadTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DateTimeOffset? ChatRecipientDeliveryInfo.ReadTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ReadTime");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ChatMessageStatus ChatRecipientDeliveryInfo.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "Status");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "string ChatRecipientDeliveryInfo.TransportAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "string ChatRecipientDeliveryInfo.TransportAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportAddress");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "int ChatRecipientDeliveryInfo.TransportErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportErrorCode");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ChatTransportErrorCodeCategory ChatRecipientDeliveryInfo.TransportErrorCodeCategory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportErrorCodeCategory");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ChatTransportInterpretedErrorCode ChatRecipientDeliveryInfo.TransportInterpretedErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportInterpretedErrorCode");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChatRecipientDeliveryInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ChatRecipientDeliveryInfo.ChatRecipientDeliveryInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ChatRecipientDeliveryInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.ChatRecipientDeliveryInfo()

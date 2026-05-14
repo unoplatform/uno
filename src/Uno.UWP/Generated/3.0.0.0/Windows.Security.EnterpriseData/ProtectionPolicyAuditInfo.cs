@@ -14,11 +14,11 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditAction ProtectionPolicyAuditInfo.Action");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "Action");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditAction ProtectionPolicyAuditInfo.Action");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "Action");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.DataDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "DataDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.DataDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "DataDescription");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.SourceDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "SourceDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.SourceDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "SourceDescription");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.TargetDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "TargetDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.TargetDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "TargetDescription");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.Security.EnterpriseData
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProtectionPolicyAuditInfo(global::Windows.Security.EnterpriseData.ProtectionPolicyAuditAction action, string dataDescription, string sourceDescription, string targetDescription)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(ProtectionPolicyAuditAction action, string dataDescription, string sourceDescription, string targetDescription)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditInfo(ProtectionPolicyAuditAction action, string dataDescription, string sourceDescription, string targetDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(Windows.Security.EnterpriseData.ProtectionPolicyAuditAction, string, string, string)
@@ -76,7 +76,7 @@ namespace Windows.Security.EnterpriseData
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProtectionPolicyAuditInfo(global::Windows.Security.EnterpriseData.ProtectionPolicyAuditAction action, string dataDescription)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(ProtectionPolicyAuditAction action, string dataDescription)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditInfo(ProtectionPolicyAuditAction action, string dataDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(Windows.Security.EnterpriseData.ProtectionPolicyAuditAction, string)

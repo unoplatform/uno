@@ -15,7 +15,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "string PercentFormatter.GeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "GeographicRegion");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "string PercentFormatter.ResolvedGeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "ResolvedGeographicRegion");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PercentFormatter(global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.PercentFormatter", "PercentFormatter.PercentFormatter(IEnumerable<string> languages, string geographicRegion)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.PercentFormatter", "PercentFormatter(IEnumerable<string> languages, string geographicRegion)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.PercentFormatter(System.Collections.Generic.IEnumerable<string>, string)
@@ -52,14 +52,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "string PercentFormatter.Format(long value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "Format(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "string PercentFormatter.Format(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "Format(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.Format(double)
@@ -67,14 +67,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatInt(long value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "string PercentFormatter.FormatInt(long value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "FormatInt(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatUInt(ulong value)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "string PercentFormatter.FormatUInt(ulong value)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "FormatUInt(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.FormatDouble(double)
@@ -82,14 +82,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public long? ParseInt(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "long? PercentFormatter.ParseInt(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "ParseInt(string text)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong? ParseUInt(string text)
 		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "ulong? PercentFormatter.ParseUInt(string text)");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PercentFormatter", "ParseUInt(string text)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PercentFormatter.ParseDouble(string)
