@@ -206,7 +206,10 @@
 					ev.preventDefault();
 					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
 				}
-				BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown = false;
+
+				if (ev.key === "Enter" || ev.keyCode === 13) {
+					BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown = false;
+				}
 
 				if (BrowserInvisibleTextBoxViewExtension.isComposing || ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
 					ev.stopPropagation();
