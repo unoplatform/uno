@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum ApplicationDataLocality
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Local = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Roaming = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Temporary = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		LocalCache = 3,
-#endif
+		// Skipping already declared field Windows.Storage.ApplicationDataLocality.Local
+		// Skipping already declared field Windows.Storage.ApplicationDataLocality.Roaming
+		// Skipping already declared field Windows.Storage.ApplicationDataLocality.Temporary
+		// Skipping already declared field Windows.Storage.ApplicationDataLocality.LocalCache
 	}
 #endif
 }
