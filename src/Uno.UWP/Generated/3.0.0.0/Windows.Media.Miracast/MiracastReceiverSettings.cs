@@ -19,11 +19,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverAuthorizationMethod MiracastReceiverSettings.AuthorizationMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverAuthorizationMethod%20MiracastReceiverSettings.AuthorizationMethod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverSettings", "AuthorizationMethod");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "MiracastReceiverAuthorizationMethod MiracastReceiverSettings.AuthorizationMethod");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "AuthorizationMethod");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MiracastReceiverSettings.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverSettings", "FriendlyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "string MiracastReceiverSettings.FriendlyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "FriendlyName");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.ModelName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MiracastReceiverSettings.ModelName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverSettings", "ModelName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "string MiracastReceiverSettings.ModelName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "ModelName");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.ModelNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MiracastReceiverSettings.ModelNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverSettings", "ModelNumber");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "string MiracastReceiverSettings.ModelNumber");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "ModelNumber");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverSettings.RequireAuthorizationFromKnownTransmitters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverSettings.RequireAuthorizationFromKnownTransmitters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverSettings", "RequireAuthorizationFromKnownTransmitters");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "bool MiracastReceiverSettings.RequireAuthorizationFromKnownTransmitters");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverSettings", "RequireAuthorizationFromKnownTransmitters");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemWatcherError RemoteSystemWatcherErrorOccurredEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemWatcherError%20RemoteSystemWatcherErrorOccurredEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs", "Error");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitter.DecayModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterDecayModel%20AudioNodeEmitter.DecayModel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "DecayModel");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeEmitter.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "Direction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Vector3 AudioNodeEmitter.Direction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Direction");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DistanceScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.DistanceScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "DistanceScale");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.DistanceScale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "DistanceScale");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.DopplerScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.DopplerScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "DopplerScale");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.DopplerScale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "DopplerScale");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.DopplerVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeEmitter.DopplerVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "DopplerVelocity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Vector3 AudioNodeEmitter.DopplerVelocity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "DopplerVelocity");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitter.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeEmitter.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "Gain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "double AudioNodeEmitter.Gain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Gain");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioNodeEmitter.IsDopplerDisabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioNodeEmitter.IsDopplerDisabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "IsDopplerDisabled");
 			}
 		}
 #endif
@@ -104,11 +104,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeEmitter.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeEmitter.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "Position");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Vector3 AudioNodeEmitter.Position");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "Position");
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitter.Shape is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterShape%20AudioNodeEmitter.Shape");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "Shape");
 			}
 		}
 #endif
@@ -128,11 +128,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialAudioModel AudioNodeEmitter.SpatialAudioModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialAudioModel%20AudioNodeEmitter.SpatialAudioModel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeEmitter", "SpatialAudioModel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "SpatialAudioModel AudioNodeEmitter.SpatialAudioModel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "SpatialAudioModel");
 			}
 		}
 #endif
@@ -140,7 +140,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioNodeEmitter()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter.AudioNodeEmitter()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.AudioNodeEmitter()
@@ -148,7 +148,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioNodeEmitter(global::Windows.Media.Audio.AudioNodeEmitterShape shape, global::Windows.Media.Audio.AudioNodeEmitterDecayModel decayModel, global::Windows.Media.Audio.AudioNodeEmitterSettings settings)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter.AudioNodeEmitter(AudioNodeEmitterShape shape, AudioNodeEmitterDecayModel decayModel, AudioNodeEmitterSettings settings)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter(AudioNodeEmitterShape shape, AudioNodeEmitterDecayModel decayModel, AudioNodeEmitterSettings settings)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.AudioNodeEmitter(Windows.Media.Audio.AudioNodeEmitterShape, Windows.Media.Audio.AudioNodeEmitterDecayModel, Windows.Media.Audio.AudioNodeEmitterSettings)

@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestMessage WebViewControlWebResourceRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpRequestMessage%20WebViewControlWebResourceRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlWebResourceRequestedEventArgs", "Request");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage WebViewControlWebResourceRequestedEventArgs.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpResponseMessage%20WebViewControlWebResourceRequestedEventArgs.Response");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlWebResourceRequestedEventArgs", "Response");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlWebResourceRequestedEventArgs", "HttpResponseMessage WebViewControlWebResourceRequestedEventArgs.Response");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlWebResourceRequestedEventArgs", "Response");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Web.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral WebViewControlWebResourceRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20WebViewControlWebResourceRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlWebResourceRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.UI.WebViewControlWebResourceRequestedEventArgs.Request.get

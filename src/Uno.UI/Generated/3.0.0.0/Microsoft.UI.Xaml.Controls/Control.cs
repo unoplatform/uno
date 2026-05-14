@@ -211,14 +211,14 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		protected virtual void OnPreviewKeyDown(global::Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "void Control.OnPreviewKeyDown(KeyRoutedEventArgs e)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "OnPreviewKeyDown(KeyRoutedEventArgs e)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		protected virtual void OnPreviewKeyUp(global::Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "void Control.OnPreviewKeyUp(KeyRoutedEventArgs e)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "OnPreviewKeyUp(KeyRoutedEventArgs e)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnGotFocus(Microsoft.UI.Xaml.RoutedEventArgs)
@@ -227,7 +227,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnCharacterReceived(global::Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs e)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "void Control.OnCharacterReceived(CharacterReceivedRoutedEventArgs e)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "OnCharacterReceived(CharacterReceivedRoutedEventArgs e)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragEnter(Microsoft.UI.Xaml.DragEventArgs)

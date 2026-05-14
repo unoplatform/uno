@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.AllowNewTimeProposal is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMeetingInfo.AllowNewTimeProposal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "AllowNewTimeProposal");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "bool EmailMeetingInfo.AllowNewTimeProposal");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "AllowNewTimeProposal");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.AppointmentOriginalStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20EmailMeetingInfo.AppointmentOriginalStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "AppointmentOriginalStartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "DateTimeOffset? EmailMeetingInfo.AppointmentOriginalStartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "AppointmentOriginalStartTime");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMeetingInfo.AppointmentRoamingId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMeetingInfo.AppointmentRoamingId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "AppointmentRoamingId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "string EmailMeetingInfo.AppointmentRoamingId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "AppointmentRoamingId");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan EmailMeetingInfo.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20EmailMeetingInfo.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "TimeSpan EmailMeetingInfo.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "Duration");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsAllDay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMeetingInfo.IsAllDay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "IsAllDay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "bool EmailMeetingInfo.IsAllDay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "IsAllDay");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsReportedOutOfDateByServer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMeetingInfo.IsReportedOutOfDateByServer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "IsReportedOutOfDateByServer");
 			}
 		}
 #endif
@@ -94,11 +94,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMeetingInfo.IsResponseRequested is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMeetingInfo.IsResponseRequested");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "IsResponseRequested");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "bool EmailMeetingInfo.IsResponseRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "IsResponseRequested");
 			}
 		}
 #endif
@@ -108,11 +108,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMeetingInfo.Location is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMeetingInfo.Location");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "Location");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "string EmailMeetingInfo.Location");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "Location");
 			}
 		}
 #endif
@@ -122,11 +122,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? EmailMeetingInfo.ProposedDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20EmailMeetingInfo.ProposedDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "ProposedDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "TimeSpan? EmailMeetingInfo.ProposedDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "ProposedDuration");
 			}
 		}
 #endif
@@ -136,11 +136,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.ProposedStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20EmailMeetingInfo.ProposedStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "ProposedStartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "DateTimeOffset? EmailMeetingInfo.ProposedStartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "ProposedStartTime");
 			}
 		}
 #endif
@@ -150,11 +150,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentRecurrence EmailMeetingInfo.Recurrence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentRecurrence%20EmailMeetingInfo.Recurrence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "Recurrence");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "AppointmentRecurrence EmailMeetingInfo.Recurrence");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "Recurrence");
 			}
 		}
 #endif
@@ -164,11 +164,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMeetingInfo.RecurrenceStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20EmailMeetingInfo.RecurrenceStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "RecurrenceStartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "DateTimeOffset? EmailMeetingInfo.RecurrenceStartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "RecurrenceStartTime");
 			}
 		}
 #endif
@@ -178,11 +178,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong EmailMeetingInfo.RemoteChangeNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20EmailMeetingInfo.RemoteChangeNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "RemoteChangeNumber");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "ulong EmailMeetingInfo.RemoteChangeNumber");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "RemoteChangeNumber");
 			}
 		}
 #endif
@@ -192,11 +192,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMeetingInfo.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20EmailMeetingInfo.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMeetingInfo", "StartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "DateTimeOffset EmailMeetingInfo.StartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "StartTime");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailMeetingInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "EmailMeetingInfo.EmailMeetingInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMeetingInfo", "EmailMeetingInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.EmailMeetingInfo()

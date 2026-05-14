@@ -12,14 +12,14 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.WebTokenRequestResult> RequestTokenForWindowAsync(nint appWindow, global::Windows.Security.Authentication.Web.Core.WebTokenRequest request)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebTokenRequestResult> WebAuthenticationCoreManagerInterop.RequestTokenForWindowAsync(nint appWindow, WebTokenRequest request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebTokenRequestResult%3E%20WebAuthenticationCoreManagerInterop.RequestTokenForWindowAsync%28nint%20appWindow%2C%20WebTokenRequest%20request%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManagerInterop", "RequestTokenForWindowAsync(nint appWindow, WebTokenRequest request)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.WebTokenRequestResult> RequestTokenWithWebAccountForWindowAsync(nint appWindow, global::Windows.Security.Authentication.Web.Core.WebTokenRequest request, global::Windows.Security.Credentials.WebAccount webAccount)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebTokenRequestResult> WebAuthenticationCoreManagerInterop.RequestTokenWithWebAccountForWindowAsync(nint appWindow, WebTokenRequest request, WebAccount webAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebTokenRequestResult%3E%20WebAuthenticationCoreManagerInterop.RequestTokenWithWebAccountForWindowAsync%28nint%20appWindow%2C%20WebTokenRequest%20request%2C%20WebAccount%20webAccount%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManagerInterop", "RequestTokenWithWebAccountForWindowAsync(nint appWindow, WebTokenRequest request, WebAccount webAccount)");
 		}
 #endif
 	}

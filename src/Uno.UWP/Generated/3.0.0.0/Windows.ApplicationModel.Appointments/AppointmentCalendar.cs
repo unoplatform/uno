@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanCancelMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanCancelMeetings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanCancelMeetings");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanCancelMeetings");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanCancelMeetings");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanCreateOrUpdateAppointments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanCreateOrUpdateAppointments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanCreateOrUpdateAppointments");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanCreateOrUpdateAppointments");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanCreateOrUpdateAppointments");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanForwardMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanForwardMeetings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanForwardMeetings");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanForwardMeetings");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanForwardMeetings");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanNotifyInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanNotifyInvitees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanNotifyInvitees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanNotifyInvitees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanNotifyInvitees");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanProposeNewTimeForMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanProposeNewTimeForMeetings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanProposeNewTimeForMeetings");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanProposeNewTimeForMeetings");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanProposeNewTimeForMeetings");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.CanUpdateMeetingResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.CanUpdateMeetingResponses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanUpdateMeetingResponses");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.CanUpdateMeetingResponses");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "CanUpdateMeetingResponses");
 			}
 		}
 #endif
@@ -103,11 +103,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color AppointmentCalendar.DisplayColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20AppointmentCalendar.DisplayColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DisplayColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "Color AppointmentCalendar.DisplayColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DisplayColor");
 			}
 		}
 #endif
@@ -117,11 +117,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DisplayName");
 			}
 		}
 #endif
@@ -131,11 +131,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.IsHidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.IsHidden");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IsHidden");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.IsHidden");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "IsHidden");
 			}
 		}
 #endif
@@ -145,7 +145,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.LocalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.LocalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "LocalId");
 			}
 		}
 #endif
@@ -155,11 +155,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentCalendar.MustNofityInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppointmentCalendar.MustNofityInvitees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "MustNofityInvitees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "bool AppointmentCalendar.MustNofityInvitees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "MustNofityInvitees");
 			}
 		}
 #endif
@@ -169,11 +169,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendarOtherAppReadAccess%20AppointmentCalendar.OtherAppReadAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "OtherAppReadAccess");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppReadAccess AppointmentCalendar.OtherAppReadAccess");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "OtherAppReadAccess");
 			}
 		}
 #endif
@@ -183,11 +183,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendarOtherAppWriteAccess%20AppointmentCalendar.OtherAppWriteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "OtherAppWriteAccess");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentCalendarOtherAppWriteAccess AppointmentCalendar.OtherAppWriteAccess");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "OtherAppWriteAccess");
 			}
 		}
 #endif
@@ -197,11 +197,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.RemoteId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "RemoteId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "string AppointmentCalendar.RemoteId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "RemoteId");
 			}
 		}
 #endif
@@ -211,7 +211,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.SourceDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.SourceDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SourceDisplayName");
 			}
 		}
 #endif
@@ -221,11 +221,11 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentSummaryCardView AppointmentCalendar.SummaryCardView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentSummaryCardView%20AppointmentCalendar.SummaryCardView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SummaryCardView");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "AppointmentSummaryCardView AppointmentCalendar.SummaryCardView");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SummaryCardView");
 			}
 		}
 #endif
@@ -235,7 +235,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarSyncManager AppointmentCalendar.SyncManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendarSyncManager%20AppointmentCalendar.SyncManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SyncManager");
 			}
 		}
 #endif
@@ -245,7 +245,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentCalendar.UserDataAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentCalendar.UserDataAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "UserDataAccountId");
 			}
 		}
 #endif
@@ -253,140 +253,140 @@ namespace Windows.ApplicationModel.Appointments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAppointmentsAsync(global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindAppointmentsAsync%28DateTimeOffset%20rangeStart%2C%20TimeSpan%20rangeLength%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAppointmentsAsync(global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength, global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindAppointmentsAsync%28DateTimeOffset%20rangeStart%2C%20TimeSpan%20rangeLength%2C%20FindAppointmentsOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.AppointmentException>> FindExceptionsFromMasterAsync(string masterLocalId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppointmentException>> AppointmentCalendar.FindExceptionsFromMasterAsync(string masterLocalId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CAppointmentException%3E%3E%20AppointmentCalendar.FindExceptionsFromMasterAsync%28string%20masterLocalId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindExceptionsFromMasterAsync(string masterLocalId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAllInstancesAsync(string masterLocalId, global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindAllInstancesAsync%28string%20masterLocalId%2C%20DateTimeOffset%20rangeStart%2C%20TimeSpan%20rangeLength%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindAllInstancesAsync(string masterLocalId, global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength, global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions pOptions)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions pOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindAllInstancesAsync%28string%20masterLocalId%2C%20DateTimeOffset%20rangeStart%2C%20TimeSpan%20rangeLength%2C%20FindAppointmentsOptions%20pOptions%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindAllInstancesAsync(string masterLocalId, DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions pOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Appointments.Appointment> GetAppointmentAsync(string localId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Appointment> AppointmentCalendar.GetAppointmentAsync(string localId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppointment%3E%20AppointmentCalendar.GetAppointmentAsync%28string%20localId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "GetAppointmentAsync(string localId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Appointments.Appointment> GetAppointmentInstanceAsync(string localId, global::System.DateTimeOffset instanceStartTime)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Appointment> AppointmentCalendar.GetAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppointment%3E%20AppointmentCalendar.GetAppointmentInstanceAsync%28string%20localId%2C%20DateTimeOffset%20instanceStartTime%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "GetAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindUnexpandedAppointmentsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindUnexpandedAppointmentsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindUnexpandedAppointmentsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindUnexpandedAppointmentsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Appointments.Appointment>> FindUnexpandedAppointmentsAsync(global::Windows.ApplicationModel.Appointments.FindAppointmentsOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Appointment>> AppointmentCalendar.FindUnexpandedAppointmentsAsync(FindAppointmentsOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CAppointment%3E%3E%20AppointmentCalendar.FindUnexpandedAppointmentsAsync%28FindAppointmentsOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "FindUnexpandedAppointmentsAsync(FindAppointmentsOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendar.DeleteAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DeleteAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendar.SaveAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SaveAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAppointmentAsync(string localId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAppointmentAsync(string localId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendar.DeleteAppointmentAsync%28string%20localId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DeleteAppointmentAsync(string localId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAppointmentInstanceAsync(string localId, global::System.DateTimeOffset instanceStartTime)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.DeleteAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendar.DeleteAppointmentInstanceAsync%28string%20localId%2C%20DateTimeOffset%20instanceStartTime%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "DeleteAppointmentInstanceAsync(string localId, DateTimeOffset instanceStartTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAppointmentAsync(global::Windows.ApplicationModel.Appointments.Appointment pAppointment)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.SaveAppointmentAsync(Appointment pAppointment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendar.SaveAppointmentAsync%28Appointment%20pAppointment%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "SaveAppointmentAsync(Appointment pAppointment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryCreateOrUpdateAppointmentAsync(global::Windows.ApplicationModel.Appointments.Appointment appointment, bool notifyInvitees)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryCreateOrUpdateAppointmentAsync(Appointment appointment, bool notifyInvitees) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryCreateOrUpdateAppointmentAsync%28Appointment%20appointment%2C%20bool%20notifyInvitees%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryCreateOrUpdateAppointmentAsync(Appointment appointment, bool notifyInvitees)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryCancelMeetingAsync(global::Windows.ApplicationModel.Appointments.Appointment meeting, string subject, string comment, bool notifyInvitees)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryCancelMeetingAsync(Appointment meeting, string subject, string comment, bool notifyInvitees) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryCancelMeetingAsync%28Appointment%20meeting%2C%20string%20subject%2C%20string%20comment%2C%20bool%20notifyInvitees%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryCancelMeetingAsync(Appointment meeting, string subject, string comment, bool notifyInvitees)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryForwardMeetingAsync(global::Windows.ApplicationModel.Appointments.Appointment meeting, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Appointments.AppointmentInvitee> invitees, string subject, string forwardHeader, string comment)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryForwardMeetingAsync(Appointment meeting, IEnumerable<AppointmentInvitee> invitees, string subject, string forwardHeader, string comment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryForwardMeetingAsync%28Appointment%20meeting%2C%20IEnumerable%3CAppointmentInvitee%3E%20invitees%2C%20string%20subject%2C%20string%20forwardHeader%2C%20string%20comment%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryForwardMeetingAsync(Appointment meeting, IEnumerable<AppointmentInvitee> invitees, string subject, string forwardHeader, string comment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryProposeNewTimeForMeetingAsync(global::Windows.ApplicationModel.Appointments.Appointment meeting, global::System.DateTimeOffset newStartTime, global::System.TimeSpan newDuration, string subject, string comment)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryProposeNewTimeForMeetingAsync(Appointment meeting, DateTimeOffset newStartTime, TimeSpan newDuration, string subject, string comment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryProposeNewTimeForMeetingAsync%28Appointment%20meeting%2C%20DateTimeOffset%20newStartTime%2C%20TimeSpan%20newDuration%2C%20string%20subject%2C%20string%20comment%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryProposeNewTimeForMeetingAsync(Appointment meeting, DateTimeOffset newStartTime, TimeSpan newDuration, string subject, string comment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryUpdateMeetingResponseAsync(global::Windows.ApplicationModel.Appointments.Appointment meeting, global::Windows.ApplicationModel.Appointments.AppointmentParticipantResponse response, string subject, string comment, bool sendUpdate)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendar.TryUpdateMeetingResponseAsync(Appointment meeting, AppointmentParticipantResponse response, string subject, string comment, bool sendUpdate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppointmentCalendar.TryUpdateMeetingResponseAsync%28Appointment%20meeting%2C%20AppointmentParticipantResponse%20response%2C%20string%20subject%2C%20string%20comment%2C%20bool%20sendUpdate%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "TryUpdateMeetingResponseAsync(Appointment meeting, AppointmentParticipantResponse response, string subject, string comment, bool sendUpdate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RegisterSyncManagerAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendar.RegisterSyncManagerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendar.RegisterSyncManagerAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendar", "RegisterSyncManagerAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendar.CanCancelMeetings.get

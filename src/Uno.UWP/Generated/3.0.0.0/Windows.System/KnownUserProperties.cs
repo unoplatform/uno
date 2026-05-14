@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.AccountName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.AccountName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "AccountName");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "DisplayName");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.DomainName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.DomainName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "DomainName");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.FirstName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.FirstName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "FirstName");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.GuestHost is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.GuestHost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "GuestHost");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.LastName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.LastName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "LastName");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.PrincipalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.PrincipalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "PrincipalName");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.ProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.ProviderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "ProviderName");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownUserProperties.SessionInitiationProtocolUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownUserProperties.SessionInitiationProtocolUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "SessionInitiationProtocolUri");
 			}
 		}
 #endif

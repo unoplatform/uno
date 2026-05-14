@@ -12,14 +12,14 @@ namespace Windows.Media.PlayTo
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.PlayTo.PlayToManager GetForWindow(nint appWindow)
 		{
-			throw new global::System.NotImplementedException("The member PlayToManager PlayToManagerInterop.GetForWindow(nint appWindow) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToManager%20PlayToManagerInterop.GetForWindow%28nint%20appWindow%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToManagerInterop", "GetForWindow(nint appWindow)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ShowPlayToUIForWindow(nint appWindow)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToManagerInterop", "void PlayToManagerInterop.ShowPlayToUIForWindow(nint appWindow)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToManagerInterop", "ShowPlayToUIForWindow(nint appWindow)");
 		}
 #endif
 	}

@@ -12,7 +12,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProximitySensorDataThreshold(global::Windows.Devices.Sensors.ProximitySensor sensor)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.ProximitySensorDataThreshold", "ProximitySensorDataThreshold.ProximitySensorDataThreshold(ProximitySensor sensor)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.ProximitySensorDataThreshold", "ProximitySensorDataThreshold(ProximitySensor sensor)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.ProximitySensorDataThreshold(Windows.Devices.Sensors.ProximitySensor)

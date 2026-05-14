@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CoreWebView2ContextMenuItem> CoreWebView2ContextMenuItem.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCoreWebView2ContextMenuItem%3E%20CoreWebView2ContextMenuItem.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "Children");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2ContextMenuItem.CommandId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2ContextMenuItem.CommandId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "CommandId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream CoreWebView2ContextMenuItem.Icon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20CoreWebView2ContextMenuItem.Icon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "Icon");
 			}
 		}
 #endif
@@ -49,11 +49,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ContextMenuItem.IsChecked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ContextMenuItem.IsChecked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "IsChecked");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "bool CoreWebView2ContextMenuItem.IsChecked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "IsChecked");
 			}
 		}
 #endif
@@ -63,11 +63,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ContextMenuItem.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ContextMenuItem.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "bool CoreWebView2ContextMenuItem.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "IsEnabled");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ContextMenuItemKind CoreWebView2ContextMenuItem.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ContextMenuItemKind%20CoreWebView2ContextMenuItem.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "Kind");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ContextMenuItem.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ContextMenuItem.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "Label");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ContextMenuItem.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ContextMenuItem.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "Name");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ContextMenuItem.ShortcutKeyDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ContextMenuItem.ShortcutKeyDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "ShortcutKeyDescription");
 			}
 		}
 #endif
@@ -131,12 +131,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "event TypedEventHandler<CoreWebView2ContextMenuItem, object> CoreWebView2ContextMenuItem.CustomItemSelected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "event CustomItemSelected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "event TypedEventHandler<CoreWebView2ContextMenuItem, object> CoreWebView2ContextMenuItem.CustomItemSelected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem", "event CustomItemSelected");
 			}
 		}
 #endif

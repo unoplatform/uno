@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsStackPanel.FirstCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsStackPanel.FirstCacheIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "FirstCacheIndex");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsStackPanel.FirstVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsStackPanel.FirstVisibleIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "FirstVisibleIndex");
 			}
 		}
 #endif
@@ -63,11 +63,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ItemsUpdatingScrollMode ItemsStackPanel.ItemsUpdatingScrollMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemsUpdatingScrollMode%20ItemsStackPanel.ItemsUpdatingScrollMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "ItemsUpdatingScrollMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "ItemsUpdatingScrollMode ItemsStackPanel.ItemsUpdatingScrollMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "ItemsUpdatingScrollMode");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsStackPanel.LastCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsStackPanel.LastCacheIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "LastCacheIndex");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsStackPanel.LastVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsStackPanel.LastVisibleIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "LastVisibleIndex");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PanelScrollingDirection ItemsStackPanel.ScrollingDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PanelScrollingDirection%20ItemsStackPanel.ScrollingDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "ScrollingDirection");
 			}
 		}
 #endif

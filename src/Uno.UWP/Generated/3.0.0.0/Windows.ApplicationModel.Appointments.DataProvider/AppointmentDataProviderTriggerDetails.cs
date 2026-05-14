@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentDataProviderConnection AppointmentDataProviderTriggerDetails.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentDataProviderConnection%20AppointmentDataProviderTriggerDetails.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderTriggerDetails", "Connection");
 			}
 		}
 #endif

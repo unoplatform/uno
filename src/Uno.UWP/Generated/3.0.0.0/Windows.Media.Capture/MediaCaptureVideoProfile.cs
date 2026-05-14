@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaFrameSourceInfo> MediaCaptureVideoProfile.FrameSourceInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaFrameSourceInfo%3E%20MediaCaptureVideoProfile.FrameSourceInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "FrameSourceInfos");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureVideoProfile.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureVideoProfile.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaCaptureVideoProfile.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaCaptureVideoProfile.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "Properties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaCaptureVideoProfile.SupportedPhotoMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfileMediaDescription%3E%20MediaCaptureVideoProfile.SupportedPhotoMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "SupportedPhotoMediaDescription");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaCaptureVideoProfile.SupportedPreviewMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfileMediaDescription%3E%20MediaCaptureVideoProfile.SupportedPreviewMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "SupportedPreviewMediaDescription");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaCaptureVideoProfile.SupportedRecordMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfileMediaDescription%3E%20MediaCaptureVideoProfile.SupportedRecordMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "SupportedRecordMediaDescription");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureVideoProfile.VideoDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureVideoProfile.VideoDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "VideoDeviceId");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> GetConcurrency()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCaptureVideoProfile.GetConcurrency() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCaptureVideoProfile.GetConcurrency%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfile", "GetConcurrency()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.FrameSourceInfos.get

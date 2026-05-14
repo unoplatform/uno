@@ -14,7 +14,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebTokenResponse WebProviderTokenResponse.ClientResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebTokenResponse%20WebProviderTokenResponse.ClientResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenResponse", "ClientResponse");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebProviderTokenResponse(global::Windows.Security.Authentication.Web.Core.WebTokenResponse webTokenResponse)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebProviderTokenResponse", "WebProviderTokenResponse.WebProviderTokenResponse(WebTokenResponse webTokenResponse)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebProviderTokenResponse", "WebProviderTokenResponse(WebTokenResponse webTokenResponse)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenResponse.WebProviderTokenResponse(Windows.Security.Authentication.Web.Core.WebTokenResponse)

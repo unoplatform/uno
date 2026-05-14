@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ESimProfilePolicy.CanDelete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ESimProfilePolicy.CanDelete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfilePolicy", "CanDelete");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ESimProfilePolicy.CanDisable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ESimProfilePolicy.CanDisable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfilePolicy", "CanDisable");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ESimProfilePolicy.IsManagedByEnterprise is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ESimProfilePolicy.IsManagedByEnterprise");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfilePolicy", "IsManagedByEnterprise");
 			}
 		}
 #endif

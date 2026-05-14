@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BandwidthStatistics(ulong _OutboundBitsPerSecond, ulong _InboundBitsPerSecond, ulong _OutboundBitsPerSecondInstability, ulong _InboundBitsPerSecondInstability, bool _OutboundBandwidthPeaked, bool _InboundBandwidthPeaked)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.BandwidthStatistics", "BandwidthStatistics.BandwidthStatistics(ulong _OutboundBitsPerSecond, ulong _InboundBitsPerSecond, ulong _OutboundBitsPerSecondInstability, ulong _InboundBitsPerSecondInstability, bool _OutboundBandwidthPeaked, bool _InboundBandwidthPeaked)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.BandwidthStatistics", "BandwidthStatistics(ulong _OutboundBitsPerSecond, ulong _InboundBitsPerSecond, ulong _OutboundBitsPerSecondInstability, ulong _InboundBitsPerSecondInstability, bool _OutboundBandwidthPeaked, bool _InboundBandwidthPeaked)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.BandwidthStatistics(ulong, ulong, ulong, ulong, bool, bool)

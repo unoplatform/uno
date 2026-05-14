@@ -19,11 +19,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.XAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20GyrometerDataThreshold.XAxisInDegreesPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.GyrometerDataThreshold", "XAxisInDegreesPerSecond");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "double GyrometerDataThreshold.XAxisInDegreesPerSecond");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "XAxisInDegreesPerSecond");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.YAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20GyrometerDataThreshold.YAxisInDegreesPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.GyrometerDataThreshold", "YAxisInDegreesPerSecond");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "double GyrometerDataThreshold.YAxisInDegreesPerSecond");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "YAxisInDegreesPerSecond");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.ZAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20GyrometerDataThreshold.ZAxisInDegreesPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.GyrometerDataThreshold", "ZAxisInDegreesPerSecond");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "double GyrometerDataThreshold.ZAxisInDegreesPerSecond");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "ZAxisInDegreesPerSecond");
 			}
 		}
 #endif

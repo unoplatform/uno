@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid SmartCardEmulatorConnectionProperties.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20SmartCardEmulatorConnectionProperties.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorConnectionProperties", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardEmulatorConnectionSource SmartCardEmulatorConnectionProperties.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardEmulatorConnectionSource%20SmartCardEmulatorConnectionProperties.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorConnectionProperties", "Source");
 			}
 		}
 #endif

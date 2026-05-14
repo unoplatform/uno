@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong CoreWebView2DOMContentLoadedEventArgs.NavigationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CoreWebView2DOMContentLoadedEventArgs.NavigationId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DOMContentLoadedEventArgs", "NavigationId");
 			}
 		}
 #endif

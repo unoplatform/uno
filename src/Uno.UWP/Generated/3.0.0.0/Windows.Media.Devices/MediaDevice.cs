@@ -12,35 +12,35 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetAudioCaptureSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetAudioCaptureSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaDevice.GetAudioCaptureSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDevice", "GetAudioCaptureSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetAudioRenderSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetAudioRenderSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaDevice.GetAudioRenderSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDevice", "GetAudioRenderSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetVideoCaptureSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetVideoCaptureSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaDevice.GetVideoCaptureSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDevice", "GetVideoCaptureSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDefaultAudioCaptureId(global::Windows.Media.Devices.AudioDeviceRole role)
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetDefaultAudioCaptureId(AudioDeviceRole role) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaDevice.GetDefaultAudioCaptureId%28AudioDeviceRole%20role%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDevice", "GetDefaultAudioCaptureId(AudioDeviceRole role)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDefaultAudioRenderId(global::Windows.Media.Devices.AudioDeviceRole role)
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetDefaultAudioRenderId(AudioDeviceRole role) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaDevice.GetDefaultAudioRenderId%28AudioDeviceRole%20role%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDevice", "GetDefaultAudioRenderId(AudioDeviceRole role)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.MediaDevice.DefaultAudioCaptureDeviceChanged.add
@@ -54,12 +54,12 @@ namespace Windows.Media.Devices
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.MediaDevice", "event TypedEventHandler<object, DefaultAudioCaptureDeviceChangedEventArgs> MediaDevice.DefaultAudioCaptureDeviceChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.MediaDevice", "event DefaultAudioCaptureDeviceChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.MediaDevice", "event TypedEventHandler<object, DefaultAudioCaptureDeviceChangedEventArgs> MediaDevice.DefaultAudioCaptureDeviceChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.MediaDevice", "event DefaultAudioCaptureDeviceChanged");
 			}
 		}
 #endif
@@ -70,12 +70,12 @@ namespace Windows.Media.Devices
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.MediaDevice", "event TypedEventHandler<object, DefaultAudioRenderDeviceChangedEventArgs> MediaDevice.DefaultAudioRenderDeviceChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.MediaDevice", "event DefaultAudioRenderDeviceChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.MediaDevice", "event TypedEventHandler<object, DefaultAudioRenderDeviceChangedEventArgs> MediaDevice.DefaultAudioRenderDeviceChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.MediaDevice", "event DefaultAudioRenderDeviceChanged");
 			}
 		}
 #endif

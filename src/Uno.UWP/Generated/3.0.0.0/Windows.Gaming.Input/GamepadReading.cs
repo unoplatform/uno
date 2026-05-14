@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GamepadReading(ulong _Timestamp, global::Windows.Gaming.Input.GamepadButtons _Buttons, double _LeftTrigger, double _RightTrigger, double _LeftThumbstickX, double _LeftThumbstickY, double _RightThumbstickX, double _RightThumbstickY)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.GamepadReading", "GamepadReading.GamepadReading(ulong _Timestamp, GamepadButtons _Buttons, double _LeftTrigger, double _RightTrigger, double _LeftThumbstickX, double _LeftThumbstickY, double _RightThumbstickX, double _RightThumbstickY)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.GamepadReading", "GamepadReading(ulong _Timestamp, GamepadButtons _Buttons, double _LeftTrigger, double _RightTrigger, double _LeftThumbstickX, double _LeftThumbstickY, double _RightThumbstickX, double _RightThumbstickY)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.GamepadReading.GamepadReading(ulong, Windows.Gaming.Input.GamepadButtons, double, double, double, double, double, double)

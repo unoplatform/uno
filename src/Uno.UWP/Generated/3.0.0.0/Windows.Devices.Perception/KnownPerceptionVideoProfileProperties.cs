@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.BitmapAlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoProfileProperties.BitmapAlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "BitmapAlphaMode");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.BitmapPixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoProfileProperties.BitmapPixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "BitmapPixelFormat");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.FrameDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoProfileProperties.FrameDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "FrameDuration");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoProfileProperties.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "Height");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoProfileProperties.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoProfileProperties.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoProfileProperties", "Width");
 			}
 		}
 #endif

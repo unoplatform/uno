@@ -12,14 +12,14 @@ namespace Windows.Security.Cryptography.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Core.CryptographicKey> OpenKeyPairFromCertificateAsync(global::Windows.Security.Cryptography.Certificates.Certificate certificate, string hashAlgorithmName, global::Windows.Security.Cryptography.Core.CryptographicPadding padding)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CryptographicKey> PersistedKeyProvider.OpenKeyPairFromCertificateAsync(Certificate certificate, string hashAlgorithmName, CryptographicPadding padding) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCryptographicKey%3E%20PersistedKeyProvider.OpenKeyPairFromCertificateAsync%28Certificate%20certificate%2C%20string%20hashAlgorithmName%2C%20CryptographicPadding%20padding%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.PersistedKeyProvider", "OpenKeyPairFromCertificateAsync(Certificate certificate, string hashAlgorithmName, CryptographicPadding padding)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.CryptographicKey OpenPublicKeyFromCertificate(global::Windows.Security.Cryptography.Certificates.Certificate certificate, string hashAlgorithmName, global::Windows.Security.Cryptography.Core.CryptographicPadding padding)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey PersistedKeyProvider.OpenPublicKeyFromCertificate(Certificate certificate, string hashAlgorithmName, CryptographicPadding padding) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20PersistedKeyProvider.OpenPublicKeyFromCertificate%28Certificate%20certificate%2C%20string%20hashAlgorithmName%2C%20CryptographicPadding%20padding%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.PersistedKeyProvider", "OpenPublicKeyFromCertificate(Certificate certificate, string hashAlgorithmName, CryptographicPadding padding)");
 		}
 #endif
 	}

@@ -19,7 +19,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint TriggeredConnectionStateChangedEventArgs.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20TriggeredConnectionStateChangedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocket TriggeredConnectionStateChangedEventArgs.Socket is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamSocket%20TriggeredConnectionStateChangedEventArgs.Socket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "Socket");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TriggeredConnectState TriggeredConnectionStateChangedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TriggeredConnectState%20TriggeredConnectionStateChangedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs", "State");
 			}
 		}
 #endif

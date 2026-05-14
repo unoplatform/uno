@@ -14,11 +14,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ViewSizePreference FolderLauncherOptions.DesiredRemainingView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ViewSizePreference%20FolderLauncherOptions.DesiredRemainingView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.FolderLauncherOptions", "DesiredRemainingView");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.FolderLauncherOptions", "ViewSizePreference FolderLauncherOptions.DesiredRemainingView");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.FolderLauncherOptions", "DesiredRemainingView");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IStorageItem> FolderLauncherOptions.ItemsToSelect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIStorageItem%3E%20FolderLauncherOptions.ItemsToSelect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.FolderLauncherOptions", "ItemsToSelect");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public FolderLauncherOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.FolderLauncherOptions", "FolderLauncherOptions.FolderLauncherOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.FolderLauncherOptions", "FolderLauncherOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.System.FolderLauncherOptions.FolderLauncherOptions()

@@ -12,7 +12,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static char GetNumericListSeparator(global::System.IFormatProvider provider)
 		{
-			throw new global::System.NotImplementedException("The member char TokenizerHelper.GetNumericListSeparator(IFormatProvider provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=char%20TokenizerHelper.GetNumericListSeparator%28IFormatProvider%20provider%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.TokenizerHelper", "GetNumericListSeparator(IFormatProvider provider)");
 		}
 #endif
 	}

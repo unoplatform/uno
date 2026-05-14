@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardAutomaticResponseStatus SmartCardEmulatorApduReceivedEventArgs.AutomaticResponseStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardAutomaticResponseStatus%20SmartCardEmulatorApduReceivedEventArgs.AutomaticResponseStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs", "AutomaticResponseStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardEmulatorApduReceivedEventArgs.CommandApdu is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardEmulatorApduReceivedEventArgs.CommandApdu");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs", "CommandApdu");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardEmulatorConnectionProperties SmartCardEmulatorApduReceivedEventArgs.ConnectionProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardEmulatorConnectionProperties%20SmartCardEmulatorApduReceivedEventArgs.ConnectionProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs", "ConnectionProperties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmartCardEmulatorApduReceivedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmartCardEmulatorApduReceivedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs", "State");
 			}
 		}
 #endif
@@ -57,28 +57,28 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRespondAsync(global::Windows.Storage.Streams.IBuffer responseApdu)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardEmulatorApduReceivedEventArgs.TryRespondAsync(IBuffer responseApdu) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SmartCardEmulatorApduReceivedEventArgs.TryRespondAsync%28IBuffer%20responseApdu%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs", "TryRespondAsync(IBuffer responseApdu)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGeneratorOperationStatus> TryRespondWithCryptogramsAsync(global::Windows.Storage.Streams.IBuffer responseTemplate, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep> cryptogramPlacementSteps)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardCryptogramGeneratorOperationStatus> SmartCardEmulatorApduReceivedEventArgs.TryRespondWithCryptogramsAsync(IBuffer responseTemplate, IEnumerable<SmartCardCryptogramPlacementStep> cryptogramPlacementSteps) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardCryptogramGeneratorOperationStatus%3E%20SmartCardEmulatorApduReceivedEventArgs.TryRespondWithCryptogramsAsync%28IBuffer%20responseTemplate%2C%20IEnumerable%3CSmartCardCryptogramPlacementStep%3E%20cryptogramPlacementSteps%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs", "TryRespondWithCryptogramsAsync(IBuffer responseTemplate, IEnumerable<SmartCardCryptogramPlacementStep> cryptogramPlacementSteps)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGeneratorOperationStatus> TryRespondWithCryptogramsAsync(global::Windows.Storage.Streams.IBuffer responseTemplate, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep> cryptogramPlacementSteps, uint? nextState)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardCryptogramGeneratorOperationStatus> SmartCardEmulatorApduReceivedEventArgs.TryRespondWithCryptogramsAsync(IBuffer responseTemplate, IEnumerable<SmartCardCryptogramPlacementStep> cryptogramPlacementSteps, uint? nextState) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardCryptogramGeneratorOperationStatus%3E%20SmartCardEmulatorApduReceivedEventArgs.TryRespondWithCryptogramsAsync%28IBuffer%20responseTemplate%2C%20IEnumerable%3CSmartCardCryptogramPlacementStep%3E%20cryptogramPlacementSteps%2C%20uint%3F%20nextState%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs", "TryRespondWithCryptogramsAsync(IBuffer responseTemplate, IEnumerable<SmartCardCryptogramPlacementStep> cryptogramPlacementSteps, uint? nextState)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRespondAsync(global::Windows.Storage.Streams.IBuffer responseApdu, uint? nextState)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardEmulatorApduReceivedEventArgs.TryRespondAsync(IBuffer responseApdu, uint? nextState) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SmartCardEmulatorApduReceivedEventArgs.TryRespondAsync%28IBuffer%20responseApdu%2C%20uint%3F%20nextState%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs", "TryRespondAsync(IBuffer responseApdu, uint? nextState)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulatorApduReceivedEventArgs.AutomaticResponseStatus.get

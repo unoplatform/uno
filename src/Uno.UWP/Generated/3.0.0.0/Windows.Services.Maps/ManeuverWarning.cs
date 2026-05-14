@@ -19,7 +19,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ManeuverWarningKind ManeuverWarning.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ManeuverWarningKind%20ManeuverWarning.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.ManeuverWarning", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ManeuverWarningSeverity ManeuverWarning.Severity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ManeuverWarningSeverity%20ManeuverWarning.Severity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.ManeuverWarning", "Severity");
 			}
 		}
 #endif

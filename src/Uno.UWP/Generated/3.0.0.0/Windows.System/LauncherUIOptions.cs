@@ -19,11 +19,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point? LauncherUIOptions.InvocationPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%3F%20LauncherUIOptions.InvocationPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherUIOptions", "InvocationPoint");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "Point? LauncherUIOptions.InvocationPoint");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "InvocationPoint");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Placement LauncherUIOptions.PreferredPlacement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Placement%20LauncherUIOptions.PreferredPlacement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherUIOptions", "PreferredPlacement");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "Placement LauncherUIOptions.PreferredPlacement");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "PreferredPlacement");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect? LauncherUIOptions.SelectionRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%3F%20LauncherUIOptions.SelectionRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherUIOptions", "SelectionRect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "Rect? LauncherUIOptions.SelectionRect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.LauncherUIOptions", "SelectionRect");
 			}
 		}
 #endif

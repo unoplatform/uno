@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastCameraCaptureStateChangedEventArgs.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastCameraCaptureStateChangedEventArgs.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs", "ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastCameraCaptureState AppBroadcastCameraCaptureStateChangedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastCameraCaptureState%20AppBroadcastCameraCaptureStateChangedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs", "State");
 			}
 		}
 #endif

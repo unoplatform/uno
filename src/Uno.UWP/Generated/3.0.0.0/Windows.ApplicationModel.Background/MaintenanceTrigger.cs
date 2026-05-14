@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MaintenanceTrigger.FreshnessTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MaintenanceTrigger.FreshnessTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.MaintenanceTrigger", "FreshnessTime");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MaintenanceTrigger.OneShot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MaintenanceTrigger.OneShot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.MaintenanceTrigger", "OneShot");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MaintenanceTrigger(uint freshnessTime, bool oneShot)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.MaintenanceTrigger", "MaintenanceTrigger.MaintenanceTrigger(uint freshnessTime, bool oneShot)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.MaintenanceTrigger", "MaintenanceTrigger(uint freshnessTime, bool oneShot)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.MaintenanceTrigger(uint, bool)

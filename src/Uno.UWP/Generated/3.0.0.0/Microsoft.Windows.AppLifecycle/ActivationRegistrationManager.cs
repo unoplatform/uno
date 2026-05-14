@@ -12,42 +12,42 @@ namespace Microsoft.Windows.AppLifecycle
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void RegisterForFileTypeActivation(string[] supportedFileTypes, string logo, string displayName, string[] supportedVerbs, string exePath)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "void ActivationRegistrationManager.RegisterForFileTypeActivation(string[] supportedFileTypes, string logo, string displayName, string[] supportedVerbs, string exePath)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "RegisterForFileTypeActivation(string[] supportedFileTypes, string logo, string displayName, string[] supportedVerbs, string exePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void RegisterForProtocolActivation(string scheme, string logo, string displayName, string exePath)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "void ActivationRegistrationManager.RegisterForProtocolActivation(string scheme, string logo, string displayName, string exePath)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "RegisterForProtocolActivation(string scheme, string logo, string displayName, string exePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void RegisterForStartupActivation(string taskId, string exePath)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "void ActivationRegistrationManager.RegisterForStartupActivation(string taskId, string exePath)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "RegisterForStartupActivation(string taskId, string exePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void UnregisterForFileTypeActivation(string[] fileTypes, string exePath)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "void ActivationRegistrationManager.UnregisterForFileTypeActivation(string[] fileTypes, string exePath)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "UnregisterForFileTypeActivation(string[] fileTypes, string exePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void UnregisterForProtocolActivation(string scheme, string exePath)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "void ActivationRegistrationManager.UnregisterForProtocolActivation(string scheme, string exePath)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "UnregisterForProtocolActivation(string scheme, string exePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void UnregisterForStartupActivation(string taskId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "void ActivationRegistrationManager.UnregisterForStartupActivation(string taskId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.AppLifecycle.ActivationRegistrationManager", "UnregisterForStartupActivation(string taskId)");
 		}
 #endif
 	}

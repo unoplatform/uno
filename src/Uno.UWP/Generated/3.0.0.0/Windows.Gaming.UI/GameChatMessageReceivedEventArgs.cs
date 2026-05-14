@@ -19,7 +19,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GameChatMessageReceivedEventArgs.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GameChatMessageReceivedEventArgs.AppDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "AppDisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GameChatMessageReceivedEventArgs.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GameChatMessageReceivedEventArgs.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "AppId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GameChatMessageReceivedEventArgs.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GameChatMessageReceivedEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "Message");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameChatMessageOrigin GameChatMessageReceivedEventArgs.Origin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameChatMessageOrigin%20GameChatMessageReceivedEventArgs.Origin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "Origin");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GameChatMessageReceivedEventArgs.SenderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GameChatMessageReceivedEventArgs.SenderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatMessageReceivedEventArgs", "SenderName");
 			}
 		}
 #endif

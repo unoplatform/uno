@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchPaneSuggestionsRequestedEventArgs.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SearchPaneSuggestionsRequestedEventArgs.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "Language");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SearchPaneQueryLinguisticDetails SearchPaneSuggestionsRequestedEventArgs.LinguisticDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SearchPaneQueryLinguisticDetails%20SearchPaneSuggestionsRequestedEventArgs.LinguisticDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "LinguisticDetails");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchPaneSuggestionsRequestedEventArgs.QueryText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SearchPaneSuggestionsRequestedEventArgs.QueryText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "QueryText");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SearchPaneSuggestionsRequest SearchPaneSuggestionsRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SearchPaneSuggestionsRequest%20SearchPaneSuggestionsRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs", "Request");
 			}
 		}
 #endif

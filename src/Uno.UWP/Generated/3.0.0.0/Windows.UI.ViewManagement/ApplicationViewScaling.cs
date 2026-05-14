@@ -19,7 +19,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationViewScaling.DisableLayoutScaling is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationViewScaling.DisableLayoutScaling");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewScaling", "DisableLayoutScaling");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetDisableLayoutScaling(bool disableLayoutScaling)
 		{
-			throw new global::System.NotImplementedException("The member bool ApplicationViewScaling.TrySetDisableLayoutScaling(bool disableLayoutScaling) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationViewScaling.TrySetDisableLayoutScaling%28bool%20disableLayoutScaling%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewScaling", "TrySetDisableLayoutScaling(bool disableLayoutScaling)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.DisableLayoutScaling.get

@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkOperatorDataUsageNotificationKind NetworkOperatorDataUsageTriggerDetails.NotificationKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkOperatorDataUsageNotificationKind%20NetworkOperatorDataUsageTriggerDetails.NotificationKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails", "NotificationKind");
 			}
 		}
 #endif

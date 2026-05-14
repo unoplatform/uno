@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> RemoteSystemAppRegistration.Attributes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20RemoteSystemAppRegistration.Attributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemAppRegistration", "Attributes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User RemoteSystemAppRegistration.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20RemoteSystemAppRegistration.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemAppRegistration", "User");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemAppRegistration GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member RemoteSystemAppRegistration RemoteSystemAppRegistration.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemAppRegistration%20RemoteSystemAppRegistration.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemAppRegistration", "GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemAppRegistration GetForUser(global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member RemoteSystemAppRegistration RemoteSystemAppRegistration.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemAppRegistration%20RemoteSystemAppRegistration.GetForUser%28User%20user%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemAppRegistration", "GetForUser(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SaveAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemAppRegistration.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20RemoteSystemAppRegistration.SaveAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemAppRegistration", "SaveAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemAppRegistration.Attributes.get

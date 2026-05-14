@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile ProtectedContainerExportResult.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20ProtectedContainerExportResult.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedContainerExportResult", "File");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProtectedImportExportStatus ProtectedContainerExportResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProtectedImportExportStatus%20ProtectedContainerExportResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedContainerExportResult", "Status");
 			}
 		}
 #endif

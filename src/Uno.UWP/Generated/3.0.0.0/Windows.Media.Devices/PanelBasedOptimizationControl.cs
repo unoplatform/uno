@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PanelBasedOptimizationControl.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PanelBasedOptimizationControl.IsSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PanelBasedOptimizationControl", "IsSupported");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Panel PanelBasedOptimizationControl.Panel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Panel%20PanelBasedOptimizationControl.Panel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PanelBasedOptimizationControl", "Panel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PanelBasedOptimizationControl", "Panel PanelBasedOptimizationControl.Panel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PanelBasedOptimizationControl", "Panel");
 			}
 		}
 #endif

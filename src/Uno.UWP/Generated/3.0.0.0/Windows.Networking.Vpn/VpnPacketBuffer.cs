@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnAppId VpnPacketBuffer.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAppId%20VpnPacketBuffer.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "AppId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Buffer VpnPacketBuffer.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Buffer%20VpnPacketBuffer.Buffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "Buffer");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnPacketBufferStatus VpnPacketBuffer.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnPacketBufferStatus%20VpnPacketBuffer.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "VpnPacketBufferStatus VpnPacketBuffer.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "Status");
 			}
 		}
 #endif
@@ -48,11 +48,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VpnPacketBuffer.TransportAffinity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VpnPacketBuffer.TransportAffinity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "TransportAffinity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "uint VpnPacketBuffer.TransportAffinity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "TransportAffinity");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VpnPacketBuffer.TransportContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VpnPacketBuffer.TransportContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "TransportContext");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "object VpnPacketBuffer.TransportContext");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "TransportContext");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnPacketBuffer(global::Windows.Networking.Vpn.VpnPacketBuffer parentBuffer, uint offset, uint length)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "VpnPacketBuffer.VpnPacketBuffer(VpnPacketBuffer parentBuffer, uint offset, uint length)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "VpnPacketBuffer(VpnPacketBuffer parentBuffer, uint offset, uint length)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.VpnPacketBuffer(Windows.Networking.Vpn.VpnPacketBuffer, uint, uint)

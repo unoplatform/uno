@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GridViewItemDataAutomationPeer(object item, global::Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer parent) : base(item, parent)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer", "GridViewItemDataAutomationPeer.GridViewItemDataAutomationPeer(object item, GridViewAutomationPeer parent)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer", "GridViewItemDataAutomationPeer(object item, GridViewAutomationPeer parent)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer.GridViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer)
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ScrollIntoView()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer", "void GridViewItemDataAutomationPeer.ScrollIntoView()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer", "ScrollIntoView()");
 		}
 #endif
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider

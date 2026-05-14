@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TelephonyKey KeypadPressedEventArgs.TelephonyKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TelephonyKey%20KeypadPressedEventArgs.TelephonyKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.KeypadPressedEventArgs", "TelephonyKey");
 			}
 		}
 #endif

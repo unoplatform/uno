@@ -13,7 +13,7 @@ namespace Windows.Media.Import
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PhotoImportProgress(uint _ItemsImported, uint _TotalItemsToImport, ulong _BytesImported, ulong _TotalBytesToImport, double _ImportProgress)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportProgress", "PhotoImportProgress.PhotoImportProgress(uint _ItemsImported, uint _TotalItemsToImport, ulong _BytesImported, ulong _TotalBytesToImport, double _ImportProgress)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportProgress", "PhotoImportProgress(uint _ItemsImported, uint _TotalItemsToImport, ulong _BytesImported, ulong _TotalBytesToImport, double _ImportProgress)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.PhotoImportProgress(uint, uint, ulong, ulong, double)

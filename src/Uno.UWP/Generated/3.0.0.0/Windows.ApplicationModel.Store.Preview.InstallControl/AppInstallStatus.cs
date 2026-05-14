@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppInstallStatus.BytesDownloaded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppInstallStatus.BytesDownloaded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "BytesDownloaded");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppInstallStatus.DownloadSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppInstallStatus.DownloadSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "DownloadSizeInBytes");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AppInstallStatus.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20AppInstallStatus.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "ErrorCode");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallState AppInstallStatus.InstallState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstallState%20AppInstallStatus.InstallState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "InstallState");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallStatus.IsStaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallStatus.IsStaged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "IsStaged");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AppInstallStatus.PercentComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AppInstallStatus.PercentComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "PercentComplete");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallStatus.ReadyForLaunch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallStatus.ReadyForLaunch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "ReadyForLaunch");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User AppInstallStatus.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20AppInstallStatus.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus", "User");
 			}
 		}
 #endif

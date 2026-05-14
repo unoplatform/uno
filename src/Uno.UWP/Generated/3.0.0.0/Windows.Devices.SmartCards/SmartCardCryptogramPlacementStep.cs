@@ -14,11 +14,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramAlgorithm SmartCardCryptogramPlacementStep.Algorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramAlgorithm%20SmartCardCryptogramPlacementStep.Algorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "Algorithm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramAlgorithm SmartCardCryptogramPlacementStep.Algorithm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "Algorithm");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramPlacementStep SmartCardCryptogramPlacementStep.ChainedOutputStep is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramPlacementStep%20SmartCardCryptogramPlacementStep.ChainedOutputStep");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "ChainedOutputStep");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementStep SmartCardCryptogramPlacementStep.ChainedOutputStep");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "ChainedOutputStep");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmartCardCryptogramPlacementStep.CryptogramLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmartCardCryptogramPlacementStep.CryptogramLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramLength");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.CryptogramLength");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramLength");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardCryptogramPlacementStep.CryptogramMaterialName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardCryptogramPlacementStep.CryptogramMaterialName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramMaterialName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "string SmartCardCryptogramPlacementStep.CryptogramMaterialName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramMaterialName");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardCryptogramPlacementStep.CryptogramMaterialPackageName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardCryptogramPlacementStep.CryptogramMaterialPackageName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramMaterialPackageName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "string SmartCardCryptogramPlacementStep.CryptogramMaterialPackageName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramMaterialPackageName");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmartCardCryptogramPlacementStep.CryptogramOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmartCardCryptogramPlacementStep.CryptogramOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramOffset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.CryptogramOffset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramOffset");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramPlacementOptions SmartCardCryptogramPlacementStep.CryptogramPlacementOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramPlacementOptions%20SmartCardCryptogramPlacementStep.CryptogramPlacementOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramPlacementOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementOptions SmartCardCryptogramPlacementStep.CryptogramPlacementOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "CryptogramPlacementOptions");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardCryptogramPlacementStep.SourceData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardCryptogramPlacementStep.SourceData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SourceData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "IBuffer SmartCardCryptogramPlacementStep.SourceData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SourceData");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmartCardCryptogramPlacementStep.TemplateOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmartCardCryptogramPlacementStep.TemplateOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "TemplateOffset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "int SmartCardCryptogramPlacementStep.TemplateOffset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "TemplateOffset");
 			}
 		}
 #endif
@@ -138,7 +138,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardCryptogramPlacementStep()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementStep.SmartCardCryptogramPlacementStep()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep", "SmartCardCryptogramPlacementStep()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.SmartCardCryptogramPlacementStep()

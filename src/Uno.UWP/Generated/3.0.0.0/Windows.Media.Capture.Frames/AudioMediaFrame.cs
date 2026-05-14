@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioMediaFrame.AudioEncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioMediaFrame.AudioEncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.AudioMediaFrame", "AudioEncodingProperties");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameReference AudioMediaFrame.FrameReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameReference%20AudioMediaFrame.FrameReference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.AudioMediaFrame", "FrameReference");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.AudioFrame GetAudioFrame()
 		{
-			throw new global::System.NotImplementedException("The member AudioFrame AudioMediaFrame.GetAudioFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioFrame%20AudioMediaFrame.GetAudioFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.AudioMediaFrame", "GetAudioFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.AudioMediaFrame.AudioEncodingProperties.get

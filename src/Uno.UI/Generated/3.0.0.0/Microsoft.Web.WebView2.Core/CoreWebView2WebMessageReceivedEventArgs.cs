@@ -14,7 +14,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20CoreWebView2WebMessageReceivedEventArgs.AdditionalObjects");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs", "AdditionalObjects");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2WebMessageReceivedEventArgs.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2WebMessageReceivedEventArgs.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs", "Source");
 			}
 		}
 #endif

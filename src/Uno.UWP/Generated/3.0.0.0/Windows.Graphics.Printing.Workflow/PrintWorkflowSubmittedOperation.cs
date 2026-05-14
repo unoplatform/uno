@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowConfiguration PrintWorkflowSubmittedOperation.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintWorkflowConfiguration%20PrintWorkflowSubmittedOperation.Configuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation", "Configuration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowSourceContent PrintWorkflowSubmittedOperation.XpsContent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintWorkflowSourceContent%20PrintWorkflowSubmittedOperation.XpsContent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation", "XpsContent");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Printing.Workflow
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete(global::Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedStatus status)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation", "void PrintWorkflowSubmittedOperation.Complete(PrintWorkflowSubmittedStatus status)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation", "Complete(PrintWorkflowSubmittedStatus status)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.Configuration.get

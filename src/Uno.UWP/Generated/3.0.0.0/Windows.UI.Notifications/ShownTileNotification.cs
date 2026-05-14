@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ShownTileNotification.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ShownTileNotification.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ShownTileNotification", "Arguments");
 			}
 		}
 #endif

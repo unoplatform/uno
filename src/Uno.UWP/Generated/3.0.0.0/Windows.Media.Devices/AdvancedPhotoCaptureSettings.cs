@@ -14,11 +14,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedPhotoCaptureSettings.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdvancedPhotoMode%20AdvancedPhotoCaptureSettings.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AdvancedPhotoCaptureSettings", "Mode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AdvancedPhotoCaptureSettings", "AdvancedPhotoMode AdvancedPhotoCaptureSettings.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AdvancedPhotoCaptureSettings", "Mode");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AdvancedPhotoCaptureSettings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AdvancedPhotoCaptureSettings", "AdvancedPhotoCaptureSettings.AdvancedPhotoCaptureSettings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AdvancedPhotoCaptureSettings", "AdvancedPhotoCaptureSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.AdvancedPhotoCaptureSettings()

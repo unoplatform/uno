@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsBroadcastMessage.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsBroadcastMessage.Body");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "Body");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsBroadcastType SmsBroadcastMessage.BroadcastType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsBroadcastType%20SmsBroadcastMessage.BroadcastType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "BroadcastType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsBroadcastMessage.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsBroadcastMessage.CellularClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "CellularClass");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsBroadcastMessage.Channel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsBroadcastMessage.Channel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "Channel");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsBroadcastMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsBroadcastMessage.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "DeviceId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsGeographicalScope SmsBroadcastMessage.GeographicalScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsGeographicalScope%20SmsBroadcastMessage.GeographicalScope");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "GeographicalScope");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmsBroadcastMessage.IsEmergencyAlert is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmsBroadcastMessage.IsEmergencyAlert");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "IsEmergencyAlert");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmsBroadcastMessage.IsUserPopupRequested is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmsBroadcastMessage.IsUserPopupRequested");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "IsUserPopupRequested");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsBroadcastMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsBroadcastMessage.MessageClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "MessageClass");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsBroadcastMessage.MessageCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsBroadcastMessage.MessageCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "MessageCode");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsBroadcastMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsBroadcastMessage.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "MessageType");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsBroadcastMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsBroadcastMessage.SimIccId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "SimIccId");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmsBroadcastMessage.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SmsBroadcastMessage.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "Timestamp");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsBroadcastMessage.To is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsBroadcastMessage.To");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "To");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsBroadcastMessage.UpdateNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsBroadcastMessage.UpdateNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBroadcastMessage", "UpdateNumber");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastTransmitterAuthorizationStatus MiracastTransmitter.AuthorizationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastTransmitterAuthorizationStatus%20MiracastTransmitter.AuthorizationStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastTransmitter", "AuthorizationStatus");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastTransmitter", "MiracastTransmitterAuthorizationStatus MiracastTransmitter.AuthorizationStatus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastTransmitter", "AuthorizationStatus");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset MiracastTransmitter.LastConnectionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20MiracastTransmitter.LastConnectionTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastTransmitter", "LastConnectionTime");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastTransmitter.MacAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MiracastTransmitter.MacAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastTransmitter", "MacAddress");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastTransmitter.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MiracastTransmitter.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastTransmitter", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastTransmitter", "string MiracastTransmitter.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastTransmitter", "Name");
 			}
 		}
 #endif
@@ -65,7 +65,7 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Miracast.MiracastReceiverConnection> GetConnections()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MiracastReceiverConnection> MiracastTransmitter.GetConnections() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMiracastReceiverConnection%3E%20MiracastTransmitter.GetConnections%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastTransmitter", "GetConnections()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.AuthorizationStatus.get

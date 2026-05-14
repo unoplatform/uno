@@ -19,7 +19,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer HardwareToken.Certificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20HardwareToken.Certificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "Certificate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer HardwareToken.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20HardwareToken.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer HardwareToken.Signature is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20HardwareToken.Signature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareToken", "Signature");
 			}
 		}
 #endif

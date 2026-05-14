@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceController MediaFrameSource.Controller is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameSourceController%20MediaFrameSource.Controller");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSource", "Controller");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameFormat MediaFrameSource.CurrentFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameFormat%20MediaFrameSource.CurrentFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSource", "CurrentFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceInfo MediaFrameSource.Info is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameSourceInfo%20MediaFrameSource.Info");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSource", "Info");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaFrameFormat> MediaFrameSource.SupportedFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaFrameFormat%3E%20MediaFrameSource.SupportedFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSource", "SupportedFormats");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetFormatAsync(global::Windows.Media.Capture.Frames.MediaFrameFormat format)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MediaFrameSource.SetFormatAsync(MediaFrameFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MediaFrameSource.SetFormatAsync%28MediaFrameFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSource", "SetFormatAsync(MediaFrameFormat format)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.Core.CameraIntrinsics TryGetCameraIntrinsics(global::Windows.Media.Capture.Frames.MediaFrameFormat format)
 		{
-			throw new global::System.NotImplementedException("The member CameraIntrinsics MediaFrameSource.TryGetCameraIntrinsics(MediaFrameFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraIntrinsics%20MediaFrameSource.TryGetCameraIntrinsics%28MediaFrameFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSource", "TryGetCameraIntrinsics(MediaFrameFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSource.FormatChanged.add
@@ -80,12 +80,12 @@ namespace Windows.Media.Capture.Frames
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameSource", "event TypedEventHandler<MediaFrameSource, object> MediaFrameSource.FormatChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameSource", "event FormatChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameSource", "event TypedEventHandler<MediaFrameSource, object> MediaFrameSource.FormatChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameSource", "event FormatChanged");
 			}
 		}
 #endif

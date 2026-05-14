@@ -13,7 +13,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmsEncodedLength(uint _SegmentCount, uint _CharacterCountLastSegment, uint _CharactersPerSegment, uint _ByteCountLastSegment, uint _BytesPerSegment)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsEncodedLength", "SmsEncodedLength.SmsEncodedLength(uint _SegmentCount, uint _CharacterCountLastSegment, uint _CharactersPerSegment, uint _ByteCountLastSegment, uint _BytesPerSegment)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsEncodedLength", "SmsEncodedLength(uint _SegmentCount, uint _CharacterCountLastSegment, uint _CharactersPerSegment, uint _ByteCountLastSegment, uint _BytesPerSegment)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.SmsEncodedLength(uint, uint, uint, uint, uint)

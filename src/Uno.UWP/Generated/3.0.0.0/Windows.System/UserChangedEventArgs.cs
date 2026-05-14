@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UserWatcherUpdateKind> UserChangedEventArgs.ChangedPropertyKinds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUserWatcherUpdateKind%3E%20UserChangedEventArgs.ChangedPropertyKinds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserChangedEventArgs", "ChangedPropertyKinds");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User UserChangedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20UserChangedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserChangedEventArgs", "User");
 			}
 		}
 #endif

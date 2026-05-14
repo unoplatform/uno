@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConnectionProfile ConnectionSession.ConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectionProfile%20ConnectionSession.ConnectionProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionSession", "ConnectionProfile");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionSession", "void ConnectionSession.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionSession", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.ConnectionProfile.get

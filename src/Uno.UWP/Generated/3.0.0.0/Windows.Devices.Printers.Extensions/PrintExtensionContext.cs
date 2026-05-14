@@ -12,7 +12,7 @@ namespace Windows.Devices.Printers.Extensions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static object FromDeviceId(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member object PrintExtensionContext.FromDeviceId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PrintExtensionContext.FromDeviceId%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintExtensionContext", "FromDeviceId(string deviceId)");
 		}
 #endif
 	}

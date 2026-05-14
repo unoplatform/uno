@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TimedTextSubformat> TimedTextLine.Subformats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTimedTextSubformat%3E%20TimedTextLine.Subformats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextLine", "Subformats");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextLine.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TimedTextLine.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextLine", "Text");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextLine", "string TimedTextLine.Text");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextLine", "Text");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TimedTextLine()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextLine", "TimedTextLine.TimedTextLine()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextLine", "TimedTextLine()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.TimedTextLine()

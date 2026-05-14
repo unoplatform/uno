@@ -12,7 +12,7 @@ namespace Windows.System.Threading.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem.PreallocatedWorkItem(WorkItemHandler handler)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem(WorkItemHandler handler)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler)
@@ -20,7 +20,7 @@ namespace Windows.System.Threading.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem.PreallocatedWorkItem(WorkItemHandler handler, WorkItemPriority priority)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem(WorkItemHandler handler, WorkItemPriority priority)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler, Windows.System.Threading.WorkItemPriority)
@@ -28,7 +28,7 @@ namespace Windows.System.Threading.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority, global::Windows.System.Threading.WorkItemOptions options)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem.PreallocatedWorkItem(WorkItemHandler handler, WorkItemPriority priority, WorkItemOptions options)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem(WorkItemHandler handler, WorkItemPriority priority, WorkItemOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler, Windows.System.Threading.WorkItemPriority, Windows.System.Threading.WorkItemOptions)
@@ -36,7 +36,7 @@ namespace Windows.System.Threading.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RunAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PreallocatedWorkItem.RunAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PreallocatedWorkItem.RunAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.Core.PreallocatedWorkItem", "RunAsync()");
 		}
 #endif
 	}

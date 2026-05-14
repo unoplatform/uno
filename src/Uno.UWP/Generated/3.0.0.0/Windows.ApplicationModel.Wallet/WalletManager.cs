@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Wallet
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Wallet.WalletItemStore> RequestStoreAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WalletItemStore> WalletManager.RequestStoreAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWalletItemStore%3E%20WalletManager.RequestStoreAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletManager", "RequestStoreAsync()");
 		}
 #endif
 	}

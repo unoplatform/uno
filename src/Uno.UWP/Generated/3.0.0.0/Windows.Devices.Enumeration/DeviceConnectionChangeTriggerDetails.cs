@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceConnectionChangeTriggerDetails.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceConnectionChangeTriggerDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails", "DeviceId");
 			}
 		}
 #endif

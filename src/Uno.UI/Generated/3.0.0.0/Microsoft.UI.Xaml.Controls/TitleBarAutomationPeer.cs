@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TitleBarAutomationPeer(global::Microsoft.UI.Xaml.Controls.TitleBar owner) : base(owner)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer", "TitleBarAutomationPeer.TitleBarAutomationPeer(TitleBar owner)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer", "TitleBarAutomationPeer(TitleBar owner)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.TitleBarAutomationPeer(Microsoft.UI.Xaml.Controls.TitleBar)

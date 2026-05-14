@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardTriggerType SmartCardTrigger.TriggerType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardTriggerType%20SmartCardTrigger.TriggerType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.SmartCardTrigger", "TriggerType");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardTrigger(global::Windows.Devices.SmartCards.SmartCardTriggerType triggerType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.SmartCardTrigger", "SmartCardTrigger.SmartCardTrigger(SmartCardTriggerType triggerType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.SmartCardTrigger", "SmartCardTrigger(SmartCardTriggerType triggerType)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.SmartCardTrigger(Windows.Devices.SmartCards.SmartCardTriggerType)

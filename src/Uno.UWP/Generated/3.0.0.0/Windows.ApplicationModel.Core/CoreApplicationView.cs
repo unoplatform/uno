@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsComponent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreApplicationView.IsComponent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplicationView", "IsComponent");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsHosted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreApplicationView.IsHosted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplicationView", "IsHosted");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsMain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreApplicationView.IsMain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplicationView", "IsMain");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet CoreApplicationView.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20CoreApplicationView.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplicationView", "Properties");
 			}
 		}
 #endif
@@ -71,12 +71,12 @@ namespace Windows.ApplicationModel.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationView", "event TypedEventHandler<CoreApplicationView, IActivatedEventArgs> CoreApplicationView.Activated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationView", "event Activated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationView", "event TypedEventHandler<CoreApplicationView, IActivatedEventArgs> CoreApplicationView.Activated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationView", "event Activated");
 			}
 		}
 #endif
@@ -87,12 +87,12 @@ namespace Windows.ApplicationModel.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationView", "event TypedEventHandler<CoreApplicationView, HostedViewClosingEventArgs> CoreApplicationView.HostedViewClosing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationView", "event HostedViewClosing");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationView", "event TypedEventHandler<CoreApplicationView, HostedViewClosingEventArgs> CoreApplicationView.HostedViewClosing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplicationView", "event HostedViewClosing");
 			}
 		}
 #endif
