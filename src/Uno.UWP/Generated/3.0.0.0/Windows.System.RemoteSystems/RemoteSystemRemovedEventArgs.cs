@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemRemovedEventArgs.RemoteSystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemRemovedEventArgs.RemoteSystemId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs", "RemoteSystemId");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CachedFileUpdaterTriggerDetails.CanRequestUserInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CachedFileUpdaterTriggerDetails.CanRequestUserInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "CanRequestUserInput");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileUpdateRequest CachedFileUpdaterTriggerDetails.UpdateRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequest%20CachedFileUpdaterTriggerDetails.UpdateRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "UpdateRequest");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CachedFileTarget CachedFileUpdaterTriggerDetails.UpdateTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CachedFileTarget%20CachedFileUpdaterTriggerDetails.UpdateTarget");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails", "UpdateTarget");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LockScreenCallUI.CallTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LockScreenCallUI.CallTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.LockScreenCallUI", "CallTitle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "string LockScreenCallUI.CallTitle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "CallTitle");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dismiss()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "void LockScreenCallUI.Dismiss()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "Dismiss()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.Closed.add
@@ -47,12 +47,12 @@ namespace Windows.ApplicationModel.Calls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "event TypedEventHandler<LockScreenCallUI, object> LockScreenCallUI.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "event Closed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "event TypedEventHandler<LockScreenCallUI, object> LockScreenCallUI.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "event Closed");
 			}
 		}
 #endif
@@ -63,12 +63,12 @@ namespace Windows.ApplicationModel.Calls
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "event TypedEventHandler<LockScreenCallUI, LockScreenCallEndRequestedEventArgs> LockScreenCallUI.EndRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "event EndRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "event TypedEventHandler<LockScreenCallUI, LockScreenCallEndRequestedEventArgs> LockScreenCallUI.EndRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.LockScreenCallUI", "event EndRequested");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactConnectedServiceAccount.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactConnectedServiceAccount.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "string ContactConnectedServiceAccount.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "Id");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactConnectedServiceAccount.ServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactConnectedServiceAccount.ServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "ServiceName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "string ContactConnectedServiceAccount.ServiceName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "ServiceName");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactConnectedServiceAccount()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "ContactConnectedServiceAccount.ContactConnectedServiceAccount()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "ContactConnectedServiceAccount()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.ContactConnectedServiceAccount()

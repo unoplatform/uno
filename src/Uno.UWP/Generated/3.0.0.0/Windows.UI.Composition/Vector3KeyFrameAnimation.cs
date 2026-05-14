@@ -17,14 +17,14 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Vector3 value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Vector3KeyFrameAnimation", "void Vector3KeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Vector3 value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Vector3KeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, Vector3 value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Vector3 value, global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Vector3KeyFrameAnimation", "void Vector3KeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Vector3 value, CompositionEasingFunction easingFunction)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Vector3KeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, Vector3 value, CompositionEasingFunction easingFunction)");
 		}
 #endif
 	}

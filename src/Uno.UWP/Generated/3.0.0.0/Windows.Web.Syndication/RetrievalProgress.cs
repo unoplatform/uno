@@ -13,7 +13,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RetrievalProgress(uint _BytesRetrieved, uint _TotalBytesToRetrieve)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.RetrievalProgress", "RetrievalProgress.RetrievalProgress(uint _BytesRetrieved, uint _TotalBytesToRetrieve)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.RetrievalProgress", "RetrievalProgress(uint _BytesRetrieved, uint _TotalBytesToRetrieve)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.RetrievalProgress(uint, uint)

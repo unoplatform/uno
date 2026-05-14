@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color ShareProvider.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20ShareProvider.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvider", "BackgroundColor");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference ShareProvider.DisplayIcon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RandomAccessStreamReference%20ShareProvider.DisplayIcon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvider", "DisplayIcon");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ShareProvider.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ShareProvider.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvider", "Tag");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareProvider", "object ShareProvider.Tag");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareProvider", "Tag");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ShareProvider.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ShareProvider.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvider", "Title");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ShareProvider(string title, global::Windows.Storage.Streams.RandomAccessStreamReference displayIcon, global::Windows.UI.Color backgroundColor, global::Windows.ApplicationModel.DataTransfer.ShareProviderHandler handler)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareProvider", "ShareProvider.ShareProvider(string title, RandomAccessStreamReference displayIcon, Color backgroundColor, ShareProviderHandler handler)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareProvider", "ShareProvider(string title, RandomAccessStreamReference displayIcon, Color backgroundColor, ShareProviderHandler handler)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.ShareProvider(string, Windows.Storage.Streams.RandomAccessStreamReference, Windows.UI.Color, Windows.ApplicationModel.DataTransfer.ShareProviderHandler)

@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PivotItemAutomationPeer(global::Microsoft.UI.Xaml.Controls.PivotItem owner) : base(owner)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer", "PivotItemAutomationPeer.PivotItemAutomationPeer(PivotItem owner)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer", "PivotItemAutomationPeer(PivotItem owner)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemAutomationPeer.PivotItemAutomationPeer(Microsoft.UI.Xaml.Controls.PivotItem)

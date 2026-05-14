@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception WorkflowPrintTicketValidationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20WorkflowPrintTicketValidationResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WorkflowPrintTicketValidationResult.Validated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WorkflowPrintTicketValidationResult.Validated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult", "Validated");
 			}
 		}
 #endif

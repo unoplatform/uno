@@ -14,11 +14,11 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Lamp.BrightnessLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Lamp.BrightnessLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "BrightnessLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "float Lamp.BrightnessLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "BrightnessLevel");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color Lamp.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20Lamp.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "Color Lamp.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "Color");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Lamp.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Lamp.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "DeviceId");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Lamp.IsColorSettable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Lamp.IsColorSettable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "IsColorSettable");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Lamp.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Lamp.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "bool Lamp.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "IsEnabled");
 			}
 		}
 #endif
@@ -74,14 +74,14 @@ namespace Windows.Devices.Lights
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Lamp.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Lamp.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.Lamp> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLamp%3E%20Lamp.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "FromIdAsync(string deviceId)");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Lights.Lamp.GetDefaultAsync()
@@ -91,7 +91,7 @@ namespace Windows.Devices.Lights
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "void Lamp.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Lamp.BrightnessLevel.get
@@ -109,12 +109,12 @@ namespace Windows.Devices.Lights
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "event TypedEventHandler<Lamp, LampAvailabilityChangedEventArgs> Lamp.AvailabilityChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "event AvailabilityChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "event TypedEventHandler<Lamp, LampAvailabilityChangedEventArgs> Lamp.AvailabilityChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "event AvailabilityChanged");
 			}
 		}
 #endif

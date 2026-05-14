@@ -14,7 +14,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BackgroundTransferCompletionGroup.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BackgroundTransferCompletionGroup.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup", "IsEnabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBackgroundTrigger BackgroundTransferCompletionGroup.Trigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBackgroundTrigger%20BackgroundTransferCompletionGroup.Trigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup", "Trigger");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BackgroundTransferCompletionGroup()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup", "BackgroundTransferCompletionGroup.BackgroundTransferCompletionGroup()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup", "BackgroundTransferCompletionGroup()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup.BackgroundTransferCompletionGroup()
@@ -40,7 +40,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Enable()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup", "void BackgroundTransferCompletionGroup.Enable()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup", "Enable()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup.IsEnabled.get

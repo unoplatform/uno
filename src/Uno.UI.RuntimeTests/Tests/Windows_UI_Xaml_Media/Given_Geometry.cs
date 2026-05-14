@@ -133,11 +133,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public void EmptyGeometry_CheckBounds()
 		{
-			// Catastrophic Failure on UWP
-			Assert.Throws<Exception>(() => _ = Geometry.Empty.Bounds);
+			// PathGeometry.ComputeBounds is implemented under __SKIA__ only, so this test is restricted to Skia heads.
+			// (Native WinUI also throws "Catastrophic Failure" on UWP/WinAppSDK for Geometry.Empty.Bounds.)
+			Geometry.Empty.Bounds.Should().Be(default(Rect));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public void Geometry_Empty_Returns_Empty_PathGeometry()
+		{
+			// Native WinUI's GeometryFactory::get_EmptyImpl creates the instance as a raw
+			// ctl::ComObject<PathGeometry>, bypassing BetterCoreObjectActivationFactory and
+			// the DXamlCore peer setup. Property accessors (get_Figures, get_Bounds, ...)
+			// route through GetValueByKnownIndex, which needs the core peer and fails with
+			// E_UNEXPECTED ("Catastrophic failure") on this naked instance. The reference
+			// type is observable, but the empty-figures invariant can only be verified on
+			// Uno's Skia implementation. Same root cause as EmptyGeometry_CheckBounds above.
+			var empty = Geometry.Empty;
+
+			Assert.IsInstanceOfType(empty, typeof(PathGeometry));
+			Assert.AreEqual(0, ((PathGeometry)empty).Figures.Count);
+		}
+
+		[TestMethod]
+		public void Geometry_Empty_Returns_Distinct_Instances()
+		{
+			Assert.AreNotSame(Geometry.Empty, Geometry.Empty);
+		}
+
+		[TestMethod]
+		public void Geometry_StandardFlatteningTolerance_Is_QuarterPixel()
+		{
+			Assert.AreEqual(0.25, Geometry.StandardFlatteningTolerance);
 		}
 
 #if __SKIA__

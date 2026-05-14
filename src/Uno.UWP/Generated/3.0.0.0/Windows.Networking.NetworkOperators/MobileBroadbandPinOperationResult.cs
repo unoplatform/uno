@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandPinOperationResult.AttemptsRemaining is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MobileBroadbandPinOperationResult.AttemptsRemaining");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult", "AttemptsRemaining");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandPinOperationResult.IsSuccessful is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MobileBroadbandPinOperationResult.IsSuccessful");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult", "IsSuccessful");
 			}
 		}
 #endif

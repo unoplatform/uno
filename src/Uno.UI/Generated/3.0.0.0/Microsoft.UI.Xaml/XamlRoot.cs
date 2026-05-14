@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentIsland XamlRoot.ContentIsland is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20XamlRoot.ContentIsland");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "ContentIsland");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentIslandEnvironment XamlRoot.ContentIslandEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIslandEnvironment%20XamlRoot.ContentIslandEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "ContentIslandEnvironment");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentCoordinateConverter XamlRoot.CoordinateConverter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentCoordinateConverter%20XamlRoot.CoordinateConverter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlRoot", "CoordinateConverter");
 			}
 		}
 #endif

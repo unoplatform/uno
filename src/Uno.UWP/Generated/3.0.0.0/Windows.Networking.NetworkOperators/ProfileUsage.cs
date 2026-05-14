@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProfileUsage(uint _UsageInMegabytes, global::System.DateTimeOffset _LastSyncTime)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ProfileUsage", "ProfileUsage.ProfileUsage(uint _UsageInMegabytes, DateTimeOffset _LastSyncTime)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ProfileUsage", "ProfileUsage(uint _UsageInMegabytes, DateTimeOffset _LastSyncTime)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.ProfileUsage(uint, System.DateTimeOffset)

@@ -19,11 +19,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologyAttributes.DecodeLength1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologyAttributes.DecodeLength1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "DecodeLength1");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "uint BarcodeSymbologyAttributes.DecodeLength1");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "DecodeLength1");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologyAttributes.DecodeLength2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeSymbologyAttributes.DecodeLength2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "DecodeLength2");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "uint BarcodeSymbologyAttributes.DecodeLength2");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "DecodeLength2");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarcodeSymbologyDecodeLengthKind BarcodeSymbologyAttributes.DecodeLengthKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BarcodeSymbologyDecodeLengthKind%20BarcodeSymbologyAttributes.DecodeLengthKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "DecodeLengthKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "BarcodeSymbologyDecodeLengthKind BarcodeSymbologyAttributes.DecodeLengthKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "DecodeLengthKind");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "IsCheckDigitTransmissionEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "IsCheckDigitTransmissionEnabled");
 			}
 		}
 #endif
@@ -75,7 +75,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "IsCheckDigitTransmissionSupported");
 			}
 		}
 #endif
@@ -85,11 +85,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "IsCheckDigitValidationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "bool BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "IsCheckDigitValidationEnabled");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitValidationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsCheckDigitValidationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "IsCheckDigitValidationSupported");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsDecodeLengthSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BarcodeSymbologyAttributes.IsDecodeLengthSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeSymbologyAttributes", "IsDecodeLengthSupported");
 			}
 		}
 #endif

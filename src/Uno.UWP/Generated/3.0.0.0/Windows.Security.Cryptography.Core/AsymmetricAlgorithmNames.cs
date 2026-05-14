@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.DsaSha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.DsaSha1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "DsaSha1");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.DsaSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.DsaSha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "DsaSha256");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaP256Sha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaP256Sha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "EcdsaP256Sha256");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaP384Sha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaP384Sha384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "EcdsaP384Sha384");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaP521Sha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaP521Sha512");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "EcdsaP521Sha512");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "EcdsaSha256");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "EcdsaSha384");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.EcdsaSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.EcdsaSha512");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "EcdsaSha512");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaOaepSha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaOaepSha1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaOaepSha1");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaOaepSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaOaepSha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaOaepSha256");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaOaepSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaOaepSha384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaOaepSha384");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaOaepSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaOaepSha512");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaOaepSha512");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaPkcs1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaPkcs1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaPkcs1");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPkcs1Sha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPkcs1Sha1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaSignPkcs1Sha1");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPkcs1Sha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPkcs1Sha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaSignPkcs1Sha256");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPkcs1Sha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPkcs1Sha384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaSignPkcs1Sha384");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPkcs1Sha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPkcs1Sha512");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaSignPkcs1Sha512");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPssSha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPssSha1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaSignPssSha1");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPssSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPssSha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaSignPssSha256");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPssSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPssSha384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaSignPssSha384");
 			}
 		}
 #endif
@@ -214,7 +214,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricAlgorithmNames.RsaSignPssSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricAlgorithmNames.RsaSignPssSha512");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames", "RsaSignPssSha512");
 			}
 		}
 #endif

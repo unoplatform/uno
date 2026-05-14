@@ -19,7 +19,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SystemIdentificationInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SystemIdentificationInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentificationInfo", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemIdentificationSource SystemIdentificationInfo.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemIdentificationSource%20SystemIdentificationInfo.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemIdentificationInfo", "Source");
 			}
 		}
 #endif

@@ -17,7 +17,7 @@ namespace Windows.Security.EnterpriseData
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ThreadNetworkContext", "void ThreadNetworkContext.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ThreadNetworkContext", "Dispose()");
 		}
 #endif
 		// Processing: System.IDisposable

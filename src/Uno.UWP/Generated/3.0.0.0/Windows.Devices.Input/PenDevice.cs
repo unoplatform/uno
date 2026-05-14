@@ -19,7 +19,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PenDevice.PenId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PenDevice.PenId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenDevice", "PenId");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PenDevice GetFromPointerId(uint pointerId)
 		{
-			throw new global::System.NotImplementedException("The member PenDevice PenDevice.GetFromPointerId(uint pointerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenDevice%20PenDevice.GetFromPointerId%28uint%20pointerId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenDevice", "GetFromPointerId(uint pointerId)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.PenDevice.PenId.get

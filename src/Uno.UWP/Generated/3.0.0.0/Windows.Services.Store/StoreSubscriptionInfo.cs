@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StoreSubscriptionInfo.BillingPeriod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StoreSubscriptionInfo.BillingPeriod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSubscriptionInfo", "BillingPeriod");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreDurationUnit StoreSubscriptionInfo.BillingPeriodUnit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreDurationUnit%20StoreSubscriptionInfo.BillingPeriodUnit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSubscriptionInfo", "BillingPeriodUnit");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreSubscriptionInfo.HasTrialPeriod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreSubscriptionInfo.HasTrialPeriod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSubscriptionInfo", "HasTrialPeriod");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StoreSubscriptionInfo.TrialPeriod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StoreSubscriptionInfo.TrialPeriod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSubscriptionInfo", "TrialPeriod");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreDurationUnit StoreSubscriptionInfo.TrialPeriodUnit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreDurationUnit%20StoreSubscriptionInfo.TrialPeriodUnit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSubscriptionInfo", "TrialPeriodUnit");
 			}
 		}
 #endif

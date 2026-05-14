@@ -19,7 +19,7 @@ namespace Windows.Media.FaceAnalysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapBounds DetectedFace.FaceBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapBounds%20DetectedFace.FaceBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.FaceAnalysis.DetectedFace", "FaceBox");
 			}
 		}
 #endif

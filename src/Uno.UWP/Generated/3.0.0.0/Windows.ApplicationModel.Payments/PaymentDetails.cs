@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentItem> PaymentDetails.DisplayItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPaymentItem%3E%20PaymentDetails.DisplayItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetails", "DisplayItems");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "IReadOnlyList<PaymentItem> PaymentDetails.DisplayItems");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "DisplayItems");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentDetailsModifier> PaymentDetails.Modifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPaymentDetailsModifier%3E%20PaymentDetails.Modifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetails", "Modifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "IReadOnlyList<PaymentDetailsModifier> PaymentDetails.Modifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "Modifiers");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentShippingOption> PaymentDetails.ShippingOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPaymentShippingOption%3E%20PaymentDetails.ShippingOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetails", "ShippingOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "IReadOnlyList<PaymentShippingOption> PaymentDetails.ShippingOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "ShippingOptions");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentItem PaymentDetails.Total is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentItem%20PaymentDetails.Total");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetails", "Total");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentItem PaymentDetails.Total");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "Total");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentDetails()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails.PaymentDetails()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.PaymentDetails()
@@ -76,7 +76,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentDetails(global::Windows.ApplicationModel.Payments.PaymentItem total)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails.PaymentDetails(PaymentItem total)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails(PaymentItem total)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.PaymentDetails(Windows.ApplicationModel.Payments.PaymentItem)
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentDetails(global::Windows.ApplicationModel.Payments.PaymentItem total, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentItem> displayItems)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails.PaymentDetails(PaymentItem total, IEnumerable<PaymentItem> displayItems)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails(PaymentItem total, IEnumerable<PaymentItem> displayItems)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.PaymentDetails(Windows.ApplicationModel.Payments.PaymentItem, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentItem>)

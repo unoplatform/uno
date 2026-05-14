@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame CapturedPhoto.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrame%20CapturedPhoto.Frame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedPhoto", "Frame");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame CapturedPhoto.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrame%20CapturedPhoto.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CapturedPhoto", "Thumbnail");
 			}
 		}
 #endif

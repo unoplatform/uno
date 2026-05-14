@@ -101,6 +101,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Size? CustomContentExtent => null;
 
+		// True while a scroll animation is in flight on the content's AnchorPoint. Used by
+		// ScrollViewer.RecomputeOffsetsFromIntent to avoid interrupting an ongoing animation
+		// (e.g. the wheel-driven or programmatic-with-animation scroll) with an instant Set.
+		// The recompute will run again on the next layout pass after the animation completes.
+		internal bool IsScrollAnimationInProgress
+		{
+			get
+			{
+				if (Content is UIElement contentElt && contentElt.Visual is { } visual
+					&& visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller)
+				{
+					// A KeyFrameAnimation that completed naturally stays in the owning
+					// CompositionObject's animation dictionary (only StopAnimation removes it),
+					// so the controller's mere presence is not a reliable "in progress" signal.
+					// Check the remaining time instead.
+					return controller.Remaining > TimeSpan.Zero;
+				}
+				return false;
+			}
+		}
+
 		private object RealContent => Content;
 
 		private readonly SerialDisposable _eventSubscriptions = new();
@@ -352,6 +373,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			// Touch/pen press invalidates any armed offset intent so subsequent layout cascades from
+			// realization don't push the offset back toward the intent during the user's manipulation.
+			Scroller?.ClearOffsetIntents();
+
 			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.RegisterDirectManipulationHandler(args.Pointer.UniqueId, this);
 		}
 
@@ -364,6 +389,15 @@ namespace Microsoft.UI.Xaml.Controls
 			// cannot fight with the new manipulation's direction.
 			_touchInertia = null;
 
+			return ComputeAcceptedManipulationModes();
+		}
+
+		/// <inheritdoc />
+		ManipulationModes IDirectManipulationHandler.GetCurrentlyAcceptedModes()
+			=> ComputeAcceptedManipulationModes();
+
+		private ManipulationModes ComputeAcceptedManipulationModes()
+		{
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();
 			if (scrollable.Horizontally)

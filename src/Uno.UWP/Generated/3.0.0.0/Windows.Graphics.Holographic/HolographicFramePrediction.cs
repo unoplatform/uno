@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicCameraPose> HolographicFramePrediction.CameraPoses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHolographicCameraPose%3E%20HolographicFramePrediction.CameraPoses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePrediction", "CameraPoses");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionTimestamp HolographicFramePrediction.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionTimestamp%20HolographicFramePrediction.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePrediction", "Timestamp");
 			}
 		}
 #endif

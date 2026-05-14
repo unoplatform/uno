@@ -19,11 +19,11 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectAdvertisement.InformationElements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectInformationElement%3E%20WiFiDirectAdvertisement.InformationElements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "InformationElements");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "IList<WiFiDirectInformationElement> WiFiDirectAdvertisement.InformationElements");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "InformationElements");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "IsAutonomousGroupOwnerEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "bool WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "IsAutonomousGroupOwnerEnabled");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectLegacySettings WiFiDirectAdvertisement.LegacySettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectLegacySettings%20WiFiDirectAdvertisement.LegacySettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "LegacySettings");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisementListenStateDiscoverability WiFiDirectAdvertisement.ListenStateDiscoverability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectAdvertisementListenStateDiscoverability%20WiFiDirectAdvertisement.ListenStateDiscoverability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "ListenStateDiscoverability");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "WiFiDirectAdvertisementListenStateDiscoverability WiFiDirectAdvertisement.ListenStateDiscoverability");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "ListenStateDiscoverability");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WiFiDirectConfigurationMethod> WiFiDirectAdvertisement.SupportedConfigurationMethods is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectConfigurationMethod%3E%20WiFiDirectAdvertisement.SupportedConfigurationMethods");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "SupportedConfigurationMethods");
 			}
 		}
 #endif

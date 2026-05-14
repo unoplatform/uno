@@ -19,7 +19,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisualElementsRequest VisualElementsRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualElementsRequest%20VisualElementsRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.StartScreen.VisualElementsRequestedEventArgs", "Request");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.CurrencyCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.CurrencyCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "CurrencyCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.CustomDeveloperData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.CustomDeveloperData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "CustomDeveloperData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "Description");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.ExtendedData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.ExtendedData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "ExtendedData");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.FormattedListPrice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.FormattedListPrice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "FormattedListPrice");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "ProductId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.SkuId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.SkuId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "SkuId");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.SkuType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.SkuType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "SkuType");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewSkuInfo.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewSkuInfo.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo", "Title");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MicrosoftAccountMultiFactorOneTimeCodedInfo.Code is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MicrosoftAccountMultiFactorOneTimeCodedInfo.Code");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo", "Code");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MicrosoftAccountMultiFactorServiceResponse MicrosoftAccountMultiFactorOneTimeCodedInfo.ServiceResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MicrosoftAccountMultiFactorServiceResponse%20MicrosoftAccountMultiFactorOneTimeCodedInfo.ServiceResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo", "ServiceResponse");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MicrosoftAccountMultiFactorOneTimeCodedInfo.TimeInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MicrosoftAccountMultiFactorOneTimeCodedInfo.TimeInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo", "TimeInterval");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MicrosoftAccountMultiFactorOneTimeCodedInfo.TimeToLive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MicrosoftAccountMultiFactorOneTimeCodedInfo.TimeToLive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorOneTimeCodedInfo", "TimeToLive");
 			}
 		}
 #endif

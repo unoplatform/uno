@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint EmailItemCounts.Flagged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20EmailItemCounts.Flagged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailItemCounts", "Flagged");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint EmailItemCounts.Important is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20EmailItemCounts.Important");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailItemCounts", "Important");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint EmailItemCounts.Total is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20EmailItemCounts.Total");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailItemCounts", "Total");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint EmailItemCounts.Unread is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20EmailItemCounts.Unread");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailItemCounts", "Unread");
 			}
 		}
 #endif

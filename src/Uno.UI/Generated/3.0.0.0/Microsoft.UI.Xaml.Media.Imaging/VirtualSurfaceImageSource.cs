@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VirtualSurfaceImageSource(int pixelWidth, int pixelHeight) : base(pixelWidth, pixelHeight)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource", "VirtualSurfaceImageSource.VirtualSurfaceImageSource(int pixelWidth, int pixelHeight)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource", "VirtualSurfaceImageSource(int pixelWidth, int pixelHeight)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.VirtualSurfaceImageSource(int, int)
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VirtualSurfaceImageSource(int pixelWidth, int pixelHeight, bool isOpaque) : base(pixelWidth, pixelHeight, isOpaque)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource", "VirtualSurfaceImageSource.VirtualSurfaceImageSource(int pixelWidth, int pixelHeight, bool isOpaque)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource", "VirtualSurfaceImageSource(int pixelWidth, int pixelHeight, bool isOpaque)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.VirtualSurfaceImageSource(int, int, bool)

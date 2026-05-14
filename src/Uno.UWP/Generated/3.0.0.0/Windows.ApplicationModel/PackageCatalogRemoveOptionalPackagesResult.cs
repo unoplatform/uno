@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageCatalogRemoveOptionalPackagesResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PackageCatalogRemoveOptionalPackagesResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Package> PackageCatalogRemoveOptionalPackagesResult.PackagesRemoved is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPackage%3E%20PackageCatalogRemoveOptionalPackagesResult.PackagesRemoved");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult", "PackagesRemoved");
 			}
 		}
 #endif

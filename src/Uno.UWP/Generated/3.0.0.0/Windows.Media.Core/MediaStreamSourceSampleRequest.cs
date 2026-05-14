@@ -19,11 +19,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSourceSampleRequest.Sample is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSample%20MediaStreamSourceSampleRequest.Sample");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSampleRequest", "Sample");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceSampleRequest", "MediaStreamSample MediaStreamSourceSampleRequest.Sample");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceSampleRequest", "Sample");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSampleRequest.StreamDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaStreamDescriptor%20MediaStreamSourceSampleRequest.StreamDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSampleRequest", "StreamDescriptor");
 			}
 		}
 #endif
@@ -41,14 +41,14 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSourceSampleRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member MediaStreamSourceSampleRequestDeferral MediaStreamSourceSampleRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceSampleRequestDeferral%20MediaStreamSourceSampleRequest.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSampleRequest", "GetDeferral()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportSampleProgress(uint progress)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceSampleRequest", "void MediaStreamSourceSampleRequest.ReportSampleProgress(uint progress)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceSampleRequest", "ReportSampleProgress(uint progress)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Sample.get

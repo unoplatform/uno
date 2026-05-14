@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConnectedAnimationConfiguration ConnectedAnimation.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimationConfiguration%20ConnectedAnimation.Configuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "Configuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "ConnectedAnimationConfiguration ConnectedAnimation.Configuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "Configuration");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectedAnimation.IsScaleAnimationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectedAnimation.IsScaleAnimationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "IsScaleAnimationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "bool ConnectedAnimation.IsScaleAnimationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "IsScaleAnimationEnabled");
 			}
 		}
 #endif
@@ -45,28 +45,28 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryStart(global::Microsoft.UI.Xaml.UIElement destination)
 		{
-			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectedAnimation.TryStart%28UIElement%20destination%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "TryStart(UIElement destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryStart(global::Microsoft.UI.Xaml.UIElement destination, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.UIElement> coordinatedElements)
 		{
-			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination, IEnumerable<UIElement> coordinatedElements) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectedAnimation.TryStart%28UIElement%20destination%2C%20IEnumerable%3CUIElement%3E%20coordinatedElements%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "TryStart(UIElement destination, IEnumerable<UIElement> coordinatedElements)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "void ConnectedAnimation.Cancel()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "Cancel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetAnimationComponent(global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationComponent component, global::Microsoft.UI.Composition.ICompositionAnimationBase animation)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "void ConnectedAnimation.SetAnimationComponent(ConnectedAnimationComponent component, ICompositionAnimationBase animation)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "SetAnimationComponent(ConnectedAnimationComponent component, ICompositionAnimationBase animation)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.add
@@ -82,12 +82,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "event TypedEventHandler<ConnectedAnimation, object> ConnectedAnimation.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "event Completed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "event TypedEventHandler<ConnectedAnimation, object> ConnectedAnimation.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation", "event Completed");
 			}
 		}
 #endif

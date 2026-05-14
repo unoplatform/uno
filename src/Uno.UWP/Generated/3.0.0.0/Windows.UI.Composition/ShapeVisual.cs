@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionShapeCollection ShapeVisual.Shapes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionShapeCollection%20ShapeVisual.Shapes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ShapeVisual", "Shapes");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionViewBox ShapeVisual.ViewBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionViewBox%20ShapeVisual.ViewBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ShapeVisual", "ViewBox");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ShapeVisual", "CompositionViewBox ShapeVisual.ViewBox");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ShapeVisual", "ViewBox");
 			}
 		}
 #endif

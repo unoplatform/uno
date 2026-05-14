@@ -16,11 +16,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasingFunctionBase VisualTransition.GeneratedEasingFunction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasingFunctionBase%20VisualTransition.GeneratedEasingFunction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.VisualTransition", "GeneratedEasingFunction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "EasingFunctionBase VisualTransition.GeneratedEasingFunction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.VisualTransition", "GeneratedEasingFunction");
 			}
 		}
 #endif

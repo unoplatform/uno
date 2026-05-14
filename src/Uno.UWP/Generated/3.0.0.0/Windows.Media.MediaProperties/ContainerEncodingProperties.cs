@@ -14,7 +14,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPropertySet ContainerEncodingProperties.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPropertySet%20ContainerEncodingProperties.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.ContainerEncodingProperties", "Properties");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContainerEncodingProperties.Subtype is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContainerEncodingProperties.Subtype");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.ContainerEncodingProperties", "Subtype");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.ContainerEncodingProperties", "string ContainerEncodingProperties.Subtype");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.ContainerEncodingProperties", "Subtype");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContainerEncodingProperties.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContainerEncodingProperties.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.ContainerEncodingProperties", "Type");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContainerEncodingProperties()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.ContainerEncodingProperties", "ContainerEncodingProperties.ContainerEncodingProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.ContainerEncodingProperties", "ContainerEncodingProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.ContainerEncodingProperties()
@@ -54,7 +54,7 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.ContainerEncodingProperties Copy()
 		{
-			throw new global::System.NotImplementedException("The member ContainerEncodingProperties ContainerEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContainerEncodingProperties%20ContainerEncodingProperties.Copy%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.ContainerEncodingProperties", "Copy()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.Properties.get

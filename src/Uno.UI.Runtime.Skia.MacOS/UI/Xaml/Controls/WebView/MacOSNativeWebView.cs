@@ -58,6 +58,8 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		_webview = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
 		NativeHandle = _webview;
 
+		NativeUno.uno_webview_set_inspectable(_webview, global::Uno.UI.FeatureConfiguration.WebView2.EnableDevTools);
+
 		_previousTitle = "";
 	}
 

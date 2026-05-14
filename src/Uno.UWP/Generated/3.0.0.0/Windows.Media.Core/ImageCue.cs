@@ -14,11 +14,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ImageCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ImageCue.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "TimeSpan ImageCue.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "Duration");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextSize ImageCue.Extent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextSize%20ImageCue.Extent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "Extent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "TimedTextSize ImageCue.Extent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "Extent");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageCue.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "string ImageCue.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "Id");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextPoint ImageCue.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextPoint%20ImageCue.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "Position");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "TimedTextPoint ImageCue.Position");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "Position");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoftwareBitmap ImageCue.SoftwareBitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoftwareBitmap%20ImageCue.SoftwareBitmap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "SoftwareBitmap");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "SoftwareBitmap ImageCue.SoftwareBitmap");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "SoftwareBitmap");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ImageCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ImageCue.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "StartTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "TimeSpan ImageCue.StartTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "StartTime");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ImageCue()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "ImageCue.ImageCue()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.ImageCue", "ImageCue()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.ImageCue.ImageCue()

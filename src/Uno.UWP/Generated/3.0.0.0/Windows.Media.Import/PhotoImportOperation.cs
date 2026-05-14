@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PhotoImportDeleteImportedItemsFromSourceResult, double> PhotoImportOperation.ContinueDeletingImportedItemsFromSourceAsync is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CPhotoImportDeleteImportedItemsFromSourceResult%2C%20double%3E%20PhotoImportOperation.ContinueDeletingImportedItemsFromSourceAsync");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportOperation", "ContinueDeletingImportedItemsFromSourceAsync");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PhotoImportFindItemsResult, uint> PhotoImportOperation.ContinueFindingItemsAsync is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CPhotoImportFindItemsResult%2C%20uint%3E%20PhotoImportOperation.ContinueFindingItemsAsync");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportOperation", "ContinueFindingItemsAsync");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PhotoImportImportItemsResult, PhotoImportProgress> PhotoImportOperation.ContinueImportingItemsAsync is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CPhotoImportImportItemsResult%2C%20PhotoImportProgress%3E%20PhotoImportOperation.ContinueImportingItemsAsync");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportOperation", "ContinueImportingItemsAsync");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportSession PhotoImportOperation.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSession%20PhotoImportOperation.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportOperation", "Session");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportStage PhotoImportOperation.Stage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportStage%20PhotoImportOperation.Stage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportOperation", "Stage");
 			}
 		}
 #endif

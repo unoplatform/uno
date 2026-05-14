@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PermissionKind CoreWebView2PermissionSetting.PermissionKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PermissionKind%20CoreWebView2PermissionSetting.PermissionKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionSetting", "PermissionKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2PermissionSetting.PermissionOrigin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2PermissionSetting.PermissionOrigin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionSetting", "PermissionOrigin");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PermissionState CoreWebView2PermissionSetting.PermissionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PermissionState%20CoreWebView2PermissionSetting.PermissionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionSetting", "PermissionState");
 			}
 		}
 #endif

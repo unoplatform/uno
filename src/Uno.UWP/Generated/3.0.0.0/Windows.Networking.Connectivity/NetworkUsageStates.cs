@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public NetworkUsageStates(global::Windows.Networking.Connectivity.TriStates _Roaming, global::Windows.Networking.Connectivity.TriStates _Shared)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.NetworkUsageStates", "NetworkUsageStates.NetworkUsageStates(TriStates _Roaming, TriStates _Shared)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.NetworkUsageStates", "NetworkUsageStates(TriStates _Roaming, TriStates _Shared)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.NetworkUsageStates(Windows.Networking.Connectivity.TriStates, Windows.Networking.Connectivity.TriStates)

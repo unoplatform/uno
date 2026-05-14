@@ -19,7 +19,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SettingsCommand> SettingsPaneCommandsRequest.ApplicationCommands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSettingsCommand%3E%20SettingsPaneCommandsRequest.ApplicationCommands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsPaneCommandsRequest", "ApplicationCommands");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameIsoSpeedControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameIsoSpeedControl.Auto");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedControl", "Auto");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameIsoSpeedControl", "bool FrameIsoSpeedControl.Auto");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameIsoSpeedControl", "Auto");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? FrameIsoSpeedControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20FrameIsoSpeedControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameIsoSpeedControl", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameIsoSpeedControl", "uint? FrameIsoSpeedControl.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameIsoSpeedControl", "Value");
 			}
 		}
 #endif

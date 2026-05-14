@@ -215,7 +215,12 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				node.ContentDescription = peer.GetName() ?? "";
 				node.Password = peer.IsPassword();
 				node.Enabled = peer.IsEnabled();
-				node.Checked = peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On;
+				// Call setChecked via JNI to stay compatible across the AndroidX.Core
+				// signature change in 1.17 (setChecked(boolean) -> setChecked(int)).
+				// See unoplatform/uno#22999.
+				AccessibilityNodeInfoCompatJni.SetChecked(
+					node,
+					peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On);
 				node.Checkable = peer is IToggleProvider;
 				node.Clickable = isClickable;
 				node.Editable = automationControlType == AutomationControlType.Edit;

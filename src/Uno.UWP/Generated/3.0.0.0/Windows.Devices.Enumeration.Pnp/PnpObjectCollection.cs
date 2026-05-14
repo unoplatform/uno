@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PnpObjectCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PnpObjectCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectCollection", "Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PnpObject PnpObjectCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PnpObject%20PnpObjectCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectCollection", "this[int index]");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Devices.Enumeration.Pnp.PnpObject> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<PnpObject> PnpObjectCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CPnpObject%3E%20PnpObjectCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectCollection", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.System.Collections.IEnumerable.GetEnumerator()

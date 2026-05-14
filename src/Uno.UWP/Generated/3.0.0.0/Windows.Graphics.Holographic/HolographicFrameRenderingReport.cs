@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicFrameId HolographicFrameRenderingReport.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFrameId%20HolographicFrameRenderingReport.FrameId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameRenderingReport", "FrameId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicFrameRenderingReport.MissedLatchCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HolographicFrameRenderingReport.MissedLatchCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameRenderingReport", "MissedLatchCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFrameRenderingReport.SystemRelativeActualGpuFinishTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFrameRenderingReport.SystemRelativeActualGpuFinishTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameRenderingReport", "SystemRelativeActualGpuFinishTime");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFrameRenderingReport.SystemRelativeFrameReadyTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFrameRenderingReport.SystemRelativeFrameReadyTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameRenderingReport", "SystemRelativeFrameReadyTime");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFrameRenderingReport.SystemRelativeTargetLatchTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFrameRenderingReport.SystemRelativeTargetLatchTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameRenderingReport", "SystemRelativeTargetLatchTime");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskRequest PrintTaskRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskRequest%20PrintTaskRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskRequestedEventArgs", "Request");
 			}
 		}
 #endif

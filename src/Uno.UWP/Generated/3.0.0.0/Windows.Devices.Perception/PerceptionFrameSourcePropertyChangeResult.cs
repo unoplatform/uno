@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PerceptionFrameSourcePropertyChangeResult.NewValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PerceptionFrameSourcePropertyChangeResult.NewValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult", "NewValue");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionFrameSourcePropertyChangeStatus PerceptionFrameSourcePropertyChangeResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionFrameSourcePropertyChangeStatus%20PerceptionFrameSourcePropertyChangeResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult", "Status");
 			}
 		}
 #endif

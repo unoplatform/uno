@@ -14,11 +14,11 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowBluetooth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PeerFinder.AllowBluetooth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "AllowBluetooth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "bool PeerFinder.AllowBluetooth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "AllowBluetooth");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowInfrastructure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PeerFinder.AllowInfrastructure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "AllowInfrastructure");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "bool PeerFinder.AllowInfrastructure");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "AllowInfrastructure");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PeerFinder.AllowWiFiDirect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PeerFinder.AllowWiFiDirect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "AllowWiFiDirect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "bool PeerFinder.AllowWiFiDirect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "AllowWiFiDirect");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> PeerFinder.AlternateIdentities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20PeerFinder.AlternateIdentities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "AlternateIdentities");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer PeerFinder.DiscoveryData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20PeerFinder.DiscoveryData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "DiscoveryData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "IBuffer PeerFinder.DiscoveryData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "DiscoveryData");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PeerFinder.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PeerFinder.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "string PeerFinder.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "DisplayName");
 			}
 		}
 #endif
@@ -94,11 +94,11 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PeerRole PeerFinder.Role is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PeerRole%20PeerFinder.Role");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "Role");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "PeerRole PeerFinder.Role");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "Role");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PeerDiscoveryTypes PeerFinder.SupportedDiscoveryTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PeerDiscoveryTypes%20PeerFinder.SupportedDiscoveryTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "SupportedDiscoveryTypes");
 			}
 		}
 #endif
@@ -116,35 +116,35 @@ namespace Windows.Networking.Proximity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "void PeerFinder.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Start(string peerMessage)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "void PeerFinder.Start(string peerMessage)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "Start(string peerMessage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "void PeerFinder.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Proximity.PeerInformation>> FindAllPeersAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PeerInformation>> PeerFinder.FindAllPeersAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CPeerInformation%3E%3E%20PeerFinder.FindAllPeersAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "FindAllPeersAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Sockets.StreamSocket> ConnectAsync(global::Windows.Networking.Proximity.PeerInformation peerInformation)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StreamSocket> PeerFinder.ConnectAsync(PeerInformation peerInformation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStreamSocket%3E%20PeerFinder.ConnectAsync%28PeerInformation%20peerInformation%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "ConnectAsync(PeerInformation peerInformation)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.ConnectionRequested.add
@@ -155,7 +155,7 @@ namespace Windows.Networking.Proximity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.Proximity.PeerWatcher CreateWatcher()
 		{
-			throw new global::System.NotImplementedException("The member PeerWatcher PeerFinder.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PeerWatcher%20PeerFinder.CreateWatcher%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerFinder", "CreateWatcher()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Proximity.PeerFinder.AllowBluetooth.get
@@ -179,12 +179,12 @@ namespace Windows.Networking.Proximity
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "event TypedEventHandler<object, ConnectionRequestedEventArgs> PeerFinder.ConnectionRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "event ConnectionRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "event TypedEventHandler<object, ConnectionRequestedEventArgs> PeerFinder.ConnectionRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "event ConnectionRequested");
 			}
 		}
 #endif
@@ -195,12 +195,12 @@ namespace Windows.Networking.Proximity
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "event TypedEventHandler<object, TriggeredConnectionStateChangedEventArgs> PeerFinder.TriggeredConnectionStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "event TriggeredConnectionStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "event TypedEventHandler<object, TriggeredConnectionStateChangedEventArgs> PeerFinder.TriggeredConnectionStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "event TriggeredConnectionStateChanged");
 			}
 		}
 #endif

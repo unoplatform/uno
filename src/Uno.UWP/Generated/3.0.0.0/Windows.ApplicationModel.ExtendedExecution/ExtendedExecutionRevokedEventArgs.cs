@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExtendedExecutionRevokedReason ExtendedExecutionRevokedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExtendedExecutionRevokedReason%20ExtendedExecutionRevokedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs", "Reason");
 			}
 		}
 #endif

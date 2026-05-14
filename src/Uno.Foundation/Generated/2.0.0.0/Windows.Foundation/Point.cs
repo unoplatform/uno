@@ -24,7 +24,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ToString(global::System.IFormatProvider provider)
 		{
-			throw new global::System.NotImplementedException("The member string Point.ToString(IFormatProvider provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Point.ToString%28IFormatProvider%20provider%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Point", "ToString(IFormatProvider provider)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Point.System.IFormattable.ToString(string, System.IFormatProvider)

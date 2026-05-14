@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<BluetoothLEAdvertisementReceivedEventArgs> BluetoothLEAdvertisementWatcherTriggerDetails.Advertisements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CBluetoothLEAdvertisementReceivedEventArgs%3E%20BluetoothLEAdvertisementWatcherTriggerDetails.Advertisements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "Advertisements");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError BluetoothLEAdvertisementWatcherTriggerDetails.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothError%20BluetoothLEAdvertisementWatcherTriggerDetails.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "Error");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcherTriggerDetails.SignalStrengthFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothSignalStrengthFilter%20BluetoothLEAdvertisementWatcherTriggerDetails.SignalStrengthFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails", "SignalStrengthFilter");
 			}
 		}
 #endif

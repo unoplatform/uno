@@ -19,11 +19,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.Bandwidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.Bandwidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerBand", "Bandwidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.Bandwidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "Bandwidth");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.FrequencyCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.FrequencyCenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerBand", "FrequencyCenter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.FrequencyCenter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "FrequencyCenter");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerBand", "Gain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.Gain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.EqualizerBand", "Gain");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<RevocationAndRenewalItem> RevocationAndRenewalInformation.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CRevocationAndRenewalItem%3E%20RevocationAndRenewalInformation.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalInformation", "Items");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsBinaryMessage SmsMessageReceivedEventArgs.BinaryMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsBinaryMessage%20SmsMessageReceivedEventArgs.BinaryMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedEventArgs", "BinaryMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsTextMessage SmsMessageReceivedEventArgs.TextMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsTextMessage%20SmsMessageReceivedEventArgs.TextMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedEventArgs", "TextMessage");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType BarcodeScannerImagePreviewReceivedEventArgs.Preview is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamWithContentType%20BarcodeScannerImagePreviewReceivedEventArgs.Preview");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs", "Preview");
 			}
 		}
 #endif

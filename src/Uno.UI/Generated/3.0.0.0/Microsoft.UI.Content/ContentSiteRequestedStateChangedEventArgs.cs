@@ -19,7 +19,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteRequestedStateChangedEventArgs.DidRequestedSizeChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteRequestedStateChangedEventArgs.DidRequestedSizeChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteRequestedStateChangedEventArgs", "DidRequestedSizeChange");
 			}
 		}
 #endif

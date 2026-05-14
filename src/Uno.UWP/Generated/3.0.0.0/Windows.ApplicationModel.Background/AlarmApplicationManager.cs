@@ -12,14 +12,14 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.AlarmAccessStatus> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AlarmAccessStatus> AlarmApplicationManager.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAlarmAccessStatus%3E%20AlarmApplicationManager.RequestAccessAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AlarmApplicationManager", "RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Background.AlarmAccessStatus GetAccessStatus()
 		{
-			throw new global::System.NotImplementedException("The member AlarmAccessStatus AlarmApplicationManager.GetAccessStatus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AlarmAccessStatus%20AlarmApplicationManager.GetAccessStatus%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AlarmApplicationManager", "GetAccessStatus()");
 		}
 #endif
 	}

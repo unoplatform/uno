@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ExposurePriorityVideoControl.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ExposurePriorityVideoControl", "Enabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ExposurePriorityVideoControl", "bool ExposurePriorityVideoControl.Enabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ExposurePriorityVideoControl", "Enabled");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ExposurePriorityVideoControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ExposurePriorityVideoControl", "Supported");
 			}
 		}
 #endif

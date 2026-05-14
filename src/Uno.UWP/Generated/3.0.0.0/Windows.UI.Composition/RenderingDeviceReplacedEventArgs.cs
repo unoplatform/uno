@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionGraphicsDevice RenderingDeviceReplacedEventArgs.GraphicsDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGraphicsDevice%20RenderingDeviceReplacedEventArgs.GraphicsDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.RenderingDeviceReplacedEventArgs", "GraphicsDevice");
 			}
 		}
 #endif

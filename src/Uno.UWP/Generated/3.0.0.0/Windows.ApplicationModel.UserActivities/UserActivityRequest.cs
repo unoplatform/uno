@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.UserActivities
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetUserActivity(global::Windows.ApplicationModel.UserActivities.UserActivity activity)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityRequest", "void UserActivityRequest.SetUserActivity(UserActivity activity)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityRequest", "SetUserActivity(UserActivity activity)");
 		}
 #endif
 	}

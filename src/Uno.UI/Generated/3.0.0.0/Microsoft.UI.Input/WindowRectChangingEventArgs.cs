@@ -19,11 +19,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WindowRectChangingEventArgs.AllowRectChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowRectChangingEventArgs.AllowRectChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "AllowRectChange");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "bool WindowRectChangingEventArgs.AllowRectChange");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "AllowRectChange");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MoveSizeOperation WindowRectChangingEventArgs.MoveSizeOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MoveSizeOperation%20WindowRectChangingEventArgs.MoveSizeOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "MoveSizeOperation");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RectInt32 WindowRectChangingEventArgs.NewWindowRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%20WindowRectChangingEventArgs.NewWindowRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "NewWindowRect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "RectInt32 WindowRectChangingEventArgs.NewWindowRect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "NewWindowRect");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RectInt32 WindowRectChangingEventArgs.OldWindowRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%20WindowRectChangingEventArgs.OldWindowRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "OldWindowRect");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointInt32 WindowRectChangingEventArgs.PointerScreenPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%20WindowRectChangingEventArgs.PointerScreenPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "PointerScreenPoint");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WindowRectChangingEventArgs.ShowWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowRectChangingEventArgs.ShowWindow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "ShowWindow");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "bool WindowRectChangingEventArgs.ShowWindow");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "ShowWindow");
 			}
 		}
 #endif

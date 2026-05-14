@@ -17,28 +17,28 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public static void ShowShareUI()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "void DataTransferManager.ShowShareUI()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "ShowShareUI()");
 		}
 #endif
 #if false || false || __TVOS__ || false || false || false || false
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static global::Windows.ApplicationModel.DataTransfer.DataTransferManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member DataTransferManager DataTransferManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataTransferManager%20DataTransferManager.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataTransferManager", "GetForCurrentView()");
 		}
 #endif
 #if false || false || __TVOS__ || false || false || false || false
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool DataTransferManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DataTransferManager.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataTransferManager", "IsSupported()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public static void ShowShareUI(global::Windows.ApplicationModel.DataTransfer.ShareUIOptions options)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "void DataTransferManager.ShowShareUI(ShareUIOptions options)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "ShowShareUI(ShareUIOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.DataRequested.add
@@ -54,12 +54,12 @@ namespace Windows.ApplicationModel.DataTransfer
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event TypedEventHandler<DataTransferManager, DataRequestedEventArgs> DataTransferManager.DataRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event DataRequested");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event TypedEventHandler<DataTransferManager, DataRequestedEventArgs> DataTransferManager.DataRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event DataRequested");
 			}
 		}
 #endif
@@ -70,12 +70,12 @@ namespace Windows.ApplicationModel.DataTransfer
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> DataTransferManager.TargetApplicationChosen");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event TargetApplicationChosen");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event TypedEventHandler<DataTransferManager, TargetApplicationChosenEventArgs> DataTransferManager.TargetApplicationChosen");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event TargetApplicationChosen");
 			}
 		}
 #endif
@@ -86,12 +86,12 @@ namespace Windows.ApplicationModel.DataTransfer
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event TypedEventHandler<DataTransferManager, ShareProvidersRequestedEventArgs> DataTransferManager.ShareProvidersRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event ShareProvidersRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event TypedEventHandler<DataTransferManager, ShareProvidersRequestedEventArgs> DataTransferManager.ShareProvidersRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "event ShareProvidersRequested");
 			}
 		}
 #endif

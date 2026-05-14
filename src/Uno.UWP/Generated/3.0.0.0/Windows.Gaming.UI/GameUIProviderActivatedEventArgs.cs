@@ -19,7 +19,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet GameUIProviderActivatedEventArgs.GameUIArgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20GameUIProviderActivatedEventArgs.GameUIArgs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "GameUIArgs");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind GameUIProviderActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20GameUIProviderActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState GameUIProviderActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20GameUIProviderActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen GameUIProviderActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20GameUIProviderActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "SplashScreen");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Gaming.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted(global::Windows.Foundation.Collections.ValueSet results)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "void GameUIProviderActivatedEventArgs.ReportCompleted(ValueSet results)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameUIProviderActivatedEventArgs", "ReportCompleted(ValueSet results)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.GameUIArgs.get

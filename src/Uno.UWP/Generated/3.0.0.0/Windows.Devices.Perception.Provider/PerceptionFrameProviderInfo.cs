@@ -14,11 +14,11 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.DeviceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.DeviceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "DeviceKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.DeviceKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "DeviceKind");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "DisplayName");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.FrameKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.FrameKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "FrameKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.FrameKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "FrameKind");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PerceptionFrameProviderInfo.Hidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionFrameProviderInfo.Hidden");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "Hidden");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "bool PerceptionFrameProviderInfo.Hidden");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "Hidden");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "Id");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PerceptionFrameProviderInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "PerceptionFrameProviderInfo.PerceptionFrameProviderInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "PerceptionFrameProviderInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.PerceptionFrameProviderInfo()

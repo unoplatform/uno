@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ResourceLayoutInfo(uint _MajorVersion, uint _MinorVersion, uint _ResourceSubtreeCount, uint _NamedResourceCount, int _Checksum)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo", "ResourceLayoutInfo.ResourceLayoutInfo(uint _MajorVersion, uint _MinorVersion, uint _ResourceSubtreeCount, uint _NamedResourceCount, int _Checksum)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo", "ResourceLayoutInfo(uint _MajorVersion, uint _MinorVersion, uint _ResourceSubtreeCount, uint _NamedResourceCount, int _Checksum)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.ResourceLayoutInfo(uint, uint, uint, uint, int)

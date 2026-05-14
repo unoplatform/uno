@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaStreamDescriptor%20MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "NewStreamDescriptor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaStreamDescriptor%20MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "OldStreamDescriptor");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member MediaStreamSourceSwitchStreamsRequestDeferral MediaStreamSourceSwitchStreamsRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceSwitchStreamsRequestDeferral%20MediaStreamSourceSwitchStreamsRequest.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor.get

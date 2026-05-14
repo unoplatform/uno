@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorQuaternion.W is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorQuaternion.W");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorQuaternion", "W");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorQuaternion.X is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorQuaternion.X");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorQuaternion", "X");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorQuaternion.Y is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorQuaternion.Y");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorQuaternion", "Y");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorQuaternion.Z is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorQuaternion.Z");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorQuaternion", "Z");
 			}
 		}
 #endif

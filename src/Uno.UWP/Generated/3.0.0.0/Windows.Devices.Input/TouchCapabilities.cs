@@ -14,7 +14,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint TouchCapabilities.Contacts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20TouchCapabilities.Contacts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.TouchCapabilities", "Contacts");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TouchCapabilities.TouchPresent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TouchCapabilities.TouchPresent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.TouchCapabilities", "TouchPresent");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TouchCapabilities()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.TouchCapabilities", "TouchCapabilities.TouchCapabilities()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.TouchCapabilities", "TouchCapabilities()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchCapabilities()

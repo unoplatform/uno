@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemOutOfBoxExperienceState SystemSetupInfo.OutOfBoxExperienceState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemOutOfBoxExperienceState%20SystemSetupInfo.OutOfBoxExperienceState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemSetupInfo", "OutOfBoxExperienceState");
 			}
 		}
 #endif
@@ -28,12 +28,12 @@ namespace Windows.System.Profile
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.SystemSetupInfo", "event EventHandler<object> SystemSetupInfo.OutOfBoxExperienceStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.SystemSetupInfo", "event OutOfBoxExperienceStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.SystemSetupInfo", "event EventHandler<object> SystemSetupInfo.OutOfBoxExperienceStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Profile.SystemSetupInfo", "event OutOfBoxExperienceStateChanged");
 			}
 		}
 #endif

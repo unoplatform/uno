@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseSatisfactionInfo.IsSatisfied is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseSatisfactionInfo.IsSatisfied");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "IsSatisfied");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseSatisfactionInfo.SatisfiedByDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseSatisfactionInfo.SatisfiedByDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByDevice");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseSatisfactionInfo.SatisfiedByInstallMedia is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseSatisfactionInfo.SatisfiedByInstallMedia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByInstallMedia");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseSatisfactionInfo.SatisfiedByOpenLicense is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseSatisfactionInfo.SatisfiedByOpenLicense");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByOpenLicense");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseSatisfactionInfo.SatisfiedByPass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseSatisfactionInfo.SatisfiedByPass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByPass");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseSatisfactionInfo.SatisfiedBySignedInUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseSatisfactionInfo.SatisfiedBySignedInUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedBySignedInUser");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseSatisfactionInfo.SatisfiedByTrial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseSatisfactionInfo.SatisfiedByTrial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo", "SatisfiedByTrial");
 			}
 		}
 #endif

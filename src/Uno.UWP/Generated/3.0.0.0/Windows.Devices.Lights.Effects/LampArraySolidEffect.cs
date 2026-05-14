@@ -14,11 +14,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color LampArraySolidEffect.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20LampArraySolidEffect.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "Color LampArraySolidEffect.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "Color");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayEffectCompletionBehavior LampArraySolidEffect.CompletionBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayEffectCompletionBehavior%20LampArraySolidEffect.CompletionBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "CompletionBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "LampArrayEffectCompletionBehavior LampArraySolidEffect.CompletionBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "CompletionBehavior");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArraySolidEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArraySolidEffect.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "TimeSpan LampArraySolidEffect.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "Duration");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArraySolidEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArraySolidEffect.StartDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "StartDelay");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "TimeSpan LampArraySolidEffect.StartDelay");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "StartDelay");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArraySolidEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArraySolidEffect.ZIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "ZIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "int LampArraySolidEffect.ZIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "ZIndex");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Devices.Lights.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LampArraySolidEffect(global::Windows.Devices.Lights.LampArray lampArray, int[] lampIndexes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "LampArraySolidEffect.LampArraySolidEffect(LampArray lampArray, int[] lampIndexes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArraySolidEffect", "LampArraySolidEffect(LampArray lampArray, int[] lampIndexes)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.LampArraySolidEffect(Windows.Devices.Lights.LampArray, int[])

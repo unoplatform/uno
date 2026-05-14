@@ -14,11 +14,11 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FileUnprotectOptions.Audit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FileUnprotectOptions.Audit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileUnprotectOptions", "Audit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.FileUnprotectOptions", "bool FileUnprotectOptions.Audit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.FileUnprotectOptions", "Audit");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.Security.EnterpriseData
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public FileUnprotectOptions(bool audit)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.FileUnprotectOptions", "FileUnprotectOptions.FileUnprotectOptions(bool audit)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.FileUnprotectOptions", "FileUnprotectOptions(bool audit)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.FileUnprotectOptions(bool)

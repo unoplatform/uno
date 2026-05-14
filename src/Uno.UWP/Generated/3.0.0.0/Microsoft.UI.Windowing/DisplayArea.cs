@@ -19,7 +19,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.Primary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.Primary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "Primary");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayId DisplayArea.DisplayId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayId%20DisplayArea.DisplayId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "DisplayId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayArea.IsPrimary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayArea.IsPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "IsPrimary");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RectInt32 DisplayArea.OuterBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%20DisplayArea.OuterBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "OuterBounds");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RectInt32 DisplayArea.WorkArea is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%20DisplayArea.WorkArea");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "WorkArea");
 			}
 		}
 #endif
@@ -67,42 +67,42 @@ namespace Microsoft.UI.Windowing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayAreaWatcher CreateWatcher()
 		{
-			throw new global::System.NotImplementedException("The member DisplayAreaWatcher DisplayArea.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAreaWatcher%20DisplayArea.CreateWatcher%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "CreateWatcher()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Microsoft.UI.Windowing.DisplayArea> FindAll()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayArea> DisplayArea.FindAll() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayArea%3E%20DisplayArea.FindAll%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "FindAll()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayArea GetFromWindowId(global::Microsoft.UI.WindowId windowId, global::Microsoft.UI.Windowing.DisplayAreaFallback displayAreaFallback)
 		{
-			throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.GetFromWindowId(WindowId windowId, DisplayAreaFallback displayAreaFallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.GetFromWindowId%28WindowId%20windowId%2C%20DisplayAreaFallback%20displayAreaFallback%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "GetFromWindowId(WindowId windowId, DisplayAreaFallback displayAreaFallback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayArea GetFromPoint(global::Windows.Graphics.PointInt32 point, global::Microsoft.UI.Windowing.DisplayAreaFallback displayAreaFallback)
 		{
-			throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.GetFromPoint(PointInt32 point, DisplayAreaFallback displayAreaFallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.GetFromPoint%28PointInt32%20point%2C%20DisplayAreaFallback%20displayAreaFallback%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "GetFromPoint(PointInt32 point, DisplayAreaFallback displayAreaFallback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayArea GetFromRect(global::Windows.Graphics.RectInt32 rect, global::Microsoft.UI.Windowing.DisplayAreaFallback displayAreaFallback)
 		{
-			throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.GetFromRect(RectInt32 rect, DisplayAreaFallback displayAreaFallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.GetFromRect%28RectInt32%20rect%2C%20DisplayAreaFallback%20displayAreaFallback%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "GetFromRect(RectInt32 rect, DisplayAreaFallback displayAreaFallback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayArea GetFromDisplayId(global::Microsoft.UI.DisplayId displayId)
 		{
-			throw new global::System.NotImplementedException("The member DisplayArea DisplayArea.GetFromDisplayId(DisplayId displayId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayArea%20DisplayArea.GetFromDisplayId%28DisplayId%20displayId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayArea", "GetFromDisplayId(DisplayId displayId)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Primary.get
