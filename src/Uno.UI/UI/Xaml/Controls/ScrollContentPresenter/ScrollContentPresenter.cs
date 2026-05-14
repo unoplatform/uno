@@ -185,7 +185,18 @@ namespace Microsoft.UI.Xaml.Controls
 				bool childPreventsInfiniteAvailableWidth = false;
 				bool childPreventsInfiniteAvailableHeight = false;
 
-				if (CanVerticallyScroll)
+				// The decision to allow the content to overflow during measure is driven by ScrollBarVisibility,
+				// not by Can[H|V]erticallyScroll. The latter is tied to ScrollMode (user-input gate) and is used by
+				// the pointer-wheel and direct-manipulation paths; gating layout on it would also disable layout overflow
+				// whenever ScrollMode is Disabled (e.g. PipsPager), which then traps the content inside a viewport-sized
+				// layout slot and produces a LayoutClip that masks any content that scrolls in via programmatic
+				// ChangeView / BringIntoView.
+				var allowVerticalOverflow = ScrollOwner is not ScrollViewer verticallyOwningScrollViewer
+					|| verticallyOwningScrollViewer.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+				var allowHorizontalOverflow = ScrollOwner is not ScrollViewer horizontallyOwningScrollViewer
+					|| horizontallyOwningScrollViewer.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+
+				if (allowVerticalOverflow)
 				{
 					childPreventsInfiniteAvailableHeight = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Vertical);
 					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableHeight)
@@ -193,7 +204,7 @@ namespace Microsoft.UI.Xaml.Controls
 						slotSize.Height = double.PositiveInfinity;
 					}
 				}
-				if (CanHorizontallyScroll)
+				if (allowHorizontalOverflow)
 				{
 					childPreventsInfiniteAvailableWidth = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Horizontal);
 					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableWidth)
