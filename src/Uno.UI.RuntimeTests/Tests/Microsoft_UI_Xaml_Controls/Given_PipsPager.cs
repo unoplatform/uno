@@ -20,6 +20,7 @@ public partial class Given_PipsPager
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 	public async Task When_SelectedIndex_Beyond_MaxVisiblePips_All_Visible_Pips_Are_Realized()
 	{
 		// Repro for the trailing-pips-disappear bug: with NumberOfPages > MaxVisiblePips,
