@@ -264,9 +264,12 @@ public partial class ApiInformation
 		{
 			lock (_notImplementedOnce)
 			{
-				if (!_notImplementedOnce.Contains(memberName) || AlwaysLogNotImplementedMessages)
+				// Keyed by type + member since generated stubs pass member names without a containing-type prefix,
+				// which would otherwise collapse same-named members of different types into a single log entry.
+				var key = type + "." + memberName;
+				if (!_notImplementedOnce.Contains(key) || AlwaysLogNotImplementedMessages)
 				{
-					_notImplementedOnce.Add(memberName);
+					_notImplementedOnce.Add(key);
 
 					var logLevel = NotImplementedLogLevel == LogLevel.Error ? errorLogLevelOverride : NotImplementedLogLevel;
 

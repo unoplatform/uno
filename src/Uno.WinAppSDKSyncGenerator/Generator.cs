@@ -1401,7 +1401,8 @@ namespace Uno.WinAppSDKSyncGenerator
 		private void BuildNotImplementedException(IndentedStringBuilder b, ISymbol member, bool forceRaise)
 		{
 			var typeName = member.ContainingType.ToDisplayString();
-			var memberName = member.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+			var memberName = member.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat
+				.RemoveMemberOptions(SymbolDisplayMemberOptions.IncludeContainingType | SymbolDisplayMemberOptions.IncludeType));
 
 			if (forceRaise)
 			{
