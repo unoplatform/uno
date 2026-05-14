@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.CacheMode)));
 #endif
-		// Skipping already declared property CanBeScrollAnchorProperty (moved to UIElement.mux.cs to attach a PropertyChangedCallback that wires anchor candidate registration with the parent IScrollAnchorProvider).
+		// Skipping already declared property CanBeScrollAnchorProperty
 		// Skipping already declared property CanDragProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -287,7 +287,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		// Skipping already declared property CanBeScrollAnchor (moved to UIElement.mux.cs).
+		// Skipping already declared property CanBeScrollAnchor
 		// Skipping already declared property CanDrag
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
