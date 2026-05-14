@@ -1406,7 +1406,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			if (forceRaise)
 			{
 				b.AppendLineInvariant(
-					$"throw new global::System.NotImplementedException(\"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(memberName)}\");"
+					$"throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException(\"{typeName}\", \"{memberName}\");"
 				);
 			}
 			else

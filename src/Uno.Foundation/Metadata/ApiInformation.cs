@@ -246,9 +246,15 @@ public partial class ApiInformation
 		}
 	}
 
+	private static string BuildNotImplementedMessage(string type, string memberName)
+		=> $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(type + "." + memberName)}";
+
+	internal static NotImplementedException CreateNotImplementedException(string type, string memberName)
+		=> new NotImplementedException(BuildNotImplementedMessage(type, memberName));
+
 	internal static void TryRaiseNotImplemented(string type, string memberName, LogLevel errorLogLevelOverride = LogLevel.Error)
 	{
-		var message = $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(type + "." + memberName)}";
+		var message = BuildNotImplementedMessage(type, memberName);
 
 		if (IsFailWhenNotImplemented)
 		{
